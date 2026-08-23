@@ -50,11 +50,20 @@ Kernaussagen → Quiz (4–6 Fragen). Abschluss bringt XP; das beste Quiz-Ergebn
 
 | Trainer | Trainiert | Mechanik |
 |---|---|---|
-| 🃏 Preflop-Trainer | Ranges nach Position | Zufällige Hand + Situation (RFI / BB-Defense), Antwort vs. Chart, Matrix-Anzeige |
-| 🧮 Pot-Odds-Trainer | Benötigte Equity | Zufälliger Pot & Bet, Multiple Choice, Rechenweg als Erklärung |
-| ⚖️ Equity-Schätzer | Matchup-Gefühl | Hand vs. Hand (+Board), Schätzung per Slider, Monte-Carlo-Auflösung |
-| 🏆 Handranking-Trainer | Handlesen | 7 Karten, beste Hand erkennen |
-| 🔢 Outs-Zähler | Draw-Bewertung | Typische Draw-Szenarien, Outs zählen, Regel-von-4-Umrechnung |
+| Szenario-Trainer | Komplette Spots | 24 handgeschriebene Situationen, jede Option einzeln bewertet und erklärt |
+| Preflop-Trainer | Ranges nach Position | Zufällige Hand + Situation (RFI / BB-Defense), Antwort vs. Chart, Matrix-Anzeige |
+| Pot-Odds-Trainer | Benötigte Equity | Zufälliger Pot & Bet, Multiple Choice, Rechenweg als Erklärung |
+| Equity-Schätzer | Matchup-Gefühl | Hand vs. Hand (+Board), Schätzung per Slider, Monte-Carlo-Auflösung |
+| Handranking-Trainer | Handlesen | 7 Karten, beste Hand erkennen |
+| Outs-Zähler | Draw-Bewertung | Typische Draw-Szenarien, Outs zählen, Regel-von-4-Umrechnung |
+| Push/Fold-Trainer | Turnier-Endgame | Vereinfachte Nash-Shove-Ranges für 10bb/5bb, alle Positionen |
+
+Dazu zwei tägliche Lernmechaniken:
+
+- **Tages-Quiz:** fünf Fragen quer durch alle Module, jeden Tag neu (datumsbasiert
+  deterministisch), Bonus-XP
+- **Wiederholen (Spaced Repetition):** falsch beantwortete Quizfragen landen in einem
+  Stapel und kommen in wachsenden Abständen wieder, bis sie dreimal in Folge sitzen
 
 Alle Trainer zählen Versuche, Trefferquote und Serien – mit XP und Abzeichen.
 
@@ -66,7 +75,9 @@ Alle Trainer zählen Versuche, Trefferquote und Serien – mit XP und Abzeichen.
   postflop equity- und potodds-basiert mit Zufallsanteil
 - **Coach-Modus:** Live-Anzeige von Equity, Pot Odds, aktueller Handstärke und einer
   Einschätzung („Call ist rechnerisch profitabel“)
-- Handverlauf als Log; gespielte/gewonnene Hände fließen in Profil & Abzeichen
+- **Handhistorie:** die letzten 30 Hände mit Karten, Ergebnis, Chip-Differenz und
+  aufklappbarem Verlauf – zum Nachbereiten eigener Entscheidungen
+- Gespielte/gewonnene Hände fließen in Profil & Abzeichen
 
 ## 6. Live-Coach – der Berater für den Pokerabend
 

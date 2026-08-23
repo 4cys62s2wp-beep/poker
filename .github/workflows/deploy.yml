@@ -20,6 +20,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      pages_enabled: ${{ steps.pages.outcome == 'success' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,16 +37,24 @@ jobs:
       - name: Build
         run: npm run build
       - name: GitHub Pages konfigurieren
+        id: pages
+        continue-on-error: true
         uses: actions/configure-pages@v5
         with:
           enablement: true
       - name: Build-Artefakt hochladen
+        if: steps.pages.outcome == 'success'
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+      - name: Hinweis, falls Pages noch nicht aktiviert ist
+        if: steps.pages.outcome != 'success'
+        run: |
+          echo "::notice title=GitHub Pages aktivieren::Einmalig unter Settings → Pages die Source 'GitHub Actions' wählen – danach deployt jeder Push automatisch."
 
   deploy:
     needs: build
+    if: needs.build.outputs.pages_enabled == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

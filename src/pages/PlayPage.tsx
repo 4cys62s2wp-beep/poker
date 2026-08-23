@@ -37,6 +37,20 @@ const STYLE_LABEL: Record<BotStyle, string> = {
   aggro: 'aggressiv',
 };
 
+/** Engine-Logzeilen sprechen in der 3. Person – für „Du“ die 2. Person herstellen. */
+function fixDuGrammar(text: string): string {
+  if (!text.startsWith('Du ')) return text;
+  return text
+    .replace(/^Du foldet\b/, 'Du foldest')
+    .replace(/^Du callt\b/, 'Du callst')
+    .replace(/^Du checkt\b/, 'Du checkst')
+    .replace(/^Du erhöht\b/, 'Du erhöhst')
+    .replace(/^Du gewinnt\b/, 'Du gewinnst')
+    .replace(/^Du zeigt\b/, 'Du zeigst')
+    .replace(/^Du erhält\b/, 'Du erhältst')
+    .replace(/ und ist all-in/, ' und bist all-in');
+}
+
 /** Sitzpositionen (Prozent) je Spielerzahl; Hero ist immer Index 0 (unten Mitte). */
 const LAYOUTS: Record<number, Array<{ x: number; y: number }>> = {
   2: [
@@ -383,7 +397,8 @@ export function PlayPage() {
             const p = g.players.find((pl) => pl.id === a.playerId)!;
             return (
               <div key={i} style={{ fontWeight: 700 }}>
-                {p.name} gewinnt {a.amount} Chips{a.handName ? ` mit ${a.handName}` : ''}
+                {p.isHero ? 'Du gewinnst' : `${p.name} gewinnt`} {a.amount} Chips
+                {a.handName ? ` mit ${a.handName}` : ''}
               </div>
             );
           })}
@@ -466,7 +481,7 @@ export function PlayPage() {
           const isStreet = entry.playerId === undefined;
           return (
             <div key={i} className={isStreet ? 'street-mark' : ''}>
-              {entry.text}
+              {fixDuGrammar(entry.text)}
             </div>
           );
         })}
@@ -524,7 +539,7 @@ function HandHistoryList({ hands }: { hands: Array<import('../state/AppState').H
             {open && (
               <div className="game-log" style={{ marginTop: 12, maxHeight: 260 }}>
                 {h.log.map((line, i) => (
-                  <div key={i}>{line}</div>
+                  <div key={i}>{fixDuGrammar(line)}</div>
                 ))}
               </div>
             )}

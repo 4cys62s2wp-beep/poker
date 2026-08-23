@@ -38,11 +38,23 @@ npm run build:single  # Alles-in-einer-HTML-Datei nach dist-single/
 npm run icons      # App-Icons neu generieren
 ```
 
-## Deployment
+## Deployment (automatisch via GitHub Actions)
 
-`npm run build` erzeugt eine statische Seite in `dist/` – lauffähig auf jedem
-statischen Hosting (GitHub Pages, Netlify, eigener Webspace). Dank Hash-Routing
-ist keine Server-Konfiguration nötig.
+Der Workflow `.github/workflows/deploy.yml` testet, baut und veröffentlicht die
+App bei jedem Push automatisch auf **GitHub Pages**.
+
+**Einmalig aktivieren** (aus Sicherheitsgründen kann das nur der Repo-Besitzer):
+
+1. Auf GitHub: **Settings → Pages**
+2. Bei „Source“ **„GitHub Actions“** auswählen – fertig.
+
+Danach läuft jeder Push automatisch durch (Tests → Build → Deploy), und die App
+ist unter `https://<owner>.github.io/poker/` erreichbar – als Website und als
+installierbare PWA („Zum Startbildschirm hinzufügen“).
+
+Alternativ manuell: `npm run build` erzeugt eine statische Seite in `dist/` –
+lauffähig auf jedem statischen Hosting (Netlify, Vercel, eigener Webspace).
+Dank Hash-Routing ist keine Server-Konfiguration nötig.
 
 ## Hinweis
 

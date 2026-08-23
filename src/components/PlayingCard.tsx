@@ -16,11 +16,15 @@ export function PlayingCard({ card, size = 'md' }: Props) {
   const rank = RANK_CHARS[rankOf(c)];
   const suit = suitOf(c);
   const suitCls = SUIT_CHARS[suit];
+  const symbol = SUIT_SYMBOLS[suit];
   const displayRank = rank === 'T' ? '10' : rank;
   return (
-    <div className={`pcard suit-${suitCls}${sizeCls}`} aria-label={`${displayRank}${SUIT_SYMBOLS[suit]}`}>
-      <span className="rank">{displayRank}</span>
-      <span className="suit">{SUIT_SYMBOLS[suit]}</span>
+    <div className={`pcard suit-${suitCls}${sizeCls}`} aria-label={`${displayRank}${symbol}`}>
+      <span className="corner">
+        {displayRank}
+        <span className="c-suit">{symbol}</span>
+      </span>
+      <span className="center-suit">{symbol}</span>
     </div>
   );
 }

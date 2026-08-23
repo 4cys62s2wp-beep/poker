@@ -167,6 +167,7 @@ export function PlayPage() {
     return (
       <div>
         <div className="page-header">
+          <div className="eyebrow">Am Tisch, ohne Risiko</div>
           <h1>🃏 Übungstisch</h1>
           <p className="sub">
             Spiele No-Limit Hold'em gegen KI-Gegner mit unterschiedlichen Spielstilen – mit Spielgeld und ohne Risiko.

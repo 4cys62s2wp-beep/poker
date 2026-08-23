@@ -45,6 +45,7 @@ export function TrainerHub() {
   return (
     <div>
       <div className="page-header">
+        <div className="eyebrow">Wissen wird Können</div>
         <h1>Trainer</h1>
         <p className="sub">
           Wissen wird erst durch Wiederholung zur Fähigkeit. Jede richtige Antwort bringt 5 XP – und lange Serien

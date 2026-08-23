@@ -150,7 +150,7 @@ const m2: Module = {
         {
           heading: 'Das richtige Open-Sizing',
           body:
-            'Online ist das Standard-Open heute klein: **2,2–3bb**, an vielen Tischen genau 2,5bb. Kleine Opens riskieren weniger, wenn du gefoldet wirst oder eine 3-Bet kassierst, und erlauben dir, eine breitere Range profitabel zu spielen. Aus dem Small Blind wählst du eher 3–3,5bb, weil du postflop out of position bist und den Big Blind nicht mit Traumodds einladen willst.\n\n**Live** sind größere Opens Standard: **3–5bb**, in loosen Runden auch mehr. Der Grund ist praktisch: Live-Spieler callen deutlich zu viel, und ein 2,5bb-Open produziert dort oft Familienpötte mit vier, fünf Spielern. Du vergrößerst das Sizing so weit, dass du meist nur ein bis zwei Caller bekommst.\n\nEntscheidend ist in beiden Welten: **Wähle eine feste Größe pro Position und benutze sie für deine gesamte Range.** Wer mit AA groß und mit 76s klein raist, verrät seine Handstärke – aufmerksame Gegner lesen das schneller, als du denkst. Angepasst wird das Sizing an die Situation (Position, Limper, Tischdynamik), niemals an die eigene Handstärke.',
+            'Online ist das Standard-Open heute klein: **2,2–3bb**, an vielen Tischen genau 2,5bb. Kleine Opens riskieren weniger, wenn du eine 3-Bet kassierst und aufgeben musst, und erlauben dir, eine breitere Range profitabel zu spielen. Aus dem Small Blind wählst du eher 3–3,5bb, weil du postflop out of position bist und den Big Blind nicht mit Traumodds einladen willst.\n\n**Live** sind größere Opens Standard: **3–5bb**, in loosen Runden auch mehr. Der Grund ist praktisch: Live-Spieler callen deutlich zu viel, und ein 2,5bb-Open produziert dort oft Familienpötte mit vier, fünf Spielern. Du vergrößerst das Sizing so weit, dass du meist nur ein bis zwei Caller bekommst.\n\nEntscheidend ist in beiden Welten: **Wähle eine feste Größe pro Position und benutze sie für deine gesamte Range.** Wer mit AA groß und mit 76s klein raist, verrät seine Handstärke – aufmerksame Gegner lesen das schneller, als du denkst. Angepasst wird das Sizing an die Situation (Position, Limper, Tischdynamik), niemals an die eigene Handstärke.',
           example:
             'Online-Cash-Game, 100bb: Du sitzt am CO mit A♦ J♦ und alle folden zu dir. Standardspiel: Raise auf 2,5bb. Dieselbe Größe würdest du hier auch mit 55, KQo oder AA wählen.',
         },
@@ -368,7 +368,7 @@ const m2: Module = {
       title: 'Blind Defense',
       duration: 8,
       intro:
-        'In den Blinds hast du bereits Geld im Pot, bevor du deine Karten kennst. Wie du dieses erzwungene Investment verteidigst, entscheidet über einen großen Teil deiner Winrate – denn in keinen Positionen verlieren selbst gute Spieler mehr Geld.',
+        'In den Blinds hast du bereits Geld im Pot, bevor du deine Karten kennst. Wie du dieses erzwungene Investment verteidigst, entscheidet über einen großen Teil deiner Winrate – denn in keiner anderen Position verlieren selbst gute Spieler mehr Geld.',
       sections: [
         {
           heading: 'Der Discount des Big Blind',
@@ -394,7 +394,7 @@ const m2: Module = {
           heading: 'Small Blind: die schwierigste Position',
           body:
             'Der Small Blind ist die undankbarste Position am Tisch, und zwar aus drei Gründen:\n\n- **Immer out of position:** Postflop musst du gegen jeden Gegner zuerst handeln – auch gegen den Big Blind.\n- **Nur der halbe Discount:** Dein erzwungenes Investment beträgt 0,5bb, deine Pot Odds sind also deutlich schlechter als im Big Blind.\n- **Ein Spieler sitzt noch hinter dir:** Dein Call schließt die Action nicht ab. Der Big Blind kann squeezen, und selbst wenn er nur callt, spielst du einen Multiway-Pot aus der schlechtesten Position.\n\nDie Konsequenz der modernen Theorie: **Im Small Blind spielst du gegen Opens überwiegend raise-or-fold.** Mit deinen guten Händen 3-bettest du (eher linear, wie in Lektion 3 besprochen), der Rest foldet. Flat Calls reduzierst du auf ein Minimum – etwa einige starke Hände, die nicht ganz zur 3-Bet reichen, gegen kleine Opens.\n\nRechne damit, in beiden Blinds langfristig Geld zu verlieren – das ist normal und unvermeidbar, weil du blind investieren musst. Dein Ziel ist nicht, die Blinds zu Gewinnpositionen zu machen, sondern **weniger zu verlieren als deine Gegner in derselben Situation**.',
-          tip: 'Wenn alle zu dir im Small Blind folden, gilt das Gegenteil von Vorsicht: Gegen nur noch einen Gegner opnest du breit (grob 40–50 %), am besten auf 3–3,5bb. Viele Spieler folden im Big Blind viel zu oft gegen SB-Opens.',
+          tip: 'Wenn alle zu dir im Small Blind folden, gilt das Gegenteil von Vorsicht: Gegen nur noch einen Gegner openst du breit (grob 40–50 %), am besten auf 3–3,5bb. Viele Spieler folden im Big Blind viel zu oft gegen SB-Opens.',
         },
         {
           heading: 'Nicht überverteidigen: Equity ist nicht gleich Gewinn',

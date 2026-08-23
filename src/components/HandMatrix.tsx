@@ -20,6 +20,7 @@ export function HandMatrix({ raise, call, highlight, onCellClick }: Props) {
       if (raise?.has(label)) cls += ' raise';
       else if (call?.has(label)) cls += ' call';
       if (highlight === label) cls += ' mark';
+      if (onCellClick) cls += ' interactive';
       rows.push(
         <div
           key={label}

@@ -22,6 +22,7 @@ export function ProfilePage() {
   return (
     <div>
       <div className="page-header">
+        <div className="eyebrow">Dein Weg</div>
         <h1>👤 Profil & Fortschritt</h1>
         <p className="sub">Alle Daten werden ausschließlich lokal auf deinem Gerät gespeichert.</p>
       </div>

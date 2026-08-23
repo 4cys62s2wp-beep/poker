@@ -46,11 +46,14 @@ export function Dashboard() {
 
   return (
     <div>
-      <div className="page-header">
-        <h1>{data.name ? `Willkommen zurück, ${data.name}!` : 'Willkommen bei PokerMentor ♠'}</h1>
-        <p className="sub">
-          Deine Poker-Schule: Lerne Strategien, trainiere deine Skills und werde Schritt für Schritt ein besserer
-          Spieler – online wie am echten Tisch.
+      <div className="card hero" style={{ marginBottom: 20 }}>
+        <span className="watermark">♠</span>
+        <div className="eyebrow">Deine Poker-Schule</div>
+        <h1 style={{ fontSize: 'clamp(26px, 4.4vw, 36px)', lineHeight: 1.15, maxWidth: 560 }}>
+          {data.name ? `Willkommen zurück, ${data.name}!` : 'Lerne Poker. Richtig.'}
+        </h1>
+        <p className="sub" style={{ color: 'var(--text-dim)', marginTop: 8, maxWidth: 520 }}>
+          Strategien lernen, Skills trainieren, am Tisch anwenden – online wie live. Ohne Echtgeld, mit System.
         </p>
       </div>
 
@@ -127,21 +130,21 @@ export function Dashboard() {
 
       <div className="section-title">Schnellzugriff</div>
       <div className="grid cols-4">
+        <Link to="/coach" className="card clickable" style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 26 }}>🧭</div>
+          <div style={{ fontWeight: 800, fontSize: 14, marginTop: 6 }}>Live-Coach</div>
+        </Link>
+        <Link to="/tools/hands" className="card clickable" style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 26 }}>🔍</div>
+          <div style={{ fontWeight: 800, fontSize: 14, marginTop: 6 }}>Starthand-Explorer</div>
+        </Link>
+        <Link to="/tools/tells" className="card clickable" style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 26 }}>🫣</div>
+          <div style={{ fontWeight: 800, fontSize: 14, marginTop: 6 }}>Tells & Reads</div>
+        </Link>
         <Link to="/trainer/preflop" className="card clickable" style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 26 }}>🃏</div>
-          <div style={{ fontWeight: 700, fontSize: 14, marginTop: 6 }}>Preflop-Trainer</div>
-        </Link>
-        <Link to="/trainer/potodds" className="card clickable" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 26 }}>🧮</div>
-          <div style={{ fontWeight: 700, fontSize: 14, marginTop: 6 }}>Pot-Odds-Trainer</div>
-        </Link>
-        <Link to="/tools/equity" className="card clickable" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 26 }}>⚖️</div>
-          <div style={{ fontWeight: 700, fontSize: 14, marginTop: 6 }}>Equity-Rechner</div>
-        </Link>
-        <Link to="/tools/bankroll" className="card clickable" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 26 }}>📒</div>
-          <div style={{ fontWeight: 700, fontSize: 14, marginTop: 6 }}>Bankroll-Tracker</div>
+          <div style={{ fontWeight: 800, fontSize: 14, marginTop: 6 }}>Preflop-Trainer</div>
         </Link>
       </div>
 

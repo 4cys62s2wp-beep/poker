@@ -1,21 +1,38 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { useAppState, levelForXp, levelTitle } from '../state/AppState';
+import { useAppState, levelForXp, levelTitle, xpThreshold } from '../state/AppState';
 
-const NAV_ITEMS = [
-  { to: '/', icon: '🏠', label: 'Start', end: true },
-  { to: '/lernen', icon: '📚', label: 'Lernen' },
-  { to: '/trainer', icon: '🎯', label: 'Trainer' },
-  { to: '/spielen', icon: '🃏', label: 'Spielen' },
-  { to: '/tools', icon: '🧰', label: 'Tools' },
-  { to: '/glossar', icon: '📖', label: 'Glossar' },
-  { to: '/profil', icon: '👤', label: 'Profil' },
+const NAV_GROUPS: Array<{ label: string; items: Array<{ to: string; icon: string; label: string; end?: boolean }> }> = [
+  {
+    label: 'Übersicht',
+    items: [{ to: '/', icon: '♠', label: 'Start', end: true }],
+  },
+  {
+    label: 'Lernen',
+    items: [
+      { to: '/lernen', icon: '📚', label: 'Lernpfad' },
+      { to: '/trainer', icon: '🎯', label: 'Trainer' },
+      { to: '/glossar', icon: '📖', label: 'Glossar' },
+    ],
+  },
+  {
+    label: 'Anwenden',
+    items: [
+      { to: '/coach', icon: '🧭', label: 'Live-Coach' },
+      { to: '/spielen', icon: '🃏', label: 'Übungstisch' },
+      { to: '/tools', icon: '🧰', label: 'Tools' },
+    ],
+  },
+  {
+    label: 'Du',
+    items: [{ to: '/profil', icon: '👤', label: 'Profil' }],
+  },
 ];
 
 const MOBILE_ITEMS = [
-  { to: '/', icon: '🏠', label: 'Start', end: true },
+  { to: '/', icon: '♠', label: 'Start', end: true },
   { to: '/lernen', icon: '📚', label: 'Lernen' },
+  { to: '/coach', icon: '🧭', label: 'Coach' },
   { to: '/trainer', icon: '🎯', label: 'Trainer' },
-  { to: '/spielen', icon: '🃏', label: 'Spielen' },
   { to: '/tools', icon: '🧰', label: 'Mehr' },
 ];
 
@@ -30,16 +47,21 @@ export function Layout() {
           <span className="spade">♠</span>
           <span className="grad">PokerMentor</span>
         </div>
-        {NAV_ITEMS.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.end}
-            className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-          >
-            <span className="ico">{item.icon}</span>
-            {item.label}
-          </NavLink>
+        {NAV_GROUPS.map((group) => (
+          <div key={group.label}>
+            <div className="nav-group">{group.label}</div>
+            {group.items.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+              >
+                <span className="ico">{item.icon}</span>
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
         ))}
         <div className="sidebar-footer">
           <div className="row between" style={{ marginBottom: 6 }}>
@@ -54,9 +76,15 @@ export function Layout() {
         </div>
       </aside>
 
-      <main className="main">
-        <Outlet />
-      </main>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="mobile-top">
+          <span className="spade">♠</span>
+          <span className="grad">PokerMentor</span>
+        </div>
+        <main className="main">
+          <Outlet />
+        </main>
+      </div>
 
       <nav className="bottom-nav">
         {MOBILE_ITEMS.map((item) => (
@@ -81,7 +109,7 @@ export function Layout() {
 
 function levelProgressPct(xp: number): number {
   const level = levelForXp(xp);
-  const cur = 75 * (level - 1) * level;
-  const next = 75 * level * (level + 1);
+  const cur = xpThreshold(level);
+  const next = xpThreshold(level + 1);
   return Math.min(100, Math.round((100 * (xp - cur)) / (next - cur)));
 }

@@ -14,6 +14,7 @@ export function LearnPage() {
   return (
     <div>
       <div className="page-header">
+        <div className="eyebrow">Dein Curriculum</div>
         <h1>Lernpfad</h1>
         <p className="sub">
           Acht Module vom ersten Blatt bis zur Profi-Strategie. Arbeite sie der Reihe nach durch – jede Lektion endet

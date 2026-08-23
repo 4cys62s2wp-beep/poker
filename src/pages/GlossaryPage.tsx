@@ -30,6 +30,7 @@ export function GlossaryPage() {
   return (
     <div>
       <div className="page-header">
+        <div className="eyebrow">Nachschlagen</div>
         <h1>📖 Glossar</h1>
         <p className="sub">{glossary.length} Pokerbegriffe von A bis Z – damit du am Tisch jede Ansage verstehst.</p>
       </div>

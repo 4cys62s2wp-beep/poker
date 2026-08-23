@@ -68,15 +68,34 @@ Alle Trainer zählen Versuche, Trefferquote und Serien – mit XP und Abzeichen.
   Einschätzung („Call ist rechnerisch profitabel“)
 - Handverlauf als Log; gespielte/gewonnene Hände fließen in Profil & Abzeichen
 
-## 6. Tools
+## 6. Live-Coach – der Berater für den Pokerabend
 
+Das Herzstück für die Praxis, gebaut für lockere Low-Stakes-Runden mit Freunden:
+
+1. **Setup:** Spielerzahl, Sitzposition, Situation (Raise davor? Limper?)
+2. **Hand eingeben:** blitzschneller 2-Tap-Karten-Picker (Rang → Farbe), fürs Handy optimiert
+3. **Street für Street:** Preflop → Flop → Turn → River – jede Karte nachtragen und sofort sehen:
+   - **Klare Empfehlung** (Raise/Bet/Call/Check/Fold) mit Sizing („Bet 50–65 % des Pots“)
+   - **Begründungen** in verständlichem Deutsch + Homegame-Tipps („Gegen Callstations nicht bluffen“)
+   - **Gewinnchance** per Monte-Carlo-Simulation gegen einstellbare Gegnerzahl
+   - **Handanalyse:** Overpair/Top Pair/…, erkannte Draws mit Out-Zählung
+   - **„Jemand setzt“-Rechner:** Pot & Einsatz eingeben → lohnt sich der Call?
+
+Hinweis in der App: gedacht für private Runden und Training – in Casinos ist Handy-Hilfe verboten.
+
+## 7. Tools
+
+- **🔍 Starthand-Explorer:** alle 169 Starthände antippen → Gewinnwahrscheinlichkeit gegen 1/3/5
+  Gegner, Einordnung (Premium/Stark/Set-Mining/…) und konkrete Spielanleitung
+- **🫣 Tells & Reads:** 25+ Live-Tells mit Zuverlässigkeits-Sternen (Körpersprache, Einsätze,
+  Timing, Sprechverhalten, Homegame-Muster) – inklusive „eigene Tells vermeiden“
 - **⚖️ Equity-Rechner:** 2–3 Hände + beliebiges Board, 30.000 Monte-Carlo-Simulationen
 - **🗺️ Range-Charts:** RFI-Ranges aller Positionen + BB-Verteidigung, interaktive 13×13-Matrix
 - **📊 Odds-Spickzettel:** Outs→Equity (exakt berechnet), klassische Matchups, Pot-Odds-Tabelle
 - **📒 Bankroll-Tracker:** Live-/Online-Sessions, Gewinn, Stundenlohn, Verlaufs-Chart – lokal gespeichert
-- **📖 Glossar:** 100+ Begriffe mit Kategorien, Suche und Querverweisen
+- **📖 Glossar:** 150+ Begriffe mit Kategorien, Suche und Querverweisen
 
-## 7. Motivation & Gamification
+## 8. Motivation & Gamification
 
 - **XP & Level:** Lektionen (60–100 XP), Trainer-Antworten (5 XP), Hände am Tisch;
   11 Level-Titel von „Neuling“ bis „Poker-Mentor“
@@ -84,7 +103,7 @@ Alle Trainer zählen Versuche, Trefferquote und Serien – mit XP und Abzeichen.
 - **Lern-Streak:** tägliches Lernen wird belohnt
 - **Fortschritt überall sichtbar:** Modul-Balken, Quiz-Bestleistungen, Trainer-Serien
 
-## 8. Plattform: Website + App
+## 9. Plattform: Website + App
 
 - **Progressive Web App (PWA):** volle Website im Browser, auf dem Handy „Zum
   Startbildschirm hinzufügen“ → startet wie eine native App (standalone, eigenes Icon)
@@ -93,7 +112,16 @@ Alle Trainer zählen Versuche, Trefferquote und Serien – mit XP und Abzeichen.
 - **Privacy by Design:** alle Fortschritts- und Bankroll-Daten bleiben im localStorage
   des Geräts; keine Accounts, kein Tracking, keine Server
 
-## 9. Technik
+## 10. Design
+
+- **Eigenständige „Kartenlounge“-Ästhetik:** tiefes Filzgrün, Gold-Akzente, warme Cremetöne –
+  kein generisches Dashboard-Design
+- **Typografie:** Fraunces (Serif-Display) für Überschriften, Manrope für UI und Fließtext –
+  beide selbst gehostet (offlinefähig)
+- **4-Color-Deck** für schnelle Farberkennung, realistische Spielkarten mit Ecken-Index
+- **Mobile-first:** Bottom-Tab-Navigation, große Touch-Ziele (Karten-Picker), Safe-Area-Support
+
+## 11. Technik
 
 - React 18 + TypeScript + Vite, React Router (Hash-Routing → überall hostbar)
 - Eigene Poker-Bibliothek (`src/lib/poker/`): Kartenmodell, 7-Karten-Evaluator,
@@ -103,12 +131,14 @@ Alle Trainer zählen Versuche, Trefferquote und Serien – mit XP und Abzeichen.
 - Inhalte als typisierte TypeScript-Daten (`src/content/`), leicht erweiterbar
 - Kein Backend nötig; Deployment als statische Seite (jeder Webspace/Pages-Dienst)
 
-## 10. Ausbaustufen (Roadmap-Ideen)
+## 12. Ausbaustufen (Roadmap-Ideen)
 
-1. **Spaced Repetition:** falsch beantwortete Quizfragen kommen automatisch wieder
-2. **Hand-Analyse:** eigene Hände eingeben und Schritt für Schritt bewerten lassen
-3. **Mehr Charts:** vs. 3-Bet, Squeeze-Spots, Turnier-Stacktiefen, Push/Fold-Tabellen
-4. **Szenario-Trainer:** komplette Spots („Flop-Quiz“) mit Bewertungslogik
-5. **Accounts & Sync (optional):** Cloud-Backup des Fortschritts, weiterhin ohne Echtgeld
-6. **Mehrsprachigkeit:** Englisch als zweite Sprache
-7. **Omaha-Grundkurs** als eigenes Modul
+1. **Karten-Scan per Kamera:** Hand im Live-Coach per Foto erkennen statt tippen
+   (on-device Erkennung, z. B. TensorFlow.js – der 2-Tap-Picker bleibt als Fallback)
+2. **Spaced Repetition:** falsch beantwortete Quizfragen kommen automatisch wieder
+3. **Session-Reader:** Hände aus dem Übungstisch speichern und im Nachhinein analysieren
+4. **Mehr Charts:** vs. 3-Bet, Squeeze-Spots, Turnier-Stacktiefen, Push/Fold-Tabellen
+5. **Szenario-Trainer:** komplette Spots („Flop-Quiz“) mit Bewertungslogik
+6. **Accounts & Sync (optional):** Cloud-Backup des Fortschritts, weiterhin ohne Echtgeld
+7. **Mehrsprachigkeit:** Englisch als zweite Sprache
+8. **Omaha-Grundkurs** als eigenes Modul

@@ -11,11 +11,14 @@ import { EquityTrainer } from './pages/trainers/EquityTrainer';
 import { HandRankTrainer } from './pages/trainers/HandRankTrainer';
 import { OutsTrainer } from './pages/trainers/OutsTrainer';
 import { PlayPage } from './pages/PlayPage';
+import { CoachPage } from './pages/CoachPage';
 import { ToolsHub } from './pages/ToolsHub';
 import { EquityCalc } from './pages/tools/EquityCalc';
 import { RangeViewer } from './pages/tools/RangeViewer';
 import { OddsTables } from './pages/tools/OddsTables';
 import { BankrollTracker } from './pages/tools/BankrollTracker';
+import { TellsPage } from './pages/tools/TellsPage';
+import { HandExplorer } from './pages/tools/HandExplorer';
 import { GlossaryPage } from './pages/GlossaryPage';
 import { ProfilePage } from './pages/ProfilePage';
 
@@ -34,11 +37,14 @@ export function App() {
         <Route path="/trainer/handranking" element={<HandRankTrainer />} />
         <Route path="/trainer/outs" element={<OutsTrainer />} />
         <Route path="/spielen" element={<PlayPage />} />
+        <Route path="/coach" element={<CoachPage />} />
         <Route path="/tools" element={<ToolsHub />} />
         <Route path="/tools/equity" element={<EquityCalc />} />
         <Route path="/tools/ranges" element={<RangeViewer />} />
         <Route path="/tools/odds" element={<OddsTables />} />
         <Route path="/tools/bankroll" element={<BankrollTracker />} />
+        <Route path="/tools/tells" element={<TellsPage />} />
+        <Route path="/tools/hands" element={<HandExplorer />} />
         <Route path="/glossar" element={<GlossaryPage />} />
         <Route path="/profil" element={<ProfilePage />} />
         <Route path="*" element={<Dashboard />} />

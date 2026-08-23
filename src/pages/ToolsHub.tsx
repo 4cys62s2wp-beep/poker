@@ -2,6 +2,24 @@ import { Link } from 'react-router-dom';
 
 const TOOLS = [
   {
+    to: '/coach',
+    icon: '🧭',
+    title: 'Live-Coach',
+    desc: 'Hand eingeben, Empfehlung bekommen: Street für Street – perfekt für den Pokerabend mit Freunden.',
+  },
+  {
+    to: '/tools/hands',
+    icon: '🔍',
+    title: 'Starthand-Explorer',
+    desc: 'Alle 169 Starthände: Gewinnwahrscheinlichkeit gegen 1–5 Gegner und wie du jede Hand spielst.',
+  },
+  {
+    to: '/tools/tells',
+    icon: '🫣',
+    title: 'Tells & Reads',
+    desc: 'Was Gesten, Einsätze und Timing verraten – mit Zuverlässigkeits-Bewertung für Low-Stakes-Runden.',
+  },
+  {
     to: '/tools/equity',
     icon: '⚖️',
     title: 'Equity-Rechner',
@@ -28,6 +46,7 @@ const TOOLS = [
 ];
 
 const EXTRA = [
+  { to: '/spielen', icon: '🃏', title: 'Übungstisch', desc: 'No-Limit Hold’em gegen KI-Gegner mit Coach-Modus.' },
   { to: '/glossar', icon: '📖', title: 'Glossar', desc: 'Alle Pokerbegriffe von A bis Z erklärt.' },
   { to: '/profil', icon: '👤', title: 'Profil & Fortschritt', desc: 'XP, Level, Abzeichen und deine Statistiken.' },
 ];
@@ -36,8 +55,9 @@ export function ToolsHub() {
   return (
     <div>
       <div className="page-header">
+        <div className="eyebrow">Werkzeugkasten</div>
         <h1>Tools</h1>
-        <p className="sub">Werkzeuge für dein Studium – dieselben Rechnungen, die Profis nach der Session machen.</p>
+        <p className="sub">Werkzeuge für den Tisch und fürs Studium – dieselben Rechnungen, die Profis machen.</p>
       </div>
 
       <div className="grid cols-2">
@@ -46,7 +66,7 @@ export function ToolsHub() {
             <div className="row" style={{ alignItems: 'flex-start' }}>
               <span style={{ fontSize: 30 }}>{t.icon}</span>
               <div>
-                <div style={{ fontWeight: 750, fontSize: 17 }}>{t.title}</div>
+                <div style={{ fontWeight: 800, fontSize: 17 }}>{t.title}</div>
                 <div className="small muted" style={{ marginTop: 3 }}>{t.desc}</div>
               </div>
             </div>
@@ -61,7 +81,7 @@ export function ToolsHub() {
             <div className="row" style={{ alignItems: 'flex-start' }}>
               <span style={{ fontSize: 30 }}>{t.icon}</span>
               <div>
-                <div style={{ fontWeight: 750, fontSize: 17 }}>{t.title}</div>
+                <div style={{ fontWeight: 800, fontSize: 17 }}>{t.title}</div>
                 <div className="small muted" style={{ marginTop: 3 }}>{t.desc}</div>
               </div>
             </div>

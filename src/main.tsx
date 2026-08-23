@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import { App } from './App';
 import { AppStateProvider } from './state/AppState';
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/manrope';
 import './styles/global.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

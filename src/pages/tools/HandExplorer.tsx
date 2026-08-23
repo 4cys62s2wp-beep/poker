@@ -102,7 +102,10 @@ export function HandExplorer() {
         </p>
       </div>
 
-      <div className="grid" style={{ gridTemplateColumns: 'minmax(280px, 640px)', gap: 18 }}>
+      <div
+        className="grid"
+        style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))', gap: 18, maxWidth: 1100, alignItems: 'start' }}
+      >
         <div className="card">
           <HandMatrix
             raise={new Set([selected])}

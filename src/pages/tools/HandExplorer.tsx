@@ -95,7 +95,7 @@ export function HandExplorer() {
       </Link>
       <div className="page-header">
         <div className="eyebrow">Alle 169 Starthände</div>
-        <h1>🔍 Starthand-Explorer</h1>
+        <h1>Starthand-Explorer</h1>
         <p className="sub">
           Tippe eine Hand in der Matrix an: Gewinnwahrscheinlichkeit gegen 1, 3 und 5 Gegner, Einordnung und konkrete
           Empfehlung, wie du sie spielst.

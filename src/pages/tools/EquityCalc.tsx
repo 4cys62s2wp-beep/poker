@@ -80,7 +80,7 @@ export function EquityCalc() {
         ← Tools
       </Link>
       <div className="page-header">
-        <h1>⚖️ Equity-Rechner</h1>
+        <h1>Equity-Rechner</h1>
         <p className="sub">
           Karten im Format <strong>Rang + Farbe</strong> eingeben: A K Q J T 9 … 2 und s (♠), h (♥), d (♦), c (♣).
           Beispiel: „As Kh“ = A♠ K♥.

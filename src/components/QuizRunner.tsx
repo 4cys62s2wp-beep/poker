@@ -7,9 +7,11 @@ interface Props {
   onFinish: (score: number, total: number) => void;
   /** Optional: bei jeder Antwort aufgerufen (für Trainer-Statistiken). */
   onAnswer?: (correct: boolean) => void;
+  /** Optional: bei falscher Antwort mit dem Fragen-Index aufgerufen (Spaced Repetition). */
+  onWrong?: (questionIndex: number) => void;
 }
 
-export function QuizRunner({ questions, onFinish, onAnswer }: Props) {
+export function QuizRunner({ questions, onFinish, onAnswer, onWrong }: Props) {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [score, setScore] = useState(0);
@@ -26,6 +28,7 @@ export function QuizRunner({ questions, onFinish, onAnswer }: Props) {
     setSelected(i);
     const correct = i === q.correctIndex;
     if (correct) setScore((s) => s + 1);
+    else onWrong?.(index);
     onAnswer?.(correct);
   }
 

@@ -41,7 +41,7 @@ export function RangeViewer() {
         ← Tools
       </Link>
       <div className="page-header">
-        <h1>🗺️ Range-Charts</h1>
+        <h1>Range-Charts</h1>
         <p className="sub">
           6-max Cash Game, 100bb effektiv, vereinfacht für die Praxis. Charts sind dein Startpunkt – mit Reads darfst
           du abweichen.

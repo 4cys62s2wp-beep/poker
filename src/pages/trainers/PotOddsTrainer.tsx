@@ -68,7 +68,7 @@ export function PotOddsTrainer() {
         ← Trainer
       </Link>
       <div className="page-header">
-        <h1>🧮 Pot-Odds-Trainer</h1>
+        <h1>Pot-Odds-Trainer</h1>
         <p className="sub">
           Wie viel Equity brauchst du mindestens, damit dein Call profitabel ist? Formel: Call ÷ (Pot + Bet + Call).
         </p>
@@ -77,7 +77,7 @@ export function PotOddsTrainer() {
       <div className="row wrap" style={{ marginBottom: 16 }}>
         <span className="pill">✓ {stats?.correct ?? 0} richtig</span>
         <span className="pill">{stats?.attempts ?? 0} gesamt</span>
-        <span className="pill gold">🔥 Serie: {stats?.streak ?? 0}</span>
+        <span className="pill gold">Serie: {stats?.streak ?? 0}</span>
       </div>
 
       <div className="card" style={{ maxWidth: 640 }}>

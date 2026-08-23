@@ -74,14 +74,14 @@ export function PreflopTrainer() {
         ← Trainer
       </Link>
       <div className="page-header">
-        <h1>🃏 Preflop-Trainer</h1>
+        <h1>Preflop-Trainer</h1>
         <p className="sub">6-max Cash Game, 100bb effektiv. Entscheide nach Chart – nach der Antwort siehst du die komplette Range.</p>
       </div>
 
       <div className="row wrap" style={{ marginBottom: 16 }}>
         <span className="pill">✓ {stats?.correct ?? 0} richtig</span>
         <span className="pill">{stats?.attempts ?? 0} gesamt</span>
-        <span className="pill gold">🔥 Serie: {stats?.streak ?? 0}</span>
+        <span className="pill gold">Serie: {stats?.streak ?? 0}</span>
       </div>
 
       <div className="card" style={{ maxWidth: 720 }}>

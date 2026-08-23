@@ -18,13 +18,13 @@ export interface CoachAdvice {
 }
 
 export const ACTION_STYLE: Record<CoachAction, { cls: string; icon: string }> = {
-  raise: { cls: 'v-raise', icon: '⬆️' },
-  bet: { cls: 'v-raise', icon: '💰' },
-  call: { cls: 'v-call', icon: '✅' },
-  check: { cls: 'v-check', icon: '👊' },
-  checkcall: { cls: 'v-check', icon: '🛡️' },
-  checkfold: { cls: 'v-fold', icon: '✋' },
-  fold: { cls: 'v-fold', icon: '🚫' },
+  raise: { cls: 'v-raise', icon: '▲' },
+  bet: { cls: 'v-raise', icon: '▲' },
+  call: { cls: 'v-call', icon: '●' },
+  check: { cls: 'v-check', icon: '○' },
+  checkcall: { cls: 'v-check', icon: '◐' },
+  checkfold: { cls: 'v-fold', icon: '◇' },
+  fold: { cls: 'v-fold', icon: '✕' },
 };
 
 export const ACTION_LABEL: Record<CoachAction, string> = {

@@ -1,50 +1,73 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { useEffect } from 'react';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Icon, type IconName } from './Icon';
 import { useAppState, levelForXp, levelTitle, xpThreshold } from '../state/AppState';
 
-const NAV_GROUPS: Array<{ label: string; items: Array<{ to: string; icon: string; label: string; end?: boolean }> }> = [
+const NAV_GROUPS: Array<{ label: string; items: Array<{ to: string; icon: IconName; label: string; end?: boolean }> }> = [
   {
     label: 'Übersicht',
-    items: [{ to: '/', icon: '♠', label: 'Start', end: true }],
+    items: [{ to: '/', icon: 'spade', label: 'Start', end: true }],
   },
   {
     label: 'Lernen',
     items: [
-      { to: '/lernen', icon: '📚', label: 'Lernpfad' },
-      { to: '/trainer', icon: '🎯', label: 'Trainer' },
-      { to: '/glossar', icon: '📖', label: 'Glossar' },
+      { to: '/lernen', icon: 'learn', label: 'Lernpfad' },
+      { to: '/wiederholen', icon: 'repeat', label: 'Wiederholen' },
+      { to: '/trainer', icon: 'trainer', label: 'Trainer' },
+      { to: '/glossar', icon: 'glossary', label: 'Glossar' },
     ],
   },
   {
     label: 'Anwenden',
     items: [
-      { to: '/coach', icon: '🧭', label: 'Live-Coach' },
-      { to: '/spielen', icon: '🃏', label: 'Übungstisch' },
-      { to: '/tools', icon: '🧰', label: 'Tools' },
+      { to: '/coach', icon: 'coach', label: 'Live-Coach' },
+      { to: '/spielen', icon: 'play', label: 'Übungstisch' },
+      { to: '/tools', icon: 'tools', label: 'Tools' },
     ],
   },
   {
     label: 'Du',
-    items: [{ to: '/profil', icon: '👤', label: 'Profil' }],
+    items: [{ to: '/profil', icon: 'profile', label: 'Profil' }],
   },
 ];
 
-const MOBILE_ITEMS = [
-  { to: '/', icon: '♠', label: 'Start', end: true },
-  { to: '/lernen', icon: '📚', label: 'Lernen' },
-  { to: '/coach', icon: '🧭', label: 'Coach' },
-  { to: '/trainer', icon: '🎯', label: 'Trainer' },
-  { to: '/tools', icon: '🧰', label: 'Mehr' },
+const MOBILE_ITEMS: Array<{ to: string; icon: IconName; label: string; end?: boolean }> = [
+  { to: '/', icon: 'spade', label: 'Start', end: true },
+  { to: '/lernen', icon: 'learn', label: 'Lernen' },
+  { to: '/coach', icon: 'coach', label: 'Coach' },
+  { to: '/trainer', icon: 'trainer', label: 'Trainer' },
+  { to: '/tools', icon: 'tools', label: 'Mehr' },
+];
+
+const TITLES: Array<[prefix: string, title: string]> = [
+  ['/lernen', 'Lernpfad'],
+  ['/wiederholen', 'Wiederholen'],
+  ['/tagesquiz', 'Tages-Quiz'],
+  ['/trainer', 'Trainer'],
+  ['/coach', 'Live-Coach'],
+  ['/spielen', 'Übungstisch'],
+  ['/tools', 'Tools'],
+  ['/glossar', 'Glossar'],
+  ['/profil', 'Profil'],
 ];
 
 export function Layout() {
   const { data, toasts } = useAppState();
   const level = levelForXp(data.xp);
+  const location = useLocation();
+
+  useEffect(() => {
+    const match = TITLES.find(([p]) => location.pathname.startsWith(p));
+    document.title = match ? `${match[1]} · PokerMentor` : 'PokerMentor';
+  }, [location.pathname]);
 
   return (
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand">
-          <span className="spade">♠</span>
+          <span className="spade">
+            <Icon name="spade" size={18} />
+          </span>
           <span className="grad">PokerMentor</span>
         </div>
         {NAV_GROUPS.map((group) => (
@@ -57,8 +80,11 @@ export function Layout() {
                 end={item.end}
                 className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
               >
-                <span className="ico">{item.icon}</span>
+                <span className="ico">
+                  <Icon name={item.icon} size={18} />
+                </span>
                 {item.label}
+                {item.to === '/wiederholen' && <DueBubble />}
               </NavLink>
             ))}
           </div>
@@ -78,7 +104,9 @@ export function Layout() {
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <div className="mobile-top">
-          <span className="spade">♠</span>
+          <span className="spade">
+            <Icon name="spade" size={15} />
+          </span>
           <span className="grad">PokerMentor</span>
         </div>
         <main className="main">
@@ -89,7 +117,9 @@ export function Layout() {
       <nav className="bottom-nav">
         {MOBILE_ITEMS.map((item) => (
           <NavLink key={item.to} to={item.to} end={item.end} className={({ isActive }) => (isActive ? 'active' : '')}>
-            <span className="ico">{item.icon}</span>
+            <span className="ico">
+              <Icon name={item.icon} size={21} />
+            </span>
             {item.label}
           </NavLink>
         ))}
@@ -104,6 +134,26 @@ export function Layout() {
         ))}
       </div>
     </div>
+  );
+}
+
+function DueBubble() {
+  const { dueReviewCount } = useAppState();
+  if (dueReviewCount === 0) return null;
+  return (
+    <span
+      style={{
+        marginLeft: 'auto',
+        background: 'var(--gold)',
+        color: '#271e08',
+        borderRadius: 99,
+        fontSize: 11,
+        fontWeight: 800,
+        padding: '1px 7px',
+      }}
+    >
+      {dueReviewCount}
+    </span>
   );
 }
 

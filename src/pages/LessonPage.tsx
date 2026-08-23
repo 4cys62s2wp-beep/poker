@@ -9,7 +9,7 @@ import { useAppState } from '../state/AppState';
 export function LessonPage() {
   const { moduleId, lessonId } = useParams();
   const navigate = useNavigate();
-  const { data, completeLesson } = useAppState();
+  const { data, completeLesson, addReviewItem } = useAppState();
   const found = findLesson(moduleId ?? '', lessonId ?? '');
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizDone, setQuizDone] = useState(false);
@@ -53,7 +53,7 @@ export function LessonPage() {
           <span className="pill gold">
             Lektion {lessonIndex + 1} / {module.lessons.length}
           </span>
-          <span className="pill">⏱ ca. {lesson.duration} Min.</span>
+          <span className="pill">ca. {lesson.duration} Min.</span>
           {alreadyDone && <span className="pill ok">✓ abgeschlossen</span>}
         </div>
         <h1>{lesson.title}</h1>
@@ -102,7 +102,7 @@ export function LessonPage() {
                 )}
                 {sec.tip && (
                   <div className="callout tip">
-                    <span className="label">💡 Coach-Tipp</span>
+                    <span className="label">Coach-Tipp</span>
                     <MarkdownLite text={sec.tip} />
                   </div>
                 )}
@@ -110,7 +110,7 @@ export function LessonPage() {
             ))}
 
             <section className="lesson-section card" style={{ background: 'var(--bg-elev)' }}>
-              <h2 style={{ fontSize: 17 }}>🎯 Das nimmst du mit</h2>
+              <h2 style={{ fontSize: 17 }}>Das nimmst du mit</h2>
               <ul className="list-plain">
                 {lesson.takeaways.map((t, i) => (
                   <li key={i} className="takeaway">
@@ -135,7 +135,11 @@ export function LessonPage() {
               ← Zurück zur Lektion
             </button>
           )}
-          <QuizRunner questions={lesson.quiz} onFinish={onQuizFinish} />
+          <QuizRunner
+            questions={lesson.quiz}
+            onFinish={onQuizFinish}
+            onWrong={(qi) => addReviewItem(module.id, lesson.id, qi)}
+          />
           {quizDone && (
             <div className="row wrap" style={{ marginTop: 18 }}>
               {nextLesson ? (

@@ -82,7 +82,7 @@ export function CoachPage() {
     <div>
       <div className="page-header">
         <div className="eyebrow">Dein Berater am Tisch</div>
-        <h1>🧭 Live-Coach</h1>
+        <h1>Live-Coach</h1>
         <p className="sub">
           Gib deine Hand ein und erhalte Street für Street eine klare Empfehlung: setzen, callen oder aussteigen –
           zugeschnitten auf lockere Low-Stakes-Runden.
@@ -146,7 +146,7 @@ export function CoachPage() {
           </button>
 
           <p className="small faint" style={{ marginTop: 14 }}>
-            ⚠️ Gedacht für private Runden und fürs Training. In Casinos und Cardrooms ist Handy-Hilfe am Tisch nicht
+            Hinweis: Gedacht für private Runden und fürs Training. In Casinos und Cardrooms ist Handy-Hilfe am Tisch nicht
             erlaubt – dort bleibt die App in der Tasche.
           </p>
         </div>
@@ -240,7 +240,7 @@ export function CoachPage() {
             </ul>
             {advice.lowStakes && (
               <div className="callout tip" style={{ marginBottom: 0 }}>
-                <span className="label">🍻 Homegame-Tipp</span>
+                <span className="label">Homegame-Tipp</span>
                 {advice.lowStakes}
               </div>
             )}
@@ -282,7 +282,7 @@ export function CoachPage() {
 
           {step !== 'preflop' && (
             <div className="card" style={{ marginBottom: 14 }}>
-              <div className="stat-label" style={{ marginBottom: 8 }}>💸 Jemand setzt – lohnt sich der Call?</div>
+              <div className="stat-label" style={{ marginBottom: 8 }}>Jemand setzt – lohnt sich der Call?</div>
               <div className="row wrap">
                 <input
                   className="text-input"
@@ -330,7 +330,7 @@ export function CoachPage() {
               </button>
             )}
             <button className="btn lg" onClick={() => resetHand(true)}>
-              ♻️ Neue Hand
+              Neue Hand
             </button>
             <button className="btn lg ghost" onClick={() => resetHand(false)}>
               Setup ändern

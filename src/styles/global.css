@@ -96,6 +96,13 @@ h1, h2, h3 {
   font-family: var(--font-display);
   font-weight: 620;
   letter-spacing: 0.1px;
+  text-wrap: balance;
+}
+
+.big-stat,
+.seat .stack,
+table.data td {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ==========================================================================
@@ -1127,6 +1134,35 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 @media (max-width: 560px) {
   .hide-mobile { display: none; }
+}
+
+/* Pokertisch auf schmalen Screens */
+.seat .name {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .table-felt {
+    padding: 22px 6px;
+  }
+  .seat {
+    min-width: 88px;
+    padding: 6px 8px;
+    border-radius: 10px;
+  }
+  .seat .name { font-size: 11px; max-width: 92px; }
+  .seat .stack { font-size: 11px; }
+  .seat .tag { font-size: 9.5px; }
+  .pcard.sm { width: 28px; height: 40px; border-radius: 4px; }
+  .pcard.sm .corner { font-size: 8.5px; top: 1px; left: 2px; }
+  .pcard.sm .corner .c-suit { font-size: 7px; }
+  .pcard.sm .center-suit { font-size: 13px; margin-top: 8px; }
+  .coach-verdict .v-action { font-size: 19px; }
+  .chip-bet { font-size: 10.5px; padding: 2px 8px; }
 }
 
 /* Reduzierte Bewegung respektieren */

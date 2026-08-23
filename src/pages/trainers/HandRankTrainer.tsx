@@ -66,7 +66,7 @@ export function HandRankTrainer() {
         ← Trainer
       </Link>
       <div className="page-header">
-        <h1>🏆 Handranking-Trainer</h1>
+        <h1>Handranking-Trainer</h1>
         <p className="sub">
           Aus deinen zwei Karten und dem Board entsteht deine beste Fünf-Karten-Hand. Welche Kategorie ist es?
         </p>
@@ -75,7 +75,7 @@ export function HandRankTrainer() {
       <div className="row wrap" style={{ marginBottom: 16 }}>
         <span className="pill">✓ {stats?.correct ?? 0} richtig</span>
         <span className="pill">{stats?.attempts ?? 0} gesamt</span>
-        <span className="pill gold">🔥 Serie: {stats?.streak ?? 0}</span>
+        <span className="pill gold">Serie: {stats?.streak ?? 0}</span>
       </div>
 
       <div className="card" style={{ maxWidth: 640 }}>

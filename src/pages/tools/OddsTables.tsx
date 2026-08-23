@@ -63,7 +63,7 @@ export function OddsTables() {
         ← Tools
       </Link>
       <div className="page-header">
-        <h1>📊 Odds-Spickzettel</h1>
+        <h1>Odds-Spickzettel</h1>
         <p className="sub">Die wichtigsten Zahlen zum Nachschlagen – exakt berechnet, nicht nur Faustregel.</p>
       </div>
 

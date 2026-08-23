@@ -53,7 +53,7 @@ export function ModulePage() {
                   <div>
                     <div style={{ fontWeight: 700 }}>{lesson.title}</div>
                     <div className="small faint">
-                      ⏱ ca. {lesson.duration} Min. · {lesson.quiz.length} Quizfragen
+                      ca. {lesson.duration} Min. · {lesson.quiz.length} Quizfragen
                       {result && ` · Quiz: ${result.quizScore}/${result.quizTotal}`}
                     </div>
                   </div>

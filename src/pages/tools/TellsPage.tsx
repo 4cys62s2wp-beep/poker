@@ -23,7 +23,7 @@ export function TellsPage() {
       </Link>
       <div className="page-header">
         <div className="eyebrow">Live-Poker lesen</div>
-        <h1>🫣 Tells & Reads</h1>
+        <h1>Tells & Reads</h1>
         <p className="sub">
           Was Gesten, Einsätze und Timing wirklich verraten – mit ehrlicher Bewertung, wie verlässlich jedes Signal
           ist. Fokus: lockere Runden mit Freizeitspielern.
@@ -40,7 +40,7 @@ export function TellsPage() {
             className={`btn sm${category === c.id ? ' primary' : ''}`}
             onClick={() => setCategory(c.id)}
           >
-            {c.icon} {c.label}
+            {c.label}
           </button>
         ))}
       </div>
@@ -62,7 +62,7 @@ export function TellsPage() {
       </div>
 
       <div className="card" style={{ maxWidth: 760, marginTop: 22 }}>
-        <div style={{ fontWeight: 800, marginBottom: 6 }}>⚠️ Die wichtigste Regel zum Schluss</div>
+        <div style={{ fontWeight: 800, marginBottom: 6 }}>Die wichtigste Regel zum Schluss</div>
         <p className="small muted">
           Tells sind das Sahnehäubchen, nicht der Kuchen. Solide Ranges, Position und Pot Odds gewinnen das Geld –
           Tells kippen nur die knappen Entscheidungen. Wer wegen eines „sicheren Reads“ die Mathematik ignoriert,

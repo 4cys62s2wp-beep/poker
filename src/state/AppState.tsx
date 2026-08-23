@@ -31,6 +31,33 @@ export interface SessionEntry {
   notes?: string;
 }
 
+export interface ReviewItem {
+  /** `${lessonId}:${questionIndex}` */
+  key: string;
+  moduleId: string;
+  lessonId: string;
+  questionIndex: number;
+  /** Fälligkeitsdatum YYYY-MM-DD. */
+  due: string;
+  /** Aktuelles Intervall in Tagen. */
+  interval: number;
+  /** Richtige Antworten in Folge (3 = gemeistert, Karte fliegt raus). */
+  streak: number;
+}
+
+export interface HandRecord {
+  id: string;
+  date: string; // ISO
+  handNumber: number;
+  heroCards: number[];
+  board: number[];
+  result: 'won' | 'lost' | 'folded';
+  /** Chip-Differenz aus Sicht des Heros. */
+  amount: number;
+  players: number;
+  log: string[];
+}
+
 export interface AppData {
   xp: number;
   completedLessons: Record<string, LessonResult>;
@@ -41,6 +68,9 @@ export interface AppData {
   handsPlayed: number;
   handsWon: number;
   name: string;
+  reviews: ReviewItem[];
+  daily: { date: string; score: number; total: number } | null;
+  hands: HandRecord[];
 }
 
 const DEFAULT_DATA: AppData = {
@@ -53,6 +83,9 @@ const DEFAULT_DATA: AppData = {
   handsPlayed: 0,
   handsWon: 0,
   name: '',
+  reviews: [],
+  daily: null,
+  hands: [],
 };
 
 export const LEVEL_TITLES = [
@@ -94,6 +127,7 @@ interface AppStateValue {
   data: AppData;
   toasts: Toast[];
   level: number;
+  dueReviewCount: number;
   completeLesson: (lessonId: string, quizScore: number, quizTotal: number) => void;
   recordTrainer: (trainerId: string, correct: boolean) => void;
   recordHand: (won: boolean) => void;
@@ -101,6 +135,12 @@ interface AppStateValue {
   deleteSession: (id: string) => void;
   setName: (name: string) => void;
   resetAll: () => void;
+  addReviewItem: (moduleId: string, lessonId: string, questionIndex: number) => void;
+  answerReview: (key: string, correct: boolean) => void;
+  completeDailyQuiz: (score: number, total: number) => void;
+  addHandRecord: (record: Omit<HandRecord, 'id' | 'date'>) => void;
+  exportJson: () => string;
+  importJson: (json: string) => boolean;
 }
 
 const Ctx = createContext<AppStateValue | null>(null);
@@ -118,6 +158,14 @@ function loadData(): AppData {
 
 function todayStr(): string {
   const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
+function addDaysStr(days: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return `${d.getFullYear()}-${m}-${day}`;
@@ -270,13 +318,101 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     setData({ ...DEFAULT_DATA });
   }, []);
 
+  const addReviewItem = useCallback(
+    (moduleId: string, lessonId: string, questionIndex: number) => {
+      mutate((d) => {
+        const key = `${lessonId}:${questionIndex}`;
+        if (d.reviews.some((r) => r.key === key)) return;
+        d.reviews.push({ key, moduleId, lessonId, questionIndex, due: todayStr(), interval: 0, streak: 0 });
+      });
+    },
+    [mutate],
+  );
+
+  const answerReview = useCallback(
+    (key: string, correct: boolean) => {
+      mutate((d) => {
+        const item = d.reviews.find((r) => r.key === key);
+        if (!item) return;
+        if (correct) {
+          item.streak += 1;
+          d.xp += 4;
+          if (item.streak >= 3) {
+            // Gemeistert – Karte fliegt aus dem Stapel
+            d.reviews = d.reviews.filter((r) => r.key !== key);
+            d.xp += 8;
+          } else {
+            item.interval = item.interval === 0 ? 1 : Math.min(30, Math.round(item.interval * 2.5));
+            item.due = addDaysStr(item.interval);
+          }
+        } else {
+          item.streak = 0;
+          item.interval = 0;
+          item.due = addDaysStr(1);
+        }
+        if (d.reviews.length === 0) award(d, 'review-clear');
+        touchStreak(d);
+      });
+    },
+    [mutate],
+  );
+
+  const completeDailyQuiz = useCallback(
+    (score: number, total: number) => {
+      mutate((d) => {
+        const today = todayStr();
+        if (d.daily?.date === today) return;
+        d.daily = { date: today, score, total };
+        d.xp += 30 + score * 4;
+        award(d, 'daily-quiz');
+        touchStreak(d);
+      });
+    },
+    [mutate],
+  );
+
+  const addHandRecord = useCallback(
+    (record: Omit<HandRecord, 'id' | 'date'>) => {
+      mutate((d) => {
+        d.hands.unshift({
+          ...record,
+          id: `h${Date.now()}-${Math.floor(Math.random() * 1e6)}`,
+          date: new Date().toISOString(),
+        });
+        if (d.hands.length > 30) d.hands.length = 30;
+      });
+    },
+    [mutate],
+  );
+
+  const exportJson = useCallback(() => {
+    return JSON.stringify({ app: 'pokermentor', version: 1, exportedAt: new Date().toISOString(), data }, null, 2);
+  }, [data]);
+
+  const importJson = useCallback((json: string): boolean => {
+    try {
+      const parsed = JSON.parse(json);
+      const incoming = parsed?.app === 'pokermentor' ? parsed.data : parsed;
+      if (!incoming || typeof incoming !== 'object' || typeof incoming.xp !== 'number') return false;
+      setData({ ...DEFAULT_DATA, ...incoming });
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
   const level = levelForXp(data.xp);
+  const dueReviewCount = useMemo(() => {
+    const today = todayStr();
+    return data.reviews.filter((r) => r.due <= today).length;
+  }, [data.reviews]);
 
   const value = useMemo<AppStateValue>(
     () => ({
       data,
       toasts,
       level,
+      dueReviewCount,
       completeLesson,
       recordTrainer,
       recordHand,
@@ -284,8 +420,15 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       deleteSession,
       setName,
       resetAll,
+      addReviewItem,
+      answerReview,
+      completeDailyQuiz,
+      addHandRecord,
+      exportJson,
+      importJson,
     }),
-    [data, toasts, level, completeLesson, recordTrainer, recordHand, addSession, deleteSession, setName, resetAll],
+    [data, toasts, level, dueReviewCount, completeLesson, recordTrainer, recordHand, addSession, deleteSession,
+     setName, resetAll, addReviewItem, answerReview, completeDailyQuiz, addHandRecord, exportJson, importJson],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
@@ -332,6 +475,8 @@ function applyAutoBadges(d: AppData) {
   if (ALL_MODULES.every((m) => m.lessons.every((l) => d.completedLessons[l.id]))) {
     award(d, 'all-modules');
   }
+  if ((d.trainers['szenario']?.correct ?? 0) >= 10) award(d, 'scenario-10');
+  if ((d.trainers['pushfold']?.correct ?? 0) >= 20) award(d, 'pushfold-20');
 }
 
 /** Fortschritt eines Moduls (0–1). */

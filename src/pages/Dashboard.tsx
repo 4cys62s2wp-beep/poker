@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ALL_MODULES } from '../content';
+import { Icon, IconTile, type IconName } from '../components/Icon';
 import { levelTitle, moduleProgress, useAppState, xpThreshold } from '../state/AppState';
 
 const DAILY_TIPS = [
@@ -18,7 +19,7 @@ const DAILY_TIPS = [
 ];
 
 export function Dashboard() {
-  const { data, level } = useAppState();
+  const { data, level, dueReviewCount } = useAppState();
   const totalLessons = ALL_MODULES.reduce((s, m) => s + m.lessons.length, 0);
   const doneLessons = Object.keys(data.completedLessons).length;
 
@@ -39,10 +40,20 @@ export function Dashboard() {
     }
   }
 
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const dailyDone = data.daily?.date === todayStr;
   const dayIndex = Math.floor(Date.now() / 86400000) % DAILY_TIPS.length;
   const curLevelXp = xpThreshold(level);
   const nextLevelXp = xpThreshold(level + 1);
   const levelPct = Math.min(100, Math.round((100 * (data.xp - curLevelXp)) / (nextLevelXp - curLevelXp)));
+
+  const quickLinks: Array<{ to: string; icon: IconName; tone: 'gold' | 'green' | 'blue' | 'red' | 'violet'; label: string }> = [
+    { to: '/coach', icon: 'coach', tone: 'gold', label: 'Live-Coach' },
+    { to: '/tools/hands', icon: 'search', tone: 'green', label: 'Starthand-Explorer' },
+    { to: '/tools/tells', icon: 'eye', tone: 'violet', label: 'Tells & Reads' },
+    { to: '/trainer/szenario', icon: 'scene', tone: 'blue', label: 'Szenario-Trainer' },
+  ];
 
   return (
     <div>
@@ -61,7 +72,7 @@ export function Dashboard() {
         <div className="card">
           <div className="stat-label">Level</div>
           <div className="big-stat">
-            {level} <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-dim)' }}>{levelTitle(level)}</span>
+            {level} <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-dim)', fontFamily: 'var(--font-body)' }}>{levelTitle(level)}</span>
           </div>
           <div className="progressbar" style={{ margin: '10px 0 6px' }}>
             <div style={{ width: `${levelPct}%` }} />
@@ -83,10 +94,11 @@ export function Dashboard() {
         </div>
         <div className="card">
           <div className="stat-label">Lern-Streak</div>
-          <div className="big-stat">
-            {data.streak.count > 0 ? `🔥 ${data.streak.count}` : '–'}
-            <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-dim)' }}>
-              {data.streak.count > 0 ? (data.streak.count === 1 ? ' Tag' : ' Tage') : ''}
+          <div className="big-stat row" style={{ gap: 6 }}>
+            {data.streak.count > 0 && <Icon name="flame" size={24} style={{ color: 'var(--gold-bright)' }} />}
+            {data.streak.count > 0 ? data.streak.count : '–'}
+            <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-dim)', fontFamily: 'var(--font-body)' }}>
+              {data.streak.count > 0 ? (data.streak.count === 1 ? 'Tag' : 'Tage') : ''}
             </span>
           </div>
           <div className="small faint" style={{ marginTop: 10 }}>
@@ -95,62 +107,66 @@ export function Dashboard() {
         </div>
       </div>
 
-      <div className="section-title">Weitermachen</div>
-      <div className="grid cols-2">
+      <div className="section-title">Heute</div>
+      <div className="grid cols-3">
         {nextLesson ? (
           <Link to={`/lernen/${nextLesson.moduleId}/${nextLesson.lessonId}`} className="card clickable">
-            <div className="pill gold" style={{ marginBottom: 10 }}>
-              📚 Nächste Lektion
+            <div className="row" style={{ marginBottom: 8 }}>
+              <IconTile name="learn" tone="gold" size={34} />
+              <span className="stat-label">Nächste Lektion</span>
             </div>
-            <div style={{ fontWeight: 700, fontSize: 17 }}>{nextLesson.title}</div>
-            <div className="small muted" style={{ marginTop: 4 }}>
-              {nextLesson.moduleTitle}
-            </div>
+            <div style={{ fontWeight: 800 }}>{nextLesson.title}</div>
+            <div className="small faint" style={{ marginTop: 3 }}>{nextLesson.moduleTitle}</div>
           </Link>
         ) : (
           <div className="card">
-            <div className="pill ok" style={{ marginBottom: 10 }}>
-              👑 Alle Lektionen abgeschlossen!
+            <div className="row" style={{ marginBottom: 8 }}>
+              <IconTile name="learn" tone="green" size={34} />
+              <span className="stat-label">Lernpfad</span>
             </div>
-            <div style={{ fontWeight: 700 }}>Stark! Halte dein Wissen mit den Trainern frisch.</div>
+            <div style={{ fontWeight: 800 }}>Alle Lektionen abgeschlossen!</div>
+            <div className="small faint" style={{ marginTop: 3 }}>Halte dein Wissen mit den Trainern frisch.</div>
           </div>
         )}
-        <Link to="/spielen" className="card clickable">
-          <div className="pill ok" style={{ marginBottom: 10 }}>
-            🃏 Übungstisch
+        <Link to="/tagesquiz" className="card clickable">
+          <div className="row" style={{ marginBottom: 8 }}>
+            <IconTile name="sun" tone={dailyDone ? 'green' : 'gold'} size={34} />
+            <span className="stat-label">Tages-Quiz</span>
           </div>
-          <div style={{ fontWeight: 700, fontSize: 17 }}>Am Tisch üben – ohne Risiko</div>
-          <div className="small muted" style={{ marginTop: 4 }}>
-            {data.handsPlayed > 0
-              ? `${data.handsPlayed} Hände gespielt · ${data.handsWon} gewonnen`
-              : 'Spiele gegen KI-Gegner mit Coach-Hinweisen'}
+          <div style={{ fontWeight: 800 }}>
+            {dailyDone ? `Erledigt: ${data.daily?.score}/${data.daily?.total} richtig` : '5 Fragen · +30 XP Bonus'}
+          </div>
+          <div className="small faint" style={{ marginTop: 3 }}>
+            {dailyDone ? 'Morgen warten neue Fragen.' : 'Quer durch alle Module, jeden Tag neu.'}
+          </div>
+        </Link>
+        <Link to="/wiederholen" className="card clickable">
+          <div className="row" style={{ marginBottom: 8 }}>
+            <IconTile name="repeat" tone={dueReviewCount > 0 ? 'gold' : 'blue'} size={34} />
+            <span className="stat-label">Wiederholen</span>
+          </div>
+          <div style={{ fontWeight: 800 }}>
+            {dueReviewCount > 0 ? `${dueReviewCount} Karten fällig` : 'Nichts fällig'}
+          </div>
+          <div className="small faint" style={{ marginTop: 3 }}>
+            {dueReviewCount > 0 ? 'Kurz wiederholen, bevor es verblasst.' : `${data.reviews.length} Karten im Stapel.`}
           </div>
         </Link>
       </div>
 
-      <div className="section-title">Schnellzugriff</div>
+      <div className="section-title">Anwenden</div>
       <div className="grid cols-4">
-        <Link to="/coach" className="card clickable" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 26 }}>🧭</div>
-          <div style={{ fontWeight: 800, fontSize: 14, marginTop: 6 }}>Live-Coach</div>
-        </Link>
-        <Link to="/tools/hands" className="card clickable" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 26 }}>🔍</div>
-          <div style={{ fontWeight: 800, fontSize: 14, marginTop: 6 }}>Starthand-Explorer</div>
-        </Link>
-        <Link to="/tools/tells" className="card clickable" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 26 }}>🫣</div>
-          <div style={{ fontWeight: 800, fontSize: 14, marginTop: 6 }}>Tells & Reads</div>
-        </Link>
-        <Link to="/trainer/preflop" className="card clickable" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 26 }}>🃏</div>
-          <div style={{ fontWeight: 800, fontSize: 14, marginTop: 6 }}>Preflop-Trainer</div>
-        </Link>
+        {quickLinks.map((q) => (
+          <Link key={q.to} to={q.to} className="card clickable" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+            <IconTile name={q.icon} tone={q.tone} />
+            <div style={{ fontWeight: 800, fontSize: 14 }}>{q.label}</div>
+          </Link>
+        ))}
       </div>
 
-      <div className="section-title">💡 Tipp des Tages</div>
-      <div className="card" style={{ borderColor: 'rgba(217,180,91,0.35)' }}>
-        <p style={{ color: '#d9d6cd' }}>{DAILY_TIPS[dayIndex]}</p>
+      <div className="section-title">Tipp des Tages</div>
+      <div className="card" style={{ borderColor: 'rgba(212,175,94,0.35)' }}>
+        <p style={{ color: '#d8d5cb' }}>{DAILY_TIPS[dayIndex]}</p>
       </div>
 
       <div className="section-title">Deine Module</div>
@@ -163,7 +179,7 @@ export function Dashboard() {
                 <div className="row">
                   <span style={{ fontSize: 22 }}>{m.icon}</span>
                   <div>
-                    <div style={{ fontWeight: 700 }}>{m.title}</div>
+                    <div style={{ fontWeight: 800 }}>{m.title}</div>
                     <div className="small faint">{m.lessons.length} Lektionen</div>
                   </div>
                 </div>
@@ -176,6 +192,8 @@ export function Dashboard() {
           );
         })}
       </div>
+
+      <div className="suit-deco">♠ ♥ ♦ ♣</div>
     </div>
   );
 }

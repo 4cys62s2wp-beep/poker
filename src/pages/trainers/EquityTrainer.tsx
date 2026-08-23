@@ -58,7 +58,7 @@ export function EquityTrainer() {
         ← Trainer
       </Link>
       <div className="page-header">
-        <h1>⚖️ Equity-Schätzer</h1>
+        <h1>Equity-Schätzer</h1>
         <p className="sub">
           Schätze die Gewinnwahrscheinlichkeit deiner Hand (beide Hände offen). Innerhalb von ±{TOLERANCE}{' '}
           Prozentpunkten zählt als richtig.
@@ -68,7 +68,7 @@ export function EquityTrainer() {
       <div className="row wrap" style={{ marginBottom: 16 }}>
         <span className="pill">✓ {stats?.correct ?? 0} richtig</span>
         <span className="pill">{stats?.attempts ?? 0} gesamt</span>
-        <span className="pill gold">🔥 Serie: {stats?.streak ?? 0}</span>
+        <span className="pill gold">Serie: {stats?.streak ?? 0}</span>
       </div>
 
       <div className="card" style={{ maxWidth: 640 }}>

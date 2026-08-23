@@ -1,10 +1,15 @@
 import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Dashboard } from './pages/Dashboard';
 import { LearnPage } from './pages/LearnPage';
 import { ModulePage } from './pages/ModulePage';
 import { LessonPage } from './pages/LessonPage';
+import { ReviewPage } from './pages/ReviewPage';
+import { DailyQuizPage } from './pages/DailyQuizPage';
 import { TrainerHub } from './pages/TrainerHub';
+import { ScenarioTrainer } from './pages/trainers/ScenarioTrainer';
+import { PushFoldTrainer } from './pages/trainers/PushFoldTrainer';
 import { PreflopTrainer } from './pages/trainers/PreflopTrainer';
 import { PotOddsTrainer } from './pages/trainers/PotOddsTrainer';
 import { EquityTrainer } from './pages/trainers/EquityTrainer';
@@ -24,13 +29,18 @@ import { ProfilePage } from './pages/ProfilePage';
 
 export function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
+    <ErrorBoundary>
+      <Routes>
+        <Route element={<Layout />}>
         <Route index element={<Dashboard />} />
         <Route path="/lernen" element={<LearnPage />} />
         <Route path="/lernen/:moduleId" element={<ModulePage />} />
         <Route path="/lernen/:moduleId/:lessonId" element={<LessonPage />} />
+        <Route path="/wiederholen" element={<ReviewPage />} />
+        <Route path="/tagesquiz" element={<DailyQuizPage />} />
         <Route path="/trainer" element={<TrainerHub />} />
+        <Route path="/trainer/szenario" element={<ScenarioTrainer />} />
+        <Route path="/trainer/pushfold" element={<PushFoldTrainer />} />
         <Route path="/trainer/preflop" element={<PreflopTrainer />} />
         <Route path="/trainer/potodds" element={<PotOddsTrainer />} />
         <Route path="/trainer/equity" element={<EquityTrainer />} />
@@ -48,7 +58,8 @@ export function App() {
         <Route path="/glossar" element={<GlossaryPage />} />
         <Route path="/profil" element={<ProfilePage />} />
         <Route path="*" element={<Dashboard />} />
-      </Route>
-    </Routes>
+        </Route>
+      </Routes>
+    </ErrorBoundary>
   );
 }

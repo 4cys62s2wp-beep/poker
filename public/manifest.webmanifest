@@ -10,6 +10,29 @@
   "background_color": "#0b100d",
   "theme_color": "#0b100d",
   "categories": ["education", "games"],
+  "shortcuts": [
+    {
+      "name": "Live-Coach",
+      "short_name": "Coach",
+      "description": "Hand eingeben und Empfehlung erhalten",
+      "url": "./#/coach",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Tages-Quiz",
+      "short_name": "Quiz",
+      "description": "Fünf Fragen, jeden Tag neu",
+      "url": "./#/tagesquiz",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Übungstisch",
+      "short_name": "Spielen",
+      "description": "Gegen KI-Gegner üben",
+      "url": "./#/spielen",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
   "icons": [
     {
       "src": "./icons/icon.svg",

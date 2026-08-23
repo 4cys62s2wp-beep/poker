@@ -8,6 +8,7 @@ function euro(n: number): string {
 
 export function BankrollTracker() {
   const { data, addSession, deleteSession } = useAppState();
+  const [filter, setFilter] = useState<'alle' | 'online' | 'live'>('alle');
   const [form, setForm] = useState({
     date: new Date().toISOString().slice(0, 10),
     type: 'online' as 'online' | 'live',
@@ -19,8 +20,13 @@ export function BankrollTracker() {
   });
   const [formError, setFormError] = useState<string | null>(null);
 
+  const filteredSessions = useMemo(
+    () => data.sessions.filter((s) => filter === 'alle' || s.type === filter),
+    [data.sessions, filter],
+  );
+
   const stats = useMemo(() => {
-    const sessions = data.sessions;
+    const sessions = filteredSessions;
     if (sessions.length === 0) return null;
     let profit = 0;
     let minutes = 0;
@@ -46,7 +52,21 @@ export function BankrollTracker() {
       winRate: Math.round((100 * wins) / sessions.length),
       cumulative,
     };
-  }, [data.sessions]);
+  }, [filteredSessions]);
+
+  function exportCsv() {
+    const header = 'Datum;Art;Spiel;Buy-in;Cash-out;Gewinn;Minuten;Notizen';
+    const rows = data.sessions.map((s) =>
+      [s.date, s.type, s.game, s.buyIn, s.cashOut, (s.cashOut - s.buyIn).toFixed(2), s.minutes, (s.notes ?? '').replace(/;/g, ',')].join(';'),
+    );
+    const blob = new Blob(['\uFEFF' + [header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'pokermentor-sessions.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   function submit() {
     setFormError(null);
@@ -75,11 +95,24 @@ export function BankrollTracker() {
         ← Tools
       </Link>
       <div className="page-header">
-        <h1>📒 Bankroll-Tracker</h1>
+        <h1>Bankroll-Tracker</h1>
         <p className="sub">
           Wer seine Ergebnisse nicht kennt, kann sich nicht verbessern. Erfasse jede Session ehrlich – live und
           online. Die Daten bleiben lokal auf deinem Gerät.
         </p>
+      </div>
+
+      <div className="row wrap between" style={{ marginBottom: 16, maxWidth: 680 }}>
+        <div className="segmented">
+          <button className={filter === 'alle' ? 'on' : ''} onClick={() => setFilter('alle')}>Alle</button>
+          <button className={filter === 'online' ? 'on' : ''} onClick={() => setFilter('online')}>Online</button>
+          <button className={filter === 'live' ? 'on' : ''} onClick={() => setFilter('live')}>Live</button>
+        </div>
+        {data.sessions.length > 0 && (
+          <button className="btn sm ghost" onClick={exportCsv}>
+            Als CSV exportieren
+          </button>
+        )}
       </div>
 
       {stats && (
@@ -127,8 +160,8 @@ export function BankrollTracker() {
           <label>
             <div className="stat-label" style={{ marginBottom: 5 }}>Art</div>
             <select className="text-input" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'online' | 'live' })}>
-              <option value="online">💻 Online</option>
-              <option value="live">🎰 Live</option>
+              <option value="online">Online</option>
+              <option value="live">Live</option>
             </select>
           </label>
           <label>
@@ -158,17 +191,18 @@ export function BankrollTracker() {
         </button>
       </div>
 
-      {data.sessions.length > 0 && (
+      {filteredSessions.length > 0 && (
         <>
-          <div className="section-title">Alle Sessions</div>
+          <div className="section-title">Sessions</div>
           <div className="grid" style={{ maxWidth: 680 }}>
-            {[...data.sessions].reverse().map((s: SessionEntry) => {
+            {[...filteredSessions].reverse().map((s: SessionEntry) => {
               const p = s.cashOut - s.buyIn;
               return (
                 <div key={s.id} className="card row between wrap">
                   <div>
-                    <div style={{ fontWeight: 700 }}>
-                      {s.type === 'live' ? '🎰' : '💻'} {s.game}
+                    <div className="row" style={{ fontWeight: 700, gap: 8 }}>
+                      <span className={`pill ${s.type === 'live' ? 'violet' : 'info'}`}>{s.type === 'live' ? 'Live' : 'Online'}</span>
+                      {s.game}
                     </div>
                     <div className="small faint">
                       {s.date} · {s.minutes} Min.
@@ -179,8 +213,8 @@ export function BankrollTracker() {
                     <span style={{ fontWeight: 800, color: p >= 0 ? 'var(--ok)' : 'var(--danger)' }}>
                       {p >= 0 ? '+' : ''}{euro(p)}
                     </span>
-                    <button className="btn sm ghost" onClick={() => deleteSession(s.id)} title="Löschen">
-                      🗑
+                    <button className="btn sm ghost" onClick={() => deleteSession(s.id)} title="Löschen" aria-label="Session löschen">
+                      ✕
                     </button>
                   </div>
                 </div>

@@ -162,7 +162,7 @@ export function OutsTrainer() {
         ← Trainer
       </Link>
       <div className="page-header">
-        <h1>🔢 Outs-Zähler</h1>
+        <h1>Outs-Zähler</h1>
         <p className="sub">
           Outs sind die Karten, die deine Hand verbessern. Zähle genau – und rechne mit der Regel von 2 und 4 in
           Equity um.
@@ -172,7 +172,7 @@ export function OutsTrainer() {
       <div className="row wrap" style={{ marginBottom: 16 }}>
         <span className="pill">✓ {stats?.correct ?? 0} richtig</span>
         <span className="pill">{stats?.attempts ?? 0} gesamt</span>
-        <span className="pill gold">🔥 Serie: {stats?.streak ?? 0}</span>
+        <span className="pill gold">Serie: {stats?.streak ?? 0}</span>
       </div>
 
       <div className="card" style={{ maxWidth: 640 }}>

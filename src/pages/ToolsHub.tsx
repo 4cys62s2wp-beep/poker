@@ -17,6 +17,13 @@ const TOOLS: Array<{ to: string; icon: IconName; tone: 'gold' | 'green' | 'blue'
     desc: 'Alle 169 Starthände: Gewinnwahrscheinlichkeit gegen 1–5 Gegner und wie du jede Hand spielst.',
   },
   {
+    to: '/tools/chips',
+    icon: 'chip',
+    tone: 'red',
+    title: 'Chip-Rechner',
+    desc: 'Pokerkoffer aufteilen: Spieler & Chips eingeben – Verteilung, Startstack und Blinds bekommen.',
+  },
+  {
     to: '/tools/tells',
     icon: 'eye',
     tone: 'violet',

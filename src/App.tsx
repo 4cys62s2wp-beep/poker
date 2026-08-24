@@ -25,6 +25,7 @@ import { OddsTables } from './pages/tools/OddsTables';
 import { BankrollTracker } from './pages/tools/BankrollTracker';
 import { TellsPage } from './pages/tools/TellsPage';
 import { HandExplorer } from './pages/tools/HandExplorer';
+import { ChipCalculator } from './pages/tools/ChipCalculator';
 import { GlossaryPage } from './pages/GlossaryPage';
 import { ProfilePage } from './pages/ProfilePage';
 
@@ -57,6 +58,7 @@ export function App() {
         <Route path="/tools/bankroll" element={<BankrollTracker />} />
         <Route path="/tools/tells" element={<TellsPage />} />
         <Route path="/tools/hands" element={<HandExplorer />} />
+        <Route path="/tools/chips" element={<ChipCalculator />} />
         <Route path="/glossar" element={<GlossaryPage />} />
         <Route path="/profil" element={<ProfilePage />} />
         <Route path="*" element={<Dashboard />} />

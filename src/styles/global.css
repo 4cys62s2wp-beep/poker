@@ -728,6 +728,10 @@ table.data {
   min-width: 400px;
 }
 
+/* Kompakte Variante (z. B. Chip-Rechner): passt auch aufs Handy ohne Scrollen */
+.table-wrap.compact table.data { min-width: 0; font-size: 13.5px; }
+.table-wrap.compact th, .table-wrap.compact td { padding: 9px 10px; }
+
 table.data th {
   text-align: left;
   padding: 11px 15px;

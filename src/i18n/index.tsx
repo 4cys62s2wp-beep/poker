@@ -7,6 +7,7 @@
      deutsche Nutzer laden kein Byte Englisch und umgekehrt nur einmal. */
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { durableSet } from '../lib/storage';
 import type { Module, GlossaryEntry } from '../content/types';
 import { ALL_MODULES } from '../content';
 import glossary from '../content/glossary';
@@ -127,17 +128,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l);
-    try {
-      localStorage.setItem(LANG_KEY, l);
-    } catch {
-      // nicht speicherbar – Auswahl gilt für diese Sitzung
-    }
+    // Doppelt sichern (localStorage + IndexedDB-Spiegel) wie der Lernfortschritt.
+    durableSet(LANG_KEY, l);
   }, []);
 
   const finishOnboarding = useCallback(() => {
     setFirstRun(false);
     try {
-      localStorage.setItem(LANG_KEY, localStorage.getItem(LANG_KEY) ?? initial.lang);
+      durableSet(LANG_KEY, localStorage.getItem(LANG_KEY) ?? initial.lang);
     } catch {
       // ignorieren
     }

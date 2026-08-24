@@ -1,7 +1,7 @@
 /* PokerMentor Service Worker: Offline-Unterstützung.
    Strategie: Navigation network-first (Fallback Cache), Assets cache-first. */
 
-const CACHE = 'pokermentor-v3';
+const CACHE = 'pokermentor-v4';
 const CORE = ['./', './index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

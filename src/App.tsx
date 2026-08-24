@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { Onboarding } from './components/Onboarding';
 import { Dashboard } from './pages/Dashboard';
 import { LearnPage } from './pages/LearnPage';
 import { ModulePage } from './pages/ModulePage';
@@ -32,6 +33,7 @@ import { ProfilePage } from './pages/ProfilePage';
 export function App() {
   return (
     <ErrorBoundary>
+      <Onboarding />
       <Routes>
         <Route element={<Layout />}>
         <Route index element={<Dashboard />} />

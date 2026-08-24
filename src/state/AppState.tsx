@@ -7,6 +7,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { ALL_MODULES } from '../content';
 import { BADGES } from '../content/badges';
 import { durableDelete, durableSet, requestPersistentStorage } from '../lib/storage';
+import { useLang, levelTitleFor } from '../i18n';
 
 const PROFILES_KEY = 'pokermentor-profiles-v1';
 const LEGACY_KEY = 'pokermentor-v1';
@@ -462,6 +463,13 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     }, 4000);
   }, []);
 
+  // Sprache für Toast-Texte (Level-Ups, Abzeichen) – als Ref, damit mutate stabil bleibt.
+  const { lang, content: langContent } = useLang();
+  const langRef = useRef(lang);
+  langRef.current = lang;
+  const badgeDefsRef = useRef(langContent.badges);
+  badgeDefsRef.current = langContent.badges;
+
   /** Zentrale Mutation: wendet Änderungen an, prüft Level-Ups & Abzeichen. */
   const mutate = useCallback(
     (fn: (draft: AppData) => void) => {
@@ -472,14 +480,19 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
         const prevLevel = levelForXp(prev.xp);
         const newLevel = levelForXp(draft.xp);
+        const l = langRef.current;
         if (newLevel > prevLevel) {
-          pushToast(`Level ${newLevel} erreicht!`, levelTitle(newLevel));
+          pushToast(
+            l === 'de' ? `Level ${newLevel} erreicht!` : `Level ${newLevel} reached!`,
+            levelTitleFor(newLevel, l),
+          );
           if (newLevel >= 5) award(draft, 'level-5');
           if (newLevel >= 10) award(draft, 'level-10');
         }
         for (const b of BADGES) {
           if (draft.badges[b.id] && !prev.badges[b.id]) {
-            pushToast(`${b.icon} Abzeichen: ${b.title}`, b.description);
+            const def = badgeDefsRef.current.find((d) => d.id === b.id) ?? b;
+            pushToast(`${def.icon} ${l === 'de' ? 'Abzeichen' : 'Badge'}: ${def.title}`, def.description);
           }
         }
         return draft;

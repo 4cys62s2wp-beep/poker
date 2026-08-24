@@ -1,0 +1,48 @@
+import { defineStrings } from '..';
+
+/* Navigations- und Rahmen-Texte. Muster für alle Seiten-Wörterbücher:
+   defineStrings(deutsch, englisch) – beide Objekte müssen dieselben Schlüssel haben. */
+export const STR = defineStrings(
+  {
+    navOverview: 'Übersicht',
+    navLearn: 'Lernen',
+    navApply: 'Anwenden',
+    navYou: 'Du',
+    start: 'Start',
+    learnPath: 'Lernpfad',
+    proInsights: 'Pro-Insights',
+    review: 'Wiederholen',
+    trainer: 'Trainer',
+    glossary: 'Glossar',
+    liveCoach: 'Live-Coach',
+    practiceTable: 'Übungstisch',
+    tools: 'Tools',
+    profile: 'Profil',
+    mobileLearn: 'Lernen',
+    mobileCoach: 'Coach',
+    mobileMore: 'Mehr',
+    level: 'Level',
+    dailyQuiz: 'Tages-Quiz',
+  },
+  {
+    navOverview: 'Overview',
+    navLearn: 'Learn',
+    navApply: 'Apply',
+    navYou: 'You',
+    start: 'Home',
+    learnPath: 'Learning Path',
+    proInsights: 'Pro Insights',
+    review: 'Review',
+    trainer: 'Trainers',
+    glossary: 'Glossary',
+    liveCoach: 'Live Coach',
+    practiceTable: 'Practice Table',
+    tools: 'Tools',
+    profile: 'Profile',
+    mobileLearn: 'Learn',
+    mobileCoach: 'Coach',
+    mobileMore: 'More',
+    level: 'Level',
+    dailyQuiz: 'Daily Quiz',
+  },
+);

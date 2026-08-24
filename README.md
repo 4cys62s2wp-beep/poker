@@ -2,7 +2,8 @@
 
 Lerne Texas Hold'em von Grund auf, trainiere Strategien und werde ein besserer
 Spieler – **online wie live**. Ohne Echtgeld, ohne Risiko: eine reine Lern- und
-Trainings-App als Website und installierbare PWA.
+Trainings-App als Website und installierbare PWA. **Komplett zweisprachig
+(Deutsch/Englisch)** mit Sprachwahl beim ersten Start und Umschalter im Profil.
 
 > Das vollständige Produktkonzept steht in [CONCEPT.md](CONCEPT.md).
 
@@ -35,6 +36,13 @@ Trainings-App als Website und installierbare PWA.
   Anleitung in [FIREBASE_SETUP.md](FIREBASE_SETUP.md)
 - **🔒 Sicherheit:** Content-Security-Policy, validierte Datenimporte
   (Backups/Cloud), 0 bekannte Abhängigkeits-Schwachstellen (`npm audit`)
+- **🌍 Zwei Sprachen:** komplette App und alle Lerninhalte auf Deutsch und
+  Englisch; englische Inhalte werden nur geladen, wenn Englisch aktiv ist
+- **📤 Teilen:** QR-Code + System-Teilen-Dialog in der App, professionelle
+  Link-Vorschau (Open Graph) für WhatsApp & Social Media; eigene Domain via
+  [DOMAIN_SETUP.md](DOMAIN_SETUP.md)
+- **🎰 Chip-Rechner:** Pokerkoffer eingeben → faire Verteilung, Startstack,
+  Blinds und Turnier-Fahrplan für den Pokerabend
 - **📲 PWA:** offline-fähig, aufs Handy installierbar, alle Daten bleiben lokal
 - **🎨 Eigenständiges Design:** „Kartenlounge“-Ästhetik mit Fraunces & Manrope,
   4-Color-Deck, mobile-first

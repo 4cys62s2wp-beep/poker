@@ -4,6 +4,7 @@ import { HashRouter } from 'react-router-dom';
 import { App } from './App';
 import { AppStateProvider } from './state/AppState';
 import { CloudProvider } from './lib/cloud/CloudProvider';
+import { LanguageProvider } from './i18n';
 import { restoreFromMirrorIfNeeded } from './lib/storage';
 import '@fontsource-variable/fraunces';
 import '@fontsource-variable/manrope';
@@ -13,11 +14,13 @@ function render() {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
       <HashRouter>
-        <AppStateProvider>
-          <CloudProvider>
-            <App />
-          </CloudProvider>
-        </AppStateProvider>
+        <LanguageProvider>
+          <AppStateProvider>
+            <CloudProvider>
+              <App />
+            </CloudProvider>
+          </AppStateProvider>
+        </LanguageProvider>
       </HashRouter>
     </React.StrictMode>,
   );

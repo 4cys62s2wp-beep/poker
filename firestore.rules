@@ -1,0 +1,18 @@
+rules_version = '2';
+
+// PokerMentor – Firestore-Sicherheitsregeln.
+// Jeder Nutzer darf ausschließlich sein eigenes Dokument lesen und schreiben,
+// und nur mit bestätigter E-Mail-Adresse. Alles andere ist verboten.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid} {
+      allow read, write: if request.auth != null
+        && request.auth.uid == uid
+        && request.auth.token.email_verified == true;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,11 +1,16 @@
-// Globaler App-Zustand: XP, Level, Lektions-Fortschritt, Trainer-Statistiken,
-// Abzeichen, Lern-Streak, Bankroll-Sessions. Persistiert in localStorage.
+// Globaler App-Zustand: Profile (mehrere Nutzer pro Gerät), XP, Level,
+// Lektions-Fortschritt, Trainer-Statistiken, Abzeichen, Lern-Streak,
+// Bankroll-Sessions, Wiederholungs-Stapel, Handhistorie.
+// Persistenz: localStorage + IndexedDB-Spiegel (siehe lib/storage.ts).
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ALL_MODULES } from '../content';
 import { BADGES } from '../content/badges';
+import { durableDelete, durableSet, requestPersistentStorage } from '../lib/storage';
 
-const STORAGE_KEY = 'pokermentor-v1';
+const PROFILES_KEY = 'pokermentor-profiles-v1';
+const LEGACY_KEY = 'pokermentor-v1';
+const dataKey = (profileId: string) => `pokermentor-data-${profileId}`;
 
 export interface LessonResult {
   completedAt: string;
@@ -73,6 +78,22 @@ export interface AppData {
   hands: HandRecord[];
 }
 
+export interface ProfileMeta {
+  id: string;
+  name: string;
+  email?: string;
+  createdAt: string;
+  /** Akzentfarbe fürs Avatar-Monogramm. */
+  color: string;
+  /** Verknüpftes Cloud-Konto (Firebase-UID), falls vorhanden. */
+  cloudUid?: string;
+}
+
+interface ProfilesIndex {
+  activeId: string;
+  profiles: ProfileMeta[];
+}
+
 const DEFAULT_DATA: AppData = {
   xp: 0,
   completedLessons: {},
@@ -88,6 +109,8 @@ const DEFAULT_DATA: AppData = {
   hands: [],
 };
 
+const PROFILE_COLORS = ['#d4af5e', '#58b368', '#5590d9', '#9b7fd4', '#e0564f', '#4fb8c9'];
+
 export const LEVEL_TITLES = [
   'Neuling',
   'Küchentisch-Spieler',
@@ -100,6 +123,10 @@ export const LEVEL_TITLES = [
   'Tisch-Kapitän',
   'Crusher',
   'Poker-Mentor',
+  'High Roller',
+  'Final-Table-Stammgast',
+  'Elite-Grinder',
+  'Poker-Legende',
 ];
 
 /** Kumulierte XP-Schwelle für ein Level (Level 1 = 0 XP). */
@@ -128,6 +155,8 @@ interface AppStateValue {
   toasts: Toast[];
   level: number;
   dueReviewCount: number;
+  profiles: ProfileMeta[];
+  activeProfile: ProfileMeta;
   completeLesson: (lessonId: string, quizScore: number, quizTotal: number) => void;
   recordTrainer: (trainerId: string, correct: boolean) => void;
   recordHand: (won: boolean) => void;
@@ -141,20 +170,241 @@ interface AppStateValue {
   addHandRecord: (record: Omit<HandRecord, 'id' | 'date'>) => void;
   exportJson: () => string;
   importJson: (json: string) => boolean;
+  createProfile: (name: string, email?: string) => void;
+  switchProfile: (id: string) => void;
+  deleteProfile: (id: string) => void;
+  updateProfile: (id: string, patch: { name?: string; email?: string }) => void;
+  /** Externe Daten (z. B. Cloud-Sync) in das aktive Profil übernehmen. */
+  replaceData: (data: AppData) => void;
+  /**
+   * Verknüpft ein Cloud-Konto mit einem lokalen Profil (legt es bei Bedarf an),
+   * wechselt dorthin und übernimmt die Cloud-Daten, wenn sie weiter sind.
+   * Rückgabe: was passiert ist plus der gewählte Datenstand – der Aufrufer
+   * entscheidet damit, ob dieser Stand in die Cloud hochgeladen werden muss.
+   */
+  linkCloudProfile: (
+    uid: string,
+    name: string,
+    email: string,
+    incoming: AppData | null,
+  ) => { outcome: 'adopted-cloud' | 'kept-local' | 'created'; data: AppData };
 }
 
 const Ctx = createContext<AppStateValue | null>(null);
 
-function loadData(): AppData {
+// ---------- Validierung / Sanitisierung ----------
+
+function num(v: unknown, fallback = 0): number {
+  return typeof v === 'number' && isFinite(v) ? v : fallback;
+}
+
+function str(v: unknown, fallback = ''): string {
+  return typeof v === 'string' ? v.slice(0, 2000) : fallback;
+}
+
+/**
+ * Wandelt beliebige (auch manipulierte) Eingaben in ein garantiert
+ * schema-konformes AppData um. Grundlage für Import & Cloud-Sync.
+ */
+export function sanitizeAppData(input: unknown): AppData {
+  const d = (typeof input === 'object' && input !== null ? input : {}) as Record<string, unknown>;
+  const out: AppData = structuredClone(DEFAULT_DATA);
+
+  out.xp = Math.max(0, Math.min(10_000_000, num(d.xp)));
+  out.handsPlayed = Math.max(0, num(d.handsPlayed));
+  out.handsWon = Math.max(0, num(d.handsWon));
+  out.name = str(d.name).slice(0, 40);
+
+  if (typeof d.completedLessons === 'object' && d.completedLessons !== null) {
+    for (const [k, v] of Object.entries(d.completedLessons as Record<string, unknown>)) {
+      if (typeof v === 'object' && v !== null && /^m\d+-l\d+$/.test(k)) {
+        const r = v as Record<string, unknown>;
+        out.completedLessons[k] = {
+          completedAt: str(r.completedAt),
+          quizScore: Math.max(0, num(r.quizScore)),
+          quizTotal: Math.max(0, num(r.quizTotal)),
+        };
+      }
+    }
+  }
+
+  if (typeof d.trainers === 'object' && d.trainers !== null) {
+    for (const [k, v] of Object.entries(d.trainers as Record<string, unknown>)) {
+      if (typeof v === 'object' && v !== null && /^[a-z]+$/.test(k)) {
+        const t = v as Record<string, unknown>;
+        out.trainers[k] = {
+          attempts: Math.max(0, num(t.attempts)),
+          correct: Math.max(0, num(t.correct)),
+          streak: Math.max(0, num(t.streak)),
+          bestStreak: Math.max(0, num(t.bestStreak)),
+        };
+      }
+    }
+  }
+
+  if (typeof d.badges === 'object' && d.badges !== null) {
+    const validIds = new Set(BADGES.map((b) => b.id));
+    for (const [k, v] of Object.entries(d.badges as Record<string, unknown>)) {
+      if (validIds.has(k) && typeof v === 'string') out.badges[k] = str(v, new Date().toISOString());
+    }
+  }
+
+  if (typeof d.streak === 'object' && d.streak !== null) {
+    const s = d.streak as Record<string, unknown>;
+    out.streak = { lastDay: str(s.lastDay).slice(0, 10), count: Math.max(0, num(s.count)) };
+  }
+
+  if (Array.isArray(d.sessions)) {
+    out.sessions = (d.sessions as unknown[]).slice(0, 2000).flatMap((v) => {
+      if (typeof v !== 'object' || v === null) return [];
+      const s = v as Record<string, unknown>;
+      const type = s.type === 'live' ? 'live' : 'online';
+      return [{
+        id: str(s.id, `s${Math.random()}`).slice(0, 60),
+        date: str(s.date).slice(0, 10),
+        type: type as 'live' | 'online',
+        game: str(s.game).slice(0, 80),
+        buyIn: Math.max(0, num(s.buyIn)),
+        cashOut: Math.max(0, num(s.cashOut)),
+        minutes: Math.max(0, num(s.minutes)),
+        notes: s.notes === undefined ? undefined : str(s.notes).slice(0, 500),
+      }];
+    });
+  }
+
+  if (Array.isArray(d.reviews)) {
+    out.reviews = (d.reviews as unknown[]).slice(0, 2000).flatMap((v) => {
+      if (typeof v !== 'object' || v === null) return [];
+      const r = v as Record<string, unknown>;
+      const lessonId = str(r.lessonId);
+      const moduleId = str(r.moduleId);
+      if (!/^m\d+-l\d+$/.test(lessonId) || !/^m\d+$/.test(moduleId)) return [];
+      return [{
+        key: str(r.key).slice(0, 40),
+        moduleId,
+        lessonId,
+        questionIndex: Math.max(0, Math.min(50, num(r.questionIndex))),
+        due: str(r.due).slice(0, 10),
+        interval: Math.max(0, Math.min(365, num(r.interval))),
+        streak: Math.max(0, Math.min(10, num(r.streak))),
+      }];
+    });
+  }
+
+  if (typeof d.daily === 'object' && d.daily !== null) {
+    const day = d.daily as Record<string, unknown>;
+    out.daily = {
+      date: str(day.date).slice(0, 10),
+      score: Math.max(0, num(day.score)),
+      total: Math.max(0, num(day.total)),
+    };
+  }
+
+  if (Array.isArray(d.hands)) {
+    out.hands = (d.hands as unknown[]).slice(0, 30).flatMap((v) => {
+      if (typeof v !== 'object' || v === null) return [];
+      const h = v as Record<string, unknown>;
+      const cardOk = (c: unknown): c is number => typeof c === 'number' && c >= 0 && c <= 51;
+      const heroCards = Array.isArray(h.heroCards) ? (h.heroCards as unknown[]).filter(cardOk) : [];
+      const board = Array.isArray(h.board) ? (h.board as unknown[]).filter(cardOk) : [];
+      const result = h.result === 'won' || h.result === 'lost' || h.result === 'folded' ? h.result : 'folded';
+      return [{
+        id: str(h.id, `h${Math.random()}`).slice(0, 60),
+        date: str(h.date),
+        handNumber: Math.max(0, num(h.handNumber)),
+        heroCards,
+        board,
+        result: result as 'won' | 'lost' | 'folded',
+        amount: num(h.amount),
+        players: Math.max(2, Math.min(9, num(h.players, 2))),
+        log: Array.isArray(h.log) ? (h.log as unknown[]).slice(0, 200).map((l) => str(l).slice(0, 300)) : [],
+      }];
+    });
+  }
+
+  return out;
+}
+
+// ---------- Profile ----------
+
+function newProfileId(): string {
+  return `p${Date.now().toString(36)}${Math.floor(Math.random() * 1e6).toString(36)}`;
+}
+
+function loadDataFor(profileId: string): AppData {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { ...DEFAULT_DATA };
-    const parsed = JSON.parse(raw) as Partial<AppData>;
-    return { ...DEFAULT_DATA, ...parsed };
+    const raw = localStorage.getItem(dataKey(profileId));
+    if (!raw) return structuredClone(DEFAULT_DATA);
+    return sanitizeAppData(JSON.parse(raw));
   } catch {
-    return { ...DEFAULT_DATA };
+    return structuredClone(DEFAULT_DATA);
   }
 }
+
+function saveProfilesIndex(index: ProfilesIndex) {
+  durableSet(PROFILES_KEY, JSON.stringify(index));
+}
+
+/** Lädt den Profil-Index; migriert Altdaten (Einzelprofil-Ära) beim ersten Mal. */
+function loadProfilesIndex(): ProfilesIndex {
+  try {
+    const raw = localStorage.getItem(PROFILES_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as ProfilesIndex;
+      if (
+        parsed &&
+        Array.isArray(parsed.profiles) &&
+        parsed.profiles.length > 0 &&
+        parsed.profiles.every((p) => typeof p.id === 'string')
+      ) {
+        // Alle Felder validieren – ein korrupter Index darf die UI nicht verbiegen.
+        const profiles: ProfileMeta[] = parsed.profiles.map((p, i) => ({
+          id: p.id.slice(0, 64),
+          name: typeof p.name === 'string' ? p.name.slice(0, 40) : '',
+          email: typeof p.email === 'string' ? p.email.slice(0, 120) : undefined,
+          createdAt: typeof p.createdAt === 'string' ? p.createdAt.slice(0, 40) : new Date().toISOString(),
+          color: PROFILE_COLORS.includes(p.color) ? p.color : PROFILE_COLORS[i % PROFILE_COLORS.length],
+          cloudUid: typeof p.cloudUid === 'string' ? p.cloudUid.slice(0, 128) : undefined,
+        }));
+        const activeId = profiles.some((p) => p.id === parsed.activeId) ? parsed.activeId : profiles[0].id;
+        return { activeId, profiles };
+      }
+    }
+  } catch {
+    // fällt durch zur Neuanlage
+  }
+
+  // Migration von der Einzelprofil-Ära oder frischer Start
+  const id = newProfileId();
+  let legacy: AppData | null = null;
+  try {
+    const raw = localStorage.getItem(LEGACY_KEY);
+    if (raw) legacy = sanitizeAppData(JSON.parse(raw));
+  } catch {
+    legacy = null;
+  }
+  const index: ProfilesIndex = {
+    activeId: id,
+    profiles: [{
+      id,
+      name: legacy?.name ?? '',
+      createdAt: new Date().toISOString(),
+      color: PROFILE_COLORS[0],
+    }],
+  };
+  saveProfilesIndex(index);
+  if (legacy) {
+    durableSet(dataKey(id), JSON.stringify(legacy));
+    try {
+      localStorage.removeItem(LEGACY_KEY);
+    } catch {
+      // ignorieren
+    }
+  }
+  return index;
+}
+
+// ---------- Datum ----------
 
 function todayStr(): string {
   const d = new Date();
@@ -179,18 +429,30 @@ function isYesterday(dayStr: string): boolean {
   return dayStr === `${d.getFullYear()}-${m}-${day}`;
 }
 
+// ---------- Provider ----------
+
 export function AppStateProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState<AppData>(loadData);
+  const [index, setIndex] = useState<ProfilesIndex>(loadProfilesIndex);
+  const [data, setData] = useState<AppData>(() => loadDataFor(index.activeId));
   const [toasts, setToasts] = useState<Toast[]>([]);
   const toastId = useRef(1);
+  const activeIdRef = useRef(index.activeId);
+  activeIdRef.current = index.activeId;
+  const indexRef = useRef(index);
+  indexRef.current = index;
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch {
-      // localStorage nicht verfügbar (z. B. private Mode) – App bleibt nutzbar
-    }
+    requestPersistentStorage();
+  }, []);
+
+  // Fortschritt bei jeder Änderung doppelt sichern
+  useEffect(() => {
+    durableSet(dataKey(activeIdRef.current), JSON.stringify(data));
   }, [data]);
+
+  useEffect(() => {
+    saveProfilesIndex(index);
+  }, [index]);
 
   const pushToast = useCallback((title: string, sub?: string) => {
     const id = toastId.current++;
@@ -211,7 +473,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         const prevLevel = levelForXp(prev.xp);
         const newLevel = levelForXp(draft.xp);
         if (newLevel > prevLevel) {
-          pushToast(`⬆️ Level ${newLevel} erreicht!`, levelTitle(newLevel));
+          pushToast(`Level ${newLevel} erreicht!`, levelTitle(newLevel));
           if (newLevel >= 5) award(draft, 'level-5');
           if (newLevel >= 10) award(draft, 'level-10');
         }
@@ -310,12 +572,16 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       mutate((d) => {
         d.name = name;
       });
+      setIndex((idx) => ({
+        ...idx,
+        profiles: idx.profiles.map((p) => (p.id === idx.activeId ? { ...p, name } : p)),
+      }));
     },
     [mutate],
   );
 
   const resetAll = useCallback(() => {
-    setData({ ...DEFAULT_DATA });
+    setData(structuredClone(DEFAULT_DATA));
   }, []);
 
   const addReviewItem = useCallback(
@@ -391,15 +657,129 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   const importJson = useCallback((json: string): boolean => {
     try {
+      if (json.length > 5_000_000) return false;
       const parsed = JSON.parse(json);
       const incoming = parsed?.app === 'pokermentor' ? parsed.data : parsed;
       if (!incoming || typeof incoming !== 'object' || typeof incoming.xp !== 'number') return false;
-      setData({ ...DEFAULT_DATA, ...incoming });
+      setData(sanitizeAppData(incoming));
       return true;
     } catch {
       return false;
     }
   }, []);
+
+  const replaceData = useCallback((incoming: AppData) => {
+    setData(sanitizeAppData(incoming));
+  }, []);
+
+  // ---------- Profil-Verwaltung ----------
+
+  const createProfile = useCallback((name: string, email?: string) => {
+    const id = newProfileId();
+    setIndex((idx) => {
+      const color = PROFILE_COLORS[idx.profiles.length % PROFILE_COLORS.length];
+      const meta: ProfileMeta = {
+        id,
+        name: name.trim().slice(0, 40),
+        email: email?.trim().slice(0, 120) || undefined,
+        createdAt: new Date().toISOString(),
+        color,
+      };
+      return { activeId: id, profiles: [...idx.profiles, meta] };
+    });
+    const fresh = structuredClone(DEFAULT_DATA);
+    fresh.name = name.trim().slice(0, 40);
+    durableSet(dataKey(id), JSON.stringify(fresh));
+    setData(fresh);
+  }, []);
+
+  const switchProfile = useCallback((id: string) => {
+    setIndex((idx) => {
+      if (!idx.profiles.some((p) => p.id === id)) return idx;
+      return { ...idx, activeId: id };
+    });
+    setData(loadDataFor(id));
+  }, []);
+
+  const deleteProfile = useCallback((id: string) => {
+    setIndex((idx) => {
+      if (idx.profiles.length <= 1) return idx;
+      const remaining = idx.profiles.filter((p) => p.id !== id);
+      durableDelete(dataKey(id));
+      const nextActive = idx.activeId === id ? remaining[0].id : idx.activeId;
+      if (idx.activeId === id) {
+        setData(loadDataFor(nextActive));
+      }
+      return { activeId: nextActive, profiles: remaining };
+    });
+  }, []);
+
+  const updateProfile = useCallback((id: string, patch: { name?: string; email?: string }) => {
+    setIndex((idx) => ({
+      ...idx,
+      profiles: idx.profiles.map((p) =>
+        p.id === id
+          ? {
+              ...p,
+              name: patch.name !== undefined ? patch.name.trim().slice(0, 40) : p.name,
+              email: patch.email !== undefined ? patch.email.trim().slice(0, 120) || undefined : p.email,
+            }
+          : p,
+      ),
+    }));
+    if (patch.name !== undefined && id === activeIdRef.current) {
+      mutate((d) => {
+        d.name = patch.name!.trim().slice(0, 40);
+      });
+    }
+  }, [mutate]);
+
+  const linkCloudProfile = useCallback(
+    (
+      uid: string,
+      name: string,
+      email: string,
+      incoming: AppData | null,
+    ): { outcome: 'adopted-cloud' | 'kept-local' | 'created'; data: AppData } => {
+      const idx = indexRef.current;
+      const cleanName = (name || email).trim().slice(0, 40);
+      const cleanEmail = email.trim().slice(0, 120);
+      const existing = idx.profiles.find((p) => p.cloudUid === uid);
+
+      if (existing) {
+        const local = loadDataFor(existing.id);
+        // Konfliktregel: Der Stand mit mehr XP gewinnt – Lernfortschritt geht nie verloren.
+        const useCloud = incoming !== null && incoming.xp >= local.xp;
+        const chosen = useCloud ? sanitizeAppData(incoming) : local;
+        durableSet(dataKey(existing.id), JSON.stringify(chosen));
+        setIndex({
+          activeId: existing.id,
+          profiles: idx.profiles.map((p) =>
+            p.id === existing.id ? { ...p, name: cleanName || p.name, email: cleanEmail } : p,
+          ),
+        });
+        setData(chosen);
+        return { outcome: useCloud ? 'adopted-cloud' : 'kept-local', data: chosen };
+      }
+
+      const id = newProfileId();
+      const meta: ProfileMeta = {
+        id,
+        name: cleanName,
+        email: cleanEmail,
+        createdAt: new Date().toISOString(),
+        color: PROFILE_COLORS[idx.profiles.length % PROFILE_COLORS.length],
+        cloudUid: uid,
+      };
+      const fresh = incoming !== null ? sanitizeAppData(incoming) : structuredClone(DEFAULT_DATA);
+      if (incoming === null) fresh.name = cleanName;
+      durableSet(dataKey(id), JSON.stringify(fresh));
+      setIndex({ activeId: id, profiles: [...idx.profiles, meta] });
+      setData(fresh);
+      return { outcome: incoming !== null ? 'adopted-cloud' : 'created', data: fresh };
+    },
+    [],
+  );
 
   const level = levelForXp(data.xp);
   const dueReviewCount = useMemo(() => {
@@ -407,12 +787,16 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return data.reviews.filter((r) => r.due <= today).length;
   }, [data.reviews]);
 
+  const activeProfile = index.profiles.find((p) => p.id === index.activeId) ?? index.profiles[0];
+
   const value = useMemo<AppStateValue>(
     () => ({
       data,
       toasts,
       level,
       dueReviewCount,
+      profiles: index.profiles,
+      activeProfile,
       completeLesson,
       recordTrainer,
       recordHand,
@@ -426,9 +810,16 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       addHandRecord,
       exportJson,
       importJson,
+      createProfile,
+      switchProfile,
+      deleteProfile,
+      updateProfile,
+      replaceData,
+      linkCloudProfile,
     }),
-    [data, toasts, level, dueReviewCount, completeLesson, recordTrainer, recordHand, addSession, deleteSession,
-     setName, resetAll, addReviewItem, answerReview, completeDailyQuiz, addHandRecord, exportJson, importJson],
+    [data, toasts, level, dueReviewCount, index.profiles, activeProfile, completeLesson, recordTrainer, recordHand,
+     addSession, deleteSession, setName, resetAll, addReviewItem, answerReview, completeDailyQuiz, addHandRecord,
+     exportJson, importJson, createProfile, switchProfile, deleteProfile, updateProfile, replaceData, linkCloudProfile],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

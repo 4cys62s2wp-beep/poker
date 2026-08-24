@@ -493,6 +493,7 @@ table.data td {
 .pill.ok { background: var(--ok-dim); color: #90d69c; border-color: rgba(88, 179, 104, 0.32); }
 .pill.info { background: var(--info-dim); color: #94bdea; border-color: rgba(85, 144, 217, 0.32); }
 .pill.danger { background: var(--danger-dim); color: #eda49f; border-color: rgba(224, 92, 85, 0.32); }
+.pill.warn { background: rgba(224, 165, 66, 0.14); color: #e8bd7a; border-color: rgba(224, 165, 66, 0.32); }
 .pill.violet { background: var(--violet-dim); color: #bda6e8; border-color: rgba(155, 127, 212, 0.32); }
 
 /* ==========================================================================
@@ -1013,7 +1014,8 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   border: 1px solid var(--border-strong);
   background: rgba(9, 13, 11, 0.75);
   color: var(--text);
-  font-size: 15px;
+  /* 16px verhindert Auto-Zoom beim Fokussieren auf iOS */
+  font-size: 16px;
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;

@@ -76,7 +76,7 @@ export function LearnPage() {
         <div className="eyebrow">Dein Curriculum</div>
         <h1>Lernpfad</h1>
         <p className="sub">
-          Acht Module vom ersten Blatt bis zur Profi-Strategie. Arbeite sie der Reihe nach durch – jede Lektion endet
+          Neun Module vom ersten Blatt bis zu Profi-Strategie und Varianten. Arbeite sie der Reihe nach durch – jede Lektion endet
           mit einem Quiz, das dein Verständnis prüft und XP bringt.
         </p>
       </div>
@@ -105,6 +105,18 @@ export function LearnPage() {
       )}
 
       {!searching && (
+        <>
+        <Link to="/pros" className="card clickable" style={{ display: 'block', marginBottom: 16, borderColor: 'rgba(212,175,94,0.35)' }}>
+          <div className="row between wrap">
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 16.5 }}>Pro-Insights: Von den Besten lernen</div>
+              <div className="small muted" style={{ marginTop: 3 }}>
+                Die Prinzipien von Fedor Holz, Negreanu, Polk & Co. – plus die teuersten Anfängerfehler aus Profi-Sicht.
+              </div>
+            </div>
+            <span className="pill gold">Neu</span>
+          </div>
+        </Link>
         <div className="grid cols-2">
           {ALL_MODULES.map((m, idx) => {
             const prog = moduleProgress(data, m.id);
@@ -134,6 +146,7 @@ export function LearnPage() {
             );
           })}
         </div>
+        </>
       )}
     </div>
   );

@@ -7,6 +7,7 @@ import { ModulePage } from './pages/ModulePage';
 import { LessonPage } from './pages/LessonPage';
 import { ReviewPage } from './pages/ReviewPage';
 import { DailyQuizPage } from './pages/DailyQuizPage';
+import { ProInsightsPage } from './pages/ProInsightsPage';
 import { TrainerHub } from './pages/TrainerHub';
 import { ScenarioTrainer } from './pages/trainers/ScenarioTrainer';
 import { PushFoldTrainer } from './pages/trainers/PushFoldTrainer';
@@ -36,6 +37,7 @@ export function App() {
         <Route path="/lernen" element={<LearnPage />} />
         <Route path="/lernen/:moduleId" element={<ModulePage />} />
         <Route path="/lernen/:moduleId/:lessonId" element={<LessonPage />} />
+        <Route path="/pros" element={<ProInsightsPage />} />
         <Route path="/wiederholen" element={<ReviewPage />} />
         <Route path="/tagesquiz" element={<DailyQuizPage />} />
         <Route path="/trainer" element={<TrainerHub />} />

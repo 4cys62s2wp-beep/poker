@@ -1,0 +1,9 @@
+{
+  "_hinweis": "Vorlage: Kopiere diese Datei zu firebase-config.json und trage die Werte aus deiner Firebase-Konsole ein (Projekteinstellungen → Allgemein → Meine Apps → Web-App). Siehe FIREBASE_SETUP.md.",
+  "apiKey": "AIza…",
+  "authDomain": "dein-projekt.firebaseapp.com",
+  "projectId": "dein-projekt",
+  "storageBucket": "dein-projekt.appspot.com",
+  "messagingSenderId": "1234567890",
+  "appId": "1:1234567890:web:abcdef"
+}

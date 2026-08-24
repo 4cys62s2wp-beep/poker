@@ -55,6 +55,7 @@ const TOOLS: Array<{ to: string; icon: IconName; tone: 'gold' | 'green' | 'blue'
 
 const EXTRA: Array<{ to: string; icon: IconName; tone: 'gold' | 'green' | 'blue' | 'red' | 'violet'; title: string; desc: string }> = [
   { to: '/spielen', icon: 'play', tone: 'red', title: 'Übungstisch', desc: 'No-Limit Hold’em gegen KI-Gegner mit Coach-Modus und Handhistorie.' },
+  { to: '/pros', icon: 'chip', tone: 'gold', title: 'Pro-Insights', desc: 'Prinzipien von Fedor Holz, Negreanu, Polk & Co. – verdichtet und verifiziert.' },
   { to: '/wiederholen', icon: 'repeat', tone: 'gold', title: 'Wiederholen', desc: 'Dein Spaced-Repetition-Stapel aus falsch beantworteten Quizfragen.' },
   { to: '/glossar', icon: 'glossary', tone: 'blue', title: 'Glossar', desc: 'Alle Pokerbegriffe von A bis Z erklärt.' },
   { to: '/profil', icon: 'profile', tone: 'violet', title: 'Profil & Fortschritt', desc: 'XP, Level, Abzeichen, Statistiken und Daten-Backup.' },

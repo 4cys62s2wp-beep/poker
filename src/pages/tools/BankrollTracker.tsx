@@ -54,10 +54,18 @@ export function BankrollTracker() {
     };
   }, [filteredSessions]);
 
+  /** CSV-Zelle absichern: Anführungszeichen escapen und Formel-Injection
+      (=, +, -, @ am Zellanfang würde Excel/Numbers als Formel ausführen) entschärfen. */
+  function csvCell(value: string | number): string {
+    let s = String(value);
+    if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+    return `"${s.replace(/"/g, '""')}"`;
+  }
+
   function exportCsv() {
     const header = 'Datum;Art;Spiel;Buy-in;Cash-out;Gewinn;Minuten;Notizen';
     const rows = data.sessions.map((s) =>
-      [s.date, s.type, s.game, s.buyIn, s.cashOut, (s.cashOut - s.buyIn).toFixed(2), s.minutes, (s.notes ?? '').replace(/;/g, ',')].join(';'),
+      [s.date, s.type, csvCell(s.game), s.buyIn, s.cashOut, (s.cashOut - s.buyIn).toFixed(2), s.minutes, csvCell(s.notes ?? '')].join(';'),
     );
     const blob = new Blob(['\uFEFF' + [header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -131,7 +139,7 @@ export function BankrollTracker() {
             </div>
             <div className="card">
               <div className="stat-label">Sessions</div>
-              <div className="big-stat" style={{ fontSize: 24 }}>{data.sessions.length}</div>
+              <div className="big-stat" style={{ fontSize: 24 }}>{filteredSessions.length}</div>
               <div className="small faint">{stats.winRate} % gewonnen</div>
             </div>
             <div className="card">

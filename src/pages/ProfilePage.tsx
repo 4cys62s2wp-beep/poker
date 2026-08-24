@@ -2,12 +2,21 @@ import { useState } from 'react';
 import { BADGES } from '../content/badges';
 import { ALL_MODULES } from '../content';
 import { levelTitle, useAppState, xpThreshold } from '../state/AppState';
+import { CloudAccountCard } from '../components/CloudAccountCard';
 
 export function ProfilePage() {
-  const { data, level, setName, resetAll, exportJson, importJson } = useAppState();
+  const {
+    data, level, setName, resetAll, exportJson, importJson,
+    profiles, activeProfile, createProfile, switchProfile, deleteProfile, updateProfile,
+  } = useAppState();
   const [nameInput, setNameInput] = useState(data.name);
+  const [emailInput, setEmailInput] = useState(activeProfile.email ?? '');
   const [confirmReset, setConfirmReset] = useState(false);
   const [importStatus, setImportStatus] = useState<'ok' | 'error' | null>(null);
+  const [showNewProfile, setShowNewProfile] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   function downloadBackup() {
     const blob = new Blob([exportJson()], { type: 'application/json' });
@@ -44,7 +53,9 @@ export function ProfilePage() {
       <div className="page-header">
         <div className="eyebrow">Dein Weg</div>
         <h1>Profil & Fortschritt</h1>
-        <p className="sub">Alle Daten werden ausschließlich lokal auf deinem Gerät gespeichert.</p>
+        <p className="sub">
+          Dein Fortschritt wird doppelt auf diesem Gerät gesichert – und mit Konto zusätzlich in der Cloud.
+        </p>
       </div>
 
       <div className="grid cols-4" style={{ marginBottom: 20 }}>
@@ -91,7 +102,7 @@ export function ProfilePage() {
         </div>
         <div className="card">
           <div className="stat-label">Lern-Streak</div>
-          <div className="big-stat">{data.streak.count > 0 ? `🔥 ${data.streak.count}` : '–'}</div>
+          <div className="big-stat">{data.streak.count > 0 ? data.streak.count : '–'}</div>
           <div className="small faint">Tage in Folge</div>
         </div>
         <div className="card">
@@ -116,18 +127,141 @@ export function ProfilePage() {
         })}
       </div>
 
+      <div className="section-title">Konto & Synchronisation</div>
+      <CloudAccountCard />
+
+      <div className="section-title">Profile auf diesem Gerät</div>
+      <div className="card" style={{ maxWidth: 560 }}>
+        <p className="small muted" style={{ marginBottom: 14 }}>
+          Jedes Profil hat eigenen Fortschritt, eigene XP und eigene Abzeichen – so können mehrere Personen am selben
+          Gerät parallel trainieren. Der Fortschritt bleibt auch nach Neuladen oder Schließen des Browsers erhalten.
+        </p>
+
+        {profiles.map((p) => {
+          const isActive = p.id === activeProfile.id;
+          return (
+            <div key={p.id} className="row between wrap" style={{ padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
+              <div className="row">
+                <span
+                  style={{
+                    width: 36, height: 36, borderRadius: '50%', display: 'inline-flex',
+                    alignItems: 'center', justifyContent: 'center', fontWeight: 800,
+                    background: `${p.color}26`, color: p.color, border: `1.5px solid ${p.color}55`,
+                    flexShrink: 0,
+                  }}
+                >
+                  {(p.name || '?').slice(0, 1).toUpperCase()}
+                </span>
+                <div>
+                  <div style={{ fontWeight: 800 }}>
+                    {p.name || 'Ohne Namen'} {isActive && <span className="pill gold" style={{ marginLeft: 6 }}>aktiv</span>}
+                    {p.cloudUid && <span className="pill info" style={{ marginLeft: 6 }}>Cloud</span>}
+                  </div>
+                  {p.email && <div className="small faint">{p.email}</div>}
+                </div>
+              </div>
+              <div className="row">
+                {!isActive && (
+                  <button className="btn sm" onClick={() => switchProfile(p.id)}>
+                    Wechseln
+                  </button>
+                )}
+                {profiles.length > 1 && (
+                  confirmDeleteId === p.id ? (
+                    <>
+                      <button className="btn sm danger" onClick={() => { deleteProfile(p.id); setConfirmDeleteId(null); }}>
+                        Wirklich löschen
+                      </button>
+                      <button className="btn sm ghost" onClick={() => setConfirmDeleteId(null)}>
+                        Abbrechen
+                      </button>
+                    </>
+                  ) : (
+                    <button className="btn sm ghost" onClick={() => setConfirmDeleteId(p.id)} aria-label={`Profil ${p.name} löschen`}>
+                      ✕
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+          );
+        })}
+
+        {!showNewProfile ? (
+          <button className="btn sm" style={{ marginTop: 14 }} onClick={() => setShowNewProfile(true)}>
+            + Neues Profil anlegen
+          </button>
+        ) : (
+          <div style={{ marginTop: 14 }}>
+            <div className="grid cols-2" style={{ gap: 10 }}>
+              <input
+                className="text-input"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="Name"
+                maxLength={40}
+              />
+              <input
+                className="text-input"
+                type="email"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                placeholder="E-Mail (optional)"
+                maxLength={120}
+              />
+            </div>
+            <div className="row" style={{ marginTop: 10 }}>
+              <button
+                className="btn sm primary"
+                disabled={!newName.trim()}
+                onClick={() => {
+                  createProfile(newName, newEmail);
+                  setNewName('');
+                  setNewEmail('');
+                  setShowNewProfile(false);
+                  setNameInput(newName.trim());
+                  setEmailInput(newEmail.trim());
+                }}
+              >
+                Profil erstellen & wechseln
+              </button>
+              <button className="btn sm ghost" onClick={() => setShowNewProfile(false)}>
+                Abbrechen
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
       <div className="section-title">Einstellungen</div>
       <div className="card" style={{ maxWidth: 520 }}>
-        <div className="stat-label" style={{ marginBottom: 5 }}>Dein Name (für die Begrüßung)</div>
-        <div className="row">
+        <div className="stat-label" style={{ marginBottom: 5 }}>Name dieses Profils</div>
+        <div className="row" style={{ marginBottom: 12 }}>
           <input
             className="text-input"
             value={nameInput}
             onChange={(e) => setNameInput(e.target.value)}
             placeholder="z. B. Lorenz"
-            maxLength={30}
+            maxLength={40}
           />
-          <button className="btn" onClick={() => setName(nameInput.trim())}>
+        </div>
+        <div className="stat-label" style={{ marginBottom: 5 }}>E-Mail (optional, für die Profil-Zuordnung)</div>
+        <div className="row">
+          <input
+            className="text-input"
+            type="email"
+            value={emailInput}
+            onChange={(e) => setEmailInput(e.target.value)}
+            placeholder="du@example.de"
+            maxLength={120}
+          />
+          <button
+            className="btn"
+            onClick={() => {
+              setName(nameInput.trim());
+              updateProfile(activeProfile.id, { name: nameInput, email: emailInput });
+            }}
+          >
             Speichern
           </button>
         </div>
@@ -141,8 +275,8 @@ export function ProfilePage() {
         ) : (
           <div>
             <p className="small" style={{ marginBottom: 10 }}>
-              Wirklich <strong>alle</strong> Daten löschen (XP, Lektionen, Abzeichen, Sessions)? Das kann nicht
-              rückgängig gemacht werden.
+              Wirklich den kompletten Fortschritt <strong>dieses Profils</strong> löschen (XP, Lektionen, Abzeichen,
+              Sessions)? Andere Profile bleiben unberührt. Das kann nicht rückgängig gemacht werden.
             </p>
             <div className="row">
               <button
@@ -211,9 +345,9 @@ export function ProfilePage() {
       <div className="card" style={{ maxWidth: 520, marginTop: 14 }}>
         <div style={{ fontWeight: 700, marginBottom: 6 }}>Über PokerMentor</div>
         <p className="small muted">
-          Version 2.0 · Eine Lern- und Trainings-App für Texas Hold'em – ohne Echtgeld, ohne Konten, ohne
-          Tracking. Poker ist ein Geschicklichkeitsspiel mit erheblichem Glücksanteil: Spiele verantwortungsvoll und
-          setze dir Grenzen, bevor du an einen echten Tisch gehst (Modul „Psychologie & Bankroll“).
+          Version 2.1 · Eine Lern- und Trainings-App für Poker – ohne Echtgeld und ohne Tracking. Poker ist ein
+          Geschicklichkeitsspiel mit erheblichem Glücksanteil: Spiele verantwortungsvoll und setze dir Grenzen, bevor
+          du an einen echten Tisch gehst (Modul „Psychologie & Bankroll“).
         </p>
       </div>
 

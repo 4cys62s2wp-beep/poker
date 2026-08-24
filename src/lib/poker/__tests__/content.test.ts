@@ -58,8 +58,8 @@ describe('Push/Fold-Charts', () => {
 });
 
 describe('Module', () => {
-  it('alle 8 Module mit gültigen Lektionen, Quizfragen und Karten', () => {
-    expect(ALL_MODULES.length).toBe(8);
+  it('alle 9 Module mit gültigen Lektionen, Quizfragen und Karten', () => {
+    expect(ALL_MODULES.length).toBe(9);
     const lessonIds = new Set<string>();
     for (const m of ALL_MODULES) {
       expect(m.lessons.length).toBeGreaterThanOrEqual(5);

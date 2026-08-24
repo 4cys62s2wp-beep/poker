@@ -32,7 +32,7 @@ kein Glücksspiel: Der gesamte Fokus liegt auf **Verstehen, Trainieren, Anwenden
 | Live-Spieler | Casino-Praxis, Tells, Etikette | Modul 7, Live-Strategieanpassungen |
 | Online-Spieler | Multi-Tabling, HUD, Study-Workflow | Modul 8, Bankroll-Tracker, Equity-Rechner |
 
-## 3. Lern-Curriculum (8 Module, ~43 Lektionen)
+## 3. Lern-Curriculum (9 Module, ~49 Lektionen)
 
 1. **🎓 Grundlagen** – Spielablauf, Handrankings, Position, Setzregeln, Varianten & Formate
 2. **🃏 Preflop-Strategie** – Starthände, Open-Raises nach Position, 3-Bets, Blind Defense, Squeeze/Multiway
@@ -109,8 +109,8 @@ Hinweis in der App: gedacht für private Runden und Training – in Casinos ist 
 ## 8. Motivation & Gamification
 
 - **XP & Level:** Lektionen (60–100 XP), Trainer-Antworten (5 XP), Hände am Tisch;
-  11 Level-Titel von „Neuling“ bis „Poker-Mentor“
-- **18 Abzeichen:** Meilensteine über alle Bereiche (Lernen, Trainer, Tisch, Bankroll, Streak)
+  15 Level-Titel von „Neuling“ bis „Poker-Legende“
+- **22 Abzeichen:** Meilensteine über alle Bereiche (Lernen, Trainer, Tisch, Bankroll, Streak)
 - **Lern-Streak:** tägliches Lernen wird belohnt
 - **Fortschritt überall sichtbar:** Modul-Balken, Quiz-Bestleistungen, Trainer-Serien
 

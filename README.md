@@ -11,9 +11,14 @@ Trainings-App als Website und installierbare PWA.
 - **🧭 Live-Coach:** Hand per 2-Tap-Picker eingeben → Street für Street eine klare
   Empfehlung (Aktion, Sizing, Begründung, Gewinnchance) – gebaut für lockere
   Low-Stakes-Runden mit Freunden
-- **📚 Lernpfad:** 8 Module, ~43 Lektionen mit Quiz – von den Regeln bis zu GTO,
-  inklusive eigener Module für Live- und Online-Poker
-- **🎯 5 Trainer:** Preflop-Ranges, Pot Odds, Equity-Schätzen, Handrankings, Outs
+- **📚 Lernpfad:** 9 Module, ~49 Lektionen mit Quiz – von den Regeln bis zu GTO,
+  inklusive Live-Poker, Online-Poker und Poker-Varianten (PLO, Short Deck, Stud,
+  Mixed Games)
+- **⭐ Pro-Insights:** verifizierte Prinzipien von Fedor Holz, Jonathan Little,
+  Doug Polk, Daniel Negreanu, Phil Galfond & Zachary Elwood – plus die teuersten
+  Anfängerfehler und Edge-Spots aus Profi-Sicht
+- **🎯 7 Trainer:** Preflop-Ranges, Pot Odds, Equity-Schätzen, Handrankings, Outs,
+  Szenario-Spots, Push/Fold
 - **🃏 Übungstisch:** No-Limit Hold'em gegen KI-Gegner (Heads-Up bis 6-max) mit
   Coach-Modus (Live-Equity, Pot Odds, Handstärke)
 - **🔍 Starthand-Explorer:** alle 169 Hände mit Gewinnwahrscheinlichkeit gegen
@@ -22,7 +27,14 @@ Trainings-App als Website und installierbare PWA.
 - **🧰 Tools:** Monte-Carlo-Equity-Rechner, Range-Charts, Odds-Spickzettel,
   Bankroll-Tracker mit Verlaufs-Chart
 - **📖 Glossar:** 150+ Begriffe mit Suche und Kategorien
-- **🏆 Gamification:** XP, 11 Level, 18 Abzeichen, Lern-Streaks
+- **🏆 Gamification:** XP, 15 Level, 22 Abzeichen, Lern-Streaks, Tages-Quiz,
+  Spaced-Repetition-Wiederholung
+- **👥 Profile & Konten:** mehrere Profile pro Gerät (parallel trainieren),
+  Fortschritt doppelt gesichert (localStorage + IndexedDB); optional echte
+  Cloud-Konten mit E-Mail-Verifizierung und Geräte-Sync via Firebase –
+  Anleitung in [FIREBASE_SETUP.md](FIREBASE_SETUP.md)
+- **🔒 Sicherheit:** Content-Security-Policy, validierte Datenimporte
+  (Backups/Cloud), 0 bekannte Abhängigkeits-Schwachstellen (`npm audit`)
 - **📲 PWA:** offline-fähig, aufs Handy installierbar, alle Daten bleiben lokal
 - **🎨 Eigenständiges Design:** „Kartenlounge“-Ästhetik mit Fraunces & Manrope,
   4-Color-Deck, mobile-first

@@ -12,6 +12,7 @@ const NAV_GROUPS: Array<{ label: string; items: Array<{ to: string; icon: IconNa
     label: 'Lernen',
     items: [
       { to: '/lernen', icon: 'learn', label: 'Lernpfad' },
+      { to: '/pros', icon: 'chip', label: 'Pro-Insights' },
       { to: '/wiederholen', icon: 'repeat', label: 'Wiederholen' },
       { to: '/trainer', icon: 'trainer', label: 'Trainer' },
       { to: '/glossar', icon: 'glossary', label: 'Glossar' },
@@ -41,6 +42,7 @@ const MOBILE_ITEMS: Array<{ to: string; icon: IconName; label: string; end?: boo
 
 const TITLES: Array<[prefix: string, title: string]> = [
   ['/lernen', 'Lernpfad'],
+  ['/pros', 'Pro-Insights'],
   ['/wiederholen', 'Wiederholen'],
   ['/tagesquiz', 'Tages-Quiz'],
   ['/trainer', 'Trainer'],
@@ -90,6 +92,7 @@ export function Layout() {
           </div>
         ))}
         <div className="sidebar-footer">
+          <ProfileBadge />
           <div className="row between" style={{ marginBottom: 6 }}>
             <span>
               Level {level} · {levelTitle(level)}
@@ -133,6 +136,28 @@ export function Layout() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function ProfileBadge() {
+  const { activeProfile, profiles } = useAppState();
+  if (!activeProfile.name && profiles.length <= 1) return null;
+  return (
+    <div className="row" style={{ marginBottom: 10 }}>
+      <span
+        style={{
+          width: 26, height: 26, borderRadius: '50%', display: 'inline-flex',
+          alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 12,
+          background: `${activeProfile.color}26`, color: activeProfile.color,
+          border: `1.5px solid ${activeProfile.color}55`, flexShrink: 0,
+        }}
+      >
+        {(activeProfile.name || '?').slice(0, 1).toUpperCase()}
+      </span>
+      <span style={{ fontWeight: 700, color: 'var(--text-dim)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {activeProfile.name || 'Profil'}
+      </span>
     </div>
   );
 }

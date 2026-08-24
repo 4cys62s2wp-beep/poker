@@ -209,7 +209,7 @@ export function ChipCalculator() {
           {!plan && (
             <div className="card">
               <p className="muted">
-                Trag mindestens eine Chip-Sorte mit Anzahl ein – es müssen genug Chips für alle Spieler da sein.
+                {L.emptyHint}
               </p>
             </div>
           )}
@@ -218,30 +218,30 @@ export function ChipCalculator() {
             <>
               <div className="grid cols-2" style={{ marginBottom: 14 }}>
                 <div className="card">
-                  <div className="stat-label">Startstack pro Spieler</div>
+                  <div className="stat-label">{L.startStack}</div>
                   <div className="big-stat" style={{ fontSize: 26 }}>{plan.stackValue.toLocaleString('de-DE')}</div>
-                  <div className="small faint">Punkte · entspricht ~{plan.stackBB} Big Blinds</div>
+                  <div className="small faint">{L.stackSub(plan.stackBB)}</div>
                 </div>
                 <div className="card">
-                  <div className="stat-label">Blinds zum Start</div>
+                  <div className="stat-label">{L.blindsStart}</div>
                   <div className="big-stat" style={{ fontSize: 26 }}>
                     {plan.smallBlind.toLocaleString('de-DE')} / {plan.bigBlind.toLocaleString('de-DE')}
                   </div>
-                  <div className="small faint">Small Blind / Big Blind</div>
+                  <div className="small faint">{L.blindsSub}</div>
                 </div>
               </div>
 
               <div className="card" style={{ marginBottom: 14 }}>
-                <div style={{ fontWeight: 800, marginBottom: 10 }}>So teilt ihr aus – jeder Spieler bekommt:</div>
+                <div style={{ fontWeight: 800, marginBottom: 10 }}>{L.dealTitle}</div>
                 <div className="table-wrap compact">
                   <table className="data" style={{ width: '100%' }}>
                     <thead>
                       <tr>
-                        <th style={{ textAlign: 'left' }}>Chip</th>
-                        <th style={{ textAlign: 'right' }}>Wert</th>
-                        <th style={{ textAlign: 'right' }}>Stück</th>
-                        <th style={{ textAlign: 'right' }}>Punkte</th>
-                        <th style={{ textAlign: 'right' }}>übrig</th>
+                        <th style={{ textAlign: 'left' }}>{L.thChip}</th>
+                        <th style={{ textAlign: 'right' }}>{L.thValue}</th>
+                        <th style={{ textAlign: 'right' }}>{L.thCount}</th>
+                        <th style={{ textAlign: 'right' }}>{L.thPoints}</th>
+                        <th style={{ textAlign: 'right' }}>{L.thLeftover}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -270,7 +270,7 @@ export function ChipCalculator() {
                   </table>
                 </div>
                 <p className="small faint" style={{ marginTop: 8 }}>
-                  Übrige Chips kommen in die Bank – zum Wechseln oder für Rebuys.
+                  {L.bankNote}
                 </p>
               </div>
 
@@ -279,18 +279,17 @@ export function ChipCalculator() {
               ))}
 
               <div className="card">
-                <div style={{ fontWeight: 800, marginBottom: 4 }}>Turnier-Modus: Blind-Fahrplan</div>
+                <div style={{ fontWeight: 800, marginBottom: 4 }}>{L.tourneyTitle}</div>
                 <p className="small muted" style={{ marginBottom: 10 }}>
-                  Erhöht die Blinds alle 15–20 Minuten eine Stufe (kürzer = schnelleres Turnier). Bei einem
-                  Cash-Game bleiben die Start-Blinds einfach den ganzen Abend stehen.
+                  {L.tourneyHelp}
                 </p>
                 <div className="table-wrap compact">
                   <table className="data" style={{ width: '100%' }}>
                     <thead>
                       <tr>
-                        <th style={{ textAlign: 'left' }}>Stufe</th>
-                        <th style={{ textAlign: 'right' }}>Small Blind</th>
-                        <th style={{ textAlign: 'right' }}>Big Blind</th>
+                        <th style={{ textAlign: 'left' }}>{L.thLevel}</th>
+                        <th style={{ textAlign: 'right' }}>{L.thSmallBlind}</th>
+                        <th style={{ textAlign: 'right' }}>{L.thBigBlind}</th>
                       </tr>
                     </thead>
                     <tbody>

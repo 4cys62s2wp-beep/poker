@@ -1,24 +1,24 @@
 import { useState } from 'react';
-import { BEGINNER_MISTAKES, EDGE_SPOTS, PRO_PROFILES, PRO_SOURCE_NOTE } from '../content/pros';
 import { Icon } from '../components/Icon';
+import { useLang } from '../i18n';
+import { STR } from '../i18n/pages/proinsights';
 
 export function ProInsightsPage() {
-  const [openId, setOpenId] = useState<string | null>(PRO_PROFILES[0].id);
+  const { lang, content } = useLang();
+  const L = STR[lang];
+  const [openId, setOpenId] = useState<string | null>(content.proProfiles[0].id);
 
   return (
     <div>
       <div className="page-header">
-        <div className="eyebrow">Von den Besten lernen</div>
-        <h1>Pro-Insights</h1>
-        <p className="sub">
-          Was Fedor Holz, Daniel Negreanu, Doug Polk & Co. wirklich lehren – verdichtet auf die Prinzipien, die dein
-          Spiel verändern. Dazu: die teuersten Anfängerfehler aus Profi-Sicht und die Spots, in denen dein Edge liegt.
-        </p>
+        <div className="eyebrow">{L.eyebrow}</div>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub}</p>
       </div>
 
-      <div className="section-title">Die Köpfe</div>
+      <div className="section-title">{L.headsTitle}</div>
       <div className="grid" style={{ maxWidth: 780 }}>
-        {PRO_PROFILES.map((pro) => {
+        {content.proProfiles.map((pro) => {
           const open = openId === pro.id;
           const initials = pro.name.split(' ').map((w) => w[0]).join('').slice(0, 2);
           return (
@@ -64,9 +64,9 @@ export function ProInsightsPage() {
         })}
       </div>
 
-      <div className="section-title">Die teuersten Anfängerfehler – aus Profi-Sicht</div>
+      <div className="section-title">{L.mistakesTitle}</div>
       <div style={{ maxWidth: 780 }}>
-        {BEGINNER_MISTAKES.map((m, i) => (
+        {content.beginnerMistakes.map((m, i) => (
           <div key={i} className="tell-item">
             <span
               style={{
@@ -80,15 +80,15 @@ export function ProInsightsPage() {
             <div style={{ flex: 1 }}>
               <div className="t-name">{m.title}</div>
               <div className="t-desc">{m.text}</div>
-              <div className="small faint" style={{ marginTop: 4 }}>Quelle: {m.source}</div>
+              <div className="small faint" style={{ marginTop: 4 }}>{L.source(m.source)}</div>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="section-title">Wo dein Edge liegt</div>
+      <div className="section-title">{L.edgeTitle}</div>
       <div className="grid cols-2" style={{ maxWidth: 900 }}>
-        {EDGE_SPOTS.map((e, i) => (
+        {content.edgeSpots.map((e, i) => (
           <div key={i} className="card">
             <div className="row" style={{ marginBottom: 8 }}>
               <span style={{ color: 'var(--gold-bright)' }}>
@@ -101,7 +101,7 @@ export function ProInsightsPage() {
         ))}
       </div>
 
-      <p className="small faint" style={{ maxWidth: 780, marginTop: 24 }}>{PRO_SOURCE_NOTE}</p>
+      <p className="small faint" style={{ maxWidth: 780, marginTop: 24 }}>{content.proSourceNote}</p>
       <div className="suit-deco">♠ ♥ ♦ ♣</div>
     </div>
   );

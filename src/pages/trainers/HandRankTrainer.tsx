@@ -2,8 +2,10 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CardsRow } from '../../components/PlayingCard';
 import { shuffledDeckWithout } from '../../lib/poker/cards';
-import { HAND_CATEGORY_NAMES, categoryOf, evaluateBest } from '../../lib/poker/evaluator';
+import { categoryOf, evaluateBest } from '../../lib/poker/evaluator';
 import { useAppState } from '../../state/AppState';
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/handranktrainer';
 
 interface Scenario {
   hole: number[];
@@ -17,6 +19,8 @@ function newScenario(): Scenario {
 
 export function HandRankTrainer() {
   const { data, recordTrainer } = useAppState();
+  const { lang } = useLang();
+  const L = STR[lang];
   const [scenario, setScenario] = useState<Scenario>(newScenario);
   const [selected, setSelected] = useState<number | null>(null);
 
@@ -63,25 +67,23 @@ export function HandRankTrainer() {
   return (
     <div>
       <Link to="/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        ← Trainer
+        {L.back}
       </Link>
       <div className="page-header">
-        <h1>Handranking-Trainer</h1>
-        <p className="sub">
-          Aus deinen zwei Karten und dem Board entsteht deine beste Fünf-Karten-Hand. Welche Kategorie ist es?
-        </p>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub}</p>
       </div>
 
       <div className="row wrap" style={{ marginBottom: 16 }}>
-        <span className="pill">✓ {stats?.correct ?? 0} richtig</span>
-        <span className="pill">{stats?.attempts ?? 0} gesamt</span>
-        <span className="pill gold">Serie: {stats?.streak ?? 0}</span>
+        <span className="pill">{L.correctCount(stats?.correct ?? 0)}</span>
+        <span className="pill">{L.totalCount(stats?.attempts ?? 0)}</span>
+        <span className="pill gold">{L.streak(stats?.streak ?? 0)}</span>
       </div>
 
       <div className="card" style={{ maxWidth: 640 }}>
-        <div className="stat-label" style={{ marginBottom: 6 }}>Deine Hand</div>
+        <div className="stat-label" style={{ marginBottom: 6 }}>{L.yourHand}</div>
         <CardsRow cards={scenario.hole} size="lg" />
-        <div className="stat-label" style={{ margin: '16px 0 6px' }}>Board</div>
+        <div className="stat-label" style={{ margin: '16px 0 6px' }}>{L.board}</div>
         <CardsRow cards={scenario.board} />
 
         <div style={{ marginTop: 20 }}>
@@ -94,7 +96,7 @@ export function HandRankTrainer() {
             }
             return (
               <button key={cat} className={cls} onClick={() => choose(cat)} disabled={answered}>
-                {HAND_CATEGORY_NAMES[cat]}
+                {L.categories[cat]}
               </button>
             );
           })}
@@ -103,11 +105,11 @@ export function HandRankTrainer() {
         {answered && (
           <>
             <div className={`feedback-box ${selected === correctCategory ? 'good' : 'bad'}`}>
-              <strong>{selected === correctCategory ? '✓ Richtig! ' : '✗ Leider nein. '}</strong>
-              Die beste Hand ist: <strong>{HAND_CATEGORY_NAMES[correctCategory]}</strong>.
+              <strong>{selected === correctCategory ? L.correctFb : L.wrongFb}</strong>
+              {L.bestHandPrefix}<strong>{L.categories[correctCategory]}</strong>.
             </div>
             <button className="btn primary" style={{ marginTop: 14 }} onClick={next}>
-              Nächste Hand →
+              {L.nextHand}
             </button>
           </>
         )}

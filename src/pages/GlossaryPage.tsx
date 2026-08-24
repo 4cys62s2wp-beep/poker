@@ -1,7 +1,10 @@
 import { useMemo, useState } from 'react';
-import glossary from '../content/glossary';
 import type { GlossaryCategory } from '../content/types';
+import { useLang } from '../i18n';
+import { STR } from '../i18n/pages/glossarypage';
 
+/* Kategorie-Schlüssel bleiben in beiden Sprachen deutsch (GlossaryCategory);
+   angezeigt wird das übersetzte Label aus STR[lang].categoryLabels. */
 const CATEGORIES: Array<GlossaryCategory | 'Alle'> = [
   'Alle',
   'Grundlagen',
@@ -15,9 +18,12 @@ const CATEGORIES: Array<GlossaryCategory | 'Alle'> = [
 ];
 
 export function GlossaryPage() {
+  const { lang, content } = useLang();
+  const L = STR[lang];
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<GlossaryCategory | 'Alle'>('Alle');
 
+  const glossary = content.glossary;
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return glossary.filter((e) => {
@@ -25,20 +31,20 @@ export function GlossaryPage() {
       if (!q) return true;
       return e.term.toLowerCase().includes(q) || e.definition.toLowerCase().includes(q);
     });
-  }, [query, category]);
+  }, [glossary, query, category]);
 
   return (
     <div>
       <div className="page-header">
-        <div className="eyebrow">Nachschlagen</div>
-        <h1>Glossar</h1>
-        <p className="sub">{glossary.length} Pokerbegriffe von A bis Z – damit du am Tisch jede Ansage verstehst.</p>
+        <div className="eyebrow">{L.eyebrow}</div>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub(glossary.length)}</p>
       </div>
 
       <input
         className="search-input"
         style={{ maxWidth: 480, marginBottom: 14 }}
-        placeholder="Begriff suchen …"
+        placeholder={L.searchPlaceholder}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
@@ -46,23 +52,23 @@ export function GlossaryPage() {
       <div className="row wrap" style={{ marginBottom: 18 }}>
         {CATEGORIES.map((c) => (
           <button key={c} className={`btn sm${category === c ? ' primary' : ''}`} onClick={() => setCategory(c)}>
-            {c}
+            {L.categoryLabels[c]}
           </button>
         ))}
       </div>
 
       <div style={{ maxWidth: 760 }}>
-        {filtered.length === 0 && <p className="muted">Kein Begriff gefunden.</p>}
+        {filtered.length === 0 && <p className="muted">{L.noResults}</p>}
         {filtered.map((e) => (
           <div key={e.term} className="glossary-item">
             <div className="row wrap between">
               <span className="term">{e.term}</span>
-              <span className="pill">{e.category}</span>
+              <span className="pill">{L.categoryLabels[e.category]}</span>
             </div>
             <div className="def">{e.definition}</div>
             {e.related && e.related.length > 0 && (
               <div className="small faint" style={{ marginTop: 5 }}>
-                Siehe auch: {e.related.join(' · ')}
+                {L.seeAlso} {e.related.join(' · ')}
               </div>
             )}
           </div>

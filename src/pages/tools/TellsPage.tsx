@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { TELLS, TELL_CATEGORIES, type TellCategory } from '../../content/tells';
+import type { TellCategory } from '../../content/tells';
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/tellspage';
 
 function Stars({ n }: { n: number }) {
+  const { lang } = useLang();
+  const L = STR[lang];
   return (
-    <span className="stars" title={`Zuverlässigkeit: ${n} von 5`}>
+    <span className="stars" title={L.reliability(n)}>
       {'★'.repeat(n)}
       <span className="off">{'★'.repeat(5 - n)}</span>
     </span>
@@ -12,29 +16,28 @@ function Stars({ n }: { n: number }) {
 }
 
 export function TellsPage() {
+  const { lang, content } = useLang();
+  const L = STR[lang];
   const [category, setCategory] = useState<TellCategory | 'alle'>('alle');
 
-  const filtered = TELLS.filter((t) => category === 'alle' || t.category === category);
+  const filtered = content.tells.filter((t) => category === 'alle' || t.category === category);
 
   return (
     <div>
       <Link to="/tools" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        ← Tools
+        {L.backToTools}
       </Link>
       <div className="page-header">
-        <div className="eyebrow">Live-Poker lesen</div>
-        <h1>Tells & Reads</h1>
-        <p className="sub">
-          Was Gesten, Einsätze und Timing wirklich verraten – mit ehrlicher Bewertung, wie verlässlich jedes Signal
-          ist. Fokus: lockere Runden mit Freizeitspielern.
-        </p>
+        <div className="eyebrow">{L.eyebrow}</div>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub}</p>
       </div>
 
       <div className="row wrap" style={{ marginBottom: 18 }}>
         <button className={`btn sm${category === 'alle' ? ' primary' : ''}`} onClick={() => setCategory('alle')}>
-          Alle
+          {L.all}
         </button>
-        {TELL_CATEGORIES.map((c) => (
+        {content.tellCategories.map((c) => (
           <button
             key={c.id}
             className={`btn sm${category === c.id ? ' primary' : ''}`}
@@ -62,12 +65,8 @@ export function TellsPage() {
       </div>
 
       <div className="card" style={{ maxWidth: 760, marginTop: 22 }}>
-        <div style={{ fontWeight: 800, marginBottom: 6 }}>Die wichtigste Regel zum Schluss</div>
-        <p className="small muted">
-          Tells sind das Sahnehäubchen, nicht der Kuchen. Solide Ranges, Position und Pot Odds gewinnen das Geld –
-          Tells kippen nur die knappen Entscheidungen. Wer wegen eines „sicheren Reads“ die Mathematik ignoriert,
-          bezahlt Lehrgeld.
-        </p>
+        <div style={{ fontWeight: 800, marginBottom: 6 }}>{L.ruleTitle}</div>
+        <p className="small muted">{L.ruleText}</p>
       </div>
     </div>
   );

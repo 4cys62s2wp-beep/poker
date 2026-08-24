@@ -4,6 +4,8 @@ import { CardsRow } from '../../components/PlayingCard';
 import { shuffledDeckWithout } from '../../lib/poker/cards';
 import { equityVsHands } from '../../lib/poker/equity';
 import { useAppState } from '../../state/AppState';
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/equitytrainer';
 
 const TOLERANCE = 7; // Prozentpunkte
 
@@ -26,6 +28,8 @@ function newScenario(): Scenario {
 
 export function EquityTrainer() {
   const { data, recordTrainer } = useAppState();
+  const { lang } = useLang();
+  const L = STR[lang];
   const [scenario, setScenario] = useState<Scenario>(newScenario);
   const [guess, setGuess] = useState(50);
   const [revealed, setRevealed] = useState(false);
@@ -55,47 +59,44 @@ export function EquityTrainer() {
   return (
     <div>
       <Link to="/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        ← Trainer
+        {L.back}
       </Link>
       <div className="page-header">
-        <h1>Equity-Schätzer</h1>
-        <p className="sub">
-          Schätze die Gewinnwahrscheinlichkeit deiner Hand (beide Hände offen). Innerhalb von ±{TOLERANCE}{' '}
-          Prozentpunkten zählt als richtig.
-        </p>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub(TOLERANCE)}</p>
       </div>
 
       <div className="row wrap" style={{ marginBottom: 16 }}>
-        <span className="pill">✓ {stats?.correct ?? 0} richtig</span>
-        <span className="pill">{stats?.attempts ?? 0} gesamt</span>
-        <span className="pill gold">Serie: {stats?.streak ?? 0}</span>
+        <span className="pill">{L.correctCount(stats?.correct ?? 0)}</span>
+        <span className="pill">{L.totalCount(stats?.attempts ?? 0)}</span>
+        <span className="pill gold">{L.streak(stats?.streak ?? 0)}</span>
       </div>
 
       <div className="card" style={{ maxWidth: 640 }}>
         <div className="row between wrap" style={{ marginBottom: 16 }}>
           <div>
-            <div className="stat-label" style={{ marginBottom: 6 }}>Deine Hand</div>
+            <div className="stat-label" style={{ marginBottom: 6 }}>{L.yourHand}</div>
             <CardsRow cards={scenario.heroCards} size="lg" />
           </div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-faint)' }}>vs.</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-faint)' }}>{L.vs}</div>
           <div>
-            <div className="stat-label" style={{ marginBottom: 6 }}>Gegner</div>
+            <div className="stat-label" style={{ marginBottom: 6 }}>{L.villain}</div>
             <CardsRow cards={scenario.villainCards} size="lg" />
           </div>
         </div>
 
         <div style={{ marginBottom: 18 }}>
           <div className="stat-label" style={{ marginBottom: 6 }}>
-            Board {scenario.board.length === 0 && '(Preflop)'}
+            {L.board} {scenario.board.length === 0 && L.preflopTag}
           </div>
           {scenario.board.length > 0 ? (
             <CardsRow cards={scenario.board} />
           ) : (
-            <span className="muted small">Noch keine Gemeinschaftskarten.</span>
+            <span className="muted small">{L.noBoard}</span>
           )}
         </div>
 
-        <div className="stat-label">Deine Schätzung: Equity deiner Hand</div>
+        <div className="stat-label">{L.guessLabel}</div>
         <div className="row" style={{ margin: '8px 0 4px' }}>
           <input
             type="range"
@@ -106,22 +107,22 @@ export function EquityTrainer() {
             onChange={(e) => setGuess(parseInt(e.target.value, 10))}
             disabled={revealed}
           />
-          <span className="big-stat" style={{ minWidth: 86, textAlign: 'right' }}>{guess} %</span>
+          <span className="big-stat" style={{ minWidth: 86, textAlign: 'right' }}>{L.pct(guess)}</span>
         </div>
 
         {!revealed ? (
           <button className="btn primary" style={{ marginTop: 12 }} onClick={reveal}>
-            Auflösen
+            {L.reveal}
           </button>
         ) : (
           <>
             <div className={`feedback-box ${good ? 'good' : 'bad'}`} style={{ marginTop: 12 }}>
-              <strong>{good ? '✓ Stark geschätzt! ' : '✗ Daneben. '}</strong>
-              Tatsächliche Equity: <strong>{equity} %</strong> (deine Schätzung: {guess} %, Abweichung {diff}{' '}
-              Punkte). Gegner: {100 - equity} %.
+              <strong>{good ? L.correctFb : L.wrongFb}</strong>
+              {L.actualPrefix}<strong>{L.pct(equity)}</strong>
+              {L.resultDetail(guess, diff, 100 - equity)}
             </div>
             <button className="btn primary" style={{ marginTop: 14 }} onClick={next}>
-              Nächstes Matchup →
+              {L.nextMatchup}
             </button>
           </>
         )}

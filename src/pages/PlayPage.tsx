@@ -2,54 +2,26 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { CardsRow } from '../components/PlayingCard';
 import { IconTile } from '../components/Icon';
 import { BOT_PROFILES, decideBotAction, positionOf, type BotStyle } from '../lib/poker/ai';
-import { categoryName, evaluateBest } from '../lib/poker/evaluator';
+import { categoryNameIn, evaluateBest } from '../lib/poker/evaluator';
 import { equityVsRandomHands } from '../lib/poker/equity';
 import {
   applyAction,
   createHand,
   legalActions,
+  setEngineLanguage,
   totalPot,
   type GameState,
 } from '../lib/poker/engine';
 import { useAppState } from '../state/AppState';
+import { useLang } from '../i18n';
+import { STR } from '../i18n/pages/play';
 
 const START_STACK = 200; // 100bb bei Blinds 1/2
 const SB = 1;
 const BB = 2;
 
-interface BotSeat {
-  name: string;
-  style: BotStyle;
-}
-
-const BOT_POOL: BotSeat[] = [
-  { name: 'Anna „die Steinwand“', style: 'tight' },
-  { name: 'Bruno Bluff', style: 'aggro' },
-  { name: 'Carla Callstation', style: 'loose' },
-  { name: 'David Solide', style: 'standard' },
-  { name: 'Elena Eiskalt', style: 'tight' },
-];
-
-const STYLE_LABEL: Record<BotStyle, string> = {
-  tight: 'tight',
-  standard: 'solide',
-  loose: 'loose',
-  aggro: 'aggressiv',
-};
-
-/** Engine-Logzeilen sprechen in der 3. Person – für „Du“ die 2. Person herstellen. */
-function fixDuGrammar(text: string): string {
-  if (!text.startsWith('Du ')) return text;
-  return text
-    .replace(/^Du foldet\b/, 'Du foldest')
-    .replace(/^Du callt\b/, 'Du callst')
-    .replace(/^Du checkt\b/, 'Du checkst')
-    .replace(/^Du erhöht\b/, 'Du erhöhst')
-    .replace(/^Du gewinnt\b/, 'Du gewinnst')
-    .replace(/^Du zeigt\b/, 'Du zeigst')
-    .replace(/^Du erhält\b/, 'Du erhältst')
-    .replace(/ und ist all-in/, ' und bist all-in');
-}
+/** Spielstile der KI-Sitze; die Anzeigenamen liegen sprachabhängig im Wörterbuch (STR[lang].botNames). */
+const BOT_STYLES: BotStyle[] = ['tight', 'aggro', 'loose', 'standard', 'tight'];
 
 /** Sitzpositionen (Prozent) je Spielerzahl; Hero ist immer Index 0 (unten Mitte). */
 const LAYOUTS: Record<number, Array<{ x: number; y: number }>> = {
@@ -74,6 +46,8 @@ const LAYOUTS: Record<number, Array<{ x: number; y: number }>> = {
 
 export function PlayPage() {
   const { data, recordHand, addHandRecord } = useAppState();
+  const { lang } = useLang();
+  const L = STR[lang];
   const [numOpponents, setNumOpponents] = useState<number | null>(null);
   const [coachMode, setCoachMode] = useState(true);
   const gameRef = useRef<GameState | null>(null);
@@ -86,10 +60,10 @@ export function PlayPage() {
   const handRecorded = useRef(false);
   const [showRaisePanel, setShowRaisePanel] = useState(false);
 
-  const seats: BotSeat[] = useMemo(
-    () => BOT_POOL.slice(0, numOpponents ?? 0),
-    [numOpponents],
-  );
+  // Engine-Log in der UI-Sprache schreiben lassen
+  useEffect(() => {
+    setEngineLanguage(lang);
+  }, [lang]);
 
   function startSession(opponents: number) {
     setNumOpponents(opponents);
@@ -109,9 +83,10 @@ export function PlayPage() {
     buttonRef.current = (buttonRef.current + 1) % n;
     handRecorded.current = false;
     setShowRaisePanel(false);
+    setEngineLanguage(lang);
     const players = Array.from({ length: n }, (_, i) => ({
       id: i,
-      name: i === 0 ? 'Du' : BOT_POOL[i - 1].name,
+      name: i === 0 ? L.heroName : L.botNames[i - 1],
       stack: stacksRef.current[i],
       isHero: i === 0,
     }));
@@ -155,7 +130,7 @@ export function PlayPage() {
       const idx = gg.toActIndex;
       const bot = gg.players[idx];
       if (!bot || bot.isHero) return;
-      const profile = BOT_PROFILES[BOT_POOL[bot.id - 1].style];
+      const profile = BOT_PROFILES[BOT_STYLES[bot.id - 1]];
       try {
         applyAction(gg, decideBotAction(gg, idx, profile));
       } catch {
@@ -185,24 +160,21 @@ export function PlayPage() {
     const call = la?.callAmount ?? 0;
     const required = call > 0 ? call / (pot + call) : 0;
     const handName =
-      g.board.length >= 3 ? categoryName(evaluateBest([...hero.cards, ...g.board])) : null;
+      g.board.length >= 3 ? categoryNameIn(evaluateBest([...hero.cards, ...g.board]), lang) : null;
     return { equity, required, call, handName, opponents };
-  }, [g, hero, coachMode, heroTurn, la?.callAmount]);
+  }, [g, hero, coachMode, heroTurn, la?.callAmount, lang]);
 
   if (numOpponents === null) {
     return (
       <div>
         <div className="page-header">
-          <div className="eyebrow">Am Tisch, ohne Risiko</div>
-          <h1>Übungstisch</h1>
-          <p className="sub">
-            Spiele No-Limit Hold'em gegen KI-Gegner mit unterschiedlichen Spielstilen – mit Spielgeld und ohne Risiko.
-            Der Coach-Modus zeigt dir live Equity und Pot Odds, damit du ein Gefühl für gute Entscheidungen entwickelst.
-          </p>
+          <div className="eyebrow">{L.eyebrow}</div>
+          <h1>{L.title}</h1>
+          <p className="sub">{L.intro}</p>
         </div>
 
         <div className="card" style={{ maxWidth: 640 }}>
-          <div className="section-title" style={{ marginTop: 0 }}>Tisch wählen</div>
+          <div className="section-title" style={{ marginTop: 0 }}>{L.chooseTable}</div>
           <div className="grid cols-3">
             <button
               className="card clickable"
@@ -210,8 +182,8 @@ export function PlayPage() {
               onClick={() => startSession(1)}
             >
               <IconTile name="profile" tone="gold" size={38} />
-              <div style={{ fontWeight: 800 }}>Heads-Up</div>
-              <div className="small faint">1 Gegner</div>
+              <div style={{ fontWeight: 800 }}>{L.headsUp}</div>
+              <div className="small faint">{L.opponents(1)}</div>
             </button>
             <button
               className="card clickable"
@@ -219,8 +191,8 @@ export function PlayPage() {
               onClick={() => startSession(2)}
             >
               <IconTile name="play" tone="green" size={38} />
-              <div style={{ fontWeight: 800 }}>3-handed</div>
-              <div className="small faint">2 Gegner</div>
+              <div style={{ fontWeight: 800 }}>{L.threeHanded}</div>
+              <div className="small faint">{L.opponents(2)}</div>
             </button>
             <button
               className="card clickable"
@@ -228,8 +200,8 @@ export function PlayPage() {
               onClick={() => startSession(5)}
             >
               <IconTile name="chip" tone="red" size={38} />
-              <div style={{ fontWeight: 800 }}>6-max</div>
-              <div className="small faint">5 Gegner</div>
+              <div style={{ fontWeight: 800 }}>{L.sixMax}</div>
+              <div className="small faint">{L.opponents(5)}</div>
             </button>
           </div>
           <hr className="divider" />
@@ -241,18 +213,18 @@ export function PlayPage() {
               style={{ width: 18, height: 18, accentColor: 'var(--gold)' }}
             />
             <div>
-              <div style={{ fontWeight: 700 }}>Coach-Modus</div>
-              <div className="small muted">Zeigt dir Equity, Pot Odds und deine aktuelle Handstärke während du spielst.</div>
+              <div style={{ fontWeight: 700 }}>{L.coachMode}</div>
+              <div className="small muted">{L.coachModeDesc}</div>
             </div>
           </label>
           <p className="small faint" style={{ marginTop: 14 }}>
-            Blinds {SB}/{BB} · Start-Stack {START_STACK} Chips ({START_STACK / BB} bb) · Nur Spielgeld
+            {L.blindsInfo(SB, BB, START_STACK, START_STACK / BB)}
           </p>
         </div>
 
         {data.hands.length > 0 && (
           <>
-            <div className="section-title">Deine letzten Hände</div>
+            <div className="section-title">{L.recentHands}</div>
             <HandHistoryList hands={data.hands} />
           </>
         )}
@@ -293,21 +265,13 @@ export function PlayPage() {
     heroAct({ type: 'raise', to });
   }
 
-  const streetLabel: Record<string, string> = {
-    preflop: 'Preflop',
-    flop: 'Flop',
-    turn: 'Turn',
-    river: 'River',
-    showdown: 'Showdown',
-  };
-
   return (
     <div>
       <div className="row between wrap" style={{ marginBottom: 14 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 750 }}>🃏 Übungstisch</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 750 }}>{L.tableTitle}</h1>
         <div className="row">
-          <span className="pill">Hand #{g.handNumber}</span>
-          <span className="pill gold">{streetLabel[g.street]}</span>
+          <span className="pill">{L.handPill(g.handNumber)}</span>
+          <span className="pill gold">{L.streetLabel[g.street]}</span>
           <button
             className="btn sm ghost"
             onClick={() => {
@@ -315,7 +279,7 @@ export function PlayPage() {
               gameRef.current = null;
             }}
           >
-            Tisch verlassen
+            {L.leaveTable}
           </button>
         </div>
       </div>
@@ -337,7 +301,7 @@ export function PlayPage() {
             <div className="small" style={{ color: 'rgba(255,255,255,0.5)' }}>♠ PokerMentor ♠</div>
           )}
           <div className="chip-bet" style={{ marginTop: 10 }}>
-            <span className="chip-dot" /> Pot: {pot > 0 ? pot : g.handOver ? g.awards.reduce((s, a) => s + a.amount, 0) : 0}
+            <span className="chip-dot" /> {L.potLabel}: {pot > 0 ? pot : g.handOver ? g.awards.reduce((s, a) => s + a.amount, 0) : 0}
           </div>
         </div>
 
@@ -365,16 +329,16 @@ export function PlayPage() {
                 <div className="name">
                   {p.name} {isButton && <span className="dealer-btn">D</span>}
                 </div>
-                <div className="stack">{p.stack} Chips</div>
+                <div className="stack">{L.chipsAmount(p.stack)}</div>
                 <div className="tag">
                   {posName}
-                  {!p.isHero && ` · ${STYLE_LABEL[BOT_POOL[p.id - 1].style]}`}
+                  {!p.isHero && ` · ${L.styleLabel[BOT_STYLES[p.id - 1]]}`}
                 </div>
                 <div style={{ marginTop: 5, display: 'flex', justifyContent: 'center' }}>
                   {p.isHero || p.revealed ? (
                     <CardsRow cards={p.cards} size="sm" />
                   ) : p.folded ? (
-                    <span className="small faint">Fold</span>
+                    <span className="small faint">{L.foldedTag}</span>
                   ) : (
                     <CardsRow cards={[undefined, undefined]} size="sm" />
                   )}
@@ -397,13 +361,12 @@ export function PlayPage() {
             const p = g.players.find((pl) => pl.id === a.playerId)!;
             return (
               <div key={i} style={{ fontWeight: 700 }}>
-                {p.isHero ? 'Du gewinnst' : `${p.name} gewinnt`} {a.amount} Chips
-                {a.handName ? ` mit ${a.handName}` : ''}
+                {L.winnerLine(p.isHero, p.name, a.amount, a.handName)}
               </div>
             );
           })}
           <button className="btn primary" style={{ marginTop: 12 }} onClick={() => startHand()}>
-            Nächste Hand →
+            {L.nextHand}
           </button>
         </div>
       )}
@@ -412,23 +375,23 @@ export function PlayPage() {
       {coachMode && coachInfo && heroTurn && (
         <div className="card" style={{ marginBottom: 14, background: 'var(--bg-elev)' }}>
           <div className="row wrap">
-            <span className="pill gold">Coach</span>
-            <span className="pill">Equity vs. {coachInfo.opponents} zufällige Hände: ~{Math.round(coachInfo.equity * 100)} %</span>
+            <span className="pill gold">{L.coachPill}</span>
+            <span className="pill">{L.coachEquity(coachInfo.opponents, Math.round(coachInfo.equity * 100))}</span>
             {coachInfo.call > 0 && (
               <span className="pill info">
-                Pot Odds: {coachInfo.call} in {pot + coachInfo.call} → brauchst ~{Math.round(coachInfo.required * 100)} %
+                {L.coachPotOdds(coachInfo.call, pot + coachInfo.call, Math.round(coachInfo.required * 100))}
               </span>
             )}
-            {coachInfo.handName && <span className="pill ok">Aktuell: {coachInfo.handName}</span>}
+            {coachInfo.handName && <span className="pill ok">{L.coachCurrent(coachInfo.handName)}</span>}
           </div>
           {coachInfo.call > 0 && (
             <p className="small muted" style={{ marginTop: 8 }}>
               {coachInfo.equity > coachInfo.required + 0.05
-                ? '✓ Deine geschätzte Equity liegt über den benötigten Pot Odds – ein Call ist rechnerisch profitabel.'
+                ? L.adviceCall
                 : coachInfo.equity < coachInfo.required - 0.05
-                  ? '✗ Deine geschätzte Equity liegt unter den Pot Odds – ohne zusätzliche Gründe (Implied Odds, Fold Equity) ist Folden besser.'
-                  : '≈ Knappe Entscheidung – hier entscheiden Reads, Position und Implied Odds.'}
-              {' '}Hinweis: Equity vs. Zufallshände überschätzt dich gegen echte Ranges.
+                  ? L.adviceFold
+                  : L.adviceClose}
+              {' '}{L.adviceNote}
             </p>
           )}
         </div>
@@ -440,48 +403,48 @@ export function PlayPage() {
           <div className="row wrap">
             {la.canFold && (
               <button className="btn danger lg" onClick={() => heroAct({ type: 'fold' })}>
-                Fold
+                {L.fold}
               </button>
             )}
             {la.canCheck ? (
               <button className="btn lg" onClick={() => heroAct({ type: 'check' })}>
-                Check
+                {L.check}
               </button>
             ) : (
               <button className="btn lg" onClick={() => heroAct({ type: 'call' })}>
-                Call {la.callAmount}
+                {L.call(la.callAmount)}
               </button>
             )}
             {la.canBetOrRaise && (
               <button className="btn primary lg" onClick={() => setShowRaisePanel((s) => !s)}>
-                {g.currentBet === 0 ? 'Bet' : 'Raise'} …
+                {g.currentBet === 0 ? L.bet : L.raise} …
               </button>
             )}
           </div>
           {showRaisePanel && la.canBetOrRaise && (
             <div className="row wrap" style={{ marginTop: 12 }}>
-              <button className="btn sm" onClick={() => raiseTo('min')}>Min ({la.minRaiseTo})</button>
-              <button className="btn sm" onClick={() => raiseTo(0.5)}>½ Pot</button>
-              <button className="btn sm" onClick={() => raiseTo(0.75)}>¾ Pot</button>
-              <button className="btn sm" onClick={() => raiseTo(1)}>Pot</button>
-              <button className="btn sm danger" onClick={() => raiseTo('allin')}>All-in ({la.maxRaiseTo})</button>
+              <button className="btn sm" onClick={() => raiseTo('min')}>{L.minRaise(la.minRaiseTo)}</button>
+              <button className="btn sm" onClick={() => raiseTo(0.5)}>{L.halfPot}</button>
+              <button className="btn sm" onClick={() => raiseTo(0.75)}>{L.threeQuarterPot}</button>
+              <button className="btn sm" onClick={() => raiseTo(1)}>{L.fullPot}</button>
+              <button className="btn sm danger" onClick={() => raiseTo('allin')}>{L.allIn(la.maxRaiseTo)}</button>
             </div>
           )}
         </div>
       )}
 
       {!heroTurn && !g.handOver && (
-        <div className="card small muted">{g.players[g.toActIndex]?.name} überlegt …</div>
+        <div className="card small muted">{L.thinking(g.players[g.toActIndex]?.name ?? '')}</div>
       )}
 
       {/* Verlauf */}
-      <div className="section-title">Verlauf</div>
+      <div className="section-title">{L.historyTitle}</div>
       <div className="card game-log">
         {g.log.map((entry, i) => {
           const isStreet = entry.playerId === undefined;
           return (
             <div key={i} className={isStreet ? 'street-mark' : ''}>
-              {fixDuGrammar(entry.text)}
+              {L.fixLogGrammar(entry.text)}
             </div>
           );
         })}
@@ -489,7 +452,7 @@ export function PlayPage() {
 
       {data.hands.length > 0 && g.handOver && (
         <>
-          <div className="section-title">Deine letzten Hände</div>
+          <div className="section-title">{L.recentHands}</div>
           <HandHistoryList hands={data.hands.slice(0, 10)} />
         </>
       )}
@@ -497,19 +460,20 @@ export function PlayPage() {
   );
 }
 
-const RESULT_STYLE: Record<string, { label: string; cls: string }> = {
-  won: { label: 'Gewonnen', cls: 'ok' },
-  lost: { label: 'Verloren', cls: 'danger' },
-  folded: { label: 'Gefoldet', cls: '' },
+const RESULT_CLS: Record<'won' | 'lost' | 'folded', string> = {
+  won: 'ok',
+  lost: 'danger',
+  folded: '',
 };
 
 function HandHistoryList({ hands }: { hands: Array<import('../state/AppState').HandRecord> }) {
+  const { lang } = useLang();
+  const L = STR[lang];
   const [openId, setOpenId] = useState<string | null>(null);
   return (
     <div className="grid" style={{ maxWidth: 720 }}>
       {hands.map((h) => {
-        const rs = RESULT_STYLE[h.result];
-        const time = new Date(h.date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        const time = new Date(h.date).toLocaleTimeString(L.timeLocale, { hour: '2-digit', minute: '2-digit' });
         const open = openId === h.id;
         return (
           <div key={h.id} className="card" style={{ padding: 14 }}>
@@ -528,7 +492,7 @@ function HandHistoryList({ hands }: { hands: Array<import('../state/AppState').H
                 )}
               </div>
               <div className="row">
-                <span className={`pill ${rs.cls}`}>{rs.label}</span>
+                <span className={`pill ${RESULT_CLS[h.result]}`}>{L.resultLabel[h.result]}</span>
                 <span style={{ fontWeight: 800, color: h.amount >= 0 ? 'var(--ok)' : 'var(--danger)', fontVariantNumeric: 'tabular-nums' }}>
                   {h.amount >= 0 ? '+' : ''}{h.amount}
                 </span>
@@ -539,7 +503,7 @@ function HandHistoryList({ hands }: { hands: Array<import('../state/AppState').H
             {open && (
               <div className="game-log" style={{ marginTop: 12, maxHeight: 260 }}>
                 {h.log.map((line, i) => (
-                  <div key={i}>{fixDuGrammar(line)}</div>
+                  <div key={i}>{L.fixLogGrammar(line)}</div>
                 ))}
               </div>
             )}

@@ -242,3 +242,17 @@ export const PAIR_TYPE_NAMES: Record<PairType, string> = {
   underpair: 'Underpair (dein Paar ist niedriger als das Board)',
   boardpair: 'Nur das Board ist gepaart',
 };
+
+export const PAIR_TYPE_NAMES_EN: Record<PairType, string> = {
+  overpair: 'Overpair (your pair is higher than the board)',
+  toppair: 'Top Pair (pairing the highest board card)',
+  middlepair: 'Middle Pair',
+  bottompair: 'Bottom Pair (pairing the lowest board card)',
+  underpair: 'Underpair (your pair is lower than the board)',
+  boardpair: 'Only the board is paired',
+};
+
+/** Sprachabhängiger Name eines Paar-Typs. */
+export function pairTypeName(pt: PairType, lang: AnalysisLang = 'de'): string {
+  return (lang === 'en' ? PAIR_TYPE_NAMES_EN : PAIR_TYPE_NAMES)[pt];
+}

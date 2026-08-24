@@ -3,9 +3,13 @@
 
 import { useState, type FormEvent } from 'react';
 import { useCloud } from '../lib/cloud/CloudProvider';
+import { useLang } from '../i18n';
+import { STR } from '../i18n/pages/cloud';
 
 export function CloudAccountCard() {
   const cloud = useCloud();
+  const { lang } = useLang();
+  const C = STR[lang];
   const [mode, setMode] = useState<'login' | 'register' | 'reset'>('login');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -16,12 +20,10 @@ export function CloudAccountCard() {
   if (cloud.phase === 'unavailable') {
     return (
       <div className="card" style={{ maxWidth: 560 }}>
-        <div style={{ fontWeight: 800, marginBottom: 6 }}>Geräte-Modus aktiv</div>
+        <div style={{ fontWeight: 800, marginBottom: 6 }}>{C.deviceTitle}</div>
         <p className="small muted">
-          Diese Installation läuft im <strong>Geräte-Modus</strong>: Alle Profile und Fortschritte werden doppelt auf
-          diesem Gerät gesichert (localStorage + IndexedDB) und überleben Neuladen, Abstürze und das Schließen des
-          Browsers. Geräteübergreifende Konten mit E-Mail-Verifizierung lassen sich mit einem kostenlosen
-          Firebase-Projekt freischalten – die Anleitung steht in <code>FIREBASE_SETUP.md</code> im Projekt.
+          {C.deviceBody1} <strong>{C.deviceStrong}</strong>{C.deviceBody2}{' '}
+          <code>FIREBASE_SETUP.md</code> {C.deviceBody3}
         </p>
       </div>
     );
@@ -48,43 +50,41 @@ export function CloudAccountCard() {
     return (
       <div className="card" style={{ maxWidth: 560 }}>
         <div className="row between wrap" style={{ marginBottom: 8 }}>
-          <div style={{ fontWeight: 800 }}>Dein Konto</div>
+          <div style={{ fontWeight: 800 }}>{C.accountTitle}</div>
           {user.verified ? (
-            <span className="pill ok">✓ E-Mail bestätigt</span>
+            <span className="pill ok">{C.verifiedPill}</span>
           ) : (
-            <span className="pill warn">E-Mail unbestätigt</span>
+            <span className="pill warn">{C.unverifiedPill}</span>
           )}
         </div>
         <p className="small muted" style={{ marginBottom: 12 }}>
-          Angemeldet als <strong>{user.name || user.email}</strong> ({user.email}).{' '}
-          {user.verified
-            ? 'Dein Fortschritt wird automatisch verschlüsselt übertragen und in der Cloud gesichert – auf jedem Gerät, auf dem du dich anmeldest, geht es genau dort weiter.'
-            : 'Bitte bestätige zuerst deine E-Mail-Adresse über den Link, den wir dir geschickt haben – erst danach wird dein Fortschritt in der Cloud gesichert.'}
+          {C.signedInAs} <strong>{user.name || user.email}</strong> ({user.email}).{' '}
+          {user.verified ? C.verifiedInfo : C.unverifiedInfo}
         </p>
 
         {user.verified && cloud.lastSync && (
           <p className="small faint" style={{ marginBottom: 12 }}>
-            Zuletzt synchronisiert: {new Date(cloud.lastSync).toLocaleTimeString('de-DE')} Uhr
+            {C.lastSync(cloud.lastSync)}
           </p>
         )}
 
         <div className="row wrap">
           {user.verified ? (
             <button className="btn sm" disabled={cloud.busy} onClick={() => void cloud.syncNow()}>
-              Jetzt synchronisieren
+              {C.syncNow}
             </button>
           ) : (
             <>
               <button className="btn sm primary" disabled={cloud.busy} onClick={() => void cloud.checkVerification()}>
-                Ich habe bestätigt
+                {C.checkedVerification}
               </button>
               <button className="btn sm" disabled={cloud.busy} onClick={() => void cloud.resendVerification()}>
-                E-Mail erneut senden
+                {C.resendEmail}
               </button>
             </>
           )}
           <button className="btn sm ghost" disabled={cloud.busy} onClick={() => void cloud.logout()}>
-            Abmelden
+            {C.logout}
           </button>
         </div>
 
@@ -97,14 +97,14 @@ export function CloudAccountCard() {
   return (
     <div className="card" style={{ maxWidth: 560 }}>
       <div style={{ fontWeight: 800, marginBottom: 6 }}>
-        {mode === 'register' ? 'Konto erstellen' : mode === 'reset' ? 'Passwort zurücksetzen' : 'Anmelden'}
+        {mode === 'register' ? C.titleRegister : mode === 'reset' ? C.titleReset : C.titleLogin}
       </div>
       <p className="small muted" style={{ marginBottom: 12 }}>
         {mode === 'register'
-          ? 'Mit einem Konto (E-Mail + Verifizierung) wird dein Fortschritt in der Cloud gesichert und auf all deinen Geräten synchronisiert.'
+          ? C.introRegister
           : mode === 'reset'
-            ? 'Wir schicken dir einen Link zum Zurücksetzen deines Passworts.'
-            : 'Melde dich an, um deinen Fortschritt geräteübergreifend zu synchronisieren.'}
+            ? C.introReset
+            : C.introLogin}
       </p>
 
       <form onSubmit={submit}>
@@ -114,7 +114,7 @@ export function CloudAccountCard() {
             style={{ marginBottom: 10, width: '100%' }}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Dein Name"
+            placeholder={C.namePlaceholder}
             autoComplete="name"
             maxLength={40}
             required
@@ -126,7 +126,7 @@ export function CloudAccountCard() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="E-Mail-Adresse"
+          placeholder={C.emailPlaceholder}
           autoComplete="email"
           maxLength={120}
           required
@@ -138,7 +138,7 @@ export function CloudAccountCard() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder={mode === 'register' ? 'Passwort (mind. 8 Zeichen)' : 'Passwort'}
+            placeholder={mode === 'register' ? C.passwordRegisterPlaceholder : C.passwordPlaceholder}
             autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
             minLength={mode === 'register' ? 8 : undefined}
             maxLength={100}
@@ -147,20 +147,20 @@ export function CloudAccountCard() {
         )}
         <div className="row wrap">
           <button className="btn sm primary" type="submit" disabled={cloud.busy}>
-            {cloud.busy ? 'Einen Moment …' : mode === 'register' ? 'Konto erstellen' : mode === 'reset' ? 'Link schicken' : 'Anmelden'}
+            {cloud.busy ? C.busy : mode === 'register' ? C.submitRegister : mode === 'reset' ? C.submitReset : C.submitLogin}
           </button>
           {mode !== 'login' && (
             <button className="btn sm ghost" type="button" onClick={() => { setMode('login'); cloud.clearMessages(); }}>
-              Zur Anmeldung
+              {C.toLogin}
             </button>
           )}
           {mode === 'login' && (
             <>
               <button className="btn sm ghost" type="button" onClick={() => { setMode('register'); cloud.clearMessages(); }}>
-                Neues Konto
+                {C.newAccount}
               </button>
               <button className="btn sm ghost" type="button" onClick={() => { setMode('reset'); cloud.clearMessages(); }}>
-                Passwort vergessen?
+                {C.forgotPassword}
               </button>
             </>
           )}

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppState } from '../../state/AppState';
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/potoddstrainer';
 
 interface Problem {
   pot: number;
@@ -41,6 +43,8 @@ function newProblem(): Problem {
 
 export function PotOddsTrainer() {
   const { data, recordTrainer } = useAppState();
+  const { lang } = useLang();
+  const L = STR[lang];
   const [problem, setProblem] = useState<Problem>(newProblem);
   const [selected, setSelected] = useState<number | null>(null);
 
@@ -65,39 +69,39 @@ export function PotOddsTrainer() {
   return (
     <div>
       <Link to="/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        ← Trainer
+        {L.back}
       </Link>
       <div className="page-header">
-        <h1>Pot-Odds-Trainer</h1>
-        <p className="sub">
-          Wie viel Equity brauchst du mindestens, damit dein Call profitabel ist? Formel: Call ÷ (Pot + Bet + Call).
-        </p>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub}</p>
       </div>
 
       <div className="row wrap" style={{ marginBottom: 16 }}>
-        <span className="pill">✓ {stats?.correct ?? 0} richtig</span>
-        <span className="pill">{stats?.attempts ?? 0} gesamt</span>
-        <span className="pill gold">Serie: {stats?.streak ?? 0}</span>
+        <span className="pill">{L.correctCount(stats?.correct ?? 0)}</span>
+        <span className="pill">{L.totalCount(stats?.attempts ?? 0)}</span>
+        <span className="pill gold">{L.streak(stats?.streak ?? 0)}</span>
       </div>
 
       <div className="card" style={{ maxWidth: 640 }}>
         <div className="grid cols-3" style={{ marginBottom: 18, textAlign: 'center' }}>
           <div>
-            <div className="stat-label">Pot</div>
+            <div className="stat-label">{L.potLabel}</div>
             <div className="big-stat">{pot}</div>
           </div>
           <div>
-            <div className="stat-label">Gegner setzt</div>
+            <div className="stat-label">{L.betLabel}</div>
             <div className="big-stat" style={{ color: 'var(--danger)' }}>{bet}</div>
           </div>
           <div>
-            <div className="stat-label">Dein Call</div>
+            <div className="stat-label">{L.callLabel}</div>
             <div className="big-stat" style={{ color: 'var(--gold-bright)' }}>{bet}</div>
           </div>
         </div>
 
         <p style={{ marginBottom: 14 }}>
-          Wie viel <strong>Equity</strong> brauchst du mindestens für einen profitablen Call?
+          {L.questionBefore}
+          <strong>{L.questionStrong}</strong>
+          {L.questionAfter}
         </p>
 
         {problem.options.map((opt, i) => {
@@ -109,7 +113,7 @@ export function PotOddsTrainer() {
           }
           return (
             <button key={i} className={cls} onClick={() => choose(i)} disabled={answered}>
-              ca. {opt.toLocaleString('de-DE')} %
+              {L.option(opt)}
             </button>
           );
         })}
@@ -117,13 +121,12 @@ export function PotOddsTrainer() {
         {answered && (
           <>
             <div className={`feedback-box ${isCorrect ? 'good' : 'bad'}`}>
-              <strong>{isCorrect ? '✓ Richtig! ' : '✗ Nicht ganz. '}</strong>
-              Rechnung: Du callst {bet} und kannst {pot} + {bet} + {bet} = {totalAfterCall} gewinnen. Benötigte Equity
-              = {bet} ÷ {totalAfterCall} = <strong>{problem.required.toFixed(1).replace('.', ',')} %</strong>.
-              {' '}Merksatz: Halbe Pot-Bet → 25 %, Pot-Bet → 33 %.
+              <strong>{isCorrect ? L.correctFb : L.wrongFb}</strong>
+              {L.calc(bet, pot, totalAfterCall)}<strong>{L.requiredPct(problem.required)}</strong>.
+              {' '}{L.mnemonic}
             </div>
             <button className="btn primary" style={{ marginTop: 14 }} onClick={next}>
-              Nächste Aufgabe →
+              {L.nextProblem}
             </button>
           </>
         )}

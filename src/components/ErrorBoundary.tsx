@@ -1,8 +1,32 @@
 import { Component, type ReactNode } from 'react';
+import { LANG_KEY } from '../i18n';
 
 interface State {
   hasError: boolean;
 }
+
+/* Klassenkomponente → keine Hooks: Sprache direkt aus localStorage lesen
+   (sicherer Fallback auf Deutsch, falls der Speicher gesperrt ist). */
+function currentLang(): 'de' | 'en' {
+  try {
+    return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'de';
+  } catch {
+    return 'de';
+  }
+}
+
+const TEXTS = {
+  de: {
+    title: 'Da ist etwas schiefgelaufen',
+    body: 'Ein unerwarteter Fehler ist aufgetreten. Deine Daten sind sicher gespeichert – lade die App einfach neu.',
+    reload: 'App neu laden',
+  },
+  en: {
+    title: 'Something went wrong',
+    body: 'An unexpected error occurred. Your data is safely stored – just reload the app.',
+    reload: 'Reload app',
+  },
+} as const;
 
 /** Fängt unerwartete Fehler ab, statt eine weiße Seite zu zeigen. */
 export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
@@ -14,6 +38,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
 
   render() {
     if (this.state.hasError) {
+      const t = TEXTS[currentLang()];
       return (
         <div
           style={{
@@ -28,10 +53,8 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
           }}
         >
           <div style={{ fontSize: 40 }}>♠</div>
-          <h1 style={{ fontSize: 22 }}>Da ist etwas schiefgelaufen</h1>
-          <p style={{ color: 'var(--text-dim)', maxWidth: 420 }}>
-            Ein unerwarteter Fehler ist aufgetreten. Deine Daten sind sicher gespeichert – lade die App einfach neu.
-          </p>
+          <h1 style={{ fontSize: 22 }}>{t.title}</h1>
+          <p style={{ color: 'var(--text-dim)', maxWidth: 420 }}>{t.body}</p>
           <button
             className="btn primary"
             onClick={() => {
@@ -39,7 +62,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
               location.reload();
             }}
           >
-            App neu laden
+            {t.reload}
           </button>
         </div>
       );

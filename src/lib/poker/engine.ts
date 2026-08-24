@@ -6,7 +6,7 @@
 
 import type { Card } from './cards';
 import { cardToPretty, shuffledDeckWithout } from './cards';
-import { evaluateBest, categoryName } from './evaluator';
+import { evaluateBest, categoryNameIn } from './evaluator';
 
 export type Street = 'preflop' | 'flop' | 'turn' | 'river' | 'showdown';
 
@@ -77,6 +77,67 @@ export type Action =
   | { type: 'check' }
   | { type: 'call' }
   | { type: 'raise'; to: number }; // "to" = Gesamteinsatz in dieser Runde (bet-to)
+
+/* --- Sprache des Spielprotokolls -------------------------------------------
+   Standard bleibt 'de', damit bestehende Aufrufer und Tests unverändert
+   funktionieren; die UI stellt die Sprache vor jeder Hand um. Reine Textsache –
+   keine Auswirkung auf die Spiellogik. */
+export type EngineLang = 'de' | 'en';
+
+let engineLang: EngineLang = 'de';
+
+export function setEngineLanguage(l: EngineLang): void {
+  engineLang = l;
+}
+
+interface EngineText {
+  handStart: (n: number, sb: number, bb: number) => string;
+  postsBlind: (name: string, label: string, paid: number) => string;
+  folds: (name: string) => string;
+  checks: (name: string) => string;
+  calls: (name: string, amount: number, allIn: boolean) => string;
+  betOrRaise: (name: string, isBet: boolean, to: number, allIn: boolean) => string;
+  boardDealt: (label: string, cards: string) => string;
+  refund: (name: string, amount: number) => string;
+  winsByFold: (name: string, pot: number) => string;
+  shows: (name: string, cards: string, handName: string) => string;
+  wins: (name: string, amount: number, handName: string) => string;
+}
+
+const ENGINE_TEXT: Record<EngineLang, EngineText> = {
+  de: {
+    handStart: (n, sb, bb) => `Hand #${n} – Blinds ${sb}/${bb}`,
+    postsBlind: (name, label, paid) => `${name} setzt ${label} (${paid})`,
+    folds: (name) => `${name} foldet`,
+    checks: (name) => `${name} checkt`,
+    calls: (name, amount, allIn) => `${name} callt ${amount}${allIn ? ' und ist all-in' : ''}`,
+    betOrRaise: (name, isBet, to, allIn) =>
+      `${name} ${isBet ? 'setzt' : 'erhöht auf'} ${to}${allIn ? ' (all-in)' : ''}`,
+    boardDealt: (label, cards) => `${label}: ${cards}`,
+    refund: (name, amount) => `${name} erhält ${amount} ungecallten Einsatz zurück`,
+    winsByFold: (name, pot) => `${name} gewinnt ${pot} (alle anderen gefoldet)`,
+    shows: (name, cards, handName) => `${name} zeigt ${cards} – ${handName}`,
+    wins: (name, amount, handName) => `${name} gewinnt ${amount} mit ${handName}`,
+  },
+  en: {
+    handStart: (n, sb, bb) => `Hand #${n} – Blinds ${sb}/${bb}`,
+    postsBlind: (name, label, paid) => `${name} posts ${label} (${paid})`,
+    folds: (name) => `${name} folds`,
+    checks: (name) => `${name} checks`,
+    calls: (name, amount, allIn) => `${name} calls ${amount}${allIn ? ' and is all-in' : ''}`,
+    betOrRaise: (name, isBet, to, allIn) =>
+      `${name} ${isBet ? 'bets' : 'raises to'} ${to}${allIn ? ' (all-in)' : ''}`,
+    boardDealt: (label, cards) => `${label}: ${cards}`,
+    refund: (name, amount) => `Uncalled bet (${amount}) returned to ${name}`,
+    winsByFold: (name, pot) => `${name} wins ${pot} (everyone else folded)`,
+    shows: (name, cards, handName) => `${name} shows ${cards} – ${handName}`,
+    wins: (name, amount, handName) => `${name} wins ${amount} with ${handName}`,
+  },
+};
+
+function txt(): EngineText {
+  return ENGINE_TEXT[engineLang];
+}
 
 function log(state: GameState, text: string, playerId?: number) {
   state.log.push({ street: state.street, text, playerId });
@@ -152,7 +213,7 @@ export function createHand(
   for (const p of state.players) {
     p.cards = [state.deck.pop()!, state.deck.pop()!];
   }
-  log(state, `Hand #${handNumber} – Blinds ${smallBlind}/${bigBlind}`);
+  log(state, txt().handStart(handNumber, smallBlind, bigBlind));
 
   // Erster Spieler: nach dem BB (preflop)
   state.toActIndex = nextIndexFrom(state, bbIndex, canStillAct);
@@ -175,7 +236,7 @@ function postBlind(state: GameState, idx: number, amount: number, label: string)
   p.bet += paid;
   p.committed += paid;
   if (p.stack === 0) p.allIn = true;
-  log(state, `${p.name} setzt ${label} (${paid})`, p.id);
+  log(state, txt().postsBlind(p.name, label, paid), p.id);
 }
 
 /** Legale Aktionen für den Spieler am Zug. */
@@ -207,13 +268,13 @@ export function applyAction(state: GameState, action: Action): void {
     case 'fold': {
       p.folded = true;
       p.hasActed = true;
-      log(state, `${p.name} foldet`, p.id);
+      log(state, txt().folds(p.name), p.id);
       break;
     }
     case 'check': {
       if (!la.canCheck) throw new Error('Check nicht möglich');
       p.hasActed = true;
-      log(state, `${p.name} checkt`, p.id);
+      log(state, txt().checks(p.name), p.id);
       break;
     }
     case 'call': {
@@ -221,19 +282,15 @@ export function applyAction(state: GameState, action: Action): void {
       if (amount <= 0) {
         // Call ohne offenen Einsatz = Check
         p.hasActed = true;
-        log(state, `${p.name} checkt`, p.id);
+        log(state, txt().checks(p.name), p.id);
         break;
       }
       p.stack -= amount;
       p.bet += amount;
       p.committed += amount;
       p.hasActed = true;
-      if (p.stack === 0) {
-        p.allIn = true;
-        log(state, `${p.name} callt ${amount} und ist all-in`, p.id);
-      } else {
-        log(state, `${p.name} callt ${amount}`, p.id);
-      }
+      if (p.stack === 0) p.allIn = true;
+      log(state, txt().calls(p.name, amount, p.allIn), p.id);
       break;
     }
     case 'raise': {
@@ -262,8 +319,7 @@ export function applyAction(state: GameState, action: Action): void {
         }
       }
       state.currentBet = to;
-      const verb = isBet ? 'setzt' : 'erhöht auf';
-      log(state, `${p.name} ${verb} ${to}${p.allIn ? ' (all-in)' : ''}`, p.id);
+      log(state, txt().betOrRaise(p.name, isBet, to, p.allIn), p.id);
       break;
     }
   }
@@ -330,15 +386,15 @@ function dealNextStreet(state: GameState): void {
   if (state.street === 'preflop') {
     state.street = 'flop';
     state.board.push(state.deck.pop()!, state.deck.pop()!, state.deck.pop()!);
-    log(state, `Flop: ${state.board.map(cardToPretty).join(' ')}`);
+    log(state, txt().boardDealt('Flop', state.board.map(cardToPretty).join(' ')));
   } else if (state.street === 'flop') {
     state.street = 'turn';
     state.board.push(state.deck.pop()!);
-    log(state, `Turn: ${state.board.map(cardToPretty).join(' ')}`);
+    log(state, txt().boardDealt('Turn', state.board.map(cardToPretty).join(' ')));
   } else if (state.street === 'turn') {
     state.street = 'river';
     state.board.push(state.deck.pop()!);
-    log(state, `River: ${state.board.map(cardToPretty).join(' ')}`);
+    log(state, txt().boardDealt('River', state.board.map(cardToPretty).join(' ')));
   }
 }
 
@@ -363,7 +419,7 @@ function refundUncalled(state: GameState): void {
     const refund = top.committed - secondMax;
     top.stack += refund;
     top.committed -= refund;
-    if (refund > 0) log(state, `${top.name} erhält ${refund} ungecallten Einsatz zurück`, top.id);
+    if (refund > 0) log(state, txt().refund(top.name, refund), top.id);
   }
 }
 
@@ -372,7 +428,7 @@ function endHandByFold(state: GameState, winner: EnginePlayer): void {
   const pot = state.players.reduce((sum, p) => sum + p.committed, 0);
   winner.stack += pot;
   state.awards = [{ playerId: winner.id, amount: pot }];
-  log(state, `${winner.name} gewinnt ${pot} (alle anderen gefoldet)`, winner.id);
+  log(state, txt().winsByFold(winner.name, pot), winner.id);
   for (const p of state.players) {
     p.committed = 0;
     p.bet = 0;
@@ -392,7 +448,11 @@ function showdown(state: GameState): void {
     p.revealed = true;
     log(
       state,
-      `${p.name} zeigt ${p.cards.map(cardToPretty).join(' ')} – ${categoryName(values.get(p.id)!)}`,
+      txt().shows(
+        p.name,
+        p.cards.map(cardToPretty).join(' '),
+        categoryNameIn(values.get(p.id)!, engineLang),
+      ),
       p.id,
     );
   }
@@ -439,9 +499,9 @@ function showdown(state: GameState): void {
   for (const [playerId, amount] of awards) {
     const p = state.players.find((pl) => pl.id === playerId)!;
     p.stack += amount;
-    const handName = categoryName(values.get(playerId)!);
+    const handName = categoryNameIn(values.get(playerId)!, engineLang);
     state.awards.push({ playerId, amount, handName });
-    log(state, `${p.name} gewinnt ${amount} mit ${handName}`, playerId);
+    log(state, txt().wins(p.name, amount, handName), playerId);
   }
   for (const p of state.players) {
     p.committed = 0;

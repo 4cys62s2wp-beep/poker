@@ -20,6 +20,18 @@ export const HAND_CATEGORY_NAMES = [
   'Straight Flush',
 ];
 
+export const HAND_CATEGORY_NAMES_EN = [
+  'High Card',
+  'One Pair',
+  'Two Pair',
+  'Three of a Kind',
+  'Straight',
+  'Flush',
+  'Full House',
+  'Four of a Kind',
+  'Straight Flush',
+];
+
 const BASE = 15;
 const B2 = BASE * BASE;
 const B3 = B2 * BASE;
@@ -30,11 +42,17 @@ export function categoryOf(value: number): number {
   return Math.floor(value / CAT);
 }
 
+/** Deutscher Kategoriename (Standard – bestehende Aufrufer und Tests). */
 export function categoryName(value: number): string {
+  return categoryNameIn(value, 'de');
+}
+
+/** Kategoriename in der gewünschten Sprache. */
+export function categoryNameIn(value: number, lang: 'de' | 'en'): string {
   const cat = categoryOf(value);
   // Royal Flush als Sonderfall des Straight Flush ausweisen
   if (cat === 8 && Math.floor(value % CAT / B4) === 12) return 'Royal Flush';
-  return HAND_CATEGORY_NAMES[cat];
+  return (lang === 'en' ? HAND_CATEGORY_NAMES_EN : HAND_CATEGORY_NAMES)[cat];
 }
 
 /** Findet den höchsten Straßen-Topp-Rang in einer Rang-Bitmaske, -1 wenn keine. */

@@ -19,7 +19,7 @@ export const STR = defineStrings(
       'Dein Fortschritt wird automatisch verschlüsselt übertragen und in der Cloud gesichert – auf jedem Gerät, auf dem du dich anmeldest, geht es genau dort weiter.',
     unverifiedInfo:
       'Bitte bestätige zuerst deine E-Mail-Adresse über den Link, den wir dir geschickt haben – erst danach wird dein Fortschritt in der Cloud gesichert.',
-    lastSync: (ts: number) => `Zuletzt synchronisiert: ${new Date(ts).toLocaleTimeString('de-DE')} Uhr`,
+    lastSync: (ts: string) => `Zuletzt synchronisiert: ${new Date(ts).toLocaleTimeString('de-DE')} Uhr`,
     syncNow: 'Jetzt synchronisieren',
     checkedVerification: 'Ich habe bestätigt',
     resendEmail: 'E-Mail erneut senden',
@@ -60,7 +60,7 @@ export const STR = defineStrings(
       'Your progress is automatically transferred encrypted and backed up in the cloud – on every device you sign in on, you pick up exactly where you left off.',
     unverifiedInfo:
       'Please confirm your email address first via the link we sent you – only then will your progress be backed up in the cloud.',
-    lastSync: (ts: number) => `Last synced: ${new Date(ts).toLocaleTimeString('en-GB')}`,
+    lastSync: (ts: string) => `Last synced: ${new Date(ts).toLocaleTimeString('en-GB')}`,
     syncNow: 'Sync now',
     checkedVerification: 'I have confirmed',
     resendEmail: 'Resend email',

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { Card } from '../lib/poker/cards';
 import { RANK_CHARS, SUIT_CHARS, SUIT_SYMBOLS, makeCard } from '../lib/poker/cards';
 import { PlayingCard } from './PlayingCard';
+import { useLang } from '../i18n';
+import { STR } from '../i18n/pages/cardpicker';
 
 interface Props {
   /** Wie viele Karten sollen gewählt werden? */
@@ -17,6 +19,8 @@ const RANK_ORDER = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]; // A → 2
 
 /** Schneller 2-Tap-Karten-Picker: erst Rang, dann Farbe. */
 export function CardPicker({ count, used, onComplete, label }: Props) {
+  const { lang } = useLang();
+  const L = STR[lang];
   const [picked, setPicked] = useState<Card[]>([]);
   const [pendingRank, setPendingRank] = useState<number | null>(null);
 
@@ -44,7 +48,7 @@ export function CardPicker({ count, used, onComplete, label }: Props) {
     <div>
       <div className="row between wrap" style={{ marginBottom: 12 }}>
         <span className="stat-label">
-          {label ?? 'Karte wählen'} ({picked.length + 1}/{count})
+          {label ?? L.pickCard} ({picked.length + 1}/{count})
         </span>
         <div className="cards-row">
           {picked.map((c) => (
@@ -71,10 +75,10 @@ export function CardPicker({ count, used, onComplete, label }: Props) {
         <div>
           <div className="row between" style={{ marginBottom: 10 }}>
             <span className="pill gold" style={{ fontSize: 14 }}>
-              {RANK_CHARS[pendingRank] === 'T' ? '10' : RANK_CHARS[pendingRank]} – welche Farbe?
+              {L.whichSuit(RANK_CHARS[pendingRank] === 'T' ? '10' : RANK_CHARS[pendingRank])}
             </span>
             <button className="btn sm ghost" onClick={() => setPendingRank(null)}>
-              ← anderer Rang
+              {L.otherRank}
             </button>
           </div>
           <div className="picker-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>

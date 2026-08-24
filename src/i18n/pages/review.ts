@@ -1,0 +1,43 @@
+import { defineStrings } from '..';
+
+/* Texte der Wiederholen-Seite (Spaced Repetition). */
+export const STR = defineStrings(
+  {
+    eyebrow: 'Spaced Repetition',
+    title: 'Wiederholen',
+    sub: 'Fragen, die du in Lektions-Quizzen falsch beantwortet hast, landen automatisch in diesem Stapel und kommen in wachsenden Abständen wieder – bis du sie dreimal in Folge richtig hast. So bleibt Wissen wirklich hängen.',
+    due: (n: number) => `${n} fällig`,
+    inDeck: (n: number) => `${n} im Stapel`,
+    doneToday: (n: number) => `${n} heute bearbeitet`,
+    emptyTitle: 'Dein Stapel ist leer',
+    emptyText: 'Beantworte Quizfragen im Lernpfad – jede falsche Antwort wandert automatisch hierher und wird zur Wiederholung fällig.',
+    toPath: 'Zum Lernpfad',
+    allDoneTitle: 'Alles erledigt!',
+    allDoneText: 'Für heute ist nichts mehr fällig.',
+    nextDueBefore: 'Die nächste Wiederholung wartet am',
+    streakPill: (n: number) => `${n}/3 richtig in Folge`,
+    correctLabel: 'Richtig! ',
+    wrongLabel: 'Leider falsch. ',
+    nextCard: 'Nächste Karte',
+    finish: 'Fertig',
+  },
+  {
+    eyebrow: 'Spaced Repetition',
+    title: 'Review',
+    sub: 'Questions you got wrong in lesson quizzes land in this deck automatically and come back at growing intervals – until you get them right three times in a row. That is how knowledge really sticks.',
+    due: (n: number) => `${n} due`,
+    inDeck: (n: number) => `${n} in the deck`,
+    doneToday: (n: number) => `${n} done today`,
+    emptyTitle: 'Your deck is empty',
+    emptyText: 'Answer quiz questions in the learning path – every wrong answer automatically lands here and comes due for review.',
+    toPath: 'Go to Learning Path',
+    allDoneTitle: 'All done!',
+    allDoneText: 'Nothing else is due today.',
+    nextDueBefore: 'The next review is waiting on',
+    streakPill: (n: number) => `${n}/3 correct in a row`,
+    correctLabel: 'Correct! ',
+    wrongLabel: 'Not quite. ',
+    nextCard: 'Next card',
+    finish: 'Done',
+  },
+);

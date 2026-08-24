@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ALL_MODULES } from '../content';
 import { moduleProgress, useAppState } from '../state/AppState';
+import { useLang, levelLabel } from '../i18n';
+import { STR } from '../i18n/pages/learn';
 
 const LEVEL_PILL: Record<string, string> = {
   Einsteiger: 'ok',
@@ -28,13 +29,15 @@ function makeSnippet(text: string, query: string): string {
 
 export function LearnPage() {
   const { data } = useAppState();
+  const { lang, content } = useLang();
+  const L = STR[lang];
   const [query, setQuery] = useState('');
 
   const hits = useMemo<SearchHit[]>(() => {
     const q = query.trim().toLowerCase();
     if (q.length < 3) return [];
     const results: SearchHit[] = [];
-    for (const m of ALL_MODULES) {
+    for (const m of content.modules) {
       for (const l of m.lessons) {
         let snippet = '';
         if (l.title.toLowerCase().includes(q)) {
@@ -44,7 +47,7 @@ export function LearnPage() {
         } else {
           for (const sec of l.sections) {
             if (sec.heading.toLowerCase().includes(q)) {
-              snippet = `Abschnitt: ${sec.heading}`;
+              snippet = L.sectionSnippet(sec.heading);
               break;
             }
             if (sec.body.toLowerCase().includes(q)) {
@@ -66,32 +69,31 @@ export function LearnPage() {
       }
     }
     return results;
-  }, [query]);
+  }, [query, content.modules, L]);
 
   const searching = query.trim().length >= 3;
 
   return (
     <div>
       <div className="page-header">
-        <div className="eyebrow">Dein Curriculum</div>
-        <h1>Lernpfad</h1>
+        <div className="eyebrow">{L.eyebrow}</div>
+        <h1>{L.title}</h1>
         <p className="sub">
-          Neun Module vom ersten Blatt bis zu Profi-Strategie und Varianten. Arbeite sie der Reihe nach durch – jede Lektion endet
-          mit einem Quiz, das dein Verständnis prüft und XP bringt.
+          {L.sub}
         </p>
       </div>
 
       <input
         className="search-input"
         style={{ maxWidth: 480, marginBottom: 20 }}
-        placeholder="Alle Lektionen durchsuchen … (z. B. „Pot Odds“, „Tilt“, „Squeeze“)"
+        placeholder={L.searchPlaceholder}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
 
       {searching && (
         <div style={{ maxWidth: 720, marginBottom: 24 }}>
-          {hits.length === 0 && <p className="muted">Kein Treffer – versuch einen anderen Begriff (oder schau im Glossar).</p>}
+          {hits.length === 0 && <p className="muted">{L.noHits}</p>}
           {hits.map((h) => (
             <Link key={h.lessonId} to={`/lernen/${h.moduleId}/${h.lessonId}`} className="card clickable" style={{ display: 'block', marginBottom: 10, padding: 14 }}>
               <div className="row between wrap">
@@ -109,23 +111,23 @@ export function LearnPage() {
         <Link to="/pros" className="card clickable" style={{ display: 'block', marginBottom: 16, borderColor: 'rgba(212,175,94,0.35)' }}>
           <div className="row between wrap">
             <div>
-              <div style={{ fontWeight: 800, fontSize: 16.5 }}>Pro-Insights: Von den Besten lernen</div>
+              <div style={{ fontWeight: 800, fontSize: 16.5 }}>{L.proTitle}</div>
               <div className="small muted" style={{ marginTop: 3 }}>
-                Die Prinzipien von Fedor Holz, Negreanu, Polk & Co. – plus die teuersten Anfängerfehler aus Profi-Sicht.
+                {L.proSub}
               </div>
             </div>
-            <span className="pill gold">Neu</span>
+            <span className="pill gold">{L.newPill}</span>
           </div>
         </Link>
         <div className="grid cols-2">
-          {ALL_MODULES.map((m, idx) => {
+          {content.modules.map((m, idx) => {
             const prog = moduleProgress(data, m.id);
             const done = Math.round(prog * m.lessons.length);
             return (
               <Link key={m.id} to={`/lernen/${m.id}`} className="card clickable">
                 <div className="row between" style={{ marginBottom: 8 }}>
-                  <span className="pill">Modul {idx + 1}</span>
-                  <span className={`pill ${LEVEL_PILL[m.level] ?? ''}`}>{m.level}</span>
+                  <span className="pill">{L.moduleN(idx + 1)}</span>
+                  <span className={`pill ${LEVEL_PILL[m.level] ?? ''}`}>{levelLabel(m.level, lang)}</span>
                 </div>
                 <div className="row" style={{ alignItems: 'flex-start' }}>
                   <span style={{ fontSize: 30 }}>{m.icon}</span>
@@ -140,7 +142,7 @@ export function LearnPage() {
                   <div style={{ width: `${prog * 100}%` }} />
                 </div>
                 <div className="small faint">
-                  {done} / {m.lessons.length} Lektionen abgeschlossen
+                  {L.doneLine(done, m.lessons.length)}
                 </div>
               </Link>
             );

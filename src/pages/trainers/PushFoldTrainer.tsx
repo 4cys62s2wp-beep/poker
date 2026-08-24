@@ -2,12 +2,11 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HandMatrix } from '../../components/HandMatrix';
 import { CardsRow } from '../../components/PlayingCard';
-import { PUSH_CHARTS, PUSH_STACK_INFO, type PushStack } from '../../content/pushfold';
 import { POSITION_NAMES } from '../../content/ranges';
 import { combosForLabel, expandRangeSpec, handLabel, rangePercent } from '../../lib/poker/ranges';
 import { useAppState } from '../../state/AppState';
-
-const CHART_SETS = PUSH_CHARTS.map((c) => ({ ...c, set: expandRangeSpec(c.push) }));
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/pushfoldtrainer';
 
 interface Spot {
   chartIdx: number;
@@ -15,8 +14,8 @@ interface Spot {
   label: string;
 }
 
-function newSpot(): Spot {
-  const chartIdx = Math.floor(Math.random() * CHART_SETS.length);
+function newSpot(chartCount: number): Spot {
+  const chartIdx = Math.floor(Math.random() * chartCount);
   const c1 = Math.floor(Math.random() * 52);
   let c2 = Math.floor(Math.random() * 51);
   if (c2 >= c1) c2 += 1;
@@ -27,10 +26,16 @@ function newSpot(): Spot {
 
 export function PushFoldTrainer() {
   const { data, recordTrainer } = useAppState();
-  const [spot, setSpot] = useState<Spot>(newSpot);
+  const { lang, content } = useLang();
+  const L = STR[lang];
+  const chartSets = useMemo(
+    () => content.pushCharts.map((c) => ({ ...c, set: expandRangeSpec(c.push) })),
+    [content],
+  );
+  const [spot, setSpot] = useState<Spot>(() => newSpot(chartSets.length));
   const [answer, setAnswer] = useState<string | null>(null);
 
-  const chart = CHART_SETS[spot.chartIdx];
+  const chart = chartSets[spot.chartIdx];
   const stats = data.trainers['pushfold'];
   const correct = chart.set.has(spot.label) ? 'push' : 'fold';
   const pct = useMemo(() => Math.round(rangePercent(chart.set) * 100), [chart]);
@@ -42,7 +47,7 @@ export function PushFoldTrainer() {
   }
 
   function next() {
-    setSpot(newSpot());
+    setSpot(newSpot(chartSets.length));
     setAnswer(null);
   }
 
@@ -51,28 +56,27 @@ export function PushFoldTrainer() {
   return (
     <div>
       <Link to="/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        ← Trainer
+        {L.back}
       </Link>
       <div className="page-header">
-        <div className="eyebrow">Turnier-Endgame</div>
-        <h1>Push/Fold-Trainer</h1>
-        <p className="sub">
-          Kurzer Stack im Turnier, alle folden zu dir: All-in oder Fold? Trainiere die vereinfachten Nash-Ranges für
-          10bb und 5bb – ohne Antes.
-        </p>
+        <div className="eyebrow">{L.eyebrow}</div>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub}</p>
       </div>
 
       <div className="row wrap" style={{ marginBottom: 16 }}>
-        <span className="pill">✓ {stats?.correct ?? 0} richtig</span>
-        <span className="pill">{stats?.attempts ?? 0} gesamt</span>
-        <span className="pill gold">Serie: {stats?.streak ?? 0}</span>
+        <span className="pill">{L.correctCount(stats?.correct ?? 0)}</span>
+        <span className="pill">{L.totalCount(stats?.attempts ?? 0)}</span>
+        <span className="pill gold">{L.streak(stats?.streak ?? 0)}</span>
       </div>
 
       <div className="card" style={{ maxWidth: 720 }}>
         <p style={{ marginBottom: 14 }}>
-          Turnier, <strong style={{ color: 'var(--gold-bright)' }}>{chart.stack === '10bb' ? '≈ 10 Big Blinds' : '≈ 5 Big Blinds'}</strong>{' '}
-          übrig. Du sitzt <strong style={{ color: 'var(--gold-bright)' }}>{chart.position}</strong> (
-          {POSITION_NAMES[chart.position]}). Alle vor dir folden.
+          {L.introBefore}
+          <strong style={{ color: 'var(--gold-bright)' }}>{L.stackApprox(chart.stack)}</strong>
+          {L.introAfterStack}
+          <strong style={{ color: 'var(--gold-bright)' }}>{chart.position}</strong> ({POSITION_NAMES[chart.position]})
+          {L.introAfterPosition}
         </p>
 
         <div className="row" style={{ marginBottom: 18 }}>
@@ -86,48 +90,46 @@ export function PushFoldTrainer() {
             onClick={() => choose('push')}
             disabled={!!answer}
           >
-            All-in
+            {L.allInBtn}
           </button>
           <button
             className={`btn lg${answer ? (correct === 'fold' ? ' success' : answer === 'fold' ? ' danger' : '') : ''}`}
             onClick={() => choose('fold')}
             disabled={!!answer}
           >
-            Fold
+            {L.foldBtn}
           </button>
         </div>
 
         {answer && (
           <>
             <div className={`feedback-box ${isCorrect ? 'good' : 'bad'}`} style={{ marginTop: 16 }}>
-              <strong>{isCorrect ? 'Richtig! ' : 'Nicht ganz. '}</strong>
-              {spot.label} ist mit {chart.stack} aus {chart.position}{' '}
-              {correct === 'push' ? 'ein Standard-Shove' : 'kein profitabler Shove'} (Shove-Range: ~{pct} % aller
-              Hände). {PUSH_STACK_INFO[chart.stack]}
+              <strong>{isCorrect ? L.correctFb : L.wrongFb}</strong>
+              {L.verdict(spot.label, chart.stack, chart.position, correct === 'push', pct)}{' '}
+              {content.pushStackInfo[chart.stack]}
             </div>
 
             <div style={{ marginTop: 18 }}>
               <div className="range-legend" style={{ marginBottom: 10 }}>
                 <span>
                   <span className="sw" style={{ background: 'linear-gradient(150deg,#d9b45b,#a37f2e)' }} />
-                  All-in
+                  {L.legendAllIn}
                 </span>
                 <span>
                   <span className="sw" style={{ background: 'rgba(9,13,11,0.7)', border: '1px solid var(--border)' }} />
-                  Fold
+                  {L.legendFold}
                 </span>
               </div>
               <HandMatrix raise={chart.set} highlight={spot.label} />
             </div>
 
             <button className="btn primary" style={{ marginTop: 18 }} onClick={next}>
-              Nächste Hand
+              {L.nextHand}
             </button>
           </>
         )}
         <p className="small faint" style={{ marginTop: 16 }}>
-          Vereinfachte Nash-Push-Ranges ohne Antes. Mit Antes wird noch breiter geschoben; gegen Spieler, die zu
-          wenig callen, ebenfalls.
+          {L.footnote}
         </p>
       </div>
     </div>

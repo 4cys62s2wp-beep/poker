@@ -1,16 +1,19 @@
 import { Link, useParams } from 'react-router-dom';
-import { findModule } from '../content';
 import { useAppState } from '../state/AppState';
+import { useLang } from '../i18n';
+import { STR } from '../i18n/pages/module';
 
 export function ModulePage() {
   const { moduleId } = useParams();
   const { data } = useAppState();
-  const module = findModule(moduleId ?? '');
+  const { lang, content } = useLang();
+  const L = STR[lang];
+  const module = content.modules.find((m) => m.id === (moduleId ?? ''));
 
   if (!module) {
     return (
       <div className="card">
-        Modul nicht gefunden. <Link to="/lernen" style={{ color: 'var(--gold-bright)' }}>Zurück zum Lernpfad</Link>
+        {L.notFound} <Link to="/lernen" style={{ color: 'var(--gold-bright)' }}>{L.backToPath}</Link>
       </div>
     );
   }
@@ -18,7 +21,7 @@ export function ModulePage() {
   return (
     <div>
       <Link to="/lernen" className="pill" style={{ marginBottom: 16, display: 'inline-flex' }}>
-        ← Lernpfad
+        {L.back}
       </Link>
       <div className="page-header" style={{ marginTop: 10 }}>
         <h1>
@@ -53,8 +56,8 @@ export function ModulePage() {
                   <div>
                     <div style={{ fontWeight: 700 }}>{lesson.title}</div>
                     <div className="small faint">
-                      ca. {lesson.duration} Min. · {lesson.quiz.length} Quizfragen
-                      {result && ` · Quiz: ${result.quizScore}/${result.quizTotal}`}
+                      {L.lessonMeta(lesson.duration, lesson.quiz.length)}
+                      {result && L.quizResult(result.quizScore, result.quizTotal)}
                     </div>
                   </div>
                 </div>

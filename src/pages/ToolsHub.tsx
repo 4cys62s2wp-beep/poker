@@ -1,80 +1,37 @@
 import { Link } from 'react-router-dom';
 import { IconTile, type IconName } from '../components/Icon';
-
-const TOOLS: Array<{ to: string; icon: IconName; tone: 'gold' | 'green' | 'blue' | 'red' | 'violet'; title: string; desc: string }> = [
-  {
-    to: '/coach',
-    icon: 'coach',
-    tone: 'gold',
-    title: 'Live-Coach',
-    desc: 'Hand eingeben, Empfehlung bekommen: Street für Street – perfekt für den Pokerabend mit Freunden.',
-  },
-  {
-    to: '/tools/hands',
-    icon: 'search',
-    tone: 'green',
-    title: 'Starthand-Explorer',
-    desc: 'Alle 169 Starthände: Gewinnwahrscheinlichkeit gegen 1–5 Gegner und wie du jede Hand spielst.',
-  },
-  {
-    to: '/tools/chips',
-    icon: 'chip',
-    tone: 'red',
-    title: 'Chip-Rechner',
-    desc: 'Pokerkoffer aufteilen: Spieler & Chips eingeben – Verteilung, Startstack und Blinds bekommen.',
-  },
-  {
-    to: '/tools/tells',
-    icon: 'eye',
-    tone: 'violet',
-    title: 'Tells & Reads',
-    desc: 'Was Gesten, Einsätze und Timing verraten – mit Zuverlässigkeits-Bewertung für Low-Stakes-Runden.',
-  },
-  {
-    to: '/tools/equity',
-    icon: 'scale',
-    tone: 'blue',
-    title: 'Equity-Rechner',
-    desc: 'Hand vs. Hand (bis zu 3 Spieler) mit beliebigem Board – Monte-Carlo-Simulation direkt im Browser.',
-  },
-  {
-    to: '/tools/ranges',
-    icon: 'grid',
-    tone: 'gold',
-    title: 'Range-Charts',
-    desc: 'Alle Open-Raise-Ranges nach Position und die Big-Blind-Verteidigung als interaktive Matrix.',
-  },
-  {
-    to: '/tools/odds',
-    icon: 'chart',
-    tone: 'blue',
-    title: 'Odds-Spickzettel',
-    desc: 'Outs, Odds und die wichtigsten Wahrscheinlichkeiten – kompakt zum Nachschlagen.',
-  },
-  {
-    to: '/tools/bankroll',
-    icon: 'notes',
-    tone: 'green',
-    title: 'Bankroll-Tracker',
-    desc: 'Erfasse deine Live- und Online-Sessions und behalte Gewinn, Stundenlohn und Verlauf im Blick.',
-  },
-];
-
-const EXTRA: Array<{ to: string; icon: IconName; tone: 'gold' | 'green' | 'blue' | 'red' | 'violet'; title: string; desc: string }> = [
-  { to: '/spielen', icon: 'play', tone: 'red', title: 'Übungstisch', desc: 'No-Limit Hold’em gegen KI-Gegner mit Coach-Modus und Handhistorie.' },
-  { to: '/pros', icon: 'chip', tone: 'gold', title: 'Pro-Insights', desc: 'Prinzipien von Fedor Holz, Negreanu, Polk & Co. – verdichtet und verifiziert.' },
-  { to: '/wiederholen', icon: 'repeat', tone: 'gold', title: 'Wiederholen', desc: 'Dein Spaced-Repetition-Stapel aus falsch beantworteten Quizfragen.' },
-  { to: '/glossar', icon: 'glossary', tone: 'blue', title: 'Glossar', desc: 'Alle Pokerbegriffe von A bis Z erklärt.' },
-  { to: '/profil', icon: 'profile', tone: 'violet', title: 'Profil & Fortschritt', desc: 'XP, Level, Abzeichen, Statistiken und Daten-Backup.' },
-];
+import { useLang } from '../i18n';
+import { STR } from '../i18n/pages/toolshub';
 
 export function ToolsHub() {
+  const { lang } = useLang();
+  const L = STR[lang];
+
+  const TOOLS: Array<{ to: string; icon: IconName; tone: 'gold' | 'green' | 'blue' | 'red' | 'violet'; title: string; desc: string }> = [
+    { to: '/coach', icon: 'coach', tone: 'gold', title: L.coachTitle, desc: L.coachDesc },
+    { to: '/tools/hands', icon: 'search', tone: 'green', title: L.handsTitle, desc: L.handsDesc },
+    { to: '/tools/chips', icon: 'chip', tone: 'red', title: L.chipsTitle, desc: L.chipsDesc },
+    { to: '/tools/tells', icon: 'eye', tone: 'violet', title: L.tellsTitle, desc: L.tellsDesc },
+    { to: '/tools/equity', icon: 'scale', tone: 'blue', title: L.equityTitle, desc: L.equityDesc },
+    { to: '/tools/ranges', icon: 'grid', tone: 'gold', title: L.rangesTitle, desc: L.rangesDesc },
+    { to: '/tools/odds', icon: 'chart', tone: 'blue', title: L.oddsTitle, desc: L.oddsDesc },
+    { to: '/tools/bankroll', icon: 'notes', tone: 'green', title: L.bankrollTitle, desc: L.bankrollDesc },
+  ];
+
+  const EXTRA: Array<{ to: string; icon: IconName; tone: 'gold' | 'green' | 'blue' | 'red' | 'violet'; title: string; desc: string }> = [
+    { to: '/spielen', icon: 'play', tone: 'red', title: L.playTitle, desc: L.playDesc },
+    { to: '/pros', icon: 'chip', tone: 'gold', title: L.prosTitle, desc: L.prosDesc },
+    { to: '/wiederholen', icon: 'repeat', tone: 'gold', title: L.reviewTitle, desc: L.reviewDesc },
+    { to: '/glossar', icon: 'glossary', tone: 'blue', title: L.glossaryTitle, desc: L.glossaryDesc },
+    { to: '/profil', icon: 'profile', tone: 'violet', title: L.profileTitle, desc: L.profileDesc },
+  ];
+
   return (
     <div>
       <div className="page-header">
-        <div className="eyebrow">Werkzeugkasten</div>
-        <h1>Tools</h1>
-        <p className="sub">Werkzeuge für den Tisch und fürs Studium – dieselben Rechnungen, die Profis machen.</p>
+        <div className="eyebrow">{L.eyebrow}</div>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub}</p>
       </div>
 
       <div className="grid cols-2">
@@ -91,7 +48,7 @@ export function ToolsHub() {
         ))}
       </div>
 
-      <div className="section-title">Außerdem</div>
+      <div className="section-title">{L.also}</div>
       <div className="grid cols-2">
         {EXTRA.map((t) => (
           <Link key={t.to} to={t.to} className="card clickable">

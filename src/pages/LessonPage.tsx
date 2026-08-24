@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { findLesson, findModule } from '../content';
 import { MarkdownLite } from '../components/MarkdownLite';
 import { CardsRow } from '../components/PlayingCard';
 import { QuizRunner } from '../components/QuizRunner';
 import { useAppState } from '../state/AppState';
+import { useLang } from '../i18n';
+import { STR } from '../i18n/pages/lesson';
 
 export function LessonPage() {
   const { moduleId, lessonId } = useParams();
   const navigate = useNavigate();
   const { data, completeLesson, addReviewItem } = useAppState();
-  const found = findLesson(moduleId ?? '', lessonId ?? '');
+  const { lang, content } = useLang();
+  const L = STR[lang];
+  const foundModule = content.modules.find((m) => m.id === (moduleId ?? ''));
+  const foundLesson = foundModule?.lessons.find((l) => l.id === (lessonId ?? ''));
+  const found = foundModule && foundLesson ? { module: foundModule, lesson: foundLesson } : undefined;
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizDone, setQuizDone] = useState(false);
 
@@ -23,7 +28,7 @@ export function LessonPage() {
   if (!found) {
     return (
       <div className="card">
-        Lektion nicht gefunden. <Link to="/lernen" style={{ color: 'var(--gold-bright)' }}>Zurück zum Lernpfad</Link>
+        {L.notFound} <Link to="/lernen" style={{ color: 'var(--gold-bright)' }}>{L.backToPath}</Link>
       </div>
     );
   }
@@ -33,7 +38,7 @@ export function LessonPage() {
   const nextLesson = module.lessons[lessonIndex + 1];
   const nextModule = (() => {
     const mIdx = parseInt(module.id.slice(1), 10);
-    return findModule(`m${mIdx + 1}`);
+    return content.modules.find((m) => m.id === `m${mIdx + 1}`);
   })();
   const alreadyDone = !!data.completedLessons[lesson.id];
 
@@ -51,10 +56,10 @@ export function LessonPage() {
       <div className="page-header" style={{ marginTop: 14 }}>
         <div className="row wrap" style={{ marginBottom: 8 }}>
           <span className="pill gold">
-            Lektion {lessonIndex + 1} / {module.lessons.length}
+            {L.lessonOf(lessonIndex + 1, module.lessons.length)}
           </span>
-          <span className="pill">ca. {lesson.duration} Min.</span>
-          {alreadyDone && <span className="pill ok">✓ abgeschlossen</span>}
+          <span className="pill">{L.duration(lesson.duration)}</span>
+          {alreadyDone && <span className="pill ok">{L.completedPill}</span>}
         </div>
         <h1>{lesson.title}</h1>
         <p className="sub">{lesson.intro}</p>
@@ -96,13 +101,13 @@ export function LessonPage() {
                 )}
                 {sec.example && (
                   <div className="callout example">
-                    <span className="label">Beispiel</span>
+                    <span className="label">{L.example}</span>
                     <MarkdownLite text={sec.example} />
                   </div>
                 )}
                 {sec.tip && (
                   <div className="callout tip">
-                    <span className="label">Coach-Tipp</span>
+                    <span className="label">{L.coachTip}</span>
                     <MarkdownLite text={sec.tip} />
                   </div>
                 )}
@@ -110,7 +115,7 @@ export function LessonPage() {
             ))}
 
             <section className="lesson-section card" style={{ background: 'var(--bg-elev)' }}>
-              <h2 style={{ fontSize: 17 }}>Das nimmst du mit</h2>
+              <h2 style={{ fontSize: 17 }}>{L.takeaways}</h2>
               <ul className="list-plain">
                 {lesson.takeaways.map((t, i) => (
                   <li key={i} className="takeaway">
@@ -123,7 +128,7 @@ export function LessonPage() {
           </div>
 
           <button className="btn primary lg" onClick={() => { setShowQuiz(true); window.scrollTo(0, 0); }}>
-            Quiz starten ({lesson.quiz.length} Fragen) →
+            {L.startQuiz(lesson.quiz.length)}
           </button>
         </>
       )}
@@ -132,7 +137,7 @@ export function LessonPage() {
         <div style={{ maxWidth: 720 }}>
           {!quizDone && (
             <button className="btn ghost sm" style={{ marginBottom: 16 }} onClick={() => setShowQuiz(false)}>
-              ← Zurück zur Lektion
+              {L.backToLesson}
             </button>
           )}
           <QuizRunner
@@ -147,19 +152,19 @@ export function LessonPage() {
                   className="btn primary"
                   onClick={() => navigate(`/lernen/${module.id}/${nextLesson.id}`)}
                 >
-                  Nächste Lektion: {nextLesson.title} →
+                  {L.nextLesson(nextLesson.title)}
                 </button>
               ) : nextModule ? (
                 <button className="btn primary" onClick={() => navigate(`/lernen/${nextModule.id}`)}>
-                  Weiter zu Modul: {nextModule.title} →
+                  {L.nextModule(nextModule.title)}
                 </button>
               ) : (
                 <button className="btn primary" onClick={() => navigate('/lernen')}>
-                  Zurück zum Lernpfad
+                  {L.backToPath}
                 </button>
               )}
               <button className="btn" onClick={() => navigate(`/lernen/${module.id}`)}>
-                Modulübersicht
+                {L.moduleOverview}
               </button>
             </div>
           )}

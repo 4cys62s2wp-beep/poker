@@ -5,6 +5,53 @@ import type { Card } from './cards';
 import { RANK_CHARS, rankOf, suitOf } from './cards';
 import { categoryOf, categoryName, evaluateBest } from './evaluator';
 
+/** Sprache der erzeugten Beschriftungen (Logik/Zahlen sind sprachneutral). */
+export type AnalysisLang = 'de' | 'en';
+
+/** Englische Pendants zu HAND_CATEGORY_NAMES aus evaluator.ts (Index = Kategorie). */
+const HAND_CATEGORY_NAMES_EN = [
+  'High Card',
+  'One Pair',
+  'Two Pair',
+  'Three of a Kind',
+  'Straight',
+  'Flush',
+  'Full House',
+  'Four of a Kind',
+  'Straight Flush',
+];
+
+function categoryNameFor(value: number, lang: AnalysisLang): string {
+  const de = categoryName(value);
+  if (lang === 'de') return de;
+  if (de === 'Royal Flush') return 'Royal Flush';
+  return HAND_CATEGORY_NAMES_EN[categoryOf(value)];
+}
+
+/** Beschriftungen der Draw-Bausteine pro Sprache. */
+const DRAW_LABELS = {
+  de: {
+    nutFlushDraw: 'Nut-Flushdraw',
+    flushDraw: 'Flushdraw',
+    multiStraightDraw: 'Straßen-Draw (mehrere Enden)',
+    openEnded: 'Open-Ended Straight Draw',
+    gutshot: 'Gutshot',
+    twoOvercards: 'Zwei Overcards (unsicher)',
+    oneOvercard: 'Eine Overcard (unsicher)',
+    setImproves: 'Set verbessert sich zu Full House/Quads',
+  },
+  en: {
+    nutFlushDraw: 'Nut Flush Draw',
+    flushDraw: 'Flush Draw',
+    multiStraightDraw: 'Straight Draw (multiple ends)',
+    openEnded: 'Open-Ended Straight Draw',
+    gutshot: 'Gutshot',
+    twoOvercards: 'Two Overcards (unreliable)',
+    oneOvercard: 'One Overcard (unreliable)',
+    setImproves: 'Set improving to Full House/Quads',
+  },
+} as const satisfies Record<AnalysisLang, Record<string, string>>;
+
 export type PairType =
   | 'overpair'
   | 'toppair'
@@ -47,10 +94,10 @@ export interface DrawInfo {
 }
 
 /** Analysiert die gemachte Hand (Board mit 3–5 Karten). */
-export function madeHandInfo(hole: Card[], board: Card[]): MadeHandInfo {
+export function madeHandInfo(hole: Card[], board: Card[], lang: AnalysisLang = 'de'): MadeHandInfo {
   const value = evaluateBest([...hole, ...board]);
   const category = categoryOf(value);
-  const info: MadeHandInfo = { value, category, name: categoryName(value) };
+  const info: MadeHandInfo = { value, category, name: categoryNameFor(value, lang) };
 
   if (category === 1) {
     const h1 = rankOf(hole[0]);
@@ -85,9 +132,10 @@ export function madeHandInfo(hole: Card[], board: Card[]): MadeHandInfo {
 }
 
 /** Erkennt Draws und zählt Outs (Board mit 3 oder 4 Karten). */
-export function detectDraws(hole: Card[], board: Card[]): DrawInfo {
+export function detectDraws(hole: Card[], board: Card[], lang: AnalysisLang = 'de'): DrawInfo {
   const all = [...hole, ...board];
   const made = categoryOf(evaluateBest(all));
+  const L = DRAW_LABELS[lang];
   const parts: OutsPart[] = [];
 
   // --- Flushdraw ---
@@ -109,7 +157,7 @@ export function detectDraws(hole: Card[], board: Card[]): DrawInfo {
     nutFlushDraw = false;
   }
   if (flushDraw) {
-    parts.push({ label: nutFlushDraw ? 'Nut-Flushdraw' : 'Flushdraw', outs: 9 });
+    parts.push({ label: nutFlushDraw ? L.nutFlushDraw : L.flushDraw, outs: 9 });
   }
 
   // --- Straßen-Draws ---
@@ -138,9 +186,9 @@ export function detectDraws(hole: Card[], board: Card[]): DrawInfo {
     parts.push({
       label: openEnded
         ? straightOutRanks.size > 2
-          ? 'Straßen-Draw (mehrere Enden)'
-          : 'Open-Ended Straight Draw'
-        : 'Gutshot',
+          ? L.multiStraightDraw
+          : L.openEnded
+        : L.gutshot,
       outs: straightOuts,
     });
   }
@@ -165,7 +213,7 @@ export function detectDraws(hole: Card[], board: Card[]): DrawInfo {
         }
       }
       parts.push({
-        label: overcards === 2 ? 'Zwei Overcards (unsicher)' : 'Eine Overcard (unsicher)',
+        label: overcards === 2 ? L.twoOvercards : L.oneOvercard,
         outs: ocOuts,
         soft: true,
       });
@@ -174,7 +222,7 @@ export function detectDraws(hole: Card[], board: Card[]): DrawInfo {
 
   // --- Set → Full House / Quads ---
   if (made === 3 && h1 === h2) {
-    parts.push({ label: 'Set verbessert sich zu Full House/Quads', outs: board.length === 3 ? 7 : 10 });
+    parts.push({ label: L.setImproves, outs: board.length === 3 ? 7 : 10 });
   }
 
   const totalOuts = parts.filter((p) => !p.soft).reduce((s, p) => s + p.outs, 0);

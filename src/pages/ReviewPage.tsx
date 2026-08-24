@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { findLesson, findModule } from '../content';
 import type { QuizQuestion } from '../content/types';
 import { Icon } from '../components/Icon';
 import { useAppState, type ReviewItem } from '../state/AppState';
+import { useLang } from '../i18n';
+import { STR } from '../i18n/pages/review';
 
 interface DueCard {
   item: ReviewItem;
@@ -19,6 +20,8 @@ function todayStr(): string {
 
 export function ReviewPage() {
   const { data, answerReview } = useAppState();
+  const { lang, content } = useLang();
+  const L = STR[lang];
   const [selected, setSelected] = useState<number | null>(null);
   const [sessionDone, setSessionDone] = useState(0);
 
@@ -27,14 +30,15 @@ export function ReviewPage() {
     const cards: DueCard[] = [];
     for (const item of data.reviews) {
       if (item.due > today) continue;
-      const found = findLesson(item.moduleId, item.lessonId);
-      const q = found?.lesson.quiz[item.questionIndex];
-      if (found && q) {
-        cards.push({ item, question: q, lessonTitle: found.lesson.title, moduleTitle: found.module.title });
+      const module = content.modules.find((m) => m.id === item.moduleId);
+      const lesson = module?.lessons.find((l) => l.id === item.lessonId);
+      const q = lesson?.quiz[item.questionIndex];
+      if (module && lesson && q) {
+        cards.push({ item, question: q, lessonTitle: lesson.title, moduleTitle: module.title });
       }
     }
     return cards;
-  }, [data.reviews, today]);
+  }, [data.reviews, today, content.modules]);
 
   const current = dueCards[0];
   const answered = selected !== null;
@@ -60,18 +64,17 @@ export function ReviewPage() {
   return (
     <div>
       <div className="page-header">
-        <div className="eyebrow">Spaced Repetition</div>
-        <h1>Wiederholen</h1>
+        <div className="eyebrow">{L.eyebrow}</div>
+        <h1>{L.title}</h1>
         <p className="sub">
-          Fragen, die du in Lektions-Quizzen falsch beantwortet hast, landen automatisch in diesem Stapel und kommen
-          in wachsenden Abständen wieder – bis du sie dreimal in Folge richtig hast. So bleibt Wissen wirklich hängen.
+          {L.sub}
         </p>
       </div>
 
       <div className="row wrap" style={{ marginBottom: 18 }}>
-        <span className="pill gold">{dueCards.length} fällig</span>
-        <span className="pill">{data.reviews.length} im Stapel</span>
-        {sessionDone > 0 && <span className="pill ok">{sessionDone} heute bearbeitet</span>}
+        <span className="pill gold">{L.due(dueCards.length)}</span>
+        <span className="pill">{L.inDeck(data.reviews.length)}</span>
+        {sessionDone > 0 && <span className="pill ok">{L.doneToday(sessionDone)}</span>}
       </div>
 
       {!current && (
@@ -81,21 +84,20 @@ export function ReviewPage() {
           </div>
           {data.reviews.length === 0 ? (
             <>
-              <h2 style={{ fontSize: 20, marginBottom: 8 }}>Dein Stapel ist leer</h2>
+              <h2 style={{ fontSize: 20, marginBottom: 8 }}>{L.emptyTitle}</h2>
               <p className="muted small" style={{ maxWidth: 420, margin: '0 auto 16px' }}>
-                Beantworte Quizfragen im Lernpfad – jede falsche Antwort wandert automatisch hierher und wird zur
-                Wiederholung fällig.
+                {L.emptyText}
               </p>
               <Link to="/lernen" className="btn primary">
-                Zum Lernpfad
+                {L.toPath}
               </Link>
             </>
           ) : (
             <>
-              <h2 style={{ fontSize: 20, marginBottom: 8 }}>Alles erledigt!</h2>
+              <h2 style={{ fontSize: 20, marginBottom: 8 }}>{L.allDoneTitle}</h2>
               <p className="muted small">
-                Für heute ist nichts mehr fällig.
-                {nextDue && <> Die nächste Wiederholung wartet am <strong>{nextDue}</strong>.</>}
+                {L.allDoneText}
+                {nextDue && <> {L.nextDueBefore} <strong>{nextDue}</strong>.</>}
               </p>
             </>
           )}
@@ -110,7 +112,7 @@ export function ReviewPage() {
                 {current.moduleTitle} · {current.lessonTitle}
               </span>
               <span className="pill">
-                {current.item.streak}/3 richtig in Folge
+                {L.streakPill(current.item.streak)}
               </span>
             </div>
             <h3 style={{ marginBottom: 16, fontSize: 17, lineHeight: 1.45 }}>{current.question.question}</h3>
@@ -134,12 +136,12 @@ export function ReviewPage() {
               <>
                 <div className={`feedback-box ${selected === current.question.correctIndex ? 'good' : 'bad'}`}>
                   <strong>
-                    {selected === current.question.correctIndex ? 'Richtig! ' : 'Leider falsch. '}
+                    {selected === current.question.correctIndex ? L.correctLabel : L.wrongLabel}
                   </strong>
                   {current.question.explanation}
                 </div>
                 <button className="btn primary" style={{ marginTop: 14 }} onClick={next}>
-                  {dueCards.length > 1 ? 'Nächste Karte' : 'Fertig'}
+                  {dueCards.length > 1 ? L.nextCard : L.finish}
                 </button>
               </>
             )}

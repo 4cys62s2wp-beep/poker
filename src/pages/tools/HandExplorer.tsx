@@ -5,6 +5,8 @@ import { CardsRow } from '../../components/PlayingCard';
 import { RFI_CHARTS } from '../../content/ranges';
 import { combosForLabel, expandRangeSpec } from '../../lib/poker/ranges';
 import { equityVsRandomHands } from '../../lib/poker/equity';
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/handexplorer';
 
 const RFI = RFI_CHARTS.map((c) => ({ position: c.position, set: expandRangeSpec(c.raise) }));
 const PREMIUM = expandRangeSpec(['QQ+', 'AKs', 'AKo']);
@@ -21,43 +23,25 @@ interface HandDetail {
   eq5: number;
 }
 
-function classify(label: string): { name: string; pill: string; desc: string } {
+function classify(label: string, L: (typeof STR)['de']): { name: string; pill: string; desc: string } {
   if (PREMIUM.has(label)) {
-    return {
-      name: 'Premium',
-      pill: 'gold',
-      desc: 'Absolute Top-Hand: aus jeder Position erhöhen und Re-Raises nicht scheuen.',
-    };
+    return { name: L.catPremiumName, pill: 'gold', desc: L.catPremiumDesc };
   }
   if (STRONG.has(label)) {
-    return {
-      name: 'Stark',
-      pill: 'ok',
-      desc: 'Klarer Open-Raise aus fast allen Positionen; gegen einen Raise meist ein Call.',
-    };
+    return { name: L.catStrongName, pill: 'ok', desc: L.catStrongDesc };
   }
   if (PAIRS.has(label)) {
-    return {
-      name: 'Set-Mining-Paar',
-      pill: 'info',
-      desc: 'Kleines bis mittleres Paar: billig mitspielen und auf den Drilling (Set) hoffen.',
-    };
+    return { name: L.catPairName, pill: 'info', desc: L.catPairDesc };
   }
   if (PLAYABLE.has(label)) {
-    return {
-      name: 'Spielbar (spät)',
-      pill: 'violet',
-      desc: 'Nur aus späten Positionen oder billig spielen – in Position deutlich mehr wert.',
-    };
+    return { name: L.catPlayableName, pill: 'violet', desc: L.catPlayableDesc };
   }
-  return {
-    name: 'Schwach',
-    pill: 'danger',
-    desc: 'Langfristig ein Verlustgeschäft – fast immer folden, auch wenn sie „hübsch aussieht“.',
-  };
+  return { name: L.catWeakName, pill: 'danger', desc: L.catWeakDesc };
 }
 
 export function HandExplorer() {
+  const { lang } = useLang();
+  const L = STR[lang];
   const [selected, setSelected] = useState<string>('AKs');
   const cache = useRef(new Map<string, HandDetail>());
   const [, force] = useState(0);
@@ -77,28 +61,27 @@ export function HandExplorer() {
   }, [selected]);
 
   const openPositions = RFI.filter((r) => r.set.has(selected)).map((r) => r.position);
-  const cls = classify(selected);
+  const cls = classify(selected, L);
   const combo = combosForLabel(selected)[0];
 
   const vsRaise = PREMIUM.has(selected)
-    ? 'Re-Raise (3-Bet) auf ca. 3x den ursprünglichen Raise.'
+    ? L.vsRaisePremium
     : STRONG.has(selected)
-      ? 'Call – und nach dem Flop ehrlich weiterspielen.'
+      ? L.vsRaiseStrong
       : PAIRS.has(selected)
-        ? 'Call nur, wenn die Stacks mindestens 15-mal so groß sind wie der Raise (Set-Mining).'
-        : 'Fold – gegen eine Erhöhung brauchst du deutlich mehr Substanz.';
+        ? L.vsRaisePair
+        : L.vsRaiseWeak;
 
   return (
     <div>
       <Link to="/tools" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        ← Tools
+        {L.back}
       </Link>
       <div className="page-header">
-        <div className="eyebrow">Alle 169 Starthände</div>
-        <h1>Starthand-Explorer</h1>
+        <div className="eyebrow">{L.eyebrow}</div>
+        <h1>{L.title}</h1>
         <p className="sub">
-          Tippe eine Hand in der Matrix an: Gewinnwahrscheinlichkeit gegen 1, 3 und 5 Gegner, Einordnung und konkrete
-          Empfehlung, wie du sie spielst.
+          {L.sub}
         </p>
       </div>
 
@@ -116,7 +99,7 @@ export function HandExplorer() {
             }}
           />
           <p className="small faint" style={{ marginTop: 12 }}>
-            Diagonale = Paare · oben rechts = suited · unten links = offsuit
+            {L.matrixHint}
           </p>
         </div>
 
@@ -130,16 +113,16 @@ export function HandExplorer() {
           </div>
           <p className="small muted" style={{ marginBottom: 16 }}>{cls.desc}</p>
 
-          <div className="stat-label" style={{ marginBottom: 8 }}>Gewinnwahrscheinlichkeit (alle Karten kommen)</div>
+          <div className="stat-label" style={{ marginBottom: 8 }}>{L.winProb}</div>
           {[
-            { n: 1, eq: detail.eq1, label: 'gegen 1 Gegner' },
-            { n: 3, eq: detail.eq3, label: 'gegen 3 Gegner' },
-            { n: 5, eq: detail.eq5, label: 'gegen 5 Gegner' },
+            { n: 1, eq: detail.eq1, label: L.vsOpponents(1) },
+            { n: 3, eq: detail.eq3, label: L.vsOpponents(3) },
+            { n: 5, eq: detail.eq5, label: L.vsOpponents(5) },
           ].map((row) => (
             <div key={row.n} style={{ marginBottom: 10 }}>
               <div className="row between" style={{ marginBottom: 4 }}>
                 <span className="small muted">{row.label}</span>
-                <strong>{Math.round(row.eq * 100)} %</strong>
+                <strong>{L.fmtPct(Math.round(row.eq * 100))}</strong>
               </div>
               <div className="progressbar">
                 <div style={{ width: `${row.eq * 100}%` }} />
@@ -147,34 +130,33 @@ export function HandExplorer() {
             </div>
           ))}
           <p className="small faint" style={{ marginBottom: 16 }}>
-            Monte-Carlo-Simulation gegen zufällige Hände, alle fünf Boardkarten werden ausgeteilt. Gegen echte
-            Einsätze liegen Gegner meist über dem Zufall.
+            {L.mcNote}
           </p>
 
-          <div className="stat-label" style={{ marginBottom: 6 }}>So spielst du {selected}</div>
+          <div className="stat-label" style={{ marginBottom: 6 }}>{L.howToPlay(selected)}</div>
           <ul className="list-plain">
             <li className="takeaway">
               <span className="tick">›</span>
               <span>
-                <strong>Niemand hat erhöht:</strong>{' '}
+                <strong>{L.noRaise}</strong>{' '}
                 {openPositions.length === 0
-                  ? 'Kein Open-Raise – aus keiner Position. Im Big Blind: gratis Flop ansehen.'
+                  ? L.noOpen
                   : openPositions.length === 5
-                    ? 'Aus jeder Position erhöhen (3–4 bb, plus 1 bb pro Limper).'
-                    : `Erhöhen aus: ${openPositions.join(', ')} (3–4 bb, plus 1 bb pro Limper). Aus früheren Positionen folden.`}
+                    ? L.openAll
+                    : L.openFrom(openPositions.join(', '))}
               </span>
             </li>
             <li className="takeaway">
               <span className="tick">›</span>
               <span>
-                <strong>Jemand hat erhöht:</strong> {vsRaise}
+                <strong>{L.someoneRaised}</strong> {vsRaise}
               </span>
             </li>
             <li className="takeaway">
               <span className="tick">›</span>
               <span>
-                <strong>Combos:</strong> {combosForLabel(selected).length} von 1326 möglichen Starthand-Kombinationen
-                {selected.length === 2 ? ' (Paar)' : selected.endsWith('s') ? ' (suited)' : ' (offsuit)'}.
+                <strong>{L.combosLabel}</strong> {L.combosOf(combosForLabel(selected).length)}
+                {selected.length === 2 ? L.comboPair : selected.endsWith('s') ? L.comboSuited : L.comboOffsuit}.
               </span>
             </li>
           </ul>

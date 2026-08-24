@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CardsRow } from '../../components/PlayingCard';
-import { SCENARIOS, type Scenario } from '../../content/scenarios';
+import type { Scenario } from '../../content/scenarios';
 import { useAppState } from '../../state/AppState';
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/scenariotrainer';
 
 function shuffled<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -15,7 +17,9 @@ function shuffled<T>(arr: T[]): T[] {
 
 export function ScenarioTrainer() {
   const { data, recordTrainer } = useAppState();
-  const [queue, setQueue] = useState<Scenario[]>(() => shuffled(SCENARIOS));
+  const { lang, content } = useLang();
+  const L = STR[lang];
+  const [queue, setQueue] = useState<Scenario[]>(() => shuffled(content.scenarios));
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
 
@@ -35,49 +39,45 @@ export function ScenarioTrainer() {
   }
 
   function next() {
-    if ((index + 1) % queue.length === 0) setQueue(shuffled(SCENARIOS));
+    if ((index + 1) % queue.length === 0) setQueue(shuffled(content.scenarios));
     setIndex((i) => i + 1);
     setSelected(null);
   }
 
   const qualityCls: Record<string, string> = { best: ' correct', ok: '', bad: ' wrong' };
-  const qualityLabel: Record<string, string> = { best: 'Beste Option', ok: 'Vertretbar', bad: 'Fehler' };
 
   return (
     <div>
       <Link to="/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        ← Trainer
+        {L.back}
       </Link>
       <div className="page-header">
-        <div className="eyebrow">Komplette Spots analysieren</div>
-        <h1>Szenario-Trainer</h1>
-        <p className="sub">
-          Echte Spielsituationen mit allen Informationen – finde die beste Entscheidung. Nach der Antwort siehst du
-          die Bewertung jeder Option. Kontext, falls nicht anders angegeben: 6-max Cash, 100bb.
-        </p>
+        <div className="eyebrow">{L.eyebrow}</div>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub}</p>
       </div>
 
       <div className="row wrap" style={{ marginBottom: 16 }}>
-        <span className="pill">✓ {stats?.correct ?? 0} richtig</span>
-        <span className="pill">{stats?.attempts ?? 0} gesamt</span>
-        <span className="pill gold">Serie: {stats?.streak ?? 0}</span>
+        <span className="pill">{L.correctCount(stats?.correct ?? 0)}</span>
+        <span className="pill">{L.totalCount(stats?.attempts ?? 0)}</span>
+        <span className="pill gold">{L.streak(stats?.streak ?? 0)}</span>
       </div>
 
       <div className="card" style={{ maxWidth: 720 }}>
         <div className="row between wrap" style={{ marginBottom: 10 }}>
           <h2 style={{ fontSize: 19 }}>{scenario.title}</h2>
-          <span className="pill info">{scenario.street}</span>
+          <span className="pill info">{L.street(scenario.street)}</span>
         </div>
         <p className="muted" style={{ marginBottom: 14, fontSize: 15 }}>{scenario.situation}</p>
 
         <div className="row wrap" style={{ marginBottom: 18 }}>
           <div>
-            <div className="stat-label" style={{ marginBottom: 5 }}>Deine Hand</div>
+            <div className="stat-label" style={{ marginBottom: 5 }}>{L.yourHand}</div>
             <CardsRow cards={scenario.heroCards} />
           </div>
           {scenario.board.length > 0 && (
             <div style={{ marginLeft: 12 }}>
-              <div className="stat-label" style={{ marginBottom: 5 }}>Board</div>
+              <div className="stat-label" style={{ marginBottom: 5 }}>{L.board}</div>
               <CardsRow cards={scenario.board} />
             </div>
           )}
@@ -97,7 +97,7 @@ export function ScenarioTrainer() {
                 {opt.label}
                 {answered && (
                   <span className={`pill ${opt.quality === 'best' ? 'ok' : opt.quality === 'bad' ? 'danger' : ''}`} style={{ marginLeft: 'auto' }}>
-                    {qualityLabel[opt.quality]}
+                    {L.qualityLabel[opt.quality]}
                   </span>
                 )}
               </button>
@@ -113,11 +113,11 @@ export function ScenarioTrainer() {
         {answered && (
           <>
             <div className="callout tip" style={{ marginTop: 6 }}>
-              <span className="label">Das Konzept dahinter</span>
+              <span className="label">{L.lessonLabel}</span>
               {scenario.lesson}
             </div>
             <button className="btn primary" style={{ marginTop: 8 }} onClick={next}>
-              Nächstes Szenario
+              {L.nextScenario}
             </button>
           </>
         )}

@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom';
 import { CardsRow } from '../../components/PlayingCard';
 import { parseCard, type Card } from '../../lib/poker/cards';
 import { equityVsHands } from '../../lib/poker/equity';
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/equitycalc';
 
 interface ParseResult {
   cards: Card[];
   error?: string;
 }
 
-function parseCards(input: string, expected: number | null): ParseResult {
+function parseCards(input: string, expected: number | null, L: (typeof STR)['de']): ParseResult {
   const tokens = input
     .trim()
     .replace(/[,;]+/g, ' ')
@@ -18,20 +20,22 @@ function parseCards(input: string, expected: number | null): ParseResult {
   if (tokens.length === 0) return { cards: [] };
   const cards: Card[] = [];
   for (const t of tokens) {
-    if (t.length !== 2) return { cards: [], error: `„${t}“ ist keine gültige Karte (z. B. As, Kh, Td)` };
+    if (t.length !== 2) return { cards: [], error: L.invalidCard(t) };
     try {
       cards.push(parseCard(t));
     } catch {
-      return { cards: [], error: `„${t}“ ist keine gültige Karte (z. B. As, Kh, Td)` };
+      return { cards: [], error: L.invalidCard(t) };
     }
   }
   if (expected !== null && cards.length !== expected) {
-    return { cards: [], error: `Bitte genau ${expected} Karten angeben` };
+    return { cards: [], error: L.exactCards(expected) };
   }
   return { cards };
 }
 
 export function EquityCalc() {
+  const { lang } = useLang();
+  const L = STR[lang];
   const [hand1, setHand1] = useState('As Kh');
   const [hand2, setHand2] = useState('Qd Qc');
   const [hand3, setHand3] = useState('');
@@ -44,26 +48,26 @@ export function EquityCalc() {
     setError(null);
     setResult(null);
 
-    const p1 = parseCards(hand1, 2);
-    const p2 = parseCards(hand2, 2);
-    if (p1.error || p1.cards.length !== 2) return setError(p1.error ?? 'Hand 1: bitte 2 Karten angeben');
-    if (p2.error || p2.cards.length !== 2) return setError(p2.error ?? 'Hand 2: bitte 2 Karten angeben');
+    const p1 = parseCards(hand1, 2, L);
+    const p2 = parseCards(hand2, 2, L);
+    if (p1.error || p1.cards.length !== 2) return setError(p1.error ?? L.handNeedsTwo(1));
+    if (p2.error || p2.cards.length !== 2) return setError(p2.error ?? L.handNeedsTwo(2));
 
     const hands = [p1.cards, p2.cards];
     if (hand3.trim()) {
-      const p3 = parseCards(hand3, 2);
-      if (p3.error || p3.cards.length !== 2) return setError(p3.error ?? 'Hand 3: bitte 2 Karten angeben');
+      const p3 = parseCards(hand3, 2, L);
+      if (p3.error || p3.cards.length !== 2) return setError(p3.error ?? L.handNeedsTwo(3));
       hands.push(p3.cards);
     }
 
-    const pb = parseCards(board, null);
-    if (pb.error) return setError(`Board: ${pb.error}`);
+    const pb = parseCards(board, null, L);
+    if (pb.error) return setError(L.boardError(pb.error));
     if (![0, 3, 4, 5].includes(pb.cards.length)) {
-      return setError('Das Board braucht 0, 3, 4 oder 5 Karten');
+      return setError(L.boardCount);
     }
 
     const all = [...hands.flat(), ...pb.cards];
-    if (new Set(all).size !== all.length) return setError('Doppelte Karte gefunden – jede Karte gibt es nur einmal');
+    if (new Set(all).size !== all.length) return setError(L.duplicate);
 
     setBusy(true);
     // Rechnung asynchron, damit die UI nicht blockiert
@@ -77,33 +81,32 @@ export function EquityCalc() {
   return (
     <div>
       <Link to="/tools" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        ← Tools
+        {L.back}
       </Link>
       <div className="page-header">
-        <h1>Equity-Rechner</h1>
+        <h1>{L.title}</h1>
         <p className="sub">
-          Karten im Format <strong>Rang + Farbe</strong> eingeben: A K Q J T 9 … 2 und s (♠), h (♥), d (♦), c (♣).
-          Beispiel: „As Kh“ = A♠ K♥.
+          {L.subBefore}<strong>{L.subStrong}</strong>{L.subAfter}
         </p>
       </div>
 
       <div className="card" style={{ maxWidth: 640 }}>
         <div className="grid" style={{ gap: 12 }}>
           <label>
-            <div className="stat-label" style={{ marginBottom: 5 }}>Hand 1</div>
-            <input className="text-input" value={hand1} onChange={(e) => setHand1(e.target.value)} placeholder="z. B. As Kh" />
+            <div className="stat-label" style={{ marginBottom: 5 }}>{L.hand1}</div>
+            <input className="text-input" value={hand1} onChange={(e) => setHand1(e.target.value)} placeholder={L.ph1} />
           </label>
           <label>
-            <div className="stat-label" style={{ marginBottom: 5 }}>Hand 2</div>
-            <input className="text-input" value={hand2} onChange={(e) => setHand2(e.target.value)} placeholder="z. B. Qd Qc" />
+            <div className="stat-label" style={{ marginBottom: 5 }}>{L.hand2}</div>
+            <input className="text-input" value={hand2} onChange={(e) => setHand2(e.target.value)} placeholder={L.ph2} />
           </label>
           <label>
-            <div className="stat-label" style={{ marginBottom: 5 }}>Hand 3 (optional)</div>
-            <input className="text-input" value={hand3} onChange={(e) => setHand3(e.target.value)} placeholder="leer lassen für Heads-Up" />
+            <div className="stat-label" style={{ marginBottom: 5 }}>{L.hand3}</div>
+            <input className="text-input" value={hand3} onChange={(e) => setHand3(e.target.value)} placeholder={L.ph3} />
           </label>
           <label>
-            <div className="stat-label" style={{ marginBottom: 5 }}>Board (0, 3, 4 oder 5 Karten)</div>
-            <input className="text-input" value={board} onChange={(e) => setBoard(e.target.value)} placeholder="z. B. 9h 2h Jc" />
+            <div className="stat-label" style={{ marginBottom: 5 }}>{L.boardLabel}</div>
+            <input className="text-input" value={board} onChange={(e) => setBoard(e.target.value)} placeholder={L.phBoard} />
           </label>
         </div>
 
@@ -114,14 +117,14 @@ export function EquityCalc() {
         )}
 
         <button className="btn primary lg" style={{ marginTop: 16 }} onClick={compute} disabled={busy}>
-          {busy ? 'Rechne …' : 'Equity berechnen'}
+          {busy ? L.computing : L.compute}
         </button>
 
         {result && (
           <div style={{ marginTop: 22 }}>
             {result.board.length > 0 && (
               <div style={{ marginBottom: 16 }}>
-                <div className="stat-label" style={{ marginBottom: 6 }}>Board</div>
+                <div className="stat-label" style={{ marginBottom: 6 }}>{L.board}</div>
                 <CardsRow cards={result.board} />
               </div>
             )}
@@ -131,7 +134,7 @@ export function EquityCalc() {
                 <div key={i} style={{ marginBottom: 14 }}>
                   <div className="row between" style={{ marginBottom: 6 }}>
                     <CardsRow cards={h} size="sm" />
-                    <span className="big-stat" style={{ fontSize: 22 }}>{pct.toFixed(1).replace('.', ',')} %</span>
+                    <span className="big-stat" style={{ fontSize: 22 }}>{L.fmtPct(pct)}</span>
                   </div>
                   <div className="progressbar">
                     <div style={{ width: `${pct}%` }} />
@@ -139,7 +142,7 @@ export function EquityCalc() {
                 </div>
               );
             })}
-            <p className="small faint">Monte-Carlo-Simulation mit 30.000 Durchläufen (±0,5 Prozentpunkte). Splits zählen anteilig.</p>
+            <p className="small faint">{L.mcNote}</p>
           </div>
         )}
       </div>

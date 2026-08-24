@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ALL_MODULES } from '../content';
 import type { QuizQuestion } from '../content/types';
 import { QuizRunner } from '../components/QuizRunner';
 import { Icon } from '../components/Icon';
 import { useAppState } from '../state/AppState';
+import { useLang } from '../i18n';
+import { STR } from '../i18n/pages/dailyquiz';
 
 const QUESTIONS_PER_DAY = 5;
 
@@ -29,13 +30,15 @@ interface DailyQuestion extends QuizQuestion {
 
 export function DailyQuizPage() {
   const { data, completeDailyQuiz, addReviewItem } = useAppState();
+  const { lang, content } = useLang();
+  const L = STR[lang];
   const [started, setStarted] = useState(false);
   const today = todayStr();
   const alreadyDone = data.daily?.date === today;
 
   const questions = useMemo<DailyQuestion[]>(() => {
     const pool: Array<DailyQuestion & { moduleId: string; lessonId: string; qi: number }> = [];
-    for (const m of ALL_MODULES) {
+    for (const m of content.modules) {
       for (const l of m.lessons) {
         l.quiz.forEach((q, qi) => {
           pool.push({ ...q, source: `${m.title} · ${l.title}`, moduleId: m.id, lessonId: l.id, qi });
@@ -49,18 +52,18 @@ export function DailyQuizPage() {
       [pool[i], pool[j]] = [pool[j], pool[i]];
     }
     return pool.slice(0, QUESTIONS_PER_DAY);
-  }, [today]);
+  }, [today, content.modules]);
 
   return (
     <div>
       <Link to="/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        ← Trainer
+        {L.back}
       </Link>
       <div className="page-header">
-        <div className="eyebrow">Jeden Tag fünf Fragen</div>
-        <h1>Tages-Quiz</h1>
+        <div className="eyebrow">{L.eyebrow}</div>
+        <h1>{L.title}</h1>
         <p className="sub">
-          Fünf zufällige Fragen quer durch alle Module – jeden Tag neu. Bonus: 30 XP plus 4 XP pro richtiger Antwort.
+          {L.sub}
         </p>
       </div>
 
@@ -69,9 +72,9 @@ export function DailyQuizPage() {
           <div style={{ color: 'var(--gold-bright)', marginBottom: 10 }}>
             <Icon name="sun" size={38} />
           </div>
-          <h2 style={{ fontSize: 20, marginBottom: 8 }}>Heute schon erledigt!</h2>
+          <h2 style={{ fontSize: 20, marginBottom: 8 }}>{L.doneTitle}</h2>
           <p className="muted small">
-            Dein Ergebnis: <strong>{data.daily?.score} / {data.daily?.total}</strong>. Morgen warten fünf neue Fragen.
+            {L.resultPrefix} <strong>{data.daily?.score} / {data.daily?.total}</strong>{L.resultSuffix}
           </p>
         </div>
       )}
@@ -81,13 +84,12 @@ export function DailyQuizPage() {
           <div style={{ color: 'var(--gold-bright)', marginBottom: 10 }}>
             <Icon name="sun" size={38} />
           </div>
-          <h2 style={{ fontSize: 20, marginBottom: 8 }}>Bereit für heute?</h2>
+          <h2 style={{ fontSize: 20, marginBottom: 8 }}>{L.readyTitle}</h2>
           <p className="muted small" style={{ marginBottom: 18 }}>
-            {QUESTIONS_PER_DAY} Fragen aus allen Themenbereichen. Falsche Antworten wandern in deinen
-            Wiederholungsstapel.
+            {L.readyText(QUESTIONS_PER_DAY)}
           </p>
           <button className="btn primary lg" onClick={() => setStarted(true)}>
-            Tages-Quiz starten
+            {L.start}
           </button>
         </div>
       )}

@@ -5,6 +5,8 @@ import { CardsRow } from '../../components/PlayingCard';
 import { BB_DEFENSE_VS_BTN, POSITION_NAMES, RFI_CHARTS } from '../../content/ranges';
 import { combosForLabel, expandRangeSpec, handLabel } from '../../lib/poker/ranges';
 import { useAppState } from '../../state/AppState';
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/prefloptrainer';
 
 type Scenario =
   | { kind: 'rfi'; position: (typeof RFI_CHARTS)[number]['position']; cards: [number, number]; label: string }
@@ -40,6 +42,8 @@ function newScenario(): Scenario {
 
 export function PreflopTrainer() {
   const { data, recordTrainer } = useAppState();
+  const { lang } = useLang();
+  const L = STR[lang];
   const [scenario, setScenario] = useState<Scenario>(newScenario);
   const [answer, setAnswer] = useState<string | null>(null);
 
@@ -66,34 +70,35 @@ export function PreflopTrainer() {
   }
 
   const isCorrect = answer === correctAnswer;
-  const chart = scenario.kind === 'rfi' ? RFI_CHARTS.find((c) => c.position === scenario.position)! : null;
 
   return (
     <div>
       <Link to="/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        ← Trainer
+        {L.back}
       </Link>
       <div className="page-header">
-        <h1>Preflop-Trainer</h1>
-        <p className="sub">6-max Cash Game, 100bb effektiv. Entscheide nach Chart – nach der Antwort siehst du die komplette Range.</p>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub}</p>
       </div>
 
       <div className="row wrap" style={{ marginBottom: 16 }}>
-        <span className="pill">✓ {stats?.correct ?? 0} richtig</span>
-        <span className="pill">{stats?.attempts ?? 0} gesamt</span>
-        <span className="pill gold">Serie: {stats?.streak ?? 0}</span>
+        <span className="pill">{L.correctCount(stats?.correct ?? 0)}</span>
+        <span className="pill">{L.totalCount(stats?.attempts ?? 0)}</span>
+        <span className="pill gold">{L.streak(stats?.streak ?? 0)}</span>
       </div>
 
       <div className="card" style={{ maxWidth: 720 }}>
         {scenario.kind === 'rfi' ? (
           <p style={{ marginBottom: 14 }}>
-            Du sitzt <strong style={{ color: 'var(--gold-bright)' }}>{scenario.position}</strong> (
-            {POSITION_NAMES[scenario.position]}). Alle vor dir folden.
+            {L.rfiIntroBefore}
+            <strong style={{ color: 'var(--gold-bright)' }}>{scenario.position}</strong> (
+            {POSITION_NAMES[scenario.position]}){L.rfiIntroAfter}
           </p>
         ) : (
           <p style={{ marginBottom: 14 }}>
-            Du sitzt im <strong style={{ color: 'var(--gold-bright)' }}>Big Blind</strong>. Der Button eröffnet auf
-            2,5bb, der Small Blind foldet.
+            {L.bbIntroBefore}
+            <strong style={{ color: 'var(--gold-bright)' }}>{L.bbIntroStrong}</strong>
+            {L.bbIntroAfter}
           </p>
         )}
 
@@ -120,17 +125,14 @@ export function PreflopTrainer() {
         {answer && (
           <>
             <div className={`feedback-box ${isCorrect ? 'good' : 'bad'}`} style={{ marginTop: 16 }}>
-              <strong>{isCorrect ? '✓ Richtig! ' : '✗ Nicht ganz. '}</strong>
+              <strong>{isCorrect ? L.correctFb : L.wrongFb}</strong>
               {scenario.kind === 'rfi' ? (
                 <>
-                  {scenario.label} ist {correctAnswer === 'raise' ? 'ein Standard-Open' : 'kein Open'} aus{' '}
-                  {scenario.position}. {chart?.description}
+                  {L.rfiVerdict(scenario.label, correctAnswer === 'raise', scenario.position)} {L.rfiDesc[scenario.position]}
                 </>
               ) : (
                 <>
-                  {scenario.label} gehört in die{' '}
-                  {correctAnswer === '3bet' ? '3-Bet-Range' : correctAnswer === 'call' ? 'Call-Range' : 'Fold-Range'}.{' '}
-                  {BB_DEFENSE_VS_BTN.description}
+                  {L.bbVerdict(scenario.label, correctAnswer)} {L.bbDefenseDesc}
                 </>
               )}
             </div>
@@ -160,7 +162,7 @@ export function PreflopTrainer() {
             </div>
 
             <button className="btn primary" style={{ marginTop: 18 }} onClick={next}>
-              Nächste Hand →
+              {L.nextHand}
             </button>
           </>
         )}

@@ -3,10 +3,14 @@ import { Link } from 'react-router-dom';
 import { HandMatrix } from '../../components/HandMatrix';
 import { BB_DEFENSE_VS_BTN, RFI_CHARTS } from '../../content/ranges';
 import { expandRangeSpec, rangePercent } from '../../lib/poker/ranges';
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/rangeviewer';
 
 type Tab = 'UTG' | 'HJ' | 'CO' | 'BTN' | 'SB' | 'BBDEF';
 
 export function RangeViewer() {
+  const { lang } = useLang();
+  const L = STR[lang];
   const [tab, setTab] = useState<Tab>('UTG');
 
   const view = useMemo(() => {
@@ -15,8 +19,8 @@ export function RangeViewer() {
       const callRaw = expandRangeSpec(BB_DEFENSE_VS_BTN.call);
       const call = new Set([...callRaw].filter((l) => !threeBet.has(l)));
       return {
-        title: 'Big Blind vs. Button-Open (2,5bb)',
-        description: BB_DEFENSE_VS_BTN.description,
+        title: L.bbdefTitle,
+        description: L.desc.BBDEF,
         raise: threeBet,
         call,
         pct: rangePercent(new Set([...threeBet, ...call])),
@@ -26,26 +30,23 @@ export function RangeViewer() {
     const chart = RFI_CHARTS.find((c) => c.position === tab)!;
     const raise = expandRangeSpec(chart.raise);
     return {
-      title: `Open-Raise (RFI) aus ${chart.position}`,
-      description: chart.description,
+      title: L.rfiTitle(chart.position),
+      description: L.desc[chart.position],
       raise,
       call: undefined as Set<string> | undefined,
       pct: rangePercent(raise),
       raiseLabel: 'Raise',
     };
-  }, [tab]);
+  }, [tab, L]);
 
   return (
     <div>
       <Link to="/tools" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        ← Tools
+        {L.back}
       </Link>
       <div className="page-header">
-        <h1>Range-Charts</h1>
-        <p className="sub">
-          6-max Cash Game, 100bb effektiv, vereinfacht für die Praxis. Charts sind dein Startpunkt – mit Reads darfst
-          du abweichen.
-        </p>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub}</p>
       </div>
 
       <div className="row wrap" style={{ marginBottom: 18 }}>
@@ -62,7 +63,7 @@ export function RangeViewer() {
       <div className="card" style={{ maxWidth: 720 }}>
         <div className="row between wrap" style={{ marginBottom: 6 }}>
           <h2 style={{ fontSize: 18, fontWeight: 750 }}>{view.title}</h2>
-          <span className="pill gold">{Math.round(view.pct * 100)} % aller Hände</span>
+          <span className="pill gold">{L.pctOfHands(Math.round(view.pct * 100))}</span>
         </div>
         <p className="small muted" style={{ marginBottom: 16 }}>{view.description}</p>
 
@@ -86,7 +87,7 @@ export function RangeViewer() {
         <HandMatrix raise={view.raise} call={view.call} />
 
         <p className="small faint" style={{ marginTop: 14 }}>
-          Lesehilfe: Diagonale = Paare, oberhalb = suited (s), unterhalb = offsuit (o).
+          {L.readingHelp}
         </p>
       </div>
     </div>

@@ -4,16 +4,20 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { planChips, type ChipInput } from '../../lib/chips';
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/chips';
 
-const CHIP_COLORS: Array<{ label: string; color: string }> = [
-  { label: 'Weiß', color: '#e8e4d8' },
-  { label: 'Rot', color: '#c94f44' },
-  { label: 'Blau', color: '#3f6fb5' },
-  { label: 'Grün', color: '#3f8f5a' },
-  { label: 'Schwarz', color: '#494952' },
-  { label: 'Lila', color: '#7b5ea7' },
-  { label: 'Orange', color: '#d98c3a' },
-  { label: 'Gelb', color: '#cdb83d' },
+/* Die Anzeigenamen der Farben kommen sprachabhängig aus STR[lang].colorNames
+   (gleiche Reihenfolge wie hier) – sie dienen nur als Vorbelegung neuer Zeilen. */
+const CHIP_COLORS: string[] = [
+  '#e8e4d8', // Weiß / white
+  '#c94f44', // Rot / red
+  '#3f6fb5', // Blau / blue
+  '#3f8f5a', // Grün / green
+  '#494952', // Schwarz / black
+  '#7b5ea7', // Lila / purple
+  '#d98c3a', // Orange
+  '#cdb83d', // Gelb / yellow
 ];
 
 interface Row {
@@ -24,19 +28,20 @@ interface Row {
   value: string;
 }
 
-const PRESETS: Array<{ name: string; counts: number[] }> = [
-  { name: '300er-Koffer', counts: [100, 100, 50, 25, 25] },
-  { name: '500er-Koffer', counts: [150, 150, 100, 50, 50] },
-  { name: '1000er-Koffer', counts: [300, 300, 200, 100, 100] },
+/* Namen der Presets stehen sprachabhängig in STR[lang].presetNames (gleiche Reihenfolge). */
+const PRESETS: Array<{ counts: number[] }> = [
+  { counts: [100, 100, 50, 25, 25] }, // 300er-Koffer
+  { counts: [150, 150, 100, 50, 50] }, // 500er-Koffer
+  { counts: [300, 300, 200, 100, 100] }, // 1000er-Koffer
 ];
 
 const STORAGE_KEY = 'pokermentor-chips-setup';
 
-function makeRows(counts: number[]): Row[] {
+function makeRows(counts: number[], colorNames: string[]): Row[] {
   return counts.map((count, i) => ({
     id: `chip-${i}`,
-    label: CHIP_COLORS[i % CHIP_COLORS.length].label,
-    color: CHIP_COLORS[i % CHIP_COLORS.length].color,
+    label: colorNames[i % colorNames.length],
+    color: CHIP_COLORS[i % CHIP_COLORS.length],
     count: String(count),
     value: '',
   }));
@@ -65,7 +70,7 @@ function loadSaved(): { players: number; rows: Row[] } | null {
         rows: (parsed.rows as Row[]).map((r) => ({
           id: r.id.slice(0, 20),
           label: r.label.slice(0, 20),
-          color: /^#[0-9a-fA-F]{6}$/.test(r.color) ? r.color : CHIP_COLORS[0].color,
+          color: /^#[0-9a-fA-F]{6}$/.test(r.color) ? r.color : CHIP_COLORS[0],
           count: r.count.slice(0, 6),
           value: r.value.slice(0, 8),
         })),
@@ -78,9 +83,11 @@ function loadSaved(): { players: number; rows: Row[] } | null {
 }
 
 export function ChipCalculator() {
+  const { lang } = useLang();
+  const L = STR[lang];
   const saved = useMemo(loadSaved, []);
   const [players, setPlayers] = useState(saved?.players ?? 5);
-  const [rows, setRows] = useState<Row[]>(saved?.rows ?? makeRows(PRESETS[0].counts));
+  const [rows, setRows] = useState<Row[]>(saved?.rows ?? makeRows(PRESETS[0].counts, L.colorNames));
 
   useEffect(() => {
     try {
@@ -109,35 +116,32 @@ export function ChipCalculator() {
     setRows((rs) => {
       if (rs.length >= 8) return rs;
       const used = new Set(rs.map((r) => r.color));
-      const next = CHIP_COLORS.find((c) => !used.has(c.color)) ?? CHIP_COLORS[rs.length % CHIP_COLORS.length];
-      return [...rs, { id: `chip-${Date.now()}`, label: next.label, color: next.color, count: '', value: '' }];
+      const freeIdx = CHIP_COLORS.findIndex((c) => !used.has(c));
+      const idx = freeIdx >= 0 ? freeIdx : rs.length % CHIP_COLORS.length;
+      return [...rs, { id: `chip-${Date.now()}`, label: L.colorNames[idx], color: CHIP_COLORS[idx], count: '', value: '' }];
     });
   }
 
   return (
     <div>
       <div className="page-header">
-        <div className="eyebrow">Für den Pokerabend</div>
-        <h1>Chip-Rechner</h1>
-        <p className="sub">
-          Koffer aufmachen, Chips zählen, eintragen – und du bekommst sofort die faire Verteilung, den Startstack
-          und passende Blinds. Auch wenn Chips fehlen oder ihr mehrere Koffer mischt.
-        </p>
+        <div className="eyebrow">{L.eyebrow}</div>
+        <h1>{L.title}</h1>
+        <p className="sub">{L.sub}</p>
       </div>
 
       <div className="grid cols-2" style={{ alignItems: 'start' }}>
         <div className="card">
-          <div className="stat-label" style={{ marginBottom: 6 }}>Wie viele Spieler seid ihr?</div>
+          <div className="stat-label" style={{ marginBottom: 6 }}>{L.playersQuestion}</div>
           <div className="row" style={{ marginBottom: 16 }}>
-            <button className="btn sm" onClick={() => setPlayers((p) => Math.max(2, p - 1))} aria-label="Weniger Spieler">−</button>
+            <button className="btn sm" onClick={() => setPlayers((p) => Math.max(2, p - 1))} aria-label={L.fewerPlayersAria}>−</button>
             <span style={{ fontWeight: 800, fontSize: 22, minWidth: 34, textAlign: 'center' }}>{players}</span>
-            <button className="btn sm" onClick={() => setPlayers((p) => Math.min(10, p + 1))} aria-label="Mehr Spieler">+</button>
+            <button className="btn sm" onClick={() => setPlayers((p) => Math.min(10, p + 1))} aria-label={L.morePlayersAria}>+</button>
           </div>
 
-          <div className="stat-label" style={{ marginBottom: 6 }}>Welche Chips habt ihr?</div>
+          <div className="stat-label" style={{ marginBottom: 6 }}>{L.whichChips}</div>
           <p className="small muted" style={{ marginBottom: 10 }}>
-            Anzahl pro Sorte eintragen. Werte vergibt der Rechner automatisch (häufigste Sorte = kleinster Wert) –
-            du kannst sie aber überschreiben, falls eure Chips aufgedruckte Werte haben.
+            {L.chipsHelp}
           </p>
 
           {rows.map((r) => (
@@ -155,33 +159,33 @@ export function ChipCalculator() {
                 value={r.label}
                 maxLength={20}
                 onChange={(e) => updateRow(r.id, { label: e.target.value })}
-                aria-label="Chip-Name"
+                aria-label={L.chipNameAria}
               />
               <input
                 className="text-input"
                 style={{ width: 66, flexShrink: 0, padding: '12px 10px' }}
                 inputMode="numeric"
-                placeholder="Stück"
+                placeholder={L.countPlaceholder}
                 value={r.count}
                 maxLength={6}
                 onChange={(e) => updateRow(r.id, { count: e.target.value.replace(/\D/g, '') })}
-                aria-label={`Anzahl ${r.label}`}
+                aria-label={L.countAria(r.label)}
               />
               <input
                 className="text-input"
                 style={{ width: 60, flexShrink: 0, padding: '12px 10px' }}
                 inputMode="numeric"
-                placeholder="Wert"
+                placeholder={L.valuePlaceholder}
                 value={r.value}
                 maxLength={8}
                 onChange={(e) => updateRow(r.id, { value: e.target.value.replace(/\D/g, '') })}
-                aria-label={`Wert ${r.label}`}
+                aria-label={L.valueAria(r.label)}
               />
               {rows.length > 1 && (
                 <button
                   className="btn sm ghost"
                   onClick={() => setRows((rs) => rs.filter((x) => x.id !== r.id))}
-                  aria-label={`${r.label} entfernen`}
+                  aria-label={L.removeAria(r.label)}
                 >
                   ✕
                 </button>
@@ -191,11 +195,11 @@ export function ChipCalculator() {
 
           <div className="row wrap" style={{ marginTop: 12 }}>
             {rows.length < 8 && (
-              <button className="btn sm" onClick={addRow}>+ Chip-Sorte</button>
+              <button className="btn sm" onClick={addRow}>{L.addChip}</button>
             )}
-            {PRESETS.map((p) => (
-              <button key={p.name} className="btn sm ghost" onClick={() => setRows(makeRows(p.counts))}>
-                {p.name}
+            {PRESETS.map((p, i) => (
+              <button key={i} className="btn sm ghost" onClick={() => setRows(makeRows(p.counts, L.colorNames))}>
+                {L.presetNames[i]}
               </button>
             ))}
           </div>

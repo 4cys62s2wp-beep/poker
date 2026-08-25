@@ -1,0 +1,128 @@
+import { defineStrings } from '..';
+
+export const STR = defineStrings(
+  {
+    eyebrow: 'Pokerabend',
+    title: 'Tisch auf einem Gerät',
+    sub: 'Die App übernimmt Karten, Chips und Blinds. Das Gerät wandert reihum – immer zu dem, der dran ist. Kein Internet, kein Konto, keine Einrichtung.',
+
+    // Einrichtung
+    setupTitle: 'Wer spielt mit?',
+    playerName: (n: number) => `Spieler ${n}`,
+    addPlayer: '+ Spieler',
+    removePlayer: (name: string) => `${name} entfernen`,
+    startStack: 'Startchips pro Spieler',
+    blindsLabel: 'Blinds (Small / Big)',
+    blindsRaise: 'Blinds erhöhen',
+    blindsNever: 'nie (Cash-Game)',
+    blindsEvery: (n: number) => `alle ${n} Hände`,
+    fromChipCalc: 'Werte aus dem Chip-Rechner übernehmen',
+    startGame: 'Tisch eröffnen',
+    needTwo: 'Mindestens zwei Spieler mit Namen.',
+
+    // Übergabe
+    passTitle: (name: string) => `Gib das Gerät an ${name}`,
+    passSub: 'Die anderen schauen bitte weg.',
+    passReveal: 'Ich bin dran – Karten zeigen',
+
+    // Am Zug
+    yourCards: (name: string) => `Deine Karten, ${name}`,
+    board: 'Board',
+    pot: 'Pot',
+    toCall: (n: string) => `${n} zum Mitgehen`,
+    yourStack: 'Dein Stack',
+    fold: 'Fold',
+    check: 'Check',
+    call: (n: string) => `Call ${n}`,
+    raiseTo: (n: string) => `Erhöhen auf ${n}`,
+    betTo: (n: string) => `Setzen ${n}`,
+    allIn: 'All-in',
+    raiseLabel: 'Betrag',
+    confirmRaise: 'Bestätigen',
+    cancel: 'Abbrechen',
+    showRaise: 'Erhöhen …',
+
+    // Showdown
+    handOver: 'Hand beendet',
+    winners: 'Ergebnis',
+    wins: (name: string, amount: string) => `${name} gewinnt ${amount}`,
+    winsWith: (name: string, amount: string, hand: string) => `${name} gewinnt ${amount} mit ${hand}`,
+    nextHand: 'Nächste Hand',
+    endTable: 'Tisch beenden',
+    handNumber: (n: number) => `Hand ${n}`,
+    blindsNow: (sb: string, bb: string) => `Blinds ${sb} / ${bb}`,
+
+    // Abschluss
+    finalTitle: 'Endstand',
+    finalSub: 'So steht ihr am Ende des Abends da.',
+    newTable: 'Neuer Tisch',
+    bustedOut: 'ausgeschieden',
+    onlyOneLeft: 'Nur noch ein Spieler hat Chips – das war’s.',
+
+    // Hinweise
+    tipTitle: 'So läuft’s am Tisch',
+    tip: 'Legt das Gerät in die Mitte. Wer dran ist, nimmt es kurz auf, schaut auf seine Karten und entscheidet. Danach wandert es weiter. Board, Pot und Stacks sehen alle – nur die Handkarten bleiben privat.',
+    onlineHint: 'Lieber jeder mit eigenem Handy?',
+    onlineLink: 'Online-Tisch öffnen',
+    leaveConfirm: 'Tisch wirklich beenden? Der aktuelle Stand geht verloren.',
+  },
+  {
+    eyebrow: 'Poker night',
+    title: 'Table on one device',
+    sub: 'The app handles cards, chips and blinds. The device goes around the table – always to whoever is next to act. No internet, no account, no setup.',
+
+    setupTitle: 'Who’s playing?',
+    playerName: (n: number) => `Player ${n}`,
+    addPlayer: '+ Player',
+    removePlayer: (name: string) => `Remove ${name}`,
+    startStack: 'Starting chips per player',
+    blindsLabel: 'Blinds (small / big)',
+    blindsRaise: 'Raise blinds',
+    blindsNever: 'never (cash game)',
+    blindsEvery: (n: number) => `every ${n} hands`,
+    fromChipCalc: 'Use values from the chip calculator',
+    startGame: 'Open the table',
+    needTwo: 'At least two players with names.',
+
+    passTitle: (name: string) => `Pass the device to ${name}`,
+    passSub: 'Everyone else please look away.',
+    passReveal: 'It’s me – show my cards',
+
+    yourCards: (name: string) => `Your cards, ${name}`,
+    board: 'Board',
+    pot: 'Pot',
+    toCall: (n: string) => `${n} to call`,
+    yourStack: 'Your stack',
+    fold: 'Fold',
+    check: 'Check',
+    call: (n: string) => `Call ${n}`,
+    raiseTo: (n: string) => `Raise to ${n}`,
+    betTo: (n: string) => `Bet ${n}`,
+    allIn: 'All-in',
+    raiseLabel: 'Amount',
+    confirmRaise: 'Confirm',
+    cancel: 'Cancel',
+    showRaise: 'Raise …',
+
+    handOver: 'Hand finished',
+    winners: 'Result',
+    wins: (name: string, amount: string) => `${name} wins ${amount}`,
+    winsWith: (name: string, amount: string, hand: string) => `${name} wins ${amount} with ${hand}`,
+    nextHand: 'Next hand',
+    endTable: 'End table',
+    handNumber: (n: number) => `Hand ${n}`,
+    blindsNow: (sb: string, bb: string) => `Blinds ${sb} / ${bb}`,
+
+    finalTitle: 'Final chip counts',
+    finalSub: 'Here’s how the night ended.',
+    newTable: 'New table',
+    bustedOut: 'busted',
+    onlyOneLeft: 'Only one player has chips left – that’s a wrap.',
+
+    tipTitle: 'How it works at the table',
+    tip: 'Put the device in the middle. Whoever is next picks it up, checks their cards and decides. Then it moves on. Board, pot and stacks are visible to everyone – only hole cards stay private.',
+    onlineHint: 'Rather have everyone on their own phone?',
+    onlineLink: 'Open the online table',
+    leaveConfirm: 'Really end the table? The current state will be lost.',
+  },
+);

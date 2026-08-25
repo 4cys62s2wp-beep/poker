@@ -88,6 +88,13 @@ export function CloudAccountCard() {
           </button>
         </div>
 
+        {/* Die Bestätigungsmail ist die einzige Stelle, an der ein Nutzer
+            stecken bleiben kann, ohne dass die App etwas dagegen tun kann –
+            deshalb hier der Ausweg statt nur „bitte warten". */}
+        {!user.verified && (
+          <p className="small faint" style={{ marginTop: 12, marginBottom: 0 }}>{C.noMailHint}</p>
+        )}
+
         {cloud.error && <div className="feedback-box bad" style={{ marginTop: 12 }}>{cloud.error}</div>}
         {cloud.info && <div className="feedback-box good" style={{ marginTop: 12 }}>{cloud.info}</div>}
       </div>
@@ -106,6 +113,31 @@ export function CloudAccountCard() {
             ? C.introReset
             : C.introLogin}
       </p>
+
+      {/* Google steht bewusst VOR dem Formular: Es ist der einzige Weg ohne
+          Bestätigungsmail (Google liefert die Adresse bereits verifiziert) und
+          damit der einzige, der nicht an einem Spamfilter scheitern kann. */}
+      {mode !== 'reset' && (
+        <>
+          <button
+            className="btn primary"
+            type="button"
+            style={{ width: '100%' }}
+            disabled={cloud.busy}
+            onClick={() => void cloud.loginWithGoogle()}
+          >
+            {C.continueWithGoogle}
+          </button>
+          <p className="small faint" style={{ margin: '7px 0 0', textAlign: 'center' }}>
+            {C.googleHint}
+          </p>
+          <div className="row" style={{ margin: '16px 0' }}>
+            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+            <span className="small faint" style={{ padding: '0 10px' }}>{C.orDivider}</span>
+            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+          </div>
+        </>
+      )}
 
       <form onSubmit={submit}>
         {mode === 'register' && (
@@ -146,7 +178,7 @@ export function CloudAccountCard() {
           />
         )}
         <div className="row wrap">
-          <button className="btn sm primary" type="submit" disabled={cloud.busy}>
+          <button className="btn sm" type="submit" disabled={cloud.busy}>
             {cloud.busy ? C.busy : mode === 'register' ? C.submitRegister : mode === 'reset' ? C.submitReset : C.submitLogin}
           </button>
           {mode !== 'login' && (
@@ -166,25 +198,6 @@ export function CloudAccountCard() {
           )}
         </div>
       </form>
-
-      {mode !== 'reset' && (
-        <>
-          <div className="row" style={{ margin: '14px 0', color: 'var(--text-dim)' }}>
-            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-            <span className="small faint" style={{ padding: '0 10px' }}>{C.orDivider}</span>
-            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-          </div>
-          <button
-            className="btn sm"
-            type="button"
-            style={{ width: '100%' }}
-            disabled={cloud.busy}
-            onClick={() => void cloud.loginWithGoogle()}
-          >
-            {C.continueWithGoogle}
-          </button>
-        </>
-      )}
 
       {cloud.error && <div className="feedback-box bad" style={{ marginTop: 12 }}>{cloud.error}</div>}
       {cloud.info && <div className="feedback-box good" style={{ marginTop: 12 }}>{cloud.info}</div>}

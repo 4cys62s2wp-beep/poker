@@ -24,9 +24,9 @@ export interface CloudHandle {
   /** Sprache für die von Firebase verschickten Mails (Bestätigung, Passwort-Reset). */
   setLanguage: (lang: Lang) => void;
   onUser: (cb: (user: CloudUser | null) => void) => () => void;
-  /** Meldet mit Google an (bestehendes Konto oder neu) – per Redirect, damit es
-      auch in der installierten PWA auf dem Handy zuverlässig funktioniert
-      (Popups sind dort unzuverlässig bis gar nicht verfügbar). */
+  /** Meldet mit Google an (bestehendes Konto oder neu).
+      Google liefert die E-Mail bereits bestätigt – es wird keine
+      Bestätigungsmail verschickt und keine muss ankommen. */
   loginWithGoogle: () => Promise<void>;
   /** Fehler aus einer zurückkommenden Google-Weiterleitung (z. B. wenn die
       E-Mail schon per Passwort registriert ist) – einmalig nach dem Neuladen. */
@@ -180,9 +180,34 @@ async function init(): Promise<CloudHandle | null> {
       async login(email, password) {
         await authMod.signInWithEmailAndPassword(auth, email, password);
       },
+      /* Erst Popup, dann Redirect – in dieser Reihenfolge, und zwar aus einem
+         konkreten Grund: Die App läuft auf einer anderen Domain als die
+         Firebase-Auth-Domain (github.io vs. firebaseapp.com). Der Redirect-Weg
+         braucht dabei Speicherzugriff über Ursprungsgrenzen hinweg, den Safari
+         und zunehmend auch Chrome blockieren – er scheitert also ausgerechnet
+         auf dem iPhone. Das Popup hat dieses Problem nicht.
+         Umgekehrt kann das Popup blockiert sein oder in einer installierten
+         PWA fehlschlagen; dann greift der Redirect. Mit eigener Domain
+         (DOMAIN_SETUP.md) entfällt das Problem ganz. */
       async loginWithGoogle() {
         const provider = new authMod.GoogleAuthProvider();
-        await authMod.signInWithRedirect(auth, provider);
+        try {
+          await authMod.signInWithPopup(auth, provider);
+        } catch (err) {
+          const code = (err as { code?: string })?.code ?? '';
+          // Vom Nutzer bewusst abgebrochen: nicht hinterherlaufen.
+          if (code === 'auth/cancelled-popup-request' || code === 'auth/popup-closed-by-user') {
+            throw err;
+          }
+          if (
+            code === 'auth/popup-blocked' ||
+            code === 'auth/operation-not-supported-in-this-environment'
+          ) {
+            await authMod.signInWithRedirect(auth, provider);
+            return;
+          }
+          throw err;
+        }
       },
       onRedirectError(cb) {
         redirectErrorHandlers.add(cb);

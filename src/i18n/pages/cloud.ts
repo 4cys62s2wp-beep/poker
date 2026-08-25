@@ -20,6 +20,8 @@ export const STR = defineStrings(
       'Dein Fortschritt wird automatisch verschlüsselt übertragen und in der Cloud gesichert – auf jedem Gerät, auf dem du dich anmeldest, geht es genau dort weiter.',
     unverifiedInfo:
       'Bitte bestätige zuerst deine E-Mail-Adresse über den Link, den wir dir geschickt haben – erst danach wird dein Fortschritt in der Cloud gesichert.',
+    noMailHint:
+      'Keine Mail bekommen? Schau im Spam-Ordner nach – manche Anbieter (besonders iCloud) filtern sie weg. Am zuverlässigsten: abmelden und stattdessen „Mit Google anmelden“ nehmen, dabei entfällt die Bestätigung komplett.',
     lastSync: (ts: string) => `Zuletzt synchronisiert: ${new Date(ts).toLocaleTimeString('de-DE')} Uhr`,
     syncNow: 'Jetzt synchronisieren',
     checkedVerification: 'Ich habe bestätigt',
@@ -44,8 +46,9 @@ export const STR = defineStrings(
     toLogin: 'Zur Anmeldung',
     newAccount: 'Neues Konto',
     forgotPassword: 'Passwort vergessen?',
-    orDivider: 'oder',
+    orDivider: 'oder mit E-Mail',
     continueWithGoogle: 'Mit Google anmelden',
+    googleHint: 'Am schnellsten – kein Passwort, keine Bestätigungsmail.',
 
     // Rückmeldungen des CloudProviders
     infoCloudLoaded: 'Fortschritt aus der Cloud geladen.',
@@ -73,6 +76,8 @@ export const STR = defineStrings(
       'Your progress is automatically transferred encrypted and backed up in the cloud – on every device you sign in on, you pick up exactly where you left off.',
     unverifiedInfo:
       'Please confirm your email address first via the link we sent you – only then will your progress be backed up in the cloud.',
+    noMailHint:
+      'No email? Check your spam folder – some providers (iCloud especially) filter it out. Most reliable: sign out and use “Sign in with Google” instead, which skips confirmation entirely.',
     lastSync: (ts: string) => `Last synced: ${new Date(ts).toLocaleTimeString('en-GB')}`,
     syncNow: 'Sync now',
     checkedVerification: 'I have confirmed',
@@ -97,8 +102,9 @@ export const STR = defineStrings(
     toLogin: 'Back to sign-in',
     newAccount: 'New account',
     forgotPassword: 'Forgot password?',
-    orDivider: 'or',
+    orDivider: 'or with email',
     continueWithGoogle: 'Sign in with Google',
+    googleHint: 'Fastest way – no password, no confirmation email.',
 
     // Rückmeldungen des CloudProviders
     infoCloudLoaded: 'Progress loaded from the cloud.',

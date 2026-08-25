@@ -76,7 +76,7 @@ export const STR = defineStrings(
 
     aboutTitle: 'Über PokerMentor',
     aboutBody:
-      'Version 2.1 · Eine Lern- und Trainings-App für Poker – ohne Echtgeld und ohne Tracking. Poker ist ein Geschicklichkeitsspiel mit erheblichem Glücksanteil: Spiele verantwortungsvoll und setze dir Grenzen, bevor du an einen echten Tisch gehst (Modul „Psychologie & Bankroll“).',
+      'Version 2.2 · Eine Lern- und Trainings-App für Poker – ohne Echtgeld und ohne Tracking. Poker ist ein Geschicklichkeitsspiel mit erheblichem Glücksanteil: Spiele verantwortungsvoll und setze dir Grenzen, bevor du an einen echten Tisch gehst (Modul „Psychologie & Bankroll“).',
   },
   {
     eyebrow: 'Your Journey',
@@ -151,6 +151,6 @@ export const STR = defineStrings(
 
     aboutTitle: 'About PokerMentor',
     aboutBody:
-      'Version 2.1 · A learning and training app for poker – no real money, no tracking. Poker is a game of skill with a significant element of luck: play responsibly and set yourself limits before you sit down at a real table (module “Psychology & Bankroll”).',
+      'Version 2.2 · A learning and training app for poker – no real money, no tracking. Poker is a game of skill with a significant element of luck: play responsibly and set yourself limits before you sit down at a real table (module “Psychology & Bankroll”).',
   },
 );

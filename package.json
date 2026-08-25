@@ -1,7 +1,7 @@
 {
   "name": "pokermentor",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.2.0",
   "type": "module",
   "description": "PokerMentor – die Poker-Lern-App: Strategien, Training und Tools für Online- und Live-Poker",
   "scripts": {

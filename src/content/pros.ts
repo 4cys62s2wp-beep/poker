@@ -297,4 +297,4 @@ export const EDGE_SPOTS: EdgeEntry[] = [
 ];
 
 export const PRO_SOURCE_NOTE =
-  'Alle Prinzipien sind sinngemäße Zusammenfassungen öffentlich dokumentierter Aussagen aus Interviews, Kursen und Büchern der genannten Profis (u. a. PokerNews, Card Player, GipsyTeam, MasterClass, Upswing Poker, Pokercode, „Reading Poker Tells“). Keine wörtlichen Zitate, keine erfundenen Aussagen.';
+  'Alle Prinzipien sind sinngemäße Zusammenfassungen öffentlich dokumentierter Aussagen aus Interviews, Kursen und Büchern der genannten Profis (u. a. PokerNews, Card Player, GipsyTeam, MasterClass, Upswing Poker, Pokercode, „Reading Poker Tells“). Keine wörtlichen Zitate, keine erfundenen Aussagen. PokerMentor steht in keiner Verbindung zu den genannten Personen: keine Kooperation, kein Sponsoring, keine Empfehlung durch sie.';

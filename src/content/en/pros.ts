@@ -268,4 +268,4 @@ export const EDGE_SPOTS: EdgeEntry[] = [
 ];
 
 export const PRO_SOURCE_NOTE =
-  'All principles are paraphrased summaries of publicly documented statements from interviews, courses, and books by the pros named (incl. PokerNews, Card Player, GipsyTeam, MasterClass, Upswing Poker, Pokercode, "Reading Poker Tells"). No verbatim quotes, no invented statements.';
+  'All principles are paraphrased summaries of publicly documented statements from interviews, courses, and books by the pros named (incl. PokerNews, Card Player, GipsyTeam, MasterClass, Upswing Poker, Pokercode, "Reading Poker Tells"). No verbatim quotes, no invented statements. PokerMentor is not affiliated with any of the people named: no partnership, no sponsorship, no endorsement by them.';

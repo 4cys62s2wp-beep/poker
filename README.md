@@ -43,7 +43,11 @@ Trainings-App als Website und installierbare PWA. **Komplett zweisprachig
   [DOMAIN_SETUP.md](DOMAIN_SETUP.md)
 - **🎰 Chip-Rechner:** Pokerkoffer eingeben → faire Verteilung, Startstack,
   Blinds und Turnier-Fahrplan für den Pokerabend
-- **📲 PWA:** offline-fähig, aufs Handy installierbar, alle Daten bleiben lokal
+- **📲 PWA:** offline-fähig und aufs Handy installierbar; ohne Konto bleiben alle
+  Daten auf dem Gerät, mit Konto kommt die Cloud-Synchronisation dazu
+- **💳 Pro-Abo (optional):** komplette Paywall-Infrastruktur mit 7-Tage-Testphase,
+  Rechtsseiten und Kündigungsseite nach § 312k BGB – standardmäßig **aus**, siehe
+  [MONETIZATION_SETUP.md](MONETIZATION_SETUP.md)
 - **🎨 Eigenständiges Design:** „Kartenlounge“-Ästhetik mit Fraunces & Manrope,
   4-Color-Deck, mobile-first
 

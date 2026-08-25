@@ -121,14 +121,46 @@ describe('Lernfortschritt (users/{uid})', () => {
   });
 });
 
-describe('Abo-Status (customers/{uid})', () => {
+describe('Abo-Berechtigung (entitlements/{uid})', () => {
   it('darf gelesen, aber niemals selbst geschrieben werden', async () => {
-    await assertSucceeds(getDoc(doc(as(ALICE), 'customers', ALICE)));
+    await assertSucceeds(getDoc(doc(as(ALICE), 'entitlements', ALICE)));
     // Der Kern der Paywall: Niemand trägt sich selbst ein aktives Abo ein.
-    await assertFails(setDoc(doc(as(ALICE), 'customers', ALICE), { status: 'active' }));
+    await assertFails(
+      setDoc(doc(as(ALICE), 'entitlements', ALICE), { status: 'active', source: 'stripe' }),
+    );
+  });
+
+  it('lässt auch keine Teiländerung eines bestehenden Satzes zu', async () => {
+    // Ein vorhandenes Dokument zu verlängern wäre genauso schlimm wie eines
+    // anzulegen – deshalb ausdrücklich mitgeprüft.
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'entitlements', ALICE), {
+        userId: ALICE, plan: 'monthly', status: 'expired', source: 'stripe',
+        currentPeriodEnd: 1, providerSubscriptionId: 'sub_1', updatedAt: 1,
+      });
+    });
+    await assertFails(updateDoc(doc(as(ALICE), 'entitlements', ALICE), { status: 'active' }));
+    await assertFails(
+      updateDoc(doc(as(ALICE), 'entitlements', ALICE), { currentPeriodEnd: 9_999_999_999_999 }),
+    );
+    await assertFails(deleteDoc(doc(as(ALICE), 'entitlements', ALICE)));
   });
 
   it('verwehrt Einblick in fremde Abo-Daten', async () => {
+    await assertFails(getDoc(doc(as(BOB), 'entitlements', ALICE)));
+  });
+
+  it('sperrt das Ereignis-Gedächtnis der Webhooks komplett', async () => {
+    // Wer hier schreiben könnte, könnte ein noch nicht verarbeitetes
+    // Ereignis als „schon erledigt" markieren und damit unterdrücken –
+    // etwa die eigene Kündigung.
+    await assertFails(getDoc(doc(as(ALICE), 'webhookEvents', 'evt_1')));
+    await assertFails(setDoc(doc(as(ALICE), 'webhookEvents', 'evt_1'), { done: true }));
+  });
+
+  it('lässt den alten Pfad lesbar, aber weiterhin nicht beschreibbar', async () => {
+    await assertSucceeds(getDoc(doc(as(ALICE), 'customers', ALICE)));
+    await assertFails(setDoc(doc(as(ALICE), 'customers', ALICE), { status: 'active' }));
     await assertFails(getDoc(doc(as(BOB), 'customers', ALICE)));
   });
 });

@@ -15,6 +15,7 @@ import { useCloud } from '../cloud/CloudProvider';
 import { getCloud } from '../cloud/cloud';
 import { loadMonetizationConfig, MONETIZATION_OFF, type MonetizationConfig } from './config';
 import { checkAccess, trialDaysLeft, type Access, type FeatureKey } from './plan';
+import { cancelRouteFor, grantsAccess, type Entitlement } from '../payments/provider';
 
 interface ProValue {
   config: MonetizationConfig;
@@ -22,6 +23,12 @@ interface ProValue {
   enabled: boolean;
   /** Aktives, bezahltes Abo. */
   pro: boolean;
+  /** Der volle Berechtigungssatz – null, solange keiner vorliegt.
+      Wird für die Kündigungs-Führung gebraucht (Apple vs. Web). */
+  entitlement: Entitlement | null;
+  /** Wohin die Kündigung führen muss. Wer über Apple gekauft hat, kann nur
+      über Apple kündigen – ein Stripe-Portal liefe ins Leere. */
+  cancelRoute: 'apple' | 'web' | 'none';
   /** Testphase läuft gerade. */
   trialActive: boolean;
   /** Verbleibende Testtage (0 = keine/abgelaufen). */
@@ -47,7 +54,7 @@ export function ProProvider({ children }: { children: ReactNode }) {
   const { data, todayUsage, consumeFeature, startTrial: startTrialState } = useAppState();
   const cloud = useCloud();
   const [config, setConfig] = useState<MonetizationConfig>(MONETIZATION_OFF);
-  const [subscribed, setSubscribed] = useState(false);
+  const [entitlement, setEntitlement] = useState<Entitlement | null>(null);
   const [paywallReason, setPaywallReason] = useState<string | null>(null);
 
   useEffect(() => {
@@ -60,19 +67,19 @@ export function ProProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // Abo-Status des angemeldeten Kontos beobachten.
+  // Berechtigungssatz des angemeldeten Kontos beobachten.
   const uid = cloud.user?.uid ?? null;
   useEffect(() => {
     if (!config.enabled || !uid) {
-      setSubscribed(false);
+      setEntitlement(null);
       return;
     }
     let unsub: (() => void) | undefined;
     let alive = true;
     getCloud().then((handle) => {
       if (!alive || !handle) return;
-      unsub = handle.watchSubscription(uid, (active) => {
-        if (alive) setSubscribed(active);
+      unsub = handle.watchEntitlement(uid, (e) => {
+        if (alive) setEntitlement(e);
       });
     });
     return () => {
@@ -86,7 +93,10 @@ export function ProProvider({ children }: { children: ReactNode }) {
     [config.enabled, data.trialStartedAt],
   );
   const trialActive = config.enabled && daysLeft > 0;
-  const pro = config.enabled && subscribed;
+  /* Dieselbe Funktion, die auch serverseitig entscheidet (functions/src/types.ts,
+     durch einen Paritätstest synchron gehalten). Damit kann nicht auseinander-
+     fallen, was der Nutzer sieht und was er darf. */
+  const pro = config.enabled && grantsAccess(entitlement, Date.now());
 
   const ctx = useMemo(
     () => ({
@@ -129,6 +139,8 @@ export function ProProvider({ children }: { children: ReactNode }) {
       config,
       enabled: config.enabled,
       pro,
+      entitlement,
+      cancelRoute: cancelRouteFor(entitlement),
       trialActive,
       trialDaysLeft: daysLeft,
       trialAvailable: data.trialStartedAt === null,
@@ -140,8 +152,8 @@ export function ProProvider({ children }: { children: ReactNode }) {
       closePaywall,
       paywallReason,
     }),
-    [config, pro, trialActive, daysLeft, data.trialStartedAt, startTrialState, access, can, consume,
-     openPaywall, closePaywall, paywallReason],
+    [config, pro, entitlement, trialActive, daysLeft, data.trialStartedAt, startTrialState, access,
+     can, consume, openPaywall, closePaywall, paywallReason],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

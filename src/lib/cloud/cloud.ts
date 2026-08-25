@@ -5,6 +5,7 @@
    dann gar nicht erst geladen (dynamischer Import). */
 
 import type { Lang } from '../../i18n';
+import { sanitizeEntitlement, type Entitlement } from '../payments/provider';
 
 export interface CloudUser {
   uid: string;
@@ -32,11 +33,17 @@ export interface CloudHandle {
       E-Mail schon per Passwort registriert ist) – einmalig nach dem Neuladen. */
   onRedirectError: (cb: (err: unknown) => void) => () => void;
   /**
-   * Beobachtet den Abo-Status im Dokument `customers/{uid}`.
-   * Dieses Dokument schreibt ausschließlich der Zahlungs-Webhook (serverseitig);
-   * die Sicherheitsregeln erlauben dem Client nur Lesezugriff.
+   * Beobachtet den Berechtigungssatz in `entitlements/{uid}`.
+   *
+   * Dieses Dokument schreibt ausschließlich der signaturgeprüfte
+   * Zahlungs-Webhook über das Admin-SDK; die Sicherheitsregeln erlauben dem
+   * Client nur Lesezugriff (siehe firestore.rules, belegt durch Regeltests).
+   *
+   * Gemeldet wird der ganze Satz statt nur „ja/nein": Die Herkunft entscheidet,
+   * wohin eine Kündigung führen muss – wer über Apple gekauft hat, kann nur
+   * über Apple kündigen.
    */
-  watchSubscription: (uid: string, cb: (active: boolean) => void) => () => void;
+  watchEntitlement: (uid: string, cb: (e: Entitlement | null) => void) => () => void;
   /** Rohdaten aus der Cloud – der Aufrufer muss sie sanitisieren. */
   pull: (uid: string) => Promise<unknown | null>;
   push: (uid: string, name: string, email: string, data: unknown) => Promise<void>;
@@ -232,23 +239,16 @@ async function init(): Promise<CloudHandle | null> {
       onUser(cb) {
         return authMod.onAuthStateChanged(auth, (u) => cb(toCloudUser(u)));
       },
-      watchSubscription(uid, cb) {
+      watchEntitlement(uid, cb) {
         return fsMod.onSnapshot(
-          fsMod.doc(db, 'customers', uid),
+          fsMod.doc(db, 'entitlements', uid),
           (snap) => {
-            const data = snap.exists() ? (snap.data() as Record<string, unknown>) : null;
-            const status = typeof data?.status === 'string' ? data.status : '';
-            const activeStatus = status === 'active' || status === 'trialing';
-            // Ablaufdatum (Sekunden oder ISO) zusätzlich prüfen, falls vorhanden.
-            const endRaw = data?.currentPeriodEnd;
-            let notExpired = true;
-            if (typeof endRaw === 'number') notExpired = endRaw * 1000 > Date.now();
-            else if (typeof endRaw === 'string' && isFinite(new Date(endRaw).getTime())) {
-              notExpired = new Date(endRaw).getTime() > Date.now();
-            }
-            cb(activeStatus && notExpired);
+            // Auch servergeschriebene Daten laufen durch die Prüfung: „darf nur
+            // der Server schreiben" ist eine Regel, keine Garantie über die Zeit.
+            cb(snap.exists() ? sanitizeEntitlement(snap.data(), uid) : null);
           },
-          () => cb(false),
+          // Lesefehler (offline, Regel greift) heißt: kein nachweisbarer Zugang.
+          () => cb(null),
         );
       },
       async pull(uid) {

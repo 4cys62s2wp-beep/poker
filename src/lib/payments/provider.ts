@@ -262,3 +262,57 @@ export function chooseProvider(env: RuntimeEnvironment): ProviderChoice {
   if (env.useMock) return 'mock';
   return 'stripe';
 }
+
+/* ------------------------------------------------------------------ *
+ * Prüfung eingelesener Daten
+ * ------------------------------------------------------------------ */
+
+const ALL_STATUSES: readonly SubscriptionStatus[] = [
+  'active', 'trialing', 'past_due', 'grace', 'canceled', 'expired', 'refunded', 'revoked',
+];
+const ALL_SOURCES: readonly EntitlementSource[] = ['stripe', 'apple', 'mock'];
+
+/**
+ * Baut einen Berechtigungssatz aus Fremddaten Feld für Feld neu auf.
+ *
+ * Der Satz kommt zwar aus einem Dokument, das nur der Server schreiben darf –
+ * aber „darf" ist eine Regel, keine Garantie über die Zeit. Ein unbekannter
+ * Status würde sonst durch alle Prüfungen fallen und wäre am Ende ein
+ * `undefined`, das sich wie „kein Zugang" verhält oder eben nicht. Lieber
+ * ausdrücklich: Was nicht erkannt wird, gilt als abgelaufen.
+ */
+export function sanitizeEntitlement(raw: unknown, uid: string): Entitlement | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const o = raw as Record<string, unknown>;
+
+  const status = ALL_STATUSES.includes(o.status as SubscriptionStatus)
+    ? (o.status as SubscriptionStatus)
+    : 'expired';
+  const source = ALL_SOURCES.includes(o.source as EntitlementSource)
+    ? (o.source as EntitlementSource)
+    : 'stripe';
+  const plan = o.plan === 'monthly' || o.plan === 'annual' ? o.plan : null;
+
+  const num = (v: unknown): number | null =>
+    typeof v === 'number' && Number.isFinite(v) ? v : null;
+
+  return {
+    userId: uid,
+    plan,
+    status,
+    source,
+    currentPeriodEnd: num(o.currentPeriodEnd),
+    providerSubscriptionId:
+      typeof o.providerSubscriptionId === 'string' ? o.providerSubscriptionId.slice(0, 120) : null,
+    updatedAt: num(o.updatedAt) ?? 0,
+  };
+}
+
+/**
+ * Wohin führt die Kündigung? Hängt allein an der Herkunft:
+ * Ein über Apple abgeschlossenes Abo lässt sich NUR über Apple kündigen.
+ */
+export function cancelRouteFor(e: Entitlement | null): 'apple' | 'web' | 'none' {
+  if (!e) return 'none';
+  return e.source === 'apple' ? 'apple' : 'web';
+}

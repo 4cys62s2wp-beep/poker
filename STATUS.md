@@ -42,27 +42,29 @@ Verhalten der laufenden App zunächst **nichts**.
 |---|---|
 | `eb7899b` | *(Vorgänger-Branch)* Spielstil-Kennzahlen: Bibliothek + Erfassung am Übungstisch, 244 Tests |
 | `7598f54` | Phase 1.1: Bestandsaufnahme, Betriebsdateien, Schlüssel-Prüfung der Historie |
-| *folgt* | Phase 1.2: Provider-Abstraktion (Vertrag, Mock, Stripe, StoreKit-Gerüst) |
+| `a5f75da` | Phase 1.2: Provider-Abstraktion (Vertrag, Mock, Stripe, StoreKit-Gerüst), 270 Tests |
+| *folgt* | Phase 1.3: Entitlement-Service – Statusmaschine, Regeln umgezogen, 313 Tests |
 
 ---
 
 ## Exakt nächster Schritt
 
-**Phase 1.3 — Entitlement-Service serverseitig.**
+**Phase 1.4 — Webhooks fertigstellen.**
 
-Anlegen: `functions/` (Firebase Cloud Functions, TypeScript) mit
+Die Statusmaschine und die Stripe-Signaturprüfung stehen und sind geprüft.
+Es fehlen noch:
 
-1. `getEntitlement` — liest `entitlements/{uid}`, uid aus dem geprüften Token
-2. `createCheckoutSession` / `createPortalSession` — Stripe, Schlüssel als Secret
-3. Schreibpfad auf `entitlements/{uid}`, **nur** aus Functions
-
-Dazu `firestore.rules`: `customers/{uid}` → `entitlements/{uid}` umziehen,
-Client darf nur lesen. Regeltests in `src/lib/__tests__/rules.test.ts`
-mitziehen — der Test „niemand trägt sich selbst ein Abo ein" muss auf dem
-neuen Pfad grün sein.
-
-Tests laufen gegen den Emulator (`npm run test:rules`), nicht gegen echtes
-Firebase.
+1. `functions/src/webhooks/appleVerify.ts` — JWS gegen die Apple Root CA
+   prüfen (ES256, Zertifikatskette aus dem `x5c`-Kopf). Mit selbst erzeugten
+   Testschlüsseln prüfbar.
+2. `functions/src/webhooks/stripeMap.ts` und `appleMap.ts` — Anbieter-Ereignis
+   in `NormalizedEvent` übersetzen.
+3. `functions/src/index.ts` — die dünnen Firebase-Adapter
+   (`getEntitlement`, `createCheckoutSession`, `createPortalSession`,
+   `stripeWebhook`, `appleWebhook`). Nutzt firebase-functions und
+   firebase-admin, ist deshalb **nicht** im normalen Testlauf prüfbar.
+4. `functions/package.json` + `tsconfig.json`.
+5. Statusmaschine als Tabelle in `docs/` ausgeben (Anforderung 1.4).
 
 ---
 

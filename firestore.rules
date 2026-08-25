@@ -43,21 +43,34 @@ service cloud.firestore {
       allow read, write: if isMe(uid);
     }
 
-    // Abo-Status: Client darf NUR LESEN. Geschrieben wird ausschließlich
-    // serverseitig vom Zahlungs-Webhook – niemand trägt sich selbst ein Abo ein.
+    /* Abo-Berechtigung: Der Client darf NUR LESEN.
+       Geschrieben wird ausschließlich serverseitig durch die Cloud Functions
+       (functions/src/entitlement.ts), ausgelöst von signaturgeprüften
+       Webhooks. Das Admin-SDK umgeht diese Regeln – deshalb genügt hier ein
+       schlichtes `write: false`, und genau deshalb ist der Status nicht
+       fälschbar: Es gibt keinen Client-Pfad, der schreiben könnte.
+
+       Enthält: userId, plan, status, source, currentPeriodEnd,
+       providerSubscriptionId, updatedAt. */
+    match /entitlements/{uid} {
+      allow read: if isMe(uid);
+      allow write: if false;
+    }
+
+    /* Verarbeitete Webhook-Ereignisse (Idempotenz). Geht den Client nichts an:
+       weder lesen noch schreiben. Nur das Admin-SDK greift darauf zu. */
+    match /webhookEvents/{eventId} {
+      allow read, write: if false;
+    }
+
+    /* Alter Pfad aus der ersten Paywall-Fassung. Bleibt lesbar, damit ein
+       Nutzer mit altem Datensatz nicht plötzlich vor einem Fehler steht,
+       solange die Umstellung läuft. Schreiben war und bleibt gesperrt. */
     match /customers/{uid} {
       allow read: if isMe(uid);
       allow write: if false;
 
-      match /checkout_sessions/{id} {
-        allow read, create: if isMe(uid);
-        allow update, delete: if false;
-      }
-      match /subscriptions/{id} {
-        allow read: if isMe(uid);
-        allow write: if false;
-      }
-      match /payments/{id} {
+      match /{sub=**} {
         allow read: if isMe(uid);
         allow write: if false;
       }

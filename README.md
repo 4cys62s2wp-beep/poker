@@ -41,6 +41,10 @@ Trainings-App als Website und installierbare PWA. **Komplett zweisprachig
 - **📤 Teilen:** QR-Code + System-Teilen-Dialog in der App, professionelle
   Link-Vorschau (Open Graph) für WhatsApp & Social Media; eigene Domain via
   [DOMAIN_SETUP.md](DOMAIN_SETUP.md)
+- **👥 Mit Freunden spielen:** Pokertisch **auf einem Gerät** (App als Dealer und
+  Chipverwaltung, ohne Internet und ohne Konto) sowie **Online-Tisch** mit QR-Code
+  und 6-stelligem Code, bei dem jeder sein eigenes Handy nutzt; dazu Freundesliste
+  mit Anfragen und Online-Anzeige – siehe [MULTIPLAYER_SETUP.md](MULTIPLAYER_SETUP.md)
 - **🎰 Chip-Rechner:** Pokerkoffer eingeben → faire Verteilung, Startstack,
   Blinds und Turnier-Fahrplan für den Pokerabend
 - **📲 PWA:** offline-fähig und aufs Handy installierbar; ohne Konto bleiben alle

@@ -13,7 +13,7 @@ export const STR = defineStrings(
     unavailableTitle: 'Online-Tisch ist hier nicht eingerichtet',
     unavailableBody:
       'Für gemeinsame Tische über mehrere Geräte braucht die App ein (kostenloses) Firebase-Projekt. Diese Installation läuft ohne – deshalb gibt es hier keine Online-Räume.',
-    unavailableSetup: 'Einrichtung: FIREBASE_SETUP.md im Projekt.',
+    unavailableSetup: 'Die Anleitung dafür liegt im Projekt – rund fünf Minuten Einrichtung.',
     unavailableLink: 'Stattdessen auf einem Gerät spielen',
     signInTitle: 'Dafür brauchst du ein Konto',
     signInBody:
@@ -129,7 +129,7 @@ export const STR = defineStrings(
     unavailableTitle: 'Online tables are not set up here',
     unavailableBody:
       'Shared tables across devices need a (free) Firebase project. This installation runs without one, so there are no online rooms here.',
-    unavailableSetup: 'Setup: see FIREBASE_SETUP.md in the project.',
+    unavailableSetup: 'The guide is in the project – about five minutes of setup.',
     unavailableLink: 'Play on a single device instead',
     signInTitle: 'This needs an account',
     signInBody:

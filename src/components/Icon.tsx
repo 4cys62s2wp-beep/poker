@@ -30,7 +30,8 @@ export type IconName =
   | 'notes'
   | 'lock'
   | 'check'
-  | 'crown';
+  | 'crown'
+  | 'table';
 
 interface Props {
   name: IconName;
@@ -268,6 +269,16 @@ function paths(name: IconName) {
       return (
         <g {...STROKE}>
           <path d="M5 12.6l4.4 4.4L19 7.4" />
+        </g>
+      );
+    // Ovaler Pokertisch mit Chips – für den Mehrspieler-Bereich.
+    case 'table':
+      return (
+        <g {...STROKE}>
+          <ellipse cx="12" cy="12" rx="9" ry="6.2" />
+          <ellipse cx="12" cy="12" rx="6.2" ry="3.6" />
+          <circle cx="12" cy="6.6" r="0.9" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="17.4" r="0.9" fill="currentColor" stroke="none" />
         </g>
       );
     case 'crown':

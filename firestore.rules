@@ -1,40 +1,77 @@
 rules_version = '2';
 
-// PokerMentor – Firestore-Sicherheitsregeln.
+/* PokerMentor – Firestore-Sicherheitsregeln.
+
+   Drei Bereiche: Lernfortschritt/Abo, Freunde/Anwesenheit, Online-Tische.
+   Ausführlich kommentierte Einzelfassungen liegen in firestore.rules.social
+   und firestore.rules.multiplayer – dort ist jede Regel begründet.
+   DIESE Datei wird in der Firebase-Konsole veröffentlicht. */
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Lernfortschritt: nur das eigene Dokument, nur mit bestätigter E-Mail.
-    match /users/{uid} {
-      allow read, write: if request.auth != null
-        && request.auth.uid == uid
-        && request.auth.token.email_verified == true;
+    /* ---------------- Hilfsfunktionen ---------------- */
+
+    // Angemeldet UND E-Mail bestätigt – dieselbe Hürde in allen Bereichen.
+    function verified() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+    function socialUser() { return verified(); }
+    function signedIn() { return verified(); }
+    function isMe(uid) { return verified() && request.auth.uid == uid; }
+
+    // Liegt im Postfach von `owner` eine Anfrage von `sender`? Bei einem Batch
+    // sieht exists() den Stand VOR dem Batch – die Anfrage darf also im selben
+    // Schreibvorgang gelöscht werden.
+    function requestExists(owner, sender) {
+      return exists(/databases/$(database)/documents/social/$(owner)/requests/$(sender));
+    }
+    function hasFriend(owner, other) {
+      return exists(/databases/$(database)/documents/social/$(owner)/friends/$(other));
+    }
+    function validName(name) {
+      return name is string && name.size() <= 40;
     }
 
-    // Abo-Status: der Client darf NUR LESEN.
-    // Geschrieben wird ausschließlich serverseitig durch den Stripe-Webhook
-    // (Cloud Function / Firebase-Extension) mit Admin-Rechten – dadurch kann
-    // sich niemand selbst ein Abo eintragen.
+    function roomPath() {
+        return /databases/$(database)/documents/tables/$(code);
+      }
+
+    function memberPath(uid) {
+        return /databases/$(database)/documents/tables/$(code)/members/$(uid);
+      }
+
+    function hostAbsent() {
+        return !exists(memberPath(resource.data.hostUid))
+          || get(memberPath(resource.data.hostUid)).data.lastSeen < request.time.toMillis() - 20000;
+      }
+
+    /* ---------------- 1. Lernfortschritt & Abo ---------------- */
+
+    match /users/{uid} {
+      allow read, write: if isMe(uid);
+    }
+
+    // Abo-Status: Client darf NUR LESEN. Geschrieben wird ausschließlich
+    // serverseitig vom Zahlungs-Webhook – niemand trägt sich selbst ein Abo ein.
     match /customers/{uid} {
-      allow read: if request.auth != null && request.auth.uid == uid;
+      allow read: if isMe(uid);
       allow write: if false;
 
-      // Unterdokumente der Stripe-Extension (Checkout-Sessions, Abos, Zahlungen).
       match /checkout_sessions/{id} {
-        allow read, create: if request.auth != null && request.auth.uid == uid;
+        allow read, create: if isMe(uid);
         allow update, delete: if false;
       }
       match /subscriptions/{id} {
-        allow read: if request.auth != null && request.auth.uid == uid;
+        allow read: if isMe(uid);
         allow write: if false;
       }
       match /payments/{id} {
-        allow read: if request.auth != null && request.auth.uid == uid;
+        allow read: if isMe(uid);
         allow write: if false;
       }
     }
 
-    // Produkt- und Preisdaten sind öffentlich lesbar, aber nie clientseitig änderbar.
     match /products/{id} {
       allow read: if true;
       allow write: if false;
@@ -43,6 +80,180 @@ service cloud.firestore {
         allow write: if false;
       }
     }
+
+    /* ---------------- 2. Freunde, Anfragen, Anwesenheit ---------------- */
+
+    match /friendCodes/{code} {
+          allow get: if socialUser();
+          allow list: if false;
+          allow create: if socialUser()
+            && request.resource.data.keys().hasOnly(['uid'])
+            && request.resource.data.uid == request.auth.uid;
+          allow update, delete: if false;
+        }
+
+    match /social/{uid}/friends/{friendUid} {
+          allow read: if isMe(uid);
+
+          allow create: if socialUser()
+            && uid != friendUid
+            && (isMe(uid) || isMe(friendUid))
+            && request.resource.data.keys().hasOnly(['name', 'since'])
+            && validName(request.resource.data.name)
+            && request.resource.data.since == request.time
+            && requestExists(request.auth.uid, uid == request.auth.uid ? friendUid : uid);
+
+          allow update: if (isMe(uid) || isMe(friendUid))
+            && request.resource.data.keys().hasOnly(['name', 'since'])
+            && validName(request.resource.data.name)
+            && request.resource.data.since == resource.data.since;
+
+          allow delete: if isMe(uid) || isMe(friendUid);
+        }
+
+    match /social/{uid}/requests/{fromUid} {
+          allow read: if isMe(uid);
+
+          allow create: if isMe(fromUid)
+            && uid != fromUid
+            && request.resource.data.keys().hasOnly(['fromUid', 'name', 'createdAt'])
+            && request.resource.data.fromUid == fromUid
+            && validName(request.resource.data.name)
+            && request.resource.data.createdAt == request.time;
+
+          allow update: if false;
+
+          // Empfänger: annehmen/ablehnen. Absender: zurückziehen.
+          allow delete: if isMe(uid) || isMe(fromUid);
+        }
+
+    match /social/{uid}/outgoing/{toUid} {
+          allow read: if isMe(uid);
+
+          allow create: if isMe(uid)
+            && uid != toUid
+            && request.resource.data.keys().hasOnly(['createdAt'])
+            && request.resource.data.createdAt == request.time;
+
+          allow update: if false;
+          allow delete: if isMe(uid) || isMe(toUid);
+        }
+
+    match /presence/{uid} {
+          allow get: if isMe(uid)
+            || (socialUser() && hasFriend(request.auth.uid, uid));
+          allow list: if false;
+
+          allow create, update: if isMe(uid)
+            && request.resource.data.keys().hasOnly(['lastSeen'])
+            && request.resource.data.lastSeen == request.time;
+
+          // Abmelden/Tab schließen: sofort offline.
+          allow delete: if isMe(uid);
+        }
+
+    /* ---------------- 3. Online-Tische ---------------- */
+
+    match /tables/{code} {
+
+      // signedIn() ist oben global definiert.
+
+      function roomPath() {
+        return /databases/$(database)/documents/tables/$(code);
+      }
+
+      function memberPath(uid) {
+        return /databases/$(database)/documents/tables/$(code)/members/$(uid);
+      }
+
+      // Der Host gilt als weg, wenn sein Mitgliedsdokument fehlt oder sein letzter
+      // Herzschlag älter als 20 s ist (protocol.PRESENCE_TIMEOUT_MS).
+      function hostAbsent() {
+        return !exists(memberPath(resource.data.hostUid))
+          || get(memberPath(resource.data.hostUid)).data.lastSeen < request.time.toMillis() - 20000;
+      }
+
+      // Jeder angemeldete Nutzer, der den 6-stelligen Code kennt, darf den Raum
+      // sehen. Der Code ist das Geheimnis (32^6 ≈ 1,07 Mrd. Möglichkeiten); im
+      // Raumdokument stehen ohnehin KEINE Karten.
+      allow read: if signedIn();
+
+      // Anlegen darf nur, wer sich selbst als Host einträgt; die Dokument-ID muss
+      // dem Code im Dokument entsprechen, und die Versionszählung startet bei 1.
+      allow create: if signedIn()
+        && request.resource.data.hostUid == request.auth.uid
+        && request.resource.data.code == code
+        && request.resource.data.version == 1
+        && request.resource.data.seats.size() <= 6;
+
+      // Ändern darf normalerweise nur der Host. Zwei zusätzliche Bedingungen:
+      //  • version muss echt steigen  → verhindert Zurückrollen und macht die
+      //    optimistische Konflikterkennung (online.pushState) verlässlich.
+      //  • code bleibt unverändert    → ein Raum kann nicht „umziehen".
+      // Übernahme: Ist der Host weg (hostAbsent), darf ein vorhandenes Mitglied
+      // sich selbst als neuen Host eintragen – aber nur sich selbst. Welcher der
+      // Verbliebenen das tut, entscheiden alle Clients deterministisch identisch
+      // (protocol.chooseHost), sodass sich nicht mehrere gegenseitig überschreiben.
+      allow update: if signedIn()
+        && request.resource.data.code == resource.data.code
+        && request.resource.data.version > resource.data.version
+        && request.resource.data.seats.size() <= 6
+        && (
+          (request.auth.uid == resource.data.hostUid
+            && request.resource.data.hostUid == resource.data.hostUid)
+          || (hostAbsent()
+            && request.resource.data.hostUid == request.auth.uid
+            && exists(memberPath(request.auth.uid)))
+        );
+
+      // Aufräumen darf nur der Host (z. B. „Tisch schließen").
+      allow delete: if signedIn() && request.auth.uid == resource.data.hostUid;
+
+      // -------------------------------------------------------------------------
+      // Mitglieder: Anwesenheit, Bereitschaft, Zugwunsch
+      // -------------------------------------------------------------------------
+      match /members/{uid} {
+
+        // Alle am Tisch sehen, wer da ist und wer bereit ist. Karten stehen hier
+        // nicht – nur Name, Zeitstempel und der zuletzt gewünschte Zug.
+        allow read: if signedIn();
+
+        // Schreiben darf ausschließlich das Mitglied selbst. Damit kann niemand
+        // für einen anderen Spieler „foldenrufen": Der Host nimmt Zugwünsche nur
+        // aus dem Dokument des Spielers entgegen, der laut Spielzustand am Zug ist
+        // (protocol.canPlayerAct).
+        // lastSeen darf nicht weit in der Zukunft liegen – sonst könnte sich ein
+        // Client dauerhaft „anwesend" stellen und die Host-Übernahme blockieren.
+        allow create, update: if signedIn()
+          && request.auth.uid == uid
+          && request.resource.data.uid == uid
+          && request.resource.data.lastSeen is number
+          && request.resource.data.lastSeen < request.time.toMillis() + 60000;
+
+        // Verlassen: nur man selbst. (Der Host räumt den Sitz danach ab.)
+        allow delete: if signedIn() && request.auth.uid == uid;
+      }
+
+      // -------------------------------------------------------------------------
+      // Hole-Cards: das Herzstück des Kartenschutzes
+      // -------------------------------------------------------------------------
+      match /private/{uid} {
+
+        // LESEN NUR DER BESITZER. Kein Mitspieler – auch der Host nicht – kann die
+        // Karten eines anderen aus der Datenbank holen. (Dass das Host-GERÄT sie
+        // beim Austeilen kennt, ist eine andere Frage; siehe Kopf dieser Datei.)
+        allow read: if signedIn() && request.auth.uid == uid;
+
+        // Geschrieben werden die Karten vom Geber – aktuell der Host-Client.
+        // Wandert das Austeilen in eine Cloud Function, kann diese Zeile auf
+        // `if false` gesetzt werden: Das Admin-SDK umgeht die Regeln.
+        allow write: if signedIn()
+          && exists(roomPath())
+          && request.auth.uid == get(roomPath()).data.hostUid;
+      }
+    }
+
+    /* ---------------- Alles Übrige ist gesperrt ---------------- */
 
     match /{document=**} {
       allow read, write: if false;

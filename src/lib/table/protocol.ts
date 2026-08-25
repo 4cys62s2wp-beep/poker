@@ -92,6 +92,9 @@ export const MAX_SEATS = 6;
 /** Ab wann gilt ein Spieler als weg? (Herzschlag alle HEARTBEAT_MS.) */
 export const PRESENCE_TIMEOUT_MS = 20_000;
 export const HEARTBEAT_MS = 6_000;
+/** Wie lange darf ein abwesender Spieler den Tisch aufhalten, bevor der Host
+    für ihn checkt bzw. foldet? Ohne das blockiert ein leerer Akku alle. */
+export const AUTO_ACT_MS = 45_000;
 
 export interface RoomConfig {
   startStack: number;
@@ -386,6 +389,36 @@ export function checkPending(room: RoomDoc, uid: string, pending: PendingAction 
   if (!canPlayerAct(room.state, uid)) return { ok: false, reason: 'not-your-turn' };
   if (!isActionLegal(room.state, pending.action)) return { ok: false, reason: 'illegal' };
   return { ok: true, action: pending.action };
+}
+
+/* ==========================================================================
+   Notzug für Abwesende
+   ========================================================================== */
+
+/**
+ * Ist der Spieler am Zug längst weg, handelt der Host stellvertretend – so
+ * behutsam wie möglich: Check, wenn es nichts kostet, sonst Fold. Das ist
+ * dieselbe Regel wie „Sit out" im Online-Poker und verhindert, dass ein
+ * abgestürztes Handy die Runde einfriert.
+ * Rückgabe: für wen und was – oder null, wenn nichts zu tun ist.
+ */
+export function autoActionFor(
+  room: RoomDoc,
+  members: MemberDoc[],
+  now: number,
+  timeout: number = AUTO_ACT_MS,
+): { uid: string; action: Action } | null {
+  if (room.phase !== 'hand' || !room.state) return null;
+  const uid = toActUid(room.state);
+  if (!uid) return null;
+  const m = members.find((x) => x.uid === uid);
+  // Ein gelöschtes Mitgliedsdokument heißt: bewusst gegangen → sofort handeln.
+  const lastSeen = m ? m.lastSeen : 0;
+  if (onlineFrom(lastSeen, now)) return null;
+  if (now - lastSeen <= timeout) return null;
+  const la = legalActionsFor(room.state);
+  if (!la) return null;
+  return { uid, action: la.canCheck ? { type: 'check' } : { type: 'fold' } };
 }
 
 /* ==========================================================================

@@ -7,6 +7,7 @@ import { UpgradePage } from './pages/UpgradePage';
 import { LegalPage } from './pages/LegalPage';
 import { CancelPage } from './pages/CancelPage';
 import { LocalTablePage } from './pages/table/LocalTablePage';
+import { OnlineTablePage } from './pages/table/OnlineTablePage';
 import { Dashboard } from './pages/Dashboard';
 import { LearnPage } from './pages/LearnPage';
 import { ModulePage } from './pages/ModulePage';
@@ -75,6 +76,7 @@ export function App() {
         <Route path="/rechtliches" element={<LegalPage />} />
         <Route path="/kuendigen" element={<CancelPage />} />
         <Route path="/tisch" element={<LocalTablePage />} />
+        <Route path="/tisch/online" element={<OnlineTablePage />} />
         <Route path="*" element={<Dashboard />} />
         </Route>
       </Routes>

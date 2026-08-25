@@ -28,6 +28,7 @@ import {
   HEARTBEAT_MS,
   MAX_SEATS,
   canPlayerAct,
+  autoActionFor,
   canStartHand,
   checkPending,
   isActionLegal,
@@ -378,26 +379,36 @@ export function OnlineTablePage() {
         });
         return;
       }
-      for (const m of members) {
-        const check = checkPending(room, m.uid, m.pending);
-        if (!check.ok) continue;
+      /** Zug anwenden und den neuen Stand veröffentlichen. */
+      const applyLocal = (action: Action): boolean => {
         try {
-          applyAction(local.game, check.action);
+          applyAction(local.game, action);
         } catch {
-          // Sollte durch checkPending ausgeschlossen sein – lieber ignorieren
+          // Sollte durch checkPending ausgeschlossen sein – lieber überspringen
           // als den Tisch mit einer Ausnahme stehen zu lassen.
-          continue;
+          return false;
         }
         local.seq = room.seq + 1;
         saveHostGame(code, local);
-        const state = toPublicState(local.game, local.uids);
+        const next = toPublicState(local.game, local.uids);
         write({
-          state,
+          state: next,
           seq: local.seq,
-          ...(state.handOver ? { phase: 'lobby' as const, seats: settleStacks(room.seats, state) } : {}),
+          ...(next.handOver ? { phase: 'lobby' as const, seats: settleStacks(room.seats, next) } : {}),
         });
-        return;
+        return true;
+      };
+
+      for (const m of members) {
+        const check = checkPending(room, m.uid, m.pending);
+        if (!check.ok) continue;
+        if (applyLocal(check.action)) return;
       }
+
+      // Niemand hat gehandelt: Steht ein längst abwesender Spieler am Zug,
+      // handelt der Host für ihn – sonst friert die Runde ein.
+      const auto = autoActionFor(room, members, stamp);
+      if (auto) applyLocal(auto.action);
       return;
     }
 
@@ -695,10 +706,14 @@ export function OnlineTablePage() {
   }
 
   if (!room) {
+    // Noch kein Snapshot – oder die Verbindung hakt gerade.
     return (
       <div>
         <PageHead L={L} />
-        <div className="card small muted">{L.checking}</div>
+        <div className="card small muted">{view?.status === 'error' ? L.reconnecting : L.checking}</div>
+        <button className="btn sm ghost" style={{ marginTop: 12 }} onClick={() => void leave()}>
+          {L.backToStart}
+        </button>
       </div>
     );
   }

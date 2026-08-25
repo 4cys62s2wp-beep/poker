@@ -40,6 +40,7 @@ export function Layout() {
       items: [
         { to: '/coach', icon: 'coach', label: L.liveCoach },
         { to: '/spielen', icon: 'play', label: L.practiceTable },
+        { to: '/tisch', icon: 'table', label: L.pokerNight },
         { to: '/tools', icon: 'tools', label: L.tools },
       ],
     },
@@ -68,6 +69,8 @@ export function Layout() {
     ['/tagesquiz', L.dailyQuiz],
     ['/trainer', L.trainer],
     ['/coach', L.liveCoach],
+    ['/tisch/online', L.onlineTable],
+    ['/tisch', L.pokerNight],
     ['/spielen', L.practiceTable],
     ['/tools', L.tools],
     ['/glossar', L.glossary],

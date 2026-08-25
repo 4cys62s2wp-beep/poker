@@ -60,6 +60,11 @@ ohnehin, sobald Google-Anmeldung angeboten wird), dann bauen wir es mit deinen W
 Die Regeln erzwingen: Jeder Nutzer kann **nur sein eigenes** Dokument lesen/schreiben, und nur
 mit **bestätigter E-Mail-Adresse**. Alles andere ist gesperrt.
 
+Das ist nicht nur behauptet: `npm run test:rules` fährt den Firestore-Emulator hoch und prüft die
+Regeln mit 26 Tests – unter anderem, dass niemand fremde Lernstände liest, sich niemand selbst ein
+Abo einträgt und kein Mitspieler die Handkarten eines anderen abrufen kann. Braucht Java, sonst
+nichts.
+
 ## 5. Domain freigeben
 
 **Authentication → Settings → Autorisierte Domains**: `localhost` ist schon drin, füge deine

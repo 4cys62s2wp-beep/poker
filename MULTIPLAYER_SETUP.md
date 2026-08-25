@@ -58,6 +58,11 @@ kann deine Karten sehen** — sie liegen in einem Bereich, den nur dein eigenes 
 lesen darf, und das erzwingen die Sicherheitsregeln. Technisch kennt aber das Gerät
 des Gastgebers alle Blätter, weil es ja austeilt.
 
+Dass das so ist, steht nicht nur da: 26 Sicherheitstests laufen gegen den echten
+Firestore-Emulator und prüfen unter anderem, dass ein Mitspieler die Karten eines
+anderen **nicht** abrufen kann — und dass selbst der Gastgeber sie nicht aus der
+Datenbank zurückholen kann. Starten mit `npm run test:rules` (braucht Java).
+
 Unter Freunden ist das exakt dasselbe Vertrauen wie beim Geben am Küchentisch. Für
 Spiel um echtes Geld wäre es das nicht — dafür müsste das Austeilen in eine
 serverseitige Funktion wandern. Die Architektur ist darauf vorbereitet: Alle
@@ -93,10 +98,6 @@ die Freundesliste eines anderen einsehen oder die Nutzerschaft durchblättern.
 
 Ehrlich benannt, damit es keine Überraschungen gibt:
 
-- **Die Sicherheitsregeln sind noch nie gegen ein echtes Firebase gelaufen.** Sie
-  sind sorgfältig geschrieben und kommentiert, aber weder kompiliert noch getestet.
-  Prüfe sie vor dem ersten echten Spiel einmal mit dem Firebase-Emulator
-  (`firebase emulators:exec`) oder beobachte die erste Runde aufmerksam.
 - **Kein Rebuy:** Wer alle Chips verloren hat, muss den Tisch verlassen und neu
   beitreten, um wieder Chips zu bekommen.
 - **Der Verlauf** („Spieler X setzt 40") wird vom Gerät des Gastgebers geschrieben

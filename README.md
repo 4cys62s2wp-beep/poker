@@ -35,7 +35,9 @@ Trainings-App als Website und installierbare PWA. **Komplett zweisprachig
   Cloud-Konten mit E-Mail-Verifizierung und Geräte-Sync via Firebase –
   Anleitung in [FIREBASE_SETUP.md](FIREBASE_SETUP.md)
 - **🔒 Sicherheit:** Content-Security-Policy, validierte Datenimporte
-  (Backups/Cloud), 0 bekannte Abhängigkeits-Schwachstellen (`npm audit`)
+  (Backups/Cloud), 0 bekannte Abhängigkeits-Schwachstellen (`npm audit`);
+  die Firestore-Regeln sind mit 26 Tests gegen den echten Emulator abgesichert
+  (`npm run test:rules`) – inklusive Nachweis, dass niemand fremde Handkarten liest
 - **🌍 Zwei Sprachen:** komplette App und alle Lerninhalte auf Deutsch und
   Englisch; englische Inhalte werden nur geladen, wenn Englisch aktiv ist
 - **📤 Teilen:** QR-Code + System-Teilen-Dialog in der App, professionelle
@@ -61,6 +63,7 @@ Trainings-App als Website und installierbare PWA. **Komplett zweisprachig
 npm install
 npm run dev        # Dev-Server
 npm test           # Unit-Tests (Evaluator, Engine, Equity, Simulation)
+npm run test:rules # Firestore-Sicherheitsregeln gegen den Emulator (braucht Java)
 npm run build      # Produktions-Build nach dist/
 npm run build:single  # Alles-in-einer-HTML-Datei nach dist-single/
 npm run icons      # App-Icons neu generieren

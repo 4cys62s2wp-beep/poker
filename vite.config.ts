@@ -1,4 +1,4 @@
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, type Plugin } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 
 // Content-Security-Policy nur im Produktions-Build injizieren:
@@ -44,5 +44,11 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+  },
+  test: {
+    // Die Regeltests brauchen Java und den laufenden Firestore-Emulator und
+    // liefen bei `npm test` sonst zwangsläufig rot. Sie haben mit
+    // `npm run test:rules` einen eigenen Lauf (vitest.rules.config.ts).
+    exclude: ['**/node_modules/**', '**/dist/**', '**/rules.test.ts'],
   },
 });

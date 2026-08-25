@@ -33,18 +33,9 @@ service cloud.firestore {
       return name is string && name.size() <= 40;
     }
 
-    function roomPath() {
-        return /databases/$(database)/documents/tables/$(code);
-      }
-
-    function memberPath(uid) {
-        return /databases/$(database)/documents/tables/$(code)/members/$(uid);
-      }
-
-    function hostAbsent() {
-        return !exists(memberPath(resource.data.hostUid))
-          || get(memberPath(resource.data.hostUid)).data.lastSeen < request.time.toMillis() - 20000;
-      }
+    /* roomPath(), memberPath() und hostAbsent() brauchen die Pfadvariable `code`
+       und stehen deshalb NUR im Block `match /tables/{code}` weiter unten – hier
+       oben wäre `code` nicht gebunden und die Datei ließe sich nicht übersetzen. */
 
     /* ---------------- 1. Lernfortschritt & Abo ---------------- */
 

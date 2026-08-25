@@ -4,6 +4,7 @@ import { HashRouter } from 'react-router-dom';
 import { App } from './App';
 import { AppStateProvider } from './state/AppState';
 import { CloudProvider } from './lib/cloud/CloudProvider';
+import { ProProvider } from './lib/pro/ProProvider';
 import { LanguageProvider } from './i18n';
 import { restoreFromMirrorIfNeeded } from './lib/storage';
 import '@fontsource-variable/fraunces';
@@ -17,7 +18,9 @@ function render() {
         <LanguageProvider>
           <AppStateProvider>
             <CloudProvider>
-              <App />
+              <ProProvider>
+                <App />
+              </ProProvider>
             </CloudProvider>
           </AppStateProvider>
         </LanguageProvider>

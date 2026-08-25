@@ -77,6 +77,10 @@ export interface AppData {
   reviews: ReviewItem[];
   daily: { date: string; score: number; total: number } | null;
   hands: HandRecord[];
+  /** Tagesverbrauch limitierter Gratis-Features (Schlüssel = FeatureKey). */
+  usage: { day: string; counts: Record<string, number> };
+  /** Start der Pro-Testphase (ISO) – null, solange nie gestartet. */
+  trialStartedAt: string | null;
 }
 
 export interface ProfileMeta {
@@ -108,6 +112,8 @@ const DEFAULT_DATA: AppData = {
   reviews: [],
   daily: null,
   hands: [],
+  usage: { day: '', counts: {} },
+  trialStartedAt: null,
 };
 
 const PROFILE_COLORS = ['#d4af5e', '#58b368', '#5590d9', '#9b7fd4', '#e0564f', '#4fb8c9'];
@@ -189,6 +195,12 @@ interface AppStateValue {
     email: string,
     incoming: AppData | null,
   ) => { outcome: 'adopted-cloud' | 'kept-local' | 'created'; data: AppData };
+  /** Heutiger Verbrauch limitierter Gratis-Features (nach Tagesreset). */
+  todayUsage: Record<string, number>;
+  /** Zählt eine Nutzung eines limitierten Features. */
+  consumeFeature: (key: string, amount?: number) => void;
+  /** Startet die Pro-Testphase (nur beim ersten Mal wirksam). */
+  startTrial: () => void;
 }
 
 const Ctx = createContext<AppStateValue | null>(null);
@@ -299,6 +311,23 @@ export function sanitizeAppData(input: unknown): AppData {
       score: Math.max(0, num(day.score)),
       total: Math.max(0, num(day.total)),
     };
+  }
+
+  if (typeof d.usage === 'object' && d.usage !== null) {
+    const u = d.usage as Record<string, unknown>;
+    out.usage.day = str(u.day).slice(0, 10);
+    if (typeof u.counts === 'object' && u.counts !== null) {
+      for (const [k, v] of Object.entries(u.counts as Record<string, unknown>).slice(0, 40)) {
+        if (/^[a-z-]{1,40}$/.test(k)) {
+          out.usage.counts[k] = Math.max(0, Math.min(1_000_000, num(v)));
+        }
+      }
+    }
+  }
+
+  if (typeof d.trialStartedAt === 'string') {
+    const t = str(d.trialStartedAt).slice(0, 40);
+    out.trialStartedAt = isFinite(new Date(t).getTime()) ? t : null;
   }
 
   if (Array.isArray(d.hands)) {
@@ -794,6 +823,35 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  // ---------- Pro-Nutzung ----------
+
+  /** Zähler gelten nur für den heutigen Tag – ältere Stände zählen als 0. */
+  const todayUsage = useMemo(
+    () => (data.usage.day === todayStr() ? data.usage.counts : {}),
+    [data.usage],
+  );
+
+  const consumeFeature = useCallback(
+    (key: string, amount = 1) => {
+      mutate((d) => {
+        const today = todayStr();
+        if (d.usage.day !== today) {
+          // Tageswechsel: Tageszähler zurücksetzen, Gesamtzähler behalten.
+          const totals = { 'bankroll-unlimited': d.usage.counts['bankroll-unlimited'] ?? 0 };
+          d.usage = { day: today, counts: totals['bankroll-unlimited'] ? totals : {} };
+        }
+        d.usage.counts[key] = Math.max(0, (d.usage.counts[key] ?? 0) + amount);
+      });
+    },
+    [mutate],
+  );
+
+  const startTrial = useCallback(() => {
+    mutate((d) => {
+      if (!d.trialStartedAt) d.trialStartedAt = new Date().toISOString();
+    });
+  }, [mutate]);
+
   const level = levelForXp(data.xp);
   const dueReviewCount = useMemo(() => {
     const today = todayStr();
@@ -829,10 +887,14 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       updateProfile,
       replaceData,
       linkCloudProfile,
+      todayUsage,
+      consumeFeature,
+      startTrial,
     }),
     [data, toasts, level, dueReviewCount, index.profiles, activeProfile, completeLesson, recordTrainer, recordHand,
      addSession, deleteSession, setName, resetAll, addReviewItem, answerReview, completeDailyQuiz, addHandRecord,
-     exportJson, importJson, createProfile, switchProfile, deleteProfile, updateProfile, replaceData, linkCloudProfile],
+     exportJson, importJson, createProfile, switchProfile, deleteProfile, updateProfile, replaceData, linkCloudProfile,
+     todayUsage, consumeFeature, startTrial],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

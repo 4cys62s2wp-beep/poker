@@ -20,6 +20,12 @@ export interface CloudHandle {
   /** Lädt den Nutzer neu (z. B. nachdem der Bestätigungslink geklickt wurde). */
   reloadUser: () => Promise<CloudUser | null>;
   onUser: (cb: (user: CloudUser | null) => void) => () => void;
+  /**
+   * Beobachtet den Abo-Status im Dokument `customers/{uid}`.
+   * Dieses Dokument schreibt ausschließlich der Zahlungs-Webhook (serverseitig);
+   * die Sicherheitsregeln erlauben dem Client nur Lesezugriff.
+   */
+  watchSubscription: (uid: string, cb: (active: boolean) => void) => () => void;
   /** Rohdaten aus der Cloud – der Aufrufer muss sie sanitisieren. */
   pull: (uid: string) => Promise<unknown | null>;
   push: (uid: string, name: string, email: string, data: unknown) => Promise<void>;
@@ -135,6 +141,25 @@ async function init(): Promise<CloudHandle | null> {
       },
       onUser(cb) {
         return authMod.onAuthStateChanged(auth, (u) => cb(toCloudUser(u)));
+      },
+      watchSubscription(uid, cb) {
+        return fsMod.onSnapshot(
+          fsMod.doc(db, 'customers', uid),
+          (snap) => {
+            const data = snap.exists() ? (snap.data() as Record<string, unknown>) : null;
+            const status = typeof data?.status === 'string' ? data.status : '';
+            const activeStatus = status === 'active' || status === 'trialing';
+            // Ablaufdatum (Sekunden oder ISO) zusätzlich prüfen, falls vorhanden.
+            const endRaw = data?.currentPeriodEnd;
+            let notExpired = true;
+            if (typeof endRaw === 'number') notExpired = endRaw * 1000 > Date.now();
+            else if (typeof endRaw === 'string' && isFinite(new Date(endRaw).getTime())) {
+              notExpired = new Date(endRaw).getTime() > Date.now();
+            }
+            cb(activeStatus && notExpired);
+          },
+          () => cb(false),
+        );
       },
       async pull(uid) {
         const snap = await fsMod.getDoc(fsMod.doc(db, 'users', uid));

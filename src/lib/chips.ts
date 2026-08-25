@@ -30,6 +30,10 @@ export interface BlindLevel {
   bb: number;
 }
 
+/** Hinweis-Codes statt fertiger Texte: Die Übersetzung passiert in der UI
+    (src/i18n/pages/chips.ts) – so bleibt die Rechenlogik sprachfrei. */
+export type ChipWarning = 'fewSmallChips' | 'shortStacks' | 'chipsBelowPlayers';
+
 export interface ChipPlan {
   chips: ChipAllocation[];
   /** Startstack pro Spieler in Punkten. */
@@ -39,7 +43,8 @@ export interface ChipPlan {
   smallBlind: number;
   bigBlind: number;
   levels: BlindLevel[];
-  warnings: string[];
+  /** Sprachfreie Hinweis-Codes – Texte siehe STR[lang].warnings. */
+  warnings: ChipWarning[];
 }
 
 /* Bewährte Heimspiel-Wertleitern: Die häufigste Chipsorte bekommt den
@@ -125,20 +130,10 @@ export function planChips(players: number, input: ChipInput[]): ChipPlan | null 
     if (bb >= stackValue / 3) break;
   }
 
-  const warnings: string[] = [];
-  if (allocations[0].perPlayer < 8) {
-    warnings.push(
-      'Ihr habt pro Person nur wenige kleine Chips – tauscht am Tisch großzügig oder gebt eine Sorte komplett als Kleingeld aus.',
-    );
-  }
-  if (stackBB < 40) {
-    warnings.push(
-      `Kurze Stacks (~${stackBB} BB): Das wird ein schnelles Spiel. Für längere Abende Blinds seltener erhöhen.`,
-    );
-  }
-  if (chips.some((c) => c.count < players)) {
-    warnings.push('Von mindestens einer Sorte gibt es weniger Chips als Spieler – diese Chips bleiben in der Bank.');
-  }
+  const warnings: ChipWarning[] = [];
+  if (allocations[0].perPlayer < 8) warnings.push('fewSmallChips');
+  if (stackBB < 40) warnings.push('shortStacks');
+  if (chips.some((c) => c.count < players)) warnings.push('chipsBelowPlayers');
 
   return { chips: allocations, stackValue, stackBB, smallBlind, bigBlind, levels, warnings };
 }

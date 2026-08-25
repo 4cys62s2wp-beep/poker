@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Icon, type IconName } from './Icon';
 import { useAppState, levelForXp, xpThreshold } from '../state/AppState';
@@ -17,6 +17,8 @@ export function Layout() {
   const proCtx = usePro();
   const level = levelForXp(data.xp);
   const location = useLocation();
+  const mainRef = useRef<HTMLElement>(null);
+  useSectionHeadings(mainRef);
 
   const navGroups: Array<{ label: string; items: Array<{ to: string; icon: IconName; label: string; end?: boolean }> }> = [
     { label: L.navOverview, items: [{ to: '/', icon: 'spade', label: L.start, end: true }] },
@@ -150,7 +152,7 @@ export function Layout() {
           </span>
           <span className="grad">PokerMentor</span>
         </div>
-        <main className="main">
+        <main className="main" ref={mainRef}>
           <Outlet />
         </main>
       </div>
@@ -166,7 +168,10 @@ export function Layout() {
         ))}
       </nav>
 
-      <div className="toast-stack">
+      {/* Level-Ups und Badges tauchen ohne Nutzeraktion auf – ohne Live-Region
+          bekommt ein Screenreader davon nichts mit. „polite“ statt „assertive“:
+          Die Meldungen sind Belohnungen, keine Fehler. */}
+      <div className="toast-stack" role="status" aria-live="polite">
         {toasts.map((t) => (
           <div key={t.id} className="toast">
             <div className="t-title">{t.title}</div>
@@ -176,6 +181,33 @@ export function Layout() {
       </div>
     </div>
   );
+}
+
+/* Abschnittsüberschriften stehen auf den Seiten historisch als
+   <div class="section-title"> im DOM und fehlen damit in der Überschriften-
+   Gliederung (Screenreader-Navigation per H-Taste). Die Seitendateien gehören
+   anderen Modulen, deshalb wird die Semantik hier nachgereicht: role="heading"
+   + aria-level="2" – rein additiv, optisch identisch. Sobald eine Seite auf
+   <h2 class="section-title"> umgestellt ist (in global.css bereits identisch
+   gestylt), fasst diese Funktion sie nicht mehr an. */
+function useSectionHeadings(scope: RefObject<HTMLElement>) {
+  useEffect(() => {
+    const root = scope.current;
+    if (!root) return;
+    const upgrade = () => {
+      root.querySelectorAll<HTMLElement>('div.section-title:not([role])').forEach((el) => {
+        el.setAttribute('role', 'heading');
+        el.setAttribute('aria-level', '2');
+      });
+    };
+    upgrade();
+    if (typeof MutationObserver === 'undefined') return;
+    // Nur childList/subtree: Die eigenen Attribut-Änderungen lösen den
+    // Observer nicht erneut aus.
+    const mo = new MutationObserver(upgrade);
+    mo.observe(root, { childList: true, subtree: true });
+    return () => mo.disconnect();
+  }, [scope]);
 }
 
 function ProfileBadge() {

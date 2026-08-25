@@ -1,7 +1,8 @@
 /* Erster Start: Sprache wählen, Name eintragen, loslegen.
    Erscheint nur, solange noch keine Sprache gespeichert ist. */
 
-import { useState } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
 import { useAppState } from '../state/AppState';
 import { useLang, type Lang } from '../i18n';
@@ -34,14 +35,59 @@ const TEXT: Record<Lang, {
   },
 };
 
+/** Fokussierbare Elemente im Dialog (in DOM-Reihenfolge). */
+const FOCUSABLE = 'button:not([disabled]), input:not([disabled]), select, textarea, a[href], [tabindex]:not([tabindex="-1"])';
+
 export function Onboarding() {
   const { lang, setLang, firstRun, finishOnboarding } = useLang();
   const { data, setName, updateProfile, activeProfile } = useAppState();
   const [step, setStep] = useState<'lang' | 'name'>('lang');
   const [name, setNameInput] = useState(data.name);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Solange der Dialog offen ist, ist der Rest der App weder fokussierbar noch
+  // für Screenreader sichtbar. inert deckt Tastatur + AT ab, aria-hidden ist der
+  // Fallback für ältere Browser (Safari < 15.5). Der Dialog selbst hängt per
+  // Portal an <body>, liegt also außerhalb von #root.
+  useEffect(() => {
+    if (!firstRun) return;
+    const root = document.getElementById('root');
+    if (!root) return;
+    root.setAttribute('inert', '');
+    root.setAttribute('aria-hidden', 'true');
+    return () => {
+      root.removeAttribute('inert');
+      root.removeAttribute('aria-hidden');
+    };
+  }, [firstRun]);
+
+  // Startfokus: erster Button des Sprachschritts. Im Namensschritt übernimmt
+  // das Eingabefeld (autoFocus) den Fokus beim Einhängen.
+  useEffect(() => {
+    if (!firstRun || step !== 'lang') return;
+    dialogRef.current?.querySelector<HTMLElement>(FOCUSABLE)?.focus();
+  }, [firstRun, step]);
 
   if (!firstRun) return null;
   const T = TEXT[lang];
+
+  /** Fokusfalle: Tab und Shift+Tab laufen im Kreis durch den Dialog.
+      Kein Escape-to-close – eine Sprache muss gewählt werden. */
+  function trapFocus(e: KeyboardEvent<HTMLDivElement>) {
+    if (e.key !== 'Tab') return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const items = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE));
+    if (items.length === 0) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+    const inside = dialog.contains(active);
+    if (e.shiftKey ? active === first || !inside : active === last || !inside) {
+      e.preventDefault();
+      (e.shiftKey ? last : first).focus();
+    }
+  }
 
   function chooseLang(l: Lang) {
     setLang(l);
@@ -62,8 +108,10 @@ export function Onboarding() {
     finishOnboarding();
   }
 
-  return (
+  return createPortal(
     <div
+      ref={dialogRef}
+      onKeyDown={trapFocus}
       role="dialog"
       aria-modal="true"
       aria-label={T.welcome}
@@ -92,10 +140,10 @@ export function Onboarding() {
             <div className="stat-label" style={{ marginBottom: 10 }}>{T.pickLang}</div>
             <div style={{ display: 'grid', gap: 10 }}>
               <button className="btn primary" style={{ justifyContent: 'center', fontSize: 16 }} onClick={() => chooseLang('de')}>
-                🇩🇪&nbsp; Deutsch
+                <span aria-hidden="true">🇩🇪&nbsp;</span> Deutsch
               </button>
               <button className="btn" style={{ justifyContent: 'center', fontSize: 16 }} onClick={() => chooseLang('en')}>
-                🇬🇧&nbsp; English
+                <span aria-hidden="true">🇬🇧&nbsp;</span> English
               </button>
             </div>
             <p className="small faint" style={{ marginTop: 16 }}>{T.langNote}</p>
@@ -127,6 +175,7 @@ export function Onboarding() {
           </>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

@@ -5,6 +5,8 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { sanitizeAppData, useAppState, type AppData } from '../../state/AppState';
+import { useLang } from '../../i18n';
+import { STR } from '../../i18n/pages/cloud';
 import { describeCloudError, getCloud, type CloudHandle, type CloudUser } from './cloud';
 
 export type CloudPhase = 'checking' | 'unavailable' | 'ready';
@@ -39,6 +41,14 @@ export function CloudProvider({ children }: { children: ReactNode }) {
   const [info, setInfo] = useState<string | null>(null);
   const [lastSync, setLastSync] = useState<string | null>(null);
 
+  // Sprache für Meldungen und Firebase-Mails. Als Ref, damit die Callbacks
+  // unten stabil bleiben (sie laufen erst beim Klick, dann mit aktueller Sprache).
+  const { lang } = useLang();
+  const langRef = useRef(lang);
+  langRef.current = lang;
+  const strRef = useRef(STR[lang]);
+  strRef.current = STR[lang];
+
   const cloudRef = useRef<CloudHandle | null>(null);
   /** UID, für die der Login-Sync in dieser Sitzung schon gelaufen ist. */
   const syncedUidRef = useRef<string | null>(null);
@@ -63,6 +73,8 @@ export function CloudProvider({ children }: { children: ReactNode }) {
         return;
       }
       setPhase('ready');
+      // Bestätigungs- und Passwort-Mails in der Sprache der App verschicken.
+      handle.setLanguage(langRef.current);
       unsub = handle.onUser((u) => {
         setUser(u);
         if (!u) syncedUidRef.current = null;
@@ -73,6 +85,11 @@ export function CloudProvider({ children }: { children: ReactNode }) {
       unsub?.();
     };
   }, []);
+
+  // Sprachwechsel im laufenden Betrieb an Firebase weiterreichen.
+  useEffect(() => {
+    cloudRef.current?.setLanguage(lang);
+  }, [lang, phase]);
 
   /** Nach Login/Verifizierung: Cloud-Stand holen, Profil verknüpfen, ggf. hochladen. */
   const initialSync = useCallback(
@@ -94,12 +111,10 @@ export function CloudProvider({ children }: { children: ReactNode }) {
         syncedUidRef.current = u.uid;
         setLastSync(new Date().toISOString());
         setInfo(
-          outcome === 'adopted-cloud'
-            ? 'Fortschritt aus der Cloud geladen.'
-            : 'Dein Fortschritt ist jetzt in der Cloud gesichert.',
+          outcome === 'adopted-cloud' ? strRef.current.infoCloudLoaded : strRef.current.infoCloudSaved,
         );
       } catch (err) {
-        setError(describeCloudError(err));
+        setError(describeCloudError(err, langRef.current));
       } finally {
         syncInFlightRef.current = null;
       }
@@ -150,16 +165,18 @@ export function CloudProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const wrap = useCallback(async (fn: () => Promise<void>, successInfo?: string): Promise<boolean> => {
+  /** `successInfo` wird als Funktion übergeben, damit der Text erst beim
+      Aufruf – also in der dann aktiven Sprache – erzeugt wird. */
+  const wrap = useCallback(async (fn: () => Promise<void>, successInfo?: () => string): Promise<boolean> => {
     setBusy(true);
     setError(null);
     setInfo(null);
     try {
       await fn();
-      if (successInfo) setInfo(successInfo);
+      if (successInfo) setInfo(successInfo());
       return true;
     } catch (err) {
-      setError(describeCloudError(err));
+      setError(describeCloudError(err, langRef.current));
       return false;
     } finally {
       setBusy(false);
@@ -172,7 +189,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
         async () => {
           await cloudRef.current!.register(name, email, password);
         },
-        'Konto erstellt! Wir haben dir eine Bestätigungs-E-Mail geschickt – bitte klicke auf den Link darin.',
+        () => strRef.current.infoAccountCreated,
       ),
     [wrap],
   );
@@ -197,7 +214,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
         async () => {
           await cloudRef.current!.resetPassword(email);
         },
-        'E-Mail zum Zurücksetzen des Passworts ist unterwegs.',
+        () => strRef.current.infoResetSent,
       ),
     [wrap],
   );
@@ -207,7 +224,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
       async () => {
         await cloudRef.current!.resendVerification();
       },
-      'Bestätigungs-E-Mail erneut verschickt – schau auch im Spam-Ordner nach.',
+      () => strRef.current.infoVerificationResent,
     );
   }, [wrap]);
 
@@ -216,7 +233,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
       const u = await cloudRef.current!.reloadUser();
       setUser(u);
       if (u && !u.verified) {
-        setInfo('Noch nicht bestätigt – klicke zuerst auf den Link in der E-Mail.');
+        setInfo(strRef.current.infoNotVerifiedYet);
       }
     });
   }, [wrap]);
@@ -233,7 +250,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
           setLastSync(new Date().toISOString());
         }
       },
-      'Synchronisiert.',
+      () => strRef.current.infoSynced,
     );
   }, [wrap, initialSync]);
 

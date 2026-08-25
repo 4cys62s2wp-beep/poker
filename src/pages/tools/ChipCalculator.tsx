@@ -85,6 +85,8 @@ function loadSaved(): { players: number; rows: Row[] } | null {
 export function ChipCalculator() {
   const { lang } = useLang();
   const L = STR[lang];
+  // Zahlformat folgt der Sprache (1.500 vs. 1,500).
+  const nf = lang === 'de' ? 'de-DE' : 'en-GB';
   const saved = useMemo(loadSaved, []);
   const [players, setPlayers] = useState(saved?.players ?? 5);
   const [rows, setRows] = useState<Row[]>(saved?.rows ?? makeRows(PRESETS[0].counts, L.colorNames));
@@ -219,13 +221,13 @@ export function ChipCalculator() {
               <div className="grid cols-2" style={{ marginBottom: 14 }}>
                 <div className="card">
                   <div className="stat-label">{L.startStack}</div>
-                  <div className="big-stat" style={{ fontSize: 26 }}>{plan.stackValue.toLocaleString('de-DE')}</div>
+                  <div className="big-stat" style={{ fontSize: 26 }}>{plan.stackValue.toLocaleString(nf)}</div>
                   <div className="small faint">{L.stackSub(plan.stackBB)}</div>
                 </div>
                 <div className="card">
                   <div className="stat-label">{L.blindsStart}</div>
                   <div className="big-stat" style={{ fontSize: 26 }}>
-                    {plan.smallBlind.toLocaleString('de-DE')} / {plan.bigBlind.toLocaleString('de-DE')}
+                    {plan.smallBlind.toLocaleString(nf)} / {plan.bigBlind.toLocaleString(nf)}
                   </div>
                   <div className="small faint">{L.blindsSub}</div>
                 </div>
@@ -260,9 +262,9 @@ export function ChipCalculator() {
                               {c.label}
                             </span>
                           </td>
-                          <td style={{ textAlign: 'right' }}>{c.value.toLocaleString('de-DE')}</td>
+                          <td style={{ textAlign: 'right' }}>{c.value.toLocaleString(nf)}</td>
                           <td style={{ textAlign: 'right', fontWeight: 800 }}>{c.perPlayer}</td>
-                          <td style={{ textAlign: 'right' }}>{c.perPlayerValue.toLocaleString('de-DE')}</td>
+                          <td style={{ textAlign: 'right' }}>{c.perPlayerValue.toLocaleString(nf)}</td>
                           <td style={{ textAlign: 'right', color: 'var(--text-faint)' }}>{c.leftover}</td>
                         </tr>
                       ))}
@@ -275,7 +277,9 @@ export function ChipCalculator() {
               </div>
 
               {plan.warnings.map((w) => (
-                <div key={w} className="feedback-box bad" style={{ marginBottom: 14 }}>{w}</div>
+                <div key={w} className="feedback-box bad" style={{ marginBottom: 14 }}>
+                  {L.warnings[w](plan.stackBB)}
+                </div>
               ))}
 
               <div className="card">
@@ -296,8 +300,8 @@ export function ChipCalculator() {
                       {plan.levels.map((l) => (
                         <tr key={l.level}>
                           <td>{l.level}</td>
-                          <td style={{ textAlign: 'right' }}>{l.sb.toLocaleString('de-DE')}</td>
-                          <td style={{ textAlign: 'right', fontWeight: 800 }}>{l.bb.toLocaleString('de-DE')}</td>
+                          <td style={{ textAlign: 'right' }}>{l.sb.toLocaleString(nf)}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 800 }}>{l.bb.toLocaleString(nf)}</td>
                         </tr>
                       ))}
                     </tbody>

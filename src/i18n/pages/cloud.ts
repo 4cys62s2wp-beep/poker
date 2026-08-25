@@ -1,7 +1,8 @@
 import { defineStrings } from '..';
 
-/* Texte der Konto-Karte (src/components/CloudAccountCard.tsx).
-   Fehler-/Info-Meldungen aus src/lib/cloud/ bleiben dort und sind hier bewusst nicht enthalten. */
+/* Texte der Konto-Karte (src/components/CloudAccountCard.tsx) und die
+   Info-Meldungen des CloudProviders (info*-Schlüssel). Fehlertexte kommen aus
+   describeCloudError() in src/lib/cloud/cloud.ts – die kennen nur Firebase-Codes. */
 export const STR = defineStrings(
   {
     deviceTitle: 'Geräte-Modus aktiv',
@@ -43,6 +44,16 @@ export const STR = defineStrings(
     toLogin: 'Zur Anmeldung',
     newAccount: 'Neues Konto',
     forgotPassword: 'Passwort vergessen?',
+
+    // Rückmeldungen des CloudProviders
+    infoCloudLoaded: 'Fortschritt aus der Cloud geladen.',
+    infoCloudSaved: 'Dein Fortschritt ist jetzt in der Cloud gesichert.',
+    infoAccountCreated:
+      'Konto erstellt! Wir haben dir eine Bestätigungs-E-Mail geschickt – bitte klicke auf den Link darin.',
+    infoResetSent: 'E-Mail zum Zurücksetzen des Passworts ist unterwegs.',
+    infoVerificationResent: 'Bestätigungs-E-Mail erneut verschickt – schau auch im Spam-Ordner nach.',
+    infoNotVerifiedYet: 'Noch nicht bestätigt – klicke zuerst auf den Link in der E-Mail.',
+    infoSynced: 'Synchronisiert.',
   },
   {
     deviceTitle: 'Device mode active',
@@ -84,5 +95,15 @@ export const STR = defineStrings(
     toLogin: 'Back to sign-in',
     newAccount: 'New account',
     forgotPassword: 'Forgot password?',
+
+    // Rückmeldungen des CloudProviders
+    infoCloudLoaded: 'Progress loaded from the cloud.',
+    infoCloudSaved: 'Your progress is now backed up in the cloud.',
+    infoAccountCreated:
+      'Account created! We have sent you a confirmation email – please click the link inside.',
+    infoResetSent: 'The email to reset your password is on its way.',
+    infoVerificationResent: 'Confirmation email sent again – have a look in your spam folder too.',
+    infoNotVerifiedYet: 'Not confirmed yet – please click the link in the email first.',
+    infoSynced: 'Synced.',
   },
 );

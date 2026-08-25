@@ -25,9 +25,21 @@ export function ScenarioTrainer() {
   const P = PRO_STR[lang];
   const { enabled, pro, trialActive } = usePro();
   const unlocked = !enabled || pro || trialActive;
-  const [queue, setQueue] = useState<Scenario[]>(() => shuffled(content.scenarios));
+  // Die Warteschlange wird aus den Inhalten abgeleitet: Ein Sprachwechsel
+  // liefert sofort die Szenarien der neuen Sprache (kein eingefrorener State).
+  // `round` erzwingt eine neue Mischung, sobald alle Szenarien durch sind.
+  const [round, setRound] = useState(0);
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
+  const queue = useMemo<Scenario[]>(() => shuffled(content.scenarios), [content, round]);
+
+  // Sprache mitten in der Sitzung gewechselt → bei Szenario 1 neu beginnen.
+  const [seenContent, setSeenContent] = useState(content);
+  if (seenContent !== content) {
+    setSeenContent(content);
+    setIndex(0);
+    setSelected(null);
+  }
 
   const scenario = queue[index % queue.length];
   const stats = data.trainers['szenario'];
@@ -45,8 +57,14 @@ export function ScenarioTrainer() {
   }
 
   function next() {
-    if ((index + 1) % queue.length === 0) setQueue(shuffled(content.scenarios));
-    setIndex((i) => i + 1);
+    const nextIndex = index + 1;
+    if (nextIndex % queue.length === 0) {
+      // Stapel durchgespielt: neu mischen und von vorn beginnen.
+      setRound((r) => r + 1);
+      setIndex(0);
+    } else {
+      setIndex(nextIndex);
+    }
     setSelected(null);
   }
 

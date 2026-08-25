@@ -499,36 +499,51 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const badgeDefsRef = useRef(langContent.badges);
   badgeDefsRef.current = langContent.badges;
 
-  /** Zentrale Mutation: wendet Änderungen an, prüft Level-Ups & Abzeichen. */
-  const mutate = useCallback(
-    (fn: (draft: AppData) => void) => {
-      setData((prev) => {
-        const draft: AppData = structuredClone(prev);
-        fn(draft);
-        applyAutoBadges(draft);
+  /** Stand, gegen den die nächsten Toasts verglichen werden (nur Meldungen, keine Daten). */
+  const notifyBaseRef = useRef<{ level: number; badges: Record<string, string> } | null>(null);
+  /** true = der nächste Datenwechsel ist ein Austausch (Profilwechsel, Import, Cloud) – keine Toasts. */
+  const skipNotifyRef = useRef(false);
 
-        const prevLevel = levelForXp(prev.xp);
-        const newLevel = levelForXp(draft.xp);
-        const l = langRef.current;
-        if (newLevel > prevLevel) {
-          pushToast(
-            l === 'de' ? `Level ${newLevel} erreicht!` : `Level ${newLevel} reached!`,
-            levelTitleFor(newLevel, l),
-          );
-          if (newLevel >= 5) award(draft, 'level-5');
-          if (newLevel >= 10) award(draft, 'level-10');
-        }
-        for (const b of BADGES) {
-          if (draft.badges[b.id] && !prev.badges[b.id]) {
-            const def = badgeDefsRef.current.find((d) => d.id === b.id) ?? b;
-            pushToast(`${def.icon} ${l === 'de' ? 'Abzeichen' : 'Badge'}: ${def.title}`, def.description);
-          }
-        }
-        return draft;
-      });
-    },
-    [pushToast],
-  );
+  /** Ersetzt den kompletten Datenstand, ohne Level-/Abzeichen-Toasts auszulösen. */
+  const swapData = useCallback((next: AppData) => {
+    skipNotifyRef.current = true;
+    setData(next);
+  }, []);
+
+  /** Zentrale Mutation: wendet Änderungen an und prüft automatische Abzeichen.
+      Der Updater bleibt bewusst frei von Seiteneffekten (StrictMode ruft ihn
+      doppelt auf, Concurrent React darf ihn verwerfen) – Toasts kommen aus
+      dem Effekt unten, also erst nach dem Commit. */
+  const mutate = useCallback((fn: (draft: AppData) => void) => {
+    setData((prev) => {
+      const draft: AppData = structuredClone(prev);
+      fn(draft);
+      applyAutoBadges(draft);
+      return draft;
+    });
+  }, []);
+
+  // Nach dem Commit: Level-Ups und frisch vergebene Abzeichen melden.
+  useEffect(() => {
+    const base = notifyBaseRef.current;
+    const level = levelForXp(data.xp);
+    notifyBaseRef.current = { level, badges: { ...data.badges } };
+    const skip = skipNotifyRef.current;
+    skipNotifyRef.current = false;
+    // Erster Lauf (geladener Stand) oder Datenaustausch: nur den Vergleichsstand merken.
+    if (!base || skip) return;
+
+    const l = langRef.current;
+    if (level > base.level) {
+      pushToast(l === 'de' ? `Level ${level} erreicht!` : `Level ${level} reached!`, levelTitleFor(level, l));
+    }
+    for (const b of BADGES) {
+      if (data.badges[b.id] && !base.badges[b.id]) {
+        const def = badgeDefsRef.current.find((d) => d.id === b.id) ?? b;
+        pushToast(`${def.icon} ${l === 'de' ? 'Abzeichen' : 'Badge'}: ${def.title}`, def.description);
+      }
+    }
+  }, [data, pushToast]);
 
   const completeLesson = useCallback(
     (lessonId: string, quizScore: number, quizTotal: number) => {
@@ -623,8 +638,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   );
 
   const resetAll = useCallback(() => {
-    setData(structuredClone(DEFAULT_DATA));
-  }, []);
+    swapData(structuredClone(DEFAULT_DATA));
+  }, [swapData]);
 
   const addReviewItem = useCallback(
     (moduleId: string, lessonId: string, questionIndex: number) => {
@@ -703,16 +718,16 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       const parsed = JSON.parse(json);
       const incoming = parsed?.app === 'pokermentor' ? parsed.data : parsed;
       if (!incoming || typeof incoming !== 'object' || typeof incoming.xp !== 'number') return false;
-      setData(sanitizeAppData(incoming));
+      swapData(sanitizeAppData(incoming));
       return true;
     } catch {
       return false;
     }
-  }, []);
+  }, [swapData]);
 
   const replaceData = useCallback((incoming: AppData) => {
-    setData(sanitizeAppData(incoming));
-  }, []);
+    swapData(sanitizeAppData(incoming));
+  }, [swapData]);
 
   // ---------- Profil-Verwaltung ----------
 
@@ -732,29 +747,29 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     const fresh = structuredClone(DEFAULT_DATA);
     fresh.name = name.trim().slice(0, 40);
     durableSet(dataKey(id), JSON.stringify(fresh));
-    setData(fresh);
-  }, []);
+    swapData(fresh);
+  }, [swapData]);
 
   const switchProfile = useCallback((id: string) => {
     setIndex((idx) => {
       if (!idx.profiles.some((p) => p.id === id)) return idx;
       return { ...idx, activeId: id };
     });
-    setData(loadDataFor(id));
-  }, []);
+    swapData(loadDataFor(id));
+  }, [swapData]);
 
+  // Seiteneffekte (Löschen im Speicher, Laden des Ersatzprofils) laufen bewusst
+  // außerhalb des setIndex-Updaters – Updater müssen rein bleiben.
   const deleteProfile = useCallback((id: string) => {
-    setIndex((idx) => {
-      if (idx.profiles.length <= 1) return idx;
-      const remaining = idx.profiles.filter((p) => p.id !== id);
-      durableDelete(dataKey(id));
-      const nextActive = idx.activeId === id ? remaining[0].id : idx.activeId;
-      if (idx.activeId === id) {
-        setData(loadDataFor(nextActive));
-      }
-      return { activeId: nextActive, profiles: remaining };
-    });
-  }, []);
+    const idx = indexRef.current;
+    if (idx.profiles.length <= 1) return;
+    const remaining = idx.profiles.filter((p) => p.id !== id);
+    if (remaining.length === idx.profiles.length) return; // unbekanntes Profil
+    const nextActive = idx.activeId === id ? remaining[0].id : idx.activeId;
+    durableDelete(dataKey(id));
+    setIndex({ activeId: nextActive, profiles: remaining });
+    if (idx.activeId === id) swapData(loadDataFor(nextActive));
+  }, [swapData]);
 
   const updateProfile = useCallback((id: string, patch: { name?: string; email?: string }) => {
     setIndex((idx) => ({
@@ -800,7 +815,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
             p.id === existing.id ? { ...p, name: cleanName || p.name, email: cleanEmail } : p,
           ),
         });
-        setData(chosen);
+        swapData(chosen);
         return { outcome: useCloud ? 'adopted-cloud' : 'kept-local', data: chosen };
       }
 
@@ -817,10 +832,10 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       if (incoming === null) fresh.name = cleanName;
       durableSet(dataKey(id), JSON.stringify(fresh));
       setIndex({ activeId: id, profiles: [...idx.profiles, meta] });
-      setData(fresh);
+      swapData(fresh);
       return { outcome: incoming !== null ? 'adopted-cloud' : 'created', data: fresh };
     },
-    [],
+    [swapData],
   );
 
   // ---------- Pro-Nutzung ----------
@@ -923,8 +938,9 @@ function touchStreak(d: AppData) {
   if (d.streak.count >= 7) award(d, 'streak-7');
 }
 
-/** Abzeichen, die sich direkt aus dem Datenstand ergeben. */
-function applyAutoBadges(d: AppData) {
+/** Abzeichen, die sich direkt aus dem Datenstand ergeben. Reine Funktion –
+    wird sowohl aus mutate() als auch im Test verwendet. */
+export function applyAutoBadges(d: AppData) {
   const doneCount = Object.keys(d.completedLessons).length;
   if (doneCount >= 1) award(d, 'first-lesson');
   if (doneCount >= 5) award(d, 'five-lessons');
@@ -941,6 +957,14 @@ function applyAutoBadges(d: AppData) {
   }
   if ((d.trainers['szenario']?.correct ?? 0) >= 10) award(d, 'scenario-10');
   if ((d.trainers['pushfold']?.correct ?? 0) >= 20) award(d, 'pushfold-20');
+
+  // Trainingsfleiß: richtige Antworten über alle Trainer hinweg.
+  const trainerCorrect = Object.values(d.trainers).reduce((sum, t) => sum + Math.max(0, t?.correct ?? 0), 0);
+  if (trainerCorrect >= 100) award(d, 'trainer-100');
+
+  const level = levelForXp(d.xp);
+  if (level >= 5) award(d, 'level-5');
+  if (level >= 10) award(d, 'level-10');
 }
 
 /** Fortschritt eines Moduls (0–1). */

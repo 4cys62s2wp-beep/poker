@@ -71,8 +71,23 @@ describe('planChips', () => {
     expect(planChips(10, [chip('mini', 5)])).toBeNull();
   });
 
-  it('warnt bei wenigen kleinen Chips und kurzen Stacks', () => {
+  it('warnt bei wenigen kleinen Chips und kurzen Stacks (als Codes)', () => {
     const plan = planChips(8, [chip('weiss', 40), chip('rot', 40)])!;
     expect(plan.warnings.length).toBeGreaterThan(0);
+    expect(plan.warnings).toContain('fewSmallChips');
+    // Codes statt Texte: keine übersetzten Sätze mehr in der Rechenlogik
+    for (const w of plan.warnings) {
+      expect(['fewSmallChips', 'shortStacks', 'chipsBelowPlayers']).toContain(w);
+    }
+  });
+
+  it('meldet Sorten mit weniger Chips als Spielern', () => {
+    const plan = planChips(6, [chip('weiss', 120), chip('rot', 4)])!;
+    expect(plan.warnings).toContain('chipsBelowPlayers');
+  });
+
+  it('ein großzügiger Koffer erzeugt keine Warnungen', () => {
+    const plan = planChips(4, [chip('weiss', 200), chip('rot', 100), chip('blau', 60)])!;
+    expect(plan.warnings).toEqual([]);
   });
 });

@@ -1,11 +1,12 @@
 import { defineStrings } from '..';
+import type { ChipWarning } from '../../lib/chips';
 
 /* Texte für den Chip-Rechner (/tools). Hinweise:
    - `colorNames` muss in der Reihenfolge zu CHIP_COLORS in ChipCalculator.tsx passen;
      die Namen dienen nur als Vorbelegung neuer Zeilen – vom Nutzer getippte Labels
      bleiben unverändert gespeichert.
-   - Die Warnungen aus lib/chips.ts (planChips) sind derzeit deutsch und werden
-     unübersetzt angezeigt. */
+   - `warnings` übersetzt die Hinweis-Codes (ChipWarning) aus lib/chips.ts;
+     jede Funktion bekommt den Startstack in BB, auch wenn sie ihn nicht nutzt. */
 export const STR = defineStrings(
   {
     eyebrow: 'Für den Pokerabend',
@@ -42,6 +43,14 @@ export const STR = defineStrings(
     thLevel: 'Stufe',
     thSmallBlind: 'Small Blind',
     thBigBlind: 'Big Blind',
+    warnings: {
+      fewSmallChips: (_bb: number) =>
+        'Ihr habt pro Person nur wenige kleine Chips – tauscht am Tisch großzügig oder gebt eine Sorte komplett als Kleingeld aus.',
+      shortStacks: (bb: number) =>
+        `Kurze Stacks (~${bb} BB): Das wird ein schnelles Spiel. Für längere Abende Blinds seltener erhöhen.`,
+      chipsBelowPlayers: (_bb: number) =>
+        'Von mindestens einer Sorte gibt es weniger Chips als Spieler – diese Chips bleiben in der Bank.',
+    } as Record<ChipWarning, (stackBB: number) => string>,
   },
   {
     eyebrow: 'For poker night',
@@ -78,5 +87,13 @@ export const STR = defineStrings(
     thLevel: 'Level',
     thSmallBlind: 'Small blind',
     thBigBlind: 'Big blind',
+    warnings: {
+      fewSmallChips: (_bb: number) =>
+        'You only have a few small chips per person – trade generously at the table or hand out one denomination purely as change.',
+      shortStacks: (bb: number) =>
+        `Short stacks (~${bb} BB): this will be a fast game. For longer nights, raise the blinds less often.`,
+      chipsBelowPlayers: (_bb: number) =>
+        'At least one denomination has fewer chips than players – those chips stay in the bank.',
+    } as Record<ChipWarning, (stackBB: number) => string>,
   },
 );

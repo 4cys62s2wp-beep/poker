@@ -4,6 +4,8 @@
    bleibt die App im reinen Geräte-Modus – der komplette Firebase-Code wird
    dann gar nicht erst geladen (dynamischer Import). */
 
+import type { Lang } from '../../i18n';
+
 export interface CloudUser {
   uid: string;
   email: string;
@@ -19,6 +21,8 @@ export interface CloudHandle {
   resendVerification: () => Promise<void>;
   /** Lädt den Nutzer neu (z. B. nachdem der Bestätigungslink geklickt wurde). */
   reloadUser: () => Promise<CloudUser | null>;
+  /** Sprache für die von Firebase verschickten Mails (Bestätigung, Passwort-Reset). */
+  setLanguage: (lang: Lang) => void;
   onUser: (cb: (user: CloudUser | null) => void) => () => void;
   /**
    * Beobachtet den Abo-Status im Dokument `customers/{uid}`.
@@ -62,10 +66,16 @@ async function loadConfig(): Promise<FirebaseConfigFile | null> {
   }
 }
 
-/** Firebase-Fehlercodes in verständliches Deutsch übersetzen. */
-export function describeCloudError(err: unknown): string {
-  const code = (err as { code?: string })?.code ?? '';
-  const map: Record<string, string> = {
+/* Firebase-Fehlercodes in verständlichen Text übersetzen – in beiden Sprachen.
+   Beide Tabellen müssen dieselben Schlüssel haben (TypeScript erzwingt es über
+   den gemeinsamen Record-Typ). */
+const ERROR_FALLBACK: Record<Lang, string> = {
+  de: 'Das hat leider nicht geklappt – bitte versuche es noch einmal.',
+  en: 'That did not work – please try again.',
+};
+
+const ERROR_MESSAGES: Record<Lang, Record<string, string>> = {
+  de: {
     'auth/invalid-email': 'Diese E-Mail-Adresse ist ungültig.',
     'auth/email-already-in-use': 'Für diese E-Mail existiert bereits ein Konto – melde dich an.',
     'auth/weak-password': 'Das Passwort ist zu schwach (mindestens 8 Zeichen empfohlen).',
@@ -77,8 +87,26 @@ export function describeCloudError(err: unknown): string {
     'auth/requires-recent-login': 'Bitte melde dich erneut an und versuche es dann noch einmal.',
     'permission-denied': 'Zugriff verweigert – ist deine E-Mail-Adresse schon bestätigt?',
     unavailable: 'Der Sync-Dienst ist gerade nicht erreichbar – deine Daten bleiben lokal gesichert.',
-  };
-  return map[code] ?? 'Das hat leider nicht geklappt – bitte versuche es noch einmal.';
+  },
+  en: {
+    'auth/invalid-email': 'This email address is invalid.',
+    'auth/email-already-in-use': 'An account with this email already exists – please sign in.',
+    'auth/weak-password': 'That password is too weak (at least 8 characters recommended).',
+    'auth/user-not-found': 'No account found for this email.',
+    'auth/wrong-password': 'Email or password is wrong.',
+    'auth/invalid-credential': 'Email or password is wrong.',
+    'auth/too-many-requests': 'Too many attempts – please wait a moment and try again.',
+    'auth/network-request-failed': 'No connection – check your internet and try again.',
+    'auth/requires-recent-login': 'Please sign in again and then retry.',
+    'permission-denied': 'Access denied – has your email address been confirmed yet?',
+    unavailable: 'The sync service is unreachable right now – your data stays saved on this device.',
+  },
+};
+
+/** Firebase-Fehlercodes in verständlichen Text der aktiven Sprache übersetzen. */
+export function describeCloudError(err: unknown, lang: Lang = 'de'): string {
+  const code = (err as { code?: string })?.code ?? '';
+  return ERROR_MESSAGES[lang][code] ?? ERROR_FALLBACK[lang];
 }
 
 let handlePromise: Promise<CloudHandle | null> | null = null;
@@ -104,6 +132,8 @@ async function init(): Promise<CloudHandle | null> {
 
     const app = initializeApp(cfg);
     const auth = authMod.getAuth(app);
+    // Sprache der Firebase-Mails: Startwert deutsch, die App setzt sie über
+    // setLanguage() sofort auf die aktive Sprache (siehe CloudProvider).
     auth.languageCode = 'de';
     const db = fsMod.getFirestore(app);
 
@@ -138,6 +168,9 @@ async function init(): Promise<CloudHandle | null> {
       async reloadUser() {
         if (auth.currentUser) await authMod.reload(auth.currentUser);
         return toCloudUser(auth.currentUser);
+      },
+      setLanguage(lang) {
+        auth.languageCode = lang;
       },
       onUser(cb) {
         return authMod.onAuthStateChanged(auth, (u) => cb(toCloudUser(u)));

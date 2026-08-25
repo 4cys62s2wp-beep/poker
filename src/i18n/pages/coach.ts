@@ -36,6 +36,9 @@ export const STR = defineStrings(
 
     // Empfehlungsbox
     recommendation: 'Empfehlung:',
+    calculating: 'Berechne …',
+    calculatingNote: 'Die Gewinnwahrscheinlichkeit wird simuliert – gleich da.',
+    calculatingShort: '…',
     homegameTip: 'Homegame-Tipp',
 
     // Equity-Karte
@@ -97,6 +100,9 @@ export const STR = defineStrings(
 
     // Recommendation box
     recommendation: 'Recommendation:',
+    calculating: 'Calculating …',
+    calculatingNote: 'Simulating your win probability – one moment.',
+    calculatingShort: '…',
     homegameTip: 'Home-game tip',
 
     // Equity card

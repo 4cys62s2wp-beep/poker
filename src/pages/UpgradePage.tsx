@@ -85,7 +85,20 @@ export function UpgradePage() {
                   aria-pressed={showAnnual}
                 >
                   {L.annual}
-                  {config.annualNote && <span className="pill gold" style={{ marginLeft: 7 }}>{config.annualNote}</span>}
+                  {config.annualNote && (
+                    /* Auf dem aktiven (goldenen) Knopf wäre eine goldene Plakette
+                       unlesbar – dort dunkel auf hell, sonst hell auf dunkel. */
+                    <span
+                      className={showAnnual ? 'pill' : 'pill gold'}
+                      style={
+                        showAnnual
+                          ? { marginLeft: 7, background: 'rgba(20,16,6,0.22)', color: '#2b2205', borderColor: 'rgba(20,16,6,0.28)' }
+                          : { marginLeft: 7 }
+                      }
+                    >
+                      {config.annualNote}
+                    </span>
+                  )}
                 </button>
               </div>
             )}

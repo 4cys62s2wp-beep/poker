@@ -98,23 +98,44 @@ function mirrorGetAll(): Promise<Record<string, string>> {
  */
 export async function restoreFromMirrorIfNeeded(): Promise<boolean> {
   try {
-    // Gibt es bereits App-Daten in localStorage? Dann nichts tun.
+    // Entscheidend ist allein, ob der LERNFORTSCHRITT noch da ist. Nebensachen
+    // wie die Sprachwahl oder ein gespeichertes Chip-Setup dürfen die
+    // Wiederherstellung nicht blockieren – genau das ist früher passiert:
+    // Nach einer Speicherräumung legte die App beim Start sofort wieder einen
+    // Sprach-Schlüssel an, und der Fortschritt galt fälschlich als vorhanden.
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);
-      if (k && k.startsWith(KEY_PREFIX)) return false;
+      if (k && isProgressKey(k)) return false;
     }
   } catch {
     return false;
   }
   const mirrored = await mirrorGetAll();
+  // Nur fehlende Schlüssel zurückschreiben; vorhandene (z. B. eine gerade
+  // getroffene Sprachwahl) bleiben unangetastet.
   const keys = Object.keys(mirrored).filter((k) => k.startsWith(KEY_PREFIX));
   if (keys.length === 0) return false;
+  let restored = false;
   try {
-    for (const k of keys) localStorage.setItem(k, mirrored[k]);
-    return true;
+    for (const k of keys) {
+      if (localStorage.getItem(k) === null) {
+        localStorage.setItem(k, mirrored[k]);
+        if (isProgressKey(k)) restored = true;
+      }
+    }
+    return restored;
   } catch {
     return false;
   }
+}
+
+/** Schlüssel, die echten Lernfortschritt enthalten (Profil-Index und Profildaten). */
+export function isProgressKey(key: string): boolean {
+  return (
+    key === 'pokermentor-profiles-v1' || // Profil-Index
+    key.startsWith('pokermentor-data-') || // Fortschritt je Profil
+    key === 'pokermentor-v1' // Altbestand vor dem Profilsystem
+  );
 }
 
 /** Browser bitten, den Speicher dauerhaft zu behalten. */

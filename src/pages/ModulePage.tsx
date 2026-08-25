@@ -5,7 +5,8 @@ import { STR } from '../i18n/pages/module';
 import { STR as PRO } from '../i18n/pages/pro';
 import { ProLock } from '../components/pro/ProLock';
 import { usePro } from '../lib/pro/ProProvider';
-import { isFreeModule } from '../lib/pro/plan';
+import { isFreeLesson } from '../lib/pro/plan';
+import { Icon } from '../components/Icon';
 
 export function ModulePage() {
   const { moduleId } = useParams();
@@ -26,8 +27,11 @@ export function ModulePage() {
     );
   }
 
-  /* Modul 1–3 sind gratis; alles darüber nur mit Pro. */
-  const locked = !unlocked && !isFreeModule(module.id);
+  /* Die Lektionsliste bleibt immer sichtbar – wer sieht, was ihn erwartet,
+     entscheidet besser als vor einer blanken Wand. Gesperrte Lektionen sind
+     markiert; die erste Lektion jedes Moduls ist immer frei. */
+  const lockedLessons = module.lessons.filter((l) => !unlocked && !isFreeLesson(module.id, l.id));
+  const hasLocked = lockedLessons.length > 0;
 
   return (
     <div>
@@ -41,47 +45,54 @@ export function ModulePage() {
         <p className="sub">{module.subtitle}</p>
       </div>
 
-      {locked ? (
-        <div style={{ maxWidth: 760 }}>
-          <ProLock text={P.lockedModule} />
-        </div>
-      ) : (
-        <div className="grid" style={{ maxWidth: 760 }}>
-          {module.lessons.map((lesson, i) => {
-            const result = data.completedLessons[lesson.id];
-            return (
-              <Link key={lesson.id} to={`/lernen/${module.id}/${lesson.id}`} className="card clickable">
-                <div className="row between">
-                  <div className="row">
-                    <span
-                      className="pill"
-                      style={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: '50%',
-                        justifyContent: 'center',
-                        fontSize: 14,
-                        flexShrink: 0,
-                        ...(result
-                          ? { background: 'var(--ok-dim)', color: '#8fd49b', borderColor: 'rgba(88,179,104,0.4)' }
-                          : {}),
-                      }}
-                    >
-                      {result ? '✓' : i + 1}
-                    </span>
-                    <div>
-                      <div style={{ fontWeight: 700 }}>{lesson.title}</div>
-                      <div className="small faint">
-                        {L.lessonMeta(lesson.duration, lesson.quiz.length)}
-                        {result && L.quizResult(result.quizScore, result.quizTotal)}
-                      </div>
+      <div className="grid" style={{ maxWidth: 760 }}>
+        {module.lessons.map((lesson, i) => {
+          const result = data.completedLessons[lesson.id];
+          const lessonLocked = !unlocked && !isFreeLesson(module.id, lesson.id);
+          return (
+            <Link key={lesson.id} to={`/lernen/${module.id}/${lesson.id}`} className="card clickable">
+              <div className="row between">
+                <div className="row">
+                  <span
+                    className="pill"
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: '50%',
+                      justifyContent: 'center',
+                      fontSize: 14,
+                      flexShrink: 0,
+                      ...(result
+                        ? { background: 'var(--ok-dim)', color: '#8fd49b', borderColor: 'rgba(88,179,104,0.4)' }
+                        : {}),
+                    }}
+                  >
+                    {result ? '✓' : i + 1}
+                  </span>
+                  <div>
+                    <div style={{ fontWeight: 700 }}>{lesson.title}</div>
+                    <div className="small faint">
+                      {L.lessonMeta(lesson.duration, lesson.quiz.length)}
+                      {result && L.quizResult(result.quizScore, result.quizTotal)}
                     </div>
                   </div>
-                  <span className="faint">→</span>
                 </div>
-              </Link>
-            );
-          })}
+                {lessonLocked ? (
+                  <span className="pill gold" title={P.lockedTitle} aria-label={P.lockedTitle}>
+                    <Icon name="lock" size={14} />
+                  </span>
+                ) : (
+                  <span className="faint">→</span>
+                )}
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+
+      {hasLocked && (
+        <div style={{ maxWidth: 760, marginTop: 16 }}>
+          <ProLock text={P.lockedModule} compact />
         </div>
       )}
     </div>

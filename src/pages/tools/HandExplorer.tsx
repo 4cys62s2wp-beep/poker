@@ -1,10 +1,10 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HandMatrix } from '../../components/HandMatrix';
 import { CardsRow } from '../../components/PlayingCard';
 import { RFI_CHARTS } from '../../content/ranges';
 import { combosForLabel, expandRangeSpec } from '../../lib/poker/ranges';
-import { equityVsRandomHands } from '../../lib/poker/equity';
+import { MC_ITERATIONS, runEquityJobs } from '../../lib/poker/equityAsync';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/handexplorer';
 
@@ -44,20 +44,34 @@ export function HandExplorer() {
   const L = STR[lang];
   const [selected, setSelected] = useState<string>('AKs');
   const cache = useRef(new Map<string, HandDetail>());
-  const [, force] = useState(0);
+  const [detail, setDetail] = useState<HandDetail | null>(null);
 
-  const detail = useMemo(() => {
-    if (cache.current.has(selected)) return cache.current.get(selected)!;
-    const combo = combosForLabel(selected)[0];
-    const hero = [combo[0], combo[1]];
-    const d: HandDetail = {
-      eq1: equityVsRandomHands(hero, [], 1, 5000),
-      eq3: equityVsRandomHands(hero, [], 3, 4000),
-      eq5: equityVsRandomHands(hero, [], 5, 4000),
+  /* Die drei Monte-Carlo-Läufe laufen im Worker (Fallback: verzögert im
+     Hauptthread). Bis das Ergebnis da ist, zeigt die Karte einen Ladezustand;
+     einmal berechnete Hände kommen aus dem Cache und erscheinen sofort. */
+  useEffect(() => {
+    const cached = cache.current.get(selected);
+    if (cached) {
+      setDetail(cached);
+      return;
+    }
+    setDetail(null);
+    let alive = true;
+    const [c0, c1] = combosForLabel(selected)[0];
+    const hero = [c0, c1];
+    const iterations = MC_ITERATIONS.explorer;
+    runEquityJobs([
+      { hero, board: [], opponents: 1, iterations },
+      { hero, board: [], opponents: 3, iterations },
+      { hero, board: [], opponents: 5, iterations },
+    ]).then(([eq1, eq3, eq5]) => {
+      const d: HandDetail = { eq1, eq3, eq5 };
+      cache.current.set(selected, d);
+      if (alive) setDetail(d);
+    });
+    return () => {
+      alive = false;
     };
-    cache.current.set(selected, d);
-    return d;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
   const openPositions = RFI.filter((r) => r.set.has(selected)).map((r) => r.position);
@@ -93,10 +107,7 @@ export function HandExplorer() {
           <HandMatrix
             raise={new Set([selected])}
             highlight={selected}
-            onCellClick={(label) => {
-              setSelected(label);
-              force((x) => x + 1);
-            }}
+            onCellClick={(label) => setSelected(label)}
           />
           <p className="small faint" style={{ marginTop: 12 }}>
             {L.matrixHint}
@@ -115,17 +126,17 @@ export function HandExplorer() {
 
           <div className="stat-label" style={{ marginBottom: 8 }}>{L.winProb}</div>
           {[
-            { n: 1, eq: detail.eq1, label: L.vsOpponents(1) },
-            { n: 3, eq: detail.eq3, label: L.vsOpponents(3) },
-            { n: 5, eq: detail.eq5, label: L.vsOpponents(5) },
+            { n: 1, eq: detail?.eq1, label: L.vsOpponents(1) },
+            { n: 3, eq: detail?.eq3, label: L.vsOpponents(3) },
+            { n: 5, eq: detail?.eq5, label: L.vsOpponents(5) },
           ].map((row) => (
             <div key={row.n} style={{ marginBottom: 10 }}>
               <div className="row between" style={{ marginBottom: 4 }}>
                 <span className="small muted">{row.label}</span>
-                <strong>{L.fmtPct(Math.round(row.eq * 100))}</strong>
+                <strong>{row.eq === undefined ? L.calculating : L.fmtPct(Math.round(row.eq * 100))}</strong>
               </div>
               <div className="progressbar">
-                <div style={{ width: `${row.eq * 100}%` }} />
+                <div style={{ width: `${(row.eq ?? 0) * 100}%` }} />
               </div>
             </div>
           ))}

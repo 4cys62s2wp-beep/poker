@@ -9,7 +9,7 @@ import { STR } from '../i18n/pages/lesson';
 import { STR as PRO } from '../i18n/pages/pro';
 import { ProLock } from '../components/pro/ProLock';
 import { usePro } from '../lib/pro/ProProvider';
-import { isFreeModule } from '../lib/pro/plan';
+import { isFreeLesson } from '../lib/pro/plan';
 
 export function LessonPage() {
   const { moduleId, lessonId } = useParams();
@@ -50,7 +50,7 @@ export function LessonPage() {
   })();
   const alreadyDone = !!data.completedLessons[lesson.id];
   /* Modul 1–3 sind gratis; alles darüber nur mit Pro. */
-  const locked = !unlocked && !isFreeModule(module.id);
+  const locked = !unlocked && !isFreeLesson(module.id, lesson.id);
 
   function onQuizFinish(score: number, total: number) {
     completeLesson(lesson.id, score, total);

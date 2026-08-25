@@ -36,7 +36,7 @@ export const STR = defineStrings(
     // Nutzen
     benefitsTitle: 'Das bekommst du mit Pro',
     benefits: [
-      { t: 'Alle 9 Module statt 3', d: 'Postflop, Ranges & GTO, Psychologie, Live-Poker, Online-Poker und alle Varianten – über 30 zusätzliche Lektionen.' },
+      { t: 'Alle 9 Module statt 4', d: 'Postflop, Ranges & GTO, Psychologie, Live-Poker, Online-Poker und alle Varianten – über 30 zusätzliche Lektionen.' },
       { t: 'Live-Coach ohne Limit', d: 'Am Pokerabend jede Hand durchrechnen lassen, statt drei pro Tag. Street für Street, mit Begründung.' },
       { t: 'Szenario- & Push/Fold-Trainer', d: '24 handgeschriebene Spots und die Turnier-Endgame-Ranges – genau die Situationen, die Geld kosten.' },
       { t: 'Pro-Insights', d: 'Die Prinzipien von Fedor Holz, Negreanu, Polk & Co. – verdichtet, geprüft, anwendbar.' },
@@ -52,7 +52,7 @@ export const STR = defineStrings(
     compareFree: 'Gratis',
     comparePro: 'Pro',
     rows: [
-      ['Lernmodule', '3 von 9', 'Alle 9'],
+      ['Lernmodule', '4 von 9 · überall Lektion 1', 'Alle 9'],
       ['Live-Coach', '3 Hände / Tag', 'Unbegrenzt'],
       ['Übungstisch', '25 Hände / Tag', 'Unbegrenzt'],
       ['Trainer', '5 von 7', 'Alle 7'],
@@ -77,7 +77,7 @@ export const STR = defineStrings(
     // Sperren & Limits
     lockedTitle: 'Pro-Funktion',
     lockedGeneric: 'Diese Funktion gehört zu PokerMentor Pro.',
-    lockedModule: 'Dieses Modul gehört zu Pro. Die Module 1–3 sind komplett gratis.',
+    lockedModule: 'Diese Lektion gehört zu Pro. Vier Module sind komplett gratis – und die erste Lektion jedes Moduls ebenfalls.',
     lockedTrainer: 'Dieser Trainer gehört zu Pro. Fünf weitere Trainer sind gratis.',
     unlock: 'Pro ansehen',
     limitTitle: 'Tageslimit erreicht',
@@ -123,7 +123,7 @@ export const STR = defineStrings(
 
     benefitsTitle: 'What you get with Pro',
     benefits: [
-      { t: 'All 9 modules instead of 3', d: 'Postflop, ranges & GTO, psychology, live poker, online poker and every variant – over 30 extra lessons.' },
+      { t: 'All 9 modules instead of 4', d: 'Postflop, ranges & GTO, psychology, live poker, online poker and every variant – over 30 extra lessons.' },
       { t: 'Unlimited Live Coach', d: 'Run every hand at poker night, not three a day. Street by street, with the reasoning.' },
       { t: 'Scenario & push/fold trainers', d: '24 hand-written spots plus tournament endgame ranges – exactly the situations that cost money.' },
       { t: 'Pro Insights', d: 'The principles of Fedor Holz, Negreanu, Polk & co. – condensed, verified, applicable.' },
@@ -138,7 +138,7 @@ export const STR = defineStrings(
     compareFree: 'Free',
     comparePro: 'Pro',
     rows: [
-      ['Learning modules', '3 of 9', 'All 9'],
+      ['Learning modules', '4 of 9 · lesson 1 everywhere', 'All 9'],
       ['Live Coach', '3 hands / day', 'Unlimited'],
       ['Practice table', '25 hands / day', 'Unlimited'],
       ['Trainers', '5 of 7', 'All 7'],
@@ -161,7 +161,7 @@ export const STR = defineStrings(
 
     lockedTitle: 'Pro feature',
     lockedGeneric: 'This feature is part of PokerMentor Pro.',
-    lockedModule: 'This module is part of Pro. Modules 1–3 are completely free.',
+    lockedModule: 'This lesson is part of Pro. Four modules are completely free – and so is the first lesson of every module.',
     lockedTrainer: 'This trainer is part of Pro. Five other trainers are free.',
     unlock: 'See Pro',
     limitTitle: 'Daily limit reached',

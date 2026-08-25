@@ -20,6 +20,7 @@ export const STR = defineStrings(
     winProb: 'Gewinnwahrscheinlichkeit (alle Karten kommen)',
     vsOpponents: (n: number) => `gegen ${n} Gegner`,
     fmtPct: (pct: number) => `${pct} %`,
+    calculating: 'berechne …',
     mcNote:
       'Monte-Carlo-Simulation gegen zufällige Hände, alle fünf Boardkarten werden ausgeteilt. Gegen echte Einsätze liegen Gegner meist über dem Zufall.',
     howToPlay: (hand: string) => `So spielst du ${hand}`,
@@ -58,6 +59,7 @@ export const STR = defineStrings(
     winProb: 'Win probability (all cards dealt out)',
     vsOpponents: (n: number) => `vs. ${n} ${n === 1 ? 'opponent' : 'opponents'}`,
     fmtPct: (pct: number) => `${pct}%`,
+    calculating: 'calculating …',
     mcNote:
       'Monte Carlo simulation against random hands, with all five board cards dealt. Against real bets, opponents usually hold better than random.',
     howToPlay: (hand: string) => `How to play ${hand}`,

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CardPicker } from '../components/CardPicker';
 import { CardsRow } from '../components/PlayingCard';
 import type { Card } from '../lib/poker/cards';
@@ -13,7 +13,7 @@ import {
   type CoachAdvice,
   type CoachPosition,
 } from '../lib/poker/coach';
-import { equityVsRandomHands } from '../lib/poker/equity';
+import { MC_ITERATIONS, runEquityJobs } from '../lib/poker/equityAsync';
 import { handLabel } from '../lib/poker/ranges';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/coach';
@@ -55,10 +55,30 @@ export function CoachPage() {
       ? P.remaining(coachAccess.remaining, coachAccess.limit)
       : null;
 
-  const equity = useMemo(() => {
-    if (hole.length < 2) return 0;
-    return equityVsRandomHands(hole, board, Math.max(1, opponents), 3000);
+  /* Equity läuft im Worker (Fallback: verzögert im Hauptthread), damit das
+     Antippen einer Karte oder der Gegnerzahl die Oberfläche nicht einfriert.
+     `key` merkt sich, zu welcher Eingabe der Wert gehört – solange er nicht
+     zur aktuellen Eingabe passt, zeigt die Seite „berechne …“ statt einer
+     veralteten Zahl. */
+  const equityKey = hole.length < 2 ? '' : `${hole.join(',')}|${board.join(',')}|${opponents}`;
+  const [equityResult, setEquityResult] = useState<{ key: string; value: number } | null>(null);
+
+  useEffect(() => {
+    if (hole.length < 2) return;
+    let alive = true;
+    const key = `${hole.join(',')}|${board.join(',')}|${opponents}`;
+    runEquityJobs([
+      { hero: hole, board, opponents: Math.max(1, opponents), iterations: MC_ITERATIONS.coach },
+    ]).then(([value]) => {
+      if (alive) setEquityResult({ key, value });
+    });
+    return () => {
+      alive = false;
+    };
   }, [hole, board, opponents]);
+
+  const equityReady = equityResult !== null && equityResult.key === equityKey;
+  const equity = equityReady ? equityResult.value : 0;
 
   const advice: CoachAdvice | null = useMemo(() => {
     if (hole.length < 2) return null;
@@ -66,19 +86,21 @@ export function CoachPage() {
       return preflopAdvice(handLabel(hole[0], hole[1]), position, players, raisedBefore, limpers, lang);
     }
     if (step === 'flop' || step === 'turn' || step === 'river') {
+      if (!equityReady) return null; // Empfehlung hängt an der Equity
       const made = madeHandInfo(hole, board, lang);
       const draws = step === 'river' ? null : detectDraws(hole, board, lang);
       return postflopAdvice({ street: STREET_OF[step], made, draws, equity, opponents }, lang);
     }
     return null;
-  }, [step, hole, board, position, players, raisedBefore, limpers, equity, opponents, lang]);
+  }, [step, hole, board, position, players, raisedBefore, limpers, equity, equityReady, opponents, lang]);
 
   const facing = useMemo(() => {
     const pot = parseFloat(potInput.replace(',', '.'));
     const bet = parseFloat(betInput.replace(',', '.'));
     if (!isFinite(pot) || !isFinite(bet) || pot <= 0 || bet <= 0 || hole.length < 2) return null;
+    if (!equityReady) return null;
     return facingBetVerdict(equity, pot, bet, lang);
-  }, [potInput, betInput, equity, hole.length, lang]);
+  }, [potInput, betInput, equity, equityReady, hole.length, lang]);
 
   /** Karteneingabe für eine neue Hand öffnen (verbucht wird erst bei der Eingabe). */
   function openHandEntry() {
@@ -238,7 +260,7 @@ export function CoachPage() {
         </div>
       )}
 
-      {showAnalysis && advice && (
+      {showAnalysis && (
         <div style={{ maxWidth: 680 }}>
           <div className="card" style={{ marginBottom: 14 }}>
             <div className="row between wrap" style={{ marginBottom: 14 }}>
@@ -256,26 +278,38 @@ export function CoachPage() {
               </span>
             </div>
 
-            <div className={`coach-verdict ${ACTION_STYLE[advice.action].cls}`}>
-              <span style={{ fontSize: 26 }}>{ACTION_STYLE[advice.action].icon}</span>
-              <div>
-                <div className="v-action">{advice.headline}</div>
-                <div className="small muted">{L.recommendation} {ACTION_LABEL[advice.action]}</div>
-              </div>
-            </div>
+            {advice ? (
+              <>
+                <div className={`coach-verdict ${ACTION_STYLE[advice.action].cls}`}>
+                  <span style={{ fontSize: 26 }}>{ACTION_STYLE[advice.action].icon}</span>
+                  <div>
+                    <div className="v-action">{advice.headline}</div>
+                    <div className="small muted">{L.recommendation} {ACTION_LABEL[advice.action]}</div>
+                  </div>
+                </div>
 
-            <ul className="list-plain">
-              {advice.reasons.map((r, i) => (
-                <li key={i} className="takeaway">
-                  <span className="tick">›</span>
-                  <span>{r}</span>
-                </li>
-              ))}
-            </ul>
-            {advice.lowStakes && (
-              <div className="callout tip" style={{ marginBottom: 0 }}>
-                <span className="label">{L.homegameTip}</span>
-                {advice.lowStakes}
+                <ul className="list-plain">
+                  {advice.reasons.map((r, i) => (
+                    <li key={i} className="takeaway">
+                      <span className="tick">›</span>
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+                {advice.lowStakes && (
+                  <div className="callout tip" style={{ marginBottom: 0 }}>
+                    <span className="label">{L.homegameTip}</span>
+                    {advice.lowStakes}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="coach-verdict">
+                <span style={{ fontSize: 26 }}>⏳</span>
+                <div>
+                  <div className="v-action">{L.calculating}</div>
+                  <div className="small muted">{L.calculatingNote}</div>
+                </div>
               </div>
             )}
           </div>
@@ -284,7 +318,7 @@ export function CoachPage() {
             <div className="row between wrap">
               <div>
                 <div className="stat-label">{L.winChance}</div>
-                <div className="big-stat">{Math.round(equity * 100)} %</div>
+                <div className="big-stat">{equityReady ? `${Math.round(equity * 100)} %` : L.calculatingShort}</div>
                 <div className="small faint">{L.vsRandom(opponents)}</div>
               </div>
               <div style={{ textAlign: 'right' }}>
@@ -343,7 +377,7 @@ export function CoachPage() {
           )}
 
           <div className="row wrap" style={{ marginBottom: 8 }}>
-            {step === 'preflop' && (advice.action === 'fold' ? (
+            {step === 'preflop' && (advice?.action === 'fold' ? (
               <button className="btn lg" onClick={() => setStep('flop-in')}>
                 {L.playAnywayFlop}
               </button>

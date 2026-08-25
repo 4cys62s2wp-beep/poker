@@ -4,13 +4,16 @@ import react from '@vitejs/plugin-react';
 // Content-Security-Policy nur im Produktions-Build injizieren:
 // Der Dev-Server braucht Inline-Skripte/WebSockets, der Einzeldatei-Build Inline-Bundles.
 // connect-src erlaubt neben 'self' nur die Firebase-Endpunkte (Auth + Firestore).
+// wss:// steht mit dabei, weil CSP Schemata strikt trennt: eine https-Quelle
+// erlaubt keine WebSocket-Verbindung zum selben Host. Firestore nutzt normalerweise
+// WebChannel über HTTPS, kann aber je nach Netz auf WebSockets wechseln.
 const CSP = [
   "default-src 'self'",
   "script-src 'self'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self' data:",
-  "connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://www.googleapis.com",
+  "connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://www.googleapis.com wss://firestore.googleapis.com",
   "worker-src 'self'",
   "manifest-src 'self'",
   "object-src 'none'",

@@ -17,6 +17,8 @@ import { equityVsRandomHands } from '../lib/poker/equity';
 import { handLabel } from '../lib/poker/ranges';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/coach';
+import { STR as PRO } from '../i18n/pages/pro';
+import { usePro } from '../lib/pro/ProProvider';
 
 type Step = 'setup' | 'hand' | 'preflop' | 'flop-in' | 'flop' | 'turn-in' | 'turn' | 'river-in' | 'river';
 
@@ -29,6 +31,8 @@ const STREET_OF: Record<string, 'flop' | 'turn' | 'river'> = {
 export function CoachPage() {
   const { lang } = useLang();
   const L = STR[lang];
+  const P = PRO[lang];
+  const { access, consume, openPaywall } = usePro();
   const positions = coachPositions(lang);
   const [step, setStep] = useState<Step>('setup');
   const [players, setPlayers] = useState(6);
@@ -42,6 +46,14 @@ export function CoachPage() {
   const [betInput, setBetInput] = useState('');
 
   const used = useMemo(() => new Set<Card>([...hole, ...board]), [hole, board]);
+
+  /* Eine Nutzung = eine neue Hand, nicht jede Street. Ohne Monetarisierung
+     liefert access() immer „allowed“ – dann verhält sich alles wie bisher. */
+  const coachAccess = access('coach');
+  const freeLeft =
+    coachAccess.state === 'allowed' && coachAccess.remaining !== undefined && coachAccess.limit !== undefined
+      ? P.remaining(coachAccess.remaining, coachAccess.limit)
+      : null;
 
   const equity = useMemo(() => {
     if (hole.length < 2) return 0;
@@ -68,7 +80,21 @@ export function CoachPage() {
     return facingBetVerdict(equity, pot, bet, lang);
   }, [potInput, betInput, equity, hole.length, lang]);
 
+  /** Karteneingabe für eine neue Hand öffnen (verbucht wird erst bei der Eingabe). */
+  function openHandEntry() {
+    if (access('coach').state !== 'allowed') {
+      openPaywall('coach');
+      return;
+    }
+    setOpponents(Math.min(2, players - 1));
+    setStep('hand');
+  }
+
   function resetHand(keepSetup: boolean) {
+    if (keepSetup && access('coach').state !== 'allowed') {
+      openPaywall('coach');
+      return;
+    }
     setHole([]);
     setBoard([]);
     setPotInput('');
@@ -139,15 +165,15 @@ export function CoachPage() {
             </>
           )}
 
-          <button
-            className="btn primary lg block"
-            onClick={() => {
-              setOpponents(Math.min(2, players - 1));
-              setStep('hand');
-            }}
-          >
+          <button className="btn primary lg block" onClick={openHandEntry}>
             {L.toHand}
           </button>
+
+          {freeLeft && (
+            <p className="small faint" style={{ marginTop: 10, textAlign: 'center' }}>
+              {freeLeft}
+            </p>
+          )}
 
           <p className="small faint" style={{ marginTop: 14 }}>
             {L.setupNote}
@@ -162,6 +188,11 @@ export function CoachPage() {
             used={used}
             label={L.holeLabel}
             onComplete={(cards) => {
+              if (access('coach').state !== 'allowed') {
+                openPaywall('coach');
+                return;
+              }
+              consume('coach');
               setHole(cards);
               setStep('preflop');
             }}
@@ -337,6 +368,7 @@ export function CoachPage() {
             <button className="btn lg ghost" onClick={() => resetHand(false)}>
               {L.changeSetup}
             </button>
+            {freeLeft && <span className="small faint">{freeLeft}</span>}
           </div>
 
           {stepIndex >= 0 && (

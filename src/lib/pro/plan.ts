@@ -53,11 +53,25 @@ export const FEATURE_RULES: Record<FeatureKey, FeatureRule> = {
   'export': { key: 'export', freeDailyLimit: 0 },
 };
 
-/** Module, die in der Gratis-Version vollständig offen sind. */
-export const FREE_MODULE_IDS = ['m1', 'm2', 'm3'] as const;
+/**
+ * Module, die in der Gratis-Version vollständig offen sind.
+ * m1–m3: Grundlagen, Starthände, Mathematik – damit kann man ernsthaft lernen.
+ * m6 („Psychologie & Bankroll"): enthält Suchtprävention und verantwortungs-
+ * volles Spielen. Diese Inhalte hinter eine Paywall zu stellen, wäre bei einem
+ * Poker-Produkt nicht vertretbar – sie bleiben dauerhaft frei.
+ */
+export const FREE_MODULE_IDS = ['m1', 'm2', 'm3', 'm6'] as const;
 
 export function isFreeModule(moduleId: string): boolean {
   return (FREE_MODULE_IDS as readonly string[]).includes(moduleId);
+}
+
+/**
+ * Die erste Lektion jedes Moduls ist immer frei: Wer den Anfang gesehen hat,
+ * weiß, was ihm fehlt – das überzeugt weit besser als eine blanke Sperre.
+ */
+export function isFreeLesson(moduleId: string, lessonId: string): boolean {
+  return isFreeModule(moduleId) || lessonId === `${moduleId}-l1`;
 }
 
 /** Trainer, die in der Gratis-Version offen sind. */

@@ -5,6 +5,9 @@ import { Icon } from '../components/Icon';
 import { useAppState, type ReviewItem } from '../state/AppState';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/review';
+import { STR as PRO_STR } from '../i18n/pages/pro';
+import { ProLock } from '../components/pro/ProLock';
+import { usePro } from '../lib/pro/ProProvider';
 
 interface DueCard {
   item: ReviewItem;
@@ -22,6 +25,9 @@ export function ReviewPage() {
   const { data, answerReview } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
+  const P = PRO_STR[lang];
+  const { enabled, pro, trialActive } = usePro();
+  const unlocked = !enabled || pro || trialActive;
   const [selected, setSelected] = useState<number | null>(null);
   const [sessionDone, setSessionDone] = useState(0);
 
@@ -77,7 +83,13 @@ export function ReviewPage() {
         {sessionDone > 0 && <span className="pill ok">{L.doneToday(sessionDone)}</span>}
       </div>
 
-      {!current && (
+      {!unlocked && (
+        <div style={{ maxWidth: 640 }}>
+          <ProLock text={P.lockedGeneric} />
+        </div>
+      )}
+
+      {unlocked && !current && (
         <div className="card" style={{ maxWidth: 640, textAlign: 'center', padding: 36 }}>
           <div style={{ color: 'var(--gold-bright)', marginBottom: 10 }}>
             <Icon name="repeat" size={38} />
@@ -104,7 +116,7 @@ export function ReviewPage() {
         </div>
       )}
 
-      {current && (
+      {unlocked && current && (
         <div style={{ maxWidth: 680 }}>
           <div className="card">
             <div className="row between wrap" style={{ marginBottom: 14 }}>

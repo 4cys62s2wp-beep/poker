@@ -15,6 +15,8 @@ import {
 import { useAppState } from '../state/AppState';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/play';
+import { STR as PRO } from '../i18n/pages/pro';
+import { usePro } from '../lib/pro/ProProvider';
 
 const START_STACK = 200; // 100bb bei Blinds 1/2
 const SB = 1;
@@ -48,6 +50,8 @@ export function PlayPage() {
   const { data, recordHand, addHandRecord } = useAppState();
   const { lang } = useLang();
   const L = STR[lang];
+  const P = PRO[lang];
+  const { access, can, consume, openPaywall } = usePro();
   const [numOpponents, setNumOpponents] = useState<number | null>(null);
   const [coachMode, setCoachMode] = useState(true);
   const gameRef = useRef<GameState | null>(null);
@@ -60,12 +64,32 @@ export function PlayPage() {
   const handRecorded = useRef(false);
   const [showRaisePanel, setShowRaisePanel] = useState(false);
 
+  /* Coach-Overlay ist eine Pro-Funktion, der Tisch selbst ist gratis mit
+     Tageslimit. Ohne Monetarisierung sind can()/access() immer offen. */
+  const coachAllowed = can('play-coach');
+  const coachOn = coachMode && coachAllowed;
+  const playAccess = access('play-hands');
+  const freeLeft =
+    playAccess.state === 'allowed' && playAccess.remaining !== undefined && playAccess.limit !== undefined
+      ? P.remaining(playAccess.remaining, playAccess.limit)
+      : null;
+
   // Engine-Log in der UI-Sprache schreiben lassen
   useEffect(() => {
     setEngineLanguage(lang);
   }, [lang]);
 
+  /* Eine Nutzung = eine ausgeteilte Hand. Ohne Monetarisierung liefert
+     access() immer „allowed“ – dann läuft alles wie bisher. */
+  function handAllowed(): boolean {
+    if (access('play-hands').state === 'allowed') return true;
+    openPaywall('play');
+    return false;
+  }
+
   function startSession(opponents: number) {
+    // Erst prüfen, dann den Tisch aufbauen – sonst bliebe ein leerer Tisch stehen.
+    if (!handAllowed()) return;
     setNumOpponents(opponents);
     stacksRef.current = new Array(opponents + 1).fill(START_STACK);
     buttonRef.current = 0;
@@ -74,6 +98,8 @@ export function PlayPage() {
   }
 
   function startHand(opponents?: number) {
+    if (!handAllowed()) return;
+    consume('play-hands');
     const n = (opponents ?? numOpponents ?? 1) + 1;
     // Rebuy für Pleite-Spieler
     for (let i = 0; i < n; i++) {
@@ -153,7 +179,7 @@ export function PlayPage() {
   const la = heroTurn && g ? legalActions(g) : null;
 
   const coachInfo = useMemo(() => {
-    if (!g || !hero || hero.folded || !coachMode || !heroTurn) return null;
+    if (!g || !hero || hero.folded || !coachOn || !heroTurn) return null;
     const opponents = g.players.filter((p) => !p.folded && !p.isHero).length;
     const equity = equityVsRandomHands(hero.cards, g.board, opponents, 500);
     const pot = totalPot(g);
@@ -162,7 +188,7 @@ export function PlayPage() {
     const handName =
       g.board.length >= 3 ? categoryNameIn(evaluateBest([...hero.cards, ...g.board]), lang) : null;
     return { equity, required, call, handName, opponents };
-  }, [g, hero, coachMode, heroTurn, la?.callAmount, lang]);
+  }, [g, hero, coachOn, heroTurn, la?.callAmount, lang]);
 
   if (numOpponents === null) {
     return (
@@ -204,16 +230,32 @@ export function PlayPage() {
               <div className="small faint">{L.opponents(5)}</div>
             </button>
           </div>
+          {freeLeft && (
+            <p className="small faint" style={{ marginTop: 12, marginBottom: 0 }}>
+              {freeLeft}
+            </p>
+          )}
           <hr className="divider" />
           <label className="row" style={{ cursor: 'pointer' }}>
             <input
               type="checkbox"
-              checked={coachMode}
-              onChange={(e) => setCoachMode(e.target.checked)}
+              checked={coachOn}
+              onChange={(e) => {
+                if (!coachAllowed) {
+                  openPaywall();
+                  return;
+                }
+                setCoachMode(e.target.checked);
+              }}
               style={{ width: 18, height: 18, accentColor: 'var(--gold)' }}
             />
             <div>
-              <div style={{ fontWeight: 700 }}>{L.coachMode}</div>
+              <div className="row" style={{ fontWeight: 700 }}>
+                {L.coachMode}
+                {!coachAllowed && (
+                  <span className="pill gold" title={P.lockedTitle}>{P.proBadge}</span>
+                )}
+              </div>
               <div className="small muted">{L.coachModeDesc}</div>
             </div>
           </label>
@@ -365,14 +407,17 @@ export function PlayPage() {
               </div>
             );
           })}
-          <button className="btn primary" style={{ marginTop: 12 }} onClick={() => startHand()}>
-            {L.nextHand}
-          </button>
+          <div className="row wrap" style={{ marginTop: 12 }}>
+            <button className="btn primary" onClick={() => startHand()}>
+              {L.nextHand}
+            </button>
+            {freeLeft && <span className="small faint">{freeLeft}</span>}
+          </div>
         </div>
       )}
 
       {/* Coach-Panel */}
-      {coachMode && coachInfo && heroTurn && (
+      {coachOn && coachInfo && heroTurn && (
         <div className="card" style={{ marginBottom: 14, background: 'var(--bg-elev)' }}>
           <div className="row wrap">
             <span className="pill gold">{L.coachPill}</span>

@@ -4,11 +4,17 @@ import { Icon, type IconName } from './Icon';
 import { useAppState, levelForXp, xpThreshold } from '../state/AppState';
 import { useLang, levelTitleFor } from '../i18n';
 import { STR } from '../i18n/pages/layout';
+import { STR as PRO } from '../i18n/pages/pro';
+import { STR as LEGAL } from '../i18n/pages/legal';
+import { usePro } from '../lib/pro/ProProvider';
 
 export function Layout() {
   const { data, toasts } = useAppState();
   const { lang } = useLang();
   const L = STR[lang];
+  const P = PRO[lang];
+  const G = LEGAL[lang];
+  const proCtx = usePro();
   const level = levelForXp(data.xp);
   const location = useLocation();
 
@@ -32,7 +38,13 @@ export function Layout() {
         { to: '/tools', icon: 'tools', label: L.tools },
       ],
     },
-    { label: L.navYou, items: [{ to: '/profil', icon: 'profile', label: L.profile }] },
+    {
+      label: L.navYou,
+      items: [
+        { to: '/profil', icon: 'profile', label: L.profile },
+        ...(proCtx.enabled ? [{ to: '/pro', icon: 'crown' as IconName, label: P.navPro }] : []),
+      ],
+    },
   ];
 
   const mobileItems: Array<{ to: string; icon: IconName; label: string; end?: boolean }> = [
@@ -54,6 +66,9 @@ export function Layout() {
     ['/tools', L.tools],
     ['/glossar', L.glossary],
     ['/profil', L.profile],
+    ['/pro', P.navPro],
+    ['/rechtliches', G.navLegal],
+    ['/kuendigen', G.cancelTitle],
   ];
 
   useEffect(() => {
@@ -92,6 +107,21 @@ export function Layout() {
         ))}
         <div className="sidebar-footer">
           <ProfileBadge />
+          {proCtx.enabled && (
+            <div style={{ marginBottom: 9 }}>
+              {proCtx.pro ? (
+                <span className="pill gold"><Icon name="crown" size={13} /> {P.proBadge}</span>
+              ) : proCtx.trialActive ? (
+                <NavLink to="/pro" className="pill gold" style={{ textDecoration: 'none' }}>
+                  {P.trialBadge(proCtx.trialDaysLeft)}
+                </NavLink>
+              ) : (
+                <NavLink to="/pro" className="pill" style={{ textDecoration: 'none' }}>
+                  {P.upgradeNudge}
+                </NavLink>
+              )}
+            </div>
+          )}
           <div className="row between" style={{ marginBottom: 6 }}>
             <span>
               {L.level} {level} · {levelTitleFor(level, lang)}
@@ -101,6 +131,15 @@ export function Layout() {
             <div style={{ width: `${levelProgressPct(data.xp)}%` }} />
           </div>
           <div style={{ marginTop: 6 }}>{data.xp} XP</div>
+          <NavLink to="/rechtliches" className="small faint" style={{ display: 'inline-block', marginTop: 10 }}>
+            {G.navLegal}
+          </NavLink>
+          {/* § 312k BGB: ohne Anmeldung erreichbar, deshalb dauerhaft im Footer. */}
+          {proCtx.enabled && (
+            <NavLink to="/kuendigen" className="small faint" style={{ display: 'block', marginTop: 4 }}>
+              {G.cancelNav}
+            </NavLink>
+          )}
         </div>
       </aside>
 

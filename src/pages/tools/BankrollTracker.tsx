@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAppState, type SessionEntry } from '../../state/AppState';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/bankroll';
+import { downloadBlob } from '../../lib/download';
 
 function euro(n: number): string {
   return n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
@@ -68,16 +69,10 @@ export function BankrollTracker() {
 
   function exportCsv() {
     const header = 'Datum;Art;Spiel;Buy-in;Cash-out;Gewinn;Minuten;Notizen';
-    const rows = data.sessions.map((s) =>
+    const rows = filteredSessions.map((s) =>
       [s.date, s.type, csvCell(s.game), s.buyIn, s.cashOut, (s.cashOut - s.buyIn).toFixed(2), s.minutes, csvCell(s.notes ?? '')].join(';'),
     );
-    const blob = new Blob(['\uFEFF' + [header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'pokermentor-sessions.csv';
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadBlob('\uFEFF' + [header, ...rows].join('\n'), 'pokermentor-sessions.csv', 'text/csv;charset=utf-8');
   }
 
   function submit() {

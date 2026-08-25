@@ -1,0 +1,13 @@
+{
+  "_hinweis": "Kopiere diese Datei zu legal.json und trage deine echten Anbieterdaten ein. Ohne vollständige Daten zeigt die App KEIN Impressum an (erfundene Angaben wären ein Rechtsverstoß). Pflicht, sobald die App Geld kostet.",
+  "provider": "Vorname Nachname",
+  "street": "Musterstraße 1",
+  "city": "12345 Musterstadt",
+  "country": "Deutschland",
+  "email": "hallo@deine-domain.de",
+  "phone": "",
+  "vatId": "",
+  "register": "",
+  "represented": "",
+  "smallBusiness": true
+}

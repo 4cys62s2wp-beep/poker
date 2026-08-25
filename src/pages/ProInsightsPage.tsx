@@ -2,11 +2,60 @@ import { useState } from 'react';
 import { Icon } from '../components/Icon';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/proinsights';
+import { STR as PRO_STR } from '../i18n/pages/pro';
+import { ProLock } from '../components/pro/ProLock';
+import { usePro } from '../lib/pro/ProProvider';
 
 export function ProInsightsPage() {
   const { lang, content } = useLang();
   const L = STR[lang];
+  const P = PRO_STR[lang];
+  // `pro` heißt hier `hasPro`, weil `pro` unten für ein einzelnes Profil steht.
+  const { enabled, pro: hasPro, trialActive } = usePro();
+  const unlocked = !enabled || hasPro || trialActive;
   const [openId, setOpenId] = useState<string | null>(content.proProfiles[0].id);
+
+  // Gesperrt: Kopf und ein echter Vorgeschmack (erster Kopf) bleiben sichtbar –
+  // eine reine Wand überzeugt niemanden.
+  if (!unlocked) {
+    const teaser = content.proProfiles[0];
+    const teaserInitials = teaser.name.split(' ').map((w) => w[0]).join('').slice(0, 2);
+    return (
+      <div>
+        <div className="page-header">
+          <div className="eyebrow">{L.eyebrow}</div>
+          <h1>{L.title}</h1>
+          <p className="sub">{L.sub}</p>
+        </div>
+
+        <div className="section-title">{L.headsTitle}</div>
+        <div className="grid" style={{ maxWidth: 780 }}>
+          <div className="card">
+            <div className="row">
+              <span
+                style={{
+                  width: 46, height: 46, borderRadius: 14, display: 'inline-flex', alignItems: 'center',
+                  justifyContent: 'center', fontWeight: 800, fontSize: 17, flexShrink: 0,
+                  fontFamily: 'var(--font-display)',
+                  background: `${teaser.color}22`, color: teaser.color, border: `1.5px solid ${teaser.color}55`,
+                }}
+              >
+                {teaserInitials}
+              </span>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ display: 'block', fontWeight: 800, fontSize: 17 }}>{teaser.name}</span>
+                <span className="small muted" style={{ display: 'block' }}>{teaser.tagline}</span>
+              </span>
+            </div>
+          </div>
+
+          <ProLock text={P.lockedGeneric} />
+        </div>
+
+        <div className="suit-deco">♠ ♥ ♦ ♣</div>
+      </div>
+    );
+  }
 
   return (
     <div>

@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
-import { IconTile, type IconName } from '../components/Icon';
+import { Icon, IconTile, type IconName } from '../components/Icon';
 import { useAppState } from '../state/AppState';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/trainerhub';
+import { STR as PRO_STR } from '../i18n/pages/pro';
+import { usePro } from '../lib/pro/ProProvider';
+import { isFreeTrainer } from '../lib/pro/plan';
 
 const TRAINERS: Array<{ id: 'szenario' | 'preflop' | 'potodds' | 'equity' | 'handranking' | 'outs' | 'pushfold'; to: string; icon: IconName; tone: 'gold' | 'green' | 'blue' | 'red' | 'violet' }> = [
   { id: 'szenario', to: '/trainer/szenario', icon: 'scene', tone: 'gold' },
@@ -18,6 +21,9 @@ export function TrainerHub() {
   const { data } = useAppState();
   const { lang } = useLang();
   const L = STR[lang];
+  const P = PRO_STR[lang];
+  const { enabled, pro, trialActive } = usePro();
+  const unlocked = !enabled || pro || trialActive;
   const today = new Date();
   const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   const dailyDone = data.daily?.date === todayStr;
@@ -54,12 +60,22 @@ export function TrainerHub() {
           const stats = data.trainers[t.id];
           const acc = stats && stats.attempts > 0 ? Math.round((100 * stats.correct) / stats.attempts) : null;
           const info = L.trainers[t.id];
+          // Gesperrte Trainer bleiben anklickbar – die Zielseite erklärt, was dahinter steckt.
+          const locked = !unlocked && !isFreeTrainer(t.id);
           return (
             <Link key={t.id} to={t.to} className="card clickable">
               <div className="row" style={{ alignItems: 'flex-start' }}>
                 <IconTile name={t.icon} tone={t.tone} />
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 800, fontSize: 16.5 }}>{info.title}</div>
+                  <div style={{ fontWeight: 800, fontSize: 16.5 }}>
+                    {info.title}
+                    {locked && (
+                      <span className="pill gold" style={{ marginLeft: 8, verticalAlign: 'middle', fontWeight: 700 }}>
+                        <Icon name="lock" size={14} />
+                        {P.proBadge}
+                      </span>
+                    )}
+                  </div>
                   <div className="small muted" style={{ marginTop: 3 }}>
                     {info.desc}
                   </div>

@@ -7,6 +7,9 @@ import { combosForLabel, expandRangeSpec, handLabel, rangePercent } from '../../
 import { useAppState } from '../../state/AppState';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/pushfoldtrainer';
+import { STR as PRO_STR } from '../../i18n/pages/pro';
+import { ProLock } from '../../components/pro/ProLock';
+import { usePro } from '../../lib/pro/ProProvider';
 
 interface Spot {
   chartIdx: number;
@@ -28,6 +31,9 @@ export function PushFoldTrainer() {
   const { data, recordTrainer } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
+  const P = PRO_STR[lang];
+  const { enabled, pro, trialActive } = usePro();
+  const unlocked = !enabled || pro || trialActive;
   const chartSets = useMemo(
     () => content.pushCharts.map((c) => ({ ...c, set: expandRangeSpec(c.push) })),
     [content],
@@ -52,6 +58,25 @@ export function PushFoldTrainer() {
   }
 
   const isCorrect = answer === correct;
+
+  // Kopf der Seite bleibt sichtbar – der Nutzer sieht, was ihn erwartet.
+  if (!unlocked) {
+    return (
+      <div>
+        <Link to="/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
+          {L.back}
+        </Link>
+        <div className="page-header">
+          <div className="eyebrow">{L.eyebrow}</div>
+          <h1>{L.title}</h1>
+          <p className="sub">{L.sub}</p>
+        </div>
+        <div style={{ maxWidth: 720 }}>
+          <ProLock text={P.lockedTrainer} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

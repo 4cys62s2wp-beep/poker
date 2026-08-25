@@ -5,6 +5,9 @@ import type { Scenario } from '../../content/scenarios';
 import { useAppState } from '../../state/AppState';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/scenariotrainer';
+import { STR as PRO_STR } from '../../i18n/pages/pro';
+import { ProLock } from '../../components/pro/ProLock';
+import { usePro } from '../../lib/pro/ProProvider';
 
 function shuffled<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -19,6 +22,9 @@ export function ScenarioTrainer() {
   const { data, recordTrainer } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
+  const P = PRO_STR[lang];
+  const { enabled, pro, trialActive } = usePro();
+  const unlocked = !enabled || pro || trialActive;
   const [queue, setQueue] = useState<Scenario[]>(() => shuffled(content.scenarios));
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -45,6 +51,25 @@ export function ScenarioTrainer() {
   }
 
   const qualityCls: Record<string, string> = { best: ' correct', ok: '', bad: ' wrong' };
+
+  // Kopf der Seite bleibt sichtbar – der Nutzer sieht, was ihn erwartet.
+  if (!unlocked) {
+    return (
+      <div>
+        <Link to="/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
+          {L.back}
+        </Link>
+        <div className="page-header">
+          <div className="eyebrow">{L.eyebrow}</div>
+          <h1>{L.title}</h1>
+          <p className="sub">{L.sub}</p>
+        </div>
+        <div style={{ maxWidth: 720 }}>
+          <ProLock text={P.lockedTrainer} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

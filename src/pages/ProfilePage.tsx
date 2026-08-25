@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ALL_MODULES } from '../content';
 import { useAppState, xpThreshold } from '../state/AppState';
 import { useLang, levelTitleFor } from '../i18n';
 import { STR } from '../i18n/pages/profile';
 import { CloudAccountCard } from '../components/CloudAccountCard';
 import { ShareCard } from '../components/ShareCard';
+import { downloadBlob } from '../lib/download';
 
 export function ProfilePage() {
   const {
@@ -22,14 +23,21 @@ export function ProfilePage() {
   const [newEmail, setNewEmail] = useState('');
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
+  /* Beim Profilwechsel (auch durch Cloud-Login) die Eingabefelder auf das neue
+     Profil umstellen. Ohne das würde ein Klick auf „Speichern" den Namen des
+     zuvor aktiven Profils in das neue schreiben. */
+  useEffect(() => {
+    setNameInput(data.name);
+    setEmailInput(activeProfile.email ?? '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeProfile.id]);
+
   function downloadBackup() {
-    const blob = new Blob([exportJson()], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `pokermentor-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadBlob(
+      exportJson(),
+      `pokermentor-backup-${new Date().toISOString().slice(0, 10)}.json`,
+      'application/json',
+    );
   }
 
   function handleImportFile(file: File) {

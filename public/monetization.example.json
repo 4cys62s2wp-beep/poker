@@ -1,0 +1,11 @@
+{
+  "_hinweis": "Kopiere diese Datei zu monetization.json, um die Pro-Version zu aktivieren. Solange monetization.json fehlt, ist die komplette App gratis und es erscheint keinerlei Paywall. Siehe MONETIZATION_SETUP.md.",
+  "enabled": true,
+  "checkoutMonthlyUrl": "https://buy.stripe.com/DEIN_MONATS_LINK",
+  "checkoutAnnualUrl": "https://buy.stripe.com/DEIN_JAHRES_LINK",
+  "portalUrl": "https://billing.stripe.com/p/login/DEIN_PORTAL_LINK",
+  "priceMonthly": "4,99 €",
+  "priceAnnual": "39,99 €",
+  "annualNote": "2 Monate geschenkt",
+  "supportEmail": "hallo@deine-domain.de"
+}

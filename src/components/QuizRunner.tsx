@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import type { QuizQuestion } from '../content/types';
+import { useLang } from '../i18n';
+import { STR } from '../i18n/pages/quiz';
 
 interface Props {
   questions: QuizQuestion[];
@@ -12,6 +14,8 @@ interface Props {
 }
 
 export function QuizRunner({ questions, onFinish, onAnswer, onWrong }: Props) {
+  const { lang } = useLang();
+  const L = STR[lang];
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [score, setScore] = useState(0);
@@ -45,17 +49,13 @@ export function QuizRunner({ questions, onFinish, onAnswer, onWrong }: Props) {
   if (finished) {
     const pct = Math.round((100 * score) / questions.length);
     return (
-      <div className="card" style={{ textAlign: 'center' }}>
+      <div className="card" style={{ textAlign: 'center' }} role="status" aria-live="polite">
         <div style={{ fontSize: 40 }}>{pct === 100 ? '🏆' : pct >= 60 ? '🎉' : '📚'}</div>
         <div className="big-stat">
           {score} / {questions.length}
         </div>
         <p className="muted" style={{ marginTop: 6 }}>
-          {pct === 100
-            ? 'Perfekt! Du hast alles verstanden.'
-            : pct >= 60
-              ? 'Gut gemacht! Schau dir die Erklärungen der falschen Antworten noch einmal an.'
-              : 'Lies die Lektion am besten noch einmal – dann klappt es!'}
+          {pct === 100 ? L.perfect : pct >= 60 ? L.good : L.retry}
         </p>
       </div>
     );
@@ -64,10 +64,8 @@ export function QuizRunner({ questions, onFinish, onAnswer, onWrong }: Props) {
   return (
     <div>
       <div className="row between" style={{ marginBottom: 12 }}>
-        <span className="pill gold">
-          Frage {index + 1} / {questions.length}
-        </span>
-        <span className="pill">✓ {score} richtig</span>
+        <span className="pill gold">{L.question(index + 1, questions.length)}</span>
+        <span className="pill">{L.correctCount(score)}</span>
       </div>
       <div className="progressbar" style={{ marginBottom: 18 }}>
         <div style={{ width: `${(100 * index) / questions.length}%` }} />
@@ -94,13 +92,13 @@ export function QuizRunner({ questions, onFinish, onAnswer, onWrong }: Props) {
       })}
       {answered && (
         <>
-          <div className={`feedback-box ${selected === q.correctIndex ? 'good' : 'bad'}`}>
-            <strong>{selected === q.correctIndex ? '✓ Richtig! ' : '✗ Leider falsch. '}</strong>
+          <div className={`feedback-box ${selected === q.correctIndex ? 'good' : 'bad'}`} role="status" aria-live="polite">
+            <strong>{selected === q.correctIndex ? L.right : L.wrong}</strong>
             {q.explanation}
           </div>
           <div style={{ marginTop: 14 }}>
             <button className="btn primary" onClick={next}>
-              {isLast ? 'Quiz abschließen' : 'Nächste Frage →'}
+              {isLast ? L.finish : L.next}
             </button>
           </div>
         </>

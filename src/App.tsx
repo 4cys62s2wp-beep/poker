@@ -2,6 +2,10 @@ import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Onboarding } from './components/Onboarding';
+import { PaywallModal } from './components/pro/PaywallModal';
+import { UpgradePage } from './pages/UpgradePage';
+import { LegalPage } from './pages/LegalPage';
+import { CancelPage } from './pages/CancelPage';
 import { Dashboard } from './pages/Dashboard';
 import { LearnPage } from './pages/LearnPage';
 import { ModulePage } from './pages/ModulePage';
@@ -34,6 +38,7 @@ export function App() {
   return (
     <ErrorBoundary>
       <Onboarding />
+      <PaywallModal />
       <Routes>
         <Route element={<Layout />}>
         <Route index element={<Dashboard />} />
@@ -63,6 +68,9 @@ export function App() {
         <Route path="/tools/chips" element={<ChipCalculator />} />
         <Route path="/glossar" element={<GlossaryPage />} />
         <Route path="/profil" element={<ProfilePage />} />
+        <Route path="/pro" element={<UpgradePage />} />
+        <Route path="/rechtliches" element={<LegalPage />} />
+        <Route path="/kuendigen" element={<CancelPage />} />
         <Route path="*" element={<Dashboard />} />
         </Route>
       </Routes>

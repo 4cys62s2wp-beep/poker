@@ -26,7 +26,10 @@ export type IconName =
   | 'eye'
   | 'scale'
   | 'grid'
-  | 'notes';
+  | 'notes'
+  | 'lock'
+  | 'check'
+  | 'crown';
 
 interface Props {
   name: IconName;
@@ -239,6 +242,27 @@ function paths(name: IconName) {
         <g {...STROKE}>
           <rect x="5" y="3.8" width="14" height="16.4" rx="2" />
           <path d="M9 8.5h6M9 12h6M9 15.5h3.5" />
+        </g>
+      );
+    case 'lock':
+      return (
+        <g {...STROKE}>
+          <rect x="4.8" y="10.5" width="14.4" height="9.7" rx="2.2" />
+          <path d="M8.3 10.5V7.8a3.7 3.7 0 0 1 7.4 0v2.7" />
+          <path d="M12 14.4v2.2" />
+        </g>
+      );
+    case 'check':
+      return (
+        <g {...STROKE}>
+          <path d="M5 12.6l4.4 4.4L19 7.4" />
+        </g>
+      );
+    case 'crown':
+      return (
+        <g {...STROKE}>
+          <path d="M4 17.4h16" />
+          <path d="M4.4 7.2l3.9 3.2L12 5.4l3.7 5 3.9-3.2-1.5 8.2H5.9z" />
         </g>
       );
   }

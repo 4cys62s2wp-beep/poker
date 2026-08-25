@@ -6,6 +6,10 @@ import { QuizRunner } from '../components/QuizRunner';
 import { useAppState } from '../state/AppState';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/lesson';
+import { STR as PRO } from '../i18n/pages/pro';
+import { ProLock } from '../components/pro/ProLock';
+import { usePro } from '../lib/pro/ProProvider';
+import { isFreeModule } from '../lib/pro/plan';
 
 export function LessonPage() {
   const { moduleId, lessonId } = useParams();
@@ -13,6 +17,10 @@ export function LessonPage() {
   const { data, completeLesson, addReviewItem } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
+  const P = PRO[lang];
+  const { enabled, pro, trialActive } = usePro();
+  /* Ohne Monetarisierung, mit Abo oder in der Testphase bleibt alles offen. */
+  const unlocked = !enabled || pro || trialActive;
   const foundModule = content.modules.find((m) => m.id === (moduleId ?? ''));
   const foundLesson = foundModule?.lessons.find((l) => l.id === (lessonId ?? ''));
   const found = foundModule && foundLesson ? { module: foundModule, lesson: foundLesson } : undefined;
@@ -41,6 +49,8 @@ export function LessonPage() {
     return content.modules.find((m) => m.id === `m${mIdx + 1}`);
   })();
   const alreadyDone = !!data.completedLessons[lesson.id];
+  /* Modul 1–3 sind gratis; alles darüber nur mit Pro. */
+  const locked = !unlocked && !isFreeModule(module.id);
 
   function onQuizFinish(score: number, total: number) {
     completeLesson(lesson.id, score, total);
@@ -65,7 +75,13 @@ export function LessonPage() {
         <p className="sub">{lesson.intro}</p>
       </div>
 
-      {!showQuiz && (
+      {locked && (
+        <div style={{ maxWidth: 720 }}>
+          <ProLock text={P.lockedModule} />
+        </div>
+      )}
+
+      {!locked && !showQuiz && (
         <>
           <div className="prose">
             {lesson.sections.map((sec, i) => (
@@ -133,7 +149,7 @@ export function LessonPage() {
         </>
       )}
 
-      {showQuiz && (
+      {!locked && showQuiz && (
         <div style={{ maxWidth: 720 }}>
           {!quizDone && (
             <button className="btn ghost sm" style={{ marginBottom: 16 }} onClick={() => setShowQuiz(false)}>

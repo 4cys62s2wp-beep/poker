@@ -1,14 +1,47 @@
 rules_version = '2';
 
 // PokerMentor – Firestore-Sicherheitsregeln.
-// Jeder Nutzer darf ausschließlich sein eigenes Dokument lesen und schreiben,
-// und nur mit bestätigter E-Mail-Adresse. Alles andere ist verboten.
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Lernfortschritt: nur das eigene Dokument, nur mit bestätigter E-Mail.
     match /users/{uid} {
       allow read, write: if request.auth != null
         && request.auth.uid == uid
         && request.auth.token.email_verified == true;
+    }
+
+    // Abo-Status: der Client darf NUR LESEN.
+    // Geschrieben wird ausschließlich serverseitig durch den Stripe-Webhook
+    // (Cloud Function / Firebase-Extension) mit Admin-Rechten – dadurch kann
+    // sich niemand selbst ein Abo eintragen.
+    match /customers/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+
+      // Unterdokumente der Stripe-Extension (Checkout-Sessions, Abos, Zahlungen).
+      match /checkout_sessions/{id} {
+        allow read, create: if request.auth != null && request.auth.uid == uid;
+        allow update, delete: if false;
+      }
+      match /subscriptions/{id} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false;
+      }
+      match /payments/{id} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false;
+      }
+    }
+
+    // Produkt- und Preisdaten sind öffentlich lesbar, aber nie clientseitig änderbar.
+    match /products/{id} {
+      allow read: if true;
+      allow write: if false;
+      match /prices/{priceId} {
+        allow read: if true;
+        allow write: if false;
+      }
     }
 
     match /{document=**} {

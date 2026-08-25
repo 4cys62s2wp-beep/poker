@@ -835,11 +835,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     (key: string, amount = 1) => {
       mutate((d) => {
         const today = todayStr();
-        if (d.usage.day !== today) {
-          // Tageswechsel: Tageszähler zurücksetzen, Gesamtzähler behalten.
-          const totals = { 'bankroll-unlimited': d.usage.counts['bankroll-unlimited'] ?? 0 };
-          d.usage = { day: today, counts: totals['bankroll-unlimited'] ? totals : {} };
-        }
+        // Tageswechsel: Zähler zurücksetzen. Gesamtlimits (z. B. Bankroll)
+        // werden nicht gezählt, sondern direkt aus den Daten abgeleitet.
+        if (d.usage.day !== today) d.usage = { day: today, counts: {} };
         d.usage.counts[key] = Math.max(0, (d.usage.counts[key] ?? 0) + amount);
       });
     },

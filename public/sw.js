@@ -1,7 +1,7 @@
 /* PokerMentor Service Worker: Offline-Unterstützung.
    Strategie: Navigation network-first (Fallback Cache), Assets cache-first. */
 
-const CACHE = 'pokermentor-v4';
+const CACHE = 'pokermentor-v5';
 const CORE = ['./', './index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
@@ -25,8 +25,9 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
-  // Cloud-Konfiguration nie cachen: Sie entscheidet live, ob Konten aktiv sind.
-  if (url.pathname.endsWith('/firebase-config.json')) return;
+  // Konfigurationsdateien nie cachen: Sie entscheiden live über Konten,
+  // Preise und Anbieterangaben – ein veralteter Stand wäre hier fatal.
+  if (/\/(firebase-config|monetization|legal)\.json$/.test(url.pathname)) return;
 
   if (req.mode === 'navigate') {
     // Network-first für die Seite selbst

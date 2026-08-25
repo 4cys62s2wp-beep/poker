@@ -13,6 +13,7 @@ export const STR = defineStrings(
     proSub: 'Die Prinzipien von Fedor Holz, Negreanu, Polk & Co. – plus die teuersten Anfängerfehler aus Profi-Sicht.',
     newPill: 'Neu',
     moduleN: (n: number) => `Modul ${n}`,
+    lockedHint: 'Nur mit Pro freigeschaltet',
     doneLine: (done: number, total: number) => `${done} / ${total} Lektionen abgeschlossen`,
   },
   {
@@ -26,6 +27,7 @@ export const STR = defineStrings(
     proSub: 'The principles of Fedor Holz, Negreanu, Polk & co. – plus the most expensive beginner mistakes from a pro’s point of view.',
     newPill: 'New',
     moduleN: (n: number) => `Module ${n}`,
+    lockedHint: 'Unlocked with Pro',
     doneLine: (done: number, total: number) => `${done} / ${total} lessons completed`,
   },
 );

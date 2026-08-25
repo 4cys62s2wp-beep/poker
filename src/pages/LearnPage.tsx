@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { moduleProgress, useAppState } from '../state/AppState';
 import { useLang, levelLabel } from '../i18n';
 import { STR } from '../i18n/pages/learn';
+import { Icon } from '../components/Icon';
+import { usePro } from '../lib/pro/ProProvider';
+import { isFreeModule } from '../lib/pro/plan';
 
 const LEVEL_PILL: Record<string, string> = {
   Einsteiger: 'ok',
@@ -31,6 +34,10 @@ export function LearnPage() {
   const { data } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
+  const { enabled, pro, trialActive } = usePro();
+  /* Ohne Monetarisierung, mit Abo oder in der Testphase ist alles offen –
+     dann sieht die Seite exakt so aus wie bisher. */
+  const unlocked = !enabled || pro || trialActive;
   const [query, setQuery] = useState('');
 
   const hits = useMemo<SearchHit[]>(() => {
@@ -123,11 +130,24 @@ export function LearnPage() {
           {content.modules.map((m, idx) => {
             const prog = moduleProgress(data, m.id);
             const done = Math.round(prog * m.lessons.length);
+            const locked = !unlocked && !isFreeModule(m.id);
+            const levelPill = (
+              <span className={`pill ${LEVEL_PILL[m.level] ?? ''}`}>{levelLabel(m.level, lang)}</span>
+            );
             return (
               <Link key={m.id} to={`/lernen/${m.id}`} className="card clickable">
                 <div className="row between" style={{ marginBottom: 8 }}>
                   <span className="pill">{L.moduleN(idx + 1)}</span>
-                  <span className={`pill ${LEVEL_PILL[m.level] ?? ''}`}>{levelLabel(m.level, lang)}</span>
+                  {locked ? (
+                    <span className="row" style={{ gap: 6 }}>
+                      <span className="pill gold" title={L.lockedHint} aria-label={L.lockedHint}>
+                        <Icon name="lock" size={14} />
+                      </span>
+                      {levelPill}
+                    </span>
+                  ) : (
+                    levelPill
+                  )}
                 </div>
                 <div className="row" style={{ alignItems: 'flex-start' }}>
                   <span style={{ fontSize: 30 }}>{m.icon}</span>

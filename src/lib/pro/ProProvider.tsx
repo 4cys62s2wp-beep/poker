@@ -89,8 +89,15 @@ export function ProProvider({ children }: { children: ReactNode }) {
   const pro = config.enabled && subscribed;
 
   const ctx = useMemo(
-    () => ({ enabled: config.enabled, pro, trialActive, used: todayUsage }),
-    [config.enabled, pro, trialActive, todayUsage],
+    () => ({
+      enabled: config.enabled,
+      pro,
+      trialActive,
+      // Tageszähler plus Gesamtstände, die direkt aus den Daten ablesbar sind
+      // (robuster als ein eigener Zähler, der beim Tageswechsel verloren ginge).
+      used: { ...todayUsage, 'bankroll-unlimited': data.sessions.length },
+    }),
+    [config.enabled, pro, trialActive, todayUsage, data.sessions.length],
   );
 
   const access = useCallback((key: FeatureKey) => checkAccess(ctx, key), [ctx]);

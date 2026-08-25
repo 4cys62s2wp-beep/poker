@@ -8,6 +8,7 @@ import { ALL_MODULES } from '../content';
 import { BADGES } from '../content/badges';
 import { durableDelete, durableSet, requestPersistentStorage } from '../lib/storage';
 import { useLang, levelTitleFor } from '../i18n';
+import { MAX_TRACKED_HANDS, sanitizeHandFacts, type HandFacts } from '../lib/poker/stats';
 
 const PROFILES_KEY = 'pokermentor-profiles-v1';
 const LEGACY_KEY = 'pokermentor-v1';
@@ -51,6 +52,7 @@ export interface ReviewItem {
   streak: number;
 }
 
+/** Spielstil-Kennzahlen: Rohdaten pro Hand, ausgewertet in src/lib/poker/stats.ts. */
 export interface HandRecord {
   id: string;
   date: string; // ISO
@@ -81,6 +83,10 @@ export interface AppData {
   usage: { day: string; counts: Record<string, number> };
   /** Start der Pro-Testphase (ISO) – null, solange nie gestartet. */
   trialStartedAt: string | null;
+  /** Fakten je gespielter Hand für die Spielstil-Analyse. Bewusst getrennt von
+      `hands`: Dort steht die lesbare Historie der letzten Partien, hier die
+      nackten Zahlen über viel mehr Hände. */
+  handFacts: HandFacts[];
 }
 
 export interface ProfileMeta {
@@ -114,6 +120,7 @@ const DEFAULT_DATA: AppData = {
   hands: [],
   usage: { day: '', counts: {} },
   trialStartedAt: null,
+  handFacts: [],
 };
 
 const PROFILE_COLORS = ['#d4af5e', '#58b368', '#5590d9', '#9b7fd4', '#e0564f', '#4fb8c9'];
@@ -166,7 +173,9 @@ interface AppStateValue {
   activeProfile: ProfileMeta;
   completeLesson: (lessonId: string, quizScore: number, quizTotal: number) => void;
   recordTrainer: (trainerId: string, correct: boolean) => void;
-  recordHand: (won: boolean) => void;
+  /** Eine gespielte Hand verbuchen. `facts` sind die Rohdaten für die
+      Spielstil-Analyse – ohne sie zählt nur die Hand selbst. */
+  recordHand: (won: boolean, facts?: HandFacts) => void;
   addSession: (entry: Omit<SessionEntry, 'id'>) => void;
   deleteSession: (id: string) => void;
   setName: (name: string) => void;
@@ -329,6 +338,9 @@ export function sanitizeAppData(input: unknown): AppData {
     const t = str(d.trialStartedAt).slice(0, 40);
     out.trialStartedAt = isFinite(new Date(t).getTime()) ? t : null;
   }
+
+  // Die Prüfung liegt bei der Bibliothek, die das Format definiert.
+  out.handFacts = sanitizeHandFacts(d.handFacts);
 
   if (Array.isArray(d.hands)) {
     out.hands = (d.hands as unknown[]).slice(0, 30).flatMap((v) => {
@@ -590,11 +602,19 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   );
 
   const recordHand = useCallback(
-    (won: boolean) => {
+    (won: boolean, facts?: HandFacts) => {
       mutate((d) => {
         d.handsPlayed += 1;
         if (won) d.handsWon += 1;
         d.xp += won ? 10 : 2;
+        if (facts) {
+          d.handFacts.push(facts);
+          // Ältestes zuerst verwerfen: Der Lernstand wandert als JSON in die
+          // Cloud, deshalb darf diese Liste nicht unbegrenzt wachsen.
+          if (d.handFacts.length > MAX_TRACKED_HANDS) {
+            d.handFacts.splice(0, d.handFacts.length - MAX_TRACKED_HANDS);
+          }
+        }
         award(d, 'first-hand');
         if (won) award(d, 'first-win');
         if (d.handsPlayed >= 100) award(d, 'hands-100');

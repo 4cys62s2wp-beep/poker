@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { createHandTracker, type HandTracker } from '../lib/poker/stats';
 import { CardsRow } from '../components/PlayingCard';
 import { IconTile } from '../components/Icon';
 import { BOT_PROFILES, decideBotAction, positionOf, type BotStyle } from '../lib/poker/ai';
@@ -62,6 +63,8 @@ export function PlayPage() {
   const buttonRef = useRef(0);
   const handCounter = useRef(0);
   const handRecorded = useRef(false);
+  const trackerRef = useRef<HandTracker | null>(null);
+  const sawFlopRef = useRef(false);
   const [showRaisePanel, setShowRaisePanel] = useState(false);
 
   /* Coach-Overlay ist eine Pro-Funktion, der Tisch selbst ist gratis mit
@@ -108,6 +111,8 @@ export function PlayPage() {
     handCounter.current += 1;
     buttonRef.current = (buttonRef.current + 1) % n;
     handRecorded.current = false;
+    trackerRef.current = createHandTracker();
+    sawFlopRef.current = false;
     setShowRaisePanel(false);
     setEngineLanguage(lang);
     const players = Array.from({ length: n }, (_, i) => ({
@@ -125,13 +130,31 @@ export function PlayPage() {
     const g = gameRef.current;
     if (!g) return;
 
+    /* Flop gesehen? Muss VOR dem handOver-Abbruch stehen: Bei einem All-in vor
+       dem Flop läuft das Board in einem Zug durch und die Hand ist sofort
+       vorbei – gesehen hat der Spieler den Flop trotzdem, und genau solche
+       Hände gehören in den Nenner der Showdown-Quote. */
+    if (!sawFlopRef.current && g.board.length >= 3 && !g.players[0].folded) {
+      sawFlopRef.current = true;
+      trackerRef.current?.onSawFlop();
+    }
+
     if (g.handOver) {
       if (!handRecorded.current) {
         handRecorded.current = true;
         const heroWon = g.awards.some((a) => a.playerId === 0 && a.amount > 0);
         const hero = g.players[0];
         const delta = hero.stack - stacksRef.current[0];
-        recordHand(heroWon);
+        /* Showdown heißt: Der Hero war bis zum Schluss dabei UND mindestens
+           ein Gegner auch. Wer alle anderen zum Folden bringt, gewinnt ohne
+           Showdown – das darf die WTSD-Quote nicht verfälschen. */
+        const showdown = !hero.folded && g.players.filter((p) => !p.folded).length > 1;
+        const facts = trackerRef.current?.finish({
+          won: heroWon,
+          showdown,
+          netChips: delta,
+        });
+        recordHand(heroWon, facts);
         addHandRecord({
           handNumber: g.handNumber,
           heroCards: hero.cards,
@@ -146,6 +169,7 @@ export function PlayPage() {
       for (const p of g.players) stacksRef.current[p.id] = p.stack;
       return;
     }
+
 
     const actor = g.players[g.toActIndex];
     if (!actor || actor.isHero) return;
@@ -283,13 +307,20 @@ export function PlayPage() {
   function heroAct(action: Parameters<typeof applyAction>[1]) {
     const gg = gameRef.current;
     if (!gg || gg.handOver || gg.toActIndex !== 0) return;
+    /* Für die Spielstil-Analyse VOR dem Anwenden mitschreiben: Danach ist die
+       Street womöglich schon weitergelaufen und `callAmount` neu berechnet.
+       Der Showdown-Zustand kann hier nicht auftreten (dann wäre niemand am
+       Zug), wird aber der Vollständigkeit halber auf 'river' abgebildet. */
+    const street = gg.street === 'showdown' ? 'river' : gg.street;
+    const facingBet = legalActions(gg).callAmount > 0;
     try {
       applyAction(gg, action);
-      setShowRaisePanel(false);
-      rerender();
     } catch {
-      // Ungültige Aktion ignorieren
+      return; // Ungültige Aktion: nichts anwenden, nichts mitschreiben
     }
+    trackerRef.current?.onAction(street, action.type, facingBet);
+    setShowRaisePanel(false);
+    rerender();
   }
 
   function raiseTo(fraction: number | 'min' | 'allin') {

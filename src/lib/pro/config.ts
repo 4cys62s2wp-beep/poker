@@ -2,17 +2,24 @@
    Liegt neben der index.html als monetization.json. Fehlt die Datei, ist die
    Monetarisierung komplett aus – die App verhält sich wie eine reine
    Gratis-Version, ohne Paywall, ohne Preise, ohne Upgrade-Hinweise.
-   Siehe MONETIZATION_SETUP.md. */
+   Siehe SETUP_PAYMENTS.md. */
 
 export interface MonetizationConfig {
   /** Master-Schalter. false = alles gratis (Standard ohne Datei). */
   enabled: boolean;
-  /** Stripe-Payment-Link (oder anderer Checkout) für das Monatsabo. */
-  checkoutMonthlyUrl: string;
-  /** Checkout für das Jahresabo. */
-  checkoutAnnualUrl: string;
-  /** Kundenportal zum Kündigen/Zahlungsdaten ändern (Pflicht in DE). */
-  portalUrl: string;
+  /**
+   * Basis-Adresse der Cloud Functions, z. B.
+   * `https://europe-west3-pokermentor-9ac7f.cloudfunctions.net`.
+   *
+   * Hier stand früher ein fertiger Stripe-Payment-Link. Das war für eine
+   * reine Web-App zulässig, ist aber in einem iOS-Bundle ein
+   * Ablehnungsgrund nach App-Store-Richtlinie 3.1.1 – auch dann, wenn der
+   * Link auf iOS nie angezeigt würde. Der Client kennt jetzt keine
+   * Checkout-Adresse mehr, sondern lässt sich vom Server eine erzeugen.
+   */
+  functionsBaseUrl: string;
+  /** Ob ein Jahresabo angeboten wird (Preis muss dann gesetzt sein). */
+  hasAnnual: boolean;
   /** Anzeigepreise inkl. MwSt., z. B. "4,99 €". */
   priceMonthly: string;
   priceAnnual: string;
@@ -24,9 +31,8 @@ export interface MonetizationConfig {
 
 export const MONETIZATION_OFF: MonetizationConfig = {
   enabled: false,
-  checkoutMonthlyUrl: '',
-  checkoutAnnualUrl: '',
-  portalUrl: '',
+  functionsBaseUrl: '',
+  hasAnnual: false,
   priceMonthly: '',
   priceAnnual: '',
 };
@@ -35,20 +41,23 @@ function isHttpsUrl(v: unknown): v is string {
   return typeof v === 'string' && /^https:\/\/[^\s"'<>]{4,300}$/.test(v);
 }
 
-/** Validiert streng: nur https-URLs, nur kurze Preistexte. */
+/** Validiert streng: nur https-Adressen, nur kurze Preistexte.
+    Bei jedem Zweifel die sichere Antwort: Monetarisierung aus. */
 export function parseConfig(input: unknown): MonetizationConfig {
   const c = (typeof input === 'object' && input !== null ? input : {}) as Record<string, unknown>;
   if (c.enabled !== true) return MONETIZATION_OFF;
-  if (!isHttpsUrl(c.checkoutMonthlyUrl) || !isHttpsUrl(c.portalUrl)) return MONETIZATION_OFF;
+  // Ohne erreichbare Funktionen gibt es keinen Kaufweg – dann lieber gar keine
+  // Paywall zeigen als eine, die ins Leere führt.
+  if (!isHttpsUrl(c.functionsBaseUrl)) return MONETIZATION_OFF;
 
   const text = (v: unknown, max = 40): string => (typeof v === 'string' ? v.slice(0, max) : '');
+  const priceAnnual = text(c.priceAnnual);
   return {
     enabled: true,
-    checkoutMonthlyUrl: c.checkoutMonthlyUrl,
-    checkoutAnnualUrl: isHttpsUrl(c.checkoutAnnualUrl) ? c.checkoutAnnualUrl : '',
-    portalUrl: c.portalUrl,
+    functionsBaseUrl: c.functionsBaseUrl.replace(/\/+$/, ''),
+    hasAnnual: c.hasAnnual === true && priceAnnual.length > 0,
     priceMonthly: text(c.priceMonthly) || '4,99 €',
-    priceAnnual: text(c.priceAnnual),
+    priceAnnual,
     annualNote: text(c.annualNote, 60) || undefined,
     supportEmail: text(c.supportEmail, 120) || undefined,
   };

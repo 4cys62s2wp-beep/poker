@@ -10,18 +10,21 @@ import { STR } from '../i18n/pages/pro';
 import { STR as LEGAL } from '../i18n/pages/legal';
 import { usePro } from '../lib/pro/ProProvider';
 import { useCloud } from '../lib/cloud/CloudProvider';
+import { APPLE_MANAGE_SUBSCRIPTIONS_URL } from '../lib/payments';
 
 export function UpgradePage() {
   const { lang } = useLang();
   const L = STR[lang];
   const G = LEGAL[lang];
-  const { config, enabled, pro, trialActive, trialDaysLeft } = usePro();
+  const { config, enabled, pro, trialActive, trialDaysLeft, cancelRoute, startCheckout, manageBilling } = usePro();
   const cloud = useCloud();
   const [annual, setAnnual] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
 
   if (!enabled) return <Navigate to="/" replace />;
 
-  const hasAnnual = !!config.checkoutAnnualUrl && !!config.priceAnnual;
+  const hasAnnual = config.hasAnnual;
   /** Monatsäquivalent des Jahrespreises – reine Zusatzangabe neben dem Endpreis. */
   const monthlyEquivalent = (() => {
     const n = parseFloat(config.priceAnnual.replace(/[^\d,.]/g, '').replace(',', '.'));
@@ -33,11 +36,38 @@ export function UpgradePage() {
       : `${currency}${per.toFixed(2)}`;
   })();
   const showAnnual = annual && hasAnnual;
-  const checkoutUrl = showAnnual ? config.checkoutAnnualUrl : config.checkoutMonthlyUrl;
-  // E-Mail vorbefüllen, damit Zahlung und Konto sicher zusammenfinden.
-  const checkoutHref = cloud.user?.email
-    ? `${checkoutUrl}${checkoutUrl.includes('?') ? '&' : '?'}prefilled_email=${encodeURIComponent(cloud.user.email)}`
-    : checkoutUrl;
+
+  /* Der Kauf läuft nicht mehr über eine Adresse im Bundle, sondern über die
+     Zahlungs-Abstraktion: Im Browser erzeugt der Server eine kurzlebige
+     Stripe-Sitzung, in der iOS-Hülle öffnet das Betriebssystem seinen
+     eigenen Dialog. Die Seite erfährt nicht, welcher Weg genommen wurde –
+     genau das verlangt App-Store-Richtlinie 3.1.1. */
+  async function buy() {
+    if (busy) return;
+    setBusy(true);
+    setError('');
+    const res = await startCheckout(showAnnual ? 'annual' : 'monthly');
+    if (res.kind === 'redirect') {
+      window.location.href = res.url;
+      return; // Seite wird verlassen, busy bleibt bewusst gesetzt
+    }
+    if (res.kind === 'error' && res.reason !== 'cancelled') {
+      setError(res.reason === 'not-signed-in' ? L.errorSignIn : L.errorCheckout);
+    }
+    setBusy(false);
+  }
+
+  async function manage() {
+    if (busy) return;
+    setBusy(true);
+    const res = await manageBilling();
+    if (res.kind === 'redirect' || res.kind === 'system-settings') {
+      window.open(res.url, '_blank', 'noopener,noreferrer');
+    } else {
+      setError(L.errorCheckout);
+    }
+    setBusy(false);
+  }
 
   return (
     <div>
@@ -53,9 +83,9 @@ export function UpgradePage() {
             <span className="pill ok">✓ {L.proBadge}</span>
           </div>
           <div className="row wrap">
-            <a className="btn sm" href={config.portalUrl} target="_blank" rel="noopener noreferrer">
-              {L.manage}
-            </a>
+            <button className="btn sm" type="button" disabled={busy} onClick={() => void manage()}>
+              {cancelRoute === 'native' ? L.manageNative : L.manage}
+            </button>
             <Link className="btn sm ghost" to="/kuendigen">{L.cancelLink}</Link>
           </div>
         </div>
@@ -131,15 +161,16 @@ export function UpgradePage() {
               </p>
             </div>
 
-            <a
+            <button
               className="btn primary"
-              href={checkoutHref}
-              target="_blank"
-              rel="noopener noreferrer"
+              type="button"
+              disabled={busy}
+              onClick={() => void buy()}
               style={{ justifyContent: 'center', marginTop: 14, width: '100%' }}
             >
-              {trialActive ? L.ctaTrial : L.cta}
-            </a>
+              {busy ? L.ctaBusy : trialActive ? L.ctaTrial : L.cta}
+            </button>
+            {error && <div className="feedback-box bad" style={{ marginTop: 11 }}>{error}</div>}
             <p className="small faint" style={{ marginTop: 11, textAlign: 'center' }}>{L.reassure}</p>
             <p className="small faint" style={{ marginTop: 5, textAlign: 'center' }}>{L.securePay}</p>
           </div>

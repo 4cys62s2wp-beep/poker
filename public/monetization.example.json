@@ -1,9 +1,9 @@
 {
-  "_hinweis": "Kopiere diese Datei zu monetization.json, um die Pro-Version zu aktivieren. Solange monetization.json fehlt, ist die komplette App gratis und es erscheint keinerlei Paywall. Siehe MONETIZATION_SETUP.md.",
+  "_hinweis": "Kopiere diese Datei zu monetization.json, um die Pro-Version zu aktivieren. Solange monetization.json fehlt, ist die komplette App gratis und es erscheint keinerlei Paywall. Siehe SETUP_PAYMENTS.md.",
+  "_wichtig": "Hier stehen KEINE Checkout-Adressen mehr. Der Client fragt den Server nach einer frisch erzeugten Bezahlseite. Grund: App-Store-Richtlinie 3.1.1 verbietet fremde Zahlungswege im iOS-Client.",
   "enabled": true,
-  "checkoutMonthlyUrl": "https://buy.stripe.com/DEIN_MONATS_LINK",
-  "checkoutAnnualUrl": "https://buy.stripe.com/DEIN_JAHRES_LINK",
-  "portalUrl": "https://billing.stripe.com/p/login/DEIN_PORTAL_LINK",
+  "functionsBaseUrl": "https://europe-west3-DEIN_PROJEKT.cloudfunctions.net",
+  "hasAnnual": true,
   "priceMonthly": "4,99 €",
   "priceAnnual": "39,99 €",
   "annualNote": "2 Monate geschenkt",

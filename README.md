@@ -53,7 +53,7 @@ Trainings-App als Website und installierbare PWA. **Komplett zweisprachig
   Daten auf dem Gerät, mit Konto kommt die Cloud-Synchronisation dazu
 - **💳 Pro-Abo (optional):** komplette Paywall-Infrastruktur mit 7-Tage-Testphase,
   Rechtsseiten und Kündigungsseite nach § 312k BGB – standardmäßig **aus**, siehe
-  [MONETIZATION_SETUP.md](MONETIZATION_SETUP.md)
+  [SETUP_PAYMENTS.md](SETUP_PAYMENTS.md)
 - **🎨 Eigenständiges Design:** „Kartenlounge“-Ästhetik mit Fraunces & Manrope,
   4-Color-Deck, mobile-first
 

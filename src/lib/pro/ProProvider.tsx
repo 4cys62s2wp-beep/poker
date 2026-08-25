@@ -16,6 +16,14 @@ import { getCloud } from '../cloud/cloud';
 import { loadMonetizationConfig, MONETIZATION_OFF, type MonetizationConfig } from './config';
 import { checkAccess, trialDaysLeft, type Access, type FeatureKey } from './plan';
 import { cancelRouteFor, grantsAccess, type Entitlement } from '../payments/provider';
+import {
+  APPLE_MANAGE_SUBSCRIPTIONS_URL,
+  createProvider,
+  currentEnvironment,
+  type CancelResult,
+  type CheckoutResult,
+  type PlanId,
+} from '../payments';
 
 interface ProValue {
   config: MonetizationConfig;
@@ -26,9 +34,10 @@ interface ProValue {
   /** Der volle Berechtigungssatz – null, solange keiner vorliegt.
       Wird für die Kündigungs-Führung gebraucht (Apple vs. Web). */
   entitlement: Entitlement | null;
-  /** Wohin die Kündigung führen muss. Wer über Apple gekauft hat, kann nur
-      über Apple kündigen – ein Stripe-Portal liefe ins Leere. */
-  cancelRoute: 'apple' | 'web' | 'none';
+  /** Wohin die Kündigung führen muss: `native` = Systemeinstellungen,
+      `web` = Kundenportal. Nach dem Verhalten benannt, nicht nach dem
+      Anbieter – die Oberfläche muss den Anbieter nicht kennen. */
+  cancelRoute: 'native' | 'web' | 'none';
   /** Testphase läuft gerade. */
   trialActive: boolean;
   /** Verbleibende Testtage (0 = keine/abgelaufen). */
@@ -42,6 +51,14 @@ interface ProValue {
   can: (key: FeatureKey) => boolean;
   /** Eine Nutzung verbuchen (nur nötig bei limitierten Gratis-Features). */
   consume: (key: FeatureKey, amount?: number) => void;
+  /**
+   * Kauf anstoßen. Welcher Weg genommen wird (Stripe im Browser, StoreKit in
+   * der iOS-Hülle), entscheidet die Abstraktion – die Oberfläche erfährt es
+   * nicht und darf es auch nicht.
+   */
+  startCheckout: (plan: PlanId) => Promise<CheckoutResult>;
+  /** Zur Verwaltung/Kündigung führen. Bei Apple in die Systemeinstellungen. */
+  manageBilling: () => Promise<CancelResult>;
   /** Paywall anzeigen (mit optionalem Auslöser fürs Wording). */
   openPaywall: (reason?: string) => void;
   closePaywall: () => void;
@@ -121,6 +138,56 @@ export function ProProvider({ children }: { children: ReactNode }) {
     [ctx, consumeFeature],
   );
 
+  /* Der Zahlungsweg wird bei jedem Aufruf neu bestimmt statt einmal beim
+     Start: Die native iOS-Brücke kann später gesetzt werden als der erste
+     Rendervorgang, und ein einmal falsch gewählter Weg wäre auf iOS ein
+     Richtlinienverstoß. */
+  const withProvider = useCallback(
+    async <T,>(
+      fn: (p: NonNullable<ReturnType<typeof createProvider>>) => Promise<T>,
+      fallback: T,
+    ): Promise<T> => {
+      const handle = await getCloud();
+      const provider = createProvider(currentEnvironment(config.enabled), {
+        functionsBaseUrl: config.functionsBaseUrl,
+        getIdToken: () => (handle ? handle.getIdToken() : Promise.resolve(null)),
+      });
+      if (!provider) return fallback;
+      return fn(provider);
+    },
+    [config.enabled, config.functionsBaseUrl],
+  );
+
+  const startCheckout = useCallback(
+    (plan: PlanId) =>
+      withProvider<CheckoutResult>(
+        (p) =>
+          p.createCheckout({
+            userId: cloud.user?.uid ?? '',
+            plan,
+            successUrl: `${window.location.origin}${window.location.pathname}#/pro`,
+            cancelUrl: `${window.location.origin}${window.location.pathname}#/pro`,
+            locale: langRefForCheckout(),
+          }),
+        { kind: 'error', reason: 'unavailable' },
+      ),
+    [withProvider, cloud.user?.uid],
+  );
+
+  const manageBilling = useCallback(
+    () =>
+      withProvider<CancelResult>(
+        (p) => p.cancelSubscription(cloud.user?.uid ?? ''),
+        /* Ohne Provider (etwa weil die Monetarisierung aus ist) trotzdem
+           etwas Sinnvolles: Wer über Apple gekauft hat, kommt so immer noch
+           an seine Kündigung. */
+        entitlement?.source === 'apple'
+          ? { kind: 'system-settings', url: APPLE_MANAGE_SUBSCRIPTIONS_URL }
+          : { kind: 'error', reason: 'unavailable' },
+      ),
+    [withProvider, cloud.user?.uid, entitlement?.source],
+  );
+
   const openPaywall = useCallback((reason?: string) => setPaywallReason(reason ?? ''), []);
   const closePaywall = useCallback(() => setPaywallReason(null), []);
 
@@ -148,15 +215,23 @@ export function ProProvider({ children }: { children: ReactNode }) {
       access,
       can,
       consume,
+      startCheckout,
+      manageBilling,
       openPaywall,
       closePaywall,
       paywallReason,
     }),
     [config, pro, entitlement, trialActive, daysLeft, data.trialStartedAt, startTrialState, access,
-     can, consume, openPaywall, closePaywall, paywallReason],
+     can, consume, startCheckout, manageBilling, openPaywall, closePaywall, paywallReason],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+}
+
+/** Sprache für die Bezahlseite. Bewusst aus dem Dokument gelesen statt über
+    einen weiteren Kontext: Der Wert wird genau einmal pro Kauf gebraucht. */
+function langRefForCheckout(): 'de' | 'en' {
+  return typeof document !== 'undefined' && document.documentElement.lang === 'en' ? 'en' : 'de';
 }
 
 export function usePro(): ProValue {

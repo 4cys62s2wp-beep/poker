@@ -6,3 +6,7 @@ dist-single
 firestore-debug.log
 firebase-debug.log
 .firebase/
+
+# Echte Geheimnisse – nur .env.example gehört ins Repository
+.env
+.env.local

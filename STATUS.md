@@ -44,25 +44,27 @@ Verhalten der laufenden App zunächst **nichts**.
 | `7598f54` | Phase 1.1: Bestandsaufnahme, Betriebsdateien, Schlüssel-Prüfung der Historie |
 | `a5f75da` | Phase 1.2: Provider-Abstraktion (Vertrag, Mock, Stripe, StoreKit-Gerüst), 270 Tests |
 | `93bb97c` | Phase 1.3: Entitlement-Service – Statusmaschine, Regeln umgezogen, 313 Tests |
-| *folgt* | Phase 1.4: Apple-Signaturprüfung, Ereignis-Übersetzung, Adapter, 357 Tests |
+| `3624b84` | Phase 1.4: Apple-Signaturprüfung, Ereignis-Übersetzung, Adapter, 357 Tests |
+| *folgt* | Phase 1.5 + 1.6: Secrets, SETUP_PAYMENTS.md, Checkout umgestellt → **Gate 1** |
 
 ---
 
 ## Exakt nächster Schritt
 
-**Phase 1.5 + 1.6 — Secrets und Setup-Anleitung.** (Gate 1 danach erreicht.)
+**Phase 2 — Informationsarchitektur & Design.** Gate 1 ist erreicht.
 
-1. `.env.example` mit Platzhaltern anlegen (1.5). Die Prüfung der
-   Git-Historie ist bereits erfolgt (Commit `7598f54`): keine Schlüssel
-   gefunden.
-2. `MONETIZATION_SETUP.md` → `SETUP_PAYMENTS.md` überführen (1.6):
-   Reihenfolge ab Oktober, Produkte/Preise anlegen, Webhook-Adressen,
-   Sandbox-Tests. Muss enthalten: Apple behält 15–30 %, der iOS-Preis darf
-   nicht wie der Webpreis kalkuliert werden.
-3. `public/monetization.example.json` an die neue Form anpassen
-   (Checkout-URLs raus, nur noch Anzeigedaten).
-4. `UpgradePage.tsx` auf `createCheckout()` umstellen statt `href`.
-5. Gate 1 prüfen, committen, dann Phase 2.
+Der erste Schritt ist 2.0, nicht 2.1: **`DESIGN_REFERENZ.md` schreiben.**
+Ausgewertet wird eine Referenz-App namens *Offsuit* (`offsuit.app`,
+„Casual poker, redesigned"), von der Screenshots vorliegen. Aufgabe ist
+Analyse, kein Nachbau — Prinzipien extrahieren, keine Pixel.
+
+Danach 2.1: Hub-Screen mit drei Einstiegskarten (Lernen / Live spielen /
+Session-Tools), vierter Platz für „Mit Freunden spielen" mitgedacht, aber
+nicht gebaut.
+
+**Wichtig für Phase 2:** Zwei offene Punkte gehören dort mit erledigt —
+O-1 (`hasAccess()` zusammenfassen) und O-2 (Statistik-Seite; Bibliothek und
+Texte liegen fertig).
 
 ---
 
@@ -86,6 +88,7 @@ Neu angelegt in dieser Phase:
 | O-2 | Statistik-Seite zur Spielstil-Analyse — Bibliothek und Erfassung stehen (`eb7899b`), die Seite fehlt noch. Texte liegen fertig in `src/i18n/pages/stats.ts` | Phase 2, gehört in die neue Informationsarchitektur |
 | O-3 | `firestore.rules`: `customers/{uid}` → `entitlements/{uid}` umziehen, Regeltests mitziehen | Phase 1.3 |
 | O-4 | Spielstil-Erfassung fehlt am Online-Tisch (dort geht nur ein Zug-*Wunsch* an den Gastgeber, der abgelehnt werden kann) | später, bewusst offen |
+| O-5 | **Zahlungs-Texte müssen im iOS-Build anders lauten.** `src/i18n/pages/pro.ts` nennt in FAQ und Fußzeile „Über Stripe – mit Apple Pay, Google Pay, Kreditkarte, PayPal oder SEPA". In der iOS-App ist das (a) falsch, weil dort StoreKit zahlt, und (b) ein Richtlinienverstoß: In der App darf nicht auf fremde Zahlungswege hingewiesen werden. Nicht jetzt gelöst, weil die iOS-Hülle noch nicht existiert und eine Verzweigung sonst ungetestet bliebe | vor dem ersten iOS-Build, **zwingend** |
 
 ---
 

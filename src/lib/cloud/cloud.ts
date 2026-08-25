@@ -44,6 +44,11 @@ export interface CloudHandle {
    * über Apple kündigen.
    */
   watchEntitlement: (uid: string, cb: (e: Entitlement | null) => void) => () => void;
+  /** Firebase-ID-Token des angemeldeten Nutzers – Nachweis der Identität
+      gegenüber den eigenen Cloud Functions. Null, wenn niemand angemeldet
+      ist. Der Server prüft es und liest die uid daraus; sie darf niemals aus
+      der Anfrage selbst kommen. */
+  getIdToken: () => Promise<string | null>;
   /** Rohdaten aus der Cloud – der Aufrufer muss sie sanitisieren. */
   pull: (uid: string) => Promise<unknown | null>;
   push: (uid: string, name: string, email: string, data: unknown) => Promise<void>;
@@ -232,6 +237,14 @@ async function init(): Promise<CloudHandle | null> {
       async reloadUser() {
         if (auth.currentUser) await authMod.reload(auth.currentUser);
         return toCloudUser(auth.currentUser);
+      },
+      async getIdToken() {
+        if (!auth.currentUser) return null;
+        try {
+          return await auth.currentUser.getIdToken();
+        } catch {
+          return null;
+        }
       },
       setLanguage(lang) {
         auth.languageCode = lang;

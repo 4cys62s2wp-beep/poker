@@ -309,10 +309,15 @@ export function sanitizeEntitlement(raw: unknown, uid: string): Entitlement | nu
 }
 
 /**
- * Wohin führt die Kündigung? Hängt allein an der Herkunft:
- * Ein über Apple abgeschlossenes Abo lässt sich NUR über Apple kündigen.
+ * Wohin führt die Kündigung?
+ *
+ * `native` = in die Systemeinstellungen des Geräts, `web` = ins Kundenportal.
+ * Bewusst nach dem VERHALTEN benannt, nicht nach dem Anbieter: Die Oberfläche
+ * soll nicht wissen müssen, wer das Abo abwickelt – nur, wohin sie führen
+ * muss. Ein über den App Store abgeschlossenes Abo lässt sich ausschließlich
+ * dort kündigen; ein Kundenportal liefe ins Leere.
  */
-export function cancelRouteFor(e: Entitlement | null): 'apple' | 'web' | 'none' {
+export function cancelRouteFor(e: Entitlement | null): 'native' | 'web' | 'none' {
   if (!e) return 'none';
-  return e.source === 'apple' ? 'apple' : 'web';
+  return e.source === 'apple' ? 'native' : 'web';
 }

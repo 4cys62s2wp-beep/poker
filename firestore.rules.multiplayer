@@ -1,0 +1,145 @@
+/* PokerMentor – Sicherheitsregeln für den ONLINE-TISCH.
+
+   Dieser Block gehört IN die bestehende firestore.rules, und zwar innerhalb von
+       service cloud.firestore { match /databases/{database}/documents { … } }
+   VOR die abschließende Catch-all-Regel
+
+       match /{document=**} { allow read, write: if false; }
+
+   (Die Datei hier wird bewusst nicht selbst deployt – sie ist der zu
+   übernehmende Ausschnitt, damit firestore.rules unangetastet bleibt.)
+
+   ── Datenmodell ────────────────────────────────────────────────────────────
+     tables/{code}                  Raum: Sitze, Konfiguration, öffentlicher
+                                    Spielzustand OHNE Karten. Schreibt der Host.
+     tables/{code}/members/{uid}    Ein Dokument pro Spieler: Name, Bereitschaft,
+                                    Herzschlag (lastSeen), offener Zugwunsch.
+                                    Schreibt AUSSCHLIESSLICH dieser Spieler.
+     tables/{code}/private/{uid}    Die beiden Hole-Cards dieses Spielers.
+                                    LIEST NUR dieser Spieler; schreibt der Host.
+
+   ── Vertrauensmodell (ehrlich) ─────────────────────────────────────────────
+   Der Host-Client mischt und teilt aus, sein Gerät kennt also alle Karten.
+   Diese Regeln verhindern deshalb NICHT, dass ein manipulierter Host schummelt –
+   sie verhindern, dass ein MITSPIELER die Karten der anderen liest oder für
+   jemand anderen handelt. Für Poker unter Freunden ist das die passende
+   Abgrenzung („einer gibt"). Wandert das Austeilen später in eine Cloud
+   Function (Admin-SDK, umgeht diese Regeln ohnehin), bleibt das Modell gleich:
+   dann fällt nur die Schreibberechtigung des Hosts unten weg. */
+
+// ---------------------------------------------------------------------------
+// Online-Tische
+// ---------------------------------------------------------------------------
+match /tables/{code} {
+
+  // Angemeldet UND E-Mail bestätigt – dieselbe Hürde wie beim Lernfortschritt.
+  function signedIn() {
+    return request.auth != null && request.auth.token.email_verified == true;
+  }
+
+  function roomPath() {
+    return /databases/$(database)/documents/tables/$(code);
+  }
+
+  function memberPath(uid) {
+    return /databases/$(database)/documents/tables/$(code)/members/$(uid);
+  }
+
+  // Der Host gilt als weg, wenn sein Mitgliedsdokument fehlt oder sein letzter
+  // Herzschlag älter als 20 s ist (protocol.PRESENCE_TIMEOUT_MS).
+  function hostAbsent() {
+    return !exists(memberPath(resource.data.hostUid))
+      || get(memberPath(resource.data.hostUid)).data.lastSeen < request.time.toMillis() - 20000;
+  }
+
+  // Jeder angemeldete Nutzer, der den 6-stelligen Code kennt, darf den Raum
+  // sehen. Der Code ist das Geheimnis (32^6 ≈ 1,07 Mrd. Möglichkeiten); im
+  // Raumdokument stehen ohnehin KEINE Karten.
+  allow read: if signedIn();
+
+  // Anlegen darf nur, wer sich selbst als Host einträgt; die Dokument-ID muss
+  // dem Code im Dokument entsprechen, und die Versionszählung startet bei 1.
+  allow create: if signedIn()
+    && request.resource.data.hostUid == request.auth.uid
+    && request.resource.data.code == code
+    && request.resource.data.version == 1
+    && request.resource.data.seats.size() <= 6;
+
+  // Ändern darf normalerweise nur der Host. Zwei zusätzliche Bedingungen:
+  //  • version muss echt steigen  → verhindert Zurückrollen und macht die
+  //    optimistische Konflikterkennung (online.pushState) verlässlich.
+  //  • code bleibt unverändert    → ein Raum kann nicht „umziehen".
+  // Übernahme: Ist der Host weg (hostAbsent), darf ein vorhandenes Mitglied
+  // sich selbst als neuen Host eintragen – aber nur sich selbst. Welcher der
+  // Verbliebenen das tut, entscheiden alle Clients deterministisch identisch
+  // (protocol.chooseHost), sodass sich nicht mehrere gegenseitig überschreiben.
+  allow update: if signedIn()
+    && request.resource.data.code == resource.data.code
+    && request.resource.data.version > resource.data.version
+    && request.resource.data.seats.size() <= 6
+    && (
+      (request.auth.uid == resource.data.hostUid
+        && request.resource.data.hostUid == resource.data.hostUid)
+      || (hostAbsent()
+        && request.resource.data.hostUid == request.auth.uid
+        && exists(memberPath(request.auth.uid)))
+    );
+
+  // Aufräumen darf nur der Host (z. B. „Tisch schließen").
+  allow delete: if signedIn() && request.auth.uid == resource.data.hostUid;
+
+  // -------------------------------------------------------------------------
+  // Mitglieder: Anwesenheit, Bereitschaft, Zugwunsch
+  // -------------------------------------------------------------------------
+  match /members/{uid} {
+
+    // Alle am Tisch sehen, wer da ist und wer bereit ist. Karten stehen hier
+    // nicht – nur Name, Zeitstempel und der zuletzt gewünschte Zug.
+    allow read: if signedIn();
+
+    // Schreiben darf ausschließlich das Mitglied selbst. Damit kann niemand
+    // für einen anderen Spieler „foldenrufen": Der Host nimmt Zugwünsche nur
+    // aus dem Dokument des Spielers entgegen, der laut Spielzustand am Zug ist
+    // (protocol.canPlayerAct).
+    // lastSeen darf nicht weit in der Zukunft liegen – sonst könnte sich ein
+    // Client dauerhaft „anwesend" stellen und die Host-Übernahme blockieren.
+    allow create, update: if signedIn()
+      && request.auth.uid == uid
+      && request.resource.data.uid == uid
+      && request.resource.data.lastSeen is number
+      && request.resource.data.lastSeen < request.time.toMillis() + 60000;
+
+    // Verlassen: nur man selbst. (Der Host räumt den Sitz danach ab.)
+    allow delete: if signedIn() && request.auth.uid == uid;
+  }
+
+  // -------------------------------------------------------------------------
+  // Hole-Cards: das Herzstück des Kartenschutzes
+  // -------------------------------------------------------------------------
+  match /private/{uid} {
+
+    // LESEN NUR DER BESITZER. Kein Mitspieler – auch der Host nicht – kann die
+    // Karten eines anderen aus der Datenbank holen. (Dass das Host-GERÄT sie
+    // beim Austeilen kennt, ist eine andere Frage; siehe Kopf dieser Datei.)
+    allow read: if signedIn() && request.auth.uid == uid;
+
+    // Geschrieben werden die Karten vom Geber – aktuell der Host-Client.
+    // Wandert das Austeilen in eine Cloud Function, kann diese Zeile auf
+    // `if false` gesetzt werden: Das Admin-SDK umgeht die Regeln.
+    allow write: if signedIn()
+      && exists(roomPath())
+      && request.auth.uid == get(roomPath()).data.hostUid;
+  }
+}
+
+/* ── Betrieb ────────────────────────────────────────────────────────────────
+   • Aufräumen: Räume verfallen nicht von selbst. Empfehlung: eine TTL-Regel in
+     Firestore auf ein Feld `expiresAt` (oder ein geplanter Job), der Räume mit
+     altem `updatedAt` löscht – inklusive der Unterkollektionen members/private,
+     denn Firestore löscht diese beim Löschen des Elterndokuments NICHT mit.
+   • Kosten: Jeder Zug erzeugt ein Update am Raumdokument und je Mitspieler ein
+     Snapshot-Ereignis; die Herzschläge (alle 6 s je Spieler) sind der größte
+     Dauerposten. Für den Freundeskreis liegt das im kostenlosen Kontingent.
+   • Missbrauch: Codes lassen sich theoretisch durchprobieren. Wer trotzdem
+     einen fremden Raum findet, sieht nur öffentliche Daten und kann ohne Sitz
+     nichts auslösen – Karten bleiben unerreichbar. */

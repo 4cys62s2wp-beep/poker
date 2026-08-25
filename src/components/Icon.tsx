@@ -11,6 +11,7 @@ export type IconName =
   | 'tools'
   | 'glossary'
   | 'profile'
+  | 'friends'
   | 'search'
   | 'repeat'
   | 'sun'
@@ -121,6 +122,17 @@ function paths(name: IconName) {
         <g {...STROKE}>
           <circle cx="12" cy="8.2" r="3.7" />
           <path d="M4.8 20c1-3.7 3.7-5.5 7.2-5.5s6.2 1.8 7.2 5.5" />
+        </g>
+      );
+    // Zwei Personen – bewusst anders als 'profile', damit sich Profil und
+    // Freunde in der Navigation nicht verwechseln lassen.
+    case 'friends':
+      return (
+        <g {...STROKE}>
+          <circle cx="9.2" cy="8.6" r="3.3" />
+          <path d="M3 19.4c.9-3.3 3.2-5 6.2-5s5.3 1.7 6.2 5" />
+          <path d="M16 5.7a3.3 3.3 0 0 1 0 6.4" />
+          <path d="M17.4 14.8c2 .6 3.3 2.1 3.9 4.6" />
         </g>
       );
     case 'search':

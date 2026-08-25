@@ -7,6 +7,8 @@ import { STR } from '../i18n/pages/layout';
 import { STR as PRO } from '../i18n/pages/pro';
 import { STR as LEGAL } from '../i18n/pages/legal';
 import { usePro } from '../lib/pro/ProProvider';
+import { STR as FRIENDS } from '../i18n/pages/friends';
+import { OnlineBadge } from './social/OnlineBadge';
 
 export function Layout() {
   const { data, toasts } = useAppState();
@@ -14,6 +16,7 @@ export function Layout() {
   const L = STR[lang];
   const P = PRO[lang];
   const G = LEGAL[lang];
+  const FR = FRIENDS[lang];
   const proCtx = usePro();
   const level = levelForXp(data.xp);
   const location = useLocation();
@@ -44,6 +47,7 @@ export function Layout() {
       label: L.navYou,
       items: [
         { to: '/profil', icon: 'profile', label: L.profile },
+        { to: '/freunde', icon: 'friends', label: FR.navFriends },
         ...(proCtx.enabled ? [{ to: '/pro', icon: 'crown' as IconName, label: P.navPro }] : []),
       ],
     },
@@ -68,6 +72,7 @@ export function Layout() {
     ['/tools', L.tools],
     ['/glossar', L.glossary],
     ['/profil', L.profile],
+    ['/freunde', FR.navFriends],
     ['/pro', P.navPro],
     ['/rechtliches', G.navLegal],
     ['/kuendigen', G.cancelTitle],
@@ -108,6 +113,7 @@ export function Layout() {
           </div>
         ))}
         <div className="sidebar-footer">
+          <div style={{ marginBottom: 9 }}><OnlineBadge /></div>
           <ProfileBadge />
           {proCtx.enabled && (
             <div style={{ marginBottom: 9 }}>

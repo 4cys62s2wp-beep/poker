@@ -34,6 +34,7 @@ import { HandExplorer } from './pages/tools/HandExplorer';
 import { ChipCalculator } from './pages/tools/ChipCalculator';
 import { GlossaryPage } from './pages/GlossaryPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { FriendsPage } from './pages/FriendsPage';
 
 export function App() {
   return (
@@ -69,6 +70,7 @@ export function App() {
         <Route path="/tools/chips" element={<ChipCalculator />} />
         <Route path="/glossar" element={<GlossaryPage />} />
         <Route path="/profil" element={<ProfilePage />} />
+        <Route path="/freunde" element={<FriendsPage />} />
         <Route path="/pro" element={<UpgradePage />} />
         <Route path="/rechtliches" element={<LegalPage />} />
         <Route path="/kuendigen" element={<CancelPage />} />

@@ -11,8 +11,9 @@ function appUrl(): string {
   return `${location.origin}${location.pathname}`;
 }
 
-/** QR-Code als React-SVG (ein Pfad aus allen dunklen Modulen – kein innerHTML). */
-function QrSvg({ text, size }: { text: string; size: number }) {
+/** QR-Code als React-SVG (ein Pfad aus allen dunklen Modulen – kein innerHTML).
+    Wird auch vom Online-Tisch benutzt (Beitritts-Code als QR). */
+export function QrSvg({ text, size, label = 'QR-Code' }: { text: string; size: number; label?: string }) {
   const path = useMemo(() => {
     const qr = qrcode(0, 'M');
     qr.addData(text);
@@ -33,7 +34,7 @@ function QrSvg({ text, size }: { text: string; size: number }) {
       width={size}
       height={size}
       role="img"
-      aria-label="QR-Code"
+      aria-label={label}
       style={{ background: '#fff', borderRadius: 12, padding: 10, boxSizing: 'content-box' }}
     >
       <path d={path.d} fill="#10241b" />

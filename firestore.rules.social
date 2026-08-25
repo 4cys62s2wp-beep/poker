@@ -1,0 +1,212 @@
+// PokerMentor – Sicherheitsregeln für das Freundes-System.
+//
+// ACHTUNG: Diese Datei ist ein BAUSTEIN, keine vollständige Regeldatei.
+// Die Blöcke unten gehören in firestore.rules hinein –
+//   * INNERHALB von `match /databases/{database}/documents { … }`
+//   * VOR dem abschließenden `match /{document=**} { allow read, write: if false; }`
+// Die Hilfsfunktionen ganz oben stehen ebenfalls innerhalb dieses match-Blocks.
+//
+// Grundgedanken:
+//   1. Niemand sieht die Freundesliste eines anderen. Punkt.
+//   2. Eine Anfrage landet im Postfach des Empfängers, aber der Absender ist
+//      nicht fälschbar: Der Dokumentname IST die UID des Absenders, und die
+//      Regel erzwingt, dass sie mit der angemeldeten UID übereinstimmt.
+//   3. Freundschaft entsteht nur mit beidseitigem Zutun: In eine fremde
+//      Freundesliste darf man sich nur eintragen, wenn von dort eine Anfrage
+//      vorliegt (exists-Prüfung unten).
+//   4. Anwesenheit (online/offline) darf nur lesen, wer die Person in seiner
+//      eigenen – nur so entstandenen – Freundesliste hat.
+//   5. Nirgends wird eine E-Mail-Adresse gespeichert. Sichtbar sind für andere
+//      ausschließlich Anzeigename und letzter Zeitstempel.
+//
+// Kostenhinweis: Jede exists()-Prüfung ist ein zusätzlicher Dokument-Lesezugriff.
+// Das betrifft nur das Annehmen einer Anfrage und das Lesen der Anwesenheit.
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* ---------------- Hilfsfunktionen ---------------- */
+
+    // Angemeldet UND E-Mail bestätigt – dieselbe Hürde wie beim Lernfortschritt.
+    // Verhindert Anfragen aus Wegwerf-Konten.
+    function socialUser() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function isMe(uid) {
+      return socialUser() && request.auth.uid == uid;
+    }
+
+    // Liegt im Postfach von `owner` eine Anfrage von `sender`?
+    // Wichtig: Bei einem Batch-Write sieht exists() den Stand VOR dem Batch –
+    // die Anfrage darf also im selben Schreibvorgang gelöscht werden.
+    function requestExists(owner, sender) {
+      return exists(/databases/$(database)/documents/social/$(owner)/requests/$(sender));
+    }
+
+    // Steht `other` in der Freundesliste von `owner`?
+    function hasFriend(owner, other) {
+      return exists(/databases/$(database)/documents/social/$(owner)/friends/$(other));
+    }
+
+    // Anzeigename: Pflicht, String, kurz. Mehr gibt niemand über sich preis.
+    function validName(name) {
+      return name is string && name.size() <= 40;
+    }
+
+    /* ---------------- 1. Code-Verzeichnis ----------------
+       friendCodes/{CODE} = { uid }
+
+       Der Code wird aus der UID abgeleitet (siehe src/lib/social/protocol.ts).
+       Dieses Verzeichnis ist die einzige Stelle, an der ein Fremder etwas
+       nachschlagen darf – und zwar ausschließlich gezielt:
+         * `get`  ist erlaubt: Wer den Code kennt, darf ihn einlösen.
+         * `list` ist verboten: Niemand kann die Nutzerschaft durchblättern
+           oder sich Codes „herunterladen".
+       Das Dokument enthält NUR die UID – keinen Namen, keine E-Mail. Wer
+       einen Code errät, erfährt daraus also nichts über die Person.
+       Einmal vergeben, ist der Eintrag unveränderlich (kein update/delete):
+       Sonst könnte jemand den Code eines anderen kapern. Ein Code neu
+       ausstellen oder beim Löschen des Kontos aufräumen kann deshalb nur
+       serverseitig (Admin-SDK / Cloud Function). */
+    match /friendCodes/{code} {
+      allow get: if socialUser();
+      allow list: if false;
+      allow create: if socialUser()
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    /* ---------------- 2. Freundesliste ----------------
+       social/{uid}/friends/{friendUid} = { name, since }
+
+       Lesen: ausschließlich der Eigentümer der Liste. Ein Fremder bekommt
+       damit weder die Namen noch die Anzahl der Freunde zu sehen.
+
+       Anlegen: Beim Annehmen einer Anfrage schreibt der Annehmende ZWEI
+       Dokumente – eines in die eigene, eines in die fremde Liste. Beides ist
+       nur erlaubt, wenn im eigenen Postfach eine Anfrage der anderen Person
+       liegt. Daraus folgt:
+         * Niemand kann sich einseitig in eine fremde Freundesliste eintragen.
+         * Niemand kann sich selbst jemanden „anhängen", den er nur gefunden,
+           aber nicht kontaktiert hat – dafür müsste die Gegenseite erst eine
+           Anfrage geschickt haben (und die kann nur sie selbst erzeugen).
+
+       Ändern: nur der Anzeigename, und nur vom Eigentümer der Liste oder von
+       der betroffenen Person selbst (Namensaktualisierung).
+
+       Löschen: der Eigentümer (Freund entfernen) ODER die betroffene Person
+       selbst – sonst bliebe man nach dem Entfernen in der fremden Liste
+       stehen und diese Liste behielte das Leserecht auf die Anwesenheit. */
+    match /social/{uid}/friends/{friendUid} {
+      allow read: if isMe(uid);
+
+      allow create: if socialUser()
+        && uid != friendUid
+        && (isMe(uid) || isMe(friendUid))
+        && request.resource.data.keys().hasOnly(['name', 'since'])
+        && validName(request.resource.data.name)
+        && request.resource.data.since == request.time
+        && requestExists(request.auth.uid, uid == request.auth.uid ? friendUid : uid);
+
+      allow update: if (isMe(uid) || isMe(friendUid))
+        && request.resource.data.keys().hasOnly(['name', 'since'])
+        && validName(request.resource.data.name)
+        && request.resource.data.since == resource.data.since;
+
+      allow delete: if isMe(uid) || isMe(friendUid);
+    }
+
+    /* ---------------- 3. Eingehende Anfragen ----------------
+       social/{uid}/requests/{fromUid} = { fromUid, name, createdAt }
+
+       Der Dokumentname IST die UID des Absenders. Zusammen mit
+       `isMe(fromUid)` heißt das: Man kann ausschließlich in eigenem Namen
+       anfragen – ein gefälschter Absender ist unmöglich, und pro Empfänger
+       gibt es höchstens eine offene Anfrage (kein Zuspammen mit tausend
+       Dokumenten desselben Absenders).
+
+       Der Zeitstempel muss der Serverzeitpunkt sein (`request.time`), damit
+       niemand seine Anfrage künstlich nach oben sortiert.
+
+       `update` ist gesperrt: Eine einmal gestellte Anfrage lässt sich nicht
+       nachträglich umschreiben (z. B. der Name gegen einen anderen tauschen,
+       nachdem der Empfänger sie gesehen hat). Wer es anders will, zieht die
+       Anfrage zurück und stellt eine neue.
+
+       Lesen darf nur der Empfänger. Der Absender erfährt dadurch NICHT, ob
+       seine Anfrage noch offen ist oder abgelehnt wurde – deshalb führt die
+       App den eigenen Merkzettel unter `outgoing` (Block 4). */
+    match /social/{uid}/requests/{fromUid} {
+      allow read: if isMe(uid);
+
+      allow create: if isMe(fromUid)
+        && uid != fromUid
+        && request.resource.data.keys().hasOnly(['fromUid', 'name', 'createdAt'])
+        && request.resource.data.fromUid == fromUid
+        && validName(request.resource.data.name)
+        && request.resource.data.createdAt == request.time;
+
+      allow update: if false;
+
+      // Empfänger: annehmen/ablehnen. Absender: zurückziehen.
+      allow delete: if isMe(uid) || isMe(fromUid);
+    }
+
+    /* ---------------- 4. Eigene offene Anfragen ----------------
+       social/{uid}/outgoing/{toUid} = { createdAt }
+
+       Reiner Merkzettel für die eigene Oberfläche („Anfrage läuft"). Er
+       enthält bewusst KEINEN Namen: Man kennt nur den Code des Gegenübers,
+       nicht dessen Namen – und soll ihn auch erst nach dem Annehmen erfahren.
+
+       Löschen darf auch der Empfänger (`isMe(toUid)`): Wenn er annimmt oder
+       ablehnt, räumt er den Merkzettel des Absenders im selben Batch mit auf.
+       Mehr als Aufräumen ist damit nicht möglich – lesen kann er ihn nicht. */
+    match /social/{uid}/outgoing/{toUid} {
+      allow read: if isMe(uid);
+
+      allow create: if isMe(uid)
+        && uid != toUid
+        && request.resource.data.keys().hasOnly(['createdAt'])
+        && request.resource.data.createdAt == request.time;
+
+      allow update: if false;
+      allow delete: if isMe(uid) || isMe(toUid);
+    }
+
+    /* ---------------- 5. Anwesenheit ----------------
+       presence/{uid} = { lastSeen }
+
+       Schreiben: nur man selbst, und nur dieses eine Feld mit der SERVERZEIT.
+       Dadurch kann niemand mit einer falsch gestellten Uhr dauerhaft „online"
+       erscheinen oder sich unsichtbar machen, indem er alte Werte einträgt.
+
+       Lesen: man selbst oder jemand, der die Person in seiner eigenen
+       Freundesliste hat. Weil diese Liste nur mit einer echten Anfrage der
+       Gegenseite entstehen kann (Block 2), ist der Online-Status damit
+       tatsächlich an eine beidseitige Freundschaft gebunden.
+
+       `list` ist verboten – niemand kann sich anzeigen lassen, wer gerade
+       alles online ist. */
+    match /presence/{uid} {
+      allow get: if isMe(uid)
+        || (socialUser() && hasFriend(request.auth.uid, uid));
+      allow list: if false;
+
+      allow create, update: if isMe(uid)
+        && request.resource.data.keys().hasOnly(['lastSeen'])
+        && request.resource.data.lastSeen == request.time;
+
+      // Abmelden/Tab schließen: sofort offline.
+      allow delete: if isMe(uid);
+    }
+
+    // HINWEIS: Die bestehende Auffangregel
+    //   match /{document=**} { allow read, write: if false; }
+    // aus firestore.rules muss NACH diesen Blöcken stehen bleiben.
+  }
+}

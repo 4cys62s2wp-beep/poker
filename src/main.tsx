@@ -5,6 +5,7 @@ import { App } from './App';
 import { AppStateProvider } from './state/AppState';
 import { CloudProvider } from './lib/cloud/CloudProvider';
 import { ProProvider } from './lib/pro/ProProvider';
+import { SocialProvider } from './lib/social/SocialProvider';
 import { LanguageProvider } from './i18n';
 import { restoreFromMirrorIfNeeded } from './lib/storage';
 import '@fontsource-variable/fraunces';
@@ -19,7 +20,9 @@ function render() {
           <AppStateProvider>
             <CloudProvider>
               <ProProvider>
-                <App />
+                <SocialProvider>
+                  <App />
+                </SocialProvider>
               </ProProvider>
             </CloudProvider>
           </AppStateProvider>

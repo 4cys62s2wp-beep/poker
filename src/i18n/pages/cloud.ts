@@ -44,6 +44,8 @@ export const STR = defineStrings(
     toLogin: 'Zur Anmeldung',
     newAccount: 'Neues Konto',
     forgotPassword: 'Passwort vergessen?',
+    orDivider: 'oder',
+    continueWithGoogle: 'Mit Google anmelden',
 
     // Rückmeldungen des CloudProviders
     infoCloudLoaded: 'Fortschritt aus der Cloud geladen.',
@@ -95,6 +97,8 @@ export const STR = defineStrings(
     toLogin: 'Back to sign-in',
     newAccount: 'New account',
     forgotPassword: 'Forgot password?',
+    orDivider: 'or',
+    continueWithGoogle: 'Sign in with Google',
 
     // Rückmeldungen des CloudProviders
     infoCloudLoaded: 'Progress loaded from the cloud.',

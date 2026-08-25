@@ -24,6 +24,13 @@ export interface CloudHandle {
   /** Sprache für die von Firebase verschickten Mails (Bestätigung, Passwort-Reset). */
   setLanguage: (lang: Lang) => void;
   onUser: (cb: (user: CloudUser | null) => void) => () => void;
+  /** Meldet mit Google an (bestehendes Konto oder neu) – per Redirect, damit es
+      auch in der installierten PWA auf dem Handy zuverlässig funktioniert
+      (Popups sind dort unzuverlässig bis gar nicht verfügbar). */
+  loginWithGoogle: () => Promise<void>;
+  /** Fehler aus einer zurückkommenden Google-Weiterleitung (z. B. wenn die
+      E-Mail schon per Passwort registriert ist) – einmalig nach dem Neuladen. */
+  onRedirectError: (cb: (err: unknown) => void) => () => void;
   /**
    * Beobachtet den Abo-Status im Dokument `customers/{uid}`.
    * Dieses Dokument schreibt ausschließlich der Zahlungs-Webhook (serverseitig);
@@ -85,6 +92,11 @@ const ERROR_MESSAGES: Record<Lang, Record<string, string>> = {
     'auth/too-many-requests': 'Zu viele Versuche – bitte warte kurz und probiere es erneut.',
     'auth/network-request-failed': 'Keine Verbindung – prüfe dein Internet und versuche es erneut.',
     'auth/requires-recent-login': 'Bitte melde dich erneut an und versuche es dann noch einmal.',
+    'auth/account-exists-with-different-credential':
+      'Für diese E-Mail existiert bereits ein Konto mit Passwort – melde dich damit an.',
+    'auth/operation-not-allowed': 'Diese Anmeldeart ist noch nicht aktiviert.',
+    'auth/unauthorized-domain': 'Diese Website ist in Firebase noch nicht freigeschaltet.',
+    'auth/popup-closed-by-user': 'Anmeldung abgebrochen.',
     'permission-denied': 'Zugriff verweigert – ist deine E-Mail-Adresse schon bestätigt?',
     unavailable: 'Der Sync-Dienst ist gerade nicht erreichbar – deine Daten bleiben lokal gesichert.',
   },
@@ -98,6 +110,11 @@ const ERROR_MESSAGES: Record<Lang, Record<string, string>> = {
     'auth/too-many-requests': 'Too many attempts – please wait a moment and try again.',
     'auth/network-request-failed': 'No connection – check your internet and try again.',
     'auth/requires-recent-login': 'Please sign in again and then retry.',
+    'auth/account-exists-with-different-credential':
+      'An account with a password already exists for this email – please sign in with that instead.',
+    'auth/operation-not-allowed': 'This sign-in method is not enabled yet.',
+    'auth/unauthorized-domain': 'This website is not authorized in Firebase yet.',
+    'auth/popup-closed-by-user': 'Sign-in cancelled.',
     'permission-denied': 'Access denied – has your email address been confirmed yet?',
     unavailable: 'The sync service is unreachable right now – your data stays saved on this device.',
   },
@@ -137,6 +154,13 @@ async function init(): Promise<CloudHandle | null> {
     auth.languageCode = 'de';
     const db = fsMod.getFirestore(app);
 
+    const redirectErrorHandlers = new Set<(err: unknown) => void>();
+    // Läuft nach jedem Laden einmal leer durch (kein Fehler), außer direkt nach
+    // der Rückkehr von einer Google-Weiterleitung mit einem echten Problem.
+    authMod.getRedirectResult(auth).catch((err) => {
+      redirectErrorHandlers.forEach((cb) => cb(err));
+    });
+
     const toCloudUser = (u: import('firebase/auth').User | null): CloudUser | null =>
       u && u.email
         ? {
@@ -155,6 +179,14 @@ async function init(): Promise<CloudHandle | null> {
       },
       async login(email, password) {
         await authMod.signInWithEmailAndPassword(auth, email, password);
+      },
+      async loginWithGoogle() {
+        const provider = new authMod.GoogleAuthProvider();
+        await authMod.signInWithRedirect(auth, provider);
+      },
+      onRedirectError(cb) {
+        redirectErrorHandlers.add(cb);
+        return () => redirectErrorHandlers.delete(cb);
       },
       async logout() {
         await authMod.signOut(auth);

@@ -32,10 +32,23 @@ Das kann nur der Betreiber der Seite anlegen (Google-Konto nötig) – so geht's
 > Repository liegen. Die Sicherheit kommt aus den Firestore-Regeln (Schritt 4) und der
 > Domain-Freigabe (Schritt 5).
 
-## 3. E-Mail/Passwort-Anmeldung einschalten
+## 3. Anmeldung einschalten
 
-1. In der Firebase-Konsole: **Build → Authentication → Jetzt starten**.
+1. In der Firebase-Konsole: **Sicherheit → Authentication → Los geht's**.
 2. Anmeldemethode **E-Mail/Passwort** aktivieren (nur die erste Option, ohne „E-Mail-Link“).
+3. Optional zusätzlich **Google** aktivieren (ein Klick, Support-E-Mail auswählen, Speichern –
+   kein weiteres Konto oder Kosten nötig). Die App zeigt den Google-Button dann automatisch;
+   ohne aktivierten Google-Provider bleibt er sichtbar, meldet beim Klick aber nur einen
+   verständlichen Fehler statt etwas kaputt zu machen.
+
+### „Mit Apple anmelden“ – bewusst nicht enthalten
+
+Technisch vorbereitet (Firebase unterstützt es), aber **nicht eingebaut**, weil es zusätzlich zum
+Firebase-Projekt einen **kostenpflichtigen Apple-Developer-Account** (99 $/Jahr) und eine eigene
+Einrichtung im Apple-Entwicklerportal braucht (Services-ID, Rückgabe-URL, privater Schlüssel) –
+Dinge, die nur du als Kontoinhaber anlegen kannst. Sag Bescheid, sobald du den Account hast (z. B.
+wenn die App in Richtung App Store geht – dort verlangt Apples Regel 4.8 „Sign in with Apple“
+ohnehin, sobald Google-Anmeldung angeboten wird), dann bauen wir es mit deinen Werten ein.
 
 ## 4. Firestore-Datenbank + Sicherheitsregeln
 

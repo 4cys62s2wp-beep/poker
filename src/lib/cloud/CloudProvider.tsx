@@ -21,6 +21,7 @@ interface CloudValue {
   lastSync: string | null;
   register: (name: string, email: string, password: string) => Promise<boolean>;
   login: (email: string, password: string) => Promise<boolean>;
+  loginWithGoogle: () => Promise<boolean>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<boolean>;
   resendVerification: () => Promise<void>;
@@ -64,6 +65,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
   // Initialisierung + Auth-Listener
   useEffect(() => {
     let unsub: (() => void) | undefined;
+    let unsubRedirectError: (() => void) | undefined;
     let cancelled = false;
     getCloud().then((handle) => {
       if (cancelled) return;
@@ -79,10 +81,16 @@ export function CloudProvider({ children }: { children: ReactNode }) {
         setUser(u);
         if (!u) syncedUidRef.current = null;
       });
+      // Rückkehr von der Google-Weiterleitung: Fehler (z. B. E-Mail bereits
+      // per Passwort registriert) sind sonst spurlos – onUser feuert dann nicht.
+      unsubRedirectError = handle.onRedirectError((err) => {
+        setError(describeCloudError(err, langRef.current));
+      });
     });
     return () => {
       cancelled = true;
       unsub?.();
+      unsubRedirectError?.();
     };
   }, []);
 
@@ -202,6 +210,14 @@ export function CloudProvider({ children }: { children: ReactNode }) {
     [wrap],
   );
 
+  const loginWithGoogle = useCallback(
+    () =>
+      wrap(async () => {
+        await cloudRef.current!.loginWithGoogle();
+      }),
+    [wrap],
+  );
+
   const logout = useCallback(async () => {
     await wrap(async () => {
       await cloudRef.current!.logout();
@@ -268,6 +284,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
     lastSync,
     register,
     login,
+    loginWithGoogle,
     logout,
     resetPassword,
     resendVerification,

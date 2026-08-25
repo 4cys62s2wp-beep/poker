@@ -167,6 +167,25 @@ export function CloudAccountCard() {
         </div>
       </form>
 
+      {mode !== 'reset' && (
+        <>
+          <div className="row" style={{ margin: '14px 0', color: 'var(--text-dim)' }}>
+            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+            <span className="small faint" style={{ padding: '0 10px' }}>{C.orDivider}</span>
+            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+          </div>
+          <button
+            className="btn sm"
+            type="button"
+            style={{ width: '100%' }}
+            disabled={cloud.busy}
+            onClick={() => void cloud.loginWithGoogle()}
+          >
+            {C.continueWithGoogle}
+          </button>
+        </>
+      )}
+
       {cloud.error && <div className="feedback-box bad" style={{ marginTop: 12 }}>{cloud.error}</div>}
       {cloud.info && <div className="feedback-box good" style={{ marginTop: 12 }}>{cloud.info}</div>}
     </div>

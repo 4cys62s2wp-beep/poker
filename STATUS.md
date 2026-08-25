@@ -41,24 +41,28 @@ Verhalten der laufenden App zunächst **nichts**.
 | Commit | Was |
 |---|---|
 | `eb7899b` | *(Vorgänger-Branch)* Spielstil-Kennzahlen: Bibliothek + Erfassung am Übungstisch, 244 Tests |
-| *folgt* | Phase 1.1: Bestandsaufnahme, Betriebsdateien |
+| `7598f54` | Phase 1.1: Bestandsaufnahme, Betriebsdateien, Schlüssel-Prüfung der Historie |
+| *folgt* | Phase 1.2: Provider-Abstraktion (Vertrag, Mock, Stripe, StoreKit-Gerüst) |
 
 ---
 
 ## Exakt nächster Schritt
 
-**Phase 1.2 — Payment-Provider-Abstraktion.**
+**Phase 1.3 — Entitlement-Service serverseitig.**
 
-Anlegen: `src/lib/payments/provider.ts` mit dem Interface
-(`createCheckout`, `cancelSubscription`, `handleWebhook`,
-`getSubscriptionStatus`) und drei Implementierungen:
+Anlegen: `functions/` (Firebase Cloud Functions, TypeScript) mit
 
-- `MockProvider` — für Entwicklung ohne jeden Account. **Zuerst bauen**, weil
-  alles andere sich daran testen lässt.
-- `StripeProvider` — Web.
-- `StoreKitProvider` — iOS, bewusst als Hülle mit `TODO (Apple)`.
+1. `getEntitlement` — liest `entitlements/{uid}`, uid aus dem geprüften Token
+2. `createCheckoutSession` / `createPortalSession` — Stripe, Schlüssel als Secret
+3. Schreibpfad auf `entitlements/{uid}`, **nur** aus Functions
 
-Regel: Kein providerspezifischer Code außerhalb dieser Dateien.
+Dazu `firestore.rules`: `customers/{uid}` → `entitlements/{uid}` umziehen,
+Client darf nur lesen. Regeltests in `src/lib/__tests__/rules.test.ts`
+mitziehen — der Test „niemand trägt sich selbst ein Abo ein" muss auf dem
+neuen Pfad grün sein.
+
+Tests laufen gegen den Emulator (`npm run test:rules`), nicht gegen echtes
+Firebase.
 
 ---
 

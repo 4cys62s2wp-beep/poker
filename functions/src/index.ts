@@ -40,6 +40,12 @@ import { normalizeStripeEvent, normalizeAppleEvent } from './webhooks/map';
 const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
 const STRIPE_WEBHOOK_SECRET = defineSecret('STRIPE_WEBHOOK_SECRET');
 const APPLE_BUNDLE_ID = defineSecret('APPLE_BUNDLE_ID');
+/* Fingerabdruck der Apple Root CA G3, SHA-256, Grossbuchstaben mit
+   Doppelpunkten. Als Geheimnis und nicht als Konstante im Quelltext:
+   Der frühere fest hinterlegte Wert war nie gegen das echte Zertifikat
+   gehalten worden. Bilden mit
+   `openssl x509 -in AppleRootCA-G3.cer -inform DER -fingerprint -sha256 -noout`. */
+const APPLE_ROOT_CA_SHA256 = defineSecret('APPLE_ROOT_CA_SHA256');
 
 /* Preis- und Produktkennungen. Keine Geheimnisse, aber projektabhängig.
    TODO: Nach dem Anlegen in Stripe bzw. App Store Connect eintragen. */
@@ -252,7 +258,7 @@ export const stripeWebhook = onRequest(
  * Prüfung entpackt.
  */
 export const appleWebhook = onRequest(
-  { region: REGION, secrets: [APPLE_BUNDLE_ID] },
+  { region: REGION, secrets: [APPLE_BUNDLE_ID, APPLE_ROOT_CA_SHA256] },
   async (req, res) => {
     const signedPayload = (req.body as { signedPayload?: unknown })?.signedPayload;
     if (typeof signedPayload !== 'string') {
@@ -261,9 +267,20 @@ export const appleWebhook = onRequest(
     }
 
     const bundleId = APPLE_BUNDLE_ID.value();
+    /* Der Fingerabdruck der Apple-Wurzel kommt als Geheimnis aus der
+       Umgebung, nicht mehr als fest hinterlegter Wert aus dem Quelltext:
+       Er war dort nie gegen das echte Zertifikat gehalten worden. Fehlt er,
+       nimmt dieser Weg nichts an — lieber gar keine Zahlung als eine, deren
+       Herkunft niemand geprüft hat. Siehe ENTSCHEIDUNGEN.md, E-021. */
+    const wurzel = APPLE_ROOT_CA_SHA256.value();
+    if (!wurzel) {
+      res.status(503).send('Apple-Wurzelzertifikat nicht hinterlegt');
+      return;
+    }
     const outer = verifyAppleNotification(signedPayload, {
       now: Date.now(),
       expectedBundleId: bundleId,
+      trustedRootFingerprint: wurzel,
     });
     if (!outer.ok) {
       res.status(400).send(`Signatur abgelehnt: ${outer.reason}`);
@@ -275,7 +292,10 @@ export const appleWebhook = onRequest(
     if (typeof data.signedTransactionInfo === 'string') {
       // Die innere Transaktion trägt keine eigene Bundle-ID-Prüfung: Sie
       // steckt bereits in der äußeren, geprüften Benachrichtigung.
-      const inner = verifyAppleNotification(data.signedTransactionInfo, { now: Date.now() });
+      const inner = verifyAppleNotification(data.signedTransactionInfo, {
+        now: Date.now(),
+        trustedRootFingerprint: wurzel,
+      });
       if (inner.ok) transaction = inner.payload;
     }
 

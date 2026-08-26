@@ -2,6 +2,9 @@ node_modules
 dist
 dist-single
 *.log
+# ... mit einer Ausnahme: Das Protokoll des Nachtlaufs gehört ins
+# Repository. Es ist die Datei, in die morgens zuerst geschaut wird.
+!NACHTLAUF.log
 .DS_Store
 firestore-debug.log
 firebase-debug.log

@@ -1,0 +1,6 @@
+# Nachtlauf 2026-08-26 — fortlaufendes Protokoll
+#
+# Eine Zeile je Ereignis: Zeitstempel · Einheit · Ergebnis.
+# Diese Datei ist die erste, in die man morgens schaut.
+
+2026-08-26T19:29Z  START      Nachtlauf begonnen. Arbeitsbereich /home/user/poker-trainer, Branch feature/pot-odds-trainer @ dd33517. B4 läuft als PID 5006 im Hauptverzeichnis und wird nicht angefasst.

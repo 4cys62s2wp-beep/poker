@@ -41,7 +41,15 @@ from fractions import Fraction
 
 from befunde import befund, prozent, prozentpunkte, zahl
 from karten import ALLE_KARTEN, aus_text
-from metadaten import metadatenblock, schreibe, standard_annahmen
+from metadaten import (
+    Faelle, evaluator_angabe, metadatenblock, schreibe, standard_annahmen, zs,
+)
+
+#: Zählt mit, was diese Rechnung tatsächlich durchgeht. Die Zahl landet im
+#: Metadatenblock und von dort in die Herkunftsanzeige der App: „über wie
+#: viele Fälle wurde gerechnet?" darf keine hergeleitete Behauptung sein,
+#: sondern eine Beobachtung am laufenden Code.
+FAELLE = Faelle()
 
 #: Bis zu wie vielen Outs die Tabelle geht. Darüber hinaus kommt die Situation
 #: praktisch nicht vor; die Rechnung selbst hätte damit kein Problem.
@@ -91,6 +99,7 @@ def zaehle_treffer(unbekannt: int, outs: int) -> dict[str, Fraction]:
             if t_ok or r_ok:
                 mindestens_eine += 1
 
+    FAELLE.zaehle("turn_river_paare", paare)
     return {
         "turn": Fraction(turn_trifft, paare),
         "river_unbedingt": Fraction(river_trifft, paare),
@@ -146,7 +155,12 @@ def _bestes_blatt(karten):
     import eval7
 
     e7 = _EVAL7_KARTEN
-    beste = max(combinations(karten, 5), key=lambda f: eval7.evaluate([e7[c] for c in f]))
+    # Erst auflisten, dann das beste suchen: Nur so lässt sich zählen, wie
+    # viele Blätter tatsächlich geprüft wurden, statt die Zahl hinterher aus
+    # einer Formel zu behaupten.
+    kandidaten = list(combinations(karten, 5))
+    FAELLE.zaehle("fuenfkartenblaetter_bewertet", len(kandidaten))
+    beste = max(kandidaten, key=lambda f: eval7.evaluate([e7[c] for c in f]))
     from referenz_evaluator import kategorie_und_rangfolge
     kategorie, _ = kategorie_und_rangfolge(list(beste))
     return kategorie, beste
@@ -242,6 +256,7 @@ def zaehle_outs(hand: str, flop: str, ziel_kategorie: int | None = None,
 
     treffer = 0
     for c in (k for k in ALLE_KARTEN if k not in bekannt):
+        FAELLE.zaehle("kandidatenkarten_geprueft")
         kategorie, blatt = _bestes_blatt(bekannt + [c])
         if kategorie < schwelle:
             continue
@@ -261,15 +276,19 @@ UNVERBUNDEN = {"hand": "9d 8d", "board": "7c 6s 2h 5s",
 
 #: Bekannte Zugbilder. Die NAMEN und die Zielkategorie sind Fachsprache, die
 #: Outs-Zahlen dahinter werden gezählt.
+#: (Name deutsch, Name englisch, Hand, Flop, Zielkategorie deutsch)
+#: Die Zielkategorie ist zugleich der Nachschlageschlüssel in KATEGORIE_NAME;
+#: ihre englische Entsprechung kommt aus KATEGORIE_NAME_EN und wird nicht hier
+#: danebengeschrieben – sonst gäbe es zwei Wahrheiten für dasselbe Wort.
 BEISPIELE = [
-    ("Flushdraw",                     "Ah 7h", "Kh 4h 2c", "Flush"),
-    ("Offene Straße",                 "9c 8d", "7h 6s 2c", "Straße"),
-    ("Gutshot",                       "9c 8d", "7h 5s 2c", "Straße"),
-    ("Zwei Überkarten",               "Ac Kd", "9h 7s 2c", "Ein Paar"),
-    ("Flushdraw plus zwei Überkarten","Ah Kh", "9h 7h 2c", "Ein Paar"),
-    ("Flushdraw plus offene Straße",  "9h 8h", "7h 6h 2c", "Straße"),
-    ("Unterpaar sucht das Set",       "5c 5d", "Ah 9s 2c", "Drilling"),
-    ("Set sucht das Full House",      "9c 9d", "9h 7s 2c", "Full House"),
+    ("Flushdraw",                      "Flush draw",                    "Ah 7h", "Kh 4h 2c", "Flush"),
+    ("Offene Straße",                  "Open-ended straight draw",      "9c 8d", "7h 6s 2c", "Straße"),
+    ("Gutshot",                        "Gutshot",                       "9c 8d", "7h 5s 2c", "Straße"),
+    ("Zwei Überkarten",                "Two overcards",                 "Ac Kd", "9h 7s 2c", "Ein Paar"),
+    ("Flushdraw plus zwei Überkarten", "Flush draw plus two overcards", "Ah Kh", "9h 7h 2c", "Ein Paar"),
+    ("Flushdraw plus offene Straße",   "Flush draw plus open-ender",    "9h 8h", "7h 6h 2c", "Straße"),
+    ("Unterpaar sucht das Set",        "Underpair looking for a set",   "5c 5d", "Ah 9s 2c", "Drilling"),
+    ("Set sucht das Full House",       "Set looking for the full house","9c 9d", "9h 7s 2c", "Full House"),
 ]
 
 
@@ -283,6 +302,7 @@ BEISPIELE = [
 GEGENBEISPIELE = [
     {
         "name": "Das Out gibt dem Gegner den Flush",
+        "name_en": "The out hands the opponent a flush",
         "hand": "9d 8d",
         "flop": "7c 6c 2h",
         "out": "5c",
@@ -292,9 +312,15 @@ GEGENBEISPIELE = [
             "9-8-7-6-5. Sie ist aber ein Kreuz, und damit liegen drei Kreuz "
             "auf dem Board – der Gegner mit zwei Kreuz hat den Flush."
         ),
+        "erklaerung_en": (
+            "The five is a properly counted straight out: the hero holds "
+            "9-8-7-6-5. But it is a club, which puts three clubs on the board "
+            "– an opponent holding two clubs has the flush."
+        ),
     },
     {
         "name": "Das Out gibt dem Gegner die höhere Straße",
+        "name_en": "The out hands the opponent the better straight",
         "hand": "7d 6d",
         "flop": "9c 8s 2h",
         "out": "Th",
@@ -307,9 +333,18 @@ GEGENBEISPIELE = [
             "Board die Verbindung stellt; bei einem Flop wie 7-6-2 kann "
             "niemand eine höhere Straße halten."
         ),
+        "erklaerung_en": (
+            "The ten completes the hero's straight to the ten. Because the "
+            "board itself supplies three straight cards, a single jack is "
+            "enough for the opponent to hold the higher straight – the "
+            "dominated straight, the most expensive case of its kind. Note: "
+            "this only works when the board makes the connection; on a flop "
+            "like 7-6-2 nobody can hold a higher straight."
+        ),
     },
     {
         "name": "Das Out paart das Board und füllt das Full House",
+        "name_en": "The out pairs the board and fills a full house",
         "hand": "Ah Kh",
         "flop": "Qh 7h 7c",
         "out": "2h",
@@ -317,6 +352,10 @@ GEGENBEISPIELE = [
         "erklaerung": (
             "Das Herz vollendet Heros Nut-Flush. Dieselbe Karte paart die Zwei "
             "und gibt dem Gegner mit Siebener-Drilling das Full House."
+        ),
+        "erklaerung_en": (
+            "The heart completes the hero's nut flush. The same card pairs the "
+            "deuce and gives the opponent with trip sevens a full house."
         ),
     },
 ]
@@ -334,7 +373,10 @@ def pruefe_gegenbeispiele() -> list[dict]:
         _EVAL7_KARTEN = _eval7_karten()
     import eval7
     from itertools import combinations
-    from referenz_evaluator import KATEGORIE_NAME
+    from referenz_evaluator import KATEGORIE_NAME, KATEGORIE_NAME_EN
+
+    def kat(i):
+        return zs(KATEGORIE_NAME[i], KATEGORIE_NAME_EN[i])
 
     e7 = _EVAL7_KARTEN
     ergebnis = []
@@ -373,10 +415,13 @@ def pruefe_gegenbeispiele() -> list[dict]:
             )
 
         ergebnis.append({
-            **fall,
-            "hero_vorher": KATEGORIE_NAME[vorher_kat],
-            "hero_nachher": KATEGORIE_NAME[nachher_kat],
-            "gegner_nachher": KATEGORIE_NAME[gegner_kat],
+            **{k: v for k, v in fall.items()
+               if k not in ("name", "name_en", "erklaerung", "erklaerung_en")},
+            "name": zs(fall["name"], fall["name_en"]),
+            "erklaerung": zs(fall["erklaerung"], fall["erklaerung_en"]),
+            "hero_vorher": kat(vorher_kat),
+            "hero_nachher": kat(nachher_kat),
+            "gegner_nachher": kat(gegner_kat),
             "hero_verbessert_sich": verbessert,
             "hero_verliert_trotzdem": verliert,
         })
@@ -388,6 +433,9 @@ def pruefe_gegenbeispiele() -> list[dict]:
 # ---------------------------------------------------------------------------
 
 def berechne() -> dict:
+    # Der Zähler beginnt bei null: Er soll diesen Lauf beschreiben, nicht
+    # alles, was ein Testlauf vorher durch das Modul geschickt hat.
+    globals()["FAELLE"] = Faelle()
     z = standard_annahmen()["kartenzahlen"]
     nach_flop = z["unbekannt_nach_flop"]
     nach_turn = z["unbekannt_nach_turn"]
@@ -428,15 +476,15 @@ def berechne() -> dict:
             },
         })
 
-    from referenz_evaluator import KATEGORIE_NAME
+    from referenz_evaluator import KATEGORIE_NAME, KATEGORIE_NAME_EN
     nach_name = {v: k for k, v in KATEGORIE_NAME.items()}
     beispiele = []
-    for name, hand, flop, ziel in BEISPIELE:
+    for name, name_en, hand, flop, ziel in BEISPIELE:
         beispiele.append({
-            "name": name,
+            "name": zs(name, name_en),
             "hand": hand,
             "flop": flop,
-            "zielkategorie": ziel,
+            "zielkategorie": zs(ziel, KATEGORIE_NAME_EN[nach_name[ziel]]),
             "outs_bis_zielkategorie": zaehle_outs(hand, flop, nach_name[ziel]),
             "outs_beliebige_verbesserung": zaehle_outs(hand, flop),
             "outs_mit_boardtreffern": zaehle_outs(
@@ -495,6 +543,7 @@ def zaehle_gegner_die_schlagen(hand: str, board: str) -> dict:
     besser = gleich = gesamt = 0
     for a, b in combinations(frei, 2):
         gesamt += 1
+        FAELLE.zaehle("gegnerhaende_geprueft")
         _, g_blatt = _bestes_blatt([a, b] + brett)
         w = eval7.evaluate([e7[c] for c in g_blatt])
         if w > hero_wert:
@@ -523,7 +572,7 @@ def befunde_zu_b1(zeilen: list[dict], beispiele: list[dict], nach_flop: int) -> 
     river_spanne_bei = max(
         zeilen, key=lambda z: z["river_nach_fehlschlag"] - z["river_unbedingt"])["outs"]
 
-    ueberkarten = next(b for b in beispiele if b["name"] == "Zwei Überkarten")
+    ueberkarten = next(b for b in beispiele if b["name"]["de"] == "Zwei Überkarten")
 
     verbunden = zaehle_gegner_die_schlagen(VERBUNDEN["hand"], VERBUNDEN["board"])
     unverbunden = zaehle_gegner_die_schlagen(UNVERBUNDEN["hand"], UNVERBUNDEN["board"])
@@ -533,6 +582,8 @@ def befunde_zu_b1(zeilen: list[dict], beispiele: list[dict], nach_flop: int) -> 
             "umschlagpunkt",
             f"Bis {wechsel - 1} Outs verspricht die 2/4-Regel zu wenig, "
             f"ab {wechsel} Outs zu viel.",
+            f"Up to {wechsel - 1} outs the 2/4 rule promises too little, "
+            f"from {wechsel} outs on too much.",
             {
                 # Die Faktoren stehen hier, weil der Satz die Regel bei ihrem
                 # Namen nennt („2/4-Regel") – und auch ein Name, der aus Zahlen
@@ -548,6 +599,8 @@ def befunde_zu_b1(zeilen: list[dict], beispiele: list[dict], nach_flop: int) -> 
         befund(
             "erste_grosse_abweichung",
             f"Ab {ab_1pp} Outs liegt die Regel um mehr als einen Prozentpunkt daneben.",
+            f"From {ab_1pp} outs on the rule is off by more than one "
+            f"percentage point.",
             {
                 "outs": ab_1pp,
                 "abweichung_pp": round(abw[ab_1pp], 4),
@@ -560,6 +613,10 @@ def befunde_zu_b1(zeilen: list[dict], beispiele: list[dict], nach_flop: int) -> 
             f"{prozent(exakt[schlimmster])} tatsächlich gegen "
             f"{zahl(4 * schlimmster, 0)} % nach der Regel, "
             f"also {prozentpunkte(abw[schlimmster])} zu viel.",
+            f"It is furthest off at {schlimmster} outs: "
+            f"{100 * exakt[schlimmster]:.2f} % in fact against "
+            f"{4 * schlimmster:.0f} % by the rule, so "
+            f"{abw[schlimmster]:.2f} pp too much.",
             {
                 "outs": schlimmster,
                 "exakt": round(exakt[schlimmster], 6),
@@ -575,6 +632,8 @@ def befunde_zu_b1(zeilen: list[dict], beispiele: list[dict], nach_flop: int) -> 
             "fehler_waechst",
             f"Ab dem Umschlagpunkt wächst der Fehler von Outs-Zahl zu Outs-Zahl "
             f"ohne Ausnahme: {'ja' if waechst_durchgehend else 'nein'}.",
+            f"From the turning point on, the error grows from one outs count to "
+            f"the next without exception: {'yes' if waechst_durchgehend else 'no'}.",
             {
                 "geprueft_von_outs": wechsel,
                 "geprueft_bis_outs": max(abw),
@@ -586,6 +645,8 @@ def befunde_zu_b1(zeilen: list[dict], beispiele: list[dict], nach_flop: int) -> 
             "river_lesarten",
             f"Die beiden Lesarten von „River\" unterscheiden sich um bis zu "
             f"{prozentpunkte(river_spanne)}, am stärksten bei {river_spanne_bei} Outs.",
+            f"The two readings of \"river\" differ by up to "
+            f"{river_spanne:.2f} pp, most strongly at {river_spanne_bei} outs.",
             {
                 "groesste_spanne_pp": round(river_spanne, 4),
                 "bei_outs": river_spanne_bei,
@@ -602,6 +663,11 @@ def befunde_zu_b1(zeilen: list[dict], beispiele: list[dict], nach_flop: int) -> 
             f"{verbunden['schlagen_hero']} von {verbunden['kombos_gesamt']} "
             f"Gegner-Kombos Heros Straße, auf {UNVERBUNDEN['board']} sind es "
             f"{unverbunden['schlagen_hero']}.",
+            f"Whether an out can hand the opponent the higher straight depends "
+            f"on the board: on {VERBUNDEN['board']}, "
+            f"{verbunden['schlagen_hero']} of {verbunden['kombos_gesamt']} "
+            f"opponent combos beat the hero's straight; on "
+            f"{UNVERBUNDEN['board']} it is {unverbunden['schlagen_hero']}.",
             {
                 "verbundenes_board": {**VERBUNDEN, **verbunden},
                 "unverbundenes_board": {**UNVERBUNDEN, **unverbunden},
@@ -617,6 +683,9 @@ def befunde_zu_b1(zeilen: list[dict], beispiele: list[dict], nach_flop: int) -> 
             "boardtreffer",
             f"Zwei Überkarten haben {ueberkarten['outs_bis_zielkategorie']} Outs. "
             f"Zählt man Paare mit, die nur auf dem Board liegen, sind es "
+            f"{ueberkarten['outs_mit_boardtreffern']}.",
+            f"Two overcards have {ueberkarten['outs_bis_zielkategorie']} outs. "
+            f"Counting pairs that sit on the board alone, it is "
             f"{ueberkarten['outs_mit_boardtreffern']}.",
             {
                 "richtig_gezaehlt": ueberkarten["outs_bis_zielkategorie"],
@@ -634,40 +703,62 @@ def main() -> int:
     inhalt = berechne()
     meta = metadatenblock(
         block="b1_outs",
-        zweck=(
-            "Verbesserungswahrscheinlichkeit für 1 bis 21 Outs auf Turn, River "
-            "und mindestens einer der beiden Straßen, samt Fehler der "
-            "2/4-Faustregel."
+        zweck=zs(
+            f"Verbesserungswahrscheinlichkeit für 1 bis {MAX_OUTS} Outs auf "
+            f"Turn, River und mindestens einer der beiden Straßen, samt Fehler "
+            f"der 2/4-Faustregel.",
+            f"Probability of improving with 1 to {MAX_OUTS} outs on the turn, "
+            f"the river and at least one of the two streets, together with the "
+            f"error of the 2/4 rule of thumb.",
         ),
         methode="exakt",
         laufzeit_s=time.perf_counter() - start,
+        faelle=FAELLE,
+        evaluator=evaluator_angabe(),
         besondere_annahmen={
-            "saubere_outs": (
+            "saubere_outs": zs(
                 "Jedes Out macht die eigene Hand zur besten. Das ist eine "
                 "Vereinfachung: Eine Karte kann das eigene Blatt verbessern und "
                 "dem Gegner trotzdem ein besseres geben. Ausführlich mit "
-                "Gegenbeispielen in POKER_MATH.md, Abschnitt „Saubere Outs\"."
+                "Gegenbeispielen in POKER_MATH.md, Abschnitt „Saubere Outs\".",
+                "Every out turns your hand into the best one. That is a "
+                "simplification: a card can improve your hand and still give an "
+                "opponent a better one. Spelled out with counter-examples in "
+                "POKER_MATH.md, section \"Saubere Outs\".",
             ),
-            "outs_sind_gegeben": (
+            "outs_sind_gegeben": zs(
                 "Die Outs-Zahl geht als gegeben ein; wie viele Outs eine "
                 "konkrete Hand hat, ist nicht Teil dieser Tabelle. Für acht "
                 "Zugbilder ist sie unter 'beispiele' gezählt – dort in zwei "
                 "Lesarten: bis zur genannten Zielkategorie (das ist die Zahl, "
                 "die am Tisch gemeint ist) und für jede beliebige Anhebung der "
                 "Kategorie (größer, weil Nebentreffer mitzählen). Ein besserer "
-                "Kicker gilt in keiner der beiden als Out."
+                "Kicker gilt in keiner der beiden als Out.",
+                "The number of outs is taken as given; how many outs a "
+                "particular hand has is not part of this table. For eight draw "
+                "pictures it is counted under 'beispiele' – in two readings: up "
+                "to the named target category (the number meant at the table) "
+                "and for any raise of the category at all (larger, because "
+                "incidental hits count). A better kicker is an out in neither.",
             ),
-            "beide_strassen": (
+            "beide_strassen": zs(
                 "'turn_oder_river' unterstellt, dass beide Karten auch wirklich "
                 "kommen – also kein Fold nach dem Turn und genug Chips, um beide "
                 "Straßen zu sehen. Wer nach dem Turn erneut zahlen muss, rechnet "
-                "mit 'river_nach_fehlschlag'."
+                "mit 'river_nach_fehlschlag'.",
+                "'turn_oder_river' assumes both cards actually come – so no fold "
+                "after the turn and enough chips to see both streets. Anyone who "
+                "has to pay again after the turn uses 'river_nach_fehlschlag'.",
             ),
-            "gegenprobe": (
+            "gegenprobe": zs(
                 "Jede Zeile wurde doppelt gerechnet: einmal durch vollständiges "
                 "Durchzählen aller geordneten Paare (Turn, River), einmal über "
                 "die Gegenwahrscheinlichkeit. Beide Wege müssen als Bruch exakt "
-                "übereinstimmen, sonst bricht der Lauf ab."
+                "übereinstimmen, sonst bricht der Lauf ab.",
+                "Every row was computed twice: once by fully counting all "
+                "ordered (turn, river) pairs, once via the complementary "
+                "probability. Both ways must agree exactly as fractions, "
+                "otherwise the run aborts.",
             ),
         },
     )
@@ -678,6 +769,7 @@ def main() -> int:
     print(f"B1 geschrieben: {ziel}")
     print(f"  {len(inhalt['outs'])} Outs-Zeilen, {len(inhalt['beispiele'])} Beispiele")
     print(f"  {len(inhalt['gegenbeispiele_saubere_outs'])} Gegenbeispiele nachgerechnet")
+    print(f"  {FAELLE.gesamt} Einzelfälle durchgerechnet: {FAELLE.block()['je_teil']}")
     print("  Befunde (aus den Daten erzeugt):")
     for b in inhalt["befunde"]:
         print(f"    · {b['aussage']}")

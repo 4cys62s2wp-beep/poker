@@ -37,18 +37,30 @@ from __future__ import annotations
 from typing import Any
 
 
-def befund(schluessel: str, aussage: str, beleg: dict[str, Any]) -> dict[str, Any]:
+def befund(schluessel: str, aussage: str, aussage_en: str,
+           beleg: dict[str, Any]) -> dict[str, Any]:
     """Einen Befund bauen.
 
     ``aussage`` muss mit f-String aus den Werten in ``beleg`` zusammengesetzt
     sein — nicht danebengeschrieben. Ob das eingehalten wurde, prüft
     ``tests/test_aussagen.py``, indem es jede Zahl im Satz im Beleg wiederfindet.
+
+    Beide Sprachen sind Pflicht, und beide werden geprüft. Eine englische
+    Fassung, die eine andere Zahl nennt als die deutsche, wäre der übelste
+    Fehler dieser Art: Er fällt niemandem auf, der nur eine Sprache liest.
     """
-    if not aussage or not aussage[0].isupper():
-        raise ValueError(f"Befund {schluessel!r}: Aussage fehlt oder beginnt klein")
+    for name, text in (("deutsch", aussage), ("englisch", aussage_en)):
+        if not text or not text[0].isupper():
+            raise ValueError(
+                f"Befund {schluessel!r}: Aussage ({name}) fehlt oder beginnt klein")
     if not beleg:
         raise ValueError(f"Befund {schluessel!r}: ohne Beleg ist es keine Ableitung")
-    return {"schluessel": schluessel, "aussage": aussage, "beleg": beleg}
+    return {
+        "schluessel": schluessel,
+        "aussage": aussage,
+        "aussage_en": aussage_en,
+        "beleg": beleg,
+    }
 
 
 def zahlen_im_satz(satz: str) -> list[str]:

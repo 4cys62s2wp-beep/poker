@@ -29,7 +29,10 @@ from karten import (
     ALLE_KARTEN, RANG_ZEICHEN, alle_starthand_kuerzel, aus_text,
     kombos_fuer_kuerzel, starthand_kuerzel,
 )
-from metadaten import metadatenblock, schreibe
+from metadaten import Faelle, metadatenblock, ohne_evaluator, schreibe, zs
+
+#: Zählt mit, was diese Rechnung durchgeht – für die Herkunftsanzeige.
+FAELLE = Faelle()
 
 
 def typ_von(kuerzel: str) -> str:
@@ -48,6 +51,7 @@ def kombos_je_typ() -> dict[str, int]:
     """
     je_klasse: dict[str, int] = {}
     for a, b in combinations(ALLE_KARTEN, 2):
+        FAELLE.zaehle("zweikartenblaetter_eingeordnet")
         k = starthand_kuerzel(a, b)
         je_klasse[k] = je_klasse.get(k, 0) + 1
 
@@ -93,6 +97,7 @@ def blockerbild(kuerzel: str, bis_karten: int = 4) -> list[dict]:
     for k in range(1, bis_karten + 1):
         verteilung: dict[int, int] = {}
         for menge in combinations(ALLE_KARTEN, k):
+            FAELLE.zaehle("bekannte_kartenmengen_geprueft")
             uebrig = uebrige_kombos(kombos, frozenset(menge))
             verteilung[uebrig] = verteilung.get(uebrig, 0) + 1
         faelle = sum(verteilung.values())
@@ -115,6 +120,7 @@ def beispiel_am_board(hand: str, board: str) -> dict:
 
     eintraege = []
     for kuerzel in alle_starthand_kuerzel():
+        FAELLE.zaehle("starthandklassen_am_board_geprueft")
         kombos = kombos_fuer_kuerzel(kuerzel)
         uebrig = uebrige_kombos(kombos, bekannt)
         eintraege.append({
@@ -153,6 +159,7 @@ def beispiel_am_board(hand: str, board: str) -> dict:
 
 
 def berechne() -> dict:
+    globals()["FAELLE"] = Faelle()
     je_typ = kombos_je_typ()
     klassen = klassen_je_typ()
 
@@ -217,6 +224,9 @@ def befunde_zu_b3(inhalt: dict) -> list[dict]:
             f"Ein Paar hat {k['Paar']} Kombos, eine suited Hand {k['suited']}, "
             f"eine offsuit Hand {k['offsuit']} – zusammen {k['suited_und_offsuit_zusammen']} "
             f"je Rangpaar.",
+            f"A pair has {k['Paar']} combos, a suited hand {k['suited']}, an "
+            f"offsuit hand {k['offsuit']} – together "
+            f"{k['suited_und_offsuit_zusammen']} per pair of ranks.",
             {**k, "gezaehlt_ueber": g["zweikartenblaetter"]},
         ),
         befund(
@@ -224,6 +234,9 @@ def befunde_zu_b3(inhalt: dict) -> list[dict]:
             f"Die {g['starthand_klassen']} Klassen decken genau die "
             f"{g['zweikartenblaetter']} Zweikartenblätter ab – lückenlos und "
             f"ohne Überschneidung.",
+            f"The {g['starthand_klassen']} classes cover exactly the "
+            f"{g['zweikartenblaetter']} two-card hands – with no gap and no "
+            f"overlap.",
             {
                 "klassen": g["starthand_klassen"],
                 "zweikartenblaetter": g["zweikartenblaetter"],
@@ -235,6 +248,9 @@ def befunde_zu_b3(inhalt: dict) -> list[dict]:
             f"Eine einzige bekannte Karte lässt von den {k['Paar']} Kombos eines "
             f"Paares zwischen {schlimmster} und {bester} übrig – je nachdem, ob "
             f"sie die Hand berührt.",
+            f"A single known card leaves between {schlimmster} and {bester} of "
+            f"a pair's {k['Paar']} combos – depending on whether it touches the "
+            f"hand.",
             {
                 "kombos_ohne_blocker": k["Paar"],
                 "schlimmstenfalls_uebrig": schlimmster,
@@ -250,6 +266,10 @@ def befunde_zu_b3(inhalt: dict) -> list[dict]:
             f"{beispiel['summe_nachher']}. Am stärksten trifft es "
             f"{am_meisten['hand']}: {am_meisten['vorher']} Kombos werden zu "
             f"{am_meisten['nachher']}.",
+            f"On the board {beispiel['board']} holding {beispiel['hand']}, "
+            f"{beispiel['summe_nachher']} of {beispiel['summe_vorher']} combos "
+            f"remain. Hit hardest is {am_meisten['hand']}: "
+            f"{am_meisten['vorher']} combos become {am_meisten['nachher']}.",
             {
                 "hand": beispiel["hand"],
                 "board": beispiel["board"],
@@ -267,27 +287,47 @@ def main() -> int:
     inhalt["befunde"] = befunde_zu_b3(inhalt)
     meta = metadatenblock(
         block="b3_kombinatorik",
-        zweck=(
-            "Kombos je Starthand-Typ, Wirkung von Blockern und ein "
-            "durchgerechnetes Beispiel über alle 169 Starthände."
+        zweck=zs(
+            f"Kombos je Starthand-Typ, Wirkung von Blockern und ein "
+            f"durchgerechnetes Beispiel über alle "
+            f"{inhalt['gesamt']['starthand_klassen']} Starthände.",
+            f"Combos per starting-hand type, the effect of blockers and one "
+            f"worked example across all "
+            f"{inhalt['gesamt']['starthand_klassen']} starting hands.",
         ),
         methode="exakt",
         laufzeit_s=time.perf_counter() - start,
-        braucht_evaluator=False,
+        faelle=FAELLE,
+        evaluator=ohne_evaluator(
+            "Hier wird nichts bewertet, sondern gezählt: Welche Kartenpaare es "
+            "gibt und welche eine bekannte Karte wegnimmt. Eine Bibliothek zum "
+            "Bewerten von Blättern kommt nicht vor.",
+            "Nothing is evaluated here, things are counted: which pairs of "
+            "cards exist and which ones a known card removes. No hand-"
+            "evaluation library is involved.",
+        ),
         besondere_annahmen={
-            "farben_gleichwertig": (
+            "farben_gleichwertig": zs(
                 "Die 169 Klassen entstehen daraus, dass die vier Farben "
                 "untereinander gleichwertig sind: Es zählt nur, ob beide Karten "
-                "dieselbe Farbe haben."
+                "dieselbe Farbe haben.",
+                "The 169 classes arise because the four suits are equivalent to "
+                "one another: all that counts is whether both cards share a "
+                "suit.",
             ),
-            "blocker_sind_rein_kombinatorisch": (
+            "blocker_sind_rein_kombinatorisch": zs(
                 "Gezählt wird, welche Kombos noch im Deck sein KÖNNEN. Dass ein "
                 "Gegner eine bestimmte Hand auch spielen würde, ist eine ganz "
-                "andere Frage und hier ausdrücklich nicht enthalten."
+                "andere Frage und hier ausdrücklich nicht enthalten.",
+                "What is counted is which combos CAN still be in the deck. "
+                "Whether an opponent would actually play a given hand is an "
+                "entirely different question and expressly not included here.",
             ),
-            "keine_range_annahmen": (
+            "keine_range_annahmen": zs(
                 "Es wird keine Gegner-Range unterstellt. Alle Kombos gelten als "
-                "gleich möglich."
+                "gleich möglich.",
+                "No opponent range is assumed. Every combo counts as equally "
+                "possible.",
             ),
         },
     )

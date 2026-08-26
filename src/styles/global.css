@@ -88,13 +88,72 @@
      Eine Familie mit echten Gewichtsabstufungen statt drei Familien.
      --fs-stat ist bewusst groß UND leicht: Größe allein schlägt sonst in
      Lautstärke um. (R3) */
+  /* ═══════════════════════════════════════════════════════════════════
+     DESIGNFUNDAMENT — die fünf Stufen, benannt nach Verwendung
+     ═══════════════════════════════════════════════════════════════════
+
+     Fünf Stufen, keine sieben. Eine Skala, deren Stufen nach ihrer
+     Verwendung heißen, lässt sich beim Bauen richtig wählen; eine, deren
+     Stufen nach Auszeichnungsebenen heißen (h1, h2, h3), verführt dazu,
+     die Größe zu nehmen, die gerade passt.
+
+     Begründung der Abstände steht in DESIGN.md. Kurz: „Ergebnis" ist um ein
+     Vielfaches größer als „Fließtext", weil die Prozentzahl der Grund ist,
+     warum jemand die App geöffnet hat. Alles andere ist Beiwerk und darf so
+     aussehen. */
+
+  /** Die eine Zahl, wegen der der Bildschirm existiert. Fett, nie dünn. */
+  --fs-ergebnis: clamp(64px, 20vw, 116px);
+  --fs-ueberschrift: clamp(19px, 2.4vw, 23px);
+  --fs-fliesstext: 15px;
+  --fs-beschriftung: 13.2px;
+  --fs-kleingedrucktes: 11.5px;
+
+  /* Ziffern in gleicher Breite. Ohne das springt eine hochzählende Anzeige
+     bei jedem Wechsel, weil die 1 schmaler ist als die 8 — am Tisch, wo der
+     Timer läuft, ist das der Unterschied zwischen ruhig und zappelig. */
+  --ziffern: tabular-nums;
+
+  /* ── Die eine Akzentfarbe ────────────────────────────────────────────
+     Reserviert für den Live-Bereich. Alles andere ist neutral: Wenn jede
+     Ecke der App ihre eigene Farbe hat, heißt Farbe nichts mehr.
+     Gegenüber dem alten --felt-light aufgehellt, weil der bei 3,92 zu 1 auf
+     dunklem Grund unter der Grenze lag und damit als Text nicht zulässig
+     war. Jetzt 8,32 zu 1. */
+  --akzent: #4fbf8e;
+  --akzent-dim: rgba(79, 191, 142, 0.16);
+
+  /* ── Ergebniszahlen ──────────────────────────────────────────────────
+     Eigene Töne, weil für sie 7 zu 1 gilt und nicht 4,5 zu 1. --ok und
+     --danger erfüllen das nicht und bleiben den kleinen Zustandsanzeigen
+     vorbehalten. Nachgemessen im Test `design.test.ts`. */
+  --ergebnis-gut: #6ec97d;
+  --ergebnis-schlecht: #f29b95;
+
+  /* ── Bedienung ───────────────────────────────────────────────────────
+     44 Punkt ist die kleinste Fläche, die ein Daumen zuverlässig trifft
+     (Apple HIG). 8 Punkt Abstand dazwischen, damit zwei Ziele nicht als
+     eines wirken. Die unteren 24 Punkt bleiben frei: Dort liegen die
+     Systemgesten, und ein Knopf, der mit dem Wischen zum Startbildschirm
+     konkurriert, verliert. */
+  --tipp-min: 44px;
+  --tipp-abstand: 8px;
+  --gestenstreifen: 24px;
+
+  /* ── Ende Designfundament ──────────────────────────────────────────── */
+
   --fs-stat: clamp(38px, 9vw, 58px);
   --fs-h1: clamp(27px, 4.4vw, 38px);
-  --fs-h2: clamp(19px, 2.4vw, 23px);
+  /* Altbestand. Wo eine alte Stufe mit einer neuen zusammenfällt, zeigt sie
+     dorthin — dann gibt es den Wert genau einmal. --fs-stat, --fs-h1 und
+     --fs-h3 haben keine Entsprechung in der Fünferskala und werden abgebaut;
+     die Prüfung in `design.test.ts` zählt ihre Verwendungen und lässt die
+     Zahl nicht wachsen. */
+  --fs-h2: var(--fs-ueberschrift);
   --fs-h3: 16.5px;
-  --fs-body: 15px;
-  --fs-small: 13.2px;
-  --fs-tiny: 11.5px;
+  --fs-body: var(--fs-fliesstext);
+  --fs-small: var(--fs-beschriftung);
+  --fs-tiny: var(--fs-kleingedrucktes);
 
   --fw-light: 300;
   --fw-regular: 500;
@@ -107,7 +166,7 @@
   /* ── Bedienung ───────────────────────────────────────────────────────
      44 px ist die kleinste Fläche, die sich auf einem Handy zuverlässig
      mit dem Daumen treffen lässt (Apple HIG). Alles Tippbare hält das ein. */
-  --touch-min: 44px;
+  --touch-min: var(--tipp-min);
 
   /* ── Sichere Bereiche ────────────────────────────────────────────────
      In der installierten PWA reicht der Inhalt bis unter die Notch und
@@ -1574,17 +1633,19 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
    bewegen. Wer gerade eine Entscheidung getroffen hat, soll die Zahl lesen,
    nicht eine Animation abwarten. */
 .drill-zahl {
-  font-size: clamp(64px, 20vw, 116px);
+  font-size: var(--fs-ergebnis);
   font-weight: var(--fw-bold);
   line-height: 0.95;
   letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: var(--ziffern);
   transition: none;
   animation: none;
 }
 
-.drill-zahl.gut { color: var(--ok); }
-.drill-zahl.schlecht { color: var(--danger); }
+/* Eigene Töne für die Ergebnisstufe: --ok und --danger erreichen die
+   geforderten 7 zu 1 nicht (siehe DESIGN.md, Abschnitt 2). */
+.drill-zahl.gut { color: var(--ergebnis-gut); }
+.drill-zahl.schlecht { color: var(--ergebnis-schlecht); }
 
 .drill-zahl-label {
   font-size: var(--fs-body);
@@ -1676,8 +1737,20 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-body);
 }
 
-.drill-urteil.gut strong { color: var(--ok); }
-.drill-urteil.schlecht strong { color: var(--danger); }
+.drill-urteil.gut strong { color: var(--ergebnis-gut); }
+.drill-urteil.schlecht strong { color: var(--ergebnis-schlecht); }
+
+/* Zustand nicht nur an der Farbe: Rund jeder zwölfte Mann sieht Rot und Grün
+   nicht zuverlässig auseinander — ausgerechnet die beiden Farben, mit denen
+   man „richtig" und „falsch" gern anzeigt. Das Zeichen davor sagt es auch
+   ohne Farbe. */
+.drill-urteil strong::before {
+  margin-right: var(--sp-2);
+  font-weight: var(--fw-bold);
+}
+
+.drill-urteil.gut strong::before { content: '✓'; }
+.drill-urteil.schlecht strong::before { content: '✕'; }
 
 /* Untereinander, nicht nebeneinander: Mit dem Herkunftszeichen passen beide
    Werte auf einem Handy nicht mehr in eine Zeile, und ein Umbruch mitten
@@ -1736,7 +1809,8 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   margin-top: auto;
   padding-top: var(--sp-3);
   position: sticky;
-  bottom: var(--sp-4);
+  /* Der Gestenstreifen bleibt frei – dort gewinnt immer das System. */
+  bottom: var(--gestenstreifen);
   min-height: var(--drill-bedienung-h);
   /* Oben ausgeblendet, unten deckend: So sieht man, dass darüber Text
      weitergeht, statt ihn blass durch die Leiste schimmern zu sehen. */
@@ -1745,18 +1819,18 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 @media (max-width: 920px) {
   .drill-unten {
-    bottom: calc(var(--nav-h) + var(--safe-bottom) + var(--sp-2));
+    bottom: calc(var(--nav-h) + var(--safe-bottom) + var(--tipp-abstand));
   }
 }
 
 .drill-knoepfe {
   display: flex;
-  gap: var(--sp-3);
+  gap: var(--tipp-abstand);
 }
 
 .drill-knopf {
   flex: 1 1 0;
-  min-height: 60px;
+  min-height: calc(var(--tipp-min) + var(--sp-4));
   border-radius: var(--radius);
   border: 1px solid var(--border-strong);
   background: var(--bg-elev);

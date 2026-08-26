@@ -205,3 +205,27 @@ Annahmen und Bibliothek, zweisprachig und aus den Daten statt formuliert.
 **Was es voraussetzt.** Nur noch die Ausweitung: Jede andere Seite, die eine
 gerechnete Zahl zeigt — Odds-Tabellen, Starthand-Explorer, Equity-Rechner —
 kann die Komponente unverändert verwenden. Das ist der offene Teil.
+
+---
+
+## Bestand auf das Designfundament umstellen
+
+**Worum es geht.** Zwei Aufräumarbeiten, die zusammengehören: die vier
+Bereichsfarben des Bestands auf die eine Akzentfarbe zurückführen, und die
+drei Alt-Schriftstufen (`--fs-stat`, `--fs-h1`, `--fs-h3`) durch die
+Fünferskala ersetzen. Dazu die 966 verstreuten Gestaltungswerte in 48
+Dateien.
+
+**Warum es wertvoll wäre.** Solange der Bestand vier Akzentfarben trägt,
+sagt Farbe in dieser App nichts. Und solange 966 Werte neben den Tokens
+stehen, ist das Fundament eine Absichtserklärung.
+
+**Was daran schwierig ist.** Nichts einzeln — aber es sind 48 Dateien, und
+ein Umbau über 48 Dateien in einem Zug erzeugt einen Unterschied, den
+niemand mehr prüfen kann. Es gehört bildschirmweise gemacht, mit einem Blick
+auf das Ergebnis nach jedem.
+
+**Was es voraussetzt.** Die Sperrklinke steht schon: `npm run streuung`
+zählt, der Test lässt die Zahl nicht wachsen. Wer aufräumt, sieht die Zahl
+fallen. Mehr braucht es nicht — nur Zeit und einen Bildschirm nach dem
+anderen.

@@ -840,3 +840,55 @@ und Rangüberschneidung. Beide Wege ergeben 47 086.
 Änderung dort würde ohnehin erst nach einem Neustart wirken. Beides — die
 Umstellung der Schätzgrundlage und die Korrektur der 47 008 — steht in
 `WARTESCHLANGE.md`.
+
+---
+
+## E-025 · 2026-08-26 · Eine Akzentfarbe — Regel sofort, Umbau später
+
+**Vorgabe (Phase 1.2).** Genau eine Akzentfarbe, reserviert für den
+Live-Bereich, sonst neutrale Grautöne.
+
+**Gewählt.** Die Regel gilt ab sofort für neu gebaute Bildschirme.
+`--akzent` (#4fbf8e) ist die eine Akzentfarbe. Der Bestand behält vorerst
+seine vier Bereichsfarben.
+
+**Alternative:** Alle 37 Bildschirme in derselben Nacht umstellen.
+
+**Warum nicht:** Ein Farbumbau über 37 Bildschirme ist keine Änderung,
+sondern eine Neugestaltung. Der Unterschied wäre morgen früh nicht mehr
+prüfbar — man könnte nicht auseinanderhalten, was Absicht war und was
+Kollateralschaden. Und die Regel selbst ist damit nicht schwächer: Jeder
+Bildschirm, der ab heute entsteht, hält sie ein, und das sind in dieser Nacht
+die wichtigsten.
+
+**Was stattdessen sofort passiert ist:** Der alte Live-Akzent `--felt-light`
+lag bei 3,92 zu 1 auf dunklem Grund und war damit als Text schlicht
+unzulässig. Der neue Akzent liegt bei 8,32 zu 1. Das war kein
+Geschmacksurteil, sondern ein Messfehler, der jetzt behoben ist.
+
+**Wo der Umbau steht:** `BACKLOG.md`, gemeinsam mit der Ablösung der drei
+Alt-Schriftstufen.
+
+---
+
+## E-026 · 2026-08-26 · Ergebniszahlen bekommen eigene Farben
+
+**Gefunden.** `--danger` (#e05c55) erreicht auf dem Kartengrund 4,73 zu 1.
+Für eine kleine Zustandsanzeige ist das zulässig, für eine Ergebniszahl
+verlangt Phase 1.2 sieben.
+
+**Gewählt.** Zwei neue Töne nur für die Ergebnisstufe: `--ergebnis-gut`
+(#6ec97d, 9,36 zu 1) und `--ergebnis-schlecht` (#f29b95, 8,98 zu 1).
+`--ok` und `--danger` bleiben unverändert für kleine Anzeigen.
+
+**Alternative:** `--ok` und `--danger` selbst aufhellen.
+
+**Warum nicht:** Dann wären alle bestehenden Zustandsanzeigen mit
+umgestellt — dieselbe Art unprüfbarer Nachtaktion wie oben. Zwei zusätzliche
+Töne für genau einen Zweck sind ehrlicher als eine Änderung, die überall
+durchschlägt.
+
+**Zusätzlich:** Das Urteil im Drill trägt jetzt ein Zeichen (✓ / ✕) vor dem
+Wort. Rund jeder zwölfte Mann sieht Rot und Grün nicht zuverlässig
+auseinander — ausgerechnet die beiden Farben, mit denen man „richtig" und
+„falsch" gern anzeigt.

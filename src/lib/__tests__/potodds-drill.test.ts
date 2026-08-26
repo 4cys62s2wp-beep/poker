@@ -30,6 +30,7 @@ import {
   GRENZFALL_PP,
   type DrillZustand,
 } from '../potodds/aufgabe';
+import { dekodiere, fingerabdruck, kodiere } from '../potodds/adresse';
 
 function lade(name: string): unknown {
   const pfad = `public/pokermath/${name}.json`;
@@ -414,5 +415,124 @@ describe('Der Herkunftsblock trägt alles, was die Anzeige verspricht', () => {
     expect(B1.herkunft.faelle_enumeriert).toBeNull();
     expect(B2.herkunft.faelle_enumeriert).toBeNull();
     expect(B2.herkunft.bibliothek).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Die Adresse einer Aufgabe
+// ---------------------------------------------------------------------------
+
+describe('Die Adresse trägt die Aufgabe', () => {
+  const abdruck = fingerabdruck(B1, B2);
+
+  it('kommt für jede Aufgabe unverändert zurück', () => {
+    for (const z of alleZustaende()) {
+      const gelesen = dekodiere(kodiere(z, abdruck));
+      expect(gelesen).not.toBeNull();
+      expect(gelesen!.zustand).toEqual(z);
+      expect(gelesen!.abdruck).toBe(abdruck);
+    }
+  });
+
+  it('führt bei gleicher Adresse zur gleichen Aufgabe', () => {
+    /* Das ist die Zusage an den, der einen Link bekommt. */
+    for (const z of alleZustaende()) {
+      const code = kodiere(z, abdruck);
+      const a = baueAufgabe(B1, B2, dekodiere(code)!.zustand);
+      const b = baueAufgabe(B1, B2, dekodiere(code)!.zustand);
+      expect(a.zugbild).toEqual(b.zugbild);
+      expect(a.pot).toBe(b.pot);
+      expect(a.einsatzBetrag).toBe(b.einsatzBetrag);
+      expect(loese(a)).toEqual(loese(b));
+    }
+  });
+
+  it('gibt jeder Aufgabe eine eigene Adresse', () => {
+    const alle = alleZustaende().map((z) => kodiere(z, abdruck));
+    expect(new Set(alle).size).toBe(alle.length);
+  });
+
+  it('bleibt kurz genug für eine Nachricht', () => {
+    for (const z of alleZustaende()) {
+      expect(kodiere(z, abdruck).length).toBeLessThanOrEqual(12);
+    }
+  });
+
+  it.each([
+    ['leer', ''],
+    ['zu wenige Teile', '1-2-3'],
+    ['zu viele Teile', '1-2-3-abcd-5'],
+    ['Abdruck zu kurz', '1-2-3-abc'],
+    ['Großbuchstaben', '1-2-3-ABCD'],
+    ['Sonderzeichen', '1-2-!-abcd'],
+    ['führende Null', '01-2-3-abcd'],
+    ['Komma', '1-2,5-3-abcd'],
+    ['negativ', '-1-2-3-abcd'],
+  ])('lehnt %s ab', (_was, code) => {
+    expect(dekodiere(code)).toBeNull();
+  });
+});
+
+describe('Der Fingerabdruck bemerkt genau die Änderungen, auf die es ankommt', () => {
+  it('bleibt gleich, wenn sich nur eine gerechnete Zahl ändert', () => {
+    /* Sonst würde jede neu gerechnete Nachkommastelle alle geteilten Links
+       ungültig machen, obwohl sie auf dieselbe Hand zeigen. */
+    const andere = structuredClone(B1);
+    andere.outs[0].turn = 0.5;
+    andere.herkunft.erzeugt_am = '2099-01-01T00:00:00+00:00';
+    expect(fingerabdruck(andere, B2)).toBe(fingerabdruck(B1, B2));
+  });
+
+  it('ändert sich, wenn ein Zugbild dazukommt', () => {
+    const andere = structuredClone(B1);
+    andere.zugbilder.unshift({ ...andere.zugbilder[0], hand: 'Qs Js' });
+    expect(fingerabdruck(andere, B2)).not.toBe(fingerabdruck(B1, B2));
+  });
+
+  it('ändert sich, wenn die Reihenfolge der Zugbilder wechselt', () => {
+    /* Der wichtigste Fall: Die Indizes zeigen dann auf andere Hände, und
+       ohne diesen Wechsel würde jeder alte Link stillschweigend etwas
+       anderes zeigen. */
+    const andere = structuredClone(B1);
+    andere.zugbilder.reverse();
+    expect(fingerabdruck(andere, B2)).not.toBe(fingerabdruck(B1, B2));
+  });
+
+  it('ändert sich, wenn eine Einsatzgröße dazukommt', () => {
+    const andere = structuredClone(B2);
+    andere.einsatzgroessen.push({ ...andere.einsatzgroessen[0], einsatz_als_bruch: '7/8' });
+    expect(fingerabdruck(B1, andere)).not.toBe(fingerabdruck(B1, B2));
+  });
+
+  it('hat immer dieselbe Länge', () => {
+    expect(fingerabdruck(B1, B2)).toMatch(/^[0-9a-z]{4}$/);
+  });
+});
+
+describe('Die Zahlen in BLOCKER.md stimmen', () => {
+  /* Regel K2, auf die Dokumentation angewandt: Wer über Daten schreibt, muss
+     es nachrechnen. B-007 wägt ab, ob sich alle Aufgaben als statische Seiten
+     vorab erzeugen lassen – und nennt dafür eine Anzahl. Ändern sich die
+     Daten, ändert sich die Anzahl, und dieser Test schlägt an, bevor in der
+     Datei eine falsche Zahl stehen bleibt. */
+  function zaehleZustaende(): number {
+    let summe = 0;
+    for (const e of B2.einsatzgroessen) {
+      const { nenner } = bruchTeile(e.einsatz_als_bruch);
+      const s = potFaktorSpanne(nenner);
+      summe += s.max - s.min + 1;
+    }
+    return summe * B1.zugbilder.length;
+  }
+
+  it('nennt die richtige Zahl möglicher Aufgaben', () => {
+    const text = readFileSync('BLOCKER.md', 'utf8');
+    expect(text).toContain(`Es gibt ${zaehleZustaende()} Zustände`);
+  });
+
+  it('nennt die richtige Zahl an Zugbild-Einsatz-Paaren', () => {
+    const text = readFileSync('BLOCKER.md', 'utf8');
+    const paare = B1.zugbilder.length * B2.einsatzgroessen.length;
+    expect(text).toContain(`| ${paare} Seiten.`);
   });
 });

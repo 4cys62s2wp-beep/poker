@@ -11,10 +11,9 @@ Projekts, unverändert übernommen.
 - **Hauptverzeichnis:** `/home/user/poker` auf `feature/poker-math` —
   **nicht anfassen.** Kein Branchwechsel dort, keine Schreibzugriffe auf
   `tools/poker-math/`, insbesondere nicht auf `output/`.
-- **Letzte Aktualisierung:** 2026-08-26, nach Aufgabe 3
-- **Stand in einem Satz:** Datenschnittstelle, Pot-Odds-Drill und die
-  Herkunftsanzeige stehen und sind geprüft; offen sind nur noch die
-  teilbaren Adressen.
+- **Letzte Aktualisierung:** 2026-08-26, nach Aufgabe 4
+- **Stand in einem Satz:** Alle vier Aufgaben sind fertig, geprüft und
+  gepusht. Offen ist nur noch, was ein Mensch entscheiden muss.
 
 ---
 
@@ -25,7 +24,7 @@ Projekts, unverändert übernommen.
 | 1 | Datenschnittstelle: schlankes, direkt ladbares Format aus B1–B3, reproduzierbar erzeugt, beim Laden **laut** validiert | ✅ fertig |
 | 2 | Pot-Odds-Trainer: der erste echte Bildschirm | ✅ fertig |
 | 3 | „Warum diese Zahl": Herkunft neben jeder Zahl, aufklappbar | ✅ fertig |
-| 4 | Teilbare Ergebnisse: Zustand in der Adresse, Vorschaubild-Metadaten | ⬜ offen |
+| 4 | Teilbare Ergebnisse: Zustand in der Adresse, Vorschaubild-Metadaten | ✅ fertig |
 
 Reihenfolge ist bindend: eine Aufgabe vollständig abschließen und committen,
 bevor die nächste beginnt.
@@ -232,23 +231,79 @@ gerechnete Zahl zeigt, kann sie verwenden; bisher tut es nur der Drill.
 
 ---
 
+## Aufgabe 4 — was jetzt steht
+
+**Die Adresse:** `src/lib/potodds/adresse.ts`, Route `/lernen/drill/:code`.
+
+Jede Situation hat eine eigene Adresse, und in der Adresse steht die Situation
+vollständig drin:
+
+```
+#/lernen/drill/2-1-5-npxu
+                │ │ │  └── Fingerabdruck der Daten
+                │ │ └───── Potfaktor
+                │ └─────── Index der Einsatzgröße in b2_potodds
+                └───────── Index des Zugbilds in b1_outs
+```
+
+Drei Zahlen zur Basis 36 und ein Fingerabdruck. Keine Datenbank, kein Server,
+nichts, was ablaufen kann. Absichtlich lesbar: Wer wissen will, was in der
+Adresse steht, kann es nachschlagen — das passt zu einer App, deren ganzer
+Punkt ist, dass man ihre Zahlen nachprüfen kann.
+
+**Die Adresse führt, nicht der Bildschirm.** „Nächste Aufgabe" setzt eine
+neue Adresse; was daraufhin erscheint, liest der Bildschirm wieder aus ihr
+heraus. Das ist ein Umweg, und er ist der Grund, warum jeder Link
+zuverlässig dieselbe Situation zeigt: Es gibt keinen zweiten Weg, auf dem
+eine Aufgabe entstehen könnte. Auch die allererste Aufgabe bekommt sofort
+ihre Adresse, damit sie ohne Umweg teilbar ist.
+
+**Der Fingerabdruck ist der eigentliche Kern.** Indizes sind nur so gut wie
+die Liste, in die sie zeigen. Käme ein neuntes Zugbild an dritter Stelle
+dazu, zeigte jeder alte Link ab dort auf eine andere Hand — und niemand
+würde es merken. Deshalb steht in der Adresse ein Fingerabdruck über **genau
+das, worauf die Indizes zeigen**: die Hände und Flops der Zugbilder, die
+Brüche der Einsatzgrößen. Vier Tests halten das fest:
+
+| Was sich ändert | Was mit alten Links passiert |
+|-----------------|------------------------------|
+| eine gerechnete Zahl, ein neuer Zeitstempel | bleiben gültig |
+| ein Zugbild kommt dazu | werden abgelehnt |
+| die Reihenfolge der Zugbilder wechselt | werden abgelehnt |
+| eine Einsatzgröße kommt dazu | werden abgelehnt |
+
+Abgelehnt heißt: ein Hinweis, kein stiller Austausch der Hand. Dazu ein
+Knopf, der eine neue Aufgabe holt.
+
+**Teilen:** ein Knopf unten rechts in der Bedienleiste. Wo das Gerät es kann,
+öffnet er den Teilen-Dialog des Systems; sonst kopiert er den Link und sagt
+es. Geprüft im Browser: Der kopierte Link öffnet in einer frischen Sitzung
+dieselbe Aufgabe.
+
+**Vorschaukarte.** Ein geteilter Link erscheint in WhatsApp und Discord als
+Karte — mit Titel, Beschreibung, Bild (1200 × 630), Sprache und
+Bildbeschreibung. Eine Karte, die *die geteilte Aufgabe* zeigt, gibt es
+nicht: Das Fragment einer Adresse wird beim Abruf nicht mitgeschickt, ein
+Vorschaudienst sieht also immer nur `index.html`. Das ist kein Versäumnis,
+sondern das Protokoll. Die Wege dahin und ihr Preis stehen in **B-007**.
+
+---
+
 ## Was als Nächstes zu tun ist
 
-**Aufgabe 4 — teilbare Ergebnisse.** Jede Situation bekommt eine eigene
-Adresse, die den Zustand vollständig kodiert; wer sie öffnet, sieht dieselbe
-Aufgabe. Keine Datenbank, kein Server — der Zustand lebt in der Adresse.
-Dazu Vorschaubild-Angaben, damit ein geteilter Link in WhatsApp und Discord
-als Karte erscheint.
+Alle vier Aufgaben sind fertig, committet und gepusht. Offen ist nur, was ein
+Mensch entscheiden muss — siehe unten und `BLOCKER.md`.
 
-Die Grundlage liegt schon: `DrillZustand` sind drei kleine Zahlen
-(`zugbild`, `einsatz`, `potFaktor`), und `baueAufgabe` wirft, wenn ein
-Zustand nicht zu den Daten passt. Zu klären ist, was passiert, wenn sich die
-Daten ändern und ein alter Link auf einen anderen Index zeigt — ein
-Fingerabdruck der Daten in der Adresse wäre der saubere Weg.
+Wer hier weiterarbeitet, hat drei naheliegende Fäden:
 
-Offen und in `BLOCKER.md` festgehalten: B-006 fragt, ob der
-Willkommensdialog übersprungen werden darf, wenn jemand über einen geteilten
-Link direkt auf einer Aufgabe landet.
+1. **B-001 auflösen:** Der B4-Lauf muss neu gestartet werden, und vorher
+   gehört der Fehler in `--sichern` behoben. Das geht nur im
+   Hauptverzeichnis, nicht hier.
+2. **Die Herkunftsanzeige ausweiten:** `Herkunft.tsx` ist nicht an den Drill
+   gebunden. Jede andere Seite, die eine gerechnete Zahl zeigt, könnte sie
+   verwenden — bisher tut es nur der Drill.
+3. **B-005 entscheiden:** Auf Englisch stehen deutsche Fachbegriffe in den
+   Daten. Sauber wäre, dass der Rechengenerator sie zweisprachig ausgibt.
 
 ---
 

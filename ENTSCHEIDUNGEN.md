@@ -605,3 +605,58 @@ Die App behauptet neben jeder Zahl, wo sie steht. Ein Test löst diesen Pfad
 in der echten Datei auf und vergleicht den Wert dort mit dem angezeigten —
 für alle 64 Aufgaben und alle fünf Zahlen. Ohne diesen Test wäre die
 Herkunftsangabe eine Zierde: Sie sähe genauso aus, wenn sie falsch wäre.
+
+---
+
+## E-019 · 2026-08-26 · Teilbare Aufgaben
+
+### Der Zustand steht lesbar in der Adresse
+
+**Gewählt:** `#/lernen/drill/2-1-5-npxu` — drei Zahlen zur Basis 36 und ein
+Fingerabdruck, durch Bindestriche getrennt.
+
+**Alternative:** Die drei Werte in eine Zahl packen und als eine kurze
+Zeichenfolge ausgeben. Das wäre zwei Zeichen kürzer.
+
+**Warum nicht:** Feste Feldbreiten brechen, sobald ein neuntes Zugbild
+dazukommt — und zwar still, weil die alte Adresse dann eine gültige neue
+ergibt. Getrennte Stellen haben diese Grenze nicht. Dass man die Adresse
+lesen kann, ist außerdem kein Nachteil in einer App, deren ganzer Punkt die
+Nachprüfbarkeit ist.
+
+### Der Fingerabdruck geht über die Adressierung, nicht über die Datei
+
+**Gewählt:** Der Abdruck läuft über die Hände und Flops der Zugbilder und
+über die Brüche der Einsatzgrößen — also über genau das, worauf die Indizes
+zeigen.
+
+**Alternative 1:** über die ganze Datei. Dann macht jede neu gerechnete
+Nachkommastelle alle geteilten Links ungültig, obwohl sie auf dieselbe Hand
+zeigen.
+
+**Alternative 2:** gar kein Abdruck. Dann zeigt ein alter Link nach einer
+Umsortierung stillschweigend eine andere Hand — genau der Fehler, gegen den
+dieses Projekt gebaut ist.
+
+Vier Testfälle halten die Grenze fest: gerechnete Zahl geändert → Links
+bleiben gültig; Zugbild ergänzt, Reihenfolge gedreht oder Einsatzgröße
+ergänzt → Links werden abgelehnt.
+
+### Die Adresse führt, nicht der Bildschirm
+
+**Gewählt:** „Nächste Aufgabe" setzt eine neue Adresse und zeigt nichts
+selbst an. Was erscheint, liest der Bildschirm wieder aus der Adresse.
+
+**Warum der Umweg:** Es gibt damit genau einen Weg, auf dem eine Aufgabe
+entsteht. Ein zweiter Weg — Aufgabe direkt setzen, Adresse hinterherziehen —
+wäre die Stelle, an der beide irgendwann auseinanderlaufen, und dann zeigt
+ein geteilter Link etwas anderes als der Bildschirm, von dem er stammt.
+
+### Eine Vorschaukarte je Aufgabe gibt es nicht
+
+Nicht aus Nachlässigkeit: Das Fragment einer Adresse wird beim Abruf nicht an
+den Server geschickt, ein Vorschaudienst sieht also immer nur `index.html`.
+Auch ohne Fragment wäre es so, weil eine Einzelseiten-App für jede Adresse
+dieselbe Datei ausliefert. Die drei Wege dahin und ihr Preis stehen in
+`BLOCKER.md`, B-007; entscheiden muss das ein Mensch, weil zwei davon dem
+Auftrag widersprechen („kein Server").

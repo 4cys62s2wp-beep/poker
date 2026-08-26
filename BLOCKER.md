@@ -141,3 +141,37 @@ Sonderregel, die niemand mehr versteht.
 wenn jemand die App über einen geteilten Link direkt auf einer Aufgabe öffnet
 (Aufgabe 4). Dort wäre er besonders störend: Man will die geteilte Aufgabe
 sehen, nicht einen Namen eintragen.
+
+---
+
+## B-007 · Eine Vorschaukarte je Aufgabe braucht einen Server
+
+**Was gefordert war.** Ein geteilter Link soll in WhatsApp und Discord als
+Karte erscheinen.
+
+**Was geht.** Er tut es. Jeder geteilte Link zeigt die PokerMentor-Karte:
+Titel, Beschreibung, Bild (`public/og.png`, 1200 × 630), Sprache und
+Bildbeschreibung stehen in `index.html`.
+
+**Was nicht geht.** Eine Karte, die *die geteilte Aufgabe* zeigt — also „Ah 7h
+auf Kh 4h 2c, er setzt Potgröße". Der Grund ist kein Versäumnis, sondern das
+Protokoll: Die Aufgabe steht im Fragment der Adresse
+(`#/lernen/drill/2-1-5-npxu`), und ein Fragment wird beim Abruf **nicht an
+den Server geschickt**. Ein Vorschaudienst sieht also immer nur `index.html`
+und kann nicht wissen, welche Aufgabe gemeint war.
+
+Ohne Fragment wäre es genauso: Bei einer Einzelseiten-App liefert der Server
+für jede Adresse dieselbe `index.html`. Eine eigene Karte je Aufgabe
+verlangt, dass **beim Abruf** jemand die Adresse auswertet.
+
+**Die Wege dahin, mit Preis.**
+
+| Weg | Was er kostet |
+|-----|---------------|
+| Eine kleine Funktion beim Hoster (Netlify/Vercel/Cloudflare), die für Anfragen von Vorschaudiensten eigene Metadaten ausliefert | Ein Server. Der Auftrag sagt ausdrücklich: keiner. |
+| Alle Aufgaben vorab als statische Seiten erzeugen | Es gibt 2864 Zustände (nachgezählt, nicht geschätzt: `zaehleZustaende` im Test). Technisch machbar, aber eine absurde Menge Seiten für einen Vorschautext. |
+| Nur die Zugbild-Einsatz-Paare vorab erzeugen, ohne Potgröße | 64 Seiten. Die Karte zeigte die Hand und die Einsatzgröße, nicht den genauen Topf. Braucht `BrowserRouter` statt `HashRouter` — eine Änderung an der ganzen App. |
+
+**Was zu entscheiden ist.** Ob die eine Karte für alle Aufgaben reicht (dann
+ist nichts zu tun) oder ob die 64 vorab erzeugten Seiten den Umbau auf
+`BrowserRouter` wert sind.

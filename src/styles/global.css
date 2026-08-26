@@ -1794,9 +1794,6 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .drill-stand {
-  min-height: 1.4em;
-  padding-top: var(--sp-2);
-  text-align: center;
   font-size: var(--fs-small);
   font-variant-numeric: tabular-nums;
   color: var(--text-faint);
@@ -1988,4 +1985,34 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 /* Eine fehlende Angabe wird nicht versteckt, sondern markiert. */
 .herkunft-fehlt {
   color: var(--gold) !important;
+}
+
+/* Der Fuß der Bedienleiste: Punktestand links, Teilen rechts.
+   Beides liegt im unteren Drittel und ist mit dem Daumen erreichbar. */
+.drill-fuss {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding-top: var(--sp-2);
+  min-height: var(--touch-min);
+}
+
+.drill-teilen {
+  min-height: var(--touch-min);
+  padding: 0 var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.drill-teilen:active {
+  background: var(--bg-card-hover);
+  color: var(--text);
 }

@@ -83,6 +83,9 @@ export function App() {
               Berührungen reichen (Hub → Lernen → Drill). Über den
               Trainer-Hub wären es drei. */}
           <Route path="/lernen/drill" element={<PotOddsDrill />} />
+          {/* Die Aufgabe steht in der Adresse. Wer den Link öffnet,
+              sieht dieselbe Situation – ohne Datenbank, ohne Server. */}
+          <Route path="/lernen/drill/:code" element={<PotOddsDrill />} />
           <Route path="/lernen/trainer" element={<TrainerHub />} />
           <Route path="/lernen/trainer/szenario" element={<ScenarioTrainer />} />
           <Route path="/lernen/trainer/pushfold" element={<PushFoldTrainer />} />

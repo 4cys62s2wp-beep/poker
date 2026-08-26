@@ -46,6 +46,20 @@ export const STR = defineStrings(
     next: 'Nächste Aufgabe',
     score: (richtig: number, gesamt: number) => `${richtig} von ${gesamt}`,
 
+    share: 'Teilen',
+    shareCopied: 'Link kopiert',
+    shareTitle: 'Pot-Odds-Aufgabe',
+
+    addressTitle: 'Diese Adresse führt nicht mehr zu dieser Aufgabe',
+    addressUnreadable:
+      'Der Link ist unvollständig oder verändert. In der Adresse steht die '
+      + 'Situation selbst — fehlt ein Zeichen, fehlt die Aufgabe.',
+    addressStale:
+      'Der Link stammt aus einer Zeit, in der die Aufgaben anders sortiert '
+      + 'waren. Die App zeigt lieber gar nichts als versehentlich eine andere '
+      + 'Hand.',
+    addressNew: 'Neue Aufgabe',
+
     loading: 'Daten werden geladen …',
     errorTitle: 'Die gerechneten Daten fehlen',
     errorHint: 'Im Projekt neu erzeugen: npm run daten',
@@ -84,6 +98,19 @@ export const STR = defineStrings(
 
     next: 'Next hand',
     score: (richtig: number, gesamt: number) => `${richtig} of ${gesamt}`,
+
+    share: 'Share',
+    shareCopied: 'Link copied',
+    shareTitle: 'Pot odds spot',
+
+    addressTitle: 'This address no longer leads to this spot',
+    addressUnreadable:
+      'The link is incomplete or altered. The address holds the situation '
+      + 'itself — a missing character means a missing spot.',
+    addressStale:
+      'The link is from a time when the spots were ordered differently. The '
+      + 'app would rather show nothing than accidentally show a different hand.',
+    addressNew: 'New spot',
 
     loading: 'Loading the computed data …',
     errorTitle: 'The computed data is missing',

@@ -25,9 +25,18 @@
 
    Und: Neben jeder gerechneten Zahl steht ihr Herkunftszeichen. Nicht neben
    Topf und Einsatz — die sind der Maßstab der Aufgabe und stehen in keiner
-   Datei. Neben allem, was aus B1 oder B2 kommt, steht es. */
+   Datei. Neben allem, was aus B1 oder B2 kommt, steht es.
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+   Die Adresse führt, nicht der Bildschirm
+   ---------------------------------------
+   Welche Aufgabe zu sehen ist, entscheidet allein die Adresse. „Nächste
+   Aufgabe" setzt eine neue Adresse; was daraufhin angezeigt wird, liest der
+   Bildschirm wieder aus ihr heraus. Das ist ein Umweg — und er ist der
+   Grund, warum jeder Link zuverlässig dieselbe Situation zeigt: Es gibt
+   keinen zweiten Weg, auf dem eine Aufgabe entstehen könnte. */
+
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BackLink } from '../../components/ui';
 import { CardsRow } from '../../components/PlayingCard';
 import { Zahl } from '../../components/Herkunft';
@@ -45,19 +54,27 @@ import {
   type Aufgabe,
   type DrillZustand,
 } from '../../lib/potodds/aufgabe';
+import { KOPIERT_MS, dekodiere, fingerabdruck, kodiere } from '../../lib/potodds/adresse';
 
 interface Daten {
   b1: B1Outs;
   b2: B2PotOdds;
 }
 
+/** Warum eine Adresse nicht zu einer Aufgabe führt. */
+type Adressfehler = 'unlesbar' | 'veraltet';
+
 export function PotOddsDrill() {
   const { lang } = useLang();
   const L = STR[lang];
+  const { code } = useParams<{ code?: string }>();
+  const navigate = useNavigate();
 
   const [daten, setDaten] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
+  const [adressfehler, setAdressfehler] = useState<Adressfehler | null>(null);
   const [zustand, setZustand] = useState<DrillZustand | null>(null);
+  const [kopiert, setKopiert] = useState(false);
   /** Die Antwort des Nutzers, oder `null`, solange er nicht geantwortet hat. */
   const [antwort, setAntwort] = useState<boolean | null>(null);
   /** Ein Eintrag je beantworteter Aufgabe: richtig oder nicht. Nur in dieser
@@ -68,13 +85,7 @@ export function PotOddsDrill() {
   useEffect(() => {
     let lebt = true;
     Promise.all([ladeB1(), ladeB2()])
-      .then(([b1, b2]) => {
-        if (!lebt) return;
-        setDaten({ b1, b2 });
-        const gezogen = ziehZustand(b1, b2);
-        letztesZugbild.current = gezogen.zugbild;
-        setZustand(gezogen);
-      })
+      .then(([b1, b2]) => { if (lebt) setDaten({ b1, b2 }); })
       .catch((f: unknown) => {
         /* Sichtbar scheitern. Ein leerer Bildschirm ohne Grund wäre die
            schlechteste aller Möglichkeiten. */
@@ -82,6 +93,43 @@ export function PotOddsDrill() {
       });
     return () => { lebt = false; };
   }, []);
+
+  /* Setzt eine neue Adresse. Angezeigt wird erst, was der Effekt darunter
+     wieder daraus liest – ein Umweg mit Absicht (siehe Kopf der Datei). */
+  const neueAufgabe = useCallback(() => {
+    if (!daten) return;
+    const gezogen = ziehZustand(daten.b1, daten.b2, Math.random, letztesZugbild.current);
+    navigate(`/lernen/drill/${kodiere(gezogen, fingerabdruck(daten.b1, daten.b2))}`,
+      { replace: true });
+  }, [daten, navigate]);
+
+  /* Die Adresse lesen. Ohne Code: eine ziehen und die Adresse setzen, damit
+     auch die allererste Aufgabe teilbar ist. */
+  useEffect(() => {
+    if (!daten) return;
+    if (!code) { neueAufgabe(); return; }
+
+    const gelesen = dekodiere(code);
+    if (!gelesen) { setAdressfehler('unlesbar'); return; }
+    if (gelesen.abdruck !== fingerabdruck(daten.b1, daten.b2)) {
+      setAdressfehler('veraltet');
+      return;
+    }
+    try {
+      /* Probeweise bauen: Eine Adresse kann formal richtig sein und trotzdem
+         auf einen Index zeigen, den es nicht gibt. Lieber hier abfangen als
+         dem Nutzer eine technische Fehlermeldung zeigen. */
+      baueAufgabe(daten.b1, daten.b2, gelesen.zustand);
+    } catch {
+      setAdressfehler('veraltet');
+      return;
+    }
+    letztesZugbild.current = gelesen.zustand.zugbild;
+    setAdressfehler(null);
+    setAntwort(null);
+    setKopiert(false);
+    setZustand(gelesen.zustand);
+  }, [daten, code, neueAufgabe]);
 
   const gebaut = useMemo<{ aufgabe: Aufgabe | null; fehler: string | null }>(() => {
     if (!daten || !zustand) return { aufgabe: null, fehler: null };
@@ -101,12 +149,22 @@ export function PotOddsDrill() {
     setVerlauf((v) => [...v, nutzerMeintLohnt === aufloesung.lohnt]);
   }
 
-  function weiter() {
-    if (!daten) return;
-    const gezogen = ziehZustand(daten.b1, daten.b2, Math.random, letztesZugbild.current);
-    letztesZugbild.current = gezogen.zugbild;
-    setAntwort(null);
-    setZustand(gezogen);
+  /* Der Link ist die Adresse, in der die Aufgabe steht – mehr braucht es
+     nicht. Teilen, wenn das Gerät es kann; sonst in die Zwischenablage. */
+  async function teilen() {
+    const url = window.location.href;
+    try {
+      if (typeof navigator.share === 'function') {
+        await navigator.share({ title: L.shareTitle, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setKopiert(true);
+      window.setTimeout(() => setKopiert(false), KOPIERT_MS);
+    } catch {
+      /* Abgebrochen oder nicht erlaubt – dann eben nicht. Ein Fehlerdialog
+         für einen nicht geteilten Link wäre lauter als der Vorgang wert. */
+    }
   }
 
   const schlimm = fehler ?? gebaut.fehler;
@@ -118,6 +176,28 @@ export function PotOddsDrill() {
           <div className="drill-fehler-titel">{L.errorTitle}</div>
           <p className="small" style={{ marginTop: 'var(--sp-2)' }}>{schlimm}</p>
           <p className="small muted">{L.errorHint}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (adressfehler) {
+    return (
+      <div>
+        <BackLink to="/lernen" label={L.back} />
+        <div className="card">
+          <div className="drill-fehler-titel">{L.addressTitle}</div>
+          <p className="small" style={{ marginTop: 'var(--sp-2)' }}>
+            {adressfehler === 'unlesbar' ? L.addressUnreadable : L.addressStale}
+          </p>
+          <button
+            type="button"
+            className="drill-knopf weiter"
+            style={{ marginTop: 'var(--sp-4)' }}
+            onClick={() => { setAdressfehler(null); navigate('/lernen/drill', { replace: true }); }}
+          >
+            {L.addressNew}
+          </button>
         </div>
       </div>
     );
@@ -262,12 +342,17 @@ export function PotOddsDrill() {
               </button>
             </div>
           ) : (
-            <button type="button" className="drill-knopf weiter" onClick={weiter}>
+            <button type="button" className="drill-knopf weiter" onClick={neueAufgabe}>
               {L.next}
             </button>
           )}
-          <div className="drill-stand">
-            {verlauf.length ? L.score(treffer, verlauf.length) : null}
+          <div className="drill-fuss">
+            <span className="drill-stand">
+              {verlauf.length ? L.score(treffer, verlauf.length) : null}
+            </span>
+            <button type="button" className="drill-teilen" onClick={teilen}>
+              {kopiert ? L.shareCopied : L.share}
+            </button>
           </div>
         </div>
       </div>

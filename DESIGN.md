@@ -158,6 +158,31 @@ die es nicht gibt, und kostet den Blick, der auf der Zahl liegen sollte.
 
 ---
 
+### Regel 4.3 — Die Rückmeldung wird an einer Stelle ausgelöst
+
+Ein Zuhörer an der Wurzel der App (`horcheAufBedienung` in `App.tsx`) stößt
+die Rückmeldung bei jedem Klick auf eine Bedienfläche an. Kein Bildschirm
+ruft sie selbst auf; ein Test prüft, dass keiner es tut.
+
+**Begründung.** In jeden Bildschirm einzeln geschrieben, fehlt sie beim
+nächsten neuen Knopf — und niemandem fällt es auf. Eine Regel, die sich nicht
+selbst durchsetzt, gilt nach drei Monaten nur noch da, wo jemand daran
+gedacht hat.
+
+Was **nicht** als Bestätigung zählt: ein Link mitten im Fließtext (er führt
+woandershin, er bestätigt nichts), das Tippen in ein Textfeld (das ist
+Schreiben), und ein abgeschaltetes Element (dort passiert gerade nichts, und
+eine Rückmeldung auf nichts ist eine Lüge über den Zustand).
+
+Zwei Stöße im selben Griff werden zu einem: Fünfzig Millisekunden sind kürzer
+als jeder bewusste zweite Tipp und länger als jede Kette aus einem Griff. Der
+Umschlag (`umschlag`) wird nicht entprellt — er kommt aus dem Ablauf der Zeit
+und nicht aus einem Finger.
+
+**Was diese Regel nicht kann.** `navigator.vibrate` gibt es auf iOS nicht.
+Auf einem iPhone bleibt die App stumm, und daran ändert kein Code etwas. Das
+steht hier, damit niemand den fehlenden Stoß für einen Fehler hält.
+
 ## 5. Umsetzung: eine Stelle, eine Sperrklinke
 
 Die Werte stehen in `src/styles/global.css`. Ein Bildschirm, der eine Zahl

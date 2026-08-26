@@ -40,7 +40,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { BackLink } from '../../components/ui';
 import { CardsRow } from '../../components/PlayingCard';
 import { Zahl } from '../../components/Herkunft';
-import { bestaetigt } from '../../lib/design/haptik';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/potoddsdrill';
 import { ladeB1, ladeB2 } from '../../lib/pokermath/laden';
@@ -148,7 +147,7 @@ export function PotOddsDrill() {
     if (antwort !== null || !aufloesung) return;
     /* Der Stoß in der Hand ist am Tisch die einzige Rückmeldung, die
        ankommt — man schaut nicht hin, und laut ist es auch. */
-    bestaetigt();
+   
     setAntwort(nutzerMeintLohnt);
     setVerlauf((v) => [...v, nutzerMeintLohnt === aufloesung.lohnt]);
   }

@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { Layout } from './components/Layout';
+import { horcheAufBedienung } from './lib/design/haptik';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Onboarding } from './components/Onboarding';
 import { PaywallModal } from './components/pro/PaywallModal';
@@ -80,6 +82,12 @@ function istGeteilteAufgabe(pfad: string): boolean {
 
 export function App() {
   const ort = useLocation();
+
+  /* Die haptische Rückmeldung wird an einer Stelle für die ganze App
+     angemeldet. In jeden Bildschirm einzeln geschrieben, fehlte sie beim
+     nächsten neuen Knopf, und niemandem fiele es auf. */
+  useEffect(() => horcheAufBedienung(document), []);
+
   return (
     <ErrorBoundary>
       {!istGeteilteAufgabe(ort.pathname) && <Onboarding />}

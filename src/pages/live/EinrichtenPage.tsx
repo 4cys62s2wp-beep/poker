@@ -16,7 +16,6 @@ import { useNavigate } from 'react-router-dom';
 import { BackLink } from '../../components/ui';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/live';
-import { bestaetigt } from '../../lib/design/haptik';
 import { VOREINSTELLUNG, baueStruktur, type Tempo } from '../../lib/live/blinds';
 import { verteile, type Sorte } from '../../lib/live/verteilung';
 import { speichereLaufende } from '../../lib/session/laufend';
@@ -71,7 +70,7 @@ export function EinrichtenPage() {
 
   function starte() {
     if (!bereit || !plan || !struktur) return;
-    bestaetigt();
+   
     speichereLaufende({
       begonnen: Date.now(),
       spieler: namen
@@ -194,7 +193,7 @@ export function EinrichtenPage() {
                 key={d}
                 type="button"
                 aria-pressed={dauer === d}
-                onClick={() => { setDauer(d); bestaetigt(); }}
+                onClick={() => { setDauer(d); }}
               >
                 {L.dauerMinuten(d)}
               </button>
@@ -210,7 +209,7 @@ export function EinrichtenPage() {
                 key={t}
                 type="button"
                 aria-pressed={tempo === t && !gleich}
-                onClick={() => { setTempo(t); setGleich(false); bestaetigt(); }}
+                onClick={() => { setTempo(t); setGleich(false); }}
               >
                 {t === 'gemuetlich' ? L.tempoGemuetlich
                   : t === 'normal' ? L.tempoNormal : L.tempoSchnell}
@@ -223,7 +222,7 @@ export function EinrichtenPage() {
             type="button"
             className="einrichten-knopf"
             aria-pressed={gleich}
-            onClick={() => { setGleich(!gleich); bestaetigt(); }}
+            onClick={() => { setGleich(!gleich); }}
           >
             {L.gleichbleibend}
           </button>

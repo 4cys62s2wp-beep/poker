@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-26T20:55:21.240Z",
+  "geprueft_am": "2026-08-26T21:12:37.067Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -125,7 +125,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 878,
+        "dauer_ms": 885,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,

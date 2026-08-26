@@ -31,7 +31,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/live';
-import { bestaetigt, umschlag } from '../../lib/design/haptik';
+import { umschlag } from '../../lib/design/haptik';
 import { gleichIstEsSoweit, haltWach, stufeGewechselt } from '../../lib/live/signal';
 import { anhalten, fortsetzen, standDerUhr } from '../../lib/live/uhr';
 import { alsUhr } from '../../lib/session/dauer';
@@ -109,7 +109,6 @@ export function TischPage() {
   letzteStufe.current = stufeIndex;
 
   function pauseUmschalten() {
-    bestaetigt();
     if (session === null || session === 'laedt') return;
     const jetzt = Date.now();
     schreibe(session.laeuft_seit === null
@@ -131,7 +130,6 @@ export function TischPage() {
   /** Ein Ereignis am Tisch — ein Griff, keine Eingabemaske. */
   function aendere(i: number, wie: (s: LaufendeSession['spieler'][number]) => LaufendeSession['spieler'][number]) {
     if (session === null || session === 'laedt') return;
-    bestaetigt();
     schreibe({ ...session, spieler: session.spieler.map((p, j) => (j === i ? wie(p) : p)) });
   }
 
@@ -165,10 +163,10 @@ export function TischPage() {
         <button type="button" className="tisch-knopf haupt" onClick={pauseUmschalten}>
           {laeuft ? L.pause : L.weiter}
         </button>
-        <button type="button" className="tisch-knopf" onClick={() => { bestaetigt(); setStaende(true); }}>
+        <button type="button" className="tisch-knopf" onClick={() => setStaende(true)}>
           {L.staende}
         </button>
-        <button type="button" className="tisch-knopf" onClick={() => { bestaetigt(); setFrage(true); }}>
+        <button type="button" className="tisch-knopf" onClick={() => setFrage(true)}>
           {L.verlassen}
         </button>
       </div>
@@ -219,7 +217,7 @@ export function TischPage() {
             ))}
 
             <span className="hinweis">{L.nochDabei(nochDabei(session).length)}</span>
-            <button type="button" className="tisch-knopf haupt" onClick={() => { bestaetigt(); setStaende(false); }}>
+            <button type="button" className="tisch-knopf haupt" onClick={() => setStaende(false)}>
               {L.fertig}
             </button>
           </div>

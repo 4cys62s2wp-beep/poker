@@ -1487,3 +1487,308 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
     color: var(--gold-bright);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Pot-Odds-Drill
+   ═══════════════════════════════════════════════════════════════════════
+
+   Die Geometrie ist keine Geschmacksfrage, sie steht im Auftrag:
+
+   - Die Ergebniszahl ist das größte Element und liegt in der oberen Hälfte.
+   - Alles andere ist deutlich kleiner.
+   - Alles Tippbare liegt im unteren Drittel, damit ein Daumen es erreicht.
+   - Zwischen Antwort und Auflösung bewegt sich nichts.
+
+   Deshalb hat der Bildschirm drei Zonen mit festem Verhältnis statt eines
+   Textflusses: oben die Zahl, in der Mitte die Lage, unten die Bedienung.
+   ------------------------------------------------------------------- */
+
+.drill {
+  display: flex;
+  flex-direction: column;
+  /* Hoch genug, dass die Bedienung nach unten rutscht — aber die Garantie,
+     dass sie erreichbar bleibt, liefert nicht diese Zahl, sondern das
+     `sticky` weiter unten. Eine Rechnung aus Kopfleiste, Zurück-Link und
+     Navigationshöhe wäre bei der ersten Änderung an einem der drei falsch,
+     und zwar unbemerkt: Der Knopf läge dann hinter der Navigation.
+     `svh` statt `vh`, weil auf dem Handy die Browserleiste beim Scrollen
+     schrumpft und `vh` dabei springt.
+     78 und nicht 70: Bei 70 blieb der Fragebildschirm exakt so hoch wie das
+     Fenster, das `sticky` griff dort also nicht — und die Knöpfe standen
+     43 px höher als der Weiter-Knopf danach. Zwei Flächen, die sich um
+     17 px überlappen, laden zum versehentlichen Doppeltipp ein. Jetzt greift
+     das `sticky` in beiden Zuständen, und beide sitzen auf derselben Linie. */
+  min-height: 78svh;
+  max-width: 560px;
+
+  /* Höhe der schwebenden Bedienleiste: Knopf plus Punktestand plus Polster.
+     Die Auflösung hält sich unten so viel Platz frei — sonst verschwindet
+     ihr letzter Satz dauerhaft unter der Leiste, und zwar mitten im Wort. */
+  --drill-bedienung-h: 128px;
+}
+
+/* ── Zone 1: obere Hälfte ─────────────────────────────────────────────── */
+
+.drill-oben {
+  flex: 0 0 auto;
+  /* Die Zone beginnt oben am Bildschirm; die Zahl steht mittig darin und
+     landet damit sicher in der oberen Hälfte. Die Höhe ist in beiden
+     Zuständen dieselbe — deshalb rutscht beim Antworten nichts nach oben
+     oder unten, obwohl der Inhalt wechselt. Knapper als ein Drittel, damit
+     unter der Lage noch Platz für die Begründung bleibt. */
+  min-height: 28svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--sp-2);
+}
+
+.drill-frage {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-medium);
+  color: var(--text-dim);
+}
+
+.drill-zugbild {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  color: var(--text);
+}
+
+.drill-outs {
+  font-size: var(--fs-body);
+  color: var(--gold);
+  font-weight: var(--fw-medium);
+}
+
+/* Die Ergebniszahl.
+   Fett, nicht dünn: Der Auftrag verlangt es ausdrücklich, und er hat recht –
+   ein dünner Schnitt in dieser Größe wirkt auf einem Handy bei Sonnenlicht
+   wie ein Wasserzeichen. `--fs-stat` ist bewusst leicht gesetzt und deshalb
+   hier nicht verwendet.
+   Keine `transition`: Zwischen Antwort und Auflösung darf sich nichts
+   bewegen. Wer gerade eine Entscheidung getroffen hat, soll die Zahl lesen,
+   nicht eine Animation abwarten. */
+.drill-zahl {
+  font-size: clamp(64px, 20vw, 116px);
+  font-weight: var(--fw-bold);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  transition: none;
+  animation: none;
+}
+
+.drill-zahl.gut { color: var(--ok); }
+.drill-zahl.schlecht { color: var(--danger); }
+
+.drill-zahl-label {
+  font-size: var(--fs-body);
+  color: var(--text-dim);
+  max-width: 26ch;
+}
+
+.drill-gegen {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+}
+
+.drill-gegen-label {
+  font-size: var(--fs-small);
+  color: var(--text-faint);
+}
+
+.drill-gegen-wert {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-bright);
+}
+
+/* ── Zone 2: die Lage ─────────────────────────────────────────────────── */
+
+.drill-mitte {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4) 0;
+  min-width: 0;
+}
+
+.drill-lage {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-3) var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.drill-karten {
+  display: flex;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+}
+
+.drill-karten-label,
+.drill-betrag-label {
+  display: block;
+  font-size: var(--fs-tiny);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: var(--sp-1);
+}
+
+.drill-betraege {
+  display: flex;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+}
+
+.drill-betrag {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.drill-aufloesung {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding-bottom: var(--drill-bedienung-h);
+}
+
+.drill-urteil {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  font-size: var(--fs-body);
+}
+
+.drill-urteil.gut strong { color: var(--ok); }
+.drill-urteil.schlecht strong { color: var(--danger); }
+
+.drill-neben {
+  display: flex;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+}
+
+.drill-neben-label {
+  font-size: var(--fs-tiny);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-right: var(--sp-2);
+}
+
+.drill-neben-wert {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-bright);
+}
+
+.drill-hinweis {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--text-dim);
+  max-width: 46ch;
+}
+
+.drill-hinweis.warn { color: var(--gold); }
+
+.drill-fehler-titel {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  color: var(--danger);
+}
+
+/* ── Zone 3: unteres Drittel ──────────────────────────────────────────── */
+
+/* Die Bedienung bleibt am unteren Rand stehen, auch wenn die Auflösung den
+   Bildschirm länger macht als das Fenster. Ohne das läge der Knopf hinter
+   der unteren Navigation — genau das ist beim ersten Durchlauf passiert.
+   Der Abstand nach unten ist die Navigationshöhe plus der sichere Bereich;
+   auf breiten Fenstern gibt es keine Navigation, dort genügt Luft. */
+.drill-unten {
+  flex: 0 0 auto;
+  margin-top: auto;
+  padding-top: var(--sp-3);
+  position: sticky;
+  bottom: var(--sp-4);
+  min-height: var(--drill-bedienung-h);
+  /* Oben ausgeblendet, unten deckend: So sieht man, dass darüber Text
+     weitergeht, statt ihn blass durch die Leiste schimmern zu sehen. */
+  background: linear-gradient(to bottom, rgba(9, 13, 11, 0), rgba(9, 13, 11, 0.98) 24px);
+}
+
+@media (max-width: 920px) {
+  .drill-unten {
+    bottom: calc(var(--nav-h) + var(--safe-bottom) + var(--sp-2));
+  }
+}
+
+.drill-knoepfe {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+.drill-knopf {
+  flex: 1 1 0;
+  min-height: 60px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.drill-knopf.ja {
+  border-color: rgba(88, 179, 104, 0.45);
+  color: var(--ok);
+}
+
+.drill-knopf.nein {
+  border-color: rgba(224, 92, 85, 0.45);
+  color: var(--danger);
+}
+
+.drill-knopf.weiter {
+  width: 100%;
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--on-gold);
+}
+
+.drill-knopf:active {
+  background: var(--bg-card-hover);
+}
+
+.drill-knopf.weiter:active {
+  background: var(--gold-bright);
+}
+
+.drill-stand {
+  min-height: 1.4em;
+  padding-top: var(--sp-2);
+  text-align: center;
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}

@@ -35,6 +35,7 @@ const HIER = dirname(fileURLToPath(import.meta.url));
 const WURZEL = resolve(HIER, '..');
 const QUELLE = join(WURZEL, 'tools', 'poker-math', 'output');
 const ZIEL = join(WURZEL, 'public', 'pokermath');
+const SW = join(WURZEL, 'public', 'sw.js');
 
 /**
  * Version des Datenvertrags zwischen Rechenausgabe und App.
@@ -261,6 +262,35 @@ function appB3(d) {
 // Lauf
 // ---------------------------------------------------------------------------
 
+/** Trägt Datenstand und Dateiliste in den Service Worker ein.
+ *
+ *  Warum automatisch und nicht als Zeile in einer Anleitung: Die Zahlen
+ *  werden für den Offline-Betrieb mitgespeichert. Bliebe der Cache-Name
+ *  gleich, zeigte ein Gerät nach neuen Zahlen weiter die alten – und das
+ *  fällt bei einer Zahl niemandem auf. Ein Schritt, den ein Mensch von Hand
+ *  machen müsste, wird irgendwann vergessen; dieser hier nicht.
+ *
+ *  Der Stand ist das jüngste `erzeugt_am` aller Blöcke, auf Zeichen
+ *  reduziert, die in einem Cache-Namen nichts anrichten. */
+function stempleServiceWorker(ergebnisse) {
+  const staende = ergebnisse.map(([, i]) => i.herkunft.erzeugt_am).sort();
+  const stand = staende[staende.length - 1].replace(/[^0-9A-Za-z]/g, '-');
+  const dateien = ergebnisse.map(([name]) => `'./pokermath/${name}.json'`).join(', ');
+
+  const text = readFileSync(SW, 'utf8');
+  const ersetzt = text
+    .replace(/^const DATEN_STAND = .*$/m, `const DATEN_STAND = '${stand}';`)
+    .replace(/^const DATEN_DATEIEN = .*$/m, `const DATEN_DATEIEN = [${dateien}];`);
+  if (ersetzt === text) {
+    throw new Error(
+      'In public/sw.js fehlen die Zeilen DATEN_STAND und DATEN_DATEIEN. '
+      + 'Ohne sie liefe die App offline mit veralteten Zahlen weiter.',
+    );
+  }
+  writeFileSync(SW, ersetzt, 'utf8');
+  return stand;
+}
+
 const BLOECKE = [
   ['b1_outs', appB1],
   ['b2_potodds', appB2],
@@ -295,6 +325,9 @@ function main() {
     console.log(`  ${name.padEnd(22)} noch nicht gerechnet – übersprungen`);
   }
   console.log(`Vertrag Version ${VERTRAG_VERSION} · geschrieben nach public/pokermath/`);
+
+  const stand = stempleServiceWorker(ergebnisse);
+  console.log(`Service Worker auf Datenstand ${stand} gesetzt (public/sw.js).`);
 
   const ohneBibliothek = ergebnisse.filter(([, i]) => i.herkunft.bibliothek === null);
   if (ohneBibliothek.length > 0) {

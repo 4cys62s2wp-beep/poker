@@ -23,6 +23,7 @@ import { ScenarioTrainer } from './pages/trainers/ScenarioTrainer';
 import { PushFoldTrainer } from './pages/trainers/PushFoldTrainer';
 import { PreflopTrainer } from './pages/trainers/PreflopTrainer';
 import { PotOddsTrainer } from './pages/trainers/PotOddsTrainer';
+import { PotOddsDrill } from './pages/trainers/PotOddsDrill';
 import { EquityTrainer } from './pages/trainers/EquityTrainer';
 import { HandRankTrainer } from './pages/trainers/HandRankTrainer';
 import { OutsTrainer } from './pages/trainers/OutsTrainer';
@@ -77,6 +78,11 @@ export function App() {
           <Route path="/lernen/wiederholen" element={<ReviewPage />} />
           <Route path="/lernen/tagesquiz" element={<DailyQuizPage />} />
           <Route path="/lernen/pros" element={<ProInsightsPage />} />
+          {/* Der Pot-Odds-Drill liegt bewusst NICHT unter /lernen/trainer/:
+              Vom Öffnen der App bis zur ersten Aufgabe sollen zwei
+              Berührungen reichen (Hub → Lernen → Drill). Über den
+              Trainer-Hub wären es drei. */}
+          <Route path="/lernen/drill" element={<PotOddsDrill />} />
           <Route path="/lernen/trainer" element={<TrainerHub />} />
           <Route path="/lernen/trainer/szenario" element={<ScenarioTrainer />} />
           <Route path="/lernen/trainer/pushfold" element={<PushFoldTrainer />} />

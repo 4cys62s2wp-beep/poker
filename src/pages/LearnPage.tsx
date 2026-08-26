@@ -140,6 +140,27 @@ export function LearnPage() {
 
       {!searching && (
         <>
+        {/* Der Pot-Odds-Drill steht hier oben und nicht im Trainer-Hub.
+            Grund: Vom Öffnen der App bis zur ersten Aufgabe sollen zwei
+            Berührungen reichen. Hub → Lernen → Drill sind zwei; über den
+            Trainer-Hub wären es drei. */}
+        <Link
+          to="/lernen/drill"
+          className="card clickable"
+          style={{ display: 'block', marginBottom: 'var(--sp-5)', borderColor: 'rgba(212,175,94,0.35)' }}
+        >
+          <div className="row between wrap">
+            <div className="row" style={{ alignItems: 'flex-start' }}>
+              <IconTile name="scale" tone="gold" />
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontWeight: 'var(--fw-bold)', fontSize: 'var(--fs-h3)' }}>{L.drillTitle}</div>
+                <div className="small muted" style={{ marginTop: 3 }}>{L.drillSub}</div>
+              </div>
+            </div>
+            <span className="pill gold">{L.drillPill}</span>
+          </div>
+        </Link>
+
         {/* Üben und festigen.
             Dieser Block hat lange gefehlt, und das Fehlen war unsichtbar:
             Trainer, Wiederholen, Tages-Quiz, Übungstisch und Spielstil-Analyse

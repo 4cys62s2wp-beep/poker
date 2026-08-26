@@ -17,6 +17,10 @@ export const STR = defineStrings(
     doneLine: (done: number, total: number) => `${done} / ${total} Lektionen abgeschlossen`,
 
     // Übungsblock: alles, was zum Kurs gehört, aber keine Lektion ist.
+    drillTitle: 'Pot-Odds-Drill',
+    drillSub: 'Eine Situation, eine Entscheidung, die gerechnete Zahl. Ohne Zeitdruck.',
+    drillPill: 'Neu',
+
     practiceGroupTitle: 'Üben und festigen',
     trainerTitle: 'Trainer',
     trainerSub: 'Sieben Drills – Preflop, Pot Odds, Outs, Szenarien',
@@ -44,6 +48,10 @@ export const STR = defineStrings(
     moduleN: (n: number) => `Module ${n}`,
     lockedHint: 'Unlocked with Pro',
     doneLine: (done: number, total: number) => `${done} / ${total} lessons completed`,
+
+    drillTitle: 'Pot odds drill',
+    drillSub: 'One spot, one decision, the computed number. No clock.',
+    drillPill: 'New',
 
     practiceGroupTitle: 'Practise and cement',
     trainerTitle: 'Trainers',

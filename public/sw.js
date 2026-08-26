@@ -7,8 +7,19 @@
    Nutzern beim ersten Start noch die alte Startseite gezeigt.
    Strategie: Navigation network-first (Fallback Cache), Assets cache-first. */
 
-const CACHE = 'pokermentor-v7';
-const CORE = ['./', './index.html', './manifest.webmanifest'];
+/* ── Von `npm run daten` gesetzt – nicht von Hand ändern ─────────────────
+   Warum der Datenstand im Cache-Namen steht: Die gerechneten Zahlen werden
+   mitgespeichert, damit der Drill ohne Netz läuft. Wären sie unter demselben
+   Cache-Namen abgelegt, würde ein Gerät nach neuen Zahlen wochenlang die
+   alten zeigen, ohne dass es jemandem auffällt. Ein neuer Datenstand ergibt
+   einen neuen Cache-Namen, und der alte wird beim Aktivieren gelöscht. */
+const DATEN_STAND = '2026-08-26T09-21-54-00-00';
+const DATEN_DATEIEN = ['./pokermath/b1_outs.json', './pokermath/b2_potodds.json', './pokermath/b3_kombinatorik.json'];
+/* ── Ende des erzeugten Bereichs ──────────────────────────────────────── */
+
+/* Die Zahl davor bei jeder Strukturänderung erhöhen (siehe Kopf der Datei). */
+const CACHE = `pokermentor-v8-${DATEN_STAND}`;
+const CORE = ['./', './index.html', './manifest.webmanifest', ...DATEN_DATEIEN];
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

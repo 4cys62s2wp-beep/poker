@@ -11,10 +11,9 @@ Projekts, unverändert übernommen.
 - **Hauptverzeichnis:** `/home/user/poker` auf `feature/poker-math` —
   **nicht anfassen.** Kein Branchwechsel dort, keine Schreibzugriffe auf
   `tools/poker-math/`, insbesondere nicht auf `output/`.
-- **Letzte Aktualisierung:** 2026-08-26, nach Aufgabe 1
-- **Stand in einem Satz:** Die Datenschnittstelle steht und ist geprüft; der
-  Pot-Odds-Trainer, die Herkunftsanzeige und die teilbaren Adressen sind noch
-  nicht gebaut.
+- **Letzte Aktualisierung:** 2026-08-26, nach Aufgabe 2
+- **Stand in einem Satz:** Datenschnittstelle und Pot-Odds-Drill stehen und
+  sind geprüft; die Herkunftsanzeige und die teilbaren Adressen fehlen noch.
 
 ---
 
@@ -23,7 +22,7 @@ Projekts, unverändert übernommen.
 | # | Aufgabe | Stand |
 |---|---------|-------|
 | 1 | Datenschnittstelle: schlankes, direkt ladbares Format aus B1–B3, reproduzierbar erzeugt, beim Laden **laut** validiert | ✅ fertig |
-| 2 | Pot-Odds-Trainer: der erste echte Bildschirm | ⬜ offen |
+| 2 | Pot-Odds-Trainer: der erste echte Bildschirm | ✅ fertig |
 | 3 | „Warum diese Zahl": Herkunft neben jeder Zahl, aufklappbar | ⬜ offen |
 | 4 | Teilbare Ergebnisse: Zustand in der Adresse, Vorschaubild-Metadaten | ⬜ offen |
 
@@ -123,23 +122,73 @@ gehört in `BLOCKER.md`, nicht in eine ausgedachte Zahl.
 
 ---
 
+## Aufgabe 2 — was jetzt steht
+
+**Der Bildschirm:** `/lernen/drill` → `src/pages/trainers/PotOddsDrill.tsx`.
+Erreichbar über eine eigene Karte oben auf der Lernseite.
+
+Eine Situation, eine Entscheidung, die Auflösung. Der Nutzer sieht Hand,
+Flop, Topf und Einsatz und entscheidet, ob der Call sich lohnt. Danach steht
+die gerechnete Zahl da.
+
+**Die Arbeitsteilung:**
+
+| Datei | Rolle |
+|-------|-------|
+| `src/lib/potodds/aufgabe.ts` | erzeugt Aufgaben, löst sie, formatiert Zahlen |
+| `src/pages/trainers/PotOddsDrill.tsx` | zeigt an — **keine einzige Ziffer** |
+| `src/styles/global.css`, Abschnitt „Pot-Odds-Drill" | alle Größen und Abstände |
+| `src/i18n/pages/potoddsdrill.ts` | alle Texte, zweisprachig |
+
+**Die Gestaltungsregeln aus dem Auftrag — nachgemessen, nicht geschätzt.**
+Gemessen im echten Browser auf 390 × 844 (Handy) und 1280 × 800:
+
+| Regel | Messung |
+|-------|---------|
+| Ergebniszahl das größte Element | 78 px gegen 19 px für das nächstgrößte |
+| in der oberen Hälfte | Oberkante bei 205 px von 844 |
+| fetter Schnitt, kein dünner | `font-weight: 800` |
+| dunkler Grund, hoher Kontrast | die App ist durchgehend dunkel |
+| höchstens zwei Berührungen | Hub → Lernen → Drill; kein Startknopf (Ausnahme: B-006) |
+| Bedienung im unteren Drittel | Knöpfe bei 656–716 px, unteres Drittel ab 563 |
+| nicht von der Navigation verdeckt | Knopfunterkante 716, Navigation ab 780 |
+| keine Bewegung zwischen Antwort und Auflösung | die Lage bewegt sich um **0 px**, der Knopf um **0 px** |
+| kein Zeitdruck | kein Timer im Quelltext |
+| kein Konto, kein Netz | nur statische Dateien, vom Service Worker mitgespeichert |
+| keine Zahl im Quelltext der Oberfläche | von einem Test erzwungen |
+
+**Was dabei aufgefallen und behoben wurde** (alles erst im Browser sichtbar,
+kein Test hätte es gefunden):
+
+1. Die Antwortknöpfe lagen hinter der unteren Navigation. Behoben mit einer
+   schwebenden Bedienleiste (`position: sticky`) statt einer Höhenrechnung
+   aus Kopfleiste, Zurück-Link und Navigationshöhe — die wäre bei der ersten
+   Änderung an einem der drei falsch gewesen, und zwar unbemerkt.
+2. Der Weiter-Knopf saß 43 px höher als die Antwortknöpfe zuvor. Zwei
+   Flächen, die sich teilweise überlappen, laden zum versehentlichen
+   Doppeltipp ein. Jetzt sitzen beide auf derselben Linie.
+3. Die Begründung verschwand unter der Bedienleiste, mitten im Wort.
+4. „8 Outs bis zum Straße" — die Zielkategorie kommt aus den Daten, und keine
+   deutsche Präposition passt zu allen. Jetzt: „8 Outs · Ziel: Straße".
+5. Dreimal dieselbe Zahl nebeneinander (Topf, sein Einsatz, dein Call). Der
+   dritte Wert ist jetzt der Endtopf.
+
+**Nebenbei abgesichert:** Der Service Worker speichert die gerechneten Daten
+für den Betrieb ohne Netz mit — und trägt dafür den Datenstand im
+Cache-Namen. `npm run daten` trägt ihn automatisch ein. Ohne das würde ein
+installiertes Gerät nach neuen Zahlen wochenlang die alten zeigen, und bei
+einer Zahl fällt das niemandem auf.
+
+---
+
 ## Was als Nächstes zu tun ist
 
-**Aufgabe 2 — Pot-Odds-Trainer.** Die Gestaltungsregeln aus dem Auftrag sind
-bindend, nicht Geschmackssache:
-
-- Die Ergebniszahl ist das größte Element, in der oberen Bildschirmhälfte,
-  fetter Schnitt, kein dünner.
-- Dunkler Grund als Vorgabe, hoher Kontrast.
-- Höchstens **zwei Berührungen** vom Öffnen bis zur ersten Aufgabe.
-- Einhändig bedienbar: alle Bedienelemente im unteren Drittel.
-- Kein Konto, kein Anmelden, kein Netz nötig.
-- **Keine Bewegung** zwischen Antwort und Auflösung.
-- Kein Zeitdruck, kein Countdown.
-- Aufgaben werden aus den B1/B2/B3-Daten erzeugt.
-  **Keine Zahl im Quelltext der Oberfläche.**
-
-**Aufgabe 3** baut auf dem `herkunft`-Block auf, der schon da ist.
+**Aufgabe 3 — „Warum diese Zahl".** Baut auf dem `herkunft`-Block auf, der
+schon in jeder Datei liegt. Neben jeder angezeigten Zahl ein unaufdringliches
+Zeichen; wer es antippt, sieht Rechenweg, Annahmen, Bibliothek und Version.
+Zwei Angaben fehlen dort noch (B-002, B-003) — die App muss das offen sagen,
+statt eine Zahl zu erfinden. Der Satz über die Zwei-Karten-Annahme, der heute
+in der Auflösung steht, gehört dorthin.
 
 **Aufgabe 4**: Zustand vollständig in der Adresse, keine Datenbank, kein
 Server. Dazu Vorschaubild-Metadaten, damit ein geteilter Link in WhatsApp und

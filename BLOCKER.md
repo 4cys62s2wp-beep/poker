@@ -94,3 +94,50 @@ passt. Immerhin laut und nicht still.
 **Was zu tun ist**: `app_schnittstelle.py` entfernen, sobald
 `tools/poker-math/` wieder beschreibbar ist. Das Node-Skript kann alles, was
 es konnte, und mehr.
+
+---
+
+## B-005 · Die gerechneten Daten gibt es nur auf Deutsch
+
+**Was fehlt.** Die Dateien unter `public/pokermath/` tragen ihre Texte nur in
+einer Sprache: Zugbildnamen („Offene Straße", „Gutshot"), Zielkategorien
+(„Straße", „Full House"), Einsatznamen („Halber Pot") und sämtliche Befunde
+und Annahmen sind deutsch.
+
+**Was das heißt.** Wer die App auf Englisch stellt, bekommt im Pot-Odds-Drill
+englische Beschriftungen um deutsche Begriffe herum: „4 outs · target:
+Straße". Die Zahlen stimmen, die Sprache nicht.
+
+**Warum ich es nicht behoben habe.** Eine Übersetzungstabelle in der App wäre
+genau die Schicht, die dieses Projekt vermeidet: Sie bildet Datenwerte auf
+Anzeigetexte ab, und beim nächsten neuen Zugbild fehlt der Eintrag, ohne dass
+es auffällt. Richtig wäre, dass der Rechengenerator die Bezeichnungen
+zweisprachig ausgibt — das ist eine Änderung an `tools/poker-math/`, und
+dieser Arbeitsbereich darf dort nicht schreiben.
+
+**Was zu entscheiden ist.** Ob der Generator zweisprachige Bezeichnungen
+mitliefern soll (sauber, aber Arbeit im Generator) oder ob die englische
+Fassung der App vorerst deutsche Fachbegriffe zeigt (in Kauf zu nehmen: Es
+sind Pokerbegriffe, von denen mehrere ohnehin englisch sind).
+
+---
+
+## B-006 · Beim allerersten Start sind es drei Berührungen, nicht zwei
+
+**Was gefordert war.** Höchstens zwei Berührungen vom Öffnen bis zur ersten
+Aufgabe.
+
+**Was ist.** Erfüllt — ab dem zweiten Start: Hub → Lernen → Drill, und die
+Aufgabe steht sofort da, ohne Startknopf. Beim **allerersten** Start liegt
+davor der Willkommensdialog (Sprache wählen, Name eintragen). Das kostet
+mindestens eine weitere Berührung.
+
+**Warum ich es nicht angefasst habe.** Der Dialog gehört nicht zum Drill,
+sondern zur ganzen App, und er hat einen Zweck (Sprachwahl). Ihn für einen
+Bildschirm zu umgehen, hieße, ihn für alle anderen zu behalten — eine
+Sonderregel, die niemand mehr versteht.
+
+**Was zu entscheiden ist.** Ob der Willkommensdialog übersprungen werden darf,
+wenn jemand die App über einen geteilten Link direkt auf einer Aufgabe öffnet
+(Aufgabe 4). Dort wäre er besonders störend: Man will die geteilte Aufgabe
+sehen, nicht einen Namen eintragen.

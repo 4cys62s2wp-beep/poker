@@ -493,3 +493,62 @@ Einzelwert für sich gültig aussieht.
 fehlen die Farbkonfigurationen, wird die **ganze Datei** abgelehnt. Die App
 kann damit nicht in einen Zustand geraten, in dem sie einen Einzelwert ohne
 die Spanne zeigen möchte und es nicht merkt.
+
+---
+
+## E-017 · 2026-08-26 · Pot-Odds-Drill
+
+**Lage.** Der Drill zeigt eine Situation und fragt, ob der Call sich lohnt.
+Dafür sind vier Entscheidungen nötig gewesen, bei denen es mehr als eine
+vertretbare Antwort gab.
+
+### Zwei Karten statt einer
+
+**Gewählt:** Verglichen wird `turn_oder_river` aus B1 mit `noetige_equity`
+aus B2 — also die Chance, bis zum River zu treffen.
+
+**Alternative:** `turn`, die Chance, dass schon die nächste Karte trifft.
+Das ist die genauere Lesart für einen einzelnen Call: Wer auf dem Flop
+bezahlt, kauft eine Karte, nicht zwei.
+
+**Warum trotzdem die andere:** Über alle acht Zugbilder und alle acht
+Einsatzgrößen — 64 Fälle — lohnt der Call in der Zwei-Karten-Lesart in
+**genau der Hälfte** der Fälle, in der Turn-Lesart in **weniger als einem
+Fünftel**. Ein Drill, bei dem „lohnt nicht" fast immer richtig ist, bringt
+einem den falschen Reflex bei; man lernt, blind abzulehnen, und liegt damit
+oft genug richtig, um es nicht zu merken. Beide Zahlen sind nachgerechnet und
+stehen als Testfälle in `potodds-drill.test.ts`.
+
+Der Turn-Wert verschwindet nicht: Er steht in der Auflösung daneben, mit dem
+Satz, was die Zwei-Karten-Lesart voraussetzt (kein zweiter Einsatz auf dem
+Turn). Damit steht die vorsichtigere Lesart neben der optimistischeren, statt
+sie zu ersetzen.
+
+### Die größte Zahl ist die Equity, nicht die Schwelle
+
+**Gewählt:** Das größte Element auf dem Bildschirm ist die eigene Trefferquote.
+
+**Alternative:** die nötige Equity — schließlich heißt der Drill „Pot Odds".
+
+**Warum:** Die nötige Equity lässt sich aus dem ablesen, was ohnehin auf dem
+Bildschirm steht (Topf und Einsatz). Die Trefferquote nicht — die ist die
+Zahl, die man nicht sieht und deshalb schätzt. Sie steht direkt darunter,
+deutlich kleiner, damit der Vergleich trotzdem in einem Blick geht.
+
+### Die Potgröße ist frei gewählt
+
+Sie ist keine Poker-Tatsache, sondern der Maßstab der Aufgabe: Ob 24 oder 48
+Big Blinds im Topf liegen, ändert nichts — nur das Verhältnis zählt, und das
+kommt aus B2. Deshalb darf sie im Aufgabengenerator frei gewählt werden, ohne
+gegen die Regel „keine Zahl aus dem Gedächtnis" zu verstoßen. Der Topf ist
+immer ein Vielfaches des Bruchnenners, damit der Einsatz ganzzahlig bleibt;
+das prüft ein Test für alle 64 Kombinationen.
+
+### Keine Ziffer im Quelltext der Oberfläche
+
+`PotOddsDrill.tsx` enthält keinen einzigen Zahlenwert. Ein Test liest die
+Datei, entfernt Kommentare und Zeichenketten und schlägt fehl, sobald eine
+Ziffer auftaucht, vor der kein Bezeichnerzeichen steht (`b1` ist keine Zahl,
+`12` schon). Der Test prüft sich zuerst an einem Beispiel selbst.
+
+Größen und Abstände stehen deshalb vollständig in `global.css`.

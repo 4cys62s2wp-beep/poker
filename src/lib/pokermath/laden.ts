@@ -28,6 +28,7 @@ import {
   type Herkunft,
   type Kopf,
 } from './typen';
+import { bruchTeile } from './bruch';
 
 /** Ein Schemafehler mit dem Pfad, an dem er auftrat.
  *
@@ -244,7 +245,7 @@ export function pruefeB2(roh: unknown): B2PotOdds {
     ...k,
     einsatzgroessen: jedes(k.einsatzgroessen, 'b2_potodds.einsatzgroessen', (e, p) => {
       const o = objekt(e, p);
-      return {
+      const zeile = {
         name: text(o.name, `${p}.name`, 60),
         einsatz_als_potanteil: zahl(o.einsatz_als_potanteil, `${p}.einsatz_als_potanteil`, 0, 100),
         einsatz_als_bruch: text(o.einsatz_als_bruch, `${p}.einsatz_als_bruch`, 20),
@@ -257,6 +258,17 @@ export function pruefeB2(roh: unknown): B2PotOdds {
         mindest_outs_river: optionaleGanzzahl(o.mindest_outs_river, `${p}.mindest_outs_river`, 1, 52),
         mindest_outs_beide: optionaleGanzzahl(o.mindest_outs_beide, `${p}.mindest_outs_beide`, 1, 52),
       };
+      /* Die Datei gibt jede Einsatzgröße doppelt an: als Dezimalzahl und als
+         Bruch. Die App braucht beide – die Dezimalzahl zum Vergleichen, den
+         Bruch, um einen glatten Einsatz zu bilden. Gehen sie auseinander,
+         zeigt der Bildschirm einen Einsatz, der nicht zu der Schwelle passt,
+         gegen die er geprüft wird. Das sieht man einer Zahl nicht an. */
+      const { zaehler, nenner } = bruchTeile(zeile.einsatz_als_bruch);
+      if (Math.abs(zaehler / nenner - zeile.einsatz_als_potanteil) > 1e-9) {
+        throw new SchemaFehler(`${p}.einsatz_als_bruch`,
+          `"${zeile.einsatz_als_bruch}" ergibt nicht ${zeile.einsatz_als_potanteil}`);
+      }
+      return zeile;
     }),
     befunde: pruefeBefunde(k.befunde, 'b2_potodds.befunde'),
   };

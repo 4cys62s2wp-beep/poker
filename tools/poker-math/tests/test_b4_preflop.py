@@ -77,8 +77,21 @@ def test_kanonform_ist_unter_farbumbenennung_stabil():
 
 
 def test_farbbeziehung_erkennt_die_geteilte_farbe():
-    assert "keine gemeinsame Farbe" in farbbeziehung(_h("Ah Kh"), _h("Qs Js"))
-    assert "gleiche Farbe" in farbbeziehung(_h("Ah Kh"), _h("Qh Jh"))
+    getrennt = farbbeziehung(_h("Ah Kh"), _h("Qs Js"))
+    geteilt = farbbeziehung(_h("Ah Kh"), _h("Qh Jh"))
+    assert "keine gemeinsame Farbe" in getrennt["de"]
+    assert "no shared suit" in getrennt["en"]
+    assert "gleiche Farbe" in geteilt["de"]
+    assert "same suit" in geteilt["en"]
+
+
+def test_farbbeziehung_ist_zweisprachig():
+    """Der Name steht in der App. Fehlt eine Sprache, steht dort ein
+    deutsches Wort auf einem englischen Bildschirm."""
+    for a, b in (("Ah Kh", "Qs Js"), ("Ah Kh", "Qh Jh"), ("Ah Kd", "Qh Js")):
+        n = farbbeziehung(_h(a), _h(b))
+        assert set(n) == {"de", "en"}
+        assert n["de"] and n["en"]
 
 
 @pytest.mark.parametrize("a,b", [("AKs", "QJs"), ("AA", "KK")])

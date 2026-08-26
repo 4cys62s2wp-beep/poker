@@ -150,28 +150,37 @@ def kanonform(hand_a: tuple[int, int], hand_b: tuple[int, int]):
     return beste
 
 
-def farbbeziehung(hand_a: tuple[int, int], hand_b: tuple[int, int]) -> str:
+def farbbeziehung(hand_a: tuple[int, int], hand_b: tuple[int, int]) -> dict[str, str]:
     """Wie die beiden Hände farblich zueinander stehen – als lesbarer Name.
 
     Das ist die Größe, die K3 sichtbar machen will: Geteilte Farben senken das
     Flush-Potenzial beider Seiten.
+
+    Zweisprachig, weil die App den Namen anzeigt. Erzeugt wird er beide Male
+    hier, aus derselben Zählung – eine Übersetzungstabelle in der Oberfläche
+    wäre die Stelle, an der beim nächsten Fall der Eintrag fehlt.
     """
+    from metadaten import zs
+
     fa = {farbe(c) for c in hand_a}
     fb = {farbe(c) for c in hand_b}
     gemeinsam = len(fa & fb)
     a_suited = len(fa) == 1
     b_suited = len(fb) == 1
 
-    teile = []
-    teile.append("A suited" if a_suited else "A offsuit")
-    teile.append("B suited" if b_suited else "B offsuit")
+    de = ["A suited" if a_suited else "A offsuit",
+          "B suited" if b_suited else "B offsuit"]
+    en = list(de)
     if gemeinsam == 0:
-        teile.append("keine gemeinsame Farbe")
+        de.append("keine gemeinsame Farbe")
+        en.append("no shared suit")
     elif a_suited and b_suited:
-        teile.append("gleiche Farbe")
+        de.append("gleiche Farbe")
+        en.append("same suit")
     else:
-        teile.append(f"{gemeinsam} gemeinsame Farbe(n)")
-    return ", ".join(teile)
+        de.append(f"{gemeinsam} gemeinsame Farbe(n)")
+        en.append(f"{gemeinsam} shared suit(s)")
+    return zs(", ".join(de), ", ".join(en))
 
 
 # ---------------------------------------------------------------------------
@@ -523,6 +532,19 @@ def zusammenbauen() -> int:
         return 1
 
     geordnet = [eintraege[p] for p in erwartet]
+
+    # Den Namen der Farbbeziehung hier neu bilden, statt den gespeicherten zu
+    # übernehmen. Grund: Die Zwischendatei kann Zeilen aus verschiedenen
+    # Läufen enthalten, und der Name hat unterwegs eine englische Fassung
+    # bekommen. Aus den mitgespeicherten Vertretern lässt er sich jederzeit
+    # exakt neu bilden – aus dem gespeicherten Text nicht.
+    from karten import aus_text
+    for e in geordnet:
+        for k in e["farbkonfigurationen"]:
+            a = tuple(aus_text(t) for t in k["vertreter_a"].split())
+            b = tuple(aus_text(t) for t in k["vertreter_b"].split())
+            k["beziehung"] = farbbeziehung(a, b)
+
     integritaet = pruefe_integritaet(geordnet)
 
     # Nicht ausgerechnet, sondern aus den Ergebnissen zusammengezählt: Jede

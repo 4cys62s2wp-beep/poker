@@ -176,7 +176,7 @@ stehen gesammelt in `RUNME.sh` — nichts davon läuft automatisch.
 | `SETUP_PAYMENTS.md` | Zahlungen ab Oktober, Schritt für Schritt |
 | `docs/TODO_MANUELL.md` | Was ein Mensch entscheiden oder prüfen muss |
 | `docs/BESTANDSAUFNAHME.md` | Zahlungs-/Gating-Stellen vor dem Umbau |
-| `docs/STATUSMASCHINE.md` | Alle Abo-Zustände und Übergänge |
+| `docs/STATUSMASCHINE.md` | Alle Abo-Zustände und Übergänge, dazu die Konto-Verknüpfung iOS ↔ Web |
 | `docs/DESIGN_REFERENZ.md` | Auswertung der Referenz-App |
 | `docs/SCREEN_STRUKTUR.md` | Navigation vorher/nachher |
 | `docs/ERREICHBARKEIT.md` | Jeder Bildschirm, Weg und Rückweg |

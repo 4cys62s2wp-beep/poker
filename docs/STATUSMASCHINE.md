@@ -143,3 +143,84 @@ Bevor irgendetwas von oben greift:
 Beide Prüfungen sind mit Angriffspfaden getestet: gefälschte Signatur,
 manipulierter Rumpf, fremde Wurzel, unterbrochene Kette, fremde App,
 wiedereingespielter Aufruf.
+
+---
+
+## 8. Ein Konto, zwei Plattformen
+
+Der Fall, um den es geht: **Jemand kauft in der iOS-App und öffnet danach die
+Web-App.** Oder umgekehrt. Beides muss dasselbe Abo sein.
+
+### Der Anker ist das Firebase-Konto, nicht das Gerät
+
+Ein Entitlement steht in `entitlements/{uid}`. Es gibt keinen zweiten
+Speicherort und keine gerätegebundene Kopie. Wer sich auf beiden Plattformen
+mit demselben Konto anmeldet, sieht dasselbe Abo — ohne dass irgendetwas
+„übertragen" werden müsste. Der ganze Aufwand steckt deshalb an genau einer
+Stelle: **den Kauf mit einer uid zu verbinden.**
+
+### Web → iOS
+
+Unproblematisch. Beim Stripe-Checkout kennt unsere Function die uid aus dem
+mitgeschickten ID-Token und legt die Zuordnung `customer → uid` an. Wer sich
+später in der iOS-Hülle mit demselben Konto anmeldet, liest dasselbe Dokument.
+
+### iOS → Web
+
+Hier liegt die Arbeit, weil Apple die uid nicht kennt und nie kennen wird. Der
+einzige stabile Schlüssel ist `originalTransactionId` — er bleibt über
+Verlängerungen, Plan-Wechsel und Neuinstallationen hinweg gleich.
+
+**Der vorgesehene Ablauf:**
+
+1. Die native Hülle verlangt eine **Anmeldung vor dem Kauf**. Ohne uid kein
+   Kauf.
+2. Nach erfolgreichem `purchase()` schickt die Hülle
+   `originalTransactionId` **zusammen mit dem Firebase-ID-Token** an unsere
+   Function.
+3. Die Function prüft das Token (nur so ist die uid echt) und schreibt die
+   Zuordnung `originalTransactionId → uid`.
+4. Ab da laufen alle weiteren Apple-Benachrichtigungen über Abschnitt 6 in
+   dasselbe `entitlements/{uid}`.
+
+**Warum Anmeldung vor dem Kauf und nicht danach:** Ein Kauf ohne uid ist ein
+Kauf ohne Besitzer. Ihn nachträglich zuzuordnen hieße, dem Gerät zu glauben,
+das sich meldet — und genau darauf darf man sich nicht verlassen. Apple
+erlaubt eine Anmeldepflicht ausdrücklich, wenn das Abo geräteübergreifend
+gilt; das tut es hier.
+
+**Verworfene Alternative:** anonymer Kauf plus späteres Verknüpfen über
+„Käufe wiederherstellen". Das ist bequemer, öffnet aber ein Fenster, in dem
+ein Kauf herrenlos ist — und wer ihn dann zuerst beansprucht, bekommt ihn.
+
+### Käufe wiederherstellen
+
+Apple schreibt einen sichtbaren Knopf dafür vor; sein Fehlen ist ein
+Ablehnungsgrund. Die Brücke hat ihn bereits: `restorePurchases()` in
+`StoreKitBridge`. Er löst denselben Ablauf wie Schritt 2–4 aus.
+
+### Wenn zwei Konten denselben Kauf beanspruchen
+
+Das passiert, wenn jemand die App mit Konto A kauft und sich später mit Konto
+B anmeldet und wiederherstellt.
+
+**Regel: Die erste Zuordnung gewinnt.** Der zweite Versuch wird abgelehnt und
+nicht etwa umgeschrieben. Andernfalls ließe sich ein Abo durch bloßes
+Wiederherstellen von Konto zu Konto weiterreichen — und der ursprüngliche
+Käufer verlöre still seinen Zugang.
+
+Wer sein Abo wirklich auf ein anderes Konto umziehen will, braucht einen
+Menschen. Das ist selten genug, um es von Hand zu machen, und zu gefährlich,
+um es zu automatisieren.
+
+### Kündigen ist nicht symmetrisch
+
+| Gekauft über | Kündigung läuft über | Im Code |
+|---|---|---|
+| Stripe | eigene Kündigungsseite | `cancelRouteFor()` → `'web'` |
+| Apple | Einstellungen des Geräts | `cancelRouteFor()` → `'native'` |
+
+Ein über Apple gekauftes Abo kann **niemand außer Apple** beenden — auch wir
+nicht. Die App darf das nicht verschweigen, sondern führt zu
+`APPLE_MANAGE_SUBSCRIPTIONS_URL`. Das ist keine Bequemlichkeitsfrage, sondern
+die einzige Stelle, an der die Kündigung tatsächlich wirkt.

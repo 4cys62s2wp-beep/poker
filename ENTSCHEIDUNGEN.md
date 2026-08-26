@@ -151,3 +151,31 @@ zurücksetzt, bekommt beliebig oft neue sieben Tage.
 - **Nicht betroffen:** Das bezahlte Abo. Dessen Status kommt aus
   `entitlements/{uid}` und darf laut `firestore.rules` nur der Server
   schreiben — durch Emulator-Tests belegt.
+
+---
+
+## E-008 · 2026-08-26 · Phase 1.3 (nachgetragen)
+
+**Der iOS-Kauf verlangt eine Anmeldung, bevor er stattfindet.**
+
+Die Aufgabe verlangte, die Konto-Verknüpfung zwischen iOS und Web zu
+skizzieren: Jemand kauft in der App und öffnet danach die Web-App. Der
+Entwurf steht jetzt in `docs/STATUSMASCHINE.md`, Abschnitt 8.
+
+- **Gewählt:** Ohne angemeldetes Konto kein Kauf. Nach `purchase()` schickt
+  die native Hülle `originalTransactionId` zusammen mit dem Firebase-ID-Token
+  an unsere Function, die daraus die Zuordnung schreibt.
+- **Verworfene Alternative:** Anonymer Kauf, spätere Verknüpfung über „Käufe
+  wiederherstellen".
+- **Begründung:** Ein Kauf ohne uid ist ein Kauf ohne Besitzer. Ihn
+  nachträglich zuzuordnen hieße, dem Gerät zu glauben, das sich meldet — und
+  wer zuerst kommt, bekommt das Abo. Apple erlaubt eine Anmeldepflicht
+  ausdrücklich, wenn das Abo geräteübergreifend gilt; genau das ist hier der
+  Fall.
+
+**Zweite Entscheidung im selben Zug: Die erste Zuordnung gewinnt.** Beansprucht
+ein zweites Konto denselben `originalTransactionId`, wird das abgelehnt statt
+umgeschrieben. Sonst ließe sich ein Abo durch bloßes Wiederherstellen von
+Konto zu Konto weiterreichen, und der ursprüngliche Käufer verlöre still
+seinen Zugang. Ein echter Umzug braucht einen Menschen — selten genug, um ihn
+von Hand zu machen, und zu gefährlich, um ihn zu automatisieren.

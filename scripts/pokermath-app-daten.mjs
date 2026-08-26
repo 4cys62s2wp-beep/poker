@@ -44,8 +44,12 @@ const SW = join(WURZEL, 'public', 'sw.js');
  * 2 → `herkunft` ergänzt: Methode, Annahmen, Bibliothek und Fallzahl an einer
  *      Stelle gebündelt, damit die Oberfläche „Warum diese Zahl?" daraus
  *      speisen kann, ohne im Dokument herumzusuchen.
+ * 3 → Jeder anzeigbare Text ist ein {de, en}-Paar statt einer deutschen
+ *      Zeichenkette; `faelle_enumeriert` trägt die mitgezählte Fallzahl samt
+ *      Aufschlüsselung; `bibliothek` nennt bei Blöcken ohne Evaluator den
+ *      Grund, statt `null` zu sein.
  */
-const VERTRAG_VERSION = 2;
+const VERTRAG_VERSION = 3;
 
 // ---------------------------------------------------------------------------
 // Zugriff, der laut scheitert
@@ -85,6 +89,24 @@ function hole(datei, wurzel, pfad, pruefung = 'vorhanden') {
   return stelle;
 }
 
+/**
+ * Ein zweisprachiges Textpaar holen und prüfen.
+ *
+ * Eine nackte Zeichenkette an dieser Stelle ist ein Fehler und keine
+ * Notlösung: Sie erschiene in der englischen App als deutscher Satz, und das
+ * fällt niemandem auf, der die App auf Deutsch benutzt.
+ */
+function holeText(datei, wurzel, pfad) {
+  const wert = hole(datei, wurzel, pfad);
+  if (typeof wert !== 'object' || wert === null
+      || typeof wert.de !== 'string' || typeof wert.en !== 'string'
+      || !wert.de || !wert.en) {
+    throw new QuellFehler(datei, pfad,
+      `ist kein zweisprachiges Textpaar: ${JSON.stringify(wert)}`);
+  }
+  return { de: wert.de, en: wert.en };
+}
+
 function lade(name) {
   const pfad = join(QUELLE, `${name}.json`);
   if (!existsSync(pfad)) return null;
@@ -101,26 +123,28 @@ function lade(name) {
  * Bewusst aus der Quelle übernommen und nicht formuliert: Die Sätze stammen
  * aus dem Rechenskript, das sie aus den Daten erzeugt hat.
  *
- * `bibliothek` und `faelle` können fehlen – nicht jeder Block braucht einen
- * Evaluator, und die Fallzahl liefert der Generator derzeit nicht (siehe
- * BLOCKER.md, B-003). Fehlt etwas, steht dort `null`, und die Oberfläche sagt
- * das offen, statt eine Zeile wegzulassen.
+ * Seit Vertrag 3 ist nichts davon mehr optional: Jeder Block zählt seine
+ * Fälle mit, und jeder Block sagt, womit gerechnet wurde – entweder mit einer
+ * Bibliothek samt Version oder mit dem Grund, warum keine nötig war. Fehlt
+ * eines davon, bricht dieser Lauf ab, statt der App eine Lücke zu geben, die
+ * sie dann selbst füllen müsste.
  */
 function herkunft(datei, d, block) {
   const m = hole(datei, d, 'metadaten');
   const a = hole(datei, m, 'annahmen');
   const karten = hole(datei, a, 'kartenzahlen');
 
-  const evaluator = m.evaluator ?? null;
+  const evaluator = hole(datei, m, 'evaluator');
+  const faelle = hole(datei, m, 'faelle_enumeriert');
 
   return {
     methode: hole(datei, m, 'methode', 'text'),
     erzeugt_am: hole(datei, m, 'erzeugt_am', 'text'),
-    zweck: hole(datei, m, 'zweck', 'text'),
+    zweck: holeText(datei, m, 'zweck'),
     annahmen: {
-      sicht: hole(datei, a, 'sicht', 'text'),
-      unbekannte_karten: hole(datei, a, 'unbekannte_karten', 'text'),
-      split_pot: hole(datei, a, 'split_pot', 'text'),
+      sicht: holeText(datei, a, 'sicht'),
+      unbekannte_karten: holeText(datei, a, 'unbekannte_karten'),
+      split_pot: holeText(datei, a, 'split_pot'),
       kartenzahlen: {
         deck: hole(datei, karten, 'deck', 'zahl'),
         eigene_karten: hole(datei, karten, 'eigene_karten', 'zahl'),
@@ -130,15 +154,29 @@ function herkunft(datei, d, block) {
       /* Die blockspezifischen Annahmen als Liste von Paaren, damit die
          Oberfläche sie ohne Kenntnis der Schlüssel anzeigen kann. */
       besonderheiten: Object.entries(a.block_spezifisch ?? {})
-        .map(([schluessel, satz]) => ({ schluessel, satz })),
+        .map(([schluessel, satz]) => ({
+          schluessel,
+          satz: holeText(datei, a.block_spezifisch, schluessel),
+        })),
     },
-    bibliothek: evaluator
-      ? { name: evaluator.name, version: evaluator.version }
-      : null,
-    /* Wie viele Fälle durchgezählt wurden. Der Generator gibt das derzeit
-       nicht aus; selbst nachrechnen wäre genau das, was in diesem
-       Arbeitsbereich nicht erlaubt ist. Siehe BLOCKER.md, B-003. */
-    faelle_enumeriert: null,
+    /* Entweder die Bibliothek mit Version – oder der Grund, warum keine nötig
+       war. Beides ist eine Auskunft; ein fehlendes Feld wäre keine. */
+    bibliothek: evaluator.name === null
+      ? { name: null, begruendung: holeText(datei, evaluator, 'begruendung') }
+      : {
+        name: hole(datei, evaluator, 'name', 'text'),
+        version: hole(datei, evaluator, 'version', 'text'),
+      },
+    /* Mitgezählt, nicht hergeleitet: Der Rechenblock hat beim Laufen
+       hochgezählt, wie viele Einzelfälle er durchgegangen ist. */
+    faelle_enumeriert: {
+      gesamt: hole(datei, faelle, 'gesamt', 'zahl'),
+      je_teil: hole(datei, faelle, 'je_teil', 'liste').map((teil) => ({
+        schluessel: hole(datei, teil, 'schluessel', 'text'),
+        bezeichnung: holeText(datei, teil, 'bezeichnung'),
+        anzahl: hole(datei, teil, 'anzahl', 'zahl'),
+      })),
+    },
     quelle: `tools/poker-math/output/${block}.json`,
   };
 }
@@ -170,26 +208,29 @@ function appB1(d) {
       _i: i,
     })).map(({ _i, ...rest }) => rest),
     zugbilder: hole(datei, d, 'beispiele', 'liste').map((b) => ({
-      name: hole(datei, b, 'name', 'text'),
+      name: holeText(datei, b, 'name'),
       hand: hole(datei, b, 'hand', 'text'),
       flop: hole(datei, b, 'flop', 'text'),
-      zielkategorie: hole(datei, b, 'zielkategorie', 'text'),
+      zielkategorie: holeText(datei, b, 'zielkategorie'),
       outs: hole(datei, b, 'outs_bis_zielkategorie', 'zahl'),
       outs_falsch_gezaehlt: hole(datei, b, 'outs_mit_boardtreffern', 'zahl'),
     })),
     gegenbeispiele: hole(datei, d, 'gegenbeispiele_saubere_outs', 'liste').map((g) => ({
-      name: hole(datei, g, 'name', 'text'),
+      name: holeText(datei, g, 'name'),
       hand: hole(datei, g, 'hand', 'text'),
       flop: hole(datei, g, 'flop', 'text'),
       out: hole(datei, g, 'out', 'text'),
       gegner: hole(datei, g, 'gegner', 'text'),
-      hero_nachher: hole(datei, g, 'hero_nachher', 'text'),
-      gegner_nachher: hole(datei, g, 'gegner_nachher', 'text'),
-      erklaerung: hole(datei, g, 'erklaerung', 'text'),
+      hero_nachher: holeText(datei, g, 'hero_nachher'),
+      gegner_nachher: holeText(datei, g, 'gegner_nachher'),
+      erklaerung: holeText(datei, g, 'erklaerung'),
     })),
     befunde: hole(datei, d, 'befunde', 'liste').map((b) => ({
       schluessel: hole(datei, b, 'schluessel', 'text'),
-      aussage: hole(datei, b, 'aussage', 'text'),
+      aussage: {
+        de: hole(datei, b, 'aussage', 'text'),
+        en: hole(datei, b, 'aussage_en', 'text'),
+      },
     })),
   };
 }
@@ -199,7 +240,7 @@ function appB2(d) {
   return {
     ...kopf(datei, d, 'b2_potodds'),
     einsatzgroessen: hole(datei, d, 'einsatzgroessen', 'liste').map((z) => ({
-      name: hole(datei, z, 'name', 'text'),
+      name: holeText(datei, z, 'name'),
       einsatz_als_potanteil: hole(datei, z, 'einsatz_als_potanteil', 'zahl'),
       einsatz_als_bruch: hole(datei, z, 'einsatz_als_bruch', 'text'),
       noetige_equity: hole(datei, z, 'anteil_am_endpot', 'zahl'),
@@ -210,7 +251,10 @@ function appB2(d) {
     })),
     befunde: hole(datei, d, 'befunde', 'liste').map((b) => ({
       schluessel: hole(datei, b, 'schluessel', 'text'),
-      aussage: hole(datei, b, 'aussage', 'text'),
+      aussage: {
+        de: hole(datei, b, 'aussage', 'text'),
+        en: hole(datei, b, 'aussage_en', 'text'),
+      },
     })),
   };
 }
@@ -253,7 +297,10 @@ function appB3(d) {
     },
     befunde: hole(datei, d, 'befunde', 'liste').map((b) => ({
       schluessel: hole(datei, b, 'schluessel', 'text'),
-      aussage: hole(datei, b, 'aussage', 'text'),
+      aussage: {
+        de: hole(datei, b, 'aussage', 'text'),
+        en: hole(datei, b, 'aussage_en', 'text'),
+      },
     })),
   };
 }
@@ -272,23 +319,31 @@ function appB3(d) {
  *
  *  Der Stand ist das jüngste `erzeugt_am` aller Blöcke, auf Zeichen
  *  reduziert, die in einem Cache-Namen nichts anrichten. */
-function stempleServiceWorker(ergebnisse) {
+function serviceWorkerText(ergebnisse) {
   const staende = ergebnisse.map(([, i]) => i.herkunft.erzeugt_am).sort();
   const stand = staende[staende.length - 1].replace(/[^0-9A-Za-z]/g, '-');
   const dateien = ergebnisse.map(([name]) => `'./pokermath/${name}.json'`).join(', ');
 
   const text = readFileSync(SW, 'utf8');
-  const ersetzt = text
-    .replace(/^const DATEN_STAND = .*$/m, `const DATEN_STAND = '${stand}';`)
-    .replace(/^const DATEN_DATEIEN = .*$/m, `const DATEN_DATEIEN = [${dateien}];`);
-  if (ersetzt === text) {
-    throw new Error(
-      'In public/sw.js fehlen die Zeilen DATEN_STAND und DATEN_DATEIEN. '
-      + 'Ohne sie liefe die App offline mit veralteten Zahlen weiter.',
-    );
+  const zeilen = [
+    [/^const DATEN_STAND = .*$/m, `const DATEN_STAND = '${stand}';`],
+    [/^const DATEN_DATEIEN = .*$/m, `const DATEN_DATEIEN = [${dateien}];`],
+  ];
+  /* Geprüft wird, ob die Zeilen DA sind – nicht, ob sich der Text ändert.
+     Eine frühere Fassung verglich das Ergebnis mit dem Original und brach
+     ab, wenn beides gleich war. Das trifft aber genau den Normalfall: Wer
+     das Skript zweimal hintereinander laufen lässt, ändert nichts, und der
+     zweite Lauf schlug fehl. */
+  for (const [muster] of zeilen) {
+    if (!muster.test(text)) {
+      throw new Error(
+        `In public/sw.js fehlt die Zeile ${muster}. Ohne sie liefe die App `
+        + 'offline mit veralteten Zahlen weiter.',
+      );
+    }
   }
-  writeFileSync(SW, ersetzt, 'utf8');
-  return stand;
+  const neu = zeilen.reduce((t, [muster, ersatz]) => t.replace(muster, ersatz), text);
+  return { stand, text: neu };
 }
 
 const BLOECKE = [
@@ -311,12 +366,18 @@ function main() {
     ergebnisse.push([name, bauen(quelle)]);
   }
 
+  /* Auch der Service Worker gehört zum Alles-oder-nichts: Sein Datenstand
+     entscheidet, ob ein installiertes Gerät die neuen Zahlen überhaupt sieht.
+     Deshalb wird sein neuer Inhalt VOR dem ersten Schreibzugriff gebaut. */
+  const sw = serviceWorkerText(ergebnisse);
+
   mkdirSync(ZIEL, { recursive: true });
   for (const [name, inhalt] of ergebnisse) {
     const text = JSON.stringify(inhalt) + '\n';
     writeFileSync(join(ZIEL, `${name}.json`), text, 'utf8');
     gebaut.push([name, text.length]);
   }
+  writeFileSync(SW, sw.text, 'utf8');
 
   for (const [name, groesse] of gebaut) {
     console.log(`  ${name.padEnd(22)} ${(groesse / 1024).toFixed(1).padStart(8)} KB`);
@@ -326,18 +387,20 @@ function main() {
   }
   console.log(`Vertrag Version ${VERTRAG_VERSION} · geschrieben nach public/pokermath/`);
 
-  const stand = stempleServiceWorker(ergebnisse);
-  console.log(`Service Worker auf Datenstand ${stand} gesetzt (public/sw.js).`);
+  console.log(`Service Worker auf Datenstand ${sw.stand} gesetzt (public/sw.js).`);
 
-  const ohneBibliothek = ergebnisse.filter(([, i]) => i.herkunft.bibliothek === null);
-  if (ohneBibliothek.length > 0) {
+  /* Was die Herkunftsanzeige verspricht, hier einmal laut nachgezählt – wer
+     das Skript laufen lässt, soll sehen, dass die Angaben da sind. */
+  for (const [name, inhalt] of ergebnisse) {
+    const h = inhalt.herkunft;
+    const womit = h.bibliothek.name
+      ? `${h.bibliothek.name} ${h.bibliothek.version}`
+      : 'ohne Bibliothek (Begründung liegt bei)';
     console.log(
-      `\nHinweis: ${ohneBibliothek.map(([n]) => n).join(', ')} `
-      + 'nennen keine Evaluator-Bibliothek. Die Oberfläche sagt das offen. '
-      + 'Siehe BLOCKER.md, B-002.',
+      `  ${name.padEnd(22)} ${h.faelle_enumeriert.gesamt.toLocaleString('de-DE')
+        .padStart(12)} Fälle · ${womit}`,
     );
   }
-  console.log('Hinweis: Keine Ausgabe nennt eine Fallzahl. Siehe BLOCKER.md, B-003.');
   return 0;
 }
 

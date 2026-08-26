@@ -43,7 +43,7 @@ import { Zahl } from '../../components/Herkunft';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/potoddsdrill';
 import { ladeB1, ladeB2 } from '../../lib/pokermath/laden';
-import type { B1Outs, B2PotOdds } from '../../lib/pokermath/typen';
+import { t as sprachfassung, type B1Outs, type B2PotOdds } from '../../lib/pokermath/typen';
 import {
   alsBB,
   alsProzent,
@@ -226,10 +226,10 @@ export function PotOddsDrill() {
           {!beantwortet ? (
             <>
               <div className="drill-frage">{L.question}</div>
-              <div className="drill-zugbild">{aufgabe.zugbild.name}</div>
+              <div className="drill-zugbild">{sprachfassung(aufgabe.zugbild.name, lang)}</div>
               <Zahl
                 className="drill-outs"
-                wert={L.outsOf(aufgabe.zugbild.outs, aufgabe.zugbild.zielkategorie)}
+                wert={L.outsOf(aufgabe.zugbild.outs, sprachfassung(aufgabe.zugbild.zielkategorie, lang))}
                 quelle={{ quellen: [{ pfad: aufgabe.pfade.outs, herkunft: daten.b1.herkunft }] }}
               />
             </>

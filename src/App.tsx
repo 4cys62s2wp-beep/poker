@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Onboarding } from './components/Onboarding';
@@ -63,10 +63,22 @@ import { FriendsPage } from './pages/FriendsPage';
    Bereich: Von dort ist alles einen Tipp entfernt, und niemand landet auf
    einer Seite, die drei von vier Malen falsch ist. */
 
+/** Adressen, auf denen der Willkommensdialog wartet, statt sich vorzudrängen.
+ *
+ *  Wer über einen geteilten Link kommt, will die Aufgabe sehen, die ihm
+ *  jemand geschickt hat – nicht zuerst seinen Namen eintragen. Der Dialog ist
+ *  damit nicht abgeschafft: `firstRun` bleibt gesetzt, und sobald jemand von
+ *  der geteilten Aufgabe weiter in die App geht, kommt er. Aufgeschoben, nicht
+ *  übersprungen. */
+function istGeteilteAufgabe(pfad: string): boolean {
+  return /^\/lernen\/drill\/.+/.test(pfad);
+}
+
 export function App() {
+  const ort = useLocation();
   return (
     <ErrorBoundary>
-      <Onboarding />
+      {!istGeteilteAufgabe(ort.pathname) && <Onboarding />}
       <PaywallModal />
       <Routes>
         <Route element={<Layout />}>

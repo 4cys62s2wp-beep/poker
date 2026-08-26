@@ -660,3 +660,69 @@ Auch ohne Fragment wäre es so, weil eine Einzelseiten-App für jede Adresse
 dieselbe Datei ausliefert. Die drei Wege dahin und ihr Preis stehen in
 `BLOCKER.md`, B-007; entscheiden muss das ein Mensch, weil zwei davon dem
 Auftrag widersprechen („kein Server").
+
+---
+
+## E-020 · 2026-08-26 · Die offenen Blocker abgearbeitet
+
+Nach der Freigabe „alles fertigmachen, was geplant ist" sind sechs der sieben
+Punkte aus `BLOCKER.md` erledigt. Vier davon hatten eine Entscheidung im
+Bauch, die nicht selbstverständlich war.
+
+### Die Fallzahl wird gezählt, nicht gerechnet
+
+**Gewählt:** Jeder Rechenblock meldet seine Zählstellen an und zählt beim
+Laufen hoch.
+
+**Alternative:** Die Zahl am Ende aus einer Formel herleiten — für B1 etwa
+47 × 46 × 21 Zeilen. Kürzer, und für diesen Fall sogar richtig.
+
+**Warum nicht:** Eine hergeleitete Zahl ist eine Behauptung über den Code.
+Ändert jemand eine Schleife, stimmt die Formel nicht mehr, und niemand merkt
+es — die Zahl sieht ja weiterhin plausibel aus. Eine mitgezählte Zahl kann
+gar nicht falsch werden, ohne dass sich das Ergebnis mit ändert.
+
+Der Preis ist ein Zähler in der inneren Schleife. Gemessen: kein Unterschied,
+der auffällt.
+
+### Die Zählstellen werden vorher angemeldet
+
+Nicht `zaehle("irgendein_name")` mit freiem Text, sondern ein Zähler, der
+seine Stellen kennt und einen unbekannten Schlüssel ablehnt. Grund: Ein
+Tippfehler legt sonst still eine zweite Zählstelle an, und in der Anzeige
+stehen dann zwei Zeilen für dieselbe Sache.
+
+### Zweisprachigkeit gehört zu den Daten, nicht zur Oberfläche
+
+**Gewählt:** Jeder anzeigbare Text ist im Generator ein `{de, en}`-Paar.
+
+**Alternative:** Eine Übersetzungstabelle in der App, die deutsche Werte auf
+englische Anzeigetexte abbildet.
+
+**Warum nicht:** Sie ist genau die Stelle, an der beim nächsten neuen Zugbild
+der Eintrag fehlt — und das sieht nur, wer die App auf Englisch benutzt, also
+so gut wie niemand aus dem Team. Wer den Text erzeugt, liefert beide
+Sprachen; fehlt eine, wirft der Generator, und zwar sofort.
+
+**Was bewusst deutsch bleibt:** Die Belege in `output/*.json` und
+`POKER_MATH.md`. Das ist Prüfmaterial, keine Anzeige.
+
+### Der Willkommensdialog wird aufgeschoben, nicht übersprungen
+
+**Gewählt:** Auf einer geteilten Aufgabe erscheint er nicht; sobald jemand
+weiter in die App geht, kommt er.
+
+**Alternative 1:** Ihn auch dort zeigen. Dann tippt jemand, der eine Aufgabe
+geschickt bekommen hat, erst seinen Namen ein.
+
+**Alternative 2:** Ihn nach dem geteilten Link ganz überspringen. Dann fehlt
+die Sprachwahl dauerhaft, und niemand weiß, warum.
+
+Die gewählte Fassung kostet eine Zeile in `App.tsx` und erklärt sich selbst.
+
+### Die doppelte Konvertierung ist beendet
+
+Zwei Programme mit derselben Aufgabe sind keine Redundanz. Geblieben ist das
+Node-Skript, weil die App es beim Bauen ohnehin aufruft. Das Python-Skript
+ist gelöscht, aber nicht spurlos: An seiner Stelle liegt eine Datei, die
+sagt, wohin es gegangen ist und warum.

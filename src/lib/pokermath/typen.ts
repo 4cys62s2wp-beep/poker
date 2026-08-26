@@ -25,7 +25,24 @@
    Block `herkunft` gebündelt, damit „Warum diese Zahl?" daraus speisen kann,
    ohne im Dokument herumzusuchen. */
 
-export const ERWARTETE_VERTRAG_VERSION = 2;
+export const ERWARTETE_VERTRAG_VERSION = 3;
+
+/** Ein anzeigbarer Text in beiden Sprachen.
+ *
+ *  Warum die Daten das mitbringen und die App keine Übersetzungstabelle hat:
+ *  Eine Tabelle in der Oberfläche ist genau die Stelle, an der beim nächsten
+ *  neuen Zugbild der Eintrag fehlt — und dann steht auf Englisch ein
+ *  deutsches Wort, ohne dass es dem auffällt, der die App auf Deutsch
+ *  benutzt. Wer den Text erzeugt, liefert beide Sprachen. */
+export interface Text {
+  de: string;
+  en: string;
+}
+
+/** Die Fassung in der gewählten Sprache. */
+export function t(text: Text, sprache: 'de' | 'en'): string {
+  return text[sprache];
+}
 
 /** Wie viele Karten aus Heldensicht bekannt und unbekannt sind. */
 export interface Kartenzahlen {
@@ -37,7 +54,7 @@ export interface Kartenzahlen {
 
 export interface Besonderheit {
   schluessel: string;
-  satz: string;
+  satz: Text;
 }
 
 /** Die Annahmen, unter denen jede Zahl gilt. Sie gehören zur Zahl.
@@ -45,30 +62,52 @@ export interface Besonderheit {
  *  Nicht optional: Eine Wahrscheinlichkeit ohne ihre Annahme ist nicht
  *  ungenau, sondern bedeutungslos. */
 export interface Annahmen {
-  sicht: string;
-  unbekannte_karten: string;
-  split_pot: string;
+  sicht: Text;
+  unbekannte_karten: Text;
+  split_pot: Text;
   kartenzahlen: Kartenzahlen;
   /** Was nur für diesen Rechenblock gilt – etwa „saubere Outs" bei B1. */
   besonderheiten: Besonderheit[];
 }
 
+/** Womit gerechnet wurde: eine Bibliothek mit Version — oder der Grund,
+ *  warum keine nötig war.
+ *
+ *  Beides ist eine Auskunft. Ein fehlendes Feld wäre keine, und genau darum
+ *  gibt es hier kein `null`: B2 und B3 zählen Kartenkombinationen, sie
+ *  bewerten keine Blätter, und das steht so in den Daten. */
+export type Bibliothek =
+  | { name: string; version: string }
+  | { name: null; begruendung: Text };
+
+/** Wie viele Einzelfälle die Rechnung durchgegangen ist.
+ *
+ *  Mitgezählt, während der Generator lief — nicht hinterher aus einer Formel
+ *  hergeleitet. `je_teil` schlüsselt auf, was mit „Fällen" gemeint ist. */
+export interface Zaehlstelle {
+  schluessel: string;
+  /** Wofür gezählt wurde, in beiden Sprachen — aus dem Generator. */
+  bezeichnung: Text;
+  anzahl: number;
+}
+
+export interface Fallzahl {
+  gesamt: number;
+  je_teil: Zaehlstelle[];
+}
+
 /** Alles, was die Oberfläche über die Entstehung einer Zahl sagen kann.
  *
- *  Speist den Bildschirm „Warum diese Zahl?". Was `null` ist, wird dort
- *  **offen benannt** und nicht weggelassen: Eine fehlende Angabe ist selbst
- *  eine Auskunft. */
+ *  Speist den Bildschirm „Warum diese Zahl?". Nichts davon ist optional: Was
+ *  die App dort verspricht, muss in der Datei stehen. */
 export interface Herkunft {
   /** `'exakt'` oder `'monte-carlo'`. */
   methode: string;
   erzeugt_am: string;
-  zweck: string;
+  zweck: Text;
   annahmen: Annahmen;
-  /** Welcher Evaluator gerechnet hat. `null`, wo keiner nötig war. */
-  bibliothek: { name: string; version: string } | null;
-  /** Wie viele Fälle durchgezählt wurden. Derzeit überall `null`,
-   *  siehe BLOCKER.md, B-003. */
-  faelle_enumeriert: number | null;
+  bibliothek: Bibliothek;
+  faelle_enumeriert: Fallzahl;
   /** Pfad zur vollständigen Fassung mit allen Belegen. */
   quelle: string;
 }
@@ -83,7 +122,7 @@ export interface Kopf {
  *  Die App darf ihn anzeigen, aber nicht umformulieren. */
 export interface Befund {
   schluessel: string;
-  aussage: string;
+  aussage: Text;
 }
 
 // ---------------------------------------------------------------------------
@@ -105,10 +144,10 @@ export interface OutsZeile {
 }
 
 export interface Zugbild {
-  name: string;
+  name: Text;
   hand: string;
   flop: string;
-  zielkategorie: string;
+  zielkategorie: Text;
   /** Richtig gezählt: hebt die Kategorie UND eine eigene Karte bildet sie mit. */
   outs: number;
   /** Mit Board-Paaren mitgezählt. Nur zum Vergleich zeigen, nie allein. */
@@ -116,14 +155,14 @@ export interface Zugbild {
 }
 
 export interface Gegenbeispiel {
-  name: string;
+  name: Text;
   hand: string;
   flop: string;
   out: string;
   gegner: string;
-  hero_nachher: string;
-  gegner_nachher: string;
-  erklaerung: string;
+  hero_nachher: Text;
+  gegner_nachher: Text;
+  erklaerung: Text;
 }
 
 export interface B1Outs extends Kopf {
@@ -138,7 +177,7 @@ export interface B1Outs extends Kopf {
 // ---------------------------------------------------------------------------
 
 export interface EinsatzZeile {
-  name: string;
+  name: Text;
   /** Einsatz als Anteil des Pots, z. B. 0.5 für den halben Pot. */
   einsatz_als_potanteil: number;
   /** Exakt, z. B. `"1/3"` – für die Anzeige, wo 0,333 falsch aussieht. */

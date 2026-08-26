@@ -28,7 +28,7 @@ import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/herkunft';
-import type { Herkunft } from '../lib/pokermath/typen';
+import { t as sprachfassung, type Herkunft } from '../lib/pokermath/typen';
 
 /** Ein Wert in einer gerechneten Datei. */
 export interface Quelle {
@@ -146,39 +146,46 @@ function Quellenblock({ quelle }: { quelle: Quelle }) {
 
       <Abschnitt titel={T.rechenweg}>
         <p>{h.methode === 'exakt' ? T.methodeExakt : T.methodeMonteCarlo}</p>
-        {h.faelle_enumeriert === null ? (
-          /* Offen sagen, dass die Angabe fehlt. Sie hier auszurechnen hieße,
-             sie zu erfinden – die Datei ist der Nachweis, nicht diese
-             Komponente. Siehe BLOCKER.md, B-003. */
-          <p className="herkunft-fehlt">{T.faelleFehlen}</p>
-        ) : (
-          <Feld name={T.faelle} wert={h.faelle_enumeriert.toLocaleString(lang)} />
-        )}
+        <Feld name={T.faelle} wert={h.faelle_enumeriert.gesamt.toLocaleString(lang)} />
+        {/* Die Aufschlüsselung sagt, was mit „Fällen" gemeint ist. Ohne sie
+            wäre die große Zahl beeindruckend und nichtssagend. */}
+        <ul className="herkunft-teile">
+          {h.faelle_enumeriert.je_teil.map((teil) => (
+            <li key={teil.schluessel}>
+              <span>{sprachfassung(teil.bezeichnung, lang)}</span>
+              <span className="herkunft-teil-zahl">{teil.anzahl.toLocaleString(lang)}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="herkunft-leise">{T.faelleHinweis}</p>
       </Abschnitt>
 
       <Abschnitt titel={T.zweck}>
-        <p>{h.zweck}</p>
+        <p>{sprachfassung(h.zweck, lang)}</p>
       </Abschnitt>
 
       <Abschnitt titel={T.annahmen}>
-        <Feld name={T.sicht} wert={h.annahmen.sicht} />
-        <Feld name={T.unbekannt} wert={h.annahmen.unbekannte_karten} />
+        <Feld name={T.sicht} wert={sprachfassung(h.annahmen.sicht, lang)} />
+        <Feld name={T.unbekannt} wert={sprachfassung(h.annahmen.unbekannte_karten, lang)} />
         <Feld name={T.kartenzahlen} wert={T.karten(h.annahmen.kartenzahlen)} />
-        <Feld name={T.splitPot} wert={h.annahmen.split_pot} />
+        <Feld name={T.splitPot} wert={sprachfassung(h.annahmen.split_pot, lang)} />
       </Abschnitt>
 
       {h.annahmen.besonderheiten.length > 0 && (
         <Abschnitt titel={T.besonderheiten}>
-          {h.annahmen.besonderheiten.map((b) => <p key={b.schluessel}>{b.satz}</p>)}
+          {h.annahmen.besonderheiten.map((b) => (
+            <p key={b.schluessel}>{sprachfassung(b.satz, lang)}</p>
+          ))}
         </Abschnitt>
       )}
 
       <Abschnitt titel={T.womit}>
-        {h.bibliothek
-          ? <p>{T.bibliothek(h.bibliothek.name, h.bibliothek.version)}</p>
-          /* Auch das ist eine Angabe, keine Lücke: B2 und B3 rechnen
+        {h.bibliothek.name === null
+          /* Auch das ist eine Angabe, keine Lücke – und sie kommt aus den
+             Daten, nicht aus dieser Komponente: B2 und B3 rechnen
              kombinatorisch, dort ist keine Bibliothek im Spiel. */
-          : <p className="herkunft-fehlt">{T.bibliothekFehlt}</p>}
+          ? <p>{sprachfassung(h.bibliothek.begruendung, lang)}</p>
+          : <p>{T.bibliothek(h.bibliothek.name, h.bibliothek.version)}</p>}
       </Abschnitt>
 
       <Abschnitt titel={T.stand}>

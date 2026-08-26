@@ -29,9 +29,10 @@ export const STR = defineStrings(
       + 'gezogene. Das Ergebnis ist deshalb eine sehr genaue Schätzung, keine '
       + 'exakte Zahl.',
     faelle: 'Durchgerechnete Fälle',
-    faelleFehlen:
-      'Wie viele Fälle durchgerechnet wurden, steht nicht in den Daten. '
-      + 'Die Zahl hier zu erfinden wäre schlimmer, als sie wegzulassen.',
+    faelleHinweis:
+      'Mitgezählt, während gerechnet wurde — nicht hinterher aus einer Formel '
+      + 'hergeleitet.',
+    faelleTeil: (name: string) => name.replace(/_/g, ' '),
 
     zweck: 'Wofür dieser Block gerechnet wurde',
 
@@ -48,9 +49,6 @@ export const STR = defineStrings(
 
     womit: 'Womit gerechnet wurde',
     bibliothek: (name: string, version: string) => `${name}, Version ${version}`,
-    bibliothekFehlt:
-      'Für diesen Block war keine Bibliothek zum Bewerten von Blättern nötig — '
-      + 'es ist reine Kombinatorik. Die Daten nennen deshalb keine.',
 
     stand: 'Stand',
     quelle: 'Vollständige Fassung mit allen Belegen',
@@ -73,9 +71,10 @@ export const STR = defineStrings(
       + 'drawn ones. The result is therefore a very close estimate, not an '
       + 'exact figure.',
     faelle: 'Cases worked through',
-    faelleFehlen:
-      'How many cases were worked through is not in the data. Inventing the '
-      + 'figure here would be worse than leaving it out.',
+    faelleHinweis:
+      'Counted while the computation ran — not derived from a formula '
+      + 'afterwards.',
+    faelleTeil: (name: string) => name.replace(/_/g, ' '),
 
     zweck: 'What this block was computed for',
 
@@ -92,9 +91,6 @@ export const STR = defineStrings(
 
     womit: 'What it was computed with',
     bibliothek: (name: string, version: string) => `${name}, version ${version}`,
-    bibliothekFehlt:
-      'This block needed no hand-evaluation library — it is pure combinatorics. '
-      + 'The data therefore names none.',
 
     stand: 'As of',
     quelle: 'Full version with all the evidence',

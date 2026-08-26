@@ -6,14 +6,41 @@ Datei** und weiß, wo es steht. Ganz unten steht die Vorgeschichte des
 Projekts, unverändert übernommen.
 
 - **Arbeitsbereich:** `/home/user/poker-trainer` (git worktree)
-- **Branch:** `feature/pot-odds-trainer`
-- **Abgezweigt von:** `feature/poker-math` @ `2c2ca7e`
-- **Hauptverzeichnis:** `/home/user/poker` auf `feature/poker-math` —
-  **nicht anfassen.** Kein Branchwechsel dort, keine Schreibzugriffe auf
-  `tools/poker-math/`, insbesondere nicht auf `output/`.
-- **Letzte Aktualisierung:** 2026-08-26, nach Aufgabe 4
-- **Stand in einem Satz:** Alle vier Aufgaben sind fertig, geprüft und
-  gepusht. Offen ist nur noch, was ein Mensch entscheiden muss.
+- **Branch:** `feature/pot-odds-trainer`, abgezweigt von `feature/poker-math`
+- **Hauptverzeichnis:** `/home/user/poker` auf `feature/poker-math`. Dort
+  läuft der B4-Rechenlauf; die Generator-Arbeit findet dort statt und wird
+  hierher gemergt.
+- **Letzte Aktualisierung:** 2026-08-26, nach dem Abarbeiten der Blocker
+- **Stand in einem Satz:** Die vier Aufgaben sind fertig, und sechs der
+  sieben Blocker sind erledigt. Offen sind der laufende B4-Lauf und eine
+  Entscheidung (B-007).
+
+---
+
+## Was gerade läuft
+
+**Der B4-Rechenlauf** (Preflop-Equity, alle 14 365 Handpaare, exakt).
+
+```bash
+tail -3 tools/poker-math/output/b4_lauf.log      # Fortschritt und Restzeit
+cat tools/poker-math/output/b4.pid               # Prozessnummer
+kill "$(cat tools/poker-math/output/b4.pid)"     # sauber anhalten
+```
+
+Er sichert sich selbst alle 250 Handpaare nach
+`output/b4_teil/matchups.jsonl`. Anhalten und neu starten kostet höchstens
+ein paar Minuten Rechnung — der Lauf setzt an der ersten fehlenden Einheit
+an. Nach dem letzten Handpaar baut er die Ausgabedatei selbst zusammen und
+prüft die ganze Matrix auf Stimmigkeit; eine Abweichung bricht ab.
+
+Ist er fertig, fehlt nur noch:
+
+```bash
+npm run daten     # nimmt b4_preflop_equity.json mit in public/pokermath/
+```
+
+Dafür braucht der Konverter noch einen `appB4`-Block — er ist der einzige,
+den es noch nicht gibt.
 
 ---
 
@@ -26,8 +53,42 @@ Projekts, unverändert übernommen.
 | 3 | „Warum diese Zahl": Herkunft neben jeder Zahl, aufklappbar | ✅ fertig |
 | 4 | Teilbare Ergebnisse: Zustand in der Adresse, Vorschaubild-Metadaten | ✅ fertig |
 
-Reihenfolge ist bindend: eine Aufgabe vollständig abschließen und committen,
-bevor die nächste beginnt.
+---
+
+## Die Blocker
+
+| # | Was | Stand |
+|---|-----|-------|
+| B-001 | B4-Lauf tot, `--sichern` hat Daten vernichtet | ✅ behoben, Lauf neu gestartet |
+| B-002 | B2/B3 nannten keine Evaluator-Bibliothek | ✅ nennen jetzt den Grund |
+| B-003 | Keine Ausgabe nannte eine Fallzahl | ✅ wird mitgezählt |
+| B-004 | Zwei Konvertierungsskripte | ✅ eines entfernt |
+| B-005 | Gerechnete Daten nur auf Deutsch | ✅ zweisprachig ab Vertrag 3 |
+| B-006 | Willkommensdialog vor der geteilten Aufgabe | ✅ aufgeschoben statt vorgedrängt |
+| B-007 | Vorschaukarte je Aufgabe | ⬜ **braucht eine Entscheidung** |
+
+Ausführlich, mit Begründung und Nachweis: `BLOCKER.md`.
+
+---
+
+## Der Datenvertrag
+
+Version **3**. `ERWARTETE_VERTRAG_VERSION` in
+`src/lib/pokermath/typen.ts` muss zu `VERTRAG_VERSION` in
+`scripts/pokermath-app-daten.mjs` passen; tut sie es nicht, lehnt die App die
+Datei ab, statt sie halb zu verstehen.
+
+Was Version 3 gegenüber 2 ändert:
+
+- Jeder anzeigbare Text ist ein `{de, en}`-Paar statt einer deutschen
+  Zeichenkette.
+- `faelle_enumeriert` trägt die mitgezählte Fallzahl und ihre
+  Aufschlüsselung, jede Zählstelle mit Namen in beiden Sprachen.
+- `bibliothek` nennt bei Blöcken ohne Evaluator den Grund, statt `null` zu
+  sein.
+
+---
+
 
 ---
 
@@ -291,34 +352,39 @@ sondern das Protokoll. Die Wege dahin und ihr Preis stehen in **B-007**.
 
 ## Was als Nächstes zu tun ist
 
-Alle vier Aufgaben sind fertig, committet und gepusht. Offen ist nur, was ein
-Mensch entscheiden muss — siehe unten und `BLOCKER.md`.
+**1. Auf B4 warten und dann anschließen.** Der Lauf braucht noch etwa vier
+Stunden (Stand 19:10 Uhr: 1152 von 14 365, rund 1,1 s je Handpaar). Danach
+liegt `output/b4_preflop_equity.json` bereit, und es fehlt nur der
+`appB4`-Block im Konverter, damit die Matrix in `public/pokermath/` landet.
+Der Zuschnitt ist schon entschieden (K3): je Handpaar der gewichtete Wert,
+die Spanne und das Kennzeichen — die einzelnen Farbkonfigurationen **nur**
+dort, wo die Spanne über einen Prozentpunkt liegt.
 
-Wer hier weiterarbeitet, hat drei naheliegende Fäden:
+**2. Die Herkunftsanzeige ausweiten.** `Herkunft.tsx` ist nicht an den Drill
+gebunden. Jede andere Seite, die eine gerechnete Zahl zeigt — die
+Odds-Tabellen, der Starthand-Explorer, der Equity-Rechner — könnte sie
+verwenden. Bisher tut es nur der Drill.
 
-1. **B-001 auflösen:** Der B4-Lauf muss neu gestartet werden, und vorher
-   gehört der Fehler in `--sichern` behoben. Das geht nur im
-   Hauptverzeichnis, nicht hier.
-2. **Die Herkunftsanzeige ausweiten:** `Herkunft.tsx` ist nicht an den Drill
-   gebunden. Jede andere Seite, die eine gerechnete Zahl zeigt, könnte sie
-   verwenden — bisher tut es nur der Drill.
-3. **B-005 entscheiden:** Auf Englisch stehen deutsche Fachbegriffe in den
-   Daten. Sauber wäre, dass der Rechengenerator sie zweisprachig ausgibt.
+**3. Die Befunde anzeigen.** Sie liegen zweisprachig in den App-Daten und
+werden nirgends gezeigt. Ein Satz wie „Bis 6 Outs verspricht die 2/4-Regel zu
+wenig, ab 7 Outs zu viel" ist genau das, was diese App von einer
+Odds-Tabelle unterscheidet.
 
 ---
 
 ## Was ein Mensch entscheiden muss
 
-Alles in `BLOCKER.md`, vier Punkte. Der dringlichste:
+Ein Punkt, `BLOCKER.md`, **B-007**: Eine Vorschaukarte je geteilter Aufgabe
+ist ohne Server nicht möglich — das Fragment einer Adresse wird beim Abruf
+nicht mitgeschickt. Die allgemeine Karte funktioniert. Zu entscheiden ist, ob
+sie reicht oder ob 64 vorab erzeugte Seiten den Umbau von `HashRouter` auf
+`BrowserRouter` wert sind.
 
-**B-001 — der B4-Lauf ist tot und Daten sind verloren.** Der
-Preflop-Equity-Lauf im Hauptverzeichnis läuft **nicht** mehr; letzte
-Logzeile 09:51:48 bei 390 von 14 365 Handpaaren. Gesichert im Repo sind 270.
-Die Differenz von etwa 120 gerechneten Handpaaren ist weg, weil `--sichern`
-die laufende Datei entfernt, während der Prozess sie noch offen hatte. Unter
-Linux schreibt der Prozess dann in eine Datei, die es nicht mehr gibt.
-Der Fehler sitzt in `tools/poker-math/src/b4_preflop_equity.py` — **hier nicht
-zu beheben**, dieser Arbeitsbereich darf dort nicht schreiben.
+Alles andere ist erledigt und in `BLOCKER.md` mit Begründung nachgehalten.
+
+---
+---
+
 
 ---
 ---

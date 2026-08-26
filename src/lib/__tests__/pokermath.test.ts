@@ -43,8 +43,10 @@ describe('Der Herkunftsblock ist vollständig – er speist „Warum diese Zahl?
   ] as const)('%s trägt Methode, Annahmen und Kartenzahlen', (_n, roh, pruefe) => {
     const h = pruefe(roh as never).herkunft;
     expect(h.methode).toBe('exakt');
-    expect(h.annahmen.sicht).toContain('Heldensicht');
-    expect(h.annahmen.split_pot).toContain('0,5');
+    expect(h.annahmen.sicht.de).toContain('Heldensicht');
+    expect(h.annahmen.sicht.en).toContain('hero');
+    expect(h.annahmen.split_pot.de).toContain('0,5');
+    expect(h.annahmen.split_pot.en).toContain('0.5');
     expect(h.annahmen.kartenzahlen.deck).toBe(52);
     /* Die Kartenzahlen müssen zueinander passen: 52 minus eigene Karten minus
        Flop. Das prüft nicht die Datei, sondern die Rechnung dahinter. */
@@ -55,22 +57,49 @@ describe('Der Herkunftsblock ist vollständig – er speist „Warum diese Zahl?
   });
 
   it('B1 nennt die Bibliothek samt Version', () => {
-    const h = pruefeB1(B1).herkunft;
-    expect(h.bibliothek).not.toBeNull();
-    expect(h.bibliothek!.name.length).toBeGreaterThan(0);
-    expect(h.bibliothek!.version).toMatch(/^\d+\.\d+/);
+    const b = pruefeB1(B1).herkunft.bibliothek;
+    expect(b.name).not.toBeNull();
+    if (b.name === null) throw new Error('unerreichbar');
+    expect(b.name.length).toBeGreaterThan(0);
+    expect(b.version).toMatch(/^\d+\.\d+/);
   });
 
-  it('B2 und B3 nennen keine – das ist bekannt und dokumentiert', () => {
-    /* Kein Evaluator nötig, also steht dort null. Die Oberfläche sagt das
-       offen, statt die Zeile wegzulassen. Siehe BLOCKER.md, B-002. */
-    expect(pruefeB2(B2).herkunft.bibliothek).toBeNull();
-    expect(pruefeB3(B3).herkunft.bibliothek).toBeNull();
+  it('B2 und B3 nennen den Grund, warum keine nötig war', () => {
+    /* Kein Evaluator nötig – aber ein fehlendes Feld sähe aus wie ein
+       Versäumnis. Also steht dort der Grund, und zwar in beiden Sprachen und
+       aus den Daten, nicht aus der Oberfläche. Früher B-002. */
+    for (const b of [pruefeB2(B2).herkunft.bibliothek, pruefeB3(B3).herkunft.bibliothek]) {
+      expect(b.name).toBeNull();
+      if (b.name !== null) throw new Error('unerreichbar');
+      expect(b.begruendung.de.length).toBeGreaterThan(0);
+      expect(b.begruendung.en.length).toBeGreaterThan(0);
+    }
   });
 
-  it('die Fallzahl fehlt überall – bekannt, siehe BLOCKER.md B-003', () => {
+  it('jede Datei sagt, über wie viele Fälle gerechnet wurde', () => {
+    /* Früher B-003: Die Herkunftsanzeige versprach die Fallzahl, und die
+       Daten lieferten sie nicht. Jetzt zählt der Generator mit. */
+    for (const d of [pruefeB1(B1), pruefeB2(B2), pruefeB3(B3)]) {
+      const f = d.herkunft.faelle_enumeriert;
+      expect(f.gesamt).toBeGreaterThan(0);
+      expect(f.je_teil.length).toBeGreaterThan(0);
+      for (const z of f.je_teil) {
+        // Der Name jeder Zählstelle steht in der Herkunftsanzeige.
+        expect(z.bezeichnung.de.length).toBeGreaterThan(0);
+        expect(z.bezeichnung.en.length).toBeGreaterThan(0);
+      }
+      const summe = f.je_teil.reduce((a, z) => a + z.anzahl, 0);
+      expect(summe).toBe(f.gesamt);
+    }
+  });
+
+  it('die Aufschlüsselung der Fälle ergibt die Gesamtzahl', () => {
+    /* Zwei Zahlen, die dasselbe beschreiben, müssen zusammenpassen. Täten
+       sie es nicht, wäre eine von beiden erfunden – und man sähe es keiner
+       von beiden an. */
     for (const h of [pruefeB1(B1), pruefeB2(B2), pruefeB3(B3)].map((d) => d.herkunft)) {
-      expect(h.faelle_enumeriert).toBeNull();
+      const summe = h.faelle_enumeriert.je_teil.reduce((a, z) => a + z.anzahl, 0);
+      expect(summe).toBe(h.faelle_enumeriert.gesamt);
     }
   });
 

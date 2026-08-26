@@ -25,8 +25,11 @@ import {
   type B2PotOdds,
   type B3Kombinatorik,
   type Befund,
+  type Bibliothek,
+  type Fallzahl,
   type Herkunft,
   type Kopf,
+  type Text,
 } from './typen';
 import { bruchTeile } from './bruch';
 
@@ -83,6 +86,16 @@ function text(v: unknown, pfad: string, maxLaenge = 4000): string {
   return v;
 }
 
+/** Ein zweisprachiges Textpaar.
+ *
+ *  Eine nackte Zeichenkette wird abgelehnt, nicht durchgereicht: Sie erschiene
+ *  in der englischen App als deutscher Satz, und das fällt nur dem auf, der
+ *  die App auf Englisch benutzt – also so gut wie nie. */
+function zweisprachig(v: unknown, pfad: string): Text {
+  const o = objekt(v, pfad);
+  return { de: text(o.de, `${pfad}.de`), en: text(o.en, `${pfad}.en`) };
+}
+
 function liste(v: unknown, pfad: string): unknown[] {
   if (!Array.isArray(v) || v.length === 0) {
     throw new SchemaFehler(pfad, 'ist keine nichtleere Liste');
@@ -106,9 +119,9 @@ function pruefeAnnahmen(v: unknown, pfad: string): Annahmen {
   const o = objekt(v, pfad);
   const k = objekt(o.kartenzahlen, `${pfad}.kartenzahlen`);
   return {
-    sicht: text(o.sicht, `${pfad}.sicht`),
-    unbekannte_karten: text(o.unbekannte_karten, `${pfad}.unbekannte_karten`),
-    split_pot: text(o.split_pot, `${pfad}.split_pot`),
+    sicht: zweisprachig(o.sicht, `${pfad}.sicht`),
+    unbekannte_karten: zweisprachig(o.unbekannte_karten, `${pfad}.unbekannte_karten`),
+    split_pot: zweisprachig(o.split_pot, `${pfad}.split_pot`),
     kartenzahlen: {
       deck: ganzzahl(k.deck, `${pfad}.kartenzahlen.deck`, 1, 52),
       eigene_karten: ganzzahl(k.eigene_karten, `${pfad}.kartenzahlen.eigene_karten`, 1, 5),
@@ -119,7 +132,7 @@ function pruefeAnnahmen(v: unknown, pfad: string): Annahmen {
       const b = objekt(e, `${pfad}.besonderheiten[${i}]`);
       return {
         schluessel: text(b.schluessel, `${pfad}.besonderheiten[${i}].schluessel`, 120),
-        satz: text(b.satz, `${pfad}.besonderheiten[${i}].satz`),
+        satz: zweisprachig(b.satz, `${pfad}.besonderheiten[${i}].satz`),
       };
     }),
   };
@@ -131,23 +144,43 @@ function pruefeHerkunft(v: unknown, pfad: string): Herkunft {
   if (methode !== 'exakt' && methode !== 'monte-carlo') {
     throw new SchemaFehler(`${pfad}.methode`, `ist weder 'exakt' noch 'monte-carlo': ${methode}`);
   }
-  let bibliothek: Herkunft['bibliothek'] = null;
-  if (o.bibliothek !== null && o.bibliothek !== undefined) {
-    const b = objekt(o.bibliothek, `${pfad}.bibliothek`);
-    bibliothek = {
+  /* Entweder eine Bibliothek mit Version oder der Grund, warum keine nötig
+     war. Kein `null` mehr: Eine Lücke, die die App selbst erklären müsste,
+     wäre genau die Stelle, an der sie anfinge zu formulieren. */
+  const b = objekt(o.bibliothek, `${pfad}.bibliothek`);
+  const bibliothek: Bibliothek = b.name === null
+    ? { name: null, begruendung: zweisprachig(b.begruendung, `${pfad}.bibliothek.begruendung`) }
+    : {
       name: text(b.name, `${pfad}.bibliothek.name`, 60),
       version: text(b.version, `${pfad}.bibliothek.version`, 40),
     };
+
+  const f = objekt(o.faelle_enumeriert, `${pfad}.faelle_enumeriert`);
+  const je_teil = jedes(f.je_teil, `${pfad}.faelle_enumeriert.je_teil`, (e, p) => {
+    const z = objekt(e, p);
+    return {
+      schluessel: text(z.schluessel, `${p}.schluessel`, 80),
+      bezeichnung: zweisprachig(z.bezeichnung, `${p}.bezeichnung`),
+      anzahl: ganzzahl(z.anzahl, `${p}.anzahl`, 0),
+    };
+  });
+  const gesamt = ganzzahl(f.gesamt, `${pfad}.faelle_enumeriert.gesamt`, 1);
+  const summe = je_teil.reduce((a, z) => a + z.anzahl, 0);
+  /* Die Aufschlüsselung muss die Gesamtzahl ergeben. Täte sie es nicht, wäre
+     eine der beiden Zahlen erfunden – und man sähe es keiner von beiden an. */
+  if (summe !== gesamt) {
+    throw new SchemaFehler(`${pfad}.faelle_enumeriert`,
+      `die Aufschlüsselung ergibt ${summe}, angegeben sind ${gesamt}`);
   }
+  const faelle_enumeriert: Fallzahl = { gesamt, je_teil };
+
   return {
     methode,
     erzeugt_am: text(o.erzeugt_am, `${pfad}.erzeugt_am`, 40),
-    zweck: text(o.zweck, `${pfad}.zweck`),
+    zweck: zweisprachig(o.zweck, `${pfad}.zweck`),
     annahmen: pruefeAnnahmen(o.annahmen, `${pfad}.annahmen`),
     bibliothek,
-    faelle_enumeriert: o.faelle_enumeriert === null || o.faelle_enumeriert === undefined
-      ? null
-      : ganzzahl(o.faelle_enumeriert, `${pfad}.faelle_enumeriert`, 1),
+    faelle_enumeriert,
     quelle: text(o.quelle, `${pfad}.quelle`, 300),
   };
 }
@@ -174,7 +207,7 @@ function pruefeBefunde(v: unknown, pfad: string): Befund[] {
     const o = objekt(e, p);
     return {
       schluessel: text(o.schluessel, `${p}.schluessel`, 80),
-      aussage: text(o.aussage, `${p}.aussage`),
+      aussage: zweisprachig(o.aussage, `${p}.aussage`),
     };
   });
 }
@@ -209,10 +242,10 @@ export function pruefeB1(roh: unknown): B1Outs {
     zugbilder: jedes(k.zugbilder, 'b1_outs.zugbilder', (e, p) => {
       const o = objekt(e, p);
       const z = {
-        name: text(o.name, `${p}.name`, 120),
+        name: zweisprachig(o.name, `${p}.name`),
         hand: text(o.hand, `${p}.hand`, 20),
         flop: text(o.flop, `${p}.flop`, 30),
-        zielkategorie: text(o.zielkategorie, `${p}.zielkategorie`, 40),
+        zielkategorie: zweisprachig(o.zielkategorie, `${p}.zielkategorie`),
         outs: ganzzahl(o.outs, `${p}.outs`, 1, 52),
         outs_falsch_gezaehlt: ganzzahl(o.outs_falsch_gezaehlt, `${p}.outs_falsch_gezaehlt`, 1, 52),
       };
@@ -225,14 +258,14 @@ export function pruefeB1(roh: unknown): B1Outs {
     gegenbeispiele: jedes(k.gegenbeispiele, 'b1_outs.gegenbeispiele', (e, p) => {
       const o = objekt(e, p);
       return {
-        name: text(o.name, `${p}.name`, 120),
+        name: zweisprachig(o.name, `${p}.name`),
         hand: text(o.hand, `${p}.hand`, 20),
         flop: text(o.flop, `${p}.flop`, 30),
         out: text(o.out, `${p}.out`, 10),
         gegner: text(o.gegner, `${p}.gegner`, 20),
-        hero_nachher: text(o.hero_nachher, `${p}.hero_nachher`, 40),
-        gegner_nachher: text(o.gegner_nachher, `${p}.gegner_nachher`, 40),
-        erklaerung: text(o.erklaerung, `${p}.erklaerung`),
+        hero_nachher: zweisprachig(o.hero_nachher, `${p}.hero_nachher`),
+        gegner_nachher: zweisprachig(o.gegner_nachher, `${p}.gegner_nachher`),
+        erklaerung: zweisprachig(o.erklaerung, `${p}.erklaerung`),
       };
     }),
     befunde: pruefeBefunde(k.befunde, 'b1_outs.befunde'),
@@ -246,7 +279,7 @@ export function pruefeB2(roh: unknown): B2PotOdds {
     einsatzgroessen: jedes(k.einsatzgroessen, 'b2_potodds.einsatzgroessen', (e, p) => {
       const o = objekt(e, p);
       const zeile = {
-        name: text(o.name, `${p}.name`, 60),
+        name: zweisprachig(o.name, `${p}.name`),
         einsatz_als_potanteil: zahl(o.einsatz_als_potanteil, `${p}.einsatz_als_potanteil`, 0, 100),
         einsatz_als_bruch: text(o.einsatz_als_bruch, `${p}.einsatz_als_bruch`, 20),
         /* Obergrenze 0,5 ist keine Vorsicht, sondern Mathematik: Der Gegner

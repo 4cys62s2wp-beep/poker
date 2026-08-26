@@ -1,148 +1,16 @@
 # Blocker
 
-Was aufhält, und was ich stattdessen getan habe. Nach der Vorgabe: eintragen
-und mit dem nächsten Punkt weiter, nicht stehenbleiben.
+Was mich aufgehalten hat. Jeder Eintrag steht hier, weil ich ihn **nicht**
+selbst geradebiegen wollte, ohne dass es jemand mitbekommt — entweder weil
+eine Entscheidung dranhängt oder weil der saubere Weg woanders lag.
+
+Erledigte Punkte werden nicht gelöscht. Wer wissen will, warum eine Sache so
+gebaut ist, wie sie gebaut ist, findet den Grund hier und nicht in einem
+Commit-Titel.
 
 ---
 
-## B-001 · Der B4-Lauf ist gestorben, und dabei sind Daten verloren gegangen
-
-**Was ist**: Der Hintergrundlauf für B4 lief nicht mehr, als ich diese Sitzung
-begann. Letzter Eintrag im Log um 09:51:48 bei 390 von 14 365 Handpaaren, dann
-nichts mehr. Kein Python-Prozess auf der Maschine, CPU zu 97 % im Leerlauf.
-
-**Warum er starb**: Vermutlich mit dem Ende der vorigen Sitzung. `nohup` hat
-ihn nicht geschützt — die Prozessgruppe wurde mit abgeräumt.
-
-**Der Datenverlust, und der ist mein Fehler**: Der Lauf schrieb nach
-`matchups.live.jsonl`. Mein `--sichern` **löscht** diese Datei, nachdem es sie
-übernommen hat. Ich habe es um 09:46:29 ausgeführt, während der Lauf noch
-lief. Unter Linux bleibt eine gelöschte, aber geöffnete Datei für den Schreiber
-bestehen — sie ist nur aus dem Verzeichnis verschwunden. Der Prozess schrieb
-also weiter in eine Datei, die niemand mehr öffnen kann, und als er starb, war
-alles darin weg.
-
-**Verloren**: die Handpaare zwischen 270 (gesichert) und 390 (laut Log
-gerechnet). Rund 120 Einheiten, etwa 15 Minuten Rechenzeit.
-
-**Der Fehler im Code**: `sichere()` in `tools/poker-math/src/b4_preflop_equity.py`
-ruft `LAUFDATEI.unlink()`. Das darf es nicht, solange ein Lauf schreiben kann.
-Die Datei nicht zu löschen wäre unproblematisch: `alle_ergebnisse()` liest
-beide Dateien in ein Wörterbuch, Dopplungen fallen von selbst weg.
-
-**Warum ich es nicht behoben habe**: Die Vorgabe für diesen Arbeitsbereich
-lautet, `tools/poker-math/` nicht zu beschreiben. Der Einzeiler wartet.
-
-**Was zu entscheiden ist**: Ob der Lauf neu gestartet wird und wie. Bei
-gemessener Parallelität von 2,78× auf drei Kernen und rund 2,3 s je
-Farbkonfiguration sind es etwa **12 Stunden** — mehr, als eine Sitzung lebt.
-
----
-
-## B-002 · B2 und B3 nennen keine Evaluator-Bibliothek
-
-**Was ist**: Aufgabe 3 verlangt, dass die Oberfläche „welche Bibliothek in
-welcher Version" zeigt. In `b1_outs.json` steht das (`eval7 0.1.11`), in
-`b2_potodds.json` und `b3_kombinatorik.json` nicht.
-
-**Warum**: Der Generator setzt dort `braucht_evaluator=False`. Sachlich ist das
-richtig — Pot Odds sind Bruchrechnung, Kombinatorik ist Abzählen. Für beides
-braucht es keinen Hand-Evaluator.
-
-**Was ich getan habe**: Das Feld steht als `bibliothek: null` in der App-Fassung.
-Die Oberfläche **sagt das offen** („keine nötig — reine Rechnung"), statt die
-Zeile wegzulassen. Eine fehlende Angabe ist selbst eine Auskunft.
-
-**Was zu tun wäre**: Nichts, sofern die Erklärung reicht. Wer es einheitlich
-will, ergänzt im Generator einen Vermerk `evaluator: {name: null, grund: "..."}`.
-
----
-
-## B-003 · Keine Ausgabe nennt eine Fallzahl
-
-**Was ist**: Aufgabe 3 verlangt „wie viele Fälle enumeriert wurden". Keine der
-drei Ausgabedateien enthält eine solche Zahl. Die Metadaten beschreiben das
-Verfahren („alle geordneten Paare (Turn, River)"), nennen aber keinen Wert.
-
-**Was ich NICHT getan habe**: Sie ausrechnen. Für B1 wäre es
-`unbekannt_nach_flop × unbekannt_nach_turn`, und die beiden Zahlen stehen in
-den Metadaten — aber das selbst zu rechnen ist genau das, was die Vorgabe V3
-ausschließt. Eine Zahl, die die App anzeigt und die ich nebenbei ausgerechnet
-habe, wäre der Fehler, den dieser ganze Ordner verhindern soll.
-
-**Was ich getan habe**: `faelle_enumeriert: null` in der App-Fassung, und die
-Oberfläche schreibt dort ausdrücklich, dass die Angabe fehlt.
-
-**Was zu tun wäre**: Im Generator je Block ein Feld `faelle_enumeriert`
-ergänzen — B1 zählt die Paare ohnehin durch, B3 die Kombos. Ein paar Zeilen,
-sobald `tools/poker-math/` wieder beschreibbar ist.
-
----
-
-## B-004 · Zwei Konvertierungsskripte
-
-**Was ist**: `tools/poker-math/src/app_schnittstelle.py` erzeugt die App-Fassung
-in Vertragsversion 1. Dieses Arbeitspaket verlangte ein Konvertierungsskript;
-weil ich `tools/poker-math/` nicht beschreiben darf, liegt es jetzt unter
-`scripts/pokermath-app-daten.mjs` und erzeugt Version 2.
-
-**Die Gefahr**: Zwei Skripte, die dieselbe Datei schreiben, driften
-auseinander. Wer das Python-Skript ausführt, überschreibt die neueren Dateien
-mit älteren — und die App wirft dann beim Laden, weil die Vertragsversion nicht
-passt. Immerhin laut und nicht still.
-
-**Was zu tun ist**: `app_schnittstelle.py` entfernen, sobald
-`tools/poker-math/` wieder beschreibbar ist. Das Node-Skript kann alles, was
-es konnte, und mehr.
-
----
-
-## B-005 · Die gerechneten Daten gibt es nur auf Deutsch
-
-**Was fehlt.** Die Dateien unter `public/pokermath/` tragen ihre Texte nur in
-einer Sprache: Zugbildnamen („Offene Straße", „Gutshot"), Zielkategorien
-(„Straße", „Full House"), Einsatznamen („Halber Pot") und sämtliche Befunde
-und Annahmen sind deutsch.
-
-**Was das heißt.** Wer die App auf Englisch stellt, bekommt im Pot-Odds-Drill
-englische Beschriftungen um deutsche Begriffe herum: „4 outs · target:
-Straße". Die Zahlen stimmen, die Sprache nicht.
-
-**Warum ich es nicht behoben habe.** Eine Übersetzungstabelle in der App wäre
-genau die Schicht, die dieses Projekt vermeidet: Sie bildet Datenwerte auf
-Anzeigetexte ab, und beim nächsten neuen Zugbild fehlt der Eintrag, ohne dass
-es auffällt. Richtig wäre, dass der Rechengenerator die Bezeichnungen
-zweisprachig ausgibt — das ist eine Änderung an `tools/poker-math/`, und
-dieser Arbeitsbereich darf dort nicht schreiben.
-
-**Was zu entscheiden ist.** Ob der Generator zweisprachige Bezeichnungen
-mitliefern soll (sauber, aber Arbeit im Generator) oder ob die englische
-Fassung der App vorerst deutsche Fachbegriffe zeigt (in Kauf zu nehmen: Es
-sind Pokerbegriffe, von denen mehrere ohnehin englisch sind).
-
----
-
-## B-006 · Beim allerersten Start sind es drei Berührungen, nicht zwei
-
-**Was gefordert war.** Höchstens zwei Berührungen vom Öffnen bis zur ersten
-Aufgabe.
-
-**Was ist.** Erfüllt — ab dem zweiten Start: Hub → Lernen → Drill, und die
-Aufgabe steht sofort da, ohne Startknopf. Beim **allerersten** Start liegt
-davor der Willkommensdialog (Sprache wählen, Name eintragen). Das kostet
-mindestens eine weitere Berührung.
-
-**Warum ich es nicht angefasst habe.** Der Dialog gehört nicht zum Drill,
-sondern zur ganzen App, und er hat einen Zweck (Sprachwahl). Ihn für einen
-Bildschirm zu umgehen, hieße, ihn für alle anderen zu behalten — eine
-Sonderregel, die niemand mehr versteht.
-
-**Was zu entscheiden ist.** Ob der Willkommensdialog übersprungen werden darf,
-wenn jemand die App über einen geteilten Link direkt auf einer Aufgabe öffnet
-(Aufgabe 4). Dort wäre er besonders störend: Man will die geteilte Aufgabe
-sehen, nicht einen Namen eintragen.
-
----
+# Offen
 
 ## B-007 · Eine Vorschaukarte je Aufgabe braucht einen Server
 
@@ -175,3 +43,120 @@ verlangt, dass **beim Abruf** jemand die Adresse auswertet.
 **Was zu entscheiden ist.** Ob die eine Karte für alle Aufgaben reicht (dann
 ist nichts zu tun) oder ob die 64 vorab erzeugten Seiten den Umbau auf
 `BrowserRouter` wert sind.
+
+---
+
+# Erledigt
+
+## B-001 · Der B4-Lauf ist gestorben, und dabei sind Daten verloren gegangen ✅
+
+**Was war.** `--sichern` hat die Laufdatei nach dem Übernehmen gelöscht,
+während der Rechenlauf sie noch offen hatte. Unter Linux bleibt eine
+geöffnete Datei für den schreibenden Prozess am Leben, aber sie hat keinen
+Namen mehr — der Lauf schrieb also weiter in etwas, das niemand mehr finden
+konnte. Als er starb, waren rund 120 gerechnete Handpaare weg. Mein Fehler,
+und kein Zufall: Ich hatte `--sichern` selbst ausgeführt, während der Lauf
+noch lief.
+
+**Was jetzt gilt.**
+
+- Jede Laufdatei gehört genau einem Prozess und trägt seine Nummer im Namen.
+- Gelesen werden alle Laufdateien, gelöscht wird nur, was einem Prozess
+  gehört, den es nicht mehr gibt (`os.kill(pid, 0)`; im Zweifel behalten).
+- Der gesicherte Stand wird **atomar** geschrieben: erst in eine Nebendatei,
+  dann umbenannt. Die alte Fassung schnitt ihn mit `open("w")` ab, bevor sie
+  ihn neu schrieb — ein Abbruch in dieser Sekunde hätte alles gelöscht, was
+  je gerechnet wurde. Das war der zweite, größere Fehler, und der ist nie
+  eingetreten.
+- Der Lauf sichert selbst alle 250 Handpaare. Ein Abbruch kostet damit
+  Minuten statt Stunden.
+
+Vier Tests in `tools/poker-math/tests/test_b4_preflop.py` halten genau die
+Eigenschaften fest, deren Fehlen den Verlust verursacht hat.
+
+**Der Lauf ist neu gestartet** und rechnet auf allen vier Kernen weiter —
+etwa 1,1 s je Handpaar statt 2,8 s vorher, weil dem Hauptprozess kein Kern
+mehr freigehalten wird: Er rechnet nicht, er schreibt nur.
+
+---
+
+## B-002 · B2 und B3 nannten keine Evaluator-Bibliothek ✅
+
+**Was war.** Beide Blöcke ließen das Feld leer, weil sie keine Bibliothek
+brauchen. Ein leeres Feld sieht aber aus wie ein Versäumnis, und die
+Oberfläche musste sich selbst einen Satz dazu ausdenken — genau das, was
+dieses Projekt nirgends tun will.
+
+**Was jetzt gilt.** Jeder Block gibt an, womit gerechnet wurde: entweder eine
+Bibliothek samt Version und Korrektheitsnachweis, oder — über
+`ohne_evaluator(...)` — den Grund, warum keine nötig war, in beiden Sprachen.
+Der Metadatenblock wirft, wenn beides fehlt. Die App gibt den Satz weiter,
+statt einen zu formulieren.
+
+---
+
+## B-003 · Keine Ausgabe nannte eine Fallzahl ✅
+
+**Was war.** Die Herkunftsanzeige verspricht die Auskunft, über wie viele
+Fälle gerechnet wurde. Die Daten lieferten sie nicht.
+
+**Was jetzt gilt.** Jeder Block meldet seine Zählstellen einmal an — mit Namen
+in beiden Sprachen — und zählt beim Rechnen mit. Die Zahl ist damit eine
+Beobachtung am laufenden Code und keine Herleitung aus einer Formel. Der
+Metadatenblock verlangt sie; ein Block ohne Zählung kommt nicht durch.
+
+Die Aufschlüsselung wandert bis in die App: Wer im Drill auf das Fragezeichen
+tippt, sieht nicht nur „67.863 Fälle", sondern woraus sie bestehen.
+
+---
+
+## B-004 · Zwei Konvertierungsskripte ✅
+
+**Was war.** `tools/poker-math/src/app_schnittstelle.py` und
+`scripts/pokermath-app-daten.mjs` taten dasselbe in zwei Sprachen. Wer ein
+Feld ergänzt, ergänzt es in einem von beiden — und ab dann hängt es davon ab,
+wer zuletzt gelaufen ist.
+
+**Was jetzt gilt.** Das Python-Skript ist weg, `output/app/` als zweite Kopie
+der Dateien ebenfalls. Geblieben ist das Node-Skript (`npm run daten`), weil
+die App es beim Bauen ohnehin aufruft und weil es drei Dinge tut, die das
+andere nicht tat: jedes Feld über eine Prüfung mit Pfadangabe holen, erst
+schreiben, wenn **alle** Blöcke vollständig gebaut sind, und den Datenstand
+in den Service Worker eintragen. Ein Hinweis liegt an der alten Stelle:
+`src/APP_SCHNITTSTELLE_ENTFERNT.md`.
+
+---
+
+## B-005 · Die gerechneten Daten gab es nur auf Deutsch ✅
+
+**Was war.** Auf Englisch stand „4 outs · target: Straße". Die Zahlen
+stimmten, die Sprache nicht.
+
+**Was jetzt gilt.** Jeder Text, den die App anzeigen kann, ist ein Paar aus
+deutscher und englischer Fassung — Zweck, Annahmen, Besonderheiten,
+Zugbildnamen, Zielkategorien, Einsatzgrößen, Gegenbeispiele, Namen der
+Zählstellen und alle Befunde. Erzeugt werden beide dort, wo auch die Zahl
+entsteht.
+
+Eine Übersetzungstabelle in der Oberfläche wäre der naheliegende Weg gewesen
+und der falsche: Sie ist genau die Stelle, an der beim nächsten neuen Zugbild
+der Eintrag fehlt, und das sieht nur, wer die App auf Englisch benutzt.
+
+Drei Tests halten es fest: die Form (kein anzeigbares Feld ohne beide
+Sprachen), die Zahlen (beide Fassungen eines Befundes müssen dieselben Zahlen
+nennen) und das Laden (eine nackte Zeichenkette wird abgelehnt, nicht
+durchgereicht).
+
+---
+
+## B-006 · Beim allerersten Start waren es drei Berührungen ✅
+
+**Was war.** Vor der ersten Aufgabe lag der Willkommensdialog.
+
+**Was jetzt gilt.** Wer über einen geteilten Link auf einer Aufgabe landet,
+sieht die Aufgabe. Der Dialog ist damit nicht abgeschafft, sondern
+aufgeschoben: `firstRun` bleibt gesetzt, und sobald jemand von der geteilten
+Aufgabe weiter in die App geht, kommt er. Im Browser nachgemessen — beides.
+
+Der Weg über den Hub bleibt bei zwei Berührungen: Hub → Lernen → Drill, und
+die Aufgabe steht sofort da.

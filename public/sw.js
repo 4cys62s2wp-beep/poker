@@ -13,7 +13,7 @@
    Cache-Namen abgelegt, würde ein Gerät nach neuen Zahlen wochenlang die
    alten zeigen, ohne dass es jemandem auffällt. Ein neuer Datenstand ergibt
    einen neuen Cache-Namen, und der alte wird beim Aktivieren gelöscht. */
-const DATEN_STAND = '2026-08-26T09-21-54-00-00';
+const DATEN_STAND = '2026-08-26T19-08-20-00-00';
 const DATEN_DATEIEN = ['./pokermath/b1_outs.json', './pokermath/b2_potodds.json', './pokermath/b3_kombinatorik.json'];
 /* ── Ende des erzeugten Bereichs ──────────────────────────────────────── */
 

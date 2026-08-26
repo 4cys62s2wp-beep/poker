@@ -397,10 +397,14 @@ describe('Der Herkunftsblock trägt alles, was die Anzeige verspricht', () => {
   it.each([['b1_outs', B1], ['b2_potodds', B2]] as const)('%s', (_name, d) => {
     const h = d.herkunft;
     expect(['exakt', 'monte-carlo']).toContain(h.methode);
-    expect(h.zweck.length).toBeGreaterThan(0);
-    expect(h.annahmen.sicht.length).toBeGreaterThan(0);
-    expect(h.annahmen.unbekannte_karten.length).toBeGreaterThan(0);
-    expect(h.annahmen.split_pot.length).toBeGreaterThan(0);
+    // Jeder anzeigbare Text in beiden Sprachen: Eine englische App, die einen
+    // deutschen Satz zeigt, hat den Satz nicht gezeigt.
+    for (const paar of [h.zweck, h.annahmen.sicht, h.annahmen.unbekannte_karten,
+      h.annahmen.split_pot]) {
+      expect(paar.de.length).toBeGreaterThan(0);
+      expect(paar.en.length).toBeGreaterThan(0);
+      expect(paar.de).not.toBe(paar.en);
+    }
     expect(h.annahmen.kartenzahlen.deck).toBeGreaterThan(h.annahmen.kartenzahlen.unbekannt_nach_flop);
     expect(h.annahmen.kartenzahlen.unbekannt_nach_flop)
       .toBeGreaterThan(h.annahmen.kartenzahlen.unbekannt_nach_turn);
@@ -408,13 +412,25 @@ describe('Der Herkunftsblock trägt alles, was die Anzeige verspricht', () => {
     expect(h.quelle.length).toBeGreaterThan(0);
   });
 
-  it('lässt fehlende Angaben ausdrücklich leer, statt sie zu erfinden', () => {
-    /* Solange B-002 und B-003 offen sind, MÜSSEN diese Felder null sein.
-       Stünde hier eine Zahl, käme sie nicht aus der Rechnung – und dieser
-       Test schlüge an, bevor sie jemand für bare Münze nimmt. */
-    expect(B1.herkunft.faelle_enumeriert).toBeNull();
-    expect(B2.herkunft.faelle_enumeriert).toBeNull();
-    expect(B2.herkunft.bibliothek).toBeNull();
+  it('nennt die Fallzahl und sagt, woraus sie sich zusammensetzt', () => {
+    /* Früher stand hier das Gegenteil: Solange die Angabe fehlte, MUSSTE das
+       Feld null sein, damit niemand eine erfundene Zahl für bare Münze nimmt.
+       Der Generator zählt jetzt mit, also prüft der Test jetzt, dass die Zahl
+       da ist und zu ihrer Aufschlüsselung passt. */
+    for (const d of [B1, B2]) {
+      const f = d.herkunft.faelle_enumeriert;
+      expect(f.gesamt).toBeGreaterThan(0);
+      const summe = f.je_teil.reduce((a, z) => a + z.anzahl, 0);
+      expect(summe).toBe(f.gesamt);
+    }
+  });
+
+  it('nennt bei B2 den Grund, warum keine Bibliothek nötig war', () => {
+    const b = B2.herkunft.bibliothek;
+    expect(b.name).toBeNull();
+    if (b.name !== null) throw new Error('unerreichbar');
+    expect(b.begruendung.de.length).toBeGreaterThan(0);
+    expect(b.begruendung.en.length).toBeGreaterThan(0);
   });
 });
 

@@ -2016,3 +2016,37 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   background: var(--bg-card-hover);
   color: var(--text);
 }
+
+/* Die Aufschlüsselung der durchgerechneten Fälle. Ohne sie wäre die große
+   Zahl darüber beeindruckend und nichtssagend. */
+.herkunft-teile {
+  margin: var(--sp-2) 0 var(--sp-2);
+  padding: 0;
+  list-style: none;
+}
+
+.herkunft-teile li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-tiny);
+  color: var(--text-dim);
+}
+
+.herkunft-teile li:last-child {
+  border-bottom: 0;
+}
+
+.herkunft-teil-zahl {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-bright);
+  white-space: nowrap;
+}
+
+.herkunft-leise {
+  font-size: var(--fs-tiny) !important;
+  color: var(--text-faint) !important;
+}

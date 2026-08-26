@@ -207,3 +207,159 @@ def test_sichern_schreibt_atomar(tmp_path, monkeypatch):
         b4.sichere(still=True)
 
     assert ziel.read_text(encoding="utf-8") == alt, "Der gesicherte Stand wurde beschädigt"
+
+
+# ---------------------------------------------------------------------------
+# W-002 — die dokumentierte Zahl wird nachgezählt
+# ---------------------------------------------------------------------------
+#
+# Der Kopfkommentar von b4_preflop_equity.py nennt die Zahl der wirklich
+# verschiedenen Rechnungen. Sie stand dort über Monate falsch: 47 008 statt
+# 47 086. Gerechnet wurde immer richtig — nur die Beschreibung war es nicht,
+# und niemandem fiel es auf, weil keine Prüfung sie anfasste.
+#
+# Genau dagegen ist dieses Projekt gebaut. Also wird sie ab jetzt gezählt.
+
+import json
+import re
+from pathlib import Path
+
+WURZEL = Path(__file__).resolve().parent.parent
+QUELLTEXT = WURZEL / "src" / "b4_preflop_equity.py"
+AUSGABE = WURZEL / "output" / "b4_preflop_equity.json"
+
+#: Konkrete Paarungen zweier Hände aus einem Deck: C(52,2) · C(50,2) / 2.
+#: Ausgerechnet statt hingeschrieben – sonst wäre das die nächste Zahl,
+#: die niemand prüft.
+KOMBO_PAARUNGEN = (52 * 51 // 2) * (50 * 49 // 2) // 2
+
+
+def _dokumentierte_zahl() -> int:
+    text = QUELLTEXT.read_text(encoding="utf-8")
+    # „bleiben **47 086** wirklich verschiedene Rechnungen übrig"
+    treffer = re.search(r"bleiben\s+\*\*([\d\s ]+)\*\*\s+wirklich verschiedene", text)
+    assert treffer, "Der Kopfkommentar nennt keine Zahl verschiedener Rechnungen mehr"
+    return int(re.sub(r"\D", "", treffer.group(1)))
+
+
+def _dokumentierter_faktor() -> float:
+    text = QUELLTEXT.read_text(encoding="utf-8")
+    treffer = re.search(r"Faktor\s+(\d+,\d+)", text)
+    assert treffer, "Der Kopfkommentar nennt keinen Faktor mehr"
+    return float(treffer.group(1).replace(",", "."))
+
+
+@pytest.mark.skipif(not AUSGABE.exists(), reason="B4 ist noch nicht durchgerechnet")
+def test_die_dokumentierte_zahl_stimmt_mit_der_ausgabe():
+    """Die Zahl im Kommentar gegen die tatsächlich gerechneten Konfigurationen."""
+    daten = json.loads(AUSGABE.read_text(encoding="utf-8"))
+    gezaehlt = sum(len(m["farbkonfigurationen"]) for m in daten["matchups"])
+    assert gezaehlt == _dokumentierte_zahl(), (
+        f"Der Kopfkommentar nennt {_dokumentierte_zahl()}, gerechnet wurden "
+        f"{gezaehlt} Farbkonfigurationen."
+    )
+
+
+@pytest.mark.skipif(not AUSGABE.exists(), reason="B4 ist noch nicht durchgerechnet")
+def test_der_dokumentierte_faktor_folgt_aus_der_zahl():
+    """Der Faktor ist keine eigene Behauptung, sondern eine Division."""
+    gezaehlt = _dokumentierte_zahl()
+    assert round(KOMBO_PAARUNGEN / gezaehlt, 2) == _dokumentierter_faktor()
+
+
+@pytest.mark.skipif(not AUSGABE.exists(), reason="B4 ist noch nicht durchgerechnet")
+def test_die_ausgabe_kennt_jedes_handpaar_genau_einmal():
+    daten = json.loads(AUSGABE.read_text(encoding="utf-8"))
+    paare = {(m["hand_a"], m["hand_b"]) for m in daten["matchups"]}
+    assert len(paare) == len(daten["matchups"]) == 169 * 170 // 2
+
+
+@pytest.mark.parametrize("a,b", [
+    ("AA", "AA"), ("32o", "32s"), ("AKs", "QJs"), ("72o", "72o"), ("KK", "AKo"),
+])
+def test_die_zahl_der_konfigurationen_kommt_aus_dem_code(a, b):
+    """Stichprobe: Was in der Datei steht, rechnet der Code auch nach.
+
+    Die vollständige Gegenrechnung über alle 14 365 Handpaare dauert rund eine
+    halbe Minute — zu lang für jeden Lauf, zu wertvoll, um sie ganz zu lassen.
+    Fünf Paare decken die Fälle ab, die sich unterscheiden: gleiche Klasse,
+    gleicher Rang mit verschiedenen Farbbildern, suited gegen suited, offsuit
+    gegen sich selbst, Paar gegen Nicht-Paar.
+    """
+    aus_code = len(farbkonfigurationen(a, b))
+    if not AUSGABE.exists():
+        assert aus_code > 0
+        return
+    daten = json.loads(AUSGABE.read_text(encoding="utf-8"))
+    eintrag = next(m for m in daten["matchups"]
+                   if {m["hand_a"], m["hand_b"]} == {a, b})
+    assert len(eintrag["farbkonfigurationen"]) == aus_code
+
+
+@pytest.mark.skipif(not AUSGABE.exists(), reason="B4 ist noch nicht durchgerechnet")
+def test_die_78_fehlenden_sind_die_gleichrangigen_paarungen():
+    """Der Grund für die alte Abweichung, als bleibender Nachweis.
+
+    47 086 − 47 008 = 78 = C(13,2). Das sind genau die Handpaare aus derselben
+    Rangkombination, einmal offsuit gegen einmal suited: 32o gegen 32s und so
+    weiter. Jedes davon hat genau eine Farbkonfiguration.
+    """
+    daten = json.loads(AUSGABE.read_text(encoding="utf-8"))
+    gleichrangig = [
+        m for m in daten["matchups"]
+        if m["hand_a"][:2] == m["hand_b"][:2]
+        and m["hand_a"] != m["hand_b"]
+        and len(m["hand_a"]) == 3 and len(m["hand_b"]) == 3
+    ]
+    assert len(gleichrangig) == 13 * 12 // 2 == 78
+    for m in gleichrangig:
+        assert len(m["farbkonfigurationen"]) == 1, (
+            f"{m['hand_a']} gegen {m['hand_b']} hat "
+            f"{len(m['farbkonfigurationen'])} Konfigurationen, erwartet 1"
+        )
+
+
+# ---------------------------------------------------------------------------
+# W-001 — die Restzeitschätzung
+# ---------------------------------------------------------------------------
+
+from datetime import timedelta
+
+from b4_preflop_equity import restschaetzung
+
+
+def test_restzeit_rechnet_die_gemessene_geschwindigkeit_hoch():
+    """Eine Stunde für ein Fünftel heißt: vier Stunden für den Rest."""
+    assert restschaetzung(3600, 1000, 5000) == timedelta(hours=4)
+
+
+def test_restzeit_ist_null_wenn_nichts_mehr_offen_ist():
+    assert restschaetzung(1234, 5000, 5000) == timedelta(0)
+
+
+def test_restzeit_wird_nie_negativ():
+    """Mehr erledigt als offen gemeldet — kann bei einem Neustart vorkommen."""
+    assert restschaetzung(1234, 6000, 5000) == timedelta(0)
+
+
+def test_restzeit_ohne_messpunkt_behauptet_nichts():
+    """Vor dem ersten fertigen Handpaar gibt es keine Grundlage.
+
+    Null zu melden ist ehrlicher als eine Hochrechnung aus einem Messwert,
+    den es nicht gibt — und eine Division durch null wäre ein Absturz mitten
+    im Start.
+    """
+    assert restschaetzung(0, 0, 5000) == timedelta(0)
+    assert restschaetzung(60, 0, 5000) == timedelta(0)
+
+
+def test_die_schaetzung_nennt_ihre_grundlage_im_quelltext():
+    """Die eigentliche Frage aus C4 war: worauf beruht die Zahl?
+
+    Sie ließ sich damals nur beantworten, indem man den Ausdruck mitten in
+    der Schleife las. Jetzt steht die Grundlage in der Funktion und im
+    Startprotokoll des Laufs.
+    """
+    text = QUELLTEXT.read_text(encoding="utf-8")
+    assert "Grundlage der Restzeitschätzung" in text
+    assert restschaetzung.__doc__ and "Grundlage" in restschaetzung.__doc__

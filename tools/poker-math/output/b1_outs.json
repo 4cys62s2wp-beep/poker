@@ -22,8 +22,8 @@
         "gegenprobe": "Jede Zeile wurde doppelt gerechnet: einmal durch vollständiges Durchzählen aller geordneten Paare (Turn, River), einmal über die Gegenwahrscheinlichkeit. Beide Wege müssen als Bruch exakt übereinstimmen, sonst bricht der Lauf ab."
       }
     },
-    "erzeugt_am": "2026-08-26T08:50:49+00:00",
-    "laufzeit_s": 0.107,
+    "erzeugt_am": "2026-08-26T09:21:54+00:00",
+    "laufzeit_s": 0.108,
     "umgebung": {
       "python": "3.11.15",
       "system": "Linux",
@@ -553,10 +553,106 @@
       "hero_verliert_trotzdem": true
     }
   ],
-  "befunde_zur_faustregel": {
-    "groesste_abweichung_pp": 14.064754856614247,
-    "bei_outs": 21,
-    "ab_outs_mindestens_1pp_daneben": 9,
-    "richtung": "Die Regel verspricht bei zwei Straßen durchweg zu viel, und der Fehler wächst mit der Outs-Zahl. Bei wenigen Outs ist sie brauchbar, bei vielen führt sie zu Calls, die sich nicht rechnen."
-  }
+  "befunde": [
+    {
+      "schluessel": "umschlagpunkt",
+      "aussage": "Bis 6 Outs verspricht die 2/4-Regel zu wenig, ab 7 Outs zu viel.",
+      "beleg": {
+        "regel_faktor_eine_karte": 2,
+        "regel_faktor_zwei_karten": 4,
+        "letzte_outs_mit_zu_wenig": 6,
+        "umschlagpunkt_outs": 7,
+        "abweichung_pp_davor": -0.1443,
+        "abweichung_pp_danach": 0.1554
+      }
+    },
+    {
+      "schluessel": "erste_grosse_abweichung",
+      "aussage": "Ab 9 Outs liegt die Regel um mehr als einen Prozentpunkt daneben.",
+      "beleg": {
+        "outs": 9,
+        "abweichung_pp": 1.0324,
+        "abweichung_pp_eins_darunter": 0.5476
+      }
+    },
+    {
+      "schluessel": "groesste_abweichung",
+      "aussage": "Am weitesten daneben liegt sie bei 21 Outs: 69,94 % tatsächlich gegen 84 % nach der Regel, also 14,06 pp zu viel.",
+      "beleg": {
+        "outs": 21,
+        "exakt": 0.699352,
+        "regel": 0.84,
+        "abweichung_pp": 14.0648,
+        "hinweis": "Das ist der Rand der geprüften Tabelle. Der Fehler wächst darüber hinaus weiter."
+      }
+    },
+    {
+      "schluessel": "fehler_waechst",
+      "aussage": "Ab dem Umschlagpunkt wächst der Fehler von Outs-Zahl zu Outs-Zahl ohne Ausnahme: ja.",
+      "beleg": {
+        "geprueft_von_outs": 7,
+        "geprueft_bis_outs": 21,
+        "durchgehend_wachsend": true,
+        "abweichungen_pp": [
+          0.1554,
+          0.5476,
+          1.0324,
+          1.6096,
+          2.2794,
+          3.0416,
+          3.8964,
+          4.8437,
+          5.8834,
+          7.0157,
+          8.2405,
+          9.5578,
+          10.9676,
+          12.4699,
+          14.0648
+        ]
+      }
+    },
+    {
+      "schluessel": "river_lesarten",
+      "aussage": "Die beiden Lesarten von „River\" unterscheiden sich um bis zu 0,97 pp, am stärksten bei 21 Outs.",
+      "beleg": {
+        "groesste_spanne_pp": 0.9713,
+        "bei_outs": 21,
+        "erlaeuterung": "Wer die eine Lesart abschreibt und die andere meint, irrt genau um diesen Betrag."
+      }
+    },
+    {
+      "schluessel": "hoehere_strasse_haengt_am_board",
+      "aussage": "Ob ein Out dem Gegner die höhere Straße geben kann, hängt am Board: Auf 9c 8s 2h Th schlagen 28 von 1035 Gegner-Kombos Heros Straße, auf 7c 6s 2h 5s sind es 0.",
+      "beleg": {
+        "verbundenes_board": {
+          "hand": "7d 6d",
+          "board": "9c 8s 2h Th",
+          "beschreibung": "Board liefert selbst drei Straßenkarten",
+          "kombos_gesamt": 1035,
+          "schlagen_hero": 28,
+          "gleichstand": 9
+        },
+        "unverbundenes_board": {
+          "hand": "9d 8d",
+          "board": "7c 6s 2h 5s",
+          "beschreibung": "Board liefert keine zusammenhängende Folge",
+          "kombos_gesamt": 1035,
+          "schlagen_hero": 0,
+          "gleichstand": 9
+        },
+        "erlaeuterung": "Auf dem verbundenen Board liefert das Board selbst drei Straßenkarten; ein einzelner Bube reicht dem Gegner. Auf dem unverbundenen Board kann niemand eine höhere Straße halten – gefährlich sind dort andere Blätter, nicht die Straße."
+      }
+    },
+    {
+      "schluessel": "boardtreffer",
+      "aussage": "Zwei Überkarten haben 6 Outs. Zählt man Paare mit, die nur auf dem Board liegen, sind es 15.",
+      "beleg": {
+        "richtig_gezaehlt": 6,
+        "mit_boardtreffern": 15,
+        "hand": "Ac Kd",
+        "flop": "9h 7s 2c"
+      }
+    }
+  ]
 }

@@ -37,6 +37,7 @@ import time
 from fractions import Fraction
 
 from b1_outs import MAX_OUTS, zaehle_treffer
+from befunde import befund, prozent, zahl
 from metadaten import metadatenblock, schreibe, standard_annahmen
 
 #: Einsatzgrößen als Anteil des Pots. Als Bruch, weil „ein Drittel Pot" ein
@@ -116,26 +117,67 @@ def berechne() -> dict:
             "ueberschuss_pp": ueberschuss,
         })
 
-    return {
-        "einsatzgroessen": zeilen,
-        "befunde": {
-            "monotonie": (
-                "Je größer der Einsatz, desto mehr Equity ist nötig – und desto "
-                "mehr Outs braucht man. Das ist die ganze Mechanik hinter der "
-                "Frage, warum große Einsätze Draws vertreiben."
-            ),
-            "grenze_halber_pot": (
-                "Beim halben Pot liegt die Schwelle bei einem Viertel. Wer "
-                "seltener als jedes vierte Mal trifft, verliert auf Dauer Geld – "
-                "unabhängig davon, wie die Hand ausgeht."
-            ),
-            "was_fehlt": (
-                "Implizite Odds. Diese Tabelle nennt die Untergrenze für einen "
-                "Call, der sich SOFORT rechnet. Was man später noch gewinnt, "
-                "wenn man trifft, steht in B6."
-            ),
-        },
-    }
+    return {"einsatzgroessen": zeilen, "befunde": befunde_zu_b2(zeilen)}
+
+
+def befunde_zu_b2(zeilen: list[dict]) -> list[dict]:
+    """Aussagen über die Pot-Odds-Tabelle, aus ihr erzeugt."""
+    groesster = zeilen[-1]
+    halber = next(z for z in zeilen if z["einsatz_als_bruch"] == "1/2")
+    voller = next(z for z in zeilen if z["einsatz_als_bruch"] == "1")
+
+    # Steigt die nötige Equity über alle Einsatzgrößen? Geprüft, nicht behauptet.
+    steigt = all(b["noetige_equity_prozent"] > a["noetige_equity_prozent"]
+                 for a, b in zip(zeilen, zeilen[1:]))
+    outs_steigen = all(
+        (b["mindest_outs"]["turn_oder_river"] or 0) >= (a["mindest_outs"]["turn_oder_river"] or 0)
+        for a, b in zip(zeilen, zeilen[1:]))
+
+    # Die Schranke: Wohin läuft die nötige Equity bei beliebig großem Einsatz?
+    from fractions import Fraction
+    riesig = float(noetige_equity(Fraction(10**6)))
+
+    return [
+        befund(
+            "hoechstens_die_haelfte",
+            f"Selbst der größte Einsatz dieser Tabelle verlangt nur "
+            f"{prozent(groesster['noetige_equity_prozent'] / 100)}. Die Schwelle "
+            f"erreicht nie 50 %, weil der Gegner denselben Betrag hineinlegt.",
+            {
+                "groesster_einsatz": groesster["einsatz_als_bruch"],
+                "noetige_equity": round(groesster["noetige_equity_prozent"] / 100, 6),
+                "grenzwert_bei_millionenfachem_pot": round(riesig, 6),
+                "obere_schranke": 0.5,
+            },
+        ),
+        befund(
+            "steigt_durchgehend",
+            f"Über alle {len(zeilen)} Einsatzgrößen steigt die nötige Equity "
+            f"durchgehend: {'ja' if steigt else 'nein'}. Die Zahl der nötigen "
+            f"Outs steigt mit: {'ja' if outs_steigen else 'nein'}.",
+            {
+                "einsatzgroessen": len(zeilen),
+                "equity_steigt_durchgehend": steigt,
+                "outs_steigen_mit": outs_steigen,
+                "von": zeilen[0]["noetige_equity_prozent"] / 100,
+                "bis": groesster["noetige_equity_prozent"] / 100,
+            },
+        ),
+        befund(
+            "halber_pot",
+            f"Beim halben Pot liegt die Schwelle bei genau "
+            f"{prozent(halber['noetige_equity_prozent'] / 100, 0)}, beim vollen Pot bei "
+            f"{prozent(voller['noetige_equity_prozent'] / 100)}.",
+            {
+                "halber_pot_equity": round(halber["noetige_equity_prozent"] / 100, 6),
+                "voller_pot_equity": round(voller["noetige_equity_prozent"] / 100, 6),
+                "halber_pot_als_bruch": halber["anteil_am_endpot_als_bruch"],
+                "voller_pot_als_bruch": voller["anteil_am_endpot_als_bruch"],
+                "halber_pot_outs_beide_strassen": halber["mindest_outs"]["turn_oder_river"],
+                "voller_pot_outs_beide_strassen": voller["mindest_outs"]["turn_oder_river"],
+            },
+        ),
+    ]
 
 
 def main() -> int:
@@ -183,6 +225,9 @@ def main() -> int:
               f"{z['noetige_equity_prozent']:5.2f} % nötig, "
               f"{z['pot_odds_text']:>9}, "
               f"Outs: Turn {o['turn']}, beide {o['turn_oder_river']}")
+    print("  Befunde:")
+    for b in inhalt["befunde"]:
+        print(f"    · {b['aussage']}")
     return 0
 
 

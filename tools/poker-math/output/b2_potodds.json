@@ -22,8 +22,8 @@
         "outs_aus_b1": "Die Mindest-Outs kommen aus derselben Zählung wie B1 und tragen damit dieselben Annahmen – insbesondere die der sauberen Outs."
       }
     },
-    "erzeugt_am": "2026-08-26T08:47:27+00:00",
-    "laufzeit_s": 0.071,
+    "erzeugt_am": "2026-08-26T09:21:33+00:00",
+    "laufzeit_s": 0.077,
     "umgebung": {
       "python": "3.11.15",
       "system": "Linux",
@@ -193,9 +193,39 @@
       }
     }
   ],
-  "befunde": {
-    "monotonie": "Je größer der Einsatz, desto mehr Equity ist nötig – und desto mehr Outs braucht man. Das ist die ganze Mechanik hinter der Frage, warum große Einsätze Draws vertreiben.",
-    "grenze_halber_pot": "Beim halben Pot liegt die Schwelle bei einem Viertel. Wer seltener als jedes vierte Mal trifft, verliert auf Dauer Geld – unabhängig davon, wie die Hand ausgeht.",
-    "was_fehlt": "Implizite Odds. Diese Tabelle nennt die Untergrenze für einen Call, der sich SOFORT rechnet. Was man später noch gewinnt, wenn man trifft, steht in B6."
-  }
+  "befunde": [
+    {
+      "schluessel": "hoechstens_die_haelfte",
+      "aussage": "Selbst der größte Einsatz dieser Tabelle verlangt nur 40,00 %. Die Schwelle erreicht nie 50 %, weil der Gegner denselben Betrag hineinlegt.",
+      "beleg": {
+        "groesster_einsatz": "2",
+        "noetige_equity": 0.4,
+        "grenzwert_bei_millionenfachem_pot": 0.5,
+        "obere_schranke": 0.5
+      }
+    },
+    {
+      "schluessel": "steigt_durchgehend",
+      "aussage": "Über alle 8 Einsatzgrößen steigt die nötige Equity durchgehend: ja. Die Zahl der nötigen Outs steigt mit: ja.",
+      "beleg": {
+        "einsatzgroessen": 8,
+        "equity_steigt_durchgehend": true,
+        "outs_steigen_mit": true,
+        "von": 0.16666666666666669,
+        "bis": 0.4
+      }
+    },
+    {
+      "schluessel": "halber_pot",
+      "aussage": "Beim halben Pot liegt die Schwelle bei genau 25 %, beim vollen Pot bei 33,33 %.",
+      "beleg": {
+        "halber_pot_equity": 0.25,
+        "voller_pot_equity": 0.333333,
+        "halber_pot_als_bruch": "1/4",
+        "voller_pot_als_bruch": "1/3",
+        "halber_pot_outs_beide_strassen": 7,
+        "voller_pot_outs_beide_strassen": 9
+      }
+    }
+  ]
 }

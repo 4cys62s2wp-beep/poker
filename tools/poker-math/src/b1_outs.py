@@ -39,6 +39,7 @@ from __future__ import annotations
 import time
 from fractions import Fraction
 
+from befunde import befund, prozent, prozentpunkte, zahl
 from karten import ALLE_KARTEN, aus_text
 from metadaten import metadatenblock, schreibe, standard_annahmen
 
@@ -250,6 +251,14 @@ def zaehle_outs(hand: str, flop: str, ziel_kategorie: int | None = None,
     return treffer
 
 
+#: Zwei Boards, an denen sich zeigt, dass die Gefahr am Board hängt und nicht
+#: an der Hand. Beide mit Heros vollendeter Straße; gezählt wird, wie viele
+#: Gegner-Kombos sie schlagen.
+VERBUNDEN = {"hand": "7d 6d", "board": "9c 8s 2h Th",
+             "beschreibung": "Board liefert selbst drei Straßenkarten"}
+UNVERBUNDEN = {"hand": "9d 8d", "board": "7c 6s 2h 5s",
+               "beschreibung": "Board liefert keine zusammenhängende Folge"}
+
 #: Bekannte Zugbilder. Die NAMEN und die Zielkategorie sind Fachsprache, die
 #: Outs-Zahlen dahinter werden gezählt.
 BEISPIELE = [
@@ -436,29 +445,188 @@ def berechne() -> dict:
 
     gegenbeispiele = pruefe_gegenbeispiele()
 
-    # Wo die Faustregel am weitesten danebenliegt – gefunden, nicht behauptet.
-    schlimmste = max(zeilen, key=lambda z: abs(z["faustregel"]["abweichung_pp_turn_oder_river"]))
-    ab_wann_1pp = next(
-        (z["outs"] for z in zeilen
-         if abs(z["faustregel"]["abweichung_pp_turn_oder_river"]) >= 1.0),
-        None,
-    )
-
     return {
         "outs": zeilen,
         "beispiele": beispiele,
         "gegenbeispiele_saubere_outs": gegenbeispiele,
-        "befunde_zur_faustregel": {
-            "groesste_abweichung_pp": schlimmste["faustregel"]["abweichung_pp_turn_oder_river"],
-            "bei_outs": schlimmste["outs"],
-            "ab_outs_mindestens_1pp_daneben": ab_wann_1pp,
-            "richtung": (
-                "Die Regel verspricht bei zwei Straßen durchweg zu viel, und der "
-                "Fehler wächst mit der Outs-Zahl. Bei wenigen Outs ist sie "
-                "brauchbar, bei vielen führt sie zu Calls, die sich nicht rechnen."
-            ),
-        },
+        "befunde": befunde_zu_b1(zeilen, beispiele, nach_flop),
     }
+
+
+def umschlagpunkt(zeilen: list[dict]) -> int | None:
+    """Bei welcher Outs-Zahl wechselt der Fehler der Regel das Vorzeichen?
+
+    Gesucht wird die kleinste Outs-Zahl, ab der die Regel **zu viel**
+    verspricht, nachdem sie vorher zu wenig versprochen hat. Der Punkt wird
+    hier bestimmt und nicht formuliert — genau daran ist die erste Fassung
+    dieser Datei gescheitert.
+    """
+    vorher = None
+    for z in zeilen:
+        a = z["faustregel"]["abweichung_pp_turn_oder_river"]
+        if vorher is not None and vorher < 0 <= a:
+            return z["outs"]
+        vorher = a
+    return None
+
+
+def zaehle_gegner_die_schlagen(hand: str, board: str) -> dict:
+    """Wie viele der verbleibenden Gegner-Kombos schlagen Heros Blatt?
+
+    Reine Auszählung, ohne jede Annahme über die Spielweise. Sie beantwortet
+    nicht „wie oft verliere ich", sondern „wie viele Hände wären besser" – und
+    genau das ist der Unterschied zwischen Kombinatorik und Strategie.
+    """
+    global _EVAL7_KARTEN
+    if _EVAL7_KARTEN is None:
+        _EVAL7_KARTEN = _eval7_karten()
+    import eval7
+    from itertools import combinations
+
+    e7 = _EVAL7_KARTEN
+    eigene = [aus_text(t) for t in hand.split()]
+    brett = [aus_text(t) for t in board.split()]
+    bekannt = set(eigene) | set(brett)
+
+    _, hero_blatt = _bestes_blatt(eigene + brett)
+    hero_wert = eval7.evaluate([e7[c] for c in hero_blatt])
+
+    frei = [c for c in ALLE_KARTEN if c not in bekannt]
+    besser = gleich = gesamt = 0
+    for a, b in combinations(frei, 2):
+        gesamt += 1
+        _, g_blatt = _bestes_blatt([a, b] + brett)
+        w = eval7.evaluate([e7[c] for c in g_blatt])
+        if w > hero_wert:
+            besser += 1
+        elif w == hero_wert:
+            gleich += 1
+    return {"kombos_gesamt": gesamt, "schlagen_hero": besser, "gleichstand": gleich}
+
+
+def befunde_zu_b1(zeilen: list[dict], beispiele: list[dict], nach_flop: int) -> list[dict]:
+    """Alle Aussagen über die B1-Daten, aus den Daten erzeugt."""
+    abw = {z["outs"]: z["faustregel"]["abweichung_pp_turn_oder_river"] for z in zeilen}
+    exakt = {z["outs"]: z["turn_oder_river"] for z in zeilen}
+
+    wechsel = umschlagpunkt(zeilen)
+    ab_1pp = next((o for o in sorted(abw) if abs(abw[o]) >= 1.0), None)
+    schlimmster = max(abw, key=lambda o: abs(abw[o]))
+
+    # Wächst der Fehler ab dem Wechsel ununterbrochen? Nicht behaupten – prüfen.
+    ab_wechsel = [o for o in sorted(abw) if wechsel is not None and o >= wechsel]
+    waechst_durchgehend = all(abw[b] > abw[a] for a, b in zip(ab_wechsel, ab_wechsel[1:]))
+
+    # Der größte Unterschied zwischen den beiden River-Lesarten.
+    river_spanne = max(
+        (z["river_nach_fehlschlag"] - z["river_unbedingt"]) * 100 for z in zeilen)
+    river_spanne_bei = max(
+        zeilen, key=lambda z: z["river_nach_fehlschlag"] - z["river_unbedingt"])["outs"]
+
+    ueberkarten = next(b for b in beispiele if b["name"] == "Zwei Überkarten")
+
+    verbunden = zaehle_gegner_die_schlagen(VERBUNDEN["hand"], VERBUNDEN["board"])
+    unverbunden = zaehle_gegner_die_schlagen(UNVERBUNDEN["hand"], UNVERBUNDEN["board"])
+
+    liste = [
+        befund(
+            "umschlagpunkt",
+            f"Bis {wechsel - 1} Outs verspricht die 2/4-Regel zu wenig, "
+            f"ab {wechsel} Outs zu viel.",
+            {
+                # Die Faktoren stehen hier, weil der Satz die Regel bei ihrem
+                # Namen nennt („2/4-Regel") – und auch ein Name, der aus Zahlen
+                # besteht, gehört belegt.
+                "regel_faktor_eine_karte": 2,
+                "regel_faktor_zwei_karten": 4,
+                "letzte_outs_mit_zu_wenig": wechsel - 1,
+                "umschlagpunkt_outs": wechsel,
+                "abweichung_pp_davor": round(abw[wechsel - 1], 4),
+                "abweichung_pp_danach": round(abw[wechsel], 4),
+            },
+        ),
+        befund(
+            "erste_grosse_abweichung",
+            f"Ab {ab_1pp} Outs liegt die Regel um mehr als einen Prozentpunkt daneben.",
+            {
+                "outs": ab_1pp,
+                "abweichung_pp": round(abw[ab_1pp], 4),
+                "abweichung_pp_eins_darunter": round(abw[ab_1pp - 1], 4),
+            },
+        ),
+        befund(
+            "groesste_abweichung",
+            f"Am weitesten daneben liegt sie bei {schlimmster} Outs: "
+            f"{prozent(exakt[schlimmster])} tatsächlich gegen "
+            f"{zahl(4 * schlimmster, 0)} % nach der Regel, "
+            f"also {prozentpunkte(abw[schlimmster])} zu viel.",
+            {
+                "outs": schlimmster,
+                "exakt": round(exakt[schlimmster], 6),
+                "regel": 4 * schlimmster / 100,
+                "abweichung_pp": round(abw[schlimmster], 4),
+                "hinweis": (
+                    "Das ist der Rand der geprüften Tabelle. Der Fehler wächst "
+                    "darüber hinaus weiter."
+                ),
+            },
+        ),
+        befund(
+            "fehler_waechst",
+            f"Ab dem Umschlagpunkt wächst der Fehler von Outs-Zahl zu Outs-Zahl "
+            f"ohne Ausnahme: {'ja' if waechst_durchgehend else 'nein'}.",
+            {
+                "geprueft_von_outs": wechsel,
+                "geprueft_bis_outs": max(abw),
+                "durchgehend_wachsend": waechst_durchgehend,
+                "abweichungen_pp": [round(abw[o], 4) for o in ab_wechsel],
+            },
+        ),
+        befund(
+            "river_lesarten",
+            f"Die beiden Lesarten von „River\" unterscheiden sich um bis zu "
+            f"{prozentpunkte(river_spanne)}, am stärksten bei {river_spanne_bei} Outs.",
+            {
+                "groesste_spanne_pp": round(river_spanne, 4),
+                "bei_outs": river_spanne_bei,
+                "erlaeuterung": (
+                    "Wer die eine Lesart abschreibt und die andere meint, irrt "
+                    "genau um diesen Betrag."
+                ),
+            },
+        ),
+        befund(
+            "hoehere_strasse_haengt_am_board",
+            f"Ob ein Out dem Gegner die höhere Straße geben kann, hängt am "
+            f"Board: Auf {VERBUNDEN['board']} schlagen "
+            f"{verbunden['schlagen_hero']} von {verbunden['kombos_gesamt']} "
+            f"Gegner-Kombos Heros Straße, auf {UNVERBUNDEN['board']} sind es "
+            f"{unverbunden['schlagen_hero']}.",
+            {
+                "verbundenes_board": {**VERBUNDEN, **verbunden},
+                "unverbundenes_board": {**UNVERBUNDEN, **unverbunden},
+                "erlaeuterung": (
+                    "Auf dem verbundenen Board liefert das Board selbst drei "
+                    "Straßenkarten; ein einzelner Bube reicht dem Gegner. Auf dem "
+                    "unverbundenen Board kann niemand eine höhere Straße halten – "
+                    "gefährlich sind dort andere Blätter, nicht die Straße."
+                ),
+            },
+        ),
+        befund(
+            "boardtreffer",
+            f"Zwei Überkarten haben {ueberkarten['outs_bis_zielkategorie']} Outs. "
+            f"Zählt man Paare mit, die nur auf dem Board liegen, sind es "
+            f"{ueberkarten['outs_mit_boardtreffern']}.",
+            {
+                "richtig_gezaehlt": ueberkarten["outs_bis_zielkategorie"],
+                "mit_boardtreffern": ueberkarten["outs_mit_boardtreffern"],
+                "hand": ueberkarten["hand"],
+                "flop": ueberkarten["flop"],
+            },
+        ),
+    ]
+    return liste
 
 
 def main() -> int:
@@ -509,10 +677,10 @@ def main() -> int:
 
     print(f"B1 geschrieben: {ziel}")
     print(f"  {len(inhalt['outs'])} Outs-Zeilen, {len(inhalt['beispiele'])} Beispiele")
-    b = inhalt["befunde_zur_faustregel"]
-    print(f"  Faustregel: größte Abweichung {b['groesste_abweichung_pp']:.2f} pp "
-          f"bei {b['bei_outs']} Outs; ab {b['ab_outs_mindestens_1pp_daneben']} Outs "
-          f"mindestens 1 pp daneben")
+    print(f"  {len(inhalt['gegenbeispiele_saubere_outs'])} Gegenbeispiele nachgerechnet")
+    print("  Befunde (aus den Daten erzeugt):")
+    for b in inhalt["befunde"]:
+        print(f"    · {b['aussage']}")
     return 0
 
 

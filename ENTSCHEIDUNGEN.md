@@ -410,3 +410,47 @@ Kategorie auf „Ein Paar" hebt.
   Verwechslung ist der Grund, warum kursierende Outs-Tabellen um einen halben
   Prozentpunkt auseinanderliegen — und wer eine davon abschreibt, weiß nicht,
   welche er erwischt hat.
+
+---
+
+## E-015 · 2026-08-26 · Poker-Mathematik, Korrektur
+
+**Aussagen über Zahlen werden erzeugt, nicht formuliert.**
+
+**Anlass:** In `b1_outs.json` stand „die Regel verspricht durchweg zu viel",
+und in `POKER_MATH.md` „bis acht Outs untertreibt sie, ab neun übertreibt
+sie". Beides falsch — der Vorzeichenwechsel liegt zwischen sechs und sieben
+Outs. Die Sätze waren plausibel, passten zum Eindruck aus der Tabelle, und
+kein Test hätte sie gefunden: Tests prüften bis dahin nur Zahlen.
+
+- **Gewählt:** Jede Aussage über die Daten wird im Rechenskript **aus den
+  Daten zusammengesetzt** (`src/befunde.py`). Steht in einem Satz eine Zahl,
+  stammt sie aus dem Beleg daneben — sie kann gar nicht anders lauten. Ein
+  Test verlangt, dass jede Zahl im Satz im Beleg wiederauffindbar ist, und ein
+  zweiter, dass jeder Befundsatz **wörtlich** in `POKER_MATH.md` steht.
+- **Verworfene Alternative:** Die falschen Sätze korrigieren und künftig
+  sorgfältiger formulieren.
+- **Begründung:** Der Fehler war nicht Unachtsamkeit, sondern strukturell.
+  Formulierte Sätze driften von ihren Daten weg, sobald sich die Daten ändern
+  — und niemand merkt es, weil kein Test Prosa liest. Erzeugte Sätze können
+  das nicht.
+
+**Drei Sorten von Aussagen** werden seither unterschieden und in der
+Dokumentation gekennzeichnet:
+
+| Sorte | Was sie ist | Deckung |
+|---|---|---|
+| **Befund** | Aus den Daten abgeleitet | Erzeugt, mit Beleg, durch Test gedeckt |
+| **Begründung** | Warum so gerechnet wurde | Keine Datenaussage, braucht keine |
+| **ungeprüft** | Könnte stimmen, ist nicht gerechnet | Ausdrücklich so markiert |
+
+Ein dritter Test durchsucht `POKER_MATH.md` nach wertenden Wörtern („wächst",
+„übertreibt", „erheblich", „nie") und verlangt für jede Fundstelle eine der
+drei Deckungen. Beim ersten Lauf schlug er an fünf Stellen an — darunter eine
+Aussage über verbreitete Poker-Tabellen im Netz, die ich gar nicht belegen
+kann und die jetzt durch eine belegbare ersetzt ist.
+
+**Ein Befund kam beim Aufräumen neu hinzu:** Ob ein Out dem Gegner die höhere
+Straße geben kann, hängt am Board. Auf einem verbundenen Board schlagen 28 von
+1035 Gegner-Kombos Heros Straße, auf einem unverbundenen null. Das stand
+vorher als Behauptung in der Dokumentation und ist jetzt ausgezählt.

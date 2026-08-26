@@ -24,6 +24,7 @@ from __future__ import annotations
 import time
 from itertools import combinations
 
+from befunde import befund, zahl
 from karten import (
     ALLE_KARTEN, RANG_ZEICHEN, alle_starthand_kuerzel, aus_text,
     kombos_fuer_kuerzel, starthand_kuerzel,
@@ -193,12 +194,77 @@ def berechne() -> dict:
             "offsuit": blockerbild("AKo"),
         },
         "beispiel": beispiel_am_board("Ah Kh", "Qh 7c 2d"),
+        "befunde": [],  # wird unten gefüllt, weil es die obigen Werte braucht
     }
+
+
+def befunde_zu_b3(inhalt: dict) -> list[dict]:
+    """Aussagen über die Kombinatorik, aus ihr erzeugt."""
+    k = inhalt["kombos_je_typ"]
+    g = inhalt["gesamt"]
+    beispiel = inhalt["beispiel"]
+
+    # Ein einzelnes Ass in der eigenen Hand: Wie viele Ass-Paare bleiben?
+    ein_ass = next(z for z in inhalt["blocker"]["Paar"] if z["bekannte_karten"] == 1)
+    schlimmster = ein_ass["schlimmstenfalls_uebrig"]
+    bester = ein_ass["bestenfalls_uebrig"]
+
+    am_meisten = beispiel["am_staerksten_geblockt"][0]
+
+    return [
+        befund(
+            "kombos_je_typ",
+            f"Ein Paar hat {k['Paar']} Kombos, eine suited Hand {k['suited']}, "
+            f"eine offsuit Hand {k['offsuit']} – zusammen {k['suited_und_offsuit_zusammen']} "
+            f"je Rangpaar.",
+            {**k, "gezaehlt_ueber": g["zweikartenblaetter"]},
+        ),
+        befund(
+            "einteilung_geht_auf",
+            f"Die {g['starthand_klassen']} Klassen decken genau die "
+            f"{g['zweikartenblaetter']} Zweikartenblätter ab – lückenlos und "
+            f"ohne Überschneidung.",
+            {
+                "klassen": g["starthand_klassen"],
+                "zweikartenblaetter": g["zweikartenblaetter"],
+                "klassen_je_typ": inhalt["klassen_je_typ"],
+            },
+        ),
+        befund(
+            "blocker_sind_keine_feste_zahl",
+            f"Eine einzige bekannte Karte lässt von den {k['Paar']} Kombos eines "
+            f"Paares zwischen {schlimmster} und {bester} übrig – je nachdem, ob "
+            f"sie die Hand berührt.",
+            {
+                "kombos_ohne_blocker": k["Paar"],
+                "schlimmstenfalls_uebrig": schlimmster,
+                "bestenfalls_uebrig": bester,
+                "im_mittel_uebrig": ein_ass["im_mittel_uebrig"],
+                "faelle_geprueft": ein_ass["faelle_geprueft"],
+            },
+        ),
+        befund(
+            "beispielboard",
+            f"Am Board {beispiel['board']} mit {beispiel['hand']} in der Hand "
+            f"bleiben von {beispiel['summe_vorher']} Kombos noch "
+            f"{beispiel['summe_nachher']}. Am stärksten trifft es "
+            f"{am_meisten['hand']}: {am_meisten['vorher']} Kombos werden zu "
+            f"{am_meisten['nachher']}.",
+            {
+                "hand": beispiel["hand"],
+                "board": beispiel["board"],
+                "vorher": beispiel["summe_vorher"],
+                "nachher": beispiel["summe_nachher"],
+                "am_staerksten_geblockt": am_meisten,
+            },
+        ),
+    ]
 
 
 def main() -> int:
     start = time.perf_counter()
     inhalt = berechne()
+    inhalt["befunde"] = befunde_zu_b3(inhalt)
     meta = metadatenblock(
         block="b3_kombinatorik",
         zweck=(
@@ -237,6 +303,9 @@ def main() -> int:
     print(f"  {g['starthand_klassen']} Klassen, {g['zweikartenblaetter']} Zweikartenblätter")
     b = inhalt["beispiel"]
     print(f"  Beispiel {b['hand']} auf {b['board']}: {b['summe_vorher']} → {b['summe_nachher']}")
+    print("  Befunde:")
+    for eintrag in inhalt["befunde"]:
+        print(f"    · {eintrag['aussage']}")
     return 0
 
 

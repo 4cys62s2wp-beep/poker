@@ -21,8 +21,8 @@
         "keine_range_annahmen": "Es wird keine Gegner-Range unterstellt. Alle Kombos gelten als gleich möglich."
       }
     },
-    "erzeugt_am": "2026-08-26T08:48:34+00:00",
-    "laufzeit_s": 1.208,
+    "erzeugt_am": "2026-08-26T09:20:06+00:00",
+    "laufzeit_s": 1.231,
     "umgebung": {
       "python": "3.11.15",
       "system": "Linux",
@@ -1473,5 +1473,59 @@
         "weggeblockt": 3
       }
     ]
-  }
+  },
+  "befunde": [
+    {
+      "schluessel": "kombos_je_typ",
+      "aussage": "Ein Paar hat 6 Kombos, eine suited Hand 4, eine offsuit Hand 12 – zusammen 16 je Rangpaar.",
+      "beleg": {
+        "Paar": 6,
+        "suited": 4,
+        "offsuit": 12,
+        "suited_und_offsuit_zusammen": 16,
+        "gezaehlt_ueber": 1326
+      }
+    },
+    {
+      "schluessel": "einteilung_geht_auf",
+      "aussage": "Die 169 Klassen decken genau die 1326 Zweikartenblätter ab – lückenlos und ohne Überschneidung.",
+      "beleg": {
+        "klassen": 169,
+        "zweikartenblaetter": 1326,
+        "klassen_je_typ": {
+          "Paar": 13,
+          "suited": 78,
+          "offsuit": 78
+        }
+      }
+    },
+    {
+      "schluessel": "blocker_sind_keine_feste_zahl",
+      "aussage": "Eine einzige bekannte Karte lässt von den 6 Kombos eines Paares zwischen 3 und 6 übrig – je nachdem, ob sie die Hand berührt.",
+      "beleg": {
+        "kombos_ohne_blocker": 6,
+        "schlimmstenfalls_uebrig": 3,
+        "bestenfalls_uebrig": 6,
+        "im_mittel_uebrig": 5.7692,
+        "faelle_geprueft": 52
+      }
+    },
+    {
+      "schluessel": "beispielboard",
+      "aussage": "Am Board Qh 7c 2d mit Ah Kh in der Hand bleiben von 1326 Kombos noch 1081. Am stärksten trifft es AKo: 12 Kombos werden zu 6.",
+      "beleg": {
+        "hand": "Ah Kh",
+        "board": "Qh 7c 2d",
+        "vorher": 1326,
+        "nachher": 1081,
+        "am_staerksten_geblockt": {
+          "hand": "AKo",
+          "typ": "offsuit",
+          "vorher": 12,
+          "nachher": 6,
+          "weggeblockt": 6
+        }
+      }
+    }
+  ]
 }

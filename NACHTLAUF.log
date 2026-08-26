@@ -4,3 +4,9 @@
 # Diese Datei ist die erste, in die man morgens schaut.
 
 2026-08-26T19:29Z  START      Nachtlauf begonnen. Arbeitsbereich /home/user/poker-trainer, Branch feature/pot-odds-trainer @ dd33517. B4 läuft als PID 5006 im Hauptverzeichnis und wird nicht angefasst.
+2026-08-26T19:33Z  C4         B4-Restzeit nachgemessen. Grundlage der laufenden Schaetzung: Hochrechnung aus fertigen Handpaaren dieses Laufs. Nachgerechnet ueber Farbkonfigurationen: 1,416 s Arbeitszeit je Konfiguration, 39 280 Konfigurationen offen = 15,5 h Arbeitszeit, bei gemessen rund 3,9 wirksamen Kernen rund 4,0 h Wanduhr. Beide Grundlagen fast gleich (3,26 Konfigurationen je fertigem, 3,28 je offenem Handpaar) - der vermutete systematische Fehler tritt bei dieser Sortierung nicht auf.
+2026-08-26T19:33Z  C4-FUND    Zaehlfehler in der Dokumentation gefunden: Der Kopfkommentar von b4_preflop_equity.py nennt 47 008 verschiedene Rechnungen, es sind 47 086. Differenz exakt 78 = die Handpaare aus derselben Rangkombination, einmal offsuit einmal suited (32o gegen 32s und so weiter, C(13,2)). Zweifach nachgezaehlt. Korrektur in WARTESCHLANGE.md, W-002.
+2026-08-26T19:36Z  C3         Apple-Fingerabdruck: kein aktiver Pfad. Functions werden nicht ausgeliefert, StoreKit nur bei nativem iOS, linkAppleTransaction nirgends aufgerufen. Wert entfernt, Pruefung bleibt, Fingerabdruck jetzt Pflichtargument aus dem Geheimnis APPLE_ROOT_CA_SHA256. 18 Tests gruen.
+2026-08-26T19:40Z  C1/C2/C5   Entscheidungen aufgeschrieben: E-021 bis E-024. BACKLOG.md mit elf Eintraegen angelegt (Phase 5 vorgezogen). Freunde-Rangliste in TODO_MANUELL.md durchgestrichen statt geloescht.
+2026-08-26T19:40Z  COMMIT     2b5757e - Teil C beantwortet.
+2026-08-26T19:42Z  PHASE-0    Bestandsaufnahme geschrieben: BESTAND.md. 37 Bildschirme, 16 Komponenten, 65 Routen, drei Datenbloecke im Vertrag 3, B4 laeuft als PID 5006 mit vier Arbeitern bei 19,5 %.

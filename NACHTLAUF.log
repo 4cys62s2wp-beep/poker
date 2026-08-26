@@ -10,3 +10,5 @@
 2026-08-26T19:40Z  C1/C2/C5   Entscheidungen aufgeschrieben: E-021 bis E-024. BACKLOG.md mit elf Eintraegen angelegt (Phase 5 vorgezogen). Freunde-Rangliste in TODO_MANUELL.md durchgestrichen statt geloescht.
 2026-08-26T19:40Z  COMMIT     2b5757e - Teil C beantwortet.
 2026-08-26T19:42Z  PHASE-0    Bestandsaufnahme geschrieben: BESTAND.md. 37 Bildschirme, 16 Komponenten, 65 Routen, drei Datenbloecke im Vertrag 3, B4 laeuft als PID 5006 mit vier Arbeitern bei 19,5 %.
+2026-08-26T19:48Z  PHASE-1    Designfundament fertig. Fuenf Schriftstufen nach Verwendung benannt, eine Akzentfarbe, Kontrast gerechnet statt behauptet. Zwei bestehende Farben durchgefallen und ersetzt: Live-Akzent 3,92 -> 8,32 zu 1, Ergebniszahlen bekommen eigene Toene mit 9,0+. Haptik als eigene Datei mit 5 Tests. Sperrklinke gegen verstreute Werte: 966 Stellen in 48 Dateien festgehalten. DESIGN.md mit Begruendungen, inkl. Pruefregel aus C5. 512 Tests gruen.
+2026-08-26T19:48Z  COMMIT     9104102 - Phase 1.

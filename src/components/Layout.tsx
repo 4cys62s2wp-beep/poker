@@ -23,26 +23,36 @@ export function Layout() {
   const mainRef = useRef<HTMLElement>(null);
   useSectionHeadings(mainRef);
 
+  /* Die Seitenleiste folgt derselben Gliederung wie der Hub: drei Absichten
+     plus Persönliches. Vorher waren es vier Gruppen mit zwölf Links, benannt
+     nach der ART der Sache („Anwenden“) statt nach der ABSICHT – dort lagen
+     Live-Coach, Übungstisch, Pokerabend und Rechner nebeneinander, obwohl sie
+     für völlig verschiedene Situationen gedacht sind.
+     (docs/SCREEN_STRUKTUR.md) */
   const navGroups: Array<{ label: string; items: Array<{ to: string; icon: IconName; label: string; end?: boolean }> }> = [
     { label: L.navOverview, items: [{ to: '/', icon: 'spade', label: L.start, end: true }] },
     {
       label: L.navLearn,
       items: [
         { to: '/lernen', icon: 'learn', label: L.learnPath },
-        { to: '/pros', icon: 'chip', label: L.proInsights },
-        { to: '/wiederholen', icon: 'repeat', label: L.review },
-        { to: '/trainer', icon: 'trainer', label: L.trainer },
-        { to: '/glossar', icon: 'glossary', label: L.glossary },
+        { to: '/lernen/trainer', icon: 'trainer', label: L.trainer },
+        { to: '/lernen/wiederholen', icon: 'repeat', label: L.review },
+        { to: '/lernen/pros', icon: 'chip', label: L.proInsights },
+        { to: '/lernen/glossar', icon: 'glossary', label: L.glossary },
       ],
     },
     {
-      label: L.navApply,
+      label: L.navLive,
       items: [
-        { to: '/coach', icon: 'coach', label: L.liveCoach },
-        { to: '/spielen', icon: 'play', label: L.practiceTable },
-        { to: '/tisch', icon: 'table', label: L.pokerNight },
-        { to: '/tools', icon: 'tools', label: L.tools },
+        { to: '/live/coach', icon: 'coach', label: L.liveCoach },
+        { to: '/live/tisch', icon: 'table', label: L.pokerNight },
+        { to: '/live/uebungstisch', icon: 'play', label: L.practiceTable },
+        { to: '/live/statistik', icon: 'chart', label: L.playStyle },
       ],
+    },
+    {
+      label: L.navTools,
+      items: [{ to: '/tools', icon: 'tools', label: L.tools }],
     },
     {
       label: L.navYou,
@@ -54,26 +64,34 @@ export function Layout() {
     },
   ];
 
+  /* Untere Leiste: vier Punkte MIT Beschriftung.
+     Fünf waren zu viele, und drei ohne Beschriftung (wie bei der Referenz)
+     funktionieren nur, wenn alle Ziele konventionell sind – ein Symbol für
+     „Live-Coach“ ist ohne Wort nicht erratbar.
+     Die vier entsprechen genau den drei Hub-Karten plus Persönliches. */
   const mobileItems: Array<{ to: string; icon: IconName; label: string; end?: boolean }> = [
     { to: '/', icon: 'spade', label: L.start, end: true },
     { to: '/lernen', icon: 'learn', label: L.mobileLearn },
-    { to: '/coach', icon: 'coach', label: L.mobileCoach },
-    { to: '/trainer', icon: 'trainer', label: L.trainer },
-    { to: '/tools', icon: 'tools', label: L.mobileMore },
+    { to: '/live', icon: 'coach', label: L.mobileLive },
+    { to: '/profil', icon: 'profile', label: L.mobileYou },
   ];
 
+  /* Längste Übereinstimmung zuerst: '/lernen/trainer' muss vor '/lernen'
+     stehen, sonst hieße jede Trainer-Seite „Lernpfad“. */
   const titles: Array<[prefix: string, title: string]> = [
+    ['/lernen/wiederholen', L.review],
+    ['/lernen/tagesquiz', L.dailyQuiz],
+    ['/lernen/pros', L.proInsights],
+    ['/lernen/glossar', L.glossary],
+    ['/lernen/trainer', L.trainer],
     ['/lernen', L.learnPath],
-    ['/pros', L.proInsights],
-    ['/wiederholen', L.review],
-    ['/tagesquiz', L.dailyQuiz],
-    ['/trainer', L.trainer],
-    ['/coach', L.liveCoach],
-    ['/tisch/online', L.onlineTable],
-    ['/tisch', L.pokerNight],
-    ['/spielen', L.practiceTable],
+    ['/live/tisch/online', L.onlineTable],
+    ['/live/tisch', L.pokerNight],
+    ['/live/uebungstisch', L.practiceTable],
+    ['/live/statistik', L.playStyle],
+    ['/live/coach', L.liveCoach],
+    ['/live', L.navLive],
     ['/tools', L.tools],
-    ['/glossar', L.glossary],
     ['/profil', L.profile],
     ['/freunde', FR.navFriends],
     ['/pro', P.navPro],
@@ -110,7 +128,7 @@ export function Layout() {
                   <Icon name={item.icon} size={18} />
                 </span>
                 {item.label}
-                {item.to === '/wiederholen' && <DueBubble />}
+                {item.to === '/lernen/wiederholen' && <DueBubble />}
               </NavLink>
             ))}
           </div>

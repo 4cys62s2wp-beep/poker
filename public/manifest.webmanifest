@@ -8,31 +8,64 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "background_color": "#0b100d",
   "theme_color": "#0b100d",
-  "categories": ["education", "games"],
+  "categories": [
+    "education",
+    "games"
+  ],
   "shortcuts": [
     {
       "name": "Live-Coach",
       "short_name": "Coach",
       "description": "Hand eingeben und Empfehlung erhalten",
-      "url": "./#/coach",
-      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+      "url": "./#/live/coach",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Pokerabend",
+      "short_name": "Tisch",
+      "description": "Die App übernimmt Karten, Chips und Blinds",
+      "url": "./#/live/tisch",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Tages-Quiz",
       "short_name": "Quiz",
       "description": "Fünf Fragen, jeden Tag neu",
-      "url": "./#/tagesquiz",
-      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+      "url": "./#/lernen/tagesquiz",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Übungstisch",
       "short_name": "Spielen",
-      "description": "Gegen KI-Gegner üben",
-      "url": "./#/spielen",
-      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+      "description": "Gegen Computergegner üben",
+      "url": "./#/live/uebungstisch",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ],
   "icons": [

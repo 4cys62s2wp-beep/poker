@@ -47,14 +47,104 @@
   --suit-d: #2565b8;
   --suit-c: #2c7f42;
 
+  /* ── Bereichs-Akzente ────────────────────────────────────────────────
+     Je Hub-Karte eine eigene Farbe: Wiedererkennung schlägt Lesen. Nach
+     dreimaliger Nutzung tippt man auf die Farbe, nicht auf das Wort.
+     Alle drei stammen aus der bestehenden Palette – keine neuen Farbwelten.
+     (docs/DESIGN_REFERENZ.md, R2) */
+  --accent-learn: var(--gold);
+  --accent-learn-dim: var(--gold-dim);
+  --accent-live: var(--felt-light);
+  --accent-live-dim: rgba(47, 127, 94, 0.16);
+  --accent-tools: var(--info);
+  --accent-tools-dim: var(--info-dim);
+  /* Vierter Platz: „Mit Freunden spielen“ – im Raster vorgesehen, noch nicht
+     gebaut. Der Token steht hier, damit die Lücke sichtbar geplant ist. */
+  --accent-friends: var(--violet);
+  --accent-friends-dim: var(--violet-dim);
+
+  /* ── Abstands-Skala ──────────────────────────────────────────────────
+     Ein Rhythmus für die ganze App. Gleichmäßige Abstände lesen sich als
+     Sorgfalt, auch wenn niemand sie bewusst wahrnimmt; uneinheitliche
+     wirken „selbstgebaut“, ohne dass man sagen könnte warum.
+     Basis 4 px, weil sich damit sowohl 8er- als auch 12er-Rhythmen
+     bilden lassen. (R5) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 22px;
+  --sp-6: 30px;
+  --sp-7: 40px;
+  --sp-8: 56px;
+
+  /* ── Radien ──────────────────────────────────────────────────────── */
   --radius: 16px;
   --radius-sm: 10px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  /* ── Schriftgrößen ───────────────────────────────────────────────────
+     Eine Familie mit echten Gewichtsabstufungen statt drei Familien.
+     --fs-stat ist bewusst groß UND leicht: Größe allein schlägt sonst in
+     Lautstärke um. (R3) */
+  --fs-stat: clamp(38px, 9vw, 58px);
+  --fs-h1: clamp(27px, 4.4vw, 38px);
+  --fs-h2: clamp(19px, 2.4vw, 23px);
+  --fs-h3: 16.5px;
+  --fs-body: 15px;
+  --fs-small: 13.2px;
+  --fs-tiny: 11.5px;
+
+  --fw-light: 300;
+  --fw-regular: 500;
+  --fw-medium: 650;
+  --fw-bold: 800;
+
+  --lh-tight: 1.15;
+  --lh-normal: 1.5;
+
+  /* ── Bedienung ───────────────────────────────────────────────────────
+     44 px ist die kleinste Fläche, die sich auf einem Handy zuverlässig
+     mit dem Daumen treffen lässt (Apple HIG). Alles Tippbare hält das ein. */
+  --touch-min: 44px;
+
+  /* ── Sichere Bereiche ────────────────────────────────────────────────
+     In der installierten PWA reicht der Inhalt bis unter die Notch und
+     die Home-Leiste. Diese Tokens halten ihn davon frei. */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  /* ── Schatten und Maße ───────────────────────────────────────────── */
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   --shadow-soft: 0 3px 14px rgba(0, 0, 0, 0.3);
   --nav-h: 64px;
 
+  /* ── Bewegung ────────────────────────────────────────────────────────
+     Sparsam und funktional: Bewegung zeigt, WOHER etwas kommt, sie
+     schmückt nicht. Wer „Bewegung reduzieren“ eingestellt hat, bekommt
+     keine (siehe @media prefers-reduced-motion weiter unten). */
+  --dur-fast: 120ms;
+  --dur-normal: 200ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
   --font-body: 'Manrope Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+}
+
+/* Wer im Betriebssystem „Bewegung reduzieren“ gewählt hat, meint es ernst –
+   für manche Menschen lösen Animationen Übelkeit oder Schwindel aus. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 * {
@@ -1234,4 +1324,47 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 /* Reduzierte Bewegung respektieren */
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+
+/* ==========================================================================
+   Hub (Phase 2)
+   ========================================================================== */
+
+/* Die große Einstiegskarte. Bewegung nur beim Antippen und nur so viel, dass
+   die Karte spürbar reagiert – Dekor-Bewegung schmückt und lenkt ab
+   (docs/DESIGN_REFERENZ.md, Anforderung 2.3). */
+.hub-card {
+  transition: border-color var(--dur-normal) var(--ease),
+              background var(--dur-normal) var(--ease),
+              transform var(--dur-fast) var(--ease);
+}
+
+.hub-card:active {
+  transform: scale(0.985);
+}
+
+@media (hover: hover) {
+  .hub-card:hover {
+    background: var(--bg-card-hover);
+  }
+}
+
+/* Mindestgröße für alles Tippbare. 44 px ist die kleinste Fläche, die sich
+   auf einem Handy zuverlässig mit dem Daumen treffen lässt – darunter tippt
+   man daneben, und zwar auch mit ruhiger Hand. */
+.bottom-nav a,
+.btn,
+.nav-link {
+  min-height: var(--touch-min);
+}
+
+/* Einhändige Bedienung: Auf schmalen Geräten sitzen primäre Aktionen im
+   unteren Drittel, wo der Daumen ohne Umgreifen hinkommt. Gilt für Knöpfe,
+   die über die volle Breite gehen – das sind genau die Hauptaktionen. */
+@media (max-width: 700px) {
+  .btn.primary[style*="width: 100%"],
+  .btn.lg {
+    min-height: 52px;
+  }
 }

@@ -115,7 +115,7 @@ export function LearnPage() {
 
       {!searching && (
         <>
-        <Link to="/pros" className="card clickable" style={{ display: 'block', marginBottom: 16, borderColor: 'rgba(212,175,94,0.35)' }}>
+        <Link to="/lernen/pros" className="card clickable" style={{ display: 'block', marginBottom: 16, borderColor: 'rgba(212,175,94,0.35)' }}>
           <div className="row between wrap">
             <div>
               <div style={{ fontWeight: 800, fontSize: 16.5 }}>{L.proTitle}</div>

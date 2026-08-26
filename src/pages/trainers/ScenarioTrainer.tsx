@@ -74,7 +74,7 @@ export function ScenarioTrainer() {
   if (!unlocked) {
     return (
       <div>
-        <Link to="/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
+        <Link to="/lernen/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
           {L.back}
         </Link>
         <div className="page-header">
@@ -91,7 +91,7 @@ export function ScenarioTrainer() {
 
   return (
     <div>
-      <Link to="/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
+      <Link to="/lernen/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
         {L.back}
       </Link>
       <div className="page-header">

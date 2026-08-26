@@ -37,10 +37,10 @@ export function Dashboard() {
   const levelPct = Math.min(100, Math.round((100 * (data.xp - curLevelXp)) / (nextLevelXp - curLevelXp)));
 
   const quickLinks: Array<{ to: string; icon: IconName; tone: 'gold' | 'green' | 'blue' | 'red' | 'violet'; label: string }> = [
-    { to: '/coach', icon: 'coach', tone: 'gold', label: L.liveCoach },
+    { to: '/live/coach', icon: 'coach', tone: 'gold', label: L.liveCoach },
     { to: '/tools/hands', icon: 'search', tone: 'green', label: L.handExplorer },
     { to: '/tools/tells', icon: 'eye', tone: 'violet', label: L.tellsReads },
-    { to: '/trainer/szenario', icon: 'scene', tone: 'blue', label: L.scenarioTrainer },
+    { to: '/lernen/trainer/szenario', icon: 'scene', tone: 'blue', label: L.scenarioTrainer },
   ];
 
   return (
@@ -116,7 +116,7 @@ export function Dashboard() {
             <div className="small faint" style={{ marginTop: 3 }}>{L.keepFresh}</div>
           </div>
         )}
-        <Link to="/tagesquiz" className="card clickable">
+        <Link to="/lernen/tagesquiz" className="card clickable">
           <div className="row" style={{ marginBottom: 8 }}>
             <IconTile name="sun" tone={dailyDone ? 'green' : 'gold'} size={34} />
             <span className="stat-label">{L.dailyQuiz}</span>
@@ -128,7 +128,7 @@ export function Dashboard() {
             {dailyDone ? L.dailyTomorrow : L.dailyAcross}
           </div>
         </Link>
-        <Link to="/wiederholen" className="card clickable">
+        <Link to="/lernen/wiederholen" className="card clickable">
           <div className="row" style={{ marginBottom: 8 }}>
             <IconTile name="repeat" tone={dueReviewCount > 0 ? 'gold' : 'blue'} size={34} />
             <span className="stat-label">{L.review}</span>

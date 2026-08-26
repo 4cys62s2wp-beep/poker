@@ -563,7 +563,7 @@ export function OnlineTablePage() {
             <code>FIREBASE_SETUP.md</code> – {L.unavailableSetup}
           </p>
           <div className="row wrap" style={{ marginTop: 14 }}>
-            <Link className="btn primary" to="/tisch">
+            <Link className="btn primary" to="/live/tisch">
               {L.unavailableLink}
             </Link>
           </div>
@@ -583,7 +583,7 @@ export function OnlineTablePage() {
             <Link className="btn primary" to="/profil">
               {L.signInLink}
             </Link>
-            <Link className="btn ghost" to="/tisch">
+            <Link className="btn ghost" to="/live/tisch">
               {L.unavailableLink}
             </Link>
           </div>

@@ -8,13 +8,13 @@ import { usePro } from '../lib/pro/ProProvider';
 import { isFreeTrainer } from '../lib/pro/plan';
 
 const TRAINERS: Array<{ id: 'szenario' | 'preflop' | 'potodds' | 'equity' | 'handranking' | 'outs' | 'pushfold'; to: string; icon: IconName; tone: 'gold' | 'green' | 'blue' | 'red' | 'violet' }> = [
-  { id: 'szenario', to: '/trainer/szenario', icon: 'scene', tone: 'gold' },
-  { id: 'preflop', to: '/trainer/preflop', icon: 'grid', tone: 'green' },
-  { id: 'potodds', to: '/trainer/potodds', icon: 'scale', tone: 'blue' },
-  { id: 'equity', to: '/trainer/equity', icon: 'chart', tone: 'violet' },
-  { id: 'handranking', to: '/trainer/handranking', icon: 'play', tone: 'red' },
-  { id: 'outs', to: '/trainer/outs', icon: 'eye', tone: 'blue' },
-  { id: 'pushfold', to: '/trainer/pushfold', icon: 'push', tone: 'gold' },
+  { id: 'szenario', to: '/lernen/trainer/szenario', icon: 'scene', tone: 'gold' },
+  { id: 'preflop', to: '/lernen/trainer/preflop', icon: 'grid', tone: 'green' },
+  { id: 'potodds', to: '/lernen/trainer/potodds', icon: 'scale', tone: 'blue' },
+  { id: 'equity', to: '/lernen/trainer/equity', icon: 'chart', tone: 'violet' },
+  { id: 'handranking', to: '/lernen/trainer/handranking', icon: 'play', tone: 'red' },
+  { id: 'outs', to: '/lernen/trainer/outs', icon: 'eye', tone: 'blue' },
+  { id: 'pushfold', to: '/lernen/trainer/pushfold', icon: 'push', tone: 'gold' },
 ];
 
 export function TrainerHub() {
@@ -36,7 +36,7 @@ export function TrainerHub() {
         <p className="sub">{L.sub}</p>
       </div>
 
-      <Link to="/tagesquiz" className="card clickable" style={{ display: 'block', marginBottom: 16, borderColor: 'rgba(212,175,94,0.35)' }}>
+      <Link to="/lernen/tagesquiz" className="card clickable" style={{ display: 'block', marginBottom: 16, borderColor: 'rgba(212,175,94,0.35)' }}>
         <div className="row" style={{ alignItems: 'flex-start' }}>
           <IconTile name="sun" tone="gold" />
           <div style={{ flex: 1 }}>

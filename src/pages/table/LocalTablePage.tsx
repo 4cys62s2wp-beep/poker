@@ -227,7 +227,7 @@ export function LocalTablePage() {
           <div style={{ fontWeight: 800, marginBottom: 6 }}>{L.tipTitle}</div>
           <p className="small muted">{L.tip}</p>
           <p className="small faint" style={{ marginTop: 10 }}>
-            {L.onlineHint} <Link to="/tisch/online">{L.onlineLink}</Link>
+            {L.onlineHint} <Link to="/live/tisch/online">{L.onlineLink}</Link>
           </p>
         </div>
       </div>

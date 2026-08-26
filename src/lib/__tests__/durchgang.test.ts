@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(18);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(20);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -281,6 +281,44 @@ describe('Was vom Abend bleibt', () => {
 
   it('lässt von jedem dieser Bildschirme einen Weg zurück', () => {
     expect(schritt('Ein Tipp auf einen Abend zeigt den Abend').zurueck_sichtbar).toBe(true);
+  });
+});
+
+describe('Das private Gerät: der Lernbildschirm', () => {
+  it('zeigt vor der Antwort keine Ergebniszahl', () => {
+    /* Die Aufgabe steht da, das Ergebnis nicht. Der größte Text ist der Name
+       des Zugbilds — nichts, was nach einer Zahl aussieht. */
+    const e = schritt('Der Drill zeigt eine Aufgabe');
+    const groesste = e.groesste as { klasse: string; px: number };
+    expect(groesste.klasse).not.toMatch(/drill-zahl/);
+    expect(e.knoepfe).toBe(2);
+  });
+
+  it('macht die Ergebniszahl um ein Vielfaches größer als den Fließtext', () => {
+    /* Die Regel aus Phase 1, hier am gerenderten Ergebnis statt am Token. */
+    const css = readFileSync('src/styles/global.css', 'utf8');
+    const fliesstext = Number(css.match(/--fs-fliesstext:\s*([\d.]+)px/)![1]);
+    const e = schritt('Zwischen Eingabe und Ergebnis liegt nichts');
+    expect(e.ergebnis_px as number).toBeGreaterThanOrEqual(fliesstext * 4);
+  });
+
+  it('lässt zwischen Eingabe und Ergebnis nichts liegen', () => {
+    const e = schritt('Zwischen Eingabe und Ergebnis liegt nichts');
+    expect(e.dauer_ms as number).toBeLessThan(300);
+    expect(e.uebergang, 'Ein Übergang auf der Ergebniszahl ist eine Wartezeit '
+      + 'mit besserem Namen').toBe('0s');
+    expect(e.belebung).toBe('none');
+  });
+
+  it('lässt beim Antworten nichts unter dem Finger wegrutschen', () => {
+    /* Ein Knopf, der sich beim Antworten verschiebt, ist schlimmer als eine
+       Wartezeit: Man tippt daneben und weiß nicht, warum. */
+    expect(schritt('Zwischen Eingabe und Ergebnis liegt nichts').knopf_bewegt_px).toBe(0);
+  });
+
+  it('zeigt als Ergebnis eine Zahl mit Einheit', () => {
+    expect(String(schritt('Zwischen Eingabe und Ergebnis liegt nichts').ergebnis_text))
+      .toMatch(/^\d+,\d\s?%$/u);
   });
 });
 

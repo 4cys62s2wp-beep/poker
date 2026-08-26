@@ -366,6 +366,30 @@ Systemgesten.
 
 ---
 
+## 8a. Das private Gerät: Ergebnis groß, Weg dahin klein
+
+Das private Gerät gehört einer Person und liegt in ihrer Hand. Für es gelten
+zwei eigene Regeln, beide am gerenderten Ergebnis gemessen (`npm run
+durchgang`):
+
+**Regel 8a.1 — Vor der Antwort steht keine Ergebniszahl da.** Der größte
+Text auf dem Aufgabenbildschirm ist der Name des Zugbilds (27 px), nicht
+etwas, das nach einer Zahl aussieht. Wer schon vorher eine große Zahl sieht,
+rät nicht mehr, sondern liest ab.
+
+**Regel 8a.2 — Zwischen Eingabe und Ergebnis liegt nichts.** Gemessen: 40 ms
+bis die Auflösung dasteht, `transition-duration: 0s`, keine Animation, und
+die Knöpfe verschieben sich um **0 px**.
+
+*Begründung.* Eine Animation auf einer Ergebniszahl ist eine Wartezeit mit
+besserem Namen — beim ersten Mal hübsch, beim fünfzigsten im Weg. Und ein
+Knopf, der sich beim Antworten verschiebt, ist schlimmer als jede Wartezeit:
+Man tippt daneben und weiß nicht, warum.
+
+Die Ergebniszahl selbst ist 78 px groß, das Fünffache des Fließtextes.
+
+---
+
 ## 9. Kontrast und Tippflächen werden am gerenderten Ergebnis geprüft
 
 Abschnitt 5 zählt verstreute Gestaltungswerte im Quelltext. Zwei Dinge kann

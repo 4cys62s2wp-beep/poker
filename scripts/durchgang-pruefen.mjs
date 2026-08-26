@@ -340,6 +340,70 @@ await schritt('Ein Tipp auf einen Abend zeigt den Abend', async () => {
   };
 });
 
+/* ── Das private Gerät: der Drill ──────────────────────────────────────────
+   Der Auftrag beschreibt zwei Geräterollen. Der Tisch ist gemessen
+   (`npm run tisch`); das private Gerät ist der Lernbildschirm, und für ihn
+   gelten zwei eigene Regeln: Ergebniszahlen groß, alles andere klein — und
+   zwischen Eingabe und Ergebnis kein Warten und keine Bewegung. */
+
+await schritt('Der Drill zeigt eine Aufgabe', async () => {
+  await seite.goto(`${GRUND}/#/lernen/drill`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.drill-knopf.ja', { timeout: 8000 });
+  await seite.waitForTimeout(300);
+  return seite.evaluate(() => {
+    const groesse = (el) => Math.round(parseFloat(getComputedStyle(el).fontSize) * 10) / 10;
+    const sichtbar = (el) => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    };
+    const texte = [...document.querySelectorAll('.drill *')]
+      .filter((el) => sichtbar(el) && [...el.childNodes]
+        .some((n) => n.nodeType === Node.TEXT_NODE && n.textContent.trim()))
+      .map((el) => ({ klasse: el.className || el.tagName.toLowerCase(), px: groesse(el) }))
+      .sort((a, b) => b.px - a.px);
+    return {
+      groesste: texte[0],
+      zweitgroesste: texte.find((t) => t.px < texte[0].px),
+      knoepfe: [...document.querySelectorAll('.drill-knopf')].filter(sichtbar).length,
+    };
+  });
+});
+
+await schritt('Zwischen Eingabe und Ergebnis liegt nichts', async () => {
+  /* Gemessen wird zweierlei: wie lange es dauert, bis die Auflösung dasteht,
+     und ob sich dabei etwas bewegt. Ein Knopf, der beim Antworten wegrutscht,
+     ist schlimmer als eine Wartezeit — man tippt daneben. */
+  const vorher = await seite.evaluate(() => {
+    const r = document.querySelector('.drill-knopf.ja').getBoundingClientRect();
+    return { oben: Math.round(r.top), links: Math.round(r.left) };
+  });
+  const t0 = Date.now();
+  await seite.locator('.drill-knopf.ja').click();
+  await seite.waitForSelector('.drill-zahl', { timeout: 4000 });
+  const dauer_ms = Date.now() - t0;
+
+  const nachher = await seite.evaluate(() => {
+    const knopf = document.querySelector('.drill-knopf.weiter') ?? document.querySelector('.drill-knopf');
+    const r = knopf.getBoundingClientRect();
+    const zahl = document.querySelector('.drill-zahl');
+    const st = getComputedStyle(zahl);
+    return {
+      oben: Math.round(r.top),
+      links: Math.round(r.left),
+      ergebnis_px: Math.round(parseFloat(st.fontSize) * 10) / 10,
+      ergebnis_text: zahl.textContent.trim(),
+      uebergang: st.transitionDuration,
+      belebung: st.animationName,
+    };
+  });
+
+  return {
+    dauer_ms,
+    knopf_bewegt_px: Math.abs(nachher.oben - vorher.oben) + Math.abs(nachher.links - vorher.links),
+    ...nachher,
+  };
+});
+
 await browser.close();
 
 const ergebnis = {

@@ -1,4 +1,173 @@
-# STATUS
+# STATUS — Arbeitsbereich `poker-trainer`
+
+**Zweck:** Diese Datei ist so geschrieben, dass eine frische Sitzung ohne
+jeden Kontext hier weiterarbeiten kann. Wer neu dazukommt, liest **nur diese
+Datei** und weiß, wo es steht. Ganz unten steht die Vorgeschichte des
+Projekts, unverändert übernommen.
+
+- **Arbeitsbereich:** `/home/user/poker-trainer` (git worktree)
+- **Branch:** `feature/pot-odds-trainer`
+- **Abgezweigt von:** `feature/poker-math` @ `2c2ca7e`
+- **Hauptverzeichnis:** `/home/user/poker` auf `feature/poker-math` —
+  **nicht anfassen.** Kein Branchwechsel dort, keine Schreibzugriffe auf
+  `tools/poker-math/`, insbesondere nicht auf `output/`.
+- **Letzte Aktualisierung:** 2026-08-26, nach Aufgabe 1
+- **Stand in einem Satz:** Die Datenschnittstelle steht und ist geprüft; der
+  Pot-Odds-Trainer, die Herkunftsanzeige und die teilbaren Adressen sind noch
+  nicht gebaut.
+
+---
+
+## Der Auftrag, in vier Aufgaben
+
+| # | Aufgabe | Stand |
+|---|---------|-------|
+| 1 | Datenschnittstelle: schlankes, direkt ladbares Format aus B1–B3, reproduzierbar erzeugt, beim Laden **laut** validiert | ✅ fertig |
+| 2 | Pot-Odds-Trainer: der erste echte Bildschirm | ⬜ offen |
+| 3 | „Warum diese Zahl": Herkunft neben jeder Zahl, aufklappbar | ⬜ offen |
+| 4 | Teilbare Ergebnisse: Zustand in der Adresse, Vorschaubild-Metadaten | ⬜ offen |
+
+Reihenfolge ist bindend: eine Aufgabe vollständig abschließen und committen,
+bevor die nächste beginnt.
+
+---
+
+## Aufgabe 1 — was jetzt steht
+
+### Der Weg der Zahlen
+
+```
+tools/poker-math/output/*.json     ← der Nachweis, vollständig, mit Belegen
+        │
+        │  scripts/pokermath-app-daten.mjs   (npm run daten)
+        ▼
+public/pokermath/*.json            ← die Anzeigefassung, schlank
+        │
+        │  src/lib/pokermath/laden.ts        (prüft, wirft bei Abweichung)
+        ▼
+die App
+```
+
+Die App rechnet **nichts** nach. Sie liest nur, was der Generator geschrieben
+hat.
+
+### Die drei Teile
+
+**`scripts/pokermath-app-daten.mjs`** — das Umwandlungsskript. Node, keine
+Abhängigkeiten, ein Aufruf: `npm run daten`. Es liest die Rechenergebnisse aus
+`tools/poker-math/output/` (nur lesend) und schreibt die Anzeigefassung nach
+`public/pokermath/`.
+
+Zwei Eigenschaften, die wichtig sind:
+
+- **Es holt jedes Feld über `hole(datei, wurzel, pfad, pruefung)`.** Fehlt ein
+  Feld oder hat es den falschen Typ, fliegt ein `QuellFehler` mit dem exakten
+  Pfad (`b1_outs.json: outs[7].turn fehlt`). Kein `?.`, kein Standardwert.
+- **Erst bauen, dann schreiben.** Alle vier Blöcke werden vollständig im
+  Speicher gebaut; erst wenn keiner geworfen hat, wird geschrieben. Bricht
+  einer ab, liegt **nichts** Halbes auf der Platte. Nachgeprüft: mit einem
+  entfernten Pflichtfeld meldet das Skript `ABBRUCH – nichts geschrieben.`
+  und schreibt null Dateien.
+
+**`src/lib/pokermath/typen.ts`** — der Vertrag als Typen.
+`ERWARTETE_VERTRAG_VERSION = 2`. Die Feldnamen sind deutsch, weil sie im
+Generator so heißen; eine Übersetzungsschicht wäre genau die Stelle, an der
+`turn_oder_river` irgendwann auf das Turn-Feld gemappt wird und es niemandem
+auffällt.
+
+**`src/lib/pokermath/laden.ts`** — die Prüfung beim Laden. Sie gibt bei einem
+Fehler **nicht** `null` zurück, sondern wirft `SchemaFehler` mit dem Pfad des
+schuldigen Feldes. Grund: Ein `null` wandert durch die App und wird irgendwo
+zu einem leeren Bildschirm ohne Ursache. Eine geworfene Ausnahme mit
+`b1_outs.outs[7].turn` im Text nennt die Stelle.
+
+Geprüft wird mehr als der Typ:
+
+| Prüfung | Warum |
+|---------|-------|
+| `turn_oder_river >= turn` | zwei Straßen können nicht schlechter sein als eine |
+| `outs_falsch_gezaehlt >= outs` | die falsche Zählweise zählt mehr, nie weniger |
+| `noetige_equity <= 0.5` | bei einem Einsatz in einen nicht-leeren Pot |
+| `weggeblockt === vorher - nachher` | die Blocker-Rechnung muss aufgehen |
+| Blocker nach `bekannte_karten` aufsteigend | sonst zeigt die App Zeilen in falscher Reihenfolge |
+
+### Der Kopf jeder Datei — für Aufgabe 3
+
+Jede Anzeigedatei trägt einen `herkunft`-Block. Der ist nicht Zierde, sondern
+die Grundlage von Aufgabe 3 („Warum diese Zahl"):
+
+```
+herkunft: {
+  methode, erzeugt_am, zweck,
+  annahmen: { sicht, unbekannte_karten, split_pot, kartenzahlen, besonderheiten },
+  bibliothek: { name, version } | null,
+  faelle_enumeriert: null,
+  quelle
+}
+```
+
+Zwei Felder sind heute leer und das ist absichtlich sichtbar:
+`bibliothek` ist bei B2 und B3 `null` (dort wird kombinatorisch gerechnet, kein
+Evaluator im Spiel — siehe B-002), und `faelle_enumeriert` ist überall `null`,
+weil die Rechenergebnisse die Fallzahl nicht mitschreiben (B-003). Beides
+gehört in `BLOCKER.md`, nicht in eine ausgedachte Zahl.
+
+### Geprüft
+
+- `src/lib/__tests__/pokermath.test.ts` — 25 Tests, lesen die **echten**
+  Dateien aus `public/pokermath/`, nicht erfundene Beispiele. Ein Test prüft
+  den exakten Fehlerpfad `b1_outs.outs[7].turn`.
+- Gesamtlauf: **424 Tests in 28 Dateien, grün.**
+- `npx tsc --noEmit`: sauber.
+- `npm run build`: baut durch.
+
+---
+
+## Was als Nächstes zu tun ist
+
+**Aufgabe 2 — Pot-Odds-Trainer.** Die Gestaltungsregeln aus dem Auftrag sind
+bindend, nicht Geschmackssache:
+
+- Die Ergebniszahl ist das größte Element, in der oberen Bildschirmhälfte,
+  fetter Schnitt, kein dünner.
+- Dunkler Grund als Vorgabe, hoher Kontrast.
+- Höchstens **zwei Berührungen** vom Öffnen bis zur ersten Aufgabe.
+- Einhändig bedienbar: alle Bedienelemente im unteren Drittel.
+- Kein Konto, kein Anmelden, kein Netz nötig.
+- **Keine Bewegung** zwischen Antwort und Auflösung.
+- Kein Zeitdruck, kein Countdown.
+- Aufgaben werden aus den B1/B2/B3-Daten erzeugt.
+  **Keine Zahl im Quelltext der Oberfläche.**
+
+**Aufgabe 3** baut auf dem `herkunft`-Block auf, der schon da ist.
+
+**Aufgabe 4**: Zustand vollständig in der Adresse, keine Datenbank, kein
+Server. Dazu Vorschaubild-Metadaten, damit ein geteilter Link in WhatsApp und
+Discord als Karte erscheint.
+
+---
+
+## Was ein Mensch entscheiden muss
+
+Alles in `BLOCKER.md`, vier Punkte. Der dringlichste:
+
+**B-001 — der B4-Lauf ist tot und Daten sind verloren.** Der
+Preflop-Equity-Lauf im Hauptverzeichnis läuft **nicht** mehr; letzte
+Logzeile 09:51:48 bei 390 von 14 365 Handpaaren. Gesichert im Repo sind 270.
+Die Differenz von etwa 120 gerechneten Handpaaren ist weg, weil `--sichern`
+die laufende Datei entfernt, während der Prozess sie noch offen hatte. Unter
+Linux schreibt der Prozess dann in eine Datei, die es nicht mehr gibt.
+Der Fehler sitzt in `tools/poker-math/src/b4_preflop_equity.py` — **hier nicht
+zu beheben**, dieser Arbeitsbereich darf dort nicht schreiben.
+
+---
+---
+
+# Vorgeschichte — Stand vor diesem Arbeitsbereich
+
+*Unverändert übernommen aus dem Branch `feature/poker-math`. Beschreibt die
+Phasen 1–3 und die Scope-Korrektur.*
+
 
 **Zweck:** Diese Datei ist so geschrieben, dass eine frische Sitzung ohne
 jeden Kontext hier weiterarbeiten kann. Wer neu dazukommt, liest **nur diese

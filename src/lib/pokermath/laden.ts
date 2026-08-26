@@ -1,25 +1,22 @@
-/* Lädt die gerechneten Daten und prüft sie streng.
-   ================================================
+/* Lädt die gerechneten Daten und prüft sie – laut, nicht still.
+   =============================================================
 
-   Warum so streng
-   ---------------
-   Diese Dateien liegen im `public/`-Ordner und werden über das Netz geholt.
-   Sie kommen zwar aus dem eigenen Generator, aber die App darf das nicht
-   voraussetzen: Ein halb übertragener Download, eine veraltete Datei im
-   Zwischenspeicher des Browsers oder eine Version aus einem anderen Zweig
-   sehen alle wie gültiges JSON aus.
+   Warum es wirft statt `null` zurückzugeben
+   -----------------------------------------
+   Eine frühere Fassung lieferte bei jedem Zweifel `null`. Das ist für einen
+   Konfigurationsschalter richtig (dann bleibt eine Funktion eben aus), für
+   **Zahlen in einer Lern-App** aber falsch: Der Bildschirm hätte dann still
+   weniger angezeigt, und niemand hätte gemerkt, dass ein Feld fehlt.
 
-   Deshalb gilt hier dasselbe Vorgehen wie bei `monetization.json` und
-   `legal.json`: **Bei jedem Zweifel `null`.** Eine Seite ohne Zahlen kann
-   sagen „Daten fehlen"; eine Seite mit falschen Zahlen bringt jemandem etwas
-   Falsches bei.
+   Deshalb wirft jede Prüfung mit dem genauen Pfad. Die Oberfläche fängt das
+   und zeigt den Fehler **sichtbar** an — sie stürzt nicht ab, aber sie
+   schweigt auch nicht.
 
    Die Versionsprüfung
    -------------------
-   Passt `vertrag_version` nicht, wird die Datei abgelehnt – auch dann, wenn
-   sie sonst gültig aussieht. Genau dafür ist die Version da: Ein Feld kann
-   seine Bedeutung ändern, ohne seinen Typ zu ändern, und dann sieht die
-   falsche Zahl völlig richtig aus. */
+   Passt `vertrag_version` nicht, wird geworfen – auch bei sonst gültiger
+   Datei. Ein Feld kann seine Bedeutung ändern, ohne seinen Typ zu ändern;
+   dann sieht die falsche Zahl völlig richtig aus. */
 
 import {
   ERWARTETE_VERTRAG_VERSION,
@@ -27,307 +24,311 @@ import {
   type B1Outs,
   type B2PotOdds,
   type B3Kombinatorik,
-  type B4Equity,
   type Befund,
+  type Herkunft,
   type Kopf,
 } from './typen';
 
-// ---------------------------------------------------------------------------
-// Kleine Prüfhelfer
-// ---------------------------------------------------------------------------
-
-function istObjekt(v: unknown): v is Record<string, unknown> {
-  return typeof v === 'object' && v !== null && !Array.isArray(v);
+/** Ein Schemafehler mit dem Pfad, an dem er auftrat.
+ *
+ *  Der Pfad ist das Wichtigste daran: „b1_outs.outs[7].turn fehlt" sagt einem
+ *  Menschen, was zu tun ist. „Daten ungültig" sagt nichts. */
+export class SchemaFehler extends Error {
+  readonly pfad: string;
+  constructor(pfad: string, was: string) {
+    super(`${pfad}: ${was}`);
+    this.name = 'SchemaFehler';
+    this.pfad = pfad;
+  }
 }
 
-/** Eine endliche Zahl im erlaubten Bereich – NaN und Infinity fallen durch. */
-function zahl(v: unknown, min = -Infinity, max = Infinity): number | null {
-  return typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max ? v : null;
+// ---------------------------------------------------------------------------
+// Prüfhelfer – jeder wirft mit Pfad
+// ---------------------------------------------------------------------------
+
+function objekt(v: unknown, pfad: string): Record<string, unknown> {
+  if (typeof v !== 'object' || v === null || Array.isArray(v)) {
+    throw new SchemaFehler(pfad, `ist kein Objekt, sondern ${typeof v}`);
+  }
+  return v as Record<string, unknown>;
+}
+
+function zahl(v: unknown, pfad: string, min = -Infinity, max = Infinity): number {
+  if (typeof v !== 'number' || !Number.isFinite(v)) {
+    throw new SchemaFehler(pfad, `ist keine endliche Zahl, sondern ${JSON.stringify(v)}`);
+  }
+  if (v < min || v > max) {
+    throw new SchemaFehler(pfad, `liegt mit ${v} außerhalb von ${min}..${max}`);
+  }
+  return v;
 }
 
 /** Eine Wahrscheinlichkeit. Außerhalb von 0..1 ist sie keine. */
-function anteil(v: unknown): number | null {
-  return zahl(v, 0, 1);
+function anteil(v: unknown, pfad: string): number {
+  return zahl(v, pfad, 0, 1);
 }
 
-function ganzzahl(v: unknown, min = 0, max = Number.MAX_SAFE_INTEGER): number | null {
-  const n = zahl(v, min, max);
-  return n !== null && Number.isInteger(n) ? n : null;
+function ganzzahl(v: unknown, pfad: string, min = 0, max = Number.MAX_SAFE_INTEGER): number {
+  const n = zahl(v, pfad, min, max);
+  if (!Number.isInteger(n)) throw new SchemaFehler(pfad, `ist keine ganze Zahl: ${n}`);
+  return n;
 }
 
-function text(v: unknown, maxLaenge = 4000): string | null {
-  return typeof v === 'string' && v.length > 0 && v.length <= maxLaenge ? v : null;
-}
-
-function liste(v: unknown): unknown[] | null {
-  return Array.isArray(v) && v.length > 0 ? v : null;
-}
-
-/** Alle Einträge durch eine Prüfung schicken. Fällt einer durch, fällt alles durch:
- *  Eine Tabelle mit einer stillschweigend fehlenden Zeile ist gefährlicher als
- *  gar keine Tabelle. */
-function alle<T>(roh: unknown, pruefe: (e: unknown) => T | null): T[] | null {
-  const arr = liste(roh);
-  if (!arr) return null;
-  const ergebnis: T[] = [];
-  for (const e of arr) {
-    const geprueft = pruefe(e);
-    if (geprueft === null) return null;
-    ergebnis.push(geprueft);
+function text(v: unknown, pfad: string, maxLaenge = 4000): string {
+  if (typeof v !== 'string' || v.length === 0) {
+    throw new SchemaFehler(pfad, 'ist kein nichtleerer Text');
   }
-  return ergebnis;
+  if (v.length > maxLaenge) throw new SchemaFehler(pfad, `ist länger als ${maxLaenge} Zeichen`);
+  return v;
 }
 
-function pruefeAnnahmen(v: unknown): Annahmen | null {
-  if (!istObjekt(v)) return null;
-  const sicht = text(v.sicht);
-  const unbekannte = text(v.unbekannte_karten);
-  const split = text(v.split_pot);
-  if (!sicht || !unbekannte || !split) return null;
-  return { sicht, unbekannte_karten: unbekannte, split_pot: split };
+function liste(v: unknown, pfad: string): unknown[] {
+  if (!Array.isArray(v) || v.length === 0) {
+    throw new SchemaFehler(pfad, 'ist keine nichtleere Liste');
+  }
+  return v;
 }
 
-function pruefeKopf(v: unknown, block: string): Kopf | null {
-  if (!istObjekt(v)) return null;
-  if (v.vertrag_version !== ERWARTETE_VERTRAG_VERSION) return null;
-  if (v.block !== block) return null;
-  if (v.methode !== 'exakt' && v.methode !== 'monte-carlo') return null;
-  const erzeugt = text(v.erzeugt_am, 40);
-  const quelle = text(v.quelle, 200);
-  const annahmen = pruefeAnnahmen(v.annahmen);
-  if (!erzeugt || !quelle || !annahmen) return null;
+function jedes<T>(v: unknown, pfad: string, pruefe: (e: unknown, p: string) => T): T[] {
+  return liste(v, pfad).map((e, i) => pruefe(e, `${pfad}[${i}]`));
+}
+
+function optionaleGanzzahl(v: unknown, pfad: string, min: number, max: number): number | null {
+  return v === null ? null : ganzzahl(v, pfad, min, max);
+}
+
+// ---------------------------------------------------------------------------
+// Kopf und Herkunft
+// ---------------------------------------------------------------------------
+
+function pruefeAnnahmen(v: unknown, pfad: string): Annahmen {
+  const o = objekt(v, pfad);
+  const k = objekt(o.kartenzahlen, `${pfad}.kartenzahlen`);
   return {
-    vertrag_version: ERWARTETE_VERTRAG_VERSION,
-    block,
-    methode: v.methode,
-    erzeugt_am: erzeugt,
-    annahmen,
-    quelle,
+    sicht: text(o.sicht, `${pfad}.sicht`),
+    unbekannte_karten: text(o.unbekannte_karten, `${pfad}.unbekannte_karten`),
+    split_pot: text(o.split_pot, `${pfad}.split_pot`),
+    kartenzahlen: {
+      deck: ganzzahl(k.deck, `${pfad}.kartenzahlen.deck`, 1, 52),
+      eigene_karten: ganzzahl(k.eigene_karten, `${pfad}.kartenzahlen.eigene_karten`, 1, 5),
+      unbekannt_nach_flop: ganzzahl(k.unbekannt_nach_flop, `${pfad}.kartenzahlen.unbekannt_nach_flop`, 1, 52),
+      unbekannt_nach_turn: ganzzahl(k.unbekannt_nach_turn, `${pfad}.kartenzahlen.unbekannt_nach_turn`, 1, 52),
+    },
+    besonderheiten: (Array.isArray(o.besonderheiten) ? o.besonderheiten : []).map((e, i) => {
+      const b = objekt(e, `${pfad}.besonderheiten[${i}]`);
+      return {
+        schluessel: text(b.schluessel, `${pfad}.besonderheiten[${i}].schluessel`, 120),
+        satz: text(b.satz, `${pfad}.besonderheiten[${i}].satz`),
+      };
+    }),
   };
 }
 
-function pruefeBefunde(v: unknown): Befund[] | null {
-  return alle<Befund>(v, (e) => {
-    if (!istObjekt(e)) return null;
-    const schluessel = text(e.schluessel, 80);
-    const aussage = text(e.aussage);
-    return schluessel && aussage ? { schluessel, aussage } : null;
+function pruefeHerkunft(v: unknown, pfad: string): Herkunft {
+  const o = objekt(v, pfad);
+  const methode = text(o.methode, `${pfad}.methode`, 40);
+  if (methode !== 'exakt' && methode !== 'monte-carlo') {
+    throw new SchemaFehler(`${pfad}.methode`, `ist weder 'exakt' noch 'monte-carlo': ${methode}`);
+  }
+  let bibliothek: Herkunft['bibliothek'] = null;
+  if (o.bibliothek !== null && o.bibliothek !== undefined) {
+    const b = objekt(o.bibliothek, `${pfad}.bibliothek`);
+    bibliothek = {
+      name: text(b.name, `${pfad}.bibliothek.name`, 60),
+      version: text(b.version, `${pfad}.bibliothek.version`, 40),
+    };
+  }
+  return {
+    methode,
+    erzeugt_am: text(o.erzeugt_am, `${pfad}.erzeugt_am`, 40),
+    zweck: text(o.zweck, `${pfad}.zweck`),
+    annahmen: pruefeAnnahmen(o.annahmen, `${pfad}.annahmen`),
+    bibliothek,
+    faelle_enumeriert: o.faelle_enumeriert === null || o.faelle_enumeriert === undefined
+      ? null
+      : ganzzahl(o.faelle_enumeriert, `${pfad}.faelle_enumeriert`, 1),
+    quelle: text(o.quelle, `${pfad}.quelle`, 300),
+  };
+}
+
+function pruefeKopf(v: unknown, block: string): Kopf & Record<string, unknown> {
+  const o = objekt(v, block);
+  const version = ganzzahl(o.vertrag_version, `${block}.vertrag_version`, 1, 999);
+  if (version !== ERWARTETE_VERTRAG_VERSION) {
+    throw new SchemaFehler(
+      `${block}.vertrag_version`,
+      `ist ${version}, erwartet wird ${ERWARTETE_VERTRAG_VERSION}. `
+      + 'Die Daten neu erzeugen: npm run daten',
+    );
+  }
+  const gefunden = text(o.block, `${block}.block`, 60);
+  if (gefunden !== block) {
+    throw new SchemaFehler(`${block}.block`, `enthält Daten des Blocks "${gefunden}"`);
+  }
+  return { ...o, vertrag_version: version, block, herkunft: pruefeHerkunft(o.herkunft, `${block}.herkunft`) };
+}
+
+function pruefeBefunde(v: unknown, pfad: string): Befund[] {
+  return jedes(v, pfad, (e, p) => {
+    const o = objekt(e, p);
+    return {
+      schluessel: text(o.schluessel, `${p}.schluessel`, 80),
+      aussage: text(o.aussage, `${p}.aussage`),
+    };
   });
 }
 
 // ---------------------------------------------------------------------------
-// Die vier Blöcke
+// Die drei Blöcke
 // ---------------------------------------------------------------------------
 
-export function parseB1(roh: unknown): B1Outs | null {
-  if (!istObjekt(roh)) return null;
-  const kopf = pruefeKopf(roh, 'b1_outs');
-  if (!kopf) return null;
-
-  const outs = alle(roh.outs, (e) => {
-    if (!istObjekt(e)) return null;
-    const o = ganzzahl(e.outs, 1, 52);
-    const turn = anteil(e.turn);
-    const river = anteil(e.river_nach_fehlschlag);
-    const beide = anteil(e.turn_oder_river);
-    const regel = anteil(e.regel_zwei_karten);
-    const abw = zahl(e.regel_abweichung_pp, -100, 100);
-    if (o === null || turn === null || river === null || beide === null
-        || regel === null || abw === null) return null;
-    /* Innere Stimmigkeit: Zwei Straßen können nie schlechter sein als eine.
-       Eine Datei, die das verletzt, ist kaputt – egal wie gültig ihr JSON ist. */
-    if (beide < turn || beide < river) return null;
-    return {
-      outs: o, turn, river_nach_fehlschlag: river, turn_oder_river: beide,
-      regel_zwei_karten: regel, regel_abweichung_pp: abw,
-    };
-  });
-
-  const zugbilder = alle(roh.zugbilder, (e) => {
-    if (!istObjekt(e)) return null;
-    const name = text(e.name, 120);
-    const hand = text(e.hand, 20);
-    const flop = text(e.flop, 30);
-    const ziel = text(e.zielkategorie, 40);
-    const o = ganzzahl(e.outs, 0, 52);
-    const falsch = ganzzahl(e.outs_falsch_gezaehlt, 0, 52);
-    if (!name || !hand || !flop || !ziel || o === null || falsch === null) return null;
-    // Die falsch gezählte Variante kann nie kleiner sein als die richtige.
-    if (falsch < o) return null;
-    return { name, hand, flop, zielkategorie: ziel, outs: o, outs_falsch_gezaehlt: falsch };
-  });
-
-  const gegenbeispiele = alle(roh.gegenbeispiele, (e) => {
-    if (!istObjekt(e)) return null;
-    const felder = ['name', 'hand', 'flop', 'out', 'gegner', 'hero_nachher',
-      'gegner_nachher', 'erklaerung'] as const;
-    const werte: Record<string, string> = {};
-    for (const f of felder) {
-      const w = text(e[f]);
-      if (!w) return null;
-      werte[f] = w;
-    }
-    return werte as unknown as B1Outs['gegenbeispiele'][number];
-  });
-
-  const befunde = pruefeBefunde(roh.befunde);
-  if (!outs || !zugbilder || !gegenbeispiele || !befunde) return null;
-  return { ...kopf, outs, zugbilder, gegenbeispiele, befunde };
+export function pruefeB1(roh: unknown): B1Outs {
+  const k = pruefeKopf(roh, 'b1_outs');
+  return {
+    ...k,
+    outs: jedes(k.outs, 'b1_outs.outs', (e, p) => {
+      const o = objekt(e, p);
+      const zeile = {
+        outs: ganzzahl(o.outs, `${p}.outs`, 1, 52),
+        turn: anteil(o.turn, `${p}.turn`),
+        river_nach_fehlschlag: anteil(o.river_nach_fehlschlag, `${p}.river_nach_fehlschlag`),
+        turn_oder_river: anteil(o.turn_oder_river, `${p}.turn_oder_river`),
+        regel_zwei_karten: anteil(o.regel_zwei_karten, `${p}.regel_zwei_karten`),
+        regel_abweichung_pp: zahl(o.regel_abweichung_pp, `${p}.regel_abweichung_pp`, -100, 100),
+      };
+      /* Innere Stimmigkeit, keine Typprüfung: Zwei Straßen können nie
+         schlechter sein als eine. Eine Datei, die das verletzt, ist kaputt –
+         auch wenn jeder Einzelwert für sich gültig aussieht. */
+      if (zeile.turn_oder_river < zeile.turn || zeile.turn_oder_river < zeile.river_nach_fehlschlag) {
+        throw new SchemaFehler(`${p}.turn_oder_river`,
+          'ist kleiner als eine einzelne Straße – das kann nicht sein');
+      }
+      return zeile;
+    }),
+    zugbilder: jedes(k.zugbilder, 'b1_outs.zugbilder', (e, p) => {
+      const o = objekt(e, p);
+      const z = {
+        name: text(o.name, `${p}.name`, 120),
+        hand: text(o.hand, `${p}.hand`, 20),
+        flop: text(o.flop, `${p}.flop`, 30),
+        zielkategorie: text(o.zielkategorie, `${p}.zielkategorie`, 40),
+        outs: ganzzahl(o.outs, `${p}.outs`, 1, 52),
+        outs_falsch_gezaehlt: ganzzahl(o.outs_falsch_gezaehlt, `${p}.outs_falsch_gezaehlt`, 1, 52),
+      };
+      if (z.outs_falsch_gezaehlt < z.outs) {
+        throw new SchemaFehler(`${p}.outs_falsch_gezaehlt`,
+          'ist kleiner als die richtige Zählung – das ist der Sache nach unmöglich');
+      }
+      return z;
+    }),
+    gegenbeispiele: jedes(k.gegenbeispiele, 'b1_outs.gegenbeispiele', (e, p) => {
+      const o = objekt(e, p);
+      return {
+        name: text(o.name, `${p}.name`, 120),
+        hand: text(o.hand, `${p}.hand`, 20),
+        flop: text(o.flop, `${p}.flop`, 30),
+        out: text(o.out, `${p}.out`, 10),
+        gegner: text(o.gegner, `${p}.gegner`, 20),
+        hero_nachher: text(o.hero_nachher, `${p}.hero_nachher`, 40),
+        gegner_nachher: text(o.gegner_nachher, `${p}.gegner_nachher`, 40),
+        erklaerung: text(o.erklaerung, `${p}.erklaerung`),
+      };
+    }),
+    befunde: pruefeBefunde(k.befunde, 'b1_outs.befunde'),
+  };
 }
 
-export function parseB2(roh: unknown): B2PotOdds | null {
-  if (!istObjekt(roh)) return null;
-  const kopf = pruefeKopf(roh, 'b2_potodds');
-  if (!kopf) return null;
-
-  const einsatzgroessen = alle(roh.einsatzgroessen, (e) => {
-    if (!istObjekt(e)) return null;
-    const name = text(e.name, 60);
-    const potanteil = zahl(e.einsatz_als_potanteil, 0, 100);
-    const bruch = text(e.einsatz_als_bruch, 20);
-    /* Obergrenze 0,5 ist keine Vorsicht, sondern Mathematik: Der Gegner legt
-       denselben Betrag hinein, mehr als die Hälfte kann nie nötig sein. */
-    const equity = zahl(e.noetige_equity, 0, 0.5);
-    const odds = zahl(e.pot_odds_zu_eins, 0, 1000);
-    if (!name || potanteil === null || !bruch || equity === null || odds === null) return null;
-
-    const outsFeld = (v: unknown) =>
-      v === null ? null : ganzzahl(v, 1, 52);
-    const t = outsFeld(e.mindest_outs_turn);
-    const r = outsFeld(e.mindest_outs_river);
-    const b = outsFeld(e.mindest_outs_beide);
-    // `null` ist erlaubt (nicht erreichbar), eine ungültige Zahl nicht.
-    if (e.mindest_outs_turn !== null && t === null) return null;
-    if (e.mindest_outs_river !== null && r === null) return null;
-    if (e.mindest_outs_beide !== null && b === null) return null;
-
-    return {
-      name, einsatz_als_potanteil: potanteil, einsatz_als_bruch: bruch,
-      noetige_equity: equity, pot_odds_zu_eins: odds,
-      mindest_outs_turn: t, mindest_outs_river: r, mindest_outs_beide: b,
-    };
-  });
-
-  const befunde = pruefeBefunde(roh.befunde);
-  if (!einsatzgroessen || !befunde) return null;
-  return { ...kopf, einsatzgroessen, befunde };
+export function pruefeB2(roh: unknown): B2PotOdds {
+  const k = pruefeKopf(roh, 'b2_potodds');
+  return {
+    ...k,
+    einsatzgroessen: jedes(k.einsatzgroessen, 'b2_potodds.einsatzgroessen', (e, p) => {
+      const o = objekt(e, p);
+      return {
+        name: text(o.name, `${p}.name`, 60),
+        einsatz_als_potanteil: zahl(o.einsatz_als_potanteil, `${p}.einsatz_als_potanteil`, 0, 100),
+        einsatz_als_bruch: text(o.einsatz_als_bruch, `${p}.einsatz_als_bruch`, 20),
+        /* Obergrenze 0,5 ist keine Vorsicht, sondern Mathematik: Der Gegner
+           legt denselben Betrag hinein, mehr als die Hälfte kann nie nötig
+           sein. Eine Datei, die das behauptet, hat einen Rechenfehler. */
+        noetige_equity: zahl(o.noetige_equity, `${p}.noetige_equity`, 0, 0.5),
+        pot_odds_zu_eins: zahl(o.pot_odds_zu_eins, `${p}.pot_odds_zu_eins`, 0, 1000),
+        mindest_outs_turn: optionaleGanzzahl(o.mindest_outs_turn, `${p}.mindest_outs_turn`, 1, 52),
+        mindest_outs_river: optionaleGanzzahl(o.mindest_outs_river, `${p}.mindest_outs_river`, 1, 52),
+        mindest_outs_beide: optionaleGanzzahl(o.mindest_outs_beide, `${p}.mindest_outs_beide`, 1, 52),
+      };
+    }),
+    befunde: pruefeBefunde(k.befunde, 'b2_potodds.befunde'),
+  };
 }
 
-export function parseB3(roh: unknown): B3Kombinatorik | null {
-  if (!istObjekt(roh)) return null;
-  const kopf = pruefeKopf(roh, 'b3_kombinatorik');
-  if (!kopf) return null;
+export function pruefeB3(roh: unknown): B3Kombinatorik {
+  const k = pruefeKopf(roh, 'b3_kombinatorik');
 
-  const zahlenkarte = (v: unknown): Record<string, number> | null => {
-    if (!istObjekt(v)) return null;
+  const zahlenkarte = (v: unknown, pfad: string): Record<string, number> => {
+    const o = objekt(v, pfad);
     const ergebnis: Record<string, number> = {};
-    for (const [k, w] of Object.entries(v)) {
-      const n = ganzzahl(w, 0, 10000);
-      if (n === null) return null;
-      ergebnis[k] = n;
+    for (const [schluessel, wert] of Object.entries(o)) {
+      ergebnis[schluessel] = ganzzahl(wert, `${pfad}.${schluessel}`, 0, 10000);
     }
-    return Object.keys(ergebnis).length > 0 ? ergebnis : null;
+    if (Object.keys(ergebnis).length === 0) throw new SchemaFehler(pfad, 'ist leer');
+    return ergebnis;
   };
 
-  const blockerZeilen = (v: unknown) =>
-    alle(v, (e) => {
-      if (!istObjekt(e)) return null;
-      const bekannt = ganzzahl(e.bekannte_karten, 1, 52);
-      const ohne = ganzzahl(e.ohne_blocker, 1, 100);
-      const schlimm = ganzzahl(e.schlimmstenfalls, 0, 100);
-      const best = ganzzahl(e.bestenfalls, 0, 100);
-      const mittel = zahl(e.im_mittel, 0, 100);
-      if (bekannt === null || ohne === null || schlimm === null
-          || best === null || mittel === null) return null;
-      // Schlimmster Fall darf nie über dem besten liegen, keiner über dem Ausgangswert.
-      if (schlimm > best || best > ohne) return null;
-      return { bekannte_karten: bekannt, ohne_blocker: ohne,
-        schlimmstenfalls: schlimm, bestenfalls: best, im_mittel: mittel };
-    });
-
-  const kombos = zahlenkarte(roh.kombos_je_typ);
-  const klassen = zahlenkarte(roh.klassen_je_typ);
-  const g = istObjekt(roh.gesamt) ? roh.gesamt : null;
-  const klassenZahl = g ? ganzzahl(g.starthand_klassen, 1, 1000) : null;
-  const blaetter = g ? ganzzahl(g.zweikartenblaetter, 1, 10000) : null;
-
-  const bl = istObjekt(roh.blocker) ? roh.blocker : null;
-  const paar = bl ? blockerZeilen(bl.Paar) : null;
-  const suited = bl ? blockerZeilen(bl.suited) : null;
-  const offsuit = bl ? blockerZeilen(bl.offsuit) : null;
-
-  const bsp = istObjekt(roh.beispiel) ? roh.beispiel : null;
-  const bHand = bsp ? text(bsp.hand, 20) : null;
-  const bBoard = bsp ? text(bsp.board, 30) : null;
-  const vorher = bsp ? ganzzahl(bsp.summe_vorher, 1, 10000) : null;
-  const nachher = bsp ? ganzzahl(bsp.summe_nachher, 0, 10000) : null;
-  const jeHand = bsp ? alle(bsp.je_starthand, (e) => {
-    if (!istObjekt(e)) return null;
-    const hand = text(e.hand, 6);
-    const typ = text(e.typ, 20);
-    const v = ganzzahl(e.vorher, 0, 100);
-    const n = ganzzahl(e.nachher, 0, 100);
-    const weg = ganzzahl(e.weggeblockt, 0, 100);
-    if (!hand || !typ || v === null || n === null || weg === null) return null;
-    if (n > v || weg !== v - n) return null;  // muss aufgehen
-    return { hand, typ, vorher: v, nachher: n, weggeblockt: weg };
-  }) : null;
-
-  const befunde = pruefeBefunde(roh.befunde);
-  if (!kombos || !klassen || klassenZahl === null || blaetter === null
-      || !paar || !suited || !offsuit || !bHand || !bBoard
-      || vorher === null || nachher === null || !jeHand || !befunde) return null;
-  if (nachher > vorher) return null;
-
-  return {
-    ...kopf,
-    kombos_je_typ: kombos,
-    klassen_je_typ: klassen,
-    gesamt: { starthand_klassen: klassenZahl, zweikartenblaetter: blaetter },
-    blocker: { Paar: paar, suited, offsuit },
-    beispiel: { hand: bHand, board: bBoard, summe_vorher: vorher,
-      summe_nachher: nachher, je_starthand: jeHand },
-    befunde,
-  };
-}
-
-export function parseB4(roh: unknown): B4Equity | null {
-  if (!istObjekt(roh)) return null;
-  const kopf = pruefeKopf(roh, 'b4_preflop_equity');
-  if (!kopf) return null;
-  const hinweis = text(roh.hinweis_zur_spanne);
-
-  const matchups = alle(roh.matchups, (e) => {
-    if (!istObjekt(e)) return null;
-    const a = text(e.a, 6);
-    const b = text(e.b, 6);
-    const equity = anteil(e.equity_a);
-    const spanne = zahl(e.spanne_pp, 0, 100);
-    if (!a || !b || equity === null || spanne === null) return null;
-    if (typeof e.spanne_relevant !== 'boolean') return null;
-
-    let konfigurationen;
-    if (e.spanne_relevant) {
-      /* Ist die Spanne erheblich, MÜSSEN die Konfigurationen beiliegen – sonst
-         könnte die App den Einzelwert nicht mit der Spanne zeigen, und genau
-         das verlangt die Vorgabe. Fehlen sie, ist die Datei unbrauchbar. */
-      konfigurationen = alle(e.farbkonfigurationen, (k) => {
-        if (!istObjekt(k)) return null;
-        const bez = text(k.beziehung, 120);
-        const h = ganzzahl(k.haeufigkeit, 1, 10000);
-        const eq = anteil(k.equity_a);
-        return bez && h !== null && eq !== null
-          ? { beziehung: bez, haeufigkeit: h, equity_a: eq } : null;
-      });
-      if (!konfigurationen) return null;
+  const blockerZeilen = (v: unknown, pfad: string) => jedes(v, pfad, (e, p) => {
+    const o = objekt(e, p);
+    const z = {
+      bekannte_karten: ganzzahl(o.bekannte_karten, `${p}.bekannte_karten`, 1, 52),
+      ohne_blocker: ganzzahl(o.ohne_blocker, `${p}.ohne_blocker`, 1, 100),
+      schlimmstenfalls: ganzzahl(o.schlimmstenfalls, `${p}.schlimmstenfalls`, 0, 100),
+      bestenfalls: ganzzahl(o.bestenfalls, `${p}.bestenfalls`, 0, 100),
+      im_mittel: zahl(o.im_mittel, `${p}.im_mittel`, 0, 100),
+    };
+    if (z.schlimmstenfalls > z.bestenfalls || z.bestenfalls > z.ohne_blocker) {
+      throw new SchemaFehler(p, 'schlimmster, bester und Ausgangswert stehen nicht in dieser Reihenfolge');
     }
-    return { a, b, equity_a: equity, spanne_pp: spanne,
-      spanne_relevant: e.spanne_relevant, farbkonfigurationen: konfigurationen };
+    return z;
   });
 
-  const befunde = pruefeBefunde(roh.befunde);
-  if (!hinweis || !matchups || !befunde) return null;
-  return { ...kopf, hinweis_zur_spanne: hinweis, matchups, befunde };
+  const bl = objekt(k.blocker, 'b3_kombinatorik.blocker');
+  const bsp = objekt(k.beispiel, 'b3_kombinatorik.beispiel');
+  const g = objekt(k.gesamt, 'b3_kombinatorik.gesamt');
+
+  return {
+    ...k,
+    kombos_je_typ: zahlenkarte(k.kombos_je_typ, 'b3_kombinatorik.kombos_je_typ'),
+    klassen_je_typ: zahlenkarte(k.klassen_je_typ, 'b3_kombinatorik.klassen_je_typ'),
+    gesamt: {
+      starthand_klassen: ganzzahl(g.starthand_klassen, 'b3_kombinatorik.gesamt.starthand_klassen', 1, 1000),
+      zweikartenblaetter: ganzzahl(g.zweikartenblaetter, 'b3_kombinatorik.gesamt.zweikartenblaetter', 1, 10000),
+    },
+    blocker: {
+      Paar: blockerZeilen(bl.Paar, 'b3_kombinatorik.blocker.Paar'),
+      suited: blockerZeilen(bl.suited, 'b3_kombinatorik.blocker.suited'),
+      offsuit: blockerZeilen(bl.offsuit, 'b3_kombinatorik.blocker.offsuit'),
+    },
+    beispiel: {
+      hand: text(bsp.hand, 'b3_kombinatorik.beispiel.hand', 20),
+      board: text(bsp.board, 'b3_kombinatorik.beispiel.board', 30),
+      summe_vorher: ganzzahl(bsp.summe_vorher, 'b3_kombinatorik.beispiel.summe_vorher', 1, 10000),
+      summe_nachher: ganzzahl(bsp.summe_nachher, 'b3_kombinatorik.beispiel.summe_nachher', 0, 10000),
+      je_starthand: jedes(bsp.je_starthand, 'b3_kombinatorik.beispiel.je_starthand', (e, p) => {
+        const o = objekt(e, p);
+        const s = {
+          hand: text(o.hand, `${p}.hand`, 6),
+          typ: text(o.typ, `${p}.typ`, 20),
+          vorher: ganzzahl(o.vorher, `${p}.vorher`, 0, 100),
+          nachher: ganzzahl(o.nachher, `${p}.nachher`, 0, 100),
+          weggeblockt: ganzzahl(o.weggeblockt, `${p}.weggeblockt`, 0, 100),
+        };
+        if (s.weggeblockt !== s.vorher - s.nachher) {
+          throw new SchemaFehler(p, `geht nicht auf: ${s.vorher} − ${s.nachher} ≠ ${s.weggeblockt}`);
+        }
+        return s;
+      }),
+    },
+    befunde: pruefeBefunde(k.befunde, 'b3_kombinatorik.befunde'),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -335,34 +336,34 @@ export function parseB4(roh: unknown): B4Equity | null {
 // ---------------------------------------------------------------------------
 
 const ORDNER = 'pokermath';
-
-/** Einmal geladen, dann behalten. Die Dateien ändern sich zur Laufzeit nicht. */
 const zwischenspeicher = new Map<string, Promise<unknown>>();
 
-async function hole<T>(block: string, pruefe: (roh: unknown) => T | null): Promise<T | null> {
+async function hole<T>(block: string, pruefe: (roh: unknown) => T): Promise<T> {
   if (!zwischenspeicher.has(block)) {
     zwischenspeicher.set(block, (async () => {
+      let roh: unknown;
       try {
         const url = new URL(`${ORDNER}/${block}.json`, document.baseURI).toString();
         const antwort = await fetch(url, { cache: 'no-store' });
-        if (!antwort.ok) return null;
-        return pruefe(await antwort.json());
-      } catch {
-        // Kein Netz, kaputtes JSON, abgebrochener Download – alles derselbe Fall.
-        return null;
+        if (!antwort.ok) {
+          throw new SchemaFehler(block, `konnte nicht geladen werden (HTTP ${antwort.status})`);
+        }
+        roh = await antwort.json();
+      } catch (fehler) {
+        if (fehler instanceof SchemaFehler) throw fehler;
+        throw new SchemaFehler(block, `ist nicht erreichbar oder kein gültiges JSON: ${fehler}`);
       }
+      return pruefe(roh);
     })());
   }
-  return (await zwischenspeicher.get(block)!) as T | null;
+  return (await zwischenspeicher.get(block)!) as T;
 }
 
-export const ladeB1 = () => hole('b1_outs', parseB1);
-export const ladeB2 = () => hole('b2_potodds', parseB2);
-export const ladeB3 = () => hole('b3_kombinatorik', parseB3);
-/** Groß – erst laden, wenn jemand die Equity-Ansicht wirklich öffnet. */
-export const ladeB4 = () => hole('b4_preflop_equity', parseB4);
+export const ladeB1 = () => hole('b1_outs', pruefeB1);
+export const ladeB2 = () => hole('b2_potodds', pruefeB2);
+export const ladeB3 = () => hole('b3_kombinatorik', pruefeB3);
 
-/** Nur für Tests: den Zwischenspeicher leeren. */
+/** Nur für Tests. */
 export function _leereZwischenspeicher(): void {
   zwischenspeicher.clear();
 }

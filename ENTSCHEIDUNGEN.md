@@ -782,9 +782,11 @@ der Altersfreigabe entfernt wurde. Ranglisten setzen außerdem eine
 Nutzermasse voraus, die es nicht gibt — eine Rangliste unter drei Leuten ist
 keine.
 
-**Wie gestrichen.** `docs/TODO_MANUELL.md`, Nr. 13, steht als durchgestrichene
-Zeile mit Begründung da, statt gelöscht zu sein. Ein gelöschter Eintrag taucht
-in einem halben Jahr als „gute Idee" wieder auf; ein durchgestrichener nicht.
+**Alternative:** Den Eintrag in `docs/TODO_MANUELL.md` löschen.
+
+**Warum nicht:** Ein gelöschter Eintrag taucht in einem halben Jahr als „gute
+Idee" wieder auf, und dann fängt die Überlegung von vorn an. Nr. 13 steht
+deshalb als durchgestrichene Zeile mit Begründung da.
 
 ---
 
@@ -793,10 +795,12 @@ in einem halben Jahr als „gute Idee" wieder auf; ein durchgestrichener nicht.
 **Entschieden (C1).** Die allgemeine Karte reicht. Der Umbau von `HashRouter`
 auf `BrowserRouter` samt vorab erzeugter Seiten bleibt ungebaut.
 
-**Begründung.** Teilbare Links entfalten ihren Wert erst, wenn es Nutzer
-gibt, die teilen. Aktuell gibt es keine. Vorab erzeugte Seiten müssten bei
-jeder Datenänderung neu erzeugt werden — dauerhafte Last für einen erst
-später eintretenden Vorteil.
+**Alternative:** Den Router jetzt umbauen und die Seiten vorab erzeugen.
+
+**Warum nicht:** Teilbare Links entfalten ihren Wert erst, wenn es Nutzer
+gibt, die teilen. Aktuell gibt es keine. Vorab erzeugte Seiten müssten
+dagegen bei jeder Datenänderung neu erzeugt werden — dauerhafte Last für
+einen erst später eintretenden Vorteil.
 
 Beides ist **eine** Entscheidung und keine zwei: Ohne Router-Umbau keine
 eigenen Seiten, ohne eigene Seiten keine eigene Karte. Fällig, sobald das

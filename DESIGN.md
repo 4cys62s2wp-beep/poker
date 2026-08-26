@@ -338,3 +338,49 @@ Mitgemessen und mitgeprüft werden außerdem: keine Navigationsleiste, kein
 Überlauf in beide Richtungen, zwei Bedienknöpfe von mindestens 44 px im
 unteren Drittel, und ein freier Streifen an der Unterkante für die
 Systemgesten.
+
+---
+
+## 9. Kontrast und Tippflächen werden am gerenderten Ergebnis geprüft
+
+Abschnitt 5 zählt verstreute Gestaltungswerte im Quelltext. Zwei Dinge kann
+diese Zählung nicht sehen:
+
+- Im Quelltext steht `color: var(--text-dim)`. Ob das lesbar ist, hängt
+  davon ab, **worauf** es liegt — und das steht in einer anderen Datei, oft
+  zwei Ebenen weiter oben, manchmal unter einem Verlauf.
+- Im Quelltext steht `min-height: var(--tipp-min)`. Ob der Knopf am Ende 44
+  Pixel hoch ist, entscheidet die Zeile, in der er steht.
+
+`npm run pruefen` misst deshalb beides an der laufenden App, bei 390 Pixeln,
+über alle Bildschirme aus `docs/wege.json`. Ergebnis in `docs/pruefung.json`,
+festgehalten von `pruefung.test.ts`.
+
+### Wie mit Verläufen umgegangen wird
+
+Ein Verlauf hat keine Farbe, sondern viele. Statt ihn für „nicht messbar" zu
+erklären, legt die Prüfung jeden seiner Farbstopps einzeln auf den Grund
+darunter und nimmt **den ungünstigsten**. Das ist strenger als die
+Wirklichkeit — wo genau ein Wort auf dem Verlauf sitzt, entscheidet der
+Zeilenumbruch.
+
+**Begründung.** Strenge ist hier die richtige Richtung: Ein Befund zu viel
+kostet eine Prüfung, ein Befund zu wenig kostet Lesbarkeit. Und die erste
+Fassung dieser Prüfung, die Verläufe für „nicht messbar" erklärte, lieferte
+3512 nutzlose Meldungen und keinen einzigen brauchbaren Befund.
+
+### Was sie beim ersten Lauf gefunden hat
+
+| Stelle | Befund | Behoben durch |
+|--------|--------|---------------|
+| Zurück-Link (`a.pill`) auf 49 Bildschirmen | 110 × **29** px statt 44 | eigene Regel für `a.pill` und `button.pill` |
+| Herz auf der Spielkarte, 38 Bildschirme | **4,07** statt 4,5 | `--suit-h` von `#c43e38` auf `#b43934` |
+| Kreuz auf der Spielkarte, 11 Bildschirme | **3,94** statt 4,5 | `--suit-c` von `#2c7f42` auf `#28723b` |
+
+Beide Farben sind nur so weit abgedunkelt, bis die Grenze erreicht ist. Die
+Farbe ist auf einer Spielkarte ohnehin nicht das Unterscheidungsmerkmal — das
+ist das Zeichen selbst.
+
+Seither: **null Befunde**. Hier steht ausdrücklich keine Sperrklinke: Ab null
+ist jeder neue Befund eine Verschlechterung, und die soll auffallen, bevor
+ein Nutzer sie bemerkt.

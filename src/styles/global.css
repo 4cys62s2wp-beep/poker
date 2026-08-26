@@ -43,9 +43,16 @@
 
   /* Kartenfarben (4-Color-Deck) */
   --suit-s: #23241f;
-  --suit-h: #c43e38;
+  /* Vierfarbdeck. Die drei bunten Farben sind gegen die Kartenfläche
+     (#e9e5d7) gerechnet und liegen alle über 4,5 zu 1: Herz 4,66 · Karo
+     4,58 · Kreuz 4,68 · Pik 12,39. Gemessen mit `npm run pruefen`, das die
+     Verläufe darüber mit einrechnet. Herz und Kreuz waren vorher 4,07 und
+     3,94 — sie sind nur so weit abgedunkelt, bis die Grenze erreicht ist.
+     Die Farbe ist ohnehin nicht das Unterscheidungsmerkmal; das ist das
+     Zeichen selbst. */
+  --suit-h: #b43934;
   --suit-d: #2565b8;
-  --suit-c: #2c7f42;
+  --suit-c: #28723b;
 
   /* ── Bereichs-Akzente ────────────────────────────────────────────────
      Je Hub-Karte eine eigene Farbe: Wiedererkennung schlägt Lesen. Nach
@@ -715,6 +722,16 @@ h2.section-title::after {
   border: 1px solid var(--border);
   color: var(--text-dim);
   white-space: nowrap;
+}
+
+/* Eine Marke, die ein Weg ist, muss man treffen können. Der Zurück-Link auf
+   jedem Bildschirm war 29 Pixel hoch — knapp zwei Drittel dessen, was ein
+   Finger sicher trifft, und er steht auf 49 Bildschirmen. Nur der anklickbare
+   Fall wird größer; die Marke als reine Beschriftung bleibt, wie sie ist. */
+a.pill,
+button.pill {
+  min-height: var(--tipp-min);
+  padding-inline: var(--sp-4);
 }
 
 .pill.gold { background: var(--gold-dim); color: var(--gold-bright); border-color: rgba(212, 175, 94, 0.32); }

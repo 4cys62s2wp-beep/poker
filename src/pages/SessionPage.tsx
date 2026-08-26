@@ -47,6 +47,15 @@ export function SessionPage() {
       title: L.tableTitle, body: L.tableBody, when: L.tableWhen,
       accent: 'var(--accent-live)',
     },
+    /* Der Online-Tisch stand hinter dem Ein-Gerät-Tisch und lag damit bei
+       drei Berührungen. Jetzt steht er daneben. Ob er bleibt, ist eine
+       Frage der Altersfreigabe und keine der Navigation — sie steht im
+       Abschlussbericht. */
+    {
+      to: '/session/tisch/online', icon: 'friends',
+      title: L.onlineTitle, body: L.onlineBody, when: L.onlineWhen,
+      accent: 'var(--info)',
+    },
     {
       to: '/session/bankroll', icon: 'notes',
       title: L.bankrollTitle, body: L.bankrollBody, when: L.bankrollWhen,

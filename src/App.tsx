@@ -18,7 +18,6 @@ import { LessonPage } from './pages/LessonPage';
 import { ReviewPage } from './pages/ReviewPage';
 import { DailyQuizPage } from './pages/DailyQuizPage';
 import { ProInsightsPage } from './pages/ProInsightsPage';
-import { TrainerHub } from './pages/TrainerHub';
 import { ScenarioTrainer } from './pages/trainers/ScenarioTrainer';
 import { PushFoldTrainer } from './pages/trainers/PushFoldTrainer';
 import { PreflopTrainer } from './pages/trainers/PreflopTrainer';
@@ -98,7 +97,12 @@ export function App() {
           {/* Die Aufgabe steht in der Adresse. Wer den Link öffnet,
               sieht dieselbe Situation – ohne Datenbank, ohne Server. */}
           <Route path="/lernen/drill/:code" element={<PotOddsDrill />} />
-          <Route path="/lernen/trainer" element={<TrainerHub />} />
+          {/* Der Trainer-Hub war ein Bildschirm, dessen einziger Zweck ein
+              Menü war — und er lag zwischen Lernseite und Trainer, also bei
+              drei Berührungen. Die sieben Trainer stehen jetzt samt ihrer
+              Trefferquote auf der Lernseite. Die Adresse bleibt als
+              Umleitung, damit alte Lesezeichen nicht ins Leere laufen. */}
+          <Route path="/lernen/trainer" element={<Navigate to="/lernen" replace />} />
           <Route path="/lernen/trainer/szenario" element={<ScenarioTrainer />} />
           <Route path="/lernen/trainer/pushfold" element={<PushFoldTrainer />} />
           <Route path="/lernen/trainer/preflop" element={<PreflopTrainer />} />

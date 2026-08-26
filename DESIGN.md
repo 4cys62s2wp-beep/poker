@@ -206,4 +206,57 @@ geprüft.
 
 ## 7. Wege und Tiefen
 
-*(Wird in Phase 2 gefüllt.)*
+Gemessen am **gerenderten** Ergebnis bei 390 Pixel Breite mit
+`npm run wege`. Ergebnis in `docs/wege.json`, Stand 2026-08-26T20:01:29Z.
+
+**41 eigene Bildschirme**, größte Tiefe **2**, **null Sackgassen**, **null unerreichbare Adressen**.
+
+### Tiefe 0 — die Startseite
+
+`/`
+
+### Tiefe 1 — eine Berührung
+
+`/lernen` · `/nachschlagen` · `/profil` · `/session`
+
+Vier statt drei: `/profil` hängt an der unteren Navigation und ist
+damit von überall eine Berührung entfernt. Das ist Absicht — wer
+seinen Namen ändern will, sucht ihn nicht unter einem der drei
+Einstiege.
+
+### Tiefe 2 — zwei Berührungen
+
+**Lernen** — `/lernen/drill` · `/lernen/m1` · `/lernen/m2` · `/lernen/m3` · `/lernen/m4` · `/lernen/m5` · `/lernen/m6` · `/lernen/m7` · `/lernen/m8` · `/lernen/m9` · `/lernen/pros` · `/lernen/statistik` · `/lernen/tagesquiz` · `/lernen/trainer/equity` · `/lernen/trainer/handranking` · `/lernen/trainer/outs` · `/lernen/trainer/potodds` · `/lernen/trainer/preflop` · `/lernen/trainer/pushfold` · `/lernen/trainer/szenario` · `/lernen/uebungstisch` · `/lernen/wiederholen`
+
+**Nachschlagen** — `/nachschlagen/coach` · `/nachschlagen/equity` · `/nachschlagen/glossar` · `/nachschlagen/haende` · `/nachschlagen/odds` · `/nachschlagen/ranges` · `/nachschlagen/tells`
+
+**Live-Session** — `/session/auszahlung` · `/session/bankroll` · `/session/chips` · `/session/tisch` · `/session/tisch/online`
+
+**Übriges** — `/freunde` · `/rechtliches`
+
+### Was nicht mitzählt
+
+**Lektionen** (`/lernen/m3/m3-l2` und so weiter) sind Inhalt des
+Modulbildschirms, kein eigener Bildschirm — so wie ein Glossareintrag Inhalt
+des Glossars ist. Zählte man sie mit, lägen 49 Adressen bei Tiefe drei, und
+die Zahl sagte nichts mehr über die Navigation aus, sondern nur noch darüber,
+wie viele Lektionen es gibt.
+
+**Absichtlich nicht verlinkt** sind `/pro` (erscheint nur, solange die
+Monetarisierung läuft — sie läuft nicht) und `/kuendigen` (wird aus der
+Zahlungsverwaltung heraus geöffnet). Beides steht mit Begründung im
+Prüfskript.
+
+### Was sich dafür geändert hat
+
+Zwei Bildschirme lagen bei drei Berührungen, und beide aus demselben Grund:
+Vor ihnen lag ein Menü.
+
+- Die **sieben Trainer** standen hinter `/lernen/trainer` — einem
+  Bildschirm, dessen einziger Zweck ein Menü war. Sie stehen jetzt samt ihrer
+  Trefferquote auf der Lernseite; die alte Adresse leitet dorthin um.
+- Der **Online-Tisch** stand hinter dem Ein-Gerät-Tisch. Er steht jetzt
+  daneben.
+
+Die elf Sackgassen aus der früheren Prüfung sind bereits behoben — der Lauf
+findet keine mehr. Was er stattdessen fand, war die Tiefe.

@@ -43,6 +43,20 @@ export const STR = defineStrings(
     sessionStatusPlayed: (n: number) => `${n} ${n === 1 ? 'Session' : 'Sessions'} erfasst`,
 
     // Erstnutzer
+    /* Beim allerersten Öffnen steht hier ein Satz, der sagt, was die App
+       tut — keine Fortschrittszahl. „0 von 49 Lektionen" sagt einem Neuling
+       nichts. */
+    wasDieAppTut:
+      'PokerMentor rechnet dir vor, was sich lohnt — und zeigt dir zu jeder '
+      + 'Zahl, wie sie entstanden ist. Am Tisch führt es die Blinds, die Zeit '
+      + 'und die Chips.',
+
+    fortsetzenMarke: 'Läuft gerade',
+    fortsetzenTitel: 'Zurück in die Runde',
+    fortsetzenSeit: (dauer: string, spieler: number) =>
+      `Seit ${dauer} · ${spieler === 1 ? '1 Spieler' : `${spieler} Spieler`}`,
+    fortsetzenNamen: (namen: string) => namen,
+
     firstTimeTitle: 'Wo willst du anfangen?',
     firstTimeSub:
       'Drei Wege durch die App. Du kannst jederzeit wechseln – nichts geht dabei verloren.',
@@ -77,6 +91,17 @@ export const STR = defineStrings(
     sessionSub: 'Split the chips, raise the blinds, pay out fairly',
     sessionStatus: 'Everything for the evening',
     sessionStatusPlayed: (n: number) => `${n} ${n === 1 ? 'session' : 'sessions'} logged`,
+
+    wasDieAppTut:
+      'PokerMentor works out what pays — and shows you, for every number, how '
+      + 'it came about. At the table it runs the blinds, the clock and the '
+      + 'chips.',
+
+    fortsetzenMarke: 'Running now',
+    fortsetzenTitel: 'Back into the round',
+    fortsetzenSeit: (dauer: string, spieler: number) =>
+      `For ${dauer} · ${spieler === 1 ? '1 player' : `${spieler} players`}`,
+    fortsetzenNamen: (namen: string) => namen,
 
     firstTimeTitle: 'Where do you want to start?',
     firstTimeSub:

@@ -1,0 +1,556 @@
+{
+  "geprueft_am": "2026-08-26T20:01:29Z",
+  "breite": 390,
+  "erreichbar": 90,
+  "bildschirme": 41,
+  "groesste_tiefe": 2,
+  "sackgassen": [],
+  "tiefer_als_zwei": [],
+  "unerreichbar": [],
+  "absichtlich_unverlinkt": [
+    "/pro",
+    "/kuendigen"
+  ],
+  "wege": [
+    {
+      "hash": "#/",
+      "tiefe": 0,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen",
+      "tiefe": 1,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/nachschlagen",
+      "tiefe": 1,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/profil",
+      "tiefe": 1,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/session",
+      "tiefe": 1,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/freunde",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/drill",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/m1",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/m2",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/m3",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/m4",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/m5",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/m6",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/m7",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/m8",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/m9",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/pros",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/statistik",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/tagesquiz",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/trainer/equity",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/trainer/handranking",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/trainer/outs",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/trainer/potodds",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/trainer/preflop",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/trainer/pushfold",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/trainer/szenario",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/uebungstisch",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/wiederholen",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/nachschlagen/coach",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/nachschlagen/equity",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/nachschlagen/glossar",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/nachschlagen/haende",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/nachschlagen/odds",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/nachschlagen/ranges",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/nachschlagen/tells",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/rechtliches",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/session/auszahlung",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/session/bankroll",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/session/chips",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/session/tisch",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/session/tisch/online",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/lernen/m1/m1-l1",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l3",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m2/m2-l1",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m2/m2-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m2/m2-l3",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m2/m2-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m2/m2-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m3/m3-l1",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m3/m3-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m3/m3-l3",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m3/m3-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m3/m3-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m3/m3-l6",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m4/m4-l1",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m4/m4-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m4/m4-l3",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m4/m4-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m4/m4-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m4/m4-l6",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m5/m5-l1",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m5/m5-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m5/m5-l3",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m5/m5-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m5/m5-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m5/m5-l6",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m6/m6-l1",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m6/m6-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m6/m6-l3",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m6/m6-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m6/m6-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m7/m7-l1",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m7/m7-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m7/m7-l3",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m7/m7-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m7/m7-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m8/m8-l1",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m8/m8-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m8/m8-l3",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m8/m8-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m8/m8-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m8/m8-l6",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m9/m9-l1",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m9/m9-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m9/m9-l3",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m9/m9-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m9/m9-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    }
+  ]
+}

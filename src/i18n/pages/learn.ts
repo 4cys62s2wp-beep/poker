@@ -17,6 +17,7 @@ export const STR = defineStrings(
     doneLine: (done: number, total: number) => `${done} / ${total} Lektionen abgeschlossen`,
 
     // Übungsblock: alles, was zum Kurs gehört, aber keine Lektion ist.
+    trainerQuote: (p: number) => `${p} % richtig`,
     drillTitle: 'Pot-Odds-Drill',
     drillSub: 'Eine Situation, eine Entscheidung, die gerechnete Zahl. Ohne Zeitdruck.',
     drillPill: 'Neu',
@@ -49,6 +50,7 @@ export const STR = defineStrings(
     lockedHint: 'Unlocked with Pro',
     doneLine: (done: number, total: number) => `${done} / ${total} lessons completed`,
 
+    trainerQuote: (p: number) => `${p} % correct`,
     drillTitle: 'Pot odds drill',
     drillSub: 'One spot, one decision, the computed number. No clock.',
     drillPill: 'New',

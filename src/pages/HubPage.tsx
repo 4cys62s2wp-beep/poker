@@ -1,215 +1,122 @@
-/* Der Hub: die Startseite.
-   ========================
+/* Die Startseite.
+   ==============
 
-   Drei Entscheidungen, mehr nicht. Wer die App öffnet, hat eine von drei
-   Absichten – lernen, live spielen, eine Sitzung verwalten – und soll sie in
-   einem Blick finden, ohne zu lesen.
+   Drei Einstiege, **ungleich gewichtet**. Die Gewichtung folgt der
+   Nutzungssituation und nicht der Wichtigkeit:
 
-   Was hier bewusst NICHT steht: Kennzahl-Kacheln, Schnellzugriff-Raster,
-   Tipp des Tages, Wasserzeichen. Das war der alte Startbildschirm, und es war
-   eine Kachelwand ohne Fokus (docs/SCREEN_STRUKTUR.md, Abschnitt 1).
+   - LIVE-SESSION unten und am größten. Sie wird unter Zeitdruck geöffnet,
+     oft einhändig, während die andere Hand Chips stapelt — und der Daumen
+     erreicht die untere Bildschirmhälfte, mehr nicht.
+   - LERNEN in der Mitte, mittlere Größe. Wird in Ruhe geöffnet.
+   - NACHSCHLAGEN oben und klein. Wer gezielt sucht, findet auch ein kleines
+     Ziel.
 
-   Was stattdessen da ist:
-   - eine schmale Kopfzeile mit Streak, Level und XP – sichtbar, aber nicht
-     der Held des Screens (Anforderung 2.2)
-   - EIN Quick Access: die eine Sache, die gerade ansteht
-   - genau drei Karten, je mit eigener Farbe und eigenem Bildzeichen
+   Einen vierten Einstieg gibt es nicht. Hier stand einmal ein Platzhalter
+   „Mit Freunden spielen"; er ist ersatzlos gestrichen. Ein Platzhalter, der
+   nicht kommt, ist ein Versprechen, das man bricht.
 
-   Die drei trennen nach ABSICHT, nicht nach Thema (ENTSCHEIDUNGEN.md, E-011):
-   Lernen hat einen Fortschritt, Nachschlagen hat keinen, Live-Session
-   passiert am echten Tisch.
+   Fortsetzen statt Menü
+   ---------------------
+   Läuft eine Runde, steht sie **ganz oben** — mit dem Weg zurück hinein,
+   seit wann sie läuft und wer mitspielt. Wer eine angebrochene Runde hat,
+   will keinen Einstieg, sondern zurück.
 
-   Einen vierten Einstieg gibt es nicht. Hier stand ein Platzhalter „Mit
-   Freunden spielen“; er ist ersatzlos gestrichen. Ein Platzhalter, der nicht
-   kommt, ist ein Versprechen, das man bricht. */
+   Beim allerersten Öffnen steht dort stattdessen ein Satz, der sagt, was die
+   App tut. Eine Fortschrittszahl wäre dort sinnlos: „0 von 49 Lektionen"
+   sagt einem Neuling nichts.
 
-import { useMemo } from 'react';
+   Größen und Abstände stehen vollständig in `global.css`, Abschnitt
+   „Startseite". In dieser Datei steht keine Gestaltungszahl. */
+
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../components/Icon';
-import { HubCard, StatPill } from '../components/ui';
+import { StatPill } from '../components/ui';
 import { useAppState } from '../state/AppState';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/hub';
 import { usePro } from '../lib/pro/ProProvider';
+import { grobeDauer } from '../lib/session/dauer';
+import { ladeLaufende, nochDabei, type LaufendeSession } from '../lib/session/laufend';
 
 export function HubPage() {
-  const { data, level, dueReviewCount } = useAppState();
+  const { data, level } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
   const { enabled: proEnabled } = usePro();
 
+  /* Erst nach dem ersten Rendern lesen: Der Gerätespeicher steht beim
+     Serverrendern nicht zur Verfügung, und ein Fehler dort würde die
+     Startseite kosten. */
+  const [laufend, setLaufend] = useState<LaufendeSession | null>(null);
+  useEffect(() => { setLaufend(ladeLaufende()); }, []);
+
   const totalLessons = content.modules.reduce((s, m) => s + m.lessons.length, 0);
   const doneLessons = Object.keys(data.completedLessons).length;
-  const learnPct = totalLessons > 0 ? (100 * doneLessons) / totalLessons : 0;
 
-  /* Erstnutzer erkennen wir daran, dass noch nichts passiert ist. Sie
-     bekommen erklärende Untertitel statt Fortschrittszahlen – „0 von 49
-     Lektionen“ sagt einem Neuling nichts, „Kurs, Trainer und Wiederholung“
-     schon (Anforderung 2.2). */
-  const isFirstTime = doneLessons === 0 && data.handsPlayed === 0 && data.xp === 0;
-  const sessionCount = data.sessions.length;
-
-  const nextLesson = useMemo(() => {
-    for (const m of content.modules) {
-      for (const l of m.lessons) {
-        if (!data.completedLessons[l.id]) {
-          return { moduleId: m.id, lessonId: l.id, title: l.title };
-        }
-      }
-    }
-    return null;
-  }, [content.modules, data.completedLessons]);
-
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const quizOpen = data.daily?.date !== todayStr;
-
-  /* Genau EIN Quick Access, nach Dringlichkeit gewählt. Fünf Vorschläge
-     nebeneinander wären wieder eine Kachelwand – und wer fünf Dinge
-     gleichzeitig angeboten bekommt, tut oft keins davon. */
-  const quick = (() => {
-    if (dueReviewCount > 0) {
-      return { to: '/lernen/wiederholen', icon: 'repeat' as const, label: L.continueReview(dueReviewCount) };
-    }
-    if (nextLesson) {
-      return {
-        to: `/lernen/${nextLesson.moduleId}/${nextLesson.lessonId}`,
-        icon: 'learn' as const,
-        label: doneLessons === 0 ? L.continueFirst : L.continueLesson(nextLesson.title),
-      };
-    }
-    if (quizOpen) return { to: '/lernen/tagesquiz', icon: 'check' as const, label: L.continueQuiz };
-    return null;
-  })();
-
-  const hour = new Date().getHours();
-  const greeting = !data.name
-    ? L.greetingAnonymous
-    : hour < 11 ? L.greetingMorning : hour < 18 ? L.greetingDay : L.greetingEvening;
+  /* Erstnutzer erkennen wir daran, dass noch nichts passiert ist. */
+  const erstesMal = doneLessons === 0 && data.handsPlayed === 0 && data.xp === 0;
 
   return (
-    <div>
-      {/* ── Kopfzeile: Fortschritt sichtbar, aber schmal ───────────────── */}
-      <div
-        className="row between wrap"
-        style={{ gap: 'var(--sp-4)', marginBottom: 'var(--sp-5)' }}
-      >
-        <div style={{ minWidth: 0 }}>
-          <div
-            style={{
-              fontFamily: 'var(--font-display)', fontSize: 'var(--fs-h2)',
-              fontWeight: 'var(--fw-bold)', lineHeight: 'var(--lh-tight)',
-            }}
-          >
-            {greeting}
-            {data.name ? `, ${data.name}` : ''}
-          </div>
-        </div>
+    <div className="start">
+      {/* ── Ganz oben: die laufende Runde, oder der erklärende Satz ────── */}
+      {/* Ziel ist heute der Live-Bereich. Sobald der Timer-Bildschirm aus
+          Phase 3 steht, zeigt der Weg dorthin — ein Link auf eine Seite, die
+          es noch nicht gibt, wäre die schlechtere Zwischenlösung. */}
+      {laufend ? (
+        <Link to="/session" className="start-fortsetzen">
+          <span className="marke">{L.fortsetzenMarke}</span>
+          <span className="titel">{L.fortsetzenTitel}</span>
+          <span className="unter">
+            {L.fortsetzenSeit(
+              grobeDauer(Date.now() - laufend.begonnen, lang),
+              nochDabei(laufend).length,
+            )}
+          </span>
+          <span className="unter">
+            {L.fortsetzenNamen(nochDabei(laufend).map((s) => s.name).join(', '))}
+          </span>
+        </Link>
+      ) : erstesMal ? (
+        <p className="start-erklaerung">{L.wasDieAppTut}</p>
+      ) : null}
 
-        <div className="row" style={{ gap: 'var(--sp-5)', flexShrink: 0 }}>
-          {/* Der Streak ist der Wiederkehr-Anker – deshalb zuerst und mit
-              Flamme, sobald er läuft. Bei 0 bleibt er blass statt zu fehlen:
-              Eine Lücke, die man füllen kann, motiviert mehr als nichts. */}
+      {/* ── Klein, oben ───────────────────────────────────────────────── */}
+      <Link to="/nachschlagen" className="start-einstieg klein">
+        <span className="titel">{L.lookupTitle}</span>
+        <span className="unter">{L.lookupSub}</span>
+      </Link>
+
+      {/* ── Mittel, Mitte ─────────────────────────────────────────────── */}
+      <Link to="/lernen" className="start-einstieg mittel">
+        <span className="titel">{L.learnTitle}</span>
+        <span className="unter">
+          {erstesMal ? L.learnSub : L.learnStatus(doneLessons, totalLessons)}
+        </span>
+      </Link>
+
+      {/* ── Groß, unten, im Daumenbereich ─────────────────────────────── */}
+      <Link to="/session" className="start-einstieg gross">
+        <span className="titel">{L.sessionTitle}</span>
+        <span className="unter">{L.sessionSub}</span>
+      </Link>
+
+      {/* ── Stand: sichtbar, aber nicht der Held des Bildschirms ───────── */}
+      {!erstesMal && (
+        <div className="start-stand">
           <StatPill
             value={data.streak.count}
             label={data.streak.count > 0 ? L.streakLabel : L.streakNone}
-            accent={data.streak.count > 0 ? 'learn' : 'neutral'}
+            accent="neutral"
             icon="flame"
           />
           <StatPill value={level} label={L.levelLabel} accent="neutral" />
           <StatPill value={data.xp} label={L.xpLabel} accent="neutral" />
-        </div>
-      </div>
-
-      {/* ── Quick Access: die eine Sache, die ansteht ──────────────────── */}
-      {quick && (
-        <Link
-          to={quick.to}
-          className="card"
-          style={{
-            display: 'flex', alignItems: 'center', gap: 'var(--sp-3)',
-            padding: 'var(--sp-4) var(--sp-5)', marginBottom: 'var(--sp-5)',
-            textDecoration: 'none', color: 'inherit',
-            borderColor: 'var(--gold-dim)', minHeight: 'var(--touch-min)',
-          }}
-        >
-          <span style={{ color: 'var(--gold)' }}><Icon name={quick.icon} size={19} /></span>
-          <span style={{ flex: 1, minWidth: 0 }}>
-            <span
-              style={{
-                display: 'block', fontSize: 'var(--fs-tiny)', letterSpacing: '0.4px',
-                textTransform: 'uppercase', color: 'var(--text-faint)',
-                fontWeight: 'var(--fw-medium)',
-              }}
-            >
-              {L.continueTitle}
-            </span>
-            <span style={{ display: 'block', fontWeight: 'var(--fw-medium)', marginTop: 2 }}>
-              {quick.label}
-            </span>
-          </span>
-          <span aria-hidden="true" style={{ color: 'var(--text-faint)' }}>›</span>
-        </Link>
-      )}
-
-      {isFirstTime && (
-        <div style={{ marginBottom: 'var(--sp-5)' }}>
-          <div className="eyebrow">{L.firstTimeTitle}</div>
-          <p className="small muted" style={{ marginTop: 'var(--sp-2)', maxWidth: 520 }}>
-            {L.firstTimeSub}
-          </p>
-        </div>
-      )}
-
-      {/* ── Die drei Absichten ─────────────────────────────────────────── */}
-      <div
-        style={{
-          display: 'grid', gap: 'var(--sp-3)',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-        }}
-      >
-        <HubCard
-          to="/lernen"
-          icon="learn"
-          accent="learn"
-          title={L.learnTitle}
-          subtitle={L.learnSub}
-          status={isFirstTime ? undefined : L.learnStatus(doneLessons, totalLessons)}
-          progress={isFirstTime ? undefined : learnPct}
-        />
-
-        <HubCard
-          to="/nachschlagen"
-          icon="search"
-          accent="tools"
-          title={L.lookupTitle}
-          subtitle={L.lookupSub}
-          /* Kein Fortschritt, kein Balken – das ist hier das Merkmal des
-             Bereichs und keine fehlende Information. */
-          status={isFirstTime ? undefined : L.lookupStatus}
-        />
-
-        <HubCard
-          to="/session"
-          icon="chip"
-          accent="live"
-          title={L.sessionTitle}
-          subtitle={L.sessionSub}
-          status={
-            isFirstTime
-              ? undefined
-              : sessionCount > 0
-                ? L.sessionStatusPlayed(sessionCount)
-                : L.sessionStatus
-          }
-        />
-      </div>
-
-      {/* Pro-Hinweis nur, wenn die Monetarisierung überhaupt läuft. */}
-      {proEnabled && (
-        <div style={{ marginTop: 'var(--sp-5)' }}>
-          <Link to="/pro" className="small faint" style={{ textDecoration: 'none' }}>
-            <Icon name="crown" size={13} /> Pro
-          </Link>
+          {proEnabled && (
+            <Link to="/pro" className="small faint">
+              <Icon name="crown" size={13} /> Pro
+            </Link>
+          )}
         </div>
       )}
     </div>

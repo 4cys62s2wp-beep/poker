@@ -2124,3 +2124,139 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-tiny) !important;
   color: var(--text-faint) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Startseite: drei Einstiege, ungleich gewichtet
+   ═══════════════════════════════════════════════════════════════════════
+
+   Die Gewichtung folgt der Nutzungssituation und nicht der Wichtigkeit:
+
+   - LIVE-SESSION wird unter Zeitdruck geöffnet, oft einhändig, während man
+     mit der anderen Hand Chips stapelt. Deshalb unten und am größten — der
+     Daumen erreicht die untere Bildschirmhälfte, mehr nicht.
+   - LERNEN wird in Ruhe geöffnet. Mitte, mittlere Größe.
+   - NACHSCHLAGEN wird geöffnet, wenn man schon weiß, was man sucht. Oben und
+     klein: Wer gezielt sucht, findet auch ein kleines Ziel.
+
+   Alles Tippbare hält --tipp-min ein, die Abstände --tipp-abstand.
+   ------------------------------------------------------------------- */
+
+.start {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tipp-abstand);
+  max-width: 560px;
+}
+
+.start-einstieg {
+  display: block;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: inherit;
+  text-decoration: none;
+  padding: var(--sp-4);
+  min-height: var(--tipp-min);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.start-einstieg:active {
+  background: var(--bg-card-hover);
+}
+
+.start-einstieg .titel {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+}
+
+.start-einstieg .unter {
+  display: block;
+  margin-top: var(--sp-1);
+  color: var(--text-dim);
+  font-size: var(--fs-beschriftung);
+}
+
+/* Klein — oben. */
+.start-einstieg.klein .titel { font-size: var(--fs-fliesstext); }
+.start-einstieg.klein .unter { font-size: var(--fs-kleingedrucktes); }
+
+/* Mittel — Mitte. */
+.start-einstieg.mittel { padding: var(--sp-5) var(--sp-4); }
+.start-einstieg.mittel .titel { font-size: var(--fs-ueberschrift); }
+
+/* Groß — unten, im Daumenbereich. Als einziger Einstieg mit der
+   Akzentfarbe: Er ist der einzige, der unter Zeitdruck gesucht wird, und
+   Farbe findet man schneller als Text. */
+.start-einstieg.gross {
+  padding: var(--sp-6) var(--sp-5);
+  border-color: var(--akzent);
+  background: linear-gradient(180deg, var(--akzent-dim), transparent);
+}
+
+.start-einstieg.gross .titel {
+  font-size: calc(var(--fs-ueberschrift) * 1.35);
+  color: var(--akzent);
+}
+
+.start-einstieg.gross .unter { font-size: var(--fs-fliesstext); }
+
+/* ── Fortsetzen statt Menü ─────────────────────────────────────────────
+   Wer eine angebrochene Runde hat, will keinen Einstieg, sondern zurück.
+   Deshalb ganz oben und deutlicher als alles andere. */
+.start-fortsetzen {
+  display: block;
+  border-radius: var(--radius);
+  border: 1px solid var(--akzent);
+  background: var(--akzent-dim);
+  color: inherit;
+  text-decoration: none;
+  padding: var(--sp-5);
+  min-height: var(--tipp-min);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.start-fortsetzen .marke {
+  display: block;
+  font-size: var(--fs-kleingedrucktes);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--akzent);
+  font-weight: var(--fw-bold);
+}
+
+.start-fortsetzen .titel {
+  display: block;
+  margin-top: var(--sp-1);
+  font-family: var(--font-display);
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+}
+
+.start-fortsetzen .unter {
+  display: block;
+  margin-top: var(--sp-1);
+  font-size: var(--fs-beschriftung);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+/* ── Erster Start: ein Satz statt einer Fortschrittszahl ────────────── */
+.start-erklaerung {
+  margin: 0;
+  padding: var(--sp-4) 0;
+  font-size: var(--fs-fliesstext);
+  color: var(--text-dim);
+  max-width: 46ch;
+}
+
+/* ── Die schmale Zeile mit Streak, Level, XP ────────────────────────── */
+.start-stand {
+  display: flex;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+  padding-top: var(--sp-4);
+  margin-top: var(--sp-2);
+  border-top: 1px solid var(--border);
+}

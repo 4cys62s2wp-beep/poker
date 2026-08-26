@@ -360,3 +360,53 @@ folgenden Blöcke vorgesehen.
 - **Begründung:** Das hätte genau die Abhängigkeit hergestellt, die dieses
   Arbeitspaket ausschließen soll. Ein Vollständigkeitsbeweis über alle
   Blätter ist zudem stärker als jede Stichprobe aus einer Tabelle.
+
+---
+
+## E-013 · 2026-08-26 · Poker-Mathematik B1
+
+**Ein Out ist nur, was eine eigene Karte trifft.**
+
+Beim Durchrechnen der acht Zugbilder für B1 stellte sich heraus, dass die
+naheliegende Definition unbrauchbar ist: „Karte, die mein bestes Blatt
+stärker macht" trifft auf **47 von 47** Karten zu, weil auch ein besserer
+Kicker das Blatt stärker macht. Die Zahl ist richtig gerechnet und ohne jede
+Aussage.
+
+Der zweite Versuch — „Karte, die meine Kategorie anhebt" — liefert für zwei
+Überkarten **15** statt der erwarteten 6, weil auch ein Board-Paar die
+Kategorie auf „Ein Paar" hebt.
+
+- **Gewählt:** Als Out zählt eine Karte, die die Kategorie anhebt **und** bei
+  der eine eigene Karte die neue Kategorie mitbildet — nicht bloß als Kicker
+  danebensteht.
+- **Verworfene Alternative:** Die Zahlen als bekannt hinschreiben (9 für den
+  Flushdraw, 8 für die offene Straße). Genau das schließt der Auftrag aus.
+- **Begründung:** Hero hält A-K, der Flop ist 9-7-2, es kommt eine weitere
+  Neun. Heros Kategorie steigt, getroffen hat er nichts: Das Paar liegt auf
+  dem Board und gehört jedem am Tisch. Es als Out zu zählen ist der
+  klassische Anfängerfehler — eine Lern-App darf ihn nicht einbauen.
+- **Nachweis, dass die Definition trägt:** Mit ihr fallen genau die Zahlen
+  heraus, die am Tisch gemeint sind — 9 für den Flushdraw, 8 für die offene
+  Straße, 4 für den Gutshot, 6 für zwei Überkarten, 15 für Flushdraw plus
+  offene Straße. Keine davon steht im Quelltext.
+- **Beide Zählweisen bleiben in der Ausgabe**, nebeneinander. Der Unterschied
+  ist selbst der Lerninhalt.
+
+---
+
+## E-014 · 2026-08-26 · Poker-Mathematik B2
+
+**Zwei Lesarten von „River-Wahrscheinlichkeit", beide ausgewiesen.**
+
+- **Gewählt:** `river_nach_fehlschlag` (der Turn hat verfehlt, Nenner 46) und
+  `river_unbedingt` (ohne Bedingung, Nenner 47) stehen **beide** in der
+  Ausgabe, jede benannt.
+- **Verworfene Alternative:** Sich für eine entscheiden und sie „die
+  River-Wahrscheinlichkeit" nennen.
+- **Begründung:** Beide sind richtig und beantworten verschiedene Fragen. Wer
+  am Tisch nach dem Turn erneut zahlen muss, braucht die erste; wer wissen
+  will, wie oft die Riverkarte überhaupt hilft, die zweite. Genau diese
+  Verwechslung ist der Grund, warum kursierende Outs-Tabellen um einen halben
+  Prozentpunkt auseinanderliegen — und wer eine davon abschreibt, weiß nicht,
+  welche er erwischt hat.

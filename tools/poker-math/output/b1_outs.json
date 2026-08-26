@@ -1,0 +1,562 @@
+{
+  "metadaten": {
+    "schema_version": 1,
+    "block": "b1_outs",
+    "zweck": "Verbesserungswahrscheinlichkeit für 1 bis 21 Outs auf Turn, River und mindestens einer der beiden Straßen, samt Fehler der 2/4-Faustregel.",
+    "methode": "exakt",
+    "annahmen": {
+      "sicht": "Heldensicht. Bekannt sind ausschließlich die eigenen zwei Karten und das sichtbare Board. Über die Karten der Gegner wird nichts angenommen.",
+      "unbekannte_karten": "Alle übrigen Karten gelten als unbekannt und verbleiben im Deck: 47 nach dem Flop, 46 nach dem Turn. Es wird NICHT herausgerechnet, dass ein Teil davon bereits als Gegnerhand ausgeteilt ist.",
+      "warum_diese_sicht": "Sie ist die einzige, die ein Spieler am Tisch tatsächlich einnehmen kann. Rechnungen, die ausgeteilte Gegnerkarten aus dem Deck nehmen, liefern leicht andere Zahlen – beide sind richtig, aber sie beantworten verschiedene Fragen. Vermischt man sie, entstehen genau die Tabellen, die einander widersprechen.",
+      "split_pot": "Geteilte Pötte zählen in jeder Equity-Rechnung als 0,5 für jede Seite.",
+      "kartenzahlen": {
+        "deck": 52,
+        "eigene_karten": 2,
+        "unbekannt_nach_flop": 47,
+        "unbekannt_nach_turn": 46
+      },
+      "block_spezifisch": {
+        "saubere_outs": "Jedes Out macht die eigene Hand zur besten. Das ist eine Vereinfachung: Eine Karte kann das eigene Blatt verbessern und dem Gegner trotzdem ein besseres geben. Ausführlich mit Gegenbeispielen in POKER_MATH.md, Abschnitt „Saubere Outs\".",
+        "outs_sind_gegeben": "Die Outs-Zahl geht als gegeben ein; wie viele Outs eine konkrete Hand hat, ist nicht Teil dieser Tabelle. Für acht Zugbilder ist sie unter 'beispiele' gezählt – dort in zwei Lesarten: bis zur genannten Zielkategorie (das ist die Zahl, die am Tisch gemeint ist) und für jede beliebige Anhebung der Kategorie (größer, weil Nebentreffer mitzählen). Ein besserer Kicker gilt in keiner der beiden als Out.",
+        "beide_strassen": "'turn_oder_river' unterstellt, dass beide Karten auch wirklich kommen – also kein Fold nach dem Turn und genug Chips, um beide Straßen zu sehen. Wer nach dem Turn erneut zahlen muss, rechnet mit 'river_nach_fehlschlag'.",
+        "gegenprobe": "Jede Zeile wurde doppelt gerechnet: einmal durch vollständiges Durchzählen aller geordneten Paare (Turn, River), einmal über die Gegenwahrscheinlichkeit. Beide Wege müssen als Bruch exakt übereinstimmen, sonst bricht der Lauf ab."
+      }
+    },
+    "erzeugt_am": "2026-08-26T08:50:49+00:00",
+    "laufzeit_s": 0.107,
+    "umgebung": {
+      "python": "3.11.15",
+      "system": "Linux",
+      "maschine": "x86_64"
+    },
+    "reproduzierbar": "Derselbe Lauf liefert bis auf 'erzeugt_am' und 'laufzeit_s' Bit für Bit dieselbe Datei.",
+    "evaluator": {
+      "name": "eval7",
+      "version": "0.1.11",
+      "gegenprobe": "phevaluator 0.6.0",
+      "nachweis": "Über alle 2 598 960 Fünfkartenblätter gegen einen unabhängigen Evaluator aus den Spielregeln geprüft; siehe output/evaluator_auswahl.json und ENTSCHEIDUNGEN.md, E-012."
+    }
+  },
+  "outs": [
+    {
+      "outs": 1,
+      "turn": 0.02127659574468085,
+      "river_nach_fehlschlag": 0.021739130434782608,
+      "river_unbedingt": 0.02127659574468085,
+      "turn_oder_river": 0.0425531914893617,
+      "als_bruch": {
+        "turn": "1/47",
+        "river_nach_fehlschlag": "1/46",
+        "turn_oder_river": "2/47"
+      },
+      "faustregel": {
+        "eine_karte": 0.02,
+        "zwei_karten": 0.04,
+        "abweichung_pp_turn": -0.1276595744680851,
+        "abweichung_pp_river": -0.17391304347826086,
+        "abweichung_pp_turn_oder_river": -0.2553191489361702
+      }
+    },
+    {
+      "outs": 2,
+      "turn": 0.0425531914893617,
+      "river_nach_fehlschlag": 0.043478260869565216,
+      "river_unbedingt": 0.0425531914893617,
+      "turn_oder_river": 0.0841813135985199,
+      "als_bruch": {
+        "turn": "2/47",
+        "river_nach_fehlschlag": "1/23",
+        "turn_oder_river": "91/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.04,
+        "zwei_karten": 0.08,
+        "abweichung_pp_turn": -0.2553191489361702,
+        "abweichung_pp_river": -0.34782608695652173,
+        "abweichung_pp_turn_oder_river": -0.4181313598519889
+      }
+    },
+    {
+      "outs": 3,
+      "turn": 0.06382978723404255,
+      "river_nach_fehlschlag": 0.06521739130434782,
+      "river_unbedingt": 0.06382978723404255,
+      "turn_oder_river": 0.12488436632747456,
+      "als_bruch": {
+        "turn": "3/47",
+        "river_nach_fehlschlag": "3/46",
+        "turn_oder_river": "135/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.06,
+        "zwei_karten": 0.12,
+        "abweichung_pp_turn": -0.3829787234042553,
+        "abweichung_pp_river": -0.5217391304347826,
+        "abweichung_pp_turn_oder_river": -0.4884366327474561
+      }
+    },
+    {
+      "outs": 4,
+      "turn": 0.0851063829787234,
+      "river_nach_fehlschlag": 0.08695652173913043,
+      "river_unbedingt": 0.0851063829787234,
+      "turn_oder_river": 0.16466234967622573,
+      "als_bruch": {
+        "turn": "4/47",
+        "river_nach_fehlschlag": "2/23",
+        "turn_oder_river": "178/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.08,
+        "zwei_karten": 0.16,
+        "abweichung_pp_turn": -0.5106382978723404,
+        "abweichung_pp_river": -0.6956521739130435,
+        "abweichung_pp_turn_oder_river": -0.4662349676225717
+      }
+    },
+    {
+      "outs": 5,
+      "turn": 0.10638297872340426,
+      "river_nach_fehlschlag": 0.10869565217391304,
+      "river_unbedingt": 0.10638297872340426,
+      "turn_oder_river": 0.20351526364477335,
+      "als_bruch": {
+        "turn": "5/47",
+        "river_nach_fehlschlag": "5/46",
+        "turn_oder_river": "220/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.1,
+        "zwei_karten": 0.2,
+        "abweichung_pp_turn": -0.6382978723404256,
+        "abweichung_pp_river": -0.8695652173913043,
+        "abweichung_pp_turn_oder_river": -0.3515263644773358
+      }
+    },
+    {
+      "outs": 6,
+      "turn": 0.1276595744680851,
+      "river_nach_fehlschlag": 0.13043478260869565,
+      "river_unbedingt": 0.1276595744680851,
+      "turn_oder_river": 0.2414431082331175,
+      "als_bruch": {
+        "turn": "6/47",
+        "river_nach_fehlschlag": "3/23",
+        "turn_oder_river": "261/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.12,
+        "zwei_karten": 0.24,
+        "abweichung_pp_turn": -0.7659574468085106,
+        "abweichung_pp_river": -1.0434782608695652,
+        "abweichung_pp_turn_oder_river": -0.14431082331174838
+      }
+    },
+    {
+      "outs": 7,
+      "turn": 0.14893617021276595,
+      "river_nach_fehlschlag": 0.15217391304347827,
+      "river_unbedingt": 0.14893617021276595,
+      "turn_oder_river": 0.2784458834412581,
+      "als_bruch": {
+        "turn": "7/47",
+        "river_nach_fehlschlag": "7/46",
+        "turn_oder_river": "301/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.14,
+        "zwei_karten": 0.28,
+        "abweichung_pp_turn": -0.8936170212765957,
+        "abweichung_pp_river": -1.2173913043478262,
+        "abweichung_pp_turn_oder_river": 0.15541165587419056
+      }
+    },
+    {
+      "outs": 8,
+      "turn": 0.1702127659574468,
+      "river_nach_fehlschlag": 0.17391304347826086,
+      "river_unbedingt": 0.1702127659574468,
+      "turn_oder_river": 0.3145235892691952,
+      "als_bruch": {
+        "turn": "8/47",
+        "river_nach_fehlschlag": "4/23",
+        "turn_oder_river": "340/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.16,
+        "zwei_karten": 0.32,
+        "abweichung_pp_turn": -1.0212765957446808,
+        "abweichung_pp_river": -1.391304347826087,
+        "abweichung_pp_turn_oder_river": 0.547641073080481
+      }
+    },
+    {
+      "outs": 9,
+      "turn": 0.19148936170212766,
+      "river_nach_fehlschlag": 0.1956521739130435,
+      "river_unbedingt": 0.19148936170212766,
+      "turn_oder_river": 0.34967622571692875,
+      "als_bruch": {
+        "turn": "9/47",
+        "river_nach_fehlschlag": "9/46",
+        "turn_oder_river": "378/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.18,
+        "zwei_karten": 0.36,
+        "abweichung_pp_turn": -1.148936170212766,
+        "abweichung_pp_river": -1.565217391304348,
+        "abweichung_pp_turn_oder_river": 1.032377428307123
+      }
+    },
+    {
+      "outs": 10,
+      "turn": 0.2127659574468085,
+      "river_nach_fehlschlag": 0.21739130434782608,
+      "river_unbedingt": 0.2127659574468085,
+      "turn_oder_river": 0.38390379278445885,
+      "als_bruch": {
+        "turn": "10/47",
+        "river_nach_fehlschlag": "5/23",
+        "turn_oder_river": "415/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.2,
+        "zwei_karten": 0.4,
+        "abweichung_pp_turn": -1.2765957446808511,
+        "abweichung_pp_river": -1.7391304347826086,
+        "abweichung_pp_turn_oder_river": 1.6096207215541165
+      }
+    },
+    {
+      "outs": 11,
+      "turn": 0.23404255319148937,
+      "river_nach_fehlschlag": 0.2391304347826087,
+      "river_unbedingt": 0.23404255319148937,
+      "turn_oder_river": 0.41720629047178537,
+      "als_bruch": {
+        "turn": "11/47",
+        "river_nach_fehlschlag": "11/46",
+        "turn_oder_river": "451/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.22,
+        "zwei_karten": 0.44,
+        "abweichung_pp_turn": -1.4042553191489362,
+        "abweichung_pp_river": -1.9130434782608696,
+        "abweichung_pp_turn_oder_river": 2.2793709528214614
+      }
+    },
+    {
+      "outs": 12,
+      "turn": 0.2553191489361702,
+      "river_nach_fehlschlag": 0.2608695652173913,
+      "river_unbedingt": 0.2553191489361702,
+      "turn_oder_river": 0.4495837187789084,
+      "als_bruch": {
+        "turn": "12/47",
+        "river_nach_fehlschlag": "6/23",
+        "turn_oder_river": "486/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.24,
+        "zwei_karten": 0.48,
+        "abweichung_pp_turn": -1.5319148936170213,
+        "abweichung_pp_river": -2.0869565217391304,
+        "abweichung_pp_turn_oder_river": 3.041628122109158
+      }
+    },
+    {
+      "outs": 13,
+      "turn": 0.2765957446808511,
+      "river_nach_fehlschlag": 0.2826086956521739,
+      "river_unbedingt": 0.2765957446808511,
+      "turn_oder_river": 0.48103607770582796,
+      "als_bruch": {
+        "turn": "13/47",
+        "river_nach_fehlschlag": "13/46",
+        "turn_oder_river": "520/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.26,
+        "zwei_karten": 0.52,
+        "abweichung_pp_turn": -1.6595744680851063,
+        "abweichung_pp_river": -2.260869565217391,
+        "abweichung_pp_turn_oder_river": 3.896392229417206
+      }
+    },
+    {
+      "outs": 14,
+      "turn": 0.2978723404255319,
+      "river_nach_fehlschlag": 0.30434782608695654,
+      "river_unbedingt": 0.2978723404255319,
+      "turn_oder_river": 0.5115633672525439,
+      "als_bruch": {
+        "turn": "14/47",
+        "river_nach_fehlschlag": "7/23",
+        "turn_oder_river": "553/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.28,
+        "zwei_karten": 0.56,
+        "abweichung_pp_turn": -1.7872340425531914,
+        "abweichung_pp_river": -2.4347826086956523,
+        "abweichung_pp_turn_oder_river": 4.843663274745606
+      }
+    },
+    {
+      "outs": 15,
+      "turn": 0.3191489361702128,
+      "river_nach_fehlschlag": 0.32608695652173914,
+      "river_unbedingt": 0.3191489361702128,
+      "turn_oder_river": 0.5411655874190564,
+      "als_bruch": {
+        "turn": "15/47",
+        "river_nach_fehlschlag": "15/46",
+        "turn_oder_river": "585/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.3,
+        "zwei_karten": 0.6,
+        "abweichung_pp_turn": -1.9148936170212767,
+        "abweichung_pp_river": -2.608695652173913,
+        "abweichung_pp_turn_oder_river": 5.883441258094357
+      }
+    },
+    {
+      "outs": 16,
+      "turn": 0.3404255319148936,
+      "river_nach_fehlschlag": 0.34782608695652173,
+      "river_unbedingt": 0.3404255319148936,
+      "turn_oder_river": 0.5698427382053654,
+      "als_bruch": {
+        "turn": "16/47",
+        "river_nach_fehlschlag": "8/23",
+        "turn_oder_river": "616/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.32,
+        "zwei_karten": 0.64,
+        "abweichung_pp_turn": -2.0425531914893615,
+        "abweichung_pp_river": -2.782608695652174,
+        "abweichung_pp_turn_oder_river": 7.01572617946346
+      }
+    },
+    {
+      "outs": 17,
+      "turn": 0.3617021276595745,
+      "river_nach_fehlschlag": 0.3695652173913043,
+      "river_unbedingt": 0.3617021276595745,
+      "turn_oder_river": 0.5975948196114709,
+      "als_bruch": {
+        "turn": "17/47",
+        "river_nach_fehlschlag": "17/46",
+        "turn_oder_river": "646/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.34,
+        "zwei_karten": 0.68,
+        "abweichung_pp_turn": -2.1702127659574466,
+        "abweichung_pp_river": -2.9565217391304346,
+        "abweichung_pp_turn_oder_river": 8.240518038852914
+      }
+    },
+    {
+      "outs": 18,
+      "turn": 0.3829787234042553,
+      "river_nach_fehlschlag": 0.391304347826087,
+      "river_unbedingt": 0.3829787234042553,
+      "turn_oder_river": 0.6244218316373727,
+      "als_bruch": {
+        "turn": "18/47",
+        "river_nach_fehlschlag": "9/23",
+        "turn_oder_river": "675/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.36,
+        "zwei_karten": 0.72,
+        "abweichung_pp_turn": -2.297872340425532,
+        "abweichung_pp_river": -3.130434782608696,
+        "abweichung_pp_turn_oder_river": 9.55781683626272
+      }
+    },
+    {
+      "outs": 19,
+      "turn": 0.40425531914893614,
+      "river_nach_fehlschlag": 0.41304347826086957,
+      "river_unbedingt": 0.40425531914893614,
+      "turn_oder_river": 0.6503237742830712,
+      "als_bruch": {
+        "turn": "19/47",
+        "river_nach_fehlschlag": "19/46",
+        "turn_oder_river": "703/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.38,
+        "zwei_karten": 0.76,
+        "abweichung_pp_turn": -2.425531914893617,
+        "abweichung_pp_river": -3.3043478260869565,
+        "abweichung_pp_turn_oder_river": 10.967622571692877
+      }
+    },
+    {
+      "outs": 20,
+      "turn": 0.425531914893617,
+      "river_nach_fehlschlag": 0.43478260869565216,
+      "river_unbedingt": 0.425531914893617,
+      "turn_oder_river": 0.6753006475485661,
+      "als_bruch": {
+        "turn": "20/47",
+        "river_nach_fehlschlag": "10/23",
+        "turn_oder_river": "730/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.4,
+        "zwei_karten": 0.8,
+        "abweichung_pp_turn": -2.5531914893617023,
+        "abweichung_pp_river": -3.4782608695652173,
+        "abweichung_pp_turn_oder_river": 12.469935245143386
+      }
+    },
+    {
+      "outs": 21,
+      "turn": 0.44680851063829785,
+      "river_nach_fehlschlag": 0.45652173913043476,
+      "river_unbedingt": 0.44680851063829785,
+      "turn_oder_river": 0.6993524514338575,
+      "als_bruch": {
+        "turn": "21/47",
+        "river_nach_fehlschlag": "21/46",
+        "turn_oder_river": "756/1081"
+      },
+      "faustregel": {
+        "eine_karte": 0.42,
+        "zwei_karten": 0.84,
+        "abweichung_pp_turn": -2.6808510638297873,
+        "abweichung_pp_river": -3.652173913043478,
+        "abweichung_pp_turn_oder_river": 14.064754856614247
+      }
+    }
+  ],
+  "beispiele": [
+    {
+      "name": "Flushdraw",
+      "hand": "Ah 7h",
+      "flop": "Kh 4h 2c",
+      "zielkategorie": "Flush",
+      "outs_bis_zielkategorie": 9,
+      "outs_beliebige_verbesserung": 15,
+      "outs_mit_boardtreffern": 9
+    },
+    {
+      "name": "Offene Straße",
+      "hand": "9c 8d",
+      "flop": "7h 6s 2c",
+      "zielkategorie": "Straße",
+      "outs_bis_zielkategorie": 8,
+      "outs_beliebige_verbesserung": 14,
+      "outs_mit_boardtreffern": 8
+    },
+    {
+      "name": "Gutshot",
+      "hand": "9c 8d",
+      "flop": "7h 5s 2c",
+      "zielkategorie": "Straße",
+      "outs_bis_zielkategorie": 4,
+      "outs_beliebige_verbesserung": 10,
+      "outs_mit_boardtreffern": 4
+    },
+    {
+      "name": "Zwei Überkarten",
+      "hand": "Ac Kd",
+      "flop": "9h 7s 2c",
+      "zielkategorie": "Ein Paar",
+      "outs_bis_zielkategorie": 6,
+      "outs_beliebige_verbesserung": 6,
+      "outs_mit_boardtreffern": 15
+    },
+    {
+      "name": "Flushdraw plus zwei Überkarten",
+      "hand": "Ah Kh",
+      "flop": "9h 7h 2c",
+      "zielkategorie": "Ein Paar",
+      "outs_bis_zielkategorie": 15,
+      "outs_beliebige_verbesserung": 15,
+      "outs_mit_boardtreffern": 23
+    },
+    {
+      "name": "Flushdraw plus offene Straße",
+      "hand": "9h 8h",
+      "flop": "7h 6h 2c",
+      "zielkategorie": "Straße",
+      "outs_bis_zielkategorie": 15,
+      "outs_beliebige_verbesserung": 21,
+      "outs_mit_boardtreffern": 15
+    },
+    {
+      "name": "Unterpaar sucht das Set",
+      "hand": "5c 5d",
+      "flop": "Ah 9s 2c",
+      "zielkategorie": "Drilling",
+      "outs_bis_zielkategorie": 2,
+      "outs_beliebige_verbesserung": 11,
+      "outs_mit_boardtreffern": 2
+    },
+    {
+      "name": "Set sucht das Full House",
+      "hand": "9c 9d",
+      "flop": "9h 7s 2c",
+      "zielkategorie": "Full House",
+      "outs_bis_zielkategorie": 7,
+      "outs_beliebige_verbesserung": 7,
+      "outs_mit_boardtreffern": 7
+    }
+  ],
+  "gegenbeispiele_saubere_outs": [
+    {
+      "name": "Das Out gibt dem Gegner den Flush",
+      "hand": "9d 8d",
+      "flop": "7c 6c 2h",
+      "out": "5c",
+      "gegner": "Ac Jc",
+      "erklaerung": "Die Fünf ist ein sauber gezähltes Straßen-Out: Hero hält 9-8-7-6-5. Sie ist aber ein Kreuz, und damit liegen drei Kreuz auf dem Board – der Gegner mit zwei Kreuz hat den Flush.",
+      "hero_vorher": "High Card",
+      "hero_nachher": "Straße",
+      "gegner_nachher": "Flush",
+      "hero_verbessert_sich": true,
+      "hero_verliert_trotzdem": true
+    },
+    {
+      "name": "Das Out gibt dem Gegner die höhere Straße",
+      "hand": "7d 6d",
+      "flop": "9c 8s 2h",
+      "out": "Th",
+      "gegner": "Jc 7c",
+      "erklaerung": "Die Zehn vollendet Heros Straße von der Zehn abwärts. Weil das Board selbst drei Straßenkarten liefert, reicht dem Gegner ein einzelner Bube für die höhere Straße – die dominierte Straße, der teuerste Fall dieser Art. Zu beachten: Das geht nur, wenn das Board die Verbindung stellt; bei einem Flop wie 7-6-2 kann niemand eine höhere Straße halten.",
+      "hero_vorher": "High Card",
+      "hero_nachher": "Straße",
+      "gegner_nachher": "Straße",
+      "hero_verbessert_sich": true,
+      "hero_verliert_trotzdem": true
+    },
+    {
+      "name": "Das Out paart das Board und füllt das Full House",
+      "hand": "Ah Kh",
+      "flop": "Qh 7h 7c",
+      "out": "2h",
+      "gegner": "7s 2c",
+      "erklaerung": "Das Herz vollendet Heros Nut-Flush. Dieselbe Karte paart die Zwei und gibt dem Gegner mit Siebener-Drilling das Full House.",
+      "hero_vorher": "Ein Paar",
+      "hero_nachher": "Flush",
+      "gegner_nachher": "Full House",
+      "hero_verbessert_sich": true,
+      "hero_verliert_trotzdem": true
+    }
+  ],
+  "befunde_zur_faustregel": {
+    "groesste_abweichung_pp": 14.064754856614247,
+    "bei_outs": 21,
+    "ab_outs_mindestens_1pp_daneben": 9,
+    "richtung": "Die Regel verspricht bei zwei Straßen durchweg zu viel, und der Fehler wächst mit der Outs-Zahl. Bei wenigen Outs ist sie brauchbar, bei vielen führt sie zu Calls, die sich nicht rechnen."
+  }
+}

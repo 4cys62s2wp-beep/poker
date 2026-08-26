@@ -1,0 +1,201 @@
+{
+  "metadaten": {
+    "schema_version": 1,
+    "block": "b2_potodds",
+    "zweck": "Mindest-Equity und Mindest-Outs für acht Einsatzgrößen, jeweils als Anteil des Pots.",
+    "methode": "exakt",
+    "annahmen": {
+      "sicht": "Heldensicht. Bekannt sind ausschließlich die eigenen zwei Karten und das sichtbare Board. Über die Karten der Gegner wird nichts angenommen.",
+      "unbekannte_karten": "Alle übrigen Karten gelten als unbekannt und verbleiben im Deck: 47 nach dem Flop, 46 nach dem Turn. Es wird NICHT herausgerechnet, dass ein Teil davon bereits als Gegnerhand ausgeteilt ist.",
+      "warum_diese_sicht": "Sie ist die einzige, die ein Spieler am Tisch tatsächlich einnehmen kann. Rechnungen, die ausgeteilte Gegnerkarten aus dem Deck nehmen, liefern leicht andere Zahlen – beide sind richtig, aber sie beantworten verschiedene Fragen. Vermischt man sie, entstehen genau die Tabellen, die einander widersprechen.",
+      "split_pot": "Geteilte Pötte zählen in jeder Equity-Rechnung als 0,5 für jede Seite.",
+      "kartenzahlen": {
+        "deck": 52,
+        "eigene_karten": 2,
+        "unbekannt_nach_flop": 47,
+        "unbekannt_nach_turn": 46
+      },
+      "block_spezifisch": {
+        "einsatz_als_potanteil": "Der Pot enthält vor dem Einsatz eine Einheit; der Einsatz wird als Anteil davon angegeben. Gerechnet wird mit Brüchen, nicht mit Dezimalzahlen.",
+        "heads_up": "Es zahlt genau ein Gegner. Bei mehreren Callern wächst der Pot weiter, und die nötige Equity sinkt – diese Tabelle gibt dann eine zu strenge Schwelle an.",
+        "keine_impliziten_odds": "Späteres Geld bleibt unberücksichtigt. Die Werte sind eine Untergrenze für einen Call, der sich sofort rechnet, keine Spielempfehlung.",
+        "outs_aus_b1": "Die Mindest-Outs kommen aus derselben Zählung wie B1 und tragen damit dieselben Annahmen – insbesondere die der sauberen Outs."
+      }
+    },
+    "erzeugt_am": "2026-08-26T08:47:27+00:00",
+    "laufzeit_s": 0.071,
+    "umgebung": {
+      "python": "3.11.15",
+      "system": "Linux",
+      "maschine": "x86_64"
+    },
+    "reproduzierbar": "Derselbe Lauf liefert bis auf 'erzeugt_am' und 'laufzeit_s' Bit für Bit dieselbe Datei."
+  },
+  "einsatzgroessen": [
+    {
+      "name": "Viertel Pot",
+      "einsatz_als_potanteil": 0.25,
+      "einsatz_als_bruch": "1/4",
+      "anteil_am_endpot": 0.16666666666666666,
+      "anteil_am_endpot_als_bruch": "1/6",
+      "noetige_equity_prozent": 16.666666666666668,
+      "pot_odds_zu_eins": 5.0,
+      "pot_odds_text": "5.00 zu 1",
+      "mindest_outs": {
+        "turn": 8,
+        "river_nach_fehlschlag": 8,
+        "turn_oder_river": 5
+      },
+      "ueberschuss_pp": {
+        "turn": 0.3546099290780142,
+        "river_nach_fehlschlag": 0.7246376811594203,
+        "turn_oder_river": 3.684859697810669
+      }
+    },
+    {
+      "name": "Drittel Pot",
+      "einsatz_als_potanteil": 0.3333333333333333,
+      "einsatz_als_bruch": "1/3",
+      "anteil_am_endpot": 0.2,
+      "anteil_am_endpot_als_bruch": "1/5",
+      "noetige_equity_prozent": 20.0,
+      "pot_odds_zu_eins": 4.0,
+      "pot_odds_text": "4.00 zu 1",
+      "mindest_outs": {
+        "turn": 10,
+        "river_nach_fehlschlag": 10,
+        "turn_oder_river": 5
+      },
+      "ueberschuss_pp": {
+        "turn": 1.2765957446808511,
+        "river_nach_fehlschlag": 1.7391304347826086,
+        "turn_oder_river": 0.3515263644773358
+      }
+    },
+    {
+      "name": "Halber Pot",
+      "einsatz_als_potanteil": 0.5,
+      "einsatz_als_bruch": "1/2",
+      "anteil_am_endpot": 0.25,
+      "anteil_am_endpot_als_bruch": "1/4",
+      "noetige_equity_prozent": 25.0,
+      "pot_odds_zu_eins": 3.0,
+      "pot_odds_text": "3.00 zu 1",
+      "mindest_outs": {
+        "turn": 12,
+        "river_nach_fehlschlag": 12,
+        "turn_oder_river": 7
+      },
+      "ueberschuss_pp": {
+        "turn": 0.5319148936170213,
+        "river_nach_fehlschlag": 1.0869565217391304,
+        "turn_oder_river": 2.8445883441258095
+      }
+    },
+    {
+      "name": "Zwei Drittel Pot",
+      "einsatz_als_potanteil": 0.6666666666666666,
+      "einsatz_als_bruch": "2/3",
+      "anteil_am_endpot": 0.2857142857142857,
+      "anteil_am_endpot_als_bruch": "2/7",
+      "noetige_equity_prozent": 28.571428571428573,
+      "pot_odds_zu_eins": 2.5,
+      "pot_odds_text": "2.50 zu 1",
+      "mindest_outs": {
+        "turn": 14,
+        "river_nach_fehlschlag": 14,
+        "turn_oder_river": 8
+      },
+      "ueberschuss_pp": {
+        "turn": 1.21580547112462,
+        "river_nach_fehlschlag": 1.8633540372670807,
+        "turn_oder_river": 2.8809303554909476
+      }
+    },
+    {
+      "name": "Drei Viertel Pot",
+      "einsatz_als_potanteil": 0.75,
+      "einsatz_als_bruch": "3/4",
+      "anteil_am_endpot": 0.3,
+      "anteil_am_endpot_als_bruch": "3/10",
+      "noetige_equity_prozent": 30.0,
+      "pot_odds_zu_eins": 2.3333333333333335,
+      "pot_odds_text": "2.33 zu 1",
+      "mindest_outs": {
+        "turn": 15,
+        "river_nach_fehlschlag": 14,
+        "turn_oder_river": 8
+      },
+      "ueberschuss_pp": {
+        "turn": 1.9148936170212767,
+        "river_nach_fehlschlag": 0.43478260869565216,
+        "turn_oder_river": 1.452358926919519
+      }
+    },
+    {
+      "name": "Pot",
+      "einsatz_als_potanteil": 1.0,
+      "einsatz_als_bruch": "1",
+      "anteil_am_endpot": 0.3333333333333333,
+      "anteil_am_endpot_als_bruch": "1/3",
+      "noetige_equity_prozent": 33.333333333333336,
+      "pot_odds_zu_eins": 2.0,
+      "pot_odds_text": "2.00 zu 1",
+      "mindest_outs": {
+        "turn": 16,
+        "river_nach_fehlschlag": 16,
+        "turn_oder_river": 9
+      },
+      "ueberschuss_pp": {
+        "turn": 0.7092198581560284,
+        "river_nach_fehlschlag": 1.4492753623188406,
+        "turn_oder_river": 1.6342892383595435
+      }
+    },
+    {
+      "name": "Anderthalbfacher Pot",
+      "einsatz_als_potanteil": 1.5,
+      "einsatz_als_bruch": "3/2",
+      "anteil_am_endpot": 0.375,
+      "anteil_am_endpot_als_bruch": "3/8",
+      "noetige_equity_prozent": 37.5,
+      "pot_odds_zu_eins": 1.6666666666666667,
+      "pot_odds_text": "1.67 zu 1",
+      "mindest_outs": {
+        "turn": 18,
+        "river_nach_fehlschlag": 18,
+        "turn_oder_river": 10
+      },
+      "ueberschuss_pp": {
+        "turn": 0.7978723404255319,
+        "river_nach_fehlschlag": 1.6304347826086956,
+        "turn_oder_river": 0.8903792784458835
+      }
+    },
+    {
+      "name": "Doppelter Pot",
+      "einsatz_als_potanteil": 2.0,
+      "einsatz_als_bruch": "2",
+      "anteil_am_endpot": 0.4,
+      "anteil_am_endpot_als_bruch": "2/5",
+      "noetige_equity_prozent": 40.0,
+      "pot_odds_zu_eins": 1.5,
+      "pot_odds_text": "1.50 zu 1",
+      "mindest_outs": {
+        "turn": 19,
+        "river_nach_fehlschlag": 19,
+        "turn_oder_river": 11
+      },
+      "ueberschuss_pp": {
+        "turn": 0.425531914893617,
+        "river_nach_fehlschlag": 1.3043478260869565,
+        "turn_oder_river": 1.7206290471785384
+      }
+    }
+  ],
+  "befunde": {
+    "monotonie": "Je größer der Einsatz, desto mehr Equity ist nötig – und desto mehr Outs braucht man. Das ist die ganze Mechanik hinter der Frage, warum große Einsätze Draws vertreiben.",
+    "grenze_halber_pot": "Beim halben Pot liegt die Schwelle bei einem Viertel. Wer seltener als jedes vierte Mal trifft, verliert auf Dauer Geld – unabhängig davon, wie die Hand ausgeht.",
+    "was_fehlt": "Implizite Odds. Diese Tabelle nennt die Untergrenze für einen Call, der sich SOFORT rechnet. Was man später noch gewinnt, wenn man trifft, steht in B6."
+  }
+}

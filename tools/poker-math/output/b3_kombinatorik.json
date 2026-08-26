@@ -1,0 +1,1477 @@
+{
+  "metadaten": {
+    "schema_version": 1,
+    "block": "b3_kombinatorik",
+    "zweck": "Kombos je Starthand-Typ, Wirkung von Blockern und ein durchgerechnetes Beispiel über alle 169 Starthände.",
+    "methode": "exakt",
+    "annahmen": {
+      "sicht": "Heldensicht. Bekannt sind ausschließlich die eigenen zwei Karten und das sichtbare Board. Über die Karten der Gegner wird nichts angenommen.",
+      "unbekannte_karten": "Alle übrigen Karten gelten als unbekannt und verbleiben im Deck: 47 nach dem Flop, 46 nach dem Turn. Es wird NICHT herausgerechnet, dass ein Teil davon bereits als Gegnerhand ausgeteilt ist.",
+      "warum_diese_sicht": "Sie ist die einzige, die ein Spieler am Tisch tatsächlich einnehmen kann. Rechnungen, die ausgeteilte Gegnerkarten aus dem Deck nehmen, liefern leicht andere Zahlen – beide sind richtig, aber sie beantworten verschiedene Fragen. Vermischt man sie, entstehen genau die Tabellen, die einander widersprechen.",
+      "split_pot": "Geteilte Pötte zählen in jeder Equity-Rechnung als 0,5 für jede Seite.",
+      "kartenzahlen": {
+        "deck": 52,
+        "eigene_karten": 2,
+        "unbekannt_nach_flop": 47,
+        "unbekannt_nach_turn": 46
+      },
+      "block_spezifisch": {
+        "farben_gleichwertig": "Die 169 Klassen entstehen daraus, dass die vier Farben untereinander gleichwertig sind: Es zählt nur, ob beide Karten dieselbe Farbe haben.",
+        "blocker_sind_rein_kombinatorisch": "Gezählt wird, welche Kombos noch im Deck sein KÖNNEN. Dass ein Gegner eine bestimmte Hand auch spielen würde, ist eine ganz andere Frage und hier ausdrücklich nicht enthalten.",
+        "keine_range_annahmen": "Es wird keine Gegner-Range unterstellt. Alle Kombos gelten als gleich möglich."
+      }
+    },
+    "erzeugt_am": "2026-08-26T08:48:34+00:00",
+    "laufzeit_s": 1.208,
+    "umgebung": {
+      "python": "3.11.15",
+      "system": "Linux",
+      "maschine": "x86_64"
+    },
+    "reproduzierbar": "Derselbe Lauf liefert bis auf 'erzeugt_am' und 'laufzeit_s' Bit für Bit dieselbe Datei."
+  },
+  "kombos_je_typ": {
+    "Paar": 6,
+    "suited": 4,
+    "offsuit": 12,
+    "suited_und_offsuit_zusammen": 16
+  },
+  "klassen_je_typ": {
+    "Paar": 13,
+    "suited": 78,
+    "offsuit": 78
+  },
+  "gesamt": {
+    "starthand_klassen": 169,
+    "zweikartenblaetter": 1326,
+    "probe": "Klassen mal Kombos je Klasse ergibt genau die Zahl aller Zweikartenblätter – sonst wäre die Einteilung lückenhaft oder überlappend."
+  },
+  "blocker": {
+    "erklaerung": "Wie viele Kombos eine bekannte Karte wegnimmt, hängt davon ab, ob sie die Hand berührt. Deshalb steht hier keine einzelne Zahl, sondern die vollständige Verteilung über alle möglichen Mengen bekannter Karten.",
+    "Paar": [
+      {
+        "bekannte_karten": 1,
+        "kombos_ohne_blocker": 6,
+        "bestenfalls_uebrig": 6,
+        "schlimmstenfalls_uebrig": 3,
+        "im_mittel_uebrig": 5.7692,
+        "verteilung": {
+          "6": 48,
+          "3": 4
+        },
+        "faelle_geprueft": 52
+      },
+      {
+        "bekannte_karten": 2,
+        "kombos_ohne_blocker": 6,
+        "bestenfalls_uebrig": 6,
+        "schlimmstenfalls_uebrig": 1,
+        "im_mittel_uebrig": 5.543,
+        "verteilung": {
+          "6": 1128,
+          "3": 192,
+          "1": 6
+        },
+        "faelle_geprueft": 1326
+      },
+      {
+        "bekannte_karten": 3,
+        "kombos_ohne_blocker": 6,
+        "bestenfalls_uebrig": 6,
+        "schlimmstenfalls_uebrig": 0,
+        "im_mittel_uebrig": 5.3213,
+        "verteilung": {
+          "6": 17296,
+          "3": 4512,
+          "1": 288,
+          "0": 4
+        },
+        "faelle_geprueft": 22100
+      },
+      {
+        "bekannte_karten": 4,
+        "kombos_ohne_blocker": 6,
+        "bestenfalls_uebrig": 6,
+        "schlimmstenfalls_uebrig": 0,
+        "im_mittel_uebrig": 5.1041,
+        "verteilung": {
+          "6": 194580,
+          "3": 69184,
+          "1": 6768,
+          "0": 193
+        },
+        "faelle_geprueft": 270725
+      }
+    ],
+    "suited": [
+      {
+        "bekannte_karten": 1,
+        "kombos_ohne_blocker": 4,
+        "bestenfalls_uebrig": 4,
+        "schlimmstenfalls_uebrig": 3,
+        "im_mittel_uebrig": 3.8462,
+        "verteilung": {
+          "4": 44,
+          "3": 8
+        },
+        "faelle_geprueft": 52
+      },
+      {
+        "bekannte_karten": 2,
+        "kombos_ohne_blocker": 4,
+        "bestenfalls_uebrig": 4,
+        "schlimmstenfalls_uebrig": 2,
+        "im_mittel_uebrig": 3.6953,
+        "verteilung": {
+          "4": 946,
+          "3": 356,
+          "2": 24
+        },
+        "faelle_geprueft": 1326
+      },
+      {
+        "bekannte_karten": 3,
+        "kombos_ohne_blocker": 4,
+        "bestenfalls_uebrig": 4,
+        "schlimmstenfalls_uebrig": 1,
+        "im_mittel_uebrig": 3.5475,
+        "verteilung": {
+          "4": 13244,
+          "3": 7744,
+          "2": 1080,
+          "1": 32
+        },
+        "faelle_geprueft": 22100
+      },
+      {
+        "bekannte_karten": 4,
+        "kombos_ohne_blocker": 4,
+        "bestenfalls_uebrig": 4,
+        "schlimmstenfalls_uebrig": 0,
+        "im_mittel_uebrig": 3.4027,
+        "verteilung": {
+          "4": 135751,
+          "3": 109736,
+          "2": 23766,
+          "1": 1456,
+          "0": 16
+        },
+        "faelle_geprueft": 270725
+      }
+    ],
+    "offsuit": [
+      {
+        "bekannte_karten": 1,
+        "kombos_ohne_blocker": 12,
+        "bestenfalls_uebrig": 12,
+        "schlimmstenfalls_uebrig": 9,
+        "im_mittel_uebrig": 11.5385,
+        "verteilung": {
+          "12": 44,
+          "9": 8
+        },
+        "faelle_geprueft": 52
+      },
+      {
+        "bekannte_karten": 2,
+        "kombos_ohne_blocker": 12,
+        "bestenfalls_uebrig": 12,
+        "schlimmstenfalls_uebrig": 6,
+        "im_mittel_uebrig": 11.086,
+        "verteilung": {
+          "12": 946,
+          "9": 352,
+          "7": 12,
+          "6": 16
+        },
+        "faelle_geprueft": 1326
+      },
+      {
+        "bekannte_karten": 3,
+        "kombos_ohne_blocker": 12,
+        "bestenfalls_uebrig": 12,
+        "schlimmstenfalls_uebrig": 3,
+        "im_mittel_uebrig": 10.6425,
+        "verteilung": {
+          "12": 13244,
+          "9": 7568,
+          "7": 528,
+          "6": 704,
+          "5": 24,
+          "4": 24,
+          "3": 8
+        },
+        "faelle_geprueft": 22100
+      },
+      {
+        "bekannte_karten": 4,
+        "kombos_ohne_blocker": 12,
+        "bestenfalls_uebrig": 12,
+        "schlimmstenfalls_uebrig": 0,
+        "im_mittel_uebrig": 10.2081,
+        "verteilung": {
+          "12": 135751,
+          "9": 105952,
+          "7": 11352,
+          "6": 15136,
+          "5": 1056,
+          "4": 1062,
+          "3": 384,
+          "2": 30,
+          "0": 2
+        },
+        "faelle_geprueft": 270725
+      }
+    ]
+  },
+  "beispiel": {
+    "hand": "Ah Kh",
+    "board": "Qh 7c 2d",
+    "bekannte_karten": 5,
+    "summe_vorher": 1326,
+    "summe_nachher": 1081,
+    "am_staerksten_geblockt": [
+      {
+        "hand": "AKo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 6,
+        "weggeblockt": 6
+      },
+      {
+        "hand": "AQo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 6,
+        "weggeblockt": 6
+      },
+      {
+        "hand": "KQo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 6,
+        "weggeblockt": 6
+      },
+      {
+        "hand": "72o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      },
+      {
+        "hand": "A2o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      },
+      {
+        "hand": "A7o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      },
+      {
+        "hand": "K2o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      },
+      {
+        "hand": "K7o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      }
+    ],
+    "je_starthand": [
+      {
+        "hand": "22",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 3,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "32s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "32o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "42s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "42o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "52s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "52o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "62s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "62o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "72s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 2,
+        "weggeblockt": 2
+      },
+      {
+        "hand": "72o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      },
+      {
+        "hand": "82s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "82o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "92s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "92o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "T2s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "T2o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "J2s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "J2o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "Q2s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 2,
+        "weggeblockt": 2
+      },
+      {
+        "hand": "Q2o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      },
+      {
+        "hand": "K2s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 2,
+        "weggeblockt": 2
+      },
+      {
+        "hand": "K2o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      },
+      {
+        "hand": "A2s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 2,
+        "weggeblockt": 2
+      },
+      {
+        "hand": "A2o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      },
+      {
+        "hand": "33",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 6,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "43s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "43o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "53s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "53o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "63s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "63o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "73s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "73o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "83s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "83o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "93s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "93o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T3s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T3o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J3s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J3o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "Q3s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "Q3o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "K3s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "K3o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "A3s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "A3o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "44",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 6,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "54s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "54o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "64s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "64o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "74s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "74o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "84s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "84o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "94s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "94o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T4s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T4o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J4s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J4o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "Q4s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "Q4o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "K4s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "K4o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "A4s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "A4o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "55",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 6,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "65s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "65o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "75s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "75o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "85s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "85o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "95s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "95o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T5s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T5o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J5s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J5o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "Q5s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "Q5o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "K5s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "K5o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "A5s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "A5o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "66",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 6,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "76s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "76o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "86s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "86o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "96s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "96o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T6s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T6o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J6s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J6o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "Q6s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "Q6o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "K6s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "K6o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "A6s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "A6o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "77",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 3,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "87s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "87o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "97s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "97o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "T7s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "T7o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "J7s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "J7o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "Q7s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 2,
+        "weggeblockt": 2
+      },
+      {
+        "hand": "Q7o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      },
+      {
+        "hand": "K7s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 2,
+        "weggeblockt": 2
+      },
+      {
+        "hand": "K7o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      },
+      {
+        "hand": "A7s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 2,
+        "weggeblockt": 2
+      },
+      {
+        "hand": "A7o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 7,
+        "weggeblockt": 5
+      },
+      {
+        "hand": "88",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 6,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "98s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "98o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T8s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T8o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J8s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J8o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "Q8s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "Q8o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "K8s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "K8o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "A8s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "A8o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "99",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 6,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T9s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "T9o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J9s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "J9o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "Q9s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "Q9o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "K9s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "K9o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "A9s",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "A9o",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "TT",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 6,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "JTs",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 4,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "JTo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 12,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "QTs",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "QTo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "KTs",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "KTo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "ATs",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "ATo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "JJ",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 6,
+        "weggeblockt": 0
+      },
+      {
+        "hand": "QJs",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "QJo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "KJs",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "KJo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "AJs",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "AJo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 9,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "QQ",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 3,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "KQs",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "KQo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 6,
+        "weggeblockt": 6
+      },
+      {
+        "hand": "AQs",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "AQo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 6,
+        "weggeblockt": 6
+      },
+      {
+        "hand": "KK",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 3,
+        "weggeblockt": 3
+      },
+      {
+        "hand": "AKs",
+        "typ": "suited",
+        "vorher": 4,
+        "nachher": 3,
+        "weggeblockt": 1
+      },
+      {
+        "hand": "AKo",
+        "typ": "offsuit",
+        "vorher": 12,
+        "nachher": 6,
+        "weggeblockt": 6
+      },
+      {
+        "hand": "AA",
+        "typ": "Paar",
+        "vorher": 6,
+        "nachher": 3,
+        "weggeblockt": 3
+      }
+    ]
+  }
+}

@@ -5,10 +5,10 @@ Eigenständiges Arbeitspaket. Branch `feature/poker-math`.
 Diese Datei ist so geschrieben, dass eine frische Sitzung ohne Kontext hier
 weiterarbeiten kann.
 
-- **Letzte Aktualisierung:** 2026-08-26
-- **Stand in einem Satz:** Der Unterbau steht und ist bewiesen — der Evaluator
-  ist gewählt und über **alle** 2 598 960 Fünfkartenblätter als regelkonform
-  nachgewiesen. Die Rechenblöcke B1 bis B7 sind noch offen.
+- **Letzte Aktualisierung:** 2026-08-26, nach B1/B2/B3
+- **Stand in einem Satz:** Der Unterbau ist bewiesen, B1 bis B3 sind exakt
+  gerechnet und ausgeliefert. B4 ist vorbereitet, aber **noch nicht gestartet**
+  — die gemessene Laufzeit verlangt eine Entscheidung, siehe unten.
 
 ---
 
@@ -18,9 +18,9 @@ weiterarbeiten kann.
 einer Webquelle.** Alles wird gerechnet. Was nicht rechenbar ist, steht in
 `OPEN.md` statt im Code.
 
-Was davon ausgenommen ist, sind Definitionen — 52 Karten, 13 Ränge, die
-Rangfolge der Kategorien, das Ass als Eins in A-2-3-4-5. Das sind die Regeln
-des Spiels, keine Ergebnisse. Die Liste steht vollständig in `OPEN.md`.
+Ausgenommen sind Definitionen — 52 Karten, 13 Ränge, die Rangfolge der
+Kategorien, das Ass als Eins in A-2-3-4-5. Die vollständige Liste steht in
+`OPEN.md`.
 
 ---
 
@@ -28,56 +28,87 @@ des Spiels, keine Ergebnisse. Die Liste steht vollständig in `OPEN.md`.
 
 | Einheit | Was | Nachweis |
 |---|---|---|
-| Aufbau | venv, vier Kandidaten installiert, Versionen in `requirements.txt` festgenagelt | — |
-| Referenz | `src/referenz_evaluator.py` — ein zweiter Evaluator, direkt aus den Regeln | 39 Tests, 5 Mutationen geprüft |
-| Auswahl | **eval7 0.1.11** gewählt (E-012) | `output/evaluator_auswahl.json` |
-| Nachweis | Alle vier Bibliotheken über **alle** 2 598 960 Blätter gegen die Regeln gehalten | alle vier stimmen überein, 7 462 Stärkeklassen |
+| Aufbau | venv, vier Kandidaten, Versionen in `requirements.txt` festgenagelt | — |
+| Referenz | `src/referenz_evaluator.py` — ein zweiter Evaluator aus den Regeln | 5 Mutationen geprüft |
+| Auswahl | **eval7 0.1.11** (E-012) | `output/evaluator_auswahl.json` |
+| Nachweis | Alle vier Bibliotheken über **alle** 2 598 960 Blätter geprüft | alle einig, 7 462 Stärkeklassen |
+| Annahmen | Ein Block, erzeugt aus `src/metadaten.py`, in **jeder** Ausgabedatei | Test erzwingt ihn |
+| **B1** | Outs, Verbesserung, Fehler der 2/4-Regel, 8 gezählte Zugbilder, 3 nachgerechnete Gegenbeispiele | `output/b1_outs.json` |
+| **B2** | Pot Odds, Mindest-Equity, Mindest-Outs für 8 Einsatzgrößen | `output/b2_potodds.json` |
+| **B3** | Kombos je Typ, Blockerverteilung, alle 169 Hände an einem Beispielboard | `output/b3_kombinatorik.json` |
 
-### Was der Nachweis wert ist
+**240 Tests grün, 1 übersprungen** (die noch leere externe Gegenprobe).
 
-Er ist **vollständig**, keine Stichprobe: Wenn eine der Bibliotheken sich
-irgendwo anders verhielte als die Spielregeln, hätte der Lauf es gefunden.
-Geprüft wurde nicht der Zahlenwert (jede Bibliothek nummeriert anders),
-sondern die Ordnung: gleiche Blätter gleich stark, stärkere Blätter höher.
+### Was B1 bis B3 methodisch absichert
 
-**Alle vier sind korrekt.** Die Wahl entschied deshalb nicht über Korrektheit,
-sondern über Geschwindigkeit — und ist damit auch leicht rückgängig zu machen:
-Ein Wechsel würde keine einzige Zahl ändern.
+- **B1** rechnet jede Zeile **doppelt**: einmal durch vollständiges Durchzählen
+  aller geordneten Paare (Turn, River), einmal über die
+  Gegenwahrscheinlichkeit. Beide müssen als **Bruch** exakt übereinstimmen,
+  sonst bricht der Lauf ab.
+- **B2** rechnet durchgehend mit Brüchen. Ein Drittel Pot ist ein Drittel.
+- **B3** prüft, dass Klassen mal Kombos genau die Zahl aller
+  Zweikartenblätter ergibt, und dass nach Blocker-Abzug genau so viele Kombos
+  übrig bleiben, wie es Zweikartenblätter aus den unbekannten Karten gibt.
 
 ---
 
-## Exakt nächster Schritt
+## Exakt nächster Schritt: B4 — und eine Entscheidung davor
 
-**B1 — Outs und Verbesserungswahrscheinlichkeit.** Vollständig exakt
-rechenbar, kein Monte Carlo nötig:
+### Die Laufzeitabschätzung (E3), gemessen statt geschätzt
 
-Für jede Outs-Zahl von 1 bis 21 die Wahrscheinlichkeit, dass mindestens ein
-Out erscheint — auf dem Turn, auf dem River, und auf mindestens einer der
-beiden Straßen. Dazu die Abweichung der 2/4-Faustregel vom exakten Wert in
-Prozentpunkten.
+Ein **einzelnes vollständig enumeriertes Matchup** wurde gemessen:
 
-Vorgehen: Nach dem Flop sind 47 Karten unbekannt, nach dem Turn 46. Beides
-wird durch Abzählen der Kartenmengen bestimmt, nicht durch Einsetzen in eine
-erinnerte Formel. Ausgabe nach `output/b1_outs.json` mit dem in
-`POKER_MATH.md` beschriebenen Metadatenblock.
+| | |
+|---|---|
+| Beispiel | A♥K♥ gegen Q♠Q♦ |
+| Boards | 1 712 304 (alle) |
+| Dauer | **2,9 s** |
+| Durchsatz | ~600 000 Boards/s |
+| Ergebnis | 46,2145 % für A♥K♥ (Split als 0,5 gezählt) |
 
-Danach in dieser Reihenfolge: **B2** (Pot Odds, leitet aus B1 ab), **B3**
-(Kombinatorik und Blocker), dann die rechenintensiven **B4** und **B5**,
-zuletzt **B6** und **B7**.
+Hochgerechnet auf alle Paarungen:
 
-### Was bei B4 zu bedenken ist, bevor es losgeht
+| Weg | Matchups | Ein Kern | Vier Kerne |
+|---|---:|---:|---:|
+| ohne Reduktion | 812 175 | ~654 h | ~187 h |
+| **mit Farb-Isomorphie** | **47 008** | **~38 h** | **~11 h** |
 
-169 gegen 169 heißt bei exakter Auswertung Größenordnungen von 10¹⁰
-Blattbewertungen — bei gemessenen 837 000 Bewertungen pro Sekunde also
-Stunden bis Tage. Zwei Auswege stehen zur Wahl, beide sind zu prüfen:
+Der Reduktionsfaktor **17,28×** ist nicht geschätzt, sondern ausgezählt: Über
+alle 812 175 Paarungen wurde die Kanonform unter allen 24 Farbumbenennungen
+gebildet und die verschiedenen Formen gezählt.
 
-1. **Repräsentanten mit Gewichten:** Nicht jede Farbverteilung einzeln
-   rechnen, sondern je Handpaar die wenigen wirklich verschiedenen
-   Farbmuster mit ihrer Häufigkeit gewichten. Bleibt exakt.
-2. **Monte Carlo mit Kreuzvalidierung**, wie in `POKER_MATH.md` beschrieben.
+### Was daraus folgt
 
-Weg 1 ist vorzuziehen, solange er rechenbar bleibt — er liefert die Zahl statt
-einer Schätzung.
+Die Schwelle aus E3 (zwei Stunden) ist **auch nach beiden vorgeschriebenen
+Maßnahmen überschritten** — Farb-Isomorphie und Multiprocessing zusammen
+landen bei rund elf Stunden. Beide sind trotzdem zu implementieren, denn ohne
+sie wären es Wochen.
+
+**Vor dem Start von B4 ist zu entscheiden**, und das ist keine technische
+Frage:
+
+1. **Elf Stunden exakt durchrechnen.** Liefert die Zahl, nicht die Schätzung.
+   Einmalig, das Ergebnis ist für immer gültig.
+2. **Monte Carlo für die volle Matrix**, mit exakter Kreuzvalidierung auf
+   einem Teilfall, wie in `POKER_MATH.md` beschrieben. Deutlich schneller,
+   liefert aber Werte mit Konfidenzintervall statt exakter Zahlen.
+3. **Gemischt:** die 169 Klassen gegen sich selbst exakt (die Diagonale und
+   die häufig nachgeschlagenen Paarungen), der Rest per Monte Carlo.
+
+**Meine Empfehlung: Weg 1.** Elf Stunden sind einmalig, das Ergebnis ist
+danach für immer exakt, und eine Lern-App, die „46,21 %" sagt, sollte 46,21 %
+meinen und nicht „46,2 % ± 0,1". Die Rechnung kann im Hintergrund laufen.
+
+### Was für B4 vorher zu bauen ist (E3, verbindlich)
+
+- **Farb-Isomorphie** mit Gewichten. Die Reduktion ist an **mindestens fünf**
+  Paarungen gegen die vollständige Enumeration ohne Reduktion zu prüfen; die
+  Werte müssen **exakt** übereinstimmen, nicht näherungsweise.
+- **Multiprocessing** über die vier Kerne, mit deterministischem
+  Zusammenführen der Teilergebnisse.
+- **Split-Pötte** zählen als 0,5 je Seite — gilt für alle Equity-Rechnungen.
+
+Danach: **B5** (Multiway), **B6** (Set Mining), **B7** (Flop-Texturen).
 
 ---
 
@@ -86,13 +117,14 @@ einer Schätzung.
 | Datei | Inhalt |
 |---|---|
 | `POKER_MATH.md` | Was gerechnet wird, mit welcher Methode, wo die Grenzen liegen. Als Erklärtext für die App verwendbar |
-| `OPEN.md` | Jede Stelle, an der eine Zahl nicht gerechnet werden konnte. Derzeit leer |
+| `OPEN.md` | Nicht gerechnete Größen und Kandidaten für V2. Derzeit keine offene Zahl |
+| `src/metadaten.py` | Der Annahmenblock, den jede Ausgabedatei trägt |
 | `src/karten.py` | Kartendarstellung, Starthand-Klassen |
 | `src/referenz_evaluator.py` | Der Evaluator aus den Regeln — bleibt dauerhaft |
 | `src/pruefe_evaluatoren.py` | Der vollständige Nachweislauf, ~40 s |
-| `tests/bekannte_werte.json` | **Leer, von Lorenz zu füllen.** Gegenprobe aus einer Quelle, der er vertraut |
-| `output/evaluator_auswahl.json` | Messwerte und Befund der Auswahl |
-| `requirements.txt` | Festgenagelte Versionen |
+| `src/b1_outs.py` · `b2_potodds.py` · `b3_kombinatorik.py` | Die Rechenblöcke |
+| `tests/bekannte_werte.json` | **Leer, von Lorenz zu füllen** |
+| `output/*.json` | Die Ergebnisse, die die App liest |
 
 ---
 
@@ -102,8 +134,11 @@ einer Schätzung.
 cd tools/poker-math
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-PYTHONPATH=src .venv/bin/python -m pytest tests -q          # ~3 s
-PYTHONPATH=src .venv/bin/python src/pruefe_evaluatoren.py   # ~40 s, schreibt den Bericht
+PYTHONPATH=src .venv/bin/python -m pytest tests -q            # ~5 s
+PYTHONPATH=src .venv/bin/python src/b1_outs.py                # jeder Block
+PYTHONPATH=src .venv/bin/python src/b2_potodds.py
+PYTHONPATH=src .venv/bin/python src/b3_kombinatorik.py
+PYTHONPATH=src .venv/bin/python src/pruefe_evaluatoren.py     # ~40 s
 ```
 
 ---
@@ -111,13 +146,13 @@ PYTHONPATH=src .venv/bin/python src/pruefe_evaluatoren.py   # ~40 s, schreibt de
 ## Bekannte Risiken
 
 1. **`tests/bekannte_werte.json` ist leer.** Bis Lorenz sie füllt, gibt es
-   keine externe Gegenprobe — nur die interne Konsistenz und den
-   Regel-Evaluator. Das ist stark, aber es ist dieselbe Denkweise zweimal.
-   Der zugehörige Test meldet sich als übersprungen, nicht als bestanden.
-2. **eval7 ist eine C-Erweiterung.** Auf einer Plattform ohne fertiges Rad
-   muss übersetzt werden. Betrifft nur diesen Generator, nicht die App — die
-   liest ausschließlich die JSON-Dateien.
-3. **Der schnelle Testlauf zählt nicht alles durch.** Er nutzt zwei
-   verkleinerte Decks vollständig plus eine Stichprobe aus dem ganzen Deck.
-   Der vollständige Nachweis steckt in `pruefe_evaluatoren.py` und gehört vor
-   jede Veröffentlichung einmal ausgeführt.
+   keine externe Gegenprobe — nur innere Konsistenz und den Regel-Evaluator.
+   Das ist stark, aber es ist dieselbe Denkweise zweimal. Der zugehörige Test
+   meldet sich als übersprungen, nicht als bestanden.
+2. **B4 dauert Stunden.** Siehe die Entscheidung oben. Ein abgebrochener Lauf
+   darf keine halbe Datei hinterlassen — die Zwischenstände gehören gesichert.
+3. **eval7 ist eine C-Erweiterung.** Auf einer Plattform ohne fertiges Rad
+   muss übersetzt werden. Betrifft nur diesen Generator, nicht die App.
+4. **eval7 warnt beim Import** über eine veraltete pyparsing-Schnittstelle.
+   Fremder Code, keine Auswirkung auf die Ergebnisse — aber beim nächsten
+   pyparsing-Sprung möglicherweise ein echter Bruch.

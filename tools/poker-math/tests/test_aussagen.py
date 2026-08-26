@@ -63,19 +63,46 @@ def test_jede_zahl_im_satz_steht_im_beleg(datei, b):
         elif isinstance(knoten, (int, float)):
             gefunden.add(f"{knoten}")
             gefunden.add(f"{knoten:.0f}")
-            gefunden.add(f"{knoten:.2f}".replace(".", ","))
+            # Beide Schreibweisen: Deutsch trennt mit Komma, Englisch mit Punkt.
+            for roh in (f"{knoten:.2f}", f"{100 * knoten:.2f}"):
+                gefunden.add(roh)
+                gefunden.add(roh.replace(".", ","))
             gefunden.add(f"{100 * knoten:.0f}")
-            gefunden.add(f"{100 * knoten:.2f}".replace(".", ","))
         elif isinstance(knoten, str):
             gefunden |= set(re.findall(r"\d+(?:[.,]\d+)?", knoten))
         return gefunden
 
     belegt = zahlen_aus(b["beleg"])
-    im_satz = re.findall(r"\d+(?:[.,]\d+)?", b["aussage"])
-    unbelegt = [z for z in im_satz if z not in belegt and z.rstrip("0").rstrip(",") not in belegt]
-    assert not unbelegt, (
-        f"{datei} / {b['schluessel']}: Diese Zahlen im Satz stehen in keinem "
-        f"Beleg: {unbelegt}\n  Satz: {b['aussage']}"
+    # Beide Sprachen. Eine englische Fassung, die eine andere Zahl nennt als
+    # die deutsche, fällt niemandem auf, der nur eine Sprache liest.
+    for schluessel in ("aussage", "aussage_en"):
+        satz = b[schluessel]
+        im_satz = re.findall(r"\d+(?:[.,]\d+)?", satz)
+        unbelegt = [z for z in im_satz
+                    if z not in belegt and z.rstrip("0").rstrip(",").rstrip(".") not in belegt]
+        assert not unbelegt, (
+            f"{datei} / {b['schluessel']} ({schluessel}): Diese Zahlen im Satz "
+            f"stehen in keinem Beleg: {unbelegt}\n  Satz: {satz}"
+        )
+
+
+@pytest.mark.parametrize("datei,b", BEFUNDE, ids=lambda x: x if isinstance(x, str) else x["schluessel"])
+def test_jeder_befund_nennt_in_beiden_sprachen_dieselben_zahlen(datei, b):
+    """Deutsch und Englisch müssen dieselben Zahlen enthalten.
+
+    Nicht dieselbe Reihenfolge und nicht dieselbe Schreibweise – aber
+    dieselbe Menge. Sonst behauptet die App je nach Spracheinstellung etwas
+    anderes über dieselben Daten.
+    """
+    def zahlen(satz: str) -> set[str]:
+        # Deutsch schreibt 34,97 – Englisch 34.97. Für den Vergleich wird das
+        # Dezimalzeichen vereinheitlicht; die Tausendertrennung entfällt.
+        roh = re.findall(r"\d+(?:[.,]\d+)?", satz.replace("\u202f", "").replace("\u00a0", ""))
+        return {z.replace(",", ".").rstrip("0").rstrip(".") or "0" for z in roh}
+
+    assert zahlen(b["aussage"]) == zahlen(b["aussage_en"]), (
+        f"{datei} / {b['schluessel']}: verschiedene Zahlen in den Sprachen\n"
+        f"  de: {b['aussage']}\n  en: {b['aussage_en']}"
     )
 
 

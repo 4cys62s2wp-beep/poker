@@ -96,3 +96,101 @@ def test_eine_hand_gegen_sich_selbst_ist_genau_ausgeglichen():
     prüft die Gewichtung mit – die einzelnen Konfigurationen sind es nicht."""
     e = rechne_matchup("AKs", "AKs")
     assert abs(e["equity_a"] - 0.5) < 1e-9
+
+
+# ---------------------------------------------------------------------------
+# Die Sicherung darf keine Rechnung verlieren
+# ---------------------------------------------------------------------------
+#
+# Diese Tests gibt es wegen eines echten Verlusts: `--sichern` hat die
+# Laufdatei nach dem Übernehmen gelöscht, während der Lauf sie noch offen
+# hatte. Unter Linux schreibt ein Prozess dann weiter in eine Datei, die
+# niemand mehr findet — rund 120 gerechnete Handpaare waren weg.
+#
+# Geprüft wird deshalb nicht, dass die Sicherung „funktioniert", sondern die
+# drei Eigenschaften, deren Fehlen den Verlust verursacht hat.
+
+import json
+import os
+
+import b4_preflop_equity as b4
+
+
+def _eintrag(a, b):
+    return {"hand_a": a, "hand_b": b, "equity_a": 0.5, "equity_b": 0.5,
+            "farbkonfigurationen": [], "spanne_pp": 0.0, "spanne_relevant": False}
+
+
+def _stelle_um(tmp_path, monkeypatch):
+    """Alle Pfade des Moduls in ein Wegwerfverzeichnis lenken."""
+    monkeypatch.setattr(b4, "TEILDATEI", tmp_path / "matchups.jsonl")
+    monkeypatch.setattr(b4, "LAUFVERZEICHNIS", tmp_path)
+    monkeypatch.setattr(b4, "LOGDATEI", tmp_path / "lauf.log")
+
+
+def test_sichern_laesst_die_datei_eines_lebenden_prozesses_stehen(tmp_path, monkeypatch):
+    _stelle_um(tmp_path, monkeypatch)
+    meine = tmp_path / f"matchups.live.{os.getpid()}.jsonl"
+    meine.write_text(json.dumps(_eintrag("AA", "KK")) + "\n", encoding="utf-8")
+
+    b4.sichere(still=True)
+
+    # Der eigene Prozess lebt – also bleibt seine Datei, wo sie ist.
+    assert meine.exists(), "Die Laufdatei eines lebenden Prozesses wurde gelöscht"
+    gesichert = b4.alle_ergebnisse()
+    assert ("AA", "KK") in gesichert
+
+
+def test_sichern_uebernimmt_und_verliert_nichts(tmp_path, monkeypatch):
+    _stelle_um(tmp_path, monkeypatch)
+    (tmp_path / "matchups.jsonl").write_text(
+        json.dumps(_eintrag("AA", "AA")) + "\n", encoding="utf-8")
+    meine = tmp_path / f"matchups.live.{os.getpid()}.jsonl"
+    meine.write_text(json.dumps(_eintrag("AA", "KK")) + "\n", encoding="utf-8")
+
+    b4.sichere(still=True)
+
+    zeilen = (tmp_path / "matchups.jsonl").read_text(encoding="utf-8").splitlines()
+    paare = {tuple(json.loads(z)[k] for k in ("hand_a", "hand_b")) for z in zeilen}
+    assert paare == {("AA", "AA"), ("AA", "KK")}
+
+
+def test_sichern_raeumt_die_datei_eines_toten_prozesses_weg(tmp_path, monkeypatch):
+    _stelle_um(tmp_path, monkeypatch)
+    # Eine Prozessnummer, die es sicher nicht gibt: Nach dem Ende des
+    # Kindprozesses ist sie frei, und os.kill(pid, 0) findet sie nicht mehr.
+    tot = os.fork()
+    if tot == 0:
+        os._exit(0)
+    os.waitpid(tot, 0)
+
+    verwaist = tmp_path / f"matchups.live.{tot}.jsonl"
+    verwaist.write_text(json.dumps(_eintrag("QQ", "JJ")) + "\n", encoding="utf-8")
+
+    b4.sichere(still=True)
+
+    assert not verwaist.exists(), "Verwaiste Laufdatei blieb liegen"
+    # Der Inhalt ist trotzdem übernommen worden.
+    assert ("QQ", "JJ") in b4.alle_ergebnisse()
+
+
+def test_sichern_schreibt_atomar(tmp_path, monkeypatch):
+    """Bricht das Schreiben ab, bleibt der alte Stand vollständig stehen.
+
+    Die alte Fassung öffnete die gesicherte Datei mit "w" und schnitt sie
+    damit ab, bevor sie den neuen Inhalt schrieb. Ein Abbruch in dieser
+    Sekunde hätte alles gelöscht, was je gerechnet wurde.
+    """
+    _stelle_um(tmp_path, monkeypatch)
+    ziel = tmp_path / "matchups.jsonl"
+    alt = json.dumps(_eintrag("AA", "AA")) + "\n"
+    ziel.write_text(alt, encoding="utf-8")
+
+    def platzt(*_a, **_k):
+        raise OSError("Platte voll")
+
+    monkeypatch.setattr(b4.os, "replace", platzt)
+    with pytest.raises(OSError):
+        b4.sichere(still=True)
+
+    assert ziel.read_text(encoding="utf-8") == alt, "Der gesicherte Stand wurde beschädigt"

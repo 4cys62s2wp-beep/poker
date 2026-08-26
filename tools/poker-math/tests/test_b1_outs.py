@@ -116,8 +116,8 @@ def test_unmoegliche_outszahl_wird_abgelehnt():
 # Die gezählten Beispiele
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("name,hand,flop,ziel", BEISPIELE)
-def test_beispiele_sind_in_sich_stimmig(name, hand, flop, ziel):
+@pytest.mark.parametrize("name,name_en,hand,flop,ziel", BEISPIELE)
+def test_beispiele_sind_in_sich_stimmig(name, name_en, hand, flop, ziel):
     from referenz_evaluator import KATEGORIE_NAME
     nach_name = {v: k for k, v in KATEGORIE_NAME.items()}
 
@@ -180,5 +180,5 @@ def test_die_gegenbeispiele_tragen_wirklich():
 def test_die_gegenbeispiele_decken_verschiedene_ursachen_ab():
     """Drei Beispiele derselben Ursache wären eines."""
     from b1_outs import pruefe_gegenbeispiele
-    ursachen = {f["gegner_nachher"] for f in pruefe_gegenbeispiele()}
+    ursachen = {f["gegner_nachher"]["de"] for f in pruefe_gegenbeispiele()}
     assert len(ursachen) >= 3, f"Nur {ursachen} – zu wenig Vielfalt"

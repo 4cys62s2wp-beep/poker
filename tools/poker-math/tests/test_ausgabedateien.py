@@ -39,8 +39,15 @@ def test_die_annahmen_stehen_in_jeder_datei(datei):
     a = json.loads(datei.read_text(encoding="utf-8"))["metadaten"]["annahmen"]
     for feld in ("sicht", "unbekannte_karten", "split_pot", "kartenzahlen"):
         assert feld in a, f"{datei.name}: Annahme '{feld}' fehlt"
-    assert "Heldensicht" in a["sicht"]
-    assert "0,5" in a["split_pot"]
+    # Seit dem Umstieg auf zweisprachige Anzeigetexte ist jede dieser
+    # Annahmen ein {de, en}-Paar. Beide Sprachen sind Pflicht: Eine App, die
+    # auf Englisch eine deutsche Annahme zeigt, hat keine Annahme gezeigt.
+    for feld in ("sicht", "unbekannte_karten", "split_pot"):
+        assert set(a[feld]) == {"de", "en"}, f"{datei.name}: '{feld}' nicht zweisprachig"
+        assert a[feld]["de"] and a[feld]["en"]
+    assert "Heldensicht" in a["sicht"]["de"]
+    assert "0,5" in a["split_pot"]["de"]
+    assert "0.5" in a["split_pot"]["en"]
 
 
 @pytest.mark.parametrize("datei", BLOCKDATEIEN, ids=lambda p: p.name)
@@ -69,3 +76,78 @@ def test_kein_wert_ist_unendlich_oder_keine_zahl(datei):
             assert math.isfinite(knoten), f"{datei.name}{pfad} ist {knoten}"
 
     pruefe(json.loads(datei.read_text(encoding="utf-8")))
+
+
+# ---------------------------------------------------------------------------
+# Was die App neben jeder Zahl verspricht, muss in der Datei stehen
+# ---------------------------------------------------------------------------
+#
+# Die Herkunftsanzeige („Warum diese Zahl?") nennt Rechenweg, Fallzahl und
+# Bibliothek. Fehlt eine dieser Angaben, kann die App nur schweigen oder
+# raten — und Raten ist hier der schlimmere Fehler. Also muss sie in der
+# Datei stehen, und zwar in jeder.
+
+@pytest.mark.parametrize("datei", BLOCKDATEIEN, ids=lambda p: p.name)
+def test_jede_datei_nennt_ihre_fallzahl(datei):
+    m = json.loads(datei.read_text(encoding="utf-8"))["metadaten"]
+    f = m["faelle_enumeriert"]
+    assert f["gesamt"] > 0, f"{datei.name}: null Fälle gezählt"
+    assert f["je_teil"], f"{datei.name}: keine Aufschlüsselung der Fälle"
+    assert sum(f["je_teil"].values()) == f["gesamt"], (
+        f"{datei.name}: die Aufschlüsselung ergibt nicht die Gesamtzahl"
+    )
+
+
+@pytest.mark.parametrize("datei", BLOCKDATEIEN, ids=lambda p: p.name)
+def test_jede_datei_sagt_womit_gerechnet_wurde(datei):
+    """Entweder eine Bibliothek mit Version — oder der Grund, warum keine.
+
+    Ein weggelassenes Feld sieht aus wie ein Versäumnis. „Hier war keine
+    nötig, weil es reine Kombinatorik ist" ist eine Auskunft.
+    """
+    m = json.loads(datei.read_text(encoding="utf-8"))["metadaten"]
+    e = m["evaluator"]
+    if e["name"] is None:
+        assert set(e["begruendung"]) == {"de", "en"}, (
+            f"{datei.name}: Begründung ohne Bibliothek muss zweisprachig sein"
+        )
+        assert e["begruendung"]["de"] and e["begruendung"]["en"]
+    else:
+        assert e["version"], f"{datei.name}: Bibliothek ohne Version"
+        assert e["nachweis"], f"{datei.name}: Bibliothek ohne Korrektheitsnachweis"
+
+
+@pytest.mark.parametrize("datei", BLOCKDATEIEN, ids=lambda p: p.name)
+def test_jeder_anzeigbare_text_ist_zweisprachig(datei):
+    """Kein Feld, das die App zeigen kann, darf einsprachig sein.
+
+    Geprüft wird nicht der Text, sondern die Form: Wo ein {de, en}-Paar
+    hingehört, darf keine nackte Zeichenkette stehen. Eine englische Fassung,
+    die deutsche Begriffe zeigt, ist der Fehler, der niemandem auffällt, weil
+    ihn nur sieht, wer die App auf Englisch benutzt.
+    """
+    d = json.loads(datei.read_text(encoding="utf-8"))
+    m = d["metadaten"]
+
+    def paar(wert, wo):
+        assert isinstance(wert, dict) and set(wert) == {"de", "en"}, (
+            f"{datei.name}: {wo} ist nicht zweisprachig: {wert!r}"
+        )
+        assert wert["de"].strip() and wert["en"].strip(), f"{datei.name}: {wo} halb leer"
+
+    paar(m["zweck"], "metadaten.zweck")
+    for feld in ("sicht", "unbekannte_karten", "split_pot"):
+        paar(m["annahmen"][feld], f"metadaten.annahmen.{feld}")
+    for schluessel, wert in m["annahmen"].get("block_spezifisch", {}).items():
+        paar(wert, f"metadaten.annahmen.block_spezifisch.{schluessel}")
+    for i, b in enumerate(d.get("befunde", [])):
+        assert b.get("aussage_en"), f"{datei.name}: befunde[{i}] ohne englische Fassung"
+
+    for i, e in enumerate(d.get("beispiele", [])):
+        paar(e["name"], f"beispiele[{i}].name")
+        paar(e["zielkategorie"], f"beispiele[{i}].zielkategorie")
+    for i, e in enumerate(d.get("gegenbeispiele_saubere_outs", [])):
+        paar(e["name"], f"gegenbeispiele[{i}].name")
+        paar(e["erklaerung"], f"gegenbeispiele[{i}].erklaerung")
+    for i, e in enumerate(d.get("einsatzgroessen", [])):
+        paar(e["name"], f"einsatzgroessen[{i}].name")

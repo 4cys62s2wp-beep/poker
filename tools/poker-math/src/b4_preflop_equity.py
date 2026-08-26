@@ -57,16 +57,64 @@ from karten import (
 WURZEL = Path(__file__).resolve().parent.parent
 #: Der gesicherte Stand – wird in git geführt und bewusst fortgeschrieben.
 TEILDATEI = WURZEL / "output" / "b4_teil" / "matchups.jsonl"
-#: Wohin der LAUFENDE Prozess schreibt. Bewusst nicht in git: Eine Datei, die
-#: ein Prozess gerade beschreibt, kann nicht gleichzeitig committet und sauber
-#: sein. Mit `--sichern` wandert der Inhalt in die Datei darüber.
-LAUFDATEI = WURZEL / "output" / "b4_teil" / "matchups.live.jsonl"
+#: Wohin der LAUFENDE Prozess schreibt – eine Datei je Prozess, benannt nach
+#: seiner Prozessnummer. Bewusst nicht in git: Eine Datei, die ein Prozess
+#: gerade beschreibt, kann nicht gleichzeitig committet und sauber sein.
+#:
+#: Warum je Prozess und nicht eine gemeinsame: Eine frühere Fassung hatte eine
+#: feste `matchups.live.jsonl`, und `--sichern` hat sie nach dem Übernehmen
+#: gelöscht. Läuft der Prozess dabei noch, schreibt er unter Linux weiter in
+#: eine Datei, die es nicht mehr gibt – sichtbar für niemanden, wiederholbar
+#: für niemanden. Genau so sind rund 120 gerechnete Handpaare verloren
+#: gegangen. Jetzt gehört jede Laufdatei genau einem Prozess, und gelöscht
+#: wird nur, was einem Prozess gehört, den es nicht mehr gibt.
+LAUFVERZEICHNIS = WURZEL / "output" / "b4_teil"
+LAUFMUSTER = "matchups.live.*.jsonl"
+
+
+def laufdatei(pid: int | None = None) -> Path:
+    return LAUFVERZEICHNIS / f"matchups.live.{pid or os.getpid()}.jsonl"
+
+
+def laufdateien() -> list[Path]:
+    return sorted(LAUFVERZEICHNIS.glob(LAUFMUSTER))
+
+
+def _pid_aus(pfad: Path) -> int | None:
+    teile = pfad.name.split(".")
+    try:
+        return int(teile[2])
+    except (IndexError, ValueError):
+        return None
+
+
+def _laeuft(pid: int) -> bool:
+    """Läuft ein Prozess mit dieser Nummer noch?
+
+    `kill(pid, 0)` sendet kein Signal, sondern prüft nur. Wirft es nicht, gibt
+    es den Prozess. Im Zweifel – etwa wenn er einem anderen Nutzer gehört –
+    gilt er als laufend: Eine Datei zu behalten, die niemand mehr braucht, ist
+    harmlos; eine zu löschen, in die noch geschrieben wird, ist es nicht.
+    """
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
 LOGDATEI = WURZEL / "output" / "b4_lauf.log"
 ZIELDATEI = WURZEL / "output" / "b4_preflop_equity.json"
 
 #: Ab dieser Spanne zwischen den Farbkonfigurationen bekommt ein Matchup ein
 #: Kennzeichen. Ein Prozentpunkt ist die Vorgabe aus K3.
 SPANNE_KENNZEICHEN_PP = 1.0
+
+#: Nach so vielen fertigen Handpaaren wandert der Stand in die gesicherte
+#: Datei. Bei rund zwei Sekunden je Handpaar sind das etwa zehn Minuten –
+#: kurz genug, dass ein Abbruch nicht weh tut, selten genug, dass das
+#: Neuschreiben der Sammeldatei nicht ins Gewicht fällt.
+SICHERN_ALLE = 250
 
 _FARBTAUSCH = tuple(permutations(range(4)))
 _EVAL7 = None
@@ -265,7 +313,7 @@ def alle_ergebnisse() -> dict:
     Bei Dopplung gewinnt der laufende – er ist der jüngere.
     """
     ergebnisse: dict = {}
-    for pfad in (TEILDATEI, LAUFDATEI):
+    for pfad in [TEILDATEI, *laufdateien()]:
         for d in _lies_zeilen(pfad):
             ergebnisse[(d["hand_a"], d["hand_b"])] = d
     return ergebnisse
@@ -275,23 +323,52 @@ def bereits_fertig() -> set:
     return set(alle_ergebnisse())
 
 
-def sichere() -> int:
-    """Den laufenden Schreibstrom in den gesicherten Stand übernehmen.
+def sichere(still: bool = False) -> int:
+    """Die laufenden Schreibströme in den gesicherten Stand übernehmen.
 
     Danach ist der Arbeitsbaum wieder sauber und der Fortschritt liegt in git.
     Geschrieben wird sortiert, damit dieselbe Menge Ergebnisse immer dieselbe
     Datei ergibt – sonst wäre jeder Sicherungsschritt ein großer Diff.
+
+    Zwei Dinge macht diese Fassung anders als die erste, und beide sind Folge
+    eines echten Datenverlusts:
+
+    1. **Atomar geschrieben.** Erst in eine Nebendatei, dann umbenannt. Die
+       alte Fassung hat den gesicherten Stand mit `open("w")` abgeschnitten,
+       bevor sie ihn neu schrieb – ein Abbruch in dieser Sekunde hätte alles
+       gelöscht, was je gerechnet wurde.
+    2. **Keine Laufdatei eines lebenden Prozesses wird angefasst.** Übernommen
+       wird ihr Inhalt, gelöscht wird sie nicht. Doppelte Einträge schaden
+       nichts: Sie werden über (hand_a, hand_b) zusammengeführt.
     """
     ergebnisse = alle_ergebnisse()
     if not ergebnisse:
-        protokolliere("Nichts zu sichern.")
+        if not still:
+            protokolliere("Nichts zu sichern.")
         return 0
+
     TEILDATEI.parent.mkdir(parents=True, exist_ok=True)
-    with TEILDATEI.open("w", encoding="utf-8") as f:
+    neben = TEILDATEI.with_suffix(".jsonl.neu")
+    with neben.open("w", encoding="utf-8") as f:
         for schluessel in sorted(ergebnisse):
             f.write(json.dumps(ergebnisse[schluessel], ensure_ascii=False) + "\n")
-    LAUFDATEI.unlink(missing_ok=True)
-    protokolliere(f"Gesichert: {len(ergebnisse)} von {len(arbeitsliste())} Handpaaren")
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(neben, TEILDATEI)
+
+    entfernt = 0
+    for pfad in laufdateien():
+        pid = _pid_aus(pfad)
+        if pid is None or _laeuft(pid):
+            continue
+        pfad.unlink(missing_ok=True)
+        entfernt += 1
+
+    if not still:
+        protokolliere(
+            f"Gesichert: {len(ergebnisse)} von {len(arbeitsliste())} Handpaaren"
+            + (f", {entfernt} verwaiste Laufdatei(en) entfernt" if entfernt else "")
+        )
     return 0
 
 
@@ -323,7 +400,12 @@ def lauf(kerne: int | None = None, nur_erste: int | None = None) -> int:
     fertig = bereits_fertig()
     offen = [p for p in alle if p not in fertig]
 
-    kerne = kerne or max(1, (os.cpu_count() or 2) - 1)
+    """Alle Kerne, nicht einer weniger.
+
+    Der Hauptprozess rechnet nicht, er schreibt nur Zeilen und wartet – ihm
+    einen Kern freizuhalten verschenkt rund ein Viertel des Durchsatzes.
+    Gemessen am vorigen Lauf: drei Arbeiter brachten den Faktor 2,78."""
+    kerne = kerne or max(1, os.cpu_count() or 2)
     protokolliere(
         f"Start: {len(alle)} Handpaare insgesamt, {len(fertig)} schon fertig, "
         f"{len(offen)} offen, {kerne} Kerne"
@@ -332,12 +414,15 @@ def lauf(kerne: int | None = None, nur_erste: int | None = None) -> int:
         protokolliere("Nichts zu tun – alle Handpaare liegen vor.")
         return 0
 
-    LAUFDATEI.parent.mkdir(parents=True, exist_ok=True)
+    LAUFVERZEICHNIS.mkdir(parents=True, exist_ok=True)
+    meine_datei = laufdatei()
+    protokolliere(f"Schreibt nach {meine_datei.name}")
     begonnen = time.perf_counter()
     erledigt = 0
     zuletzt_gemeldet = 0.0
+    zuletzt_gesichert = 0
 
-    with mp.Pool(kerne) as pool, LAUFDATEI.open("a", encoding="utf-8") as ziel:
+    with mp.Pool(kerne) as pool, meine_datei.open("a", encoding="utf-8") as ziel:
         for ergebnis in pool.imap_unordered(_arbeite, offen, chunksize=1):
             ziel.write(json.dumps(ergebnis, ensure_ascii=False) + "\n")
             ziel.flush()
@@ -354,6 +439,14 @@ def lauf(kerne: int | None = None, nur_erste: int | None = None) -> int:
                     f"{len(fertig) + erledigt}/{len(alle)} ({anteil:.2f} %) · "
                     f"{je_einheit:.2f} s je Handpaar · Rest etwa {rest}"
                 )
+
+            # Regelmäßig in den gesicherten Stand übernehmen. Seit die
+            # Sicherung die Laufdatei nicht mehr anfasst, ist das gefahrlos –
+            # und ein Abbruch kostet dann höchstens ein paar Minuten Rechnung
+            # statt eines halben Tages.
+            if erledigt - zuletzt_gesichert >= SICHERN_ALLE:
+                zuletzt_gesichert = erledigt
+                sichere(still=True)
 
     protokolliere(f"Rechenteil fertig: {erledigt} Handpaare in dieser Sitzung")
     return 0
@@ -412,7 +505,7 @@ def pruefe_integritaet(eintraege: list[dict]) -> dict:
 def zusammenbauen() -> int:
     """Aus der Teildatei die fertige Ausgabedatei bauen."""
     from befunde import befund, prozent, prozentpunkte
-    from metadaten import metadatenblock, schreibe
+    from metadaten import Faelle, evaluator_angabe, metadatenblock, schreibe, zs
 
     start = time.perf_counter()
     eintraege = alle_ergebnisse()
@@ -432,6 +525,15 @@ def zusammenbauen() -> int:
     geordnet = [eintraege[p] for p in erwartet]
     integritaet = pruefe_integritaet(geordnet)
 
+    # Nicht ausgerechnet, sondern aus den Ergebnissen zusammengezählt: Jede
+    # Farbkonfiguration hat mitgeschrieben, über wie viele Boards sie ging.
+    faelle = Faelle()
+    for e in geordnet:
+        faelle.zaehle("handpaare_gerechnet")
+        for k in e["farbkonfigurationen"]:
+            faelle.zaehle("farbkonfigurationen_gerechnet")
+            faelle.zaehle("boards_enumeriert", k["boards"])
+
     mit_spanne = [e for e in geordnet if e["spanne_relevant"]]
     groesste = max(geordnet, key=lambda e: e["spanne_pp"])
 
@@ -444,6 +546,9 @@ def zusammenbauen() -> int:
                 f"Bei {len(mit_spanne)} von {len(geordnet)} Handpaaren hängt die "
                 f"Equity um mehr als einen Prozentpunkt davon ab, wie die Farben "
                 f"zwischen den Händen liegen.",
+                f"For {len(mit_spanne)} of {len(geordnet)} hand pairs the equity "
+                f"depends by more than one percentage point on how the suits sit "
+                f"between the two hands.",
                 {
                     "handpaare_gesamt": len(geordnet),
                     "mit_relevanter_spanne": len(mit_spanne),
@@ -457,6 +562,11 @@ def zusammenbauen() -> int:
                 f"{prozent(groesste['niedrigste_equity_a'])} und "
                 f"{prozent(groesste['hoechste_equity_a'])}, also "
                 f"{prozentpunkte(groesste['spanne_pp'])} Unterschied.",
+                f"The suit relationship matters most for {groesste['hand_a']} "
+                f"against {groesste['hand_b']}: between "
+                f"{100 * groesste['niedrigste_equity_a']:.2f} % and "
+                f"{100 * groesste['hoechste_equity_a']:.2f} %, a difference of "
+                f"{groesste['spanne_pp']:.2f} pp.",
                 {
                     "hand_a": groesste["hand_a"],
                     "hand_b": groesste["hand_b"],
@@ -470,31 +580,54 @@ def zusammenbauen() -> int:
 
     meta = metadatenblock(
         block="b4_preflop_equity",
-        zweck=(
-            "Preflop-Equity Heads-up für alle Paare der 169 Starthand-Klassen, "
-            "vollständig enumeriert, je Farbkonfiguration und gewichtet."
+        zweck=zs(
+            f"Preflop-Equity Heads-up für alle {len(geordnet)} Paare der "
+            f"Starthand-Klassen, vollständig enumeriert, je Farbkonfiguration "
+            f"und gewichtet.",
+            f"Heads-up preflop equity for all {len(geordnet)} pairs of "
+            f"starting-hand classes, fully enumerated, per suit configuration "
+            f"and weighted.",
         ),
         methode="exakt",
         laufzeit_s=time.perf_counter() - start,
+        faelle=faelle,
+        evaluator=evaluator_angabe(),
         besondere_annahmen={
-            "heads_up": "Genau zwei Hände, alle fünf Boardkarten kommen.",
-            "split_pot": "Ein geteilter Pot zählt für jede Seite als 0,5.",
-            "farb_isomorphie": (
+            "heads_up": zs(
+                "Genau zwei Hände, alle fünf Boardkarten kommen.",
+                "Exactly two hands; all five board cards come.",
+            ),
+            "split_pot": zs(
+                "Ein geteilter Pot zählt für jede Seite als 0,5.",
+                "A split pot counts as 0.5 for each side.",
+            ),
+            "farb_isomorphie": zs(
                 "Gerechnet wird je Farbkonfiguration einmal, gewichtet mit ihrer "
                 "Häufigkeit. Die Kanonform ist das Minimum über alle 24 "
                 "Farbumbenennungen und damit eindeutig. Die Reduktion ist gegen "
                 "die vollständige Enumeration ohne Reduktion geprüft – exakt, "
-                "nicht näherungsweise (tests/test_b4_preflop.py)."
+                "nicht näherungsweise (tests/test_b4_preflop.py).",
+                "Each suit configuration is computed once and weighted by how "
+                "often it occurs. The canonical form is the minimum over all 24 "
+                "suit renamings and therefore unique. The reduction is checked "
+                "against full enumeration without any reduction – exactly, not "
+                "approximately (tests/test_b4_preflop.py).",
             ),
-            "spanne_relevant": (
+            "spanne_relevant": zs(
                 f"Liegt die Spanne zwischen den Farbkonfigurationen über "
                 f"{SPANNE_KENNZEICHEN_PP} Prozentpunkt, trägt das Matchup das "
                 f"Kennzeichen 'spanne_relevant'. Die App darf dort keinen "
-                f"Einzelwert zeigen, ohne die Spanne zu nennen."
+                f"Einzelwert zeigen, ohne die Spanne zu nennen.",
+                f"If the span between the suit configurations exceeds "
+                f"{SPANNE_KENNZEICHEN_PP} percentage point, the matchup carries "
+                f"the marker 'spanne_relevant'. There the app must not show a "
+                f"single value without naming the span.",
             ),
-            "keine_reihenfolge": (
+            "keine_reihenfolge": zs(
                 "Preflop gibt es keine Position und keine Setzrunde in dieser "
-                "Rechnung: Beide Hände gehen bis zum Showdown."
+                "Rechnung: Beide Hände gehen bis zum Showdown.",
+                "Preflop there is no position and no betting round in this "
+                "computation: both hands go to showdown.",
             ),
         },
     )

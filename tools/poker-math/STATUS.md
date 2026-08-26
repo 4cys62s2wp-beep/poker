@@ -113,7 +113,7 @@ mitsamt der Sitzung abgestürzt.
 
 ```bash
 PYTHONPATH=src .venv/bin/python src/b4_preflop_equity.py --zusammenbauen
-PYTHONPATH=src .venv/bin/python src/app_schnittstelle.py
+npm run daten     # im Projektstamm
 ```
 
 Der erste Befehl baut `output/b4_preflop_equity.json` und lässt den
@@ -175,7 +175,7 @@ beantworten.
 | `SCHNITTSTELLE.md` | Der Datenvertrag zwischen Generator und App |
 | `src/b1_outs.py` · `b2_potodds.py` · `b3_kombinatorik.py` · `b4_preflop_equity.py` | Die Rechenblöcke |
 | `src/befunde.py` | Aussagen über Zahlen, aus den Zahlen erzeugt |
-| `src/app_schnittstelle.py` | Erzeugt die App-Fassung, schreibt auch nach `public/pokermath/` |
+| `scripts/pokermath-app-daten.mjs` (Projektstamm) | Erzeugt die App-Fassung nach `public/pokermath/`; Aufruf: `npm run daten` |
 | `tests/bekannte_werte.json` | **Leer, von Lorenz zu füllen** |
 | `output/*.json` | Die Ergebnisse, die die App liest |
 

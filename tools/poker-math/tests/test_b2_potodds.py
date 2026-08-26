@@ -11,16 +11,16 @@ from metadaten import standard_annahmen
 NACH_FLOP = standard_annahmen()["kartenzahlen"]["unbekannt_nach_flop"]
 
 
-@pytest.mark.parametrize("name,b", EINSATZGROESSEN)
-def test_noetige_equity_liegt_zwischen_null_und_der_haelfte(name, b):
+@pytest.mark.parametrize("name,name_en,b", EINSATZGROESSEN)
+def test_noetige_equity_liegt_zwischen_null_und_der_haelfte(name, name_en, b):
     """Selbst ein unendlich großer Einsatz verlangt nie mehr als 50 % –
     der Gegner legt ja dasselbe hinein. Das ist die harte Schranke."""
     e = noetige_equity(b)
     assert Fraction(0) < e < Fraction(1, 2), f"{name}: {e}"
 
 
-@pytest.mark.parametrize("name,b", EINSATZGROESSEN)
-def test_die_drei_darstellungen_beschreiben_dieselbe_sache(name, b):
+@pytest.mark.parametrize("name,name_en,b", EINSATZGROESSEN)
+def test_die_drei_darstellungen_beschreiben_dieselbe_sache(name, name_en, b):
     """Anteil am Endpot, nötige Equity und Pot Odds müssen sich ineinander
     umrechnen lassen – exakt, als Bruch."""
     e = noetige_equity(b)
@@ -31,7 +31,7 @@ def test_die_drei_darstellungen_beschreiben_dieselbe_sache(name, b):
 
 def test_groesserer_einsatz_verlangt_mehr_equity_und_mehr_outs():
     vorher_e, vorher_outs = None, None
-    for _, b in EINSATZGROESSEN:
+    for _, _en, b in EINSATZGROESSEN:
         e = noetige_equity(b)
         outs = mindest_outs(e, NACH_FLOP)["turn_oder_river"]
         if vorher_e is not None:
@@ -40,8 +40,8 @@ def test_groesserer_einsatz_verlangt_mehr_equity_und_mehr_outs():
         vorher_e, vorher_outs = e, outs
 
 
-@pytest.mark.parametrize("name,b", EINSATZGROESSEN)
-def test_die_genannten_outs_reichen_wirklich_und_eines_weniger_nicht(name, b):
+@pytest.mark.parametrize("name,name_en,b", EINSATZGROESSEN)
+def test_die_genannten_outs_reichen_wirklich_und_eines_weniger_nicht(name, name_en, b):
     """Der eigentliche Inhalt der Tabelle: die Zahl muss die KLEINSTE sein,
     die genügt. Ein Test, der nur „reicht aus" prüft, wäre auch mit einer
     viel zu großen Zahl grün."""

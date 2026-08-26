@@ -38,19 +38,24 @@ from fractions import Fraction
 
 from b1_outs import MAX_OUTS, zaehle_treffer
 from befunde import befund, prozent, zahl
-from metadaten import metadatenblock, schreibe, standard_annahmen
+from metadaten import (
+    Faelle, metadatenblock, ohne_evaluator, schreibe, standard_annahmen, zs,
+)
+
+#: Zählt mit, was diese Rechnung durchgeht – für die Herkunftsanzeige.
+FAELLE = Faelle()
 
 #: Einsatzgrößen als Anteil des Pots. Als Bruch, weil „ein Drittel Pot" ein
 #: Drittel ist – jede Dezimaldarstellung wäre schon eine Rundung.
 EINSATZGROESSEN = [
-    ("Viertel Pot", Fraction(1, 4)),
-    ("Drittel Pot", Fraction(1, 3)),
-    ("Halber Pot", Fraction(1, 2)),
-    ("Zwei Drittel Pot", Fraction(2, 3)),
-    ("Drei Viertel Pot", Fraction(3, 4)),
-    ("Pot", Fraction(1, 1)),
-    ("Anderthalbfacher Pot", Fraction(3, 2)),
-    ("Doppelter Pot", Fraction(2, 1)),
+    ("Viertel Pot", "Quarter pot", Fraction(1, 4)),
+    ("Drittel Pot", "Third pot", Fraction(1, 3)),
+    ("Halber Pot", "Half pot", Fraction(1, 2)),
+    ("Zwei Drittel Pot", "Two-thirds pot", Fraction(2, 3)),
+    ("Drei Viertel Pot", "Three-quarters pot", Fraction(3, 4)),
+    ("Pot", "Pot", Fraction(1, 1)),
+    ("Anderthalbfacher Pot", "One-and-a-half pot", Fraction(3, 2)),
+    ("Doppelter Pot", "Double pot", Fraction(2, 1)),
 ]
 
 
@@ -78,19 +83,23 @@ def mindest_outs(noetig: Fraction, nach_flop: int) -> dict[str, int | None]:
     """
     ergebnis: dict[str, int | None] = {}
     for feld in ("turn", "river_nach_fehlschlag", "turn_oder_river"):
-        ergebnis[feld] = next(
-            (o for o in range(1, MAX_OUTS + 1)
-             if zaehle_treffer(nach_flop, o)[feld] >= noetig),
-            None,
-        )
+        gefunden = None
+        for o in range(1, MAX_OUTS + 1):
+            FAELLE.zaehle("outs_schwellen_geprueft")
+            if zaehle_treffer(nach_flop, o)[feld] >= noetig:
+                gefunden = o
+                break
+        ergebnis[feld] = gefunden
     return ergebnis
 
 
 def berechne() -> dict:
+    globals()["FAELLE"] = Faelle()
     nach_flop = standard_annahmen()["kartenzahlen"]["unbekannt_nach_flop"]
 
     zeilen = []
-    for name, b in EINSATZGROESSEN:
+    for name, name_en, b in EINSATZGROESSEN:
+        FAELLE.zaehle("einsatzgroessen_gerechnet")
         noetig = noetige_equity(b)
         odds = pot_odds(b)
         outs = mindest_outs(noetig, nach_flop)
@@ -105,7 +114,7 @@ def berechne() -> dict:
                 ueberschuss[feld] = float((ist - noetig) * 100)
 
         zeilen.append({
-            "name": name,
+            "name": zs(name, name_en),
             "einsatz_als_potanteil": float(b),
             "einsatz_als_bruch": str(b),
             "anteil_am_endpot": float(noetig),
@@ -143,6 +152,9 @@ def befunde_zu_b2(zeilen: list[dict]) -> list[dict]:
             f"Selbst der größte Einsatz dieser Tabelle verlangt nur "
             f"{prozent(groesster['noetige_equity_prozent'] / 100)}. Die Schwelle "
             f"erreicht nie 50 %, weil der Gegner denselben Betrag hineinlegt.",
+            f"Even the largest bet in this table demands only "
+            f"{groesster['noetige_equity_prozent']:.2f} %. The threshold never "
+            f"reaches 50 %, because the opponent puts in the same amount.",
             {
                 "groesster_einsatz": groesster["einsatz_als_bruch"],
                 "noetige_equity": round(groesster["noetige_equity_prozent"] / 100, 6),
@@ -155,6 +167,9 @@ def befunde_zu_b2(zeilen: list[dict]) -> list[dict]:
             f"Über alle {len(zeilen)} Einsatzgrößen steigt die nötige Equity "
             f"durchgehend: {'ja' if steigt else 'nein'}. Die Zahl der nötigen "
             f"Outs steigt mit: {'ja' if outs_steigen else 'nein'}.",
+            f"Across all {len(zeilen)} bet sizes the required equity rises "
+            f"throughout: {'yes' if steigt else 'no'}. The number of outs "
+            f"needed rises with it: {'yes' if outs_steigen else 'no'}.",
             {
                 "einsatzgroessen": len(zeilen),
                 "equity_steigt_durchgehend": steigt,
@@ -168,6 +183,9 @@ def befunde_zu_b2(zeilen: list[dict]) -> list[dict]:
             f"Beim halben Pot liegt die Schwelle bei genau "
             f"{prozent(halber['noetige_equity_prozent'] / 100, 0)}, beim vollen Pot bei "
             f"{prozent(voller['noetige_equity_prozent'] / 100)}.",
+            f"Against a half-pot bet the threshold is exactly "
+            f"{halber['noetige_equity_prozent']:.0f} %, against a pot-sized bet "
+            f"{voller['noetige_equity_prozent']:.2f} %.",
             {
                 "halber_pot_equity": round(halber["noetige_equity_prozent"] / 100, 6),
                 "voller_pot_equity": round(voller["noetige_equity_prozent"] / 100, 6),
@@ -185,32 +203,52 @@ def main() -> int:
     inhalt = berechne()
     meta = metadatenblock(
         block="b2_potodds",
-        zweck=(
-            "Mindest-Equity und Mindest-Outs für acht Einsatzgrößen, jeweils als "
-            "Anteil des Pots."
+        zweck=zs(
+            f"Mindest-Equity und Mindest-Outs für {len(EINSATZGROESSEN)} "
+            f"Einsatzgrößen, jeweils als Anteil des Pots.",
+            f"Minimum equity and minimum outs for {len(EINSATZGROESSEN)} bet "
+            f"sizes, each given as a share of the pot.",
         ),
         methode="exakt",
         laufzeit_s=time.perf_counter() - start,
-        braucht_evaluator=False,
+        faelle=FAELLE,
+        evaluator=ohne_evaluator(
+            "Hier wird kein Blatt bewertet, sondern gerechnet: Der Einsatz "
+            "steht als Bruch zum Pot, und daraus folgt die Schwelle. Eine "
+            "Bibliothek zum Bewerten von Blättern kommt nicht vor.",
+            "Nothing is evaluated here, it is arithmetic: the bet is a fraction "
+            "of the pot, and the threshold follows from it. No hand-evaluation "
+            "library is involved.",
+        ),
         besondere_annahmen={
-            "einsatz_als_potanteil": (
+            "einsatz_als_potanteil": zs(
                 "Der Pot enthält vor dem Einsatz eine Einheit; der Einsatz wird "
                 "als Anteil davon angegeben. Gerechnet wird mit Brüchen, nicht "
-                "mit Dezimalzahlen."
+                "mit Dezimalzahlen.",
+                "Before the bet the pot holds one unit; the bet is given as a "
+                "share of it. The computation uses fractions, not decimals.",
             ),
-            "heads_up": (
+            "heads_up": zs(
                 "Es zahlt genau ein Gegner. Bei mehreren Callern wächst der Pot "
                 "weiter, und die nötige Equity sinkt – diese Tabelle gibt dann "
-                "eine zu strenge Schwelle an."
+                "eine zu strenge Schwelle an.",
+                "Exactly one opponent pays. With several callers the pot grows "
+                "further and the required equity drops – this table then gives "
+                "a threshold that is too strict.",
             ),
-            "keine_impliziten_odds": (
+            "keine_impliziten_odds": zs(
                 "Späteres Geld bleibt unberücksichtigt. Die Werte sind eine "
                 "Untergrenze für einen Call, der sich sofort rechnet, keine "
-                "Spielempfehlung."
+                "Spielempfehlung.",
+                "Money still to come is not counted. The values are a lower "
+                "bound for a call that pays off immediately, not a "
+                "recommendation on how to play.",
             ),
-            "outs_aus_b1": (
+            "outs_aus_b1": zs(
                 "Die Mindest-Outs kommen aus derselben Zählung wie B1 und tragen "
-                "damit dieselben Annahmen – insbesondere die der sauberen Outs."
+                "damit dieselben Annahmen – insbesondere die der sauberen Outs.",
+                "The minimum outs come from the same count as B1 and therefore "
+                "carry the same assumptions – in particular that of clean outs.",
             ),
         },
     )
@@ -221,7 +259,7 @@ def main() -> int:
     print(f"B2 geschrieben: {ziel}")
     for z in inhalt["einsatzgroessen"]:
         o = z["mindest_outs"]
-        print(f"  {z['name']:22} {z['einsatz_als_bruch']:>4} Pot → "
+        print(f"  {z['name']['de']:22} {z['einsatz_als_bruch']:>4} Pot → "
               f"{z['noetige_equity_prozent']:5.2f} % nötig, "
               f"{z['pot_odds_text']:>9}, "
               f"Outs: Turn {o['turn']}, beide {o['turn_oder_river']}")

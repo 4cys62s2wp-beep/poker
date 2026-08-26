@@ -1,14 +1,26 @@
 {
   "metadaten": {
-    "schema_version": 1,
+    "schema_version": 2,
     "block": "b2_potodds",
-    "zweck": "Mindest-Equity und Mindest-Outs für acht Einsatzgrößen, jeweils als Anteil des Pots.",
+    "zweck": {
+      "de": "Mindest-Equity und Mindest-Outs für 8 Einsatzgrößen, jeweils als Anteil des Pots.",
+      "en": "Minimum equity and minimum outs for 8 bet sizes, each given as a share of the pot."
+    },
     "methode": "exakt",
     "annahmen": {
-      "sicht": "Heldensicht. Bekannt sind ausschließlich die eigenen zwei Karten und das sichtbare Board. Über die Karten der Gegner wird nichts angenommen.",
-      "unbekannte_karten": "Alle übrigen Karten gelten als unbekannt und verbleiben im Deck: 47 nach dem Flop, 46 nach dem Turn. Es wird NICHT herausgerechnet, dass ein Teil davon bereits als Gegnerhand ausgeteilt ist.",
+      "sicht": {
+        "de": "Heldensicht. Bekannt sind ausschließlich die eigenen zwei Karten und das sichtbare Board. Über die Karten der Gegner wird nichts angenommen.",
+        "en": "The hero's point of view. Known are only your own two cards and the visible board. Nothing is assumed about anyone else's cards."
+      },
+      "unbekannte_karten": {
+        "de": "Alle übrigen Karten gelten als unbekannt und verbleiben im Deck: 47 nach dem Flop, 46 nach dem Turn. Es wird NICHT herausgerechnet, dass ein Teil davon bereits als Gegnerhand ausgeteilt ist.",
+        "en": "Every other card counts as unknown and stays in the deck: 47 after the flop, 46 after the turn. It is NOT discounted that some of them have already been dealt to opponents."
+      },
       "warum_diese_sicht": "Sie ist die einzige, die ein Spieler am Tisch tatsächlich einnehmen kann. Rechnungen, die ausgeteilte Gegnerkarten aus dem Deck nehmen, liefern leicht andere Zahlen – beide sind richtig, aber sie beantworten verschiedene Fragen. Vermischt man sie, entstehen genau die Tabellen, die einander widersprechen.",
-      "split_pot": "Geteilte Pötte zählen in jeder Equity-Rechnung als 0,5 für jede Seite.",
+      "split_pot": {
+        "de": "Geteilte Pötte zählen in jeder Equity-Rechnung als 0,5 für jede Seite.",
+        "en": "Split pots count as 0.5 for each side in every equity computation."
+      },
       "kartenzahlen": {
         "deck": 52,
         "eigene_karten": 2,
@@ -16,14 +28,40 @@
         "unbekannt_nach_turn": 46
       },
       "block_spezifisch": {
-        "einsatz_als_potanteil": "Der Pot enthält vor dem Einsatz eine Einheit; der Einsatz wird als Anteil davon angegeben. Gerechnet wird mit Brüchen, nicht mit Dezimalzahlen.",
-        "heads_up": "Es zahlt genau ein Gegner. Bei mehreren Callern wächst der Pot weiter, und die nötige Equity sinkt – diese Tabelle gibt dann eine zu strenge Schwelle an.",
-        "keine_impliziten_odds": "Späteres Geld bleibt unberücksichtigt. Die Werte sind eine Untergrenze für einen Call, der sich sofort rechnet, keine Spielempfehlung.",
-        "outs_aus_b1": "Die Mindest-Outs kommen aus derselben Zählung wie B1 und tragen damit dieselben Annahmen – insbesondere die der sauberen Outs."
+        "einsatz_als_potanteil": {
+          "de": "Der Pot enthält vor dem Einsatz eine Einheit; der Einsatz wird als Anteil davon angegeben. Gerechnet wird mit Brüchen, nicht mit Dezimalzahlen.",
+          "en": "Before the bet the pot holds one unit; the bet is given as a share of it. The computation uses fractions, not decimals."
+        },
+        "heads_up": {
+          "de": "Es zahlt genau ein Gegner. Bei mehreren Callern wächst der Pot weiter, und die nötige Equity sinkt – diese Tabelle gibt dann eine zu strenge Schwelle an.",
+          "en": "Exactly one opponent pays. With several callers the pot grows further and the required equity drops – this table then gives a threshold that is too strict."
+        },
+        "keine_impliziten_odds": {
+          "de": "Späteres Geld bleibt unberücksichtigt. Die Werte sind eine Untergrenze für einen Call, der sich sofort rechnet, keine Spielempfehlung.",
+          "en": "Money still to come is not counted. The values are a lower bound for a call that pays off immediately, not a recommendation on how to play."
+        },
+        "outs_aus_b1": {
+          "de": "Die Mindest-Outs kommen aus derselben Zählung wie B1 und tragen damit dieselben Annahmen – insbesondere die der sauberen Outs.",
+          "en": "The minimum outs come from the same count as B1 and therefore carry the same assumptions – in particular that of clean outs."
+        }
       }
     },
-    "erzeugt_am": "2026-08-26T09:21:33+00:00",
-    "laufzeit_s": 0.077,
+    "faelle_enumeriert": {
+      "gesamt": 294,
+      "je_teil": {
+        "einsatzgroessen_gerechnet": 8,
+        "outs_schwellen_geprueft": 286
+      }
+    },
+    "evaluator": {
+      "name": null,
+      "begruendung": {
+        "de": "Hier wird kein Blatt bewertet, sondern gerechnet: Der Einsatz steht als Bruch zum Pot, und daraus folgt die Schwelle. Eine Bibliothek zum Bewerten von Blättern kommt nicht vor.",
+        "en": "Nothing is evaluated here, it is arithmetic: the bet is a fraction of the pot, and the threshold follows from it. No hand-evaluation library is involved."
+      }
+    },
+    "erzeugt_am": "2026-08-26T18:54:15+00:00",
+    "laufzeit_s": 0.036,
     "umgebung": {
       "python": "3.11.15",
       "system": "Linux",
@@ -33,7 +71,10 @@
   },
   "einsatzgroessen": [
     {
-      "name": "Viertel Pot",
+      "name": {
+        "de": "Viertel Pot",
+        "en": "Quarter pot"
+      },
       "einsatz_als_potanteil": 0.25,
       "einsatz_als_bruch": "1/4",
       "anteil_am_endpot": 0.16666666666666666,
@@ -53,7 +94,10 @@
       }
     },
     {
-      "name": "Drittel Pot",
+      "name": {
+        "de": "Drittel Pot",
+        "en": "Third pot"
+      },
       "einsatz_als_potanteil": 0.3333333333333333,
       "einsatz_als_bruch": "1/3",
       "anteil_am_endpot": 0.2,
@@ -73,7 +117,10 @@
       }
     },
     {
-      "name": "Halber Pot",
+      "name": {
+        "de": "Halber Pot",
+        "en": "Half pot"
+      },
       "einsatz_als_potanteil": 0.5,
       "einsatz_als_bruch": "1/2",
       "anteil_am_endpot": 0.25,
@@ -93,7 +140,10 @@
       }
     },
     {
-      "name": "Zwei Drittel Pot",
+      "name": {
+        "de": "Zwei Drittel Pot",
+        "en": "Two-thirds pot"
+      },
       "einsatz_als_potanteil": 0.6666666666666666,
       "einsatz_als_bruch": "2/3",
       "anteil_am_endpot": 0.2857142857142857,
@@ -113,7 +163,10 @@
       }
     },
     {
-      "name": "Drei Viertel Pot",
+      "name": {
+        "de": "Drei Viertel Pot",
+        "en": "Three-quarters pot"
+      },
       "einsatz_als_potanteil": 0.75,
       "einsatz_als_bruch": "3/4",
       "anteil_am_endpot": 0.3,
@@ -133,7 +186,10 @@
       }
     },
     {
-      "name": "Pot",
+      "name": {
+        "de": "Pot",
+        "en": "Pot"
+      },
       "einsatz_als_potanteil": 1.0,
       "einsatz_als_bruch": "1",
       "anteil_am_endpot": 0.3333333333333333,
@@ -153,7 +209,10 @@
       }
     },
     {
-      "name": "Anderthalbfacher Pot",
+      "name": {
+        "de": "Anderthalbfacher Pot",
+        "en": "One-and-a-half pot"
+      },
       "einsatz_als_potanteil": 1.5,
       "einsatz_als_bruch": "3/2",
       "anteil_am_endpot": 0.375,
@@ -173,7 +232,10 @@
       }
     },
     {
-      "name": "Doppelter Pot",
+      "name": {
+        "de": "Doppelter Pot",
+        "en": "Double pot"
+      },
       "einsatz_als_potanteil": 2.0,
       "einsatz_als_bruch": "2",
       "anteil_am_endpot": 0.4,
@@ -197,6 +259,7 @@
     {
       "schluessel": "hoechstens_die_haelfte",
       "aussage": "Selbst der größte Einsatz dieser Tabelle verlangt nur 40,00 %. Die Schwelle erreicht nie 50 %, weil der Gegner denselben Betrag hineinlegt.",
+      "aussage_en": "Even the largest bet in this table demands only 40.00 %. The threshold never reaches 50 %, because the opponent puts in the same amount.",
       "beleg": {
         "groesster_einsatz": "2",
         "noetige_equity": 0.4,
@@ -207,6 +270,7 @@
     {
       "schluessel": "steigt_durchgehend",
       "aussage": "Über alle 8 Einsatzgrößen steigt die nötige Equity durchgehend: ja. Die Zahl der nötigen Outs steigt mit: ja.",
+      "aussage_en": "Across all 8 bet sizes the required equity rises throughout: yes. The number of outs needed rises with it: yes.",
       "beleg": {
         "einsatzgroessen": 8,
         "equity_steigt_durchgehend": true,
@@ -218,6 +282,7 @@
     {
       "schluessel": "halber_pot",
       "aussage": "Beim halben Pot liegt die Schwelle bei genau 25 %, beim vollen Pot bei 33,33 %.",
+      "aussage_en": "Against a half-pot bet the threshold is exactly 25 %, against a pot-sized bet 33.33 %.",
       "beleg": {
         "halber_pot_equity": 0.25,
         "voller_pot_equity": 0.333333,

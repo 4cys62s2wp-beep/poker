@@ -13,7 +13,7 @@ stimmt.
 | **Anzeige** | `public/pokermath/*.json` | Verschlankt auf das, was ein Bildschirm braucht |
 
 Erzeugt wird die zweite Schicht aus der ersten von
-`src/app_schnittstelle.py` — der **einzigen** Stelle, an der aus einem
+`scripts/pokermath-app-daten.mjs` — der **einzigen** Stelle, an der aus einem
 Rechenergebnis Anzeigedaten werden. Damit gibt es genau einen Ort, an dem sich
 ein Feldname ändern kann.
 
@@ -166,7 +166,7 @@ gültig aussieht.
 
 ```bash
 cd tools/poker-math
-PYTHONPATH=src .venv/bin/python src/app_schnittstelle.py   # schreibt beide Kopien
+npm run daten     # im Projektstamm; schreibt public/pokermath/
 cd ../.. && npx vitest run src/lib/__tests__/pokermath.test.ts
 ```
 

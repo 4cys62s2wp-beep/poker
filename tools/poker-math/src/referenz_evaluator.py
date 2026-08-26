@@ -62,6 +62,25 @@ KATEGORIE_NAME = {
     STRAIGHT_FLUSH: "Straight Flush",
 }
 
+#: Dieselben Kategorien auf Englisch. Sie stehen hier und nicht in der App,
+#: weil sonst beim nächsten Eintrag der Gegenpart fehlt und auf Englisch ein
+#: deutsches Wort erscheint, ohne dass es jemandem auffällt.
+KATEGORIE_NAME_EN = {
+    HIGH_CARD: "High card",
+    EIN_PAAR: "One pair",
+    ZWEI_PAARE: "Two pair",
+    DRILLING: "Three of a kind",
+    STRASSE: "Straight",
+    FLUSH: "Flush",
+    FULL_HOUSE: "Full house",
+    VIERLING: "Four of a kind",
+    STRAIGHT_FLUSH: "Straight flush",
+}
+
+assert set(KATEGORIE_NAME) == set(KATEGORIE_NAME_EN), (
+    "Für jede Kategorie muss es beide Sprachen geben"
+)
+
 
 def kategorie_und_rangfolge(karten) -> tuple[int, tuple[int, ...]]:
     """Kategorie und Gleichstands-Reihenfolge eines Fünfkartenblatts.

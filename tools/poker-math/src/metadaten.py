@@ -59,26 +59,48 @@ class Faelle:
     darum, dass jemand nachvollziehen kann, was mit „Fällen" gemeint ist.
     """
 
-    def __init__(self) -> None:
-        self._je_teil: dict[str, int] = {}
+    def __init__(self, bezeichnungen: dict[str, dict[str, str]]) -> None:
+        """``bezeichnungen`` benennt jede Zählstelle in beiden Sprachen.
+
+        Vorher angemeldet und nicht beim Zählen mitgegeben: In der inneren
+        Schleife soll nichts stehen, was dort nicht hingehört – und ein
+        Tippfehler im Schlüssel fällt so sofort auf, statt eine zweite,
+        stille Zählstelle anzulegen.
+        """
+        if not bezeichnungen:
+            raise ValueError("Ein Zähler ohne Zählstellen zählt nichts")
+        self._bezeichnungen = bezeichnungen
+        self._je_teil: dict[str, int] = {k: 0 for k in bezeichnungen}
 
     def zaehle(self, teil: str, anzahl: int = 1) -> None:
+        if teil not in self._je_teil:
+            raise KeyError(f"Zählstelle {teil!r} ist nicht angemeldet")
         if anzahl < 0:
             raise ValueError("Fälle lassen sich nicht abziehen")
-        self._je_teil[teil] = self._je_teil.get(teil, 0) + anzahl
+        self._je_teil[teil] += anzahl
 
     @property
     def gesamt(self) -> int:
         return sum(self._je_teil.values())
 
     def block(self) -> dict[str, Any]:
-        if not self._je_teil:
+        if self.gesamt == 0:
             raise ValueError(
                 "Es wurde kein einziger Fall gezählt. Entweder rechnet der "
                 "Block nichts, oder das Mitzählen wurde vergessen — beides "
                 "muss auffallen."
             )
-        return {"gesamt": self.gesamt, "je_teil": dict(sorted(self._je_teil.items()))}
+        return {
+            "gesamt": self.gesamt,
+            "je_teil": [
+                {
+                    "schluessel": schluessel,
+                    "bezeichnung": self._bezeichnungen[schluessel],
+                    "anzahl": anzahl,
+                }
+                for schluessel, anzahl in sorted(self._je_teil.items())
+            ],
+        }
 
 
 def _kartenzahlen() -> dict[str, int]:

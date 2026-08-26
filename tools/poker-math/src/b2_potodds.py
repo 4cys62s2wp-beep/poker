@@ -43,7 +43,12 @@ from metadaten import (
 )
 
 #: Zählt mit, was diese Rechnung durchgeht – für die Herkunftsanzeige.
-FAELLE = Faelle()
+ZAEHLSTELLEN = {
+    "einsatzgroessen_gerechnet": zs("gerechnete Einsatzgrößen", "bet sizes computed"),
+    "outs_schwellen_geprueft": zs("geprüfte Outs-Schwellen", "outs thresholds checked"),
+}
+
+FAELLE = Faelle(ZAEHLSTELLEN)
 
 #: Einsatzgrößen als Anteil des Pots. Als Bruch, weil „ein Drittel Pot" ein
 #: Drittel ist – jede Dezimaldarstellung wäre schon eine Rundung.
@@ -94,7 +99,7 @@ def mindest_outs(noetig: Fraction, nach_flop: int) -> dict[str, int | None]:
 
 
 def berechne() -> dict:
-    globals()["FAELLE"] = Faelle()
+    globals()["FAELLE"] = Faelle(ZAEHLSTELLEN)
     nach_flop = standard_annahmen()["kartenzahlen"]["unbekannt_nach_flop"]
 
     zeilen = []

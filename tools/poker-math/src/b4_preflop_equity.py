@@ -527,7 +527,13 @@ def zusammenbauen() -> int:
 
     # Nicht ausgerechnet, sondern aus den Ergebnissen zusammengezählt: Jede
     # Farbkonfiguration hat mitgeschrieben, über wie viele Boards sie ging.
-    faelle = Faelle()
+    faelle = Faelle({
+        "handpaare_gerechnet": zs("gerechnete Handpaare", "hand pairs computed"),
+        "farbkonfigurationen_gerechnet": zs("gerechnete Farbkonfigurationen",
+                                            "suit configurations computed"),
+        "boards_enumeriert": zs("vollständig aufgezählte Boards",
+                                "boards fully enumerated"),
+    })
     for e in geordnet:
         faelle.zaehle("handpaare_gerechnet")
         for k in e["farbkonfigurationen"]:

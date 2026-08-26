@@ -44,11 +44,32 @@
     },
     "faelle_enumeriert": {
       "gesamt": 884104,
-      "je_teil": {
-        "bekannte_kartenmengen_geprueft": 882609,
-        "starthandklassen_am_board_geprueft": 169,
-        "zweikartenblaetter_eingeordnet": 1326
-      }
+      "je_teil": [
+        {
+          "schluessel": "bekannte_kartenmengen_geprueft",
+          "bezeichnung": {
+            "de": "geprüfte Mengen bekannter Karten",
+            "en": "sets of known cards checked"
+          },
+          "anzahl": 882609
+        },
+        {
+          "schluessel": "starthandklassen_am_board_geprueft",
+          "bezeichnung": {
+            "de": "am Board geprüfte Starthand-Klassen",
+            "en": "starting-hand classes checked at the board"
+          },
+          "anzahl": 169
+        },
+        {
+          "schluessel": "zweikartenblaetter_eingeordnet",
+          "bezeichnung": {
+            "de": "eingeordnete Zweikartenblätter",
+            "en": "two-card hands classified"
+          },
+          "anzahl": 1326
+        }
+      ]
     },
     "evaluator": {
       "name": null,
@@ -57,8 +78,8 @@
         "en": "Nothing is evaluated here, things are counted: which pairs of cards exist and which ones a known card removes. No hand-evaluation library is involved."
       }
     },
-    "erzeugt_am": "2026-08-26T18:55:00+00:00",
-    "laufzeit_s": 0.858,
+    "erzeugt_am": "2026-08-26T19:08:20+00:00",
+    "laufzeit_s": 0.87,
     "umgebung": {
       "python": "3.11.15",
       "system": "Linux",

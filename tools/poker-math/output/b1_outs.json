@@ -48,12 +48,40 @@
     },
     "faelle_enumeriert": {
       "gesamt": 67863,
-      "je_teil": {
-        "fuenfkartenblaetter_bewertet": 19263,
-        "gegnerhaende_geprueft": 2070,
-        "kandidatenkarten_geprueft": 1128,
-        "turn_river_paare": 45402
-      }
+      "je_teil": [
+        {
+          "schluessel": "fuenfkartenblaetter_bewertet",
+          "bezeichnung": {
+            "de": "bewertete Fünfkartenblätter",
+            "en": "five-card hands evaluated"
+          },
+          "anzahl": 19263
+        },
+        {
+          "schluessel": "gegnerhaende_geprueft",
+          "bezeichnung": {
+            "de": "geprüfte Gegnerhände",
+            "en": "opponent hands checked"
+          },
+          "anzahl": 2070
+        },
+        {
+          "schluessel": "kandidatenkarten_geprueft",
+          "bezeichnung": {
+            "de": "geprüfte Kandidatenkarten",
+            "en": "candidate cards checked"
+          },
+          "anzahl": 1128
+        },
+        {
+          "schluessel": "turn_river_paare",
+          "bezeichnung": {
+            "de": "Paare aus Turn- und Riverkarte",
+            "en": "pairs of turn and river card"
+          },
+          "anzahl": 45402
+        }
+      ]
     },
     "evaluator": {
       "name": "eval7",
@@ -61,8 +89,8 @@
       "gegenprobe": "phevaluator 0.6.0",
       "nachweis": "Über alle 2 598 960 Fünfkartenblätter gegen einen unabhängigen Evaluator aus den Spielregeln geprüft; siehe output/evaluator_auswahl.json und ENTSCHEIDUNGEN.md, E-012."
     },
-    "erzeugt_am": "2026-08-26T18:53:29+00:00",
-    "laufzeit_s": 0.079,
+    "erzeugt_am": "2026-08-26T19:08:19+00:00",
+    "laufzeit_s": 0.089,
     "umgebung": {
       "python": "3.11.15",
       "system": "Linux",

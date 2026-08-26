@@ -31,30 +31,29 @@ Projekts, unverändert übernommen.
 |-------|-----|----------|
 | Teil C | Apple-Fingerabdruck aus dem Code entfernt, Prüfung bleibt Pflicht; Vorschaukarte und Freunde-Rangliste als Entscheidung abgelegt | `ENTSCHEIDUNGEN.md` E-021 bis E-024 |
 | 0 | Bestandsaufnahme: 37 Bildschirme, 65 Routen, Datenvertrag 3, B4 lebt (PID geprüft) | `BESTAND.md` |
-| 1 | Designfundament: fünf Schriftstufen nach Verwendung, eine Akzentfarbe, gerechneter Kontrast, Haptik, Sperrklinke gegen verstreute Werte | `DESIGN.md` 1–6, `design.test.ts`, `haptik.test.ts` |
-| 2 | Startseite mit drei ungleich gewichteten Einstiegen und Fortsetzen-Karte; jeder Bildschirm in höchstens zwei Berührungen, null Sackgassen — im Browser bei 390 px gemessen | `DESIGN.md` 7, `docs/wege.json`, `wege.test.ts` |
-| 3.1 | Chipverteilung aus vorhandenem Material: kleinster Chip = Small Blind, grobe Fünferleiter | `src/lib/live/verteilung.ts`, `live.test.ts` |
-| 3.2 | Blindstruktur: gleichmäßige Steigung, Faktor gedeckelt auf 1,6, Zielgröße für das Finale hergeleitet | `src/lib/live/blinds.ts`, `live.test.ts` |
-| 3.3 | Timer aus Zeitstempeln, Ton mit Vorwarnung, Bildschirm bleibt an; Tischgerät zeigt drei Angaben, alle aus zwei Metern lesbar (nachgemessen) | `src/lib/live/uhr.ts`, `uhr.test.ts`, `docs/tisch.json`, `tisch.test.ts` |
-| 3.4 | Laufender Abend überlebt Neuladen und Schließen; kein Speicherknopf, kein Netzaufruf im ganzen Live-Pfad | `src/lib/session/laufend.ts`, `uhr.test.ts` |
-| 3 | Ein vollständiger Durchgang vom Koffer bis zur laufenden Uhr, im Browser durchgeklickt | `docs/durchgang.json`, `durchgang.test.ts` |
+| 1 | Designfundament: fünf Schriftstufen nach Verwendung, eine Akzentfarbe, gerechneter Kontrast, Haptik an einer Stelle für die ganze App, Sperrklinke gegen verstreute Werte | `DESIGN.md` 1–6, `design.test.ts`, `haptik.test.ts` |
+| 2 | Startseite mit drei ungleich gewichteten Einstiegen und Fortsetzen-Karte; jeder Bildschirm in höchstens zwei Berührungen, null Sackgassen | `DESIGN.md` 7, `docs/wege.json`, `wege.test.ts` |
+| 3 | Live-Session vollständig: Chipverteilung, Blindstruktur, Timer aus Zeitstempeln, Ton mit Vorwarnung, Zustand überlebt alles; Tischgerät zeigt drei Angaben, alle aus zwei Metern lesbar | `src/lib/live/*`, `uhr.test.ts`, `docs/tisch.json` |
+| 4 | Abende führen, ablegen und über einen Namen wiederfinden; Ereignis am Tisch in vier Griffen; Plätze gerechnet statt eingetragen | `src/lib/session/abende.ts`, `abende.test.ts` |
+| 5 | `BACKLOG.md` mit zwölf Einträgen, jeder beantwortet dieselben vier Fragen | `doku.test.ts` |
+| extra | Kontrast, Tippflächen und Abstände am gerenderten Ergebnis geprüft — vier Befunde gefunden und behoben | `DESIGN.md` 9, `docs/pruefung.json` |
 
-**Stand der Prüfungen:** 621 Tests grün, Typprüfung sauber, drei Browserläufe
-ohne Beanstandung (`npm run wege`, `npm run tisch`, `npm run durchgang`).
+**Der Stand der Prüfungen**
 
-**In Arbeit**
+- 734 Tests grün, Typprüfung sauber, `npm run build` baut durch.
+- Vier Browserläufe ohne Beanstandung:
+  `npm run wege` (Erreichbarkeit), `npm run tisch` (Lesbarkeit am Tisch),
+  `npm run durchgang` (ein vollständiger Abend, 17 Schritte),
+  `npm run pruefen` (Kontrast und Tippflächen, 49 Bildschirme).
 
-Phase 3 ist abgeschlossen. Als Nächstes steht Phase 4 an, dort ist noch
-nichts gebaut.
+**Was noch offen ist**
 
-**Als Nächstes**
-
-1. Phase 4: Abende und Spieler — nur Name, Stände und Zeit im Abend,
-   unterbrochener Abend fortsetzbar, frühere Abende über einen Spielernamen
-   finden, grobe Erfassung am Tisch in unter 30 Sekunden.
-2. Phase 5 gegenprüfen: `BACKLOG.md` gegen die elf genannten Punkte.
-3. Warteschlange abarbeiten, sobald B4 fertig ist (`WARTESCHLANGE.md`,
-   W-001 und W-002), danach `npm run daten` und der Zusammenführungs-Lauf.
+1. Der **B4-Rechenlauf** im Hauptverzeichnis (Preflop-Equity) läuft weiter.
+   Stand siehe `tools/poker-math/output/b4_lauf.log`. Danach: `npm run daten`,
+   dann die Zusammenführung der drei Zweige.
+2. **`WARTESCHLANGE.md`** — W-001 und W-002 warten auf das Ende des B4-Laufs,
+   W-003 wartet auf eine Entscheidung des Auftraggebers (gehört der
+   Online-Tisch noch in die App?).
 <!-- NACHTLAUF-ENDE -->
 
 ---

@@ -49,3 +49,34 @@ prüft, ist genau der Fehler, gegen den dieses Projekt gebaut ist — sie ist
 **Wann es geht.** Sobald B4 durch ist.
 
 **Versuche:** 1.
+
+---
+
+## W-003 · Gehört der Online-Tisch noch in die App?
+
+**Was.** Unter `/session/tisch/online` liegt ein Tisch, an dem mehrere Geräte
+über einen Code zusammenspielen. Gespielt wird mit Punkten, nicht mit Geld.
+
+**Warum das eine offene Frage ist.** Der Auftrag setzt für den Inhalt eine
+enge Grenze (B1): erlaubt sind reine Zahlenverwaltung — Listen, Stände,
+Uhren, Rechner — und Lehrmaterial als Standbild, also eine Situation, eine
+Entscheidung, eine Auflösung, dann Schluss. Ein Tisch, an dem mehrere Leute
+über Geräte hinweg Hände gegeneinander spielen, ist beides nicht. Er ist auch
+kein Glücksspiel — es geht um nichts —, aber er ist gespieltes Poker und
+nicht verwaltetes.
+
+**Warum es heute Nacht nicht entschieden wurde.** Der Auftrag sagt für genau
+diesen Fall: unklar → Warteschlange. Die Entscheidung hat Folgen, die über
+Gestaltung hinausgehen (Altersfreigabe der App in den Stores), und sie ist
+nicht umkehrbar, wenn der Bildschirm erst entfernt ist.
+
+**Was vorbereitet ist.** Der Bildschirm liegt seit Phase 2 nicht mehr hinter
+dem Ein-Geräte-Tisch, sondern daneben — er ist damit ein einzelner Eintrag,
+den man entfernen kann, ohne dass ein Weg zerbricht. Der Wegetest würde die
+Änderung sofort bestätigen.
+
+**Was der Auftraggeber entscheiden muss.** Bleibt der Online-Tisch, bleibt
+auch der Ein-Geräte-Tisch (`/session/tisch`) — beide sind gespieltes Poker.
+Fällt die Grenze aus B1 streng aus, fallen beide.
+
+**Versuche:** 0 — hier fehlt keine Technik, hier fehlt eine Entscheidung.

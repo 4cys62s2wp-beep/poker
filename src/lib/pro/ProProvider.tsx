@@ -15,6 +15,7 @@ import { useCloud } from '../cloud/CloudProvider';
 import { getCloud } from '../cloud/cloud';
 import { loadMonetizationConfig, MONETIZATION_OFF, type MonetizationConfig } from './config';
 import { checkAccess, trialDaysLeft, type Access, type FeatureKey } from './plan';
+import { readTrialAnchor, reconcileTrialStart, writeTrialAnchor } from './trialAnchor';
 import { cancelRouteFor, grantsAccess, type Entitlement } from '../payments/provider';
 import {
   APPLE_MANAGE_SUBSCRIPTIONS_URL,
@@ -105,9 +106,19 @@ export function ProProvider({ children }: { children: ReactNode }) {
     };
   }, [config.enabled, uid]);
 
+  /* Der Beginn der Testphase wird gegen einen getrennt abgelegten Anker
+     geprüft: Der FRÜHERE Wert gilt. Ohne das ließe sich die Testphase durch
+     Zurücksetzen des Datums im Browser-Speicher beliebig oft neu starten –
+     im Gating-Test nachgewiesen. Siehe trialAnchor.ts. */
+  const effectiveTrialStart = useMemo(() => {
+    const { effective, writeAnchor } = reconcileTrialStart(data.trialStartedAt, readTrialAnchor());
+    if (writeAnchor) writeTrialAnchor(writeAnchor);
+    return effective;
+  }, [data.trialStartedAt]);
+
   const daysLeft = useMemo(
-    () => (config.enabled ? trialDaysLeft(data.trialStartedAt) : 0),
-    [config.enabled, data.trialStartedAt],
+    () => (config.enabled ? trialDaysLeft(effectiveTrialStart) : 0),
+    [config.enabled, effectiveTrialStart],
   );
   const trialActive = config.enabled && daysLeft > 0;
   /* Dieselbe Funktion, die auch serverseitig entscheidet (functions/src/types.ts,
@@ -191,15 +202,19 @@ export function ProProvider({ children }: { children: ReactNode }) {
   const openPaywall = useCallback((reason?: string) => setPaywallReason(reason ?? ''), []);
   const closePaywall = useCallback(() => setPaywallReason(null), []);
 
-  // Testphase automatisch mit dem ersten Besuch starten, sobald die
-  // Monetarisierung aktiv ist (Reverse Trial: erst Wert zeigen, dann fragen).
+  /* Testphase automatisch mit dem ersten Besuch starten, sobald die
+     Monetarisierung aktiv ist (Reverse Trial: erst Wert zeigen, dann fragen).
+
+     Geprüft wird der ABGEGLICHENE Beginn, nicht der aus dem Lernstand: Wer
+     `trialStartedAt` im Browser-Speicher löscht, soll keine neue Testphase
+     auslösen. Der Anker weiß noch, wann sie wirklich begann. */
   const autoStarted = useRef(false);
   useEffect(() => {
-    if (config.enabled && !autoStarted.current && data.trialStartedAt === null) {
+    if (config.enabled && !autoStarted.current && effectiveTrialStart === null) {
       autoStarted.current = true;
       startTrialState();
     }
-  }, [config.enabled, data.trialStartedAt, startTrialState]);
+  }, [config.enabled, effectiveTrialStart, startTrialState]);
 
   const value = useMemo<ProValue>(
     () => ({
@@ -210,7 +225,7 @@ export function ProProvider({ children }: { children: ReactNode }) {
       cancelRoute: cancelRouteFor(entitlement),
       trialActive,
       trialDaysLeft: daysLeft,
-      trialAvailable: data.trialStartedAt === null,
+      trialAvailable: effectiveTrialStart === null,
       startTrial: startTrialState,
       access,
       can,
@@ -221,7 +236,7 @@ export function ProProvider({ children }: { children: ReactNode }) {
       closePaywall,
       paywallReason,
     }),
-    [config, pro, entitlement, trialActive, daysLeft, data.trialStartedAt, startTrialState, access,
+    [config, pro, entitlement, trialActive, daysLeft, effectiveTrialStart, startTrialState, access,
      can, consume, startCheckout, manageBilling, openPaywall, closePaywall, paywallReason],
   );
 

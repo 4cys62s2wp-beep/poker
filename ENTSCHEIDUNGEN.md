@@ -89,3 +89,65 @@ Frontend nur `hasAccess(feature)` kennt.
   Regressionsrisiko an zwölf Stellen, die anschließend in Phase 2 erneut
   angefasst würden.
 - **Nicht vergessen:** Steht als offener Punkt in `STATUS.md`.
+
+---
+
+## E-005 · 2026-08-26 · Phase 3.2
+
+**Off-Scale-Abstände werden nicht automatisch auf das Raster gerundet.**
+
+Die Aufgabe verlangt „keine Magic Numbers im CSS". Rund 110 Abstandswerte
+liegen neben der 4er-Skala (3, 5, 6, 7, 9, 11, 13, 15 px).
+
+- **Gewählt:** Sie bleiben stehen, mit vollständiger Liste in
+  `docs/TOKEN_AUDIT.md` und einem priorisierten Eintrag in
+  `docs/TODO_MANUELL.md`.
+- **Verworfene Alternative:** Alle auf den nächsten Rasterwert runden.
+- **Begründung:** Ein `7px` in `8px` zu ändern ist eine **optische Änderung**,
+  kein Refactoring. Einzeln ist jede unauffällig; 110 auf einmal, ohne dass ein
+  Mensch das Ergebnis sieht, verschieben das Bild in eine Richtung, die niemand
+  beabsichtigt hat. Die Vorgabe „bestehende Funktionalität darf nicht kaputt
+  gehen" schließt das Aussehen ein.
+- **Stattdessen erfüllt:** Die schärfere und überprüfbare Regel *kein Wert, der
+  mehr als einmal vorkommt, bleibt namenlos* — bei Farben zu 100 %, nachprüfbar
+  mit dem Einzeiler in `docs/TOKEN_AUDIT.md`.
+
+---
+
+## E-006 · 2026-08-26 · Phase 3.2
+
+**68 einmal verwendete Farbwerte bekommen keinen Token.**
+
+- **Gewählt:** Nur Werte mit mehr als einer Verwendung werden benannt (63 Stück
+  umgestellt, danach null Wiederholungen übrig).
+- **Verworfene Alternative:** Jeden Literalwert in einen Token heben — das wäre
+  die wörtliche Lesart von „keine Magic Numbers".
+- **Begründung:** 68 Tokens mit je einer Verwendung koppeln nichts, was
+  zusammengehört. Sie blähen die Token-Liste auf das Anderthalbfache und machen
+  die echten Kopplungen unauffindbar. Ein Token ist ein Werkzeug gegen
+  Auseinanderdriften — wo nichts driften kann, ist er Ballast.
+
+---
+
+## E-007 · 2026-08-26 · Phase 3.5
+
+**Der Anker der Testphase liegt lokal, nicht auf dem Server.**
+
+Im Gating-Test zeigte sich: Wer `trialStartedAt` im Browser-Speicher
+zurücksetzt, bekommt beliebig oft neue sieben Tage.
+
+- **Gewählt:** Ein getrennt abgelegter Anker (localStorage **und**
+  IndexedDB-Spiegel) hält den frühesten je gesehenen Beginn fest; beim Laden
+  gewinnt der frühere Wert (`src/lib/pro/trialAnchor.ts`, 8 Tests).
+- **Verworfene Alternative:** Den Beginn beim ersten Anmelden serverseitig
+  festschreiben.
+- **Begründung:** Die serverseitige Lösung setzt laufende Cloud Functions
+  voraus — die sind blockiert (`BLOCKER.md` B-001). Sie würde außerdem ein
+  Konto erzwingen, obwohl die Testphase bewusst ohne Konto funktionieren soll.
+- **Was der Anker nicht leistet:** Wer den gesamten Speicher löscht, bekommt
+  eine neue Testphase — und verliert dabei allen Lernfortschritt. Für ein
+  5-€-Abo ist das eine angemessene Hürde. Als offener Punkt O-6 in `STATUS.md`
+  und als Nr. 8 in `docs/TODO_MANUELL.md` vermerkt.
+- **Nicht betroffen:** Das bezahlte Abo. Dessen Status kommt aus
+  `entitlements/{uid}` und darf laut `firestore.rules` nur der Server
+  schreiben — durch Emulator-Tests belegt.

@@ -376,6 +376,7 @@ Fassung dieser Prüfung, die Verläufe für „nicht messbar" erklärte, liefert
 | Zurück-Link (`a.pill`) auf 49 Bildschirmen | 110 × **29** px statt 44 | eigene Regel für `a.pill` und `button.pill` |
 | Herz auf der Spielkarte, 38 Bildschirme | **4,07** statt 4,5 | `--suit-h` von `#c43e38` auf `#b43934` |
 | Kreuz auf der Spielkarte, 11 Bildschirme | **3,94** statt 4,5 | `--suit-c` von `#2c7f42` auf `#28723b` |
+| Untere Navigationsleiste, 49 Bildschirme | drei Ziele mit **0 px** Abstand statt 8 | `gap: var(--tipp-abstand)` (E-028) |
 
 Beide Farben sind nur so weit abgedunkelt, bis die Grenze erreicht ist. Die
 Farbe ist auf einer Spielkarte ohnehin nicht das Unterscheidungsmerkmal — das

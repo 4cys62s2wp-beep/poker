@@ -36,6 +36,9 @@ const HOEHE = 844;
 const KONTRAST_ERGEBNIS = 7;
 const KONTRAST_UEBRIG = 4.5;
 const TIPP_MIN = 44;
+/** Mindestabstand zwischen zwei Bedienflächen. Steht als `--tipp-abstand`
+ *  in global.css; der Test vergleicht beide Stellen. */
+const TIPP_ABSTAND = 8;
 /** Ab dieser Schriftgröße gilt ein Text als Ergebniszahl im Sinne der Regel. */
 const ERGEBNIS_AB_PX = 40;
 
@@ -55,7 +58,7 @@ for (const hash of bildschirme) {
   await seite.waitForTimeout(320);
 
   const messung = await seite.evaluate(
-    ([grenzErgebnis, grenzUebrig, tippMin, ergebnisAb]) => {
+    ([grenzErgebnis, grenzUebrig, tippMin, ergebnisAb, tippAbstand]) => {
       /* ---- WCAG, dieselbe Formel wie in src/lib/design/kontrast.ts ---- */
       const anteile = (rgb) => rgb.map((x) => {
         const v = x / 255;
@@ -194,6 +197,7 @@ for (const hash of bildschirme) {
       }
 
       /* ---- Tippflächen -------------------------------------------------- */
+      const flaechen = [];
       for (const el of document.querySelectorAll('button, a[href], input, select, textarea, [role="button"]')) {
         if (!sichtbar(el)) continue;
         const r = el.getBoundingClientRect();
@@ -203,6 +207,7 @@ for (const hash of bildschirme) {
           && el.parentElement
           && ['P', 'LI', 'SPAN', 'STRONG', 'EM'].includes(el.parentElement.tagName);
         if (imFliesstext) continue;
+        flaechen.push({ el, r });
         if (r.height < tippMin - 0.5 || r.width < tippMin - 0.5) {
           gefunden.push({
             art: 'tippflaeche-zu-klein',
@@ -214,12 +219,38 @@ for (const hash of bildschirme) {
         }
       }
 
+      /* ---- Abstand zwischen Bedienflächen -------------------------------
+         Zwei Knöpfe, die sich berühren, sind ein Knopf mit zwei Bedeutungen.
+         Verschachtelte Flächen (ein Knopf in einer Karte, die selbst ein Link
+         ist) sind ein anderer Fall und werden hier nicht gezählt. */
+      for (let i = 0; i < flaechen.length; i += 1) {
+        for (let j = i + 1; j < flaechen.length; j += 1) {
+          const a = flaechen[i];
+          const b = flaechen[j];
+          if (a.el.contains(b.el) || b.el.contains(a.el)) continue;
+          const waagerecht = Math.max(a.r.left - b.r.right, b.r.left - a.r.right);
+          const senkrecht = Math.max(a.r.top - b.r.bottom, b.r.top - a.r.bottom);
+          /* Überlappen sie in beiden Richtungen, liegen sie übereinander —
+             ein eigener Fall, kein Abstandsproblem. */
+          if (waagerecht < 0 && senkrecht < 0) continue;
+          const abstand = Math.max(waagerecht, senkrecht);
+          if (abstand < tippAbstand - 0.5) {
+            gefunden.push({
+              art: 'tippflaechen-zu-eng',
+              marke: `${wegMarke(a.el)} ↔ ${wegMarke(b.el)}`,
+              text: `${(a.el.textContent || '').trim().slice(0, 18)} ↔ ${(b.el.textContent || '').trim().slice(0, 18)}`,
+              abstand_px: Math.round(abstand * 10) / 10,
+            });
+          }
+        }
+      }
+
       return {
         befunde: gefunden,
         seitlicher_ueberlauf_px: Math.max(0, document.documentElement.scrollWidth - window.innerWidth),
       };
     },
-    [KONTRAST_ERGEBNIS, KONTRAST_UEBRIG, TIPP_MIN, ERGEBNIS_AB_PX],
+    [KONTRAST_ERGEBNIS, KONTRAST_UEBRIG, TIPP_MIN, ERGEBNIS_AB_PX, TIPP_ABSTAND],
   );
 
   if (messung.seitlicher_ueberlauf_px > 0) {
@@ -257,6 +288,7 @@ const ergebnis = {
     kontrast_uebrig: KONTRAST_UEBRIG,
     ergebnis_ab_px: ERGEBNIS_AB_PX,
     tipp_min_px: TIPP_MIN,
+    tipp_abstand_px: TIPP_ABSTAND,
   },
   bildschirme: geprueft.length,
   befunde_gesamt: befunde.length,
@@ -274,6 +306,7 @@ console.log('\nDie zehn häufigsten Stellen:');
 for (const s of stellen.slice(0, 10)) {
   const b = s.beispiel;
   const zusatz = s.art === 'kontrast-zu-gering' ? ` (${b.verhaeltnis} statt ${b.noetig})`
-    : s.art === 'tippflaeche-zu-klein' ? ` (${b.breite_px}×${b.hoehe_px})` : '';
+    : s.art === 'tippflaeche-zu-klein' ? ` (${b.breite_px}×${b.hoehe_px})`
+      : s.art === 'tippflaechen-zu-eng' ? ` (${b.abstand_px} px)` : '';
   console.log(`  ${String(s.bildschirme.length).padStart(3)}×  ${s.marke}${zusatz}`);
 }

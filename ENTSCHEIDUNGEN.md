@@ -938,3 +938,29 @@ Zeichenhöhe von 10,5 mm, bei einer Versalhöhe von 70 % der Schriftgröße also
 alle drei Angaben darüber: Handy 105,3 / 74,1 / 58,5 px, Tablet quer
 220 / 148 / 96 px. Der Rechenweg steht in `docs/tisch.json`, der Test rechnet
 ihn nach.
+
+---
+
+## E-028 · 2026-08-26 · Die untere Navigationsleiste bekommt Abstände
+
+**Gefunden.** `npm run pruefen` meldet auf allen 49 Bildschirmen dieselbe
+Stelle: Die drei Ziele der unteren Leiste berühren einander, Abstand 0 px.
+Phase 1 des Auftrags verlangt 44 × 44 Punkt **mit mindestens 8 Punkt
+Abstand**.
+
+**Gewählt.** `gap: var(--tipp-abstand)` auf der Leiste. Bei 390 px Breite
+bleibt jedes Ziel rund 124 px breit — weit über der Mindestgröße.
+
+**Alternative:** Die Leiste als Ausnahme führen und die Regel für sie
+aussetzen.
+
+**Warum nicht:** Tab-Leisten stoßen üblicherweise aneinander, das stimmt —
+und es wäre hier das schwächere Argument. Zwei Flächen ohne Abstand sind eine
+Fläche mit zwei Bedeutungen: Ein Tipp knapp neben der Mitte landet auf dem
+Nachbarn, und der Nutzer erfährt nie, warum er auf einmal woanders ist. Der
+Preis für die Regel sind 16 von 390 Pixeln. Der Preis für die Ausnahme wäre,
+dass die nächste Ausnahme leichter fällt als diese.
+
+**Was dagegen keine Ausnahme braucht.** Der Streifen an der Unterkante für
+die Systemgesten war schon frei; er ist ein anderer Fall und in `global.css`
+als `--gestenstreifen` geregelt.

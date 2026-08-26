@@ -504,6 +504,12 @@ table.data td {
     -webkit-backdrop-filter: blur(14px);
     border-top: 1px solid var(--border);
     z-index: 60;
+    /* Die drei Ziele berührten einander. Zwei Flächen ohne Abstand sind eine
+       Fläche mit zwei Bedeutungen: Ein Tipp knapp neben der Mitte landet auf
+       dem Nachbarn, und niemand weiß hinterher, warum. Begründung und die
+       verworfene Alternative (Tab-Leisten stoßen üblicherweise aneinander)
+       stehen in ENTSCHEIDUNGEN.md, E-028. */
+    gap: var(--tipp-abstand);
   }
   .bottom-nav a {
     flex: 1;

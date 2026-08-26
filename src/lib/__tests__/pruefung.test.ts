@@ -35,6 +35,7 @@ interface Pruefung {
     kontrast_uebrig: number;
     ergebnis_ab_px: number;
     tipp_min_px: number;
+    tipp_abstand_px: number;
   };
   bildschirme: number;
   befunde_gesamt: number;
@@ -58,6 +59,10 @@ describe('Die Prüfung misst das Richtige', () => {
     const tipp = CSS.match(/--tipp-min:\s*(\d+)px/);
     expect(tipp, '--tipp-min fehlt in global.css').not.toBeNull();
     expect(P.grenzwerte.tipp_min_px).toBe(Number(tipp![1]));
+
+    const abstand = CSS.match(/--tipp-abstand:\s*(\d+)px/);
+    expect(abstand, '--tipp-abstand fehlt in global.css').not.toBeNull();
+    expect(P.grenzwerte.tipp_abstand_px).toBe(Number(abstand![1]));
   });
 
   it('rechnet Kontrast so wie kontrast.ts', () => {
@@ -91,6 +96,14 @@ describe('Was die Prüfung findet', () => {
     const klein = P.stellen.filter((s) => s.art === 'tippflaeche-zu-klein');
     expect(klein.map((s) => `${s.marke} (${s.beispiel.breite_px}×${s.beispiel.hoehe_px})`))
       .toEqual([]);
+  });
+
+  it('findet keine zwei Bedienflächen ohne Abstand', () => {
+    /* Zwei Flächen, die sich berühren, sind eine Fläche mit zwei
+       Bedeutungen: Ein Tipp knapp neben der Mitte landet auf dem Nachbarn,
+       und der Nutzer erfährt nie, warum er auf einmal woanders ist. */
+    const eng = P.stellen.filter((s) => s.art === 'tippflaechen-zu-eng');
+    expect(eng.map((s) => `${s.marke} (${s.beispiel.abstand_px} px)`)).toEqual([]);
   });
 
   it('findet keinen seitlichen Überlauf', () => {

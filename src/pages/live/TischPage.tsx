@@ -26,14 +26,11 @@ import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/live';
 import { bestaetigt, umschlag } from '../../lib/design/haptik';
 import { gleichIstEsSoweit, haltWach, stufeGewechselt } from '../../lib/live/signal';
+import { anhalten, fortsetzen, standDerUhr } from '../../lib/live/uhr';
 import { alsUhr } from '../../lib/session/dauer';
 import {
-  ladeLaufende, speichereLaufende, verbraucht, type LaufendeSession,
+  ladeLaufende, speichereLaufende, type LaufendeSession,
 } from '../../lib/session/laufend';
-
-/** Wie lange vor dem Stufenwechsel die Vorankündigung kommt, in Sekunden.
- *  Eine Minute reicht, um die laufende Hand zu Ende zu spielen. */
-const VORWARNUNG_S = 60;
 
 export function TischPage() {
   const { lang } = useLang();
@@ -84,26 +81,17 @@ export function TischPage() {
     );
   }
 
-  const laeuft = session.laeuft_seit !== null;
-  const verstrichen_ms = verbraucht(session, jetzt);
-  const dauer_ms = session.stufendauer_s * 1000;
-  const stufeIndex = Math.min(
-    session.stufen.length - 1,
-    Math.floor(verstrichen_ms / dauer_ms),
-  );
-  const rest_ms = Math.max(0, (stufeIndex + 1) * dauer_ms - verstrichen_ms);
-  const istLetzte = stufeIndex === session.stufen.length - 1;
-  const [sb, bb] = session.stufen[stufeIndex];
-  const naechste = istLetzte ? null : session.stufen[stufeIndex + 1];
+  /* Alles Gerechnete kommt aus `standDerUhr`. In dieser Datei wird nicht
+     gerechnet, sie zeigt an. */
+  const uhr = standDerUhr(session, jetzt);
+  const { laeuft, stufeIndex, istLetzte, rest_ms, naechste, knapp } = uhr;
+  const [sb, bb] = uhr.blinds;
 
   /* Vorankündigung und Wechsel. Beides nur, solange die Uhr läuft — in der
      Pause soll nichts piepen. */
-  if (laeuft && !istLetzte) {
-    const rest_s = Math.round(rest_ms / 1000);
-    if (rest_s <= VORWARNUNG_S && gewarnt.current !== stufeIndex) {
-      gewarnt.current = stufeIndex;
-      void gleichIstEsSoweit();
-    }
+  if (knapp && gewarnt.current !== stufeIndex) {
+    gewarnt.current = stufeIndex;
+    void gleichIstEsSoweit();
   }
   if (laeuft && letzteStufe.current !== null && letzteStufe.current !== stufeIndex) {
     void stufeGewechselt();
@@ -114,15 +102,10 @@ export function TischPage() {
   function pauseUmschalten() {
     bestaetigt();
     if (session === null || session === 'laedt') return;
-    if (session.laeuft_seit === null) {
-      schreibe({ ...session, laeuft_seit: Date.now() });
-    } else {
-      schreibe({
-        ...session,
-        verbraucht_ms: verbraucht(session, Date.now()),
-        laeuft_seit: null,
-      });
-    }
+    const jetzt = Date.now();
+    schreibe(session.laeuft_seit === null
+      ? fortsetzen(session, jetzt)
+      : anhalten(session, jetzt));
   }
 
   function beenden() {
@@ -132,8 +115,6 @@ export function TischPage() {
     speichereLaufende(null);
     navigate('/session');
   }
-
-  const knapp = laeuft && rest_ms <= VORWARNUNG_S * 1000;
 
   return (
     <div className={`tisch${laeuft ? '' : ' pausiert'}`}>

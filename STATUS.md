@@ -74,7 +74,7 @@ später gebraucht — sie ist nur ausgeschaltet, nicht ausgebaut.
 | `c4989bb` | CSP: Google-Anmeldung war blockiert; Konfigurationsdateien ausgeliefert | 376 |
 | `9f560f0` · `9d9e828` | Veröffentlichung, Konto-Verknüpfung iOS ↔ Web | 376 |
 | `c5aecc7` | Zentraler Zugriffsschalter `fullAccess`, alles frei (E-009) | 385 |
-| *dieser* | Hub endgültig: Lernen · Nachschlagen · Live-Session (E-011) | **399** |
+| `21537ee` | Hub endgültig: Lernen · Nachschlagen · Live-Session (E-011) | **399** |
 
 Zusammenfassung der ganzen Sitzung: **`SESSION_REPORT.md`**.
 

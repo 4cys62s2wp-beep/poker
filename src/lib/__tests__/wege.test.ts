@@ -27,6 +27,7 @@ interface Wege {
   tiefer_als_zwei: string[];
   unerreichbar: string[];
   absichtlich_unverlinkt: string[];
+  vollbild: string[];
   wege: Weg[];
 }
 
@@ -68,11 +69,19 @@ describe('Die Wegeliste passt zu den angemeldeten Adressen', () => {
     const bekannt = new Set([
       ...W.wege.map((w) => w.hash.replace(/^#/, '')),
       ...W.absichtlich_unverlinkt,
+      ...W.vollbild,
     ]);
     const fehlend = angemeldet.filter((p) => !bekannt.has(p));
     expect(fehlend, 'Neue Adresse ohne Messung. `npm run wege` ausführen: '
       + 'Ob sie erreichbar ist, entscheidet der Browser, nicht der Quelltext.')
       .toEqual([]);
+  });
+
+  it('hält die Vollbild-Ausnahme eng', () => {
+    /* Ein Bildschirm ohne sichtbaren Weg zurück ist eine Falle. Die Ausnahme
+       gilt für Bildschirme, die eine laufende Sache führen — und für die
+       muss man sie einzeln begründen, nicht als Sammelposten. */
+    expect(W.vollbild.length).toBeLessThanOrEqual(2);
   });
 
   it('nennt für jede absichtlich unverlinkte Adresse einen Grund', () => {

@@ -77,7 +77,8 @@ for (let tiefe = 0; tiefe <= MAX_TIEFE && rand.length > 0; tiefe += 1) {
     /* Ein Weg zurück zur Startseite: entweder ein sichtbarer Link auf #/ —
        das ist der Zurück-Link oder die untere Navigation — oder die
        Startseite selbst. */
-    const zurueck = hash === '#/' || ziele.includes('#/');
+    const zurueck = hash === '#/' || ziele.includes('#/')
+      || VOLLBILD.includes(hash.replace(/^#/, ''));
     const eintrag = gesehen.get(hash) ?? { tiefe, zurueck: false, ziele: [] };
     eintrag.ziele = ziele;
     eintrag.zurueck = zurueck;
@@ -114,6 +115,20 @@ const zuTief = bildschirme.filter((e) => e.tiefe > 2);
  */
 const ABSICHTLICH_UNVERLINKT = ['/pro', '/kuendigen'];
 
+/**
+ * Vollbildschirme: Sie haben mit Absicht keinen sichtbaren Link zurück.
+ *
+ * `/session/live` ist das Tischgerät. Es liegt in der Mitte des Tisches, und
+ * ein Zurück-Link neben der Uhr wäre eine Falle: Ein Wisch, und der Abend ist
+ * weg. Verlassen geht über einen Knopf mit Rückfrage — eine bewusste
+ * Handlung, kein Link. Erreicht wird der Bildschirm, indem man einen Abend
+ * startet, nicht über ein Menü.
+ *
+ * Diese Ausnahme ist eng: Sie gilt für Bildschirme, die eine laufende Sache
+ * führen, und für keine anderen.
+ */
+const VOLLBILD = ['/session/live'];
+
 // Alle im Quelltext angemeldeten Adressen, um die unerreichbaren zu finden.
 const app = readFileSync('src/App.tsx', 'utf8');
 const angemeldet = [...app.matchAll(/<Route path="([^"]+)"(?![^>]*Navigate)/g)]
@@ -122,7 +137,8 @@ const angemeldet = [...app.matchAll(/<Route path="([^"]+)"(?![^>]*Navigate)/g)]
 const erreicht = new Set(liste.map((e) => e.hash.replace(/^#/, '')));
 const unerreichbar = angemeldet
   .filter((p) => !erreicht.has(p))
-  .filter((p) => !ABSICHTLICH_UNVERLINKT.includes(p));
+  .filter((p) => !ABSICHTLICH_UNVERLINKT.includes(p))
+  .filter((p) => !VOLLBILD.includes(p));
 
 const ergebnis = {
   geprueft_am: new Date().toISOString().slice(0, 19) + 'Z',
@@ -134,6 +150,7 @@ const ergebnis = {
   tiefer_als_zwei: zuTief.map((e) => e.hash),
   unerreichbar,
   absichtlich_unverlinkt: ABSICHTLICH_UNVERLINKT,
+  vollbild: VOLLBILD,
   wege: liste,
 };
 writeFileSync('docs/wege.json', `${JSON.stringify(ergebnis, null, 2)}\n`, 'utf8');

@@ -1,8 +1,8 @@
 {
-  "geprueft_am": "2026-08-26T20:01:29Z",
+  "geprueft_am": "2026-08-26T20:16:43Z",
   "breite": 390,
-  "erreichbar": 90,
-  "bildschirme": 41,
+  "erreichbar": 91,
+  "bildschirme": 42,
   "groesste_tiefe": 2,
   "sackgassen": [],
   "tiefer_als_zwei": [],
@@ -10,6 +10,9 @@
   "absichtlich_unverlinkt": [
     "/pro",
     "/kuendigen"
+  ],
+  "vollbild": [
+    "/session/live"
   ],
   "wege": [
     {
@@ -242,6 +245,12 @@
     },
     {
       "hash": "#/session/chips",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/session/live/einrichten",
       "tiefe": 2,
       "zurueck": true,
       "inhalt": false

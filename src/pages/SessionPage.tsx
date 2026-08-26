@@ -32,6 +32,14 @@ export function SessionPage() {
   const entries: Array<{
     to: string; icon: IconName; title: string; body: string; when: string; accent: string;
   }> = [
+    /* Zuerst der Abend selbst: Chipverteilung, Blindstruktur und Uhr in
+       einem Weg. Die einzelnen Rechner darunter bleiben — wer nur schnell
+       etwas nachrechnen will, braucht keinen ganzen Abend. */
+    {
+      to: '/session/live/einrichten', icon: 'table',
+      title: L.abendTitle, body: L.abendBody, when: L.abendWhen,
+      accent: 'var(--akzent)',
+    },
     {
       to: '/session/chips', icon: 'chip',
       title: L.chipsTitle, body: L.chipsBody, when: L.chipsWhen,

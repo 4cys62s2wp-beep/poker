@@ -2260,3 +2260,309 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   margin-top: var(--sp-2);
   border-top: 1px solid var(--border);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Live-Session
+   ═══════════════════════════════════════════════════════════════════════
+
+   Zwei Geräterollen, zwei Gestaltungen:
+
+   **Das Tischgerät** liegt in der Mitte, alle schauen darauf, niemand hält
+   es. Es zeigt drei Angaben — Blinds, Restzeit, nächste Stufe — in der
+   größten Schrift, die geht. Aus zwei Metern lesbar heißt: die Restzeit
+   füllt die Bildschirmbreite.
+
+   **Das private Gerät** gehört einem Spieler und zeigt dessen eigene
+   Rechnungen. Das ist der Drill und der Rechner, nicht dieser Bildschirm.
+
+   Vollbild ohne Navigationsleiste: Wer den Tisch führt, soll nicht
+   versehentlich ins Glossar wischen.
+   ------------------------------------------------------------------- */
+
+.tisch {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-deep);
+  padding: calc(var(--safe-top) + var(--sp-4)) var(--sp-4)
+           calc(var(--safe-bottom) + var(--gestenstreifen)) var(--sp-4);
+}
+
+.tisch-kopf {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-size: var(--fs-beschriftung);
+  color: var(--text-faint);
+}
+
+/* Die drei Angaben. Mehr steht hier nicht — jede weitere kostet Größe. */
+.tisch-mitte {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-5);
+  text-align: center;
+  min-height: 0;
+}
+
+.tisch-marke {
+  font-size: var(--fs-beschriftung);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* Die Restzeit ist die Zahl, wegen der das Gerät auf dem Tisch liegt.
+   Größer als --fs-ergebnis: Sie wird aus zwei Metern gelesen, nicht aus
+   Armlänge. */
+.tisch-zeit {
+  font-size: clamp(72px, 27vw, 220px);
+  font-weight: var(--fw-bold);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  font-variant-numeric: var(--ziffern);
+  color: var(--text);
+}
+
+.tisch-zeit.knapp { color: var(--akzent); }
+
+.tisch-blinds {
+  font-size: clamp(32px, 11vw, 76px);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  font-variant-numeric: var(--ziffern);
+  color: var(--akzent);
+}
+
+.tisch-naechste {
+  font-size: var(--fs-fliesstext);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+.tisch-unten {
+  flex: 0 0 auto;
+  display: flex;
+  gap: var(--tipp-abstand);
+}
+
+.tisch-knopf {
+  flex: 1 1 0;
+  min-height: calc(var(--tipp-min) + var(--sp-4));
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tisch-knopf.haupt {
+  border-color: var(--akzent);
+  color: var(--akzent);
+}
+
+.tisch-knopf:active { background: var(--bg-card-hover); }
+
+/* Pausiert: der ganze Bildschirm sagt es, nicht nur ein kleines Zeichen. */
+.tisch.pausiert .tisch-zeit { color: var(--text-faint); }
+
+.tisch-pausiert {
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Bewusste Bestätigung vor dem Verlassen ──────────────────────────── */
+.tisch-frage {
+  position: fixed;
+  inset: 0;
+  z-index: 310;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--scrim-strong);
+}
+
+.tisch-frage-blatt {
+  width: 100%;
+  max-width: 560px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: var(--sp-5) var(--sp-5) calc(var(--safe-bottom) + var(--sp-5));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* ── Einrichten ──────────────────────────────────────────────────────── */
+.einrichten {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  max-width: 560px;
+}
+
+.einrichten-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.einrichten-block h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+}
+
+.einrichten-block .hinweis {
+  margin: 0;
+  font-size: var(--fs-beschriftung);
+  color: var(--text-dim);
+}
+
+.einrichten-zeile {
+  display: flex;
+  gap: var(--tipp-abstand);
+  align-items: center;
+}
+
+.einrichten-zeile input {
+  min-height: var(--tipp-min);
+  min-width: 0;
+  flex: 1 1 0;
+  padding: 0 var(--sp-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-fliesstext);
+  font-variant-numeric: var(--ziffern);
+}
+
+.einrichten-zeile input.schmal { flex: 0 0 6.5em; }
+
+.einrichten-wahl {
+  display: flex;
+  gap: var(--tipp-abstand);
+  flex-wrap: wrap;
+}
+
+.einrichten-wahl button {
+  flex: 1 1 8em;
+  min-height: var(--tipp-min);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: var(--fs-beschriftung);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.einrichten-wahl button[aria-pressed='true'] {
+  border-color: var(--akzent);
+  color: var(--akzent);
+  background: var(--akzent-dim);
+}
+
+.einrichten-knopf {
+  min-height: calc(var(--tipp-min) + var(--sp-3));
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.einrichten-knopf.haupt {
+  border-color: var(--akzent);
+  background: var(--akzent);
+  color: var(--bg-deep);
+  font-weight: var(--fw-bold);
+}
+
+.einrichten-knopf:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.einrichten-ergebnis {
+  border: 1px solid var(--akzent);
+  border-radius: var(--radius);
+  background: var(--akzent-dim);
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.einrichten-gross {
+  font-size: var(--fs-ergebnis);
+  font-weight: var(--fw-bold);
+  line-height: 0.95;
+  font-variant-numeric: var(--ziffern);
+  color: var(--akzent);
+}
+
+.einrichten-warnung {
+  margin: 0;
+  font-size: var(--fs-beschriftung);
+  color: var(--gold);
+}
+
+.einrichten-warnung::before {
+  content: '!';
+  display: inline-block;
+  margin-right: var(--sp-2);
+  font-weight: var(--fw-bold);
+}
+
+.einrichten-tabelle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  font-size: var(--fs-beschriftung);
+  font-variant-numeric: var(--ziffern);
+}
+
+.einrichten-tabelle > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.einrichten-stufen {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7em, 1fr));
+  gap: var(--sp-2);
+  font-size: var(--fs-beschriftung);
+  font-variant-numeric: var(--ziffern);
+}
+
+.einrichten-stufen span {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-2);
+  text-align: center;
+  color: var(--text-dim);
+}

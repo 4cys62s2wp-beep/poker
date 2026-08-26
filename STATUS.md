@@ -10,10 +10,46 @@ Projekts, unverändert übernommen.
 - **Hauptverzeichnis:** `/home/user/poker` auf `feature/poker-math`. Dort
   läuft der B4-Rechenlauf; die Generator-Arbeit findet dort statt und wird
   hierher gemergt.
-- **Letzte Aktualisierung:** 2026-08-26, nach dem Abarbeiten der Blocker
-- **Stand in einem Satz:** Die vier Aufgaben sind fertig, und sechs der
-  sieben Blocker sind erledigt. Offen sind der laufende B4-Lauf und eine
-  Entscheidung (B-007).
+- **Letzte Aktualisierung:** 2026-08-26, während des Nachtlaufs
+- **Stand in einem Satz:** Die vier Aufgaben und alle sieben Blocker sind
+  erledigt; seit dem Abend läuft der Nachtlauf, der ein Designfundament,
+  eine neue Startseite und die Live-Session gebaut hat. Offen ist nur noch
+  der B4-Rechenlauf im Hauptverzeichnis.
+
+> **Zuerst lesen:** `NACHTLAUF.log` — eine Zeile je Ereignis, in zeitlicher
+> Reihenfolge. Der Abschnitt direkt darunter fasst denselben Stand in Prosa
+> zusammen.
+
+---
+
+<!-- NACHTLAUF-ANFANG -->
+## Nachtlauf 2026-08-26 — wo es steht
+
+**Fertig und getestet**
+
+| Phase | Was | Nachweis |
+|-------|-----|----------|
+| Teil C | Apple-Fingerabdruck aus dem Code entfernt, Prüfung bleibt Pflicht; Vorschaukarte und Freunde-Rangliste als Entscheidung abgelegt | `ENTSCHEIDUNGEN.md` E-021 bis E-024 |
+| 0 | Bestandsaufnahme: 37 Bildschirme, 65 Routen, Datenvertrag 3, B4 lebt (PID geprüft) | `BESTAND.md` |
+| 1 | Designfundament: fünf Schriftstufen nach Verwendung, eine Akzentfarbe, gerechneter Kontrast, Haptik, Sperrklinke gegen verstreute Werte | `DESIGN.md` 1–6, `design.test.ts`, `haptik.test.ts` |
+| 2 | Startseite mit drei ungleich gewichteten Einstiegen und Fortsetzen-Karte; jeder Bildschirm in höchstens zwei Berührungen, null Sackgassen — im Browser bei 390 px gemessen | `DESIGN.md` 7, `docs/wege.json`, `wege.test.ts` |
+| 3.1 | Chipverteilung aus vorhandenem Material: kleinster Chip = Small Blind, grobe Fünferleiter | `src/lib/live/verteilung.ts`, `live.test.ts` |
+| 3.2 | Blindstruktur: gleichmäßige Steigung, Faktor gedeckelt auf 1,6, Zielgröße für das Finale hergeleitet | `src/lib/live/blinds.ts`, `live.test.ts` |
+| 3.3 | Timer, Ton und Vorwarnung, Wachhalten des Bildschirms | `src/lib/live/signal.ts`, `src/pages/live/TischPage.tsx` |
+| 3.4 | Laufender Abend überlebt Neuladen und Schließen: bei jeder Änderung lokal geschrieben, kein Speicherknopf | `src/lib/session/laufend.ts` |
+
+**In Arbeit**
+
+Phase 3 ist gebaut, aber die Tests für Timer und Zustand (Pause/Fortsetzen,
+Überleben eines Neuladens) fehlen noch. Die Rechenwege aus 3.1 und 3.2 sind
+abgedeckt, der Zeitverlauf nicht.
+
+**Als Nächstes**
+
+1. Tests für Pause/Fortsetzen und für den überlebenden Zustand.
+2. Phase 4: Abende und Spieler (nur Name, frühere Abende über den Namen finden).
+3. Warteschlange abarbeiten, sobald B4 fertig ist (`WARTESCHLANGE.md`, W-001 und W-002).
+<!-- NACHTLAUF-ENDE -->
 
 ---
 

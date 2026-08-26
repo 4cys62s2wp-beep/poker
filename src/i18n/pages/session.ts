@@ -30,6 +30,12 @@ export const STR = defineStrings(
       + 'seinem Gerät und sieht denselben Stand.',
     onlineWhen: 'Wenn jemand nicht dabei sein kann',
 
+    abendTitle: 'Abend führen',
+    abendBody:
+      'Koffer eintragen, Blinds ausrechnen lassen, Uhr laufen lassen. Das '
+      + 'Gerät liegt in der Mitte und zeigt allen dasselbe.',
+    abendWhen: 'Vom ersten bis zum letzten Blatt',
+
     bankrollTitle: 'Bankroll',
     bankrollBody: 'Ergebnisse festhalten – Live und Online getrennt, mit Verlauf und Export.',
     bankrollWhen: 'Nach der Session',
@@ -61,6 +67,12 @@ export const STR = defineStrings(
       'When not everyone is at the same table: each person opens the table on '
       + 'their own device and sees the same state.',
     onlineWhen: 'When somebody cannot make it',
+
+    abendTitle: 'Run the evening',
+    abendBody:
+      'Enter the case, let the blinds be worked out, start the clock. The '
+      + 'device lies in the middle and shows everyone the same thing.',
+    abendWhen: 'From the first hand to the last',
 
     bankrollTitle: 'Bankroll',
     bankrollBody: 'Log your results – live and online kept apart, with history and export.',

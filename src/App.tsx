@@ -29,6 +29,8 @@ import { OutsTrainer } from './pages/trainers/OutsTrainer';
 import { PlayPage } from './pages/PlayPage';
 import { CoachPage } from './pages/CoachPage';
 import { PayoutPage } from './pages/session/PayoutPage';
+import { EinrichtenPage } from './pages/live/EinrichtenPage';
+import { TischPage } from './pages/live/TischPage';
 import { EquityCalc } from './pages/tools/EquityCalc';
 import { RangeViewer } from './pages/tools/RangeViewer';
 import { OddsTables } from './pages/tools/OddsTables';
@@ -80,6 +82,10 @@ export function App() {
       {!istGeteilteAufgabe(ort.pathname) && <Onboarding />}
       <PaywallModal />
       <Routes>
+        {/* Der Tischbildschirm liegt bewusst außerhalb des Layouts: Vollbild
+            ohne die normale Navigation. Wer den Tisch führt, soll nicht
+            versehentlich ins Glossar wischen. */}
+        <Route path="/session/live" element={<TischPage />} />
         <Route element={<Layout />}>
           {/* ── Hub ──────────────────────────────────────────────────── */}
           <Route index element={<HubPage />} />
@@ -137,6 +143,7 @@ export function App() {
           <Route path="/session" element={<SessionPage />} />
           <Route path="/session/chips" element={<ChipCalculator />} />
           <Route path="/session/auszahlung" element={<PayoutPage />} />
+          <Route path="/session/live/einrichten" element={<EinrichtenPage />} />
           <Route path="/session/tisch" element={<LocalTablePage />} />
           <Route path="/session/tisch/online" element={<OnlineTablePage />} />
           <Route path="/session/bankroll" element={<BankrollTracker />} />

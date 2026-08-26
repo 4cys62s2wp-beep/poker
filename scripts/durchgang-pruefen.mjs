@@ -208,6 +208,44 @@ await schritt('Weiter läuft an derselben Stelle an', async () => {
   };
 });
 
+await schritt('Ohne Netz weiterspielen', async () => {
+  /* Der Live-Bereich muss am Küchentisch ohne Empfang laufen. Ein Test über
+     den Quelltext („es steht kein fetch darin") ist ein Anfang; er sagt aber
+     nichts darüber, ob die App überhaupt aus dem Gerät startet. Also wird
+     hier wirklich das Netz abgeschaltet. */
+  await seite.waitForTimeout(1200);       // dem Service Worker Zeit geben
+  const angemeldet = await seite.evaluate(
+    async () => (await navigator.serviceWorker?.getRegistrations?.() ?? []).length > 0,
+  );
+
+  await kontext.setOffline(true);
+  let neugeladen = false;
+  let zeit = '';
+  let blinds = '';
+  try {
+    await seite.reload({ waitUntil: 'domcontentloaded' });
+    await seite.waitForSelector('.tisch-zeit', { timeout: 8000 });
+    zeit = (await seite.locator('.tisch-zeit').innerText()).trim();
+    blinds = (await seite.locator('.tisch-blinds').innerText()).trim();
+    neugeladen = true;
+  } catch {
+    /* Kein Neuladen möglich — wird unten festgehalten, nicht verschwiegen. */
+  }
+  await kontext.setOffline(false);
+  if (!neugeladen) {
+    await seite.reload({ waitUntil: 'domcontentloaded' });
+    await seite.waitForTimeout(500);
+  }
+
+  return {
+    service_worker_angemeldet: angemeldet,
+    neu_geladen_ohne_netz: neugeladen,
+    zeit,
+    blinds,
+    abend_noch_da: await seite.evaluate((k) => localStorage.getItem(k) !== null, SCHLUESSEL),
+  };
+});
+
 await schritt('Ein Ereignis am Tisch erfassen', async () => {
   /* Der Auftrag setzt eine Obergrenze: unter dreißig Sekunden. Gemessen wird
      hier beides — die Zahl der Griffe (das ist die eigentliche Aussage) und

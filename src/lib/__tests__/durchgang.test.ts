@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(17);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(18);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -174,6 +174,26 @@ describe('Die Uhr am Tisch', () => {
     const e = schritt('Weiter läuft an derselben Stelle an');
     expect(e.kein_sprung).toBe(true);
     expect(e.laeuft_wieder).toBe(true);
+  });
+});
+
+describe('Ohne Netz', () => {
+  it('meldet einen Service Worker an', () => {
+    /* Ohne ihn ist die App beim nächsten Start ohne Empfang eine weiße
+       Seite — und zwar mitten im Abend. */
+    expect(schritt('Ohne Netz weiterspielen').service_worker_angemeldet).toBe(true);
+  });
+
+  it('startet mit abgeschaltetem Netz neu und zeigt den Tisch', () => {
+    /* Wirklich abgeschaltet, nicht nur „im Quelltext steht kein fetch". */
+    const e = schritt('Ohne Netz weiterspielen');
+    expect(e.neu_geladen_ohne_netz).toBe(true);
+    expect(String(e.zeit)).toMatch(/^\d+:\d{2}$/);
+    expect(String(e.blinds)).toMatch(/^\d+ \/ \d+$/);
+  });
+
+  it('behält den laufenden Abend', () => {
+    expect(schritt('Ohne Netz weiterspielen').abend_noch_da).toBe(true);
   });
 });
 

@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-26T21:12:37.067Z",
+  "geprueft_am": "2026-08-26T21:22:27.978Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -117,6 +117,17 @@
         "spaeter": "19:53",
         "kein_sprung": true,
         "laeuft_wieder": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Ohne Netz weiterspielen",
+      "ergebnis": {
+        "service_worker_angemeldet": true,
+        "neu_geladen_ohne_netz": true,
+        "zeit": "19:52",
+        "blinds": "1 / 2",
+        "abend_noch_da": true
       },
       "uebersprungen": false
     },

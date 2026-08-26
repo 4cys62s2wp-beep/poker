@@ -229,3 +229,34 @@ auf das Ergebnis nach jedem.
 zählt, der Test lässt die Zahl nicht wachsen. Wer aufräumt, sieht die Zahl
 fallen. Mehr braucht es nicht — nur Zeit und einen Bildschirm nach dem
 anderen.
+
+---
+
+## Die Equity-Matrix nachladen statt mitliefern
+
+**Worum es geht.** `public/pokermath/b4_preflop_equity.json` ist 5,0 MB groß
+und wird vom Service Worker für den Offline-Betrieb vollständig
+mitgespeichert. Sie enthält alle 14 365 Handpaare mit ihren
+Farbkonfigurationen. Denkbar wäre stattdessen: eine kleine Datei mit den
+gewichteten Mittelwerten (rund 200 KB) wird mitgeliefert, die vollständige
+Matrix mit den Farbkonfigurationen erst beim ersten Aufruf des
+Starthand-Explorers nachgeladen und dann behalten.
+
+**Warum es wertvoll wäre.** 5 MB sind bei einer PWA kein Nebenwert. Sie
+werden beim ersten Öffnen geladen, bevor irgendjemand einen Starthand-Vergleich
+angesehen hat, und im Mobilfunknetz dauert das spürbar. Wer die App nur zum
+Führen eines Pokerabends benutzt, braucht die Matrix nie.
+
+**Was daran schwierig ist.** Die Zusage „funktioniert vollständig ohne Netz"
+wird dadurch bedingt: Sie gilt dann für den Live-Bereich immer, für den
+Starthand-Vergleich erst nach dem ersten Aufruf mit Empfang. Diese
+Einschränkung müsste in der Oberfläche stehen und nicht nur in einer
+Anleitung — sonst steht jemand am Küchentisch vor einem leeren Bildschirm
+und hält es für einen Fehler. Außerdem müsste die Ladeprüfung mit einem
+Zustand „noch nicht da" umgehen können, ohne laut zu scheitern; heute wirft
+sie bei allem, was fehlt, und das ist bisher richtig so.
+
+**Was es voraussetzt.** Eine Messung: Wie lange dauert der erste Start
+heute wirklich, auf einem echten Mobilfunknetz? Solange das niemand gemessen
+hat, ist die Optimierung eine Vermutung — und die App liefert dafür eine
+Zusage auf, die heute uneingeschränkt gilt.

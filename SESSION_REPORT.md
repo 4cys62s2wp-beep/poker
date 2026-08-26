@@ -10,13 +10,15 @@ Stand für eine frische Sitzung ohne Kontext steht in `STATUS.md`.
 
 ## In einem Absatz
 
-Alle fünf Phasen des Auftrags sind abgeschlossen. Der Live-Bereich ist neu
-und vollständig: Chipverteilung, Blindstruktur, Uhr, Erfassung am Tisch,
-Abendarchiv. Das Designfundament steht und wird an vier Stellen gemessen
-statt behauptet. Vier echte Mängel sind dabei gefunden und behoben worden,
-zwei davon betrafen jeden Bildschirm der App. Offen ist genau eine Sache aus
-technischen Gründen — der B4-Rechenlauf läuft noch — und genau eine aus
-inhaltlichen: ob der Online-Tisch in die App gehört.
+Alle fünf Phasen des Auftrags sind abgeschlossen, und die Warteschlange ist
+leer. Der Live-Bereich ist neu und vollständig: Chipverteilung,
+Blindstruktur, Uhr, Erfassung am Tisch, Abendarchiv. Das Designfundament
+steht und wird an vier Stellen gemessen statt behauptet. Fünf echte Mängel
+sind dabei gefunden und behoben worden, zwei davon betrafen jeden Bildschirm
+der App. **Der B4-Rechenlauf ist um 23:00 Uhr durchgelaufen** — die
+vollständige Preflop-Equity-Matrix liegt in der App, und die vier bis dahin
+übersprungenen Tests laufen. Offen ist damit nur noch eine einzige Sache, und
+die ist keine technische: ob der Online-Tisch in die App gehört.
 
 ---
 
@@ -82,30 +84,56 @@ beim nächsten Mal von selbst anschlägt.
 
 ---
 
-## Was begonnen wurde und wo es steht
+## B4 — durchgelaufen
 
-**Der B4-Rechenlauf** (Preflop-Equity, alle 14 365 Handpaare, exakt) läuft
-im Hauptverzeichnis weiter. Er ist der einzige unfertige Teil. Stand und
-Restzeit stehen in `tools/poker-math/output/b4_lauf.log`; er sichert sich
-alle 250 Handpaare selbst und setzt nach einem Abbruch an der ersten
-fehlenden Einheit an.
+Die vollständige Preflop-Equity-Matrix: **14 365 von 14 365 Handpaaren**,
+exakt enumeriert über sämtliche Boards. Keine Simulation, keine Stichprobe.
+Rund fünfeinhalb Stunden auf vier Kernen, 80 625 607 595 gezählte Einzelfälle.
 
-Wenn er durch ist, fehlen zwei Handgriffe: `npm run daten` nimmt die neue
-Datei in die App auf (der Konverter-Block dafür ist vorbereitet, vier Tests
-warten übersprungen darauf), dann die Zusammenführung der drei Zweige.
+Die Datei prüft sich beim Zusammenbauen selbst, und alle drei Prüfungen gehen
+auf: Die Equity beider Seiten summiert sich bei jedem Paar auf eins, geteilte
+Pötte zählen für beide Seiten zur Hälfte, eine Hand gegen sich selbst bekommt
+genau 50 %. Eine Abweichung hätte abgebrochen, statt eine Datei zu schreiben,
+die richtig aussieht.
+
+Zwei Befunde, beide aus den Daten erzeugt:
+
+- Bei **7408 von 14 365** Handpaaren hängt die Equity um mehr als einen
+  Prozentpunkt davon ab, wie die Farben zwischen den Händen liegen. Das ist
+  gut die Hälfte. Eine Tabelle, die nur einen Mittelwert je Handpaar nennt,
+  verschweigt bei jedem zweiten Paar etwas — und genau daraus entstehen die
+  widersprüchlichen Tabellen im Netz.
+- Am stärksten wirkt die Farbbeziehung bei **92s gegen JTs**: zwischen
+  28,24 % und 32,20 %, also 3,96 Prozentpunkte.
+
+`npm run daten` lief beim ersten Versuch durch. Das war kein Glück: Der Weg
+war zwei Stunden vorher gegen eine Probe mit drei Handpaaren geprüft worden,
+weil ein Formfehler nach fünfeinhalb Stunden Rechnung die schlechteste Zeit
+für einen Fehler gewesen wäre.
+
+**Eine Zahl zum Nachdenken:** Die Anzeigefassung ist **5,0 MB** groß und wird
+für den Offline-Betrieb mitgespeichert. Das ist der Preis für „jede Zahl aus
+den gerechneten Daten". Ob das so bleiben soll oder ob die Matrix nachgeladen
+statt mitgeliefert wird, steht in `BACKLOG.md`.
 
 ---
 
-## Was in der Warteschlange blieb, und warum
+## Die Warteschlange ist leer
 
-Vollständig in `WARTESCHLANGE.md`.
+Beide technischen Einträge sind nach dem Ende des Rechenlaufs abgearbeitet:
 
-- **W-001 und W-002** betreffen beide `tools/poker-math/`. Dieser Ordner
-  gehört dem laufenden Prozess (Ihre Anweisung A1), und eine Änderung dort
-  würde ohnehin erst nach einem Neustart wirken. Beides ist nach dem Ende des
-  Laufs eine Sache von Minuten. **W-002 ist ein echter Fehler:** Der
-  Kopfkommentar der Datei nennt 47 008 verschiedene Rechnungen, es sind
-  47 086. Die Differenz von 78 ist genau erklärt und zweifach nachgezählt.
+- **W-002 war ein echter Fehler.** Der Kopfkommentar von
+  `b4_preflop_equity.py` nannte über Monate 47 008 wirklich verschiedene
+  Rechnungen. Es sind 47 086. Die 78 fehlenden sind genau die Handpaare aus
+  derselben Rangkombination, einmal offsuit und einmal suited. Gerechnet
+  wurde immer richtig — nur die Beschreibung war falsch, und niemandem fiel
+  es auf, weil keine Prüfung sie anfasste. Neun Tests zählen sie jetzt nach.
+- **W-001 wurde anders erledigt als geplant.** Die von Ihnen verlangte
+  Grundlage der Restzeitschätzung war bereits im Code. Meine eigene
+  Verschärfung hätte hier nichts gebracht (nachgemessen: 3,26 gegen 3,28) und
+  eine halbe Minute Vorlauf je Start gekostet. Der eigentliche Mangel war,
+  dass die Grundlage nirgends stand. Sie steht jetzt in einer eigenen,
+  prüfbaren Funktion und im Startprotokoll. Begründung in E-029.
 - **W-003** ist keine technische Sperre, sondern eine Frage an Sie. Siehe
   unten.
 
@@ -126,6 +154,7 @@ sieben aus dieser Nacht:
 | E-026 | Ergebniszahlen bekommen zwei eigene Farben | Die vorhandenen Zustandsfarben erreichen 4,73 zu 1; für eine Ergebniszahl verlangt Ihr Auftrag sieben |
 | E-027 | Das Tischgerät verliert Stufennummer und Spielerzahl | Damit die drei übrigen Angaben groß genug für zwei Meter werden. Nachgerechnet: 56,5 Pixel sind nötig |
 | E-028 | Die untere Navigationsleiste bekommt Abstände | Kostet 16 von 390 Pixeln. Die Ausnahme hätte gekostet, dass die nächste leichter fällt |
+| E-029 | Die Restzeitschätzung bleibt bei Handpaaren statt Farbkonfigurationen | Ich weiche hier von meiner eigenen Vorgabe in W-001 ab — die feinere Grundlage kommt nachgemessen aufs Gleiche und kostet Vorlauf |
 
 ---
 
@@ -174,8 +203,8 @@ zwanzig Minuten je Stufe sich richtig anfühlen, ob die Vorwarnung eine
 Minute vorher reicht, ob die Erfassung wirklich niemanden unterbricht, ob
 die Uhr aus zwei Metern tatsächlich lesbar ist und nicht nur rechnerisch.
 
-Danach erst: die Warteschlange leeren (nach B4 eine halbe Stunde), dann die
-Entscheidung zu W-003, dann der Umbau der alten Bildschirme.
+Danach erst: die Entscheidung zu W-003, dann der Umbau der alten
+Bildschirme.
 
 Was ich **nicht** empfehle: neue Funktionen. Der Backlog hat zwölf
 beschriebene Einträge; keiner davon ist so wertvoll wie die Antwort auf die

@@ -60,11 +60,11 @@ export function HubPage() {
   return (
     <div className="start">
       {/* ── Ganz oben: die laufende Runde, oder der erklärende Satz ────── */}
-      {/* Ziel ist heute der Live-Bereich. Sobald der Timer-Bildschirm aus
-          Phase 3 steht, zeigt der Weg dorthin — ein Link auf eine Seite, die
-          es noch nicht gibt, wäre die schlechtere Zwischenlösung. */}
+      {/* Der Weg führt in die laufende Runde selbst, nicht in ihr Menü. Wer
+          die App öffnet, während der Abend läuft, will die Uhr sehen — jeder
+          Zwischenschritt ist an dieser Stelle einer zu viel. */}
       {laufend ? (
-        <Link to="/session" className="start-fortsetzen">
+        <Link to="/session/live" className="start-fortsetzen">
           <span className="marke">{L.fortsetzenMarke}</span>
           <span className="titel">{L.fortsetzenTitel}</span>
           <span className="unter">

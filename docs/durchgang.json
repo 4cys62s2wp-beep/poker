@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-26T20:52:31.590Z",
+  "geprueft_am": "2026-08-26T20:55:21.240Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -79,10 +79,21 @@
       "uebersprungen": false
     },
     {
+      "name": "Die Startseite bietet Fortsetzen statt Menü",
+      "ergebnis": {
+        "text": "LÄUFT GERADE · Zurück in die Runde · Seit gerade eben · 5 Spieler · Lorenz, Mira, Jonas, Ada, Ben",
+        "ziel": "#/session/live",
+        "oben_px": 76,
+        "fuehrt_an_den_tisch": true,
+        "nennt_namen": true
+      },
+      "uebersprungen": false
+    },
+    {
       "name": "Neu laden setzt an derselben Stelle fort",
       "ergebnis": {
-        "vorher": "19:57",
-        "nachher": "19:57",
+        "vorher": "19:56",
+        "nachher": "19:56",
         "abstand_s": 0,
         "abend_noch_da": true
       },
@@ -91,8 +102,8 @@
     {
       "name": "Pause hält an",
       "ergebnis": {
-        "vorher": "19:56",
-        "nachher": "19:56",
+        "vorher": "19:55",
+        "nachher": "19:55",
         "steht_still": true,
         "marke_sichtbar": true
       },
@@ -101,9 +112,9 @@
     {
       "name": "Weiter läuft an derselben Stelle an",
       "ergebnis": {
-        "vorher": "19:56",
-        "gleich_danach": "19:56",
-        "spaeter": "19:54",
+        "vorher": "19:55",
+        "gleich_danach": "19:55",
+        "spaeter": "19:53",
         "kein_sprung": true,
         "laeuft_wieder": true
       },
@@ -114,7 +125,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 864,
+        "dauer_ms": 878,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,

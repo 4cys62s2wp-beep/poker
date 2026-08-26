@@ -143,6 +143,26 @@ await schritt('Die Uhr läuft wirklich', async () => {
   return { vorher, nachher, hat_sich_bewegt: vorher !== nachher };
 });
 
+await schritt('Die Startseite bietet Fortsetzen statt Menü', async () => {
+  /* Wer die App öffnet, während ein Abend läuft, soll nicht durch ein Menü.
+     Ganz oben steht die laufende Runde, mit Startzeit und Namen. */
+  await seite.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForTimeout(400);
+  const karte = seite.locator('.start-fortsetzen');
+  const text = (await karte.innerText()).trim().replace(/\n/g, ' · ');
+  const ziel = await karte.getAttribute('href');
+  const obenAbstand = await karte.evaluate((el) => Math.round(el.getBoundingClientRect().top));
+  await karte.click();
+  await seite.waitForTimeout(400);
+  return {
+    text,
+    ziel,
+    oben_px: obenAbstand,
+    fuehrt_an_den_tisch: new URL(seite.url()).hash === '#/session/live',
+    nennt_namen: /Lorenz/.test(text),
+  };
+});
+
 await schritt('Neu laden setzt an derselben Stelle fort', async () => {
   const vorher = (await seite.locator('.tisch-zeit').innerText()).trim();
   await seite.reload({ waitUntil: 'domcontentloaded' });

@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(16);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(17);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -125,6 +125,29 @@ describe('Der Übergang an den Tisch', () => {
     expect(String(e.zeit)).toMatch(/^\d+:\d{2}$/);
     expect(String(e.blinds)).toMatch(/^\d+ \/ \d+$/);
     expect(String(e.danach)).toMatch(/^\d+ \/ \d+$/);
+  });
+});
+
+describe('Fortsetzen statt Menü', () => {
+  it('steht ganz oben auf der Startseite', () => {
+    /* „Ganz oben" ist nachgemessen, nicht behauptet: Die Karte liegt im
+       obersten Achtel eines 844 Pixel hohen Bildschirms. */
+    const e = schritt('Die Startseite bietet Fortsetzen statt Menü');
+    expect(e.oben_px as number).toBeLessThan(120);
+  });
+
+  it('nennt Startzeit und Namen', () => {
+    const e = schritt('Die Startseite bietet Fortsetzen statt Menü');
+    expect(e.nennt_namen).toBe(true);
+    expect(String(e.text)).toMatch(/Seit /);
+  });
+
+  it('führt in die Runde und nicht in ihr Menü', () => {
+    /* Wer die App öffnet, während der Abend läuft, will die Uhr sehen. Ein
+       Zwischenschritt ist an dieser Stelle einer zu viel. */
+    const e = schritt('Die Startseite bietet Fortsetzen statt Menü');
+    expect(e.ziel).toBe('#/session/live');
+    expect(e.fuehrt_an_den_tisch).toBe(true);
   });
 });
 

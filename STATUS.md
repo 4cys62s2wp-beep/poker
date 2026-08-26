@@ -7,9 +7,14 @@ Datei** und weiß, wo es steht.
 - **Branch:** `feature/payments-und-hub`
 - **Abgezweigt von:** `claude/poker-learning-app-concept-ml0xm6` @ `eb7899b`
 - **Letzte Aktualisierung:** 2026-08-26, nach Phase 3
+- **Veröffentlicht:** ja. `feature/payments-und-hub` wurde ohne Umweg
+  (Fast-Forward) nach `claude/poker-learning-app-concept-ml0xm6` gezogen und
+  gepusht; der Workflow „Test & Deploy" ist bei `c4989bb` grün durchgelaufen.
+  Die Live-App zeigt also den Stand dieser Sitzung.
 - **Stand in einem Satz:** Alle drei Arbeitspakete sind abgeschlossen,
-  committet und gepusht. Offen ist nur noch, was ein Mensch, ein Konto oder
-  eine Geschäftsentscheidung braucht — gesammelt in `docs/TODO_MANUELL.md`.
+  committet, gepusht und ausgeliefert. Offen ist nur noch, was ein Mensch, ein
+  Konto oder eine Geschäftsentscheidung braucht — gesammelt in
+  `docs/TODO_MANUELL.md`.
 
 ---
 
@@ -48,7 +53,9 @@ Verhalten der laufenden App etwas, was Geld betrifft.
 | `3624b84` | Phase 1.4: Apple-Signaturprüfung, Ereignis-Übersetzung, Adapter | 357 |
 | `17bd681` | Phase 1.5 + 1.6: Secrets, `SETUP_PAYMENTS.md`, Checkout ohne URL im Bundle → **Gate 1** | 357 |
 | `5ccd621` | Phase 2: Hub-Screen, Bereichsstruktur, Design-Tokens, Spielstil-Analyse → **Gate 2** | 357 |
-| `62b5357` | Phase 3: Token-Audit, Erreichbarkeit, PWA, Gating-Test, toter Code | **365** |
+| `62b5357` | Phase 3: Token-Audit, Erreichbarkeit, PWA, Gating-Test, toter Code | 365 |
+| `c166a37` | Commit-Hash der dritten Phase nachgetragen | 365 |
+| `c4989bb` | CSP: Google-Anmeldung war blockiert; Konfigurationsdateien ausgeliefert | **376** |
 
 Zusammenfassung der ganzen Sitzung: **`SESSION_REPORT.md`**.
 
@@ -86,7 +93,9 @@ die lohnendste offene Arbeit in dieser Reihenfolge:
 
 **Keine.** Der Baum ist sauber, alles ist committet und gepusht.
 
-Neu angelegt in Phase 3:
+Neu angelegt in Phase 3 und danach:
+- `src/lib/csp.ts` + Test — die Sicherheitsrichtlinie, jetzt geprüft
+- `public/monetization.json`, `public/legal.json` — ausdrücklich aus bzw. leer
 - `src/lib/pro/trialAnchor.ts` + Test — schließt die gefundene Gating-Lücke
 - `docs/TOKEN_AUDIT.md` — was umgestellt wurde und was bewusst nicht
 - `docs/ERREICHBARKEIT.md` — jeder Bildschirm, Weg und Rückweg

@@ -18,6 +18,7 @@ Drei Arbeitspakete, strikt nacheinander. Alle drei abgeschlossen.
 | `17bd681` | 1.5/1.6 | Secrets, `SETUP_PAYMENTS.md`, Checkout ohne URL im Bundle |
 | `5ccd621` | 2 | Hub-Screen, Bereichsstruktur, Design-Tokens, Spielstil-Analyse |
 | `62b5357` | 3 | Qualitätsdurchlauf |
+| `c4989bb` | 3+ | CSP-Fund: Google-Anmeldung war blockiert |
 
 **376 Tests grün** (davon 29 Firestore-Regeltests gegen den Emulator),
 Typecheck sauber, Build sauber, 0 Schwachstellen.
@@ -231,6 +232,21 @@ blockierenden Punkte:
 | Apple-Weg ist nur ein Gerüst | Kein Developer-Account, und eine PWA kann StoreKit grundsätzlich nicht aufrufen (B-002) |
 | Zahlungs-Texte stimmen für iOS nicht | `O-5` in `STATUS.md`. Nicht gelöst, weil die iOS-Hülle nicht existiert und eine Verzweigung sonst ungetestet bliebe |
 | Paywall schützt den Status, nicht die Inhalte | Bewusste Abwägung, `ENTSCHEIDUNGEN.md` E-003 |
+
+---
+
+## Veröffentlicht
+
+`feature/payments-und-hub` ist ohne Umweg (Fast-Forward) nach
+`claude/poker-learning-app-concept-ml0xm6` gezogen und gepusht. Der Workflow
+„Test & Deploy" lief bei `c4989bb` grün durch — Typecheck, Tests und Build in
+der sauberen CI-Umgebung, nicht nur lokal. Die Live-App zeigt damit den Stand
+dieser Sitzung.
+
+**Nicht selbst nachgesehen:** Diese Umgebung erreicht `github.io` nicht (der
+Proxy antwortet mit 403). Dass der Workflow grün ist, belegt, dass gebaut und
+hochgeladen wurde — dass die Seite im Browser richtig aussieht, ist damit
+wahrscheinlich, aber nicht von mir geprüft.
 
 ---
 

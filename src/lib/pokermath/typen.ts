@@ -230,3 +230,42 @@ export interface B3Kombinatorik extends Kopf {
   };
   befunde: Befund[];
 }
+
+// ---------------------------------------------------------------------------
+// B4 — Preflop-Equity
+// ---------------------------------------------------------------------------
+
+/** Eine Farbkonfiguration eines Handpaars.
+ *
+ *  Warum das überhaupt einzeln steht: AKs gegen QJs ist eine andere Rechnung,
+ *  wenn beide Hände dieselbe Farbe teilen – geteilte Farbe senkt beider
+ *  Flush-Potenzial. Ein einzelner Mittelwert verwischt das. */
+export interface Farbkonfiguration {
+  /** Lesbar, z. B. „A suited, B suited, gleiche Farbe". */
+  beziehung: Text;
+  /** Wie viele konkrete Kartenpaarungen diese Konfiguration hat. */
+  haeufigkeit: number;
+  equity_a: number;
+}
+
+export interface Matchup {
+  /** Starthand-Kürzel, z. B. `"AKs"`. */
+  a: string;
+  b: string;
+  /** Gewichteter Mittelwert über alle Farbkonfigurationen. 0..1 */
+  equity_a: number;
+  /** Abstand zwischen höchster und niedrigster Konfiguration, in Prozentpunkten. */
+  spanne_pp: number;
+  /**
+   * Ist das wahr, darf die App **keinen Einzelwert ohne die Spanne zeigen**.
+   * Dann liegen auch `farbkonfigurationen` bei. Was genau das bedeutet, steht
+   * als Besonderheit im Herkunftsblock – erzeugt vom Rechenskript.
+   */
+  spanne_relevant: boolean;
+  farbkonfigurationen?: Farbkonfiguration[];
+}
+
+export interface B4Equity extends Kopf {
+  matchups: Matchup[];
+  befunde: Befund[];
+}

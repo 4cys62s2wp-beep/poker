@@ -25,6 +25,7 @@ import {
   type B2PotOdds,
   type B3Kombinatorik,
   type Befund,
+  type B4Equity,
   type Bibliothek,
   type Fallzahl,
   type Herkunft,
@@ -376,6 +377,55 @@ export function pruefeB3(roh: unknown): B3Kombinatorik {
   };
 }
 
+export function pruefeB4(roh: unknown): B4Equity {
+  const k = pruefeKopf(roh, 'b4_preflop_equity');
+  return {
+    ...k,
+    matchups: jedes(k.matchups, 'b4_preflop_equity.matchups', (e, p) => {
+      const o = objekt(e, p);
+      const m = {
+        a: text(o.a, `${p}.a`, 4),
+        b: text(o.b, `${p}.b`, 4),
+        equity_a: anteil(o.equity_a, `${p}.equity_a`),
+        spanne_pp: zahl(o.spanne_pp, `${p}.spanne_pp`, 0, 100),
+        spanne_relevant: o.spanne_relevant === true,
+        ...(o.farbkonfigurationen === undefined ? {} : {
+          farbkonfigurationen: jedes(o.farbkonfigurationen, `${p}.farbkonfigurationen`, (f, q) => {
+            const g = objekt(f, q);
+            return {
+              beziehung: zweisprachig(g.beziehung, `${q}.beziehung`),
+              haeufigkeit: ganzzahl(g.haeufigkeit, `${q}.haeufigkeit`, 1),
+              equity_a: anteil(g.equity_a, `${q}.equity_a`),
+            };
+          }),
+        }),
+      };
+      /* Das Kennzeichen und die Beilage müssen zusammenpassen. Läge eine
+         Spanne bei, ohne dass sie relevant ist, zeigte die App sie nie an;
+         fehlte sie, wo sie relevant ist, zeigte die App einen Einzelwert –
+         genau das, was K3 verbietet. */
+      if (m.spanne_relevant && m.farbkonfigurationen === undefined) {
+        throw new SchemaFehler(p,
+          'ist als spannenrelevant gekennzeichnet, bringt aber keine Farbkonfigurationen mit');
+      }
+      if (!m.spanne_relevant && m.farbkonfigurationen !== undefined) {
+        throw new SchemaFehler(p,
+          'bringt Farbkonfigurationen mit, ist aber nicht als spannenrelevant gekennzeichnet');
+      }
+      if (m.farbkonfigurationen) {
+        const werte = m.farbkonfigurationen.map((f) => f.equity_a);
+        const spanne = (Math.max(...werte) - Math.min(...werte)) * 100;
+        if (Math.abs(spanne - m.spanne_pp) > 0.01) {
+          throw new SchemaFehler(`${p}.spanne_pp`,
+            `ist ${m.spanne_pp}, aus den Konfigurationen ergibt sich ${spanne.toFixed(4)}`);
+        }
+      }
+      return m;
+    }),
+    befunde: pruefeBefunde(k.befunde, 'b4_preflop_equity.befunde'),
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Laden
 // ---------------------------------------------------------------------------
@@ -407,6 +457,9 @@ async function hole<T>(block: string, pruefe: (roh: unknown) => T): Promise<T> {
 export const ladeB1 = () => hole('b1_outs', pruefeB1);
 export const ladeB2 = () => hole('b2_potodds', pruefeB2);
 export const ladeB3 = () => hole('b3_kombinatorik', pruefeB3);
+/** Die Equity-Matrix. Deutlich größer als die anderen drei – deshalb wird
+ *  sie nur geladen, wo sie gebraucht wird, und nicht beim Start. */
+export const ladeB4 = () => hole('b4_preflop_equity', pruefeB4);
 
 /** Nur für Tests. */
 export function _leereZwischenspeicher(): void {

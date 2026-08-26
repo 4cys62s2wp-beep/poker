@@ -6,7 +6,7 @@
 
 import { readFileSync, existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { SchemaFehler, pruefeB1, pruefeB2, pruefeB3 } from '../pokermath/laden';
+import { SchemaFehler, pruefeB1, pruefeB2, pruefeB3, pruefeB4 } from '../pokermath/laden';
 import { ERWARTETE_VERTRAG_VERSION } from '../pokermath/typen';
 
 function lade(name: string): unknown {
@@ -185,5 +185,45 @@ describe('Innere Widersprüche werden erkannt – nicht nur Typen', () => {
     const z = d.blocker.Paar[0];
     [z.schlimmstenfalls, z.bestenfalls] = [z.bestenfalls + 1, z.schlimmstenfalls];
     expect(() => pruefeB3(d)).toThrow(/Reihenfolge/);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// B4 — die Equity-Matrix
+// ---------------------------------------------------------------------------
+//
+// Der Rechenlauf dauert Stunden. Solange er läuft, gibt es die Datei nicht,
+// und diese Tests werden übersprungen statt fehlzuschlagen — ein roter Test
+// für „noch nicht fertig gerechnet" gewöhnt einem das Rotsein an.
+
+const B4_PFAD = 'public/pokermath/b4_preflop_equity.json';
+const B4_DA = existsSync(B4_PFAD);
+
+describe.skipIf(!B4_DA)('B4 wird angenommen, sobald er gerechnet ist', () => {
+  const B4 = () => JSON.parse(readFileSync(B4_PFAD, 'utf8'));
+
+  it('nimmt die ausgelieferte Datei an', () => {
+    const d = pruefeB4(B4());
+    expect(d.matchups.length).toBeGreaterThan(0);
+    expect(d.befunde.length).toBeGreaterThan(0);
+  });
+
+  it('bringt Farbkonfigurationen genau dort mit, wo die Spanne zählt', () => {
+    for (const m of pruefeB4(B4()).matchups) {
+      expect(m.spanne_relevant).toBe(m.farbkonfigurationen !== undefined);
+    }
+  });
+
+  it('kennt jedes Handpaar nur einmal', () => {
+    const gesehen = new Set(pruefeB4(B4()).matchups.map((m) => `${m.a}|${m.b}`));
+    expect(gesehen.size).toBe(pruefeB4(B4()).matchups.length);
+  });
+
+  it('gibt einer Hand gegen sich selbst genau die Hälfte', () => {
+    /* Das muss gelten, wenn die Rechnung stimmt – und es ist die Prüfung,
+       die einen Vorzeichenfehler in der Gewichtung sofort auffliegen ließe. */
+    for (const m of pruefeB4(B4()).matchups.filter((x) => x.a === x.b)) {
+      expect(Math.abs(m.equity_a - 0.5)).toBeLessThan(1e-9);
+    }
   });
 });

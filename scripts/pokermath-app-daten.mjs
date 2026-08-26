@@ -305,6 +305,62 @@ function appB3(d) {
   };
 }
 
+/**
+ * B4 — die Preflop-Equity-Matrix, auf Anzeigegröße gebracht.
+ *
+ * Die vollständige Datei trägt für jedes Handpaar alle Farbkonfigurationen
+ * mit ihren Boardzahlen; das sind mehrere Dutzend Megabyte. Die App bekommt:
+ *
+ * - je Handpaar den gewichteten Wert, die Spanne und das Kennzeichen,
+ * - die einzelnen Farbkonfigurationen **nur** für die gekennzeichneten
+ *   Handpaare. Nur dort braucht die App sie, und nur dort darf sie einen
+ *   Einzelwert nicht ohne Hinweis zeigen (K3).
+ *
+ * Was die Kennzeichnung bedeutet, steht nicht hier, sondern als Besonderheit
+ * im Herkunftsblock — erzeugt vom Rechenskript, nicht formuliert von diesem.
+ */
+function appB4(d) {
+  const datei = 'b4_preflop_equity.json';
+  return {
+    ...kopf(datei, d, 'b4_preflop_equity'),
+    matchups: hole(datei, d, 'matchups', 'liste').map((m) => {
+      const eintrag = {
+        a: hole(datei, m, 'hand_a', 'text'),
+        b: hole(datei, m, 'hand_b', 'text'),
+        equity_a: runde(hole(datei, m, 'equity_a', 'zahl'), 6),
+        spanne_pp: runde(hole(datei, m, 'spanne_pp', 'zahl'), 4),
+        spanne_relevant: hole(datei, m, 'spanne_relevant'),
+      };
+      if (eintrag.spanne_relevant) {
+        eintrag.farbkonfigurationen = hole(datei, m, 'farbkonfigurationen', 'liste')
+          .map((k) => ({
+            beziehung: holeText(datei, k, 'beziehung'),
+            haeufigkeit: hole(datei, k, 'haeufigkeit', 'zahl'),
+            equity_a: runde(hole(datei, k, 'equity_a', 'zahl'), 6),
+          }));
+      }
+      return eintrag;
+    }),
+    befunde: hole(datei, d, 'befunde', 'liste').map((b) => ({
+      schluessel: hole(datei, b, 'schluessel', 'text'),
+      aussage: {
+        de: hole(datei, b, 'aussage', 'text'),
+        en: hole(datei, b, 'aussage_en', 'text'),
+      },
+    })),
+  };
+}
+
+/** Kürzen, ohne die Bedeutung zu verschieben.
+ *
+ *  Sechs Nachkommastellen sind ein Millionstel – feiner, als jede Anzeige je
+ *  zeigt, und grob genug, dass die Datei nicht am Nachkommarauschen
+ *  erstickt. */
+function runde(wert, stellen) {
+  const faktor = 10 ** stellen;
+  return Math.round(wert * faktor) / faktor;
+}
+
 // ---------------------------------------------------------------------------
 // Lauf
 // ---------------------------------------------------------------------------
@@ -350,6 +406,9 @@ const BLOECKE = [
   ['b1_outs', appB1],
   ['b2_potodds', appB2],
   ['b3_kombinatorik', appB3],
+  /* B4 läuft noch. Fehlt die Datei, wird der Block übersprungen – die
+     anderen drei sollen deswegen nicht ausfallen. */
+  ['b4_preflop_equity', appB4],
 ];
 
 function main() {

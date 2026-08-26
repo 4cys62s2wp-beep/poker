@@ -8,7 +8,7 @@ und erscheint im Abschlussbericht als Entscheidungsbedarf.
 
 ---
 
-## W-001 · Restzeitschätzung von B4 auf Konfigurationen umstellen
+## ✅ W-001 · Restzeitschätzung von B4 auf Konfigurationen umstellen
 
 **Was.** `lauf()` in `tools/poker-math/src/b4_preflop_equity.py` rechnet die
 Restzeit aus fertigen Handpaaren hoch. Sauberer wäre: gemessene Sekunden je
@@ -28,11 +28,17 @@ kommen hier aufs Gleiche (E-024).
 
 **Wann es geht.** Sobald B4 durch ist. Dann ist es eine Zehn-Minuten-Änderung.
 
+**Erledigt am 27.08.2026, 23:10.** Anders als geplant: Die verlangte
+Grundlage war schon da, die von mir vorgeschlagene Verfeinerung bringt hier
+nichts. Stattdessen ist die Rechnung aus der Schleife in eine prüfbare
+Funktion gewandert und nennt ihre Grundlage im Protokoll. Begründung in
+`ENTSCHEIDUNGEN.md`, E-029. Fünf Tests.
+
 **Versuche:** 1.
 
 ---
 
-## W-002 · Die dokumentierte Zahl 47 008 korrigieren
+## ✅ W-002 · Die dokumentierte Zahl 47 008 korrigieren
 
 **Was.** Der Kopfkommentar von `b4_preflop_equity.py` nennt 47 008
 verschiedene Rechnungen. Es sind 47 086. Die 78 fehlenden sind die Handpaare
@@ -47,6 +53,13 @@ prüft, ist genau der Fehler, gegen den dieses Projekt gebaut ist — sie ist
 über Monate unbemerkt falsch geblieben.
 
 **Wann es geht.** Sobald B4 durch ist.
+
+**Erledigt am 27.08.2026, 23:08.** Kopfkommentar auf 47 086 korrigiert, der
+abgeleitete Faktor von 17,28 auf 17,25. Dazu neun Tests: Die Zahl wird aus der
+Ausgabedatei nachgezählt, der Faktor als Division nachgerechnet, und ein
+eigener Test hält fest, dass die 78 fehlenden genau die gleichrangigen
+Paarungen mit je einer Farbkonfiguration sind. Gegenprobe gemacht: 47 085
+statt 47 086 lässt den Test fallen.
 
 **Versuche:** 1.
 

@@ -10,11 +10,10 @@ Projekts, unverändert übernommen.
 - **Hauptverzeichnis:** `/home/user/poker` auf `feature/poker-math`. Dort
   läuft der B4-Rechenlauf; die Generator-Arbeit findet dort statt und wird
   hierher gemergt.
-- **Letzte Aktualisierung:** 2026-08-26, während des Nachtlaufs
-- **Stand in einem Satz:** Die vier Aufgaben und alle sieben Blocker sind
-  erledigt; seit dem Abend läuft der Nachtlauf, der ein Designfundament,
-  eine neue Startseite und die Live-Session gebaut hat. Offen ist nur noch
-  der B4-Rechenlauf im Hauptverzeichnis.
+- **Letzte Aktualisierung:** 2026-08-27, nach dem Nachtlauf
+- **Stand in einem Satz:** Alles aus dem Auftrag ist gebaut, geprüft und
+  zusammengeführt — auch der B4-Rechenlauf ist durch. Offen ist nur eine
+  Entscheidung des Auftraggebers (W-003).
 
 > **Zuerst lesen:** `NACHTLAUF.log` — eine Zeile je Ereignis, in zeitlicher
 > Reihenfolge. Der Abschnitt direkt darunter fasst denselben Stand in Prosa
@@ -23,37 +22,41 @@ Projekts, unverändert übernommen.
 ---
 
 <!-- NACHTLAUF-ANFANG -->
-## Nachtlauf 2026-08-26 — wo es steht
+## Nachtlauf 2026-08-26/27 — abgeschlossen
 
-**Fertig und getestet**
+**Alles aus dem Auftrag ist fertig. Die Warteschlange ist leer.**
 
 | Phase | Was | Nachweis |
 |-------|-----|----------|
-| Teil C | Apple-Fingerabdruck aus dem Code entfernt, Prüfung bleibt Pflicht; Vorschaukarte und Freunde-Rangliste als Entscheidung abgelegt | `ENTSCHEIDUNGEN.md` E-021 bis E-024 |
-| 0 | Bestandsaufnahme: 37 Bildschirme, 65 Routen, Datenvertrag 3, B4 lebt (PID geprüft) | `BESTAND.md` |
-| 1 | Designfundament: fünf Schriftstufen nach Verwendung, eine Akzentfarbe, gerechneter Kontrast, Haptik an einer Stelle für die ganze App, Sperrklinke gegen verstreute Werte | `DESIGN.md` 1–6, `design.test.ts`, `haptik.test.ts` |
-| 2 | Startseite mit drei ungleich gewichteten Einstiegen und Fortsetzen-Karte; jeder Bildschirm in höchstens zwei Berührungen, null Sackgassen | `DESIGN.md` 7, `docs/wege.json`, `wege.test.ts` |
-| 3 | Live-Session vollständig: Chipverteilung, Blindstruktur, Timer aus Zeitstempeln, Ton mit Vorwarnung, Zustand überlebt alles; Tischgerät zeigt drei Angaben, alle aus zwei Metern lesbar | `src/lib/live/*`, `uhr.test.ts`, `docs/tisch.json` |
-| 4 | Abende führen, ablegen und über einen Namen wiederfinden; Ereignis am Tisch in vier Griffen; Plätze gerechnet statt eingetragen | `src/lib/session/abende.ts`, `abende.test.ts` |
-| 5 | `BACKLOG.md` mit zwölf Einträgen, jeder beantwortet dieselben vier Fragen | `doku.test.ts` |
-| extra | Kontrast, Tippflächen und Abstände am gerenderten Ergebnis geprüft — vier Befunde gefunden und behoben | `DESIGN.md` 9, `docs/pruefung.json` |
+| Teil C | Apple-Fingerabdruck entfernt, Prüfung bleibt Pflicht; Vorschaukarte und Freunde-Rangliste als Entscheidung abgelegt | `ENTSCHEIDUNGEN.md` E-021 bis E-024 |
+| 0 | Bestandsaufnahme | `BESTAND.md` |
+| 1 | Designfundament: fünf Schriftstufen, eine Akzentfarbe, gerechneter Kontrast, Haptik an einer Stelle | `DESIGN.md` 1–6 |
+| 2 | Startseite und Wege: höchstens zwei Berührungen, null Sackgassen | `DESIGN.md` 7, `docs/wege.json` |
+| 3 | Live-Session vollständig, vom Koffer bis zur laufenden Uhr | `src/lib/live/*`, `docs/tisch.json` |
+| 4 | Abende führen, ablegen, über einen Namen wiederfinden | `src/lib/session/abende.ts` |
+| 5 | `BACKLOG.md` mit dreizehn beschriebenen Einträgen | `doku.test.ts` |
+| B4 | Preflop-Equity-Matrix fertig gerechnet und in der App | `public/pokermath/b4_preflop_equity.json` |
+| W-001 | Restzeitschätzung geprüft, in eine testbare Funktion gezogen | `ENTSCHEIDUNGEN.md` E-029 |
+| W-002 | 47 008 → 47 086 korrigiert, mit neun Tests abgesichert | `test_b4_preflop.py` |
 
 **Der Stand der Prüfungen**
 
-- 734 Tests grün, Typprüfung sauber, `npm run build` baut durch.
-- Vier Browserläufe ohne Beanstandung:
-  `npm run wege` (Erreichbarkeit), `npm run tisch` (Lesbarkeit am Tisch),
-  `npm run durchgang` (ein vollständiger Abend, 17 Schritte),
-  `npm run pruefen` (Kontrast und Tippflächen, 49 Bildschirme).
+- **775 JavaScript-Tests grün, null übersprungen.** Typprüfung sauber,
+  `npm run build` baut durch.
+- **336 Python-Tests grün.**
+- Vier Browserläufe ohne Beanstandung: `npm run wege` (Erreichbarkeit),
+  `npm run tisch` (Lesbarkeit am Tisch), `npm run durchgang` (ein
+  vollständiger Abend plus Lernbildschirm, 20 Schritte), `npm run pruefen`
+  (Kontrast, Tippflächen, Abstände über 49 Bildschirme).
 
-**Was noch offen ist**
+**Was offen ist**
 
-1. Der **B4-Rechenlauf** im Hauptverzeichnis (Preflop-Equity) läuft weiter.
-   Stand siehe `tools/poker-math/output/b4_lauf.log`. Danach: `npm run daten`,
-   dann die Zusammenführung der drei Zweige.
-2. **`WARTESCHLANGE.md`** — W-001 und W-002 warten auf das Ende des B4-Laufs,
-   W-003 wartet auf eine Entscheidung des Auftraggebers (gehört der
-   Online-Tisch noch in die App?).
+Genau eine Sache, und sie ist keine technische: **W-003 — gehört der
+Online-Tisch noch in die App?** Das ist eine Entscheidung des Auftraggebers
+über den inhaltlichen Rahmen, kein fehlendes Stück Arbeit. Ausführlich in
+`WARTESCHLANGE.md` und `SESSION_REPORT.md`.
+
+**Zuerst lesen:** `SESSION_REPORT.md` (Bericht), `NACHTLAUF.log` (Verlauf).
 <!-- NACHTLAUF-ENDE -->
 
 ---

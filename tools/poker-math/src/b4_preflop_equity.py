@@ -14,8 +14,18 @@ gemessenen 2,9 s pro Paarung sind das rund 654 Stunden auf einem Kern.
 Die Farben sind untereinander gleichwertig. A♥K♥ gegen Q♠Q♦ ist dieselbe
 Rechnung wie A♠K♠ gegen Q♥Q♦ — man muss nur die Farben umbenennen. Wird jede
 Paarung auf ihre Kanonform unter allen 24 Farbumbenennungen gebracht, bleiben
-**47 008** wirklich verschiedene Rechnungen übrig, Faktor 17,28. Auf vier
-Kernen sind das rund elf Stunden.
+**47 086** wirklich verschiedene Rechnungen übrig, Faktor 17,25. Auf vier
+Kernen sind das rund fünfeinhalb Stunden.
+
+Diese Zahl stand hier über Monate falsch: **47 008**, also 78 zu wenig. Die
+78 sind genau die Handpaare aus derselben Rangkombination, einmal offsuit und
+einmal suited — 32o gegen 32s, 42o gegen 42s und so weiter, C(13,2) = 78
+Stück, jedes mit genau einer Farbkonfiguration. Sie fehlten in der
+dokumentierten Zahl, nicht in der Rechnung; gerechnet wurde immer richtig.
+
+Damit das nicht wieder passiert, zählt `test_b4_preflop.py` die Zahl aus der
+Ausgabedatei nach und vergleicht sie mit diesem Text. Eine Zahl im Kommentar,
+die niemand prüft, ist genau der Fehler, gegen den dieses Projekt gebaut ist.
 
 Was die Farbbeziehung ausmacht (K3)
 -----------------------------------
@@ -399,6 +409,32 @@ def _arbeite(paar):
     return ergebnis
 
 
+def restschaetzung(verstrichen_s: float, erledigt: int, offen: int) -> timedelta:
+    """Wie lange der Lauf noch braucht.
+
+    Grundlage: **gemessene Sekunden je fertigem Handpaar dieser Sitzung**,
+    hochgerechnet auf die Zahl der verbleibenden Handpaare. Nicht die
+    Farbkonfigurationen, obwohl die eigentliche Arbeit je Konfiguration
+    anfällt.
+
+    Warum die gröbere Grundlage genügt: Die Zahl der Farbkonfigurationen je
+    Handpaar ist über die Arbeitsliste hinweg fast gleichverteilt — 3,26 je
+    fertigem gegen 3,28 je offenem Handpaar, nachgemessen mitten im Lauf vom
+    26.08.2026 (ENTSCHEIDUNGEN.md, E-024 und E-029). Der Grund ist die
+    alphabetische Sortierung der Klassen: Sie mischt Paare, suited und offsuit
+    durch, statt sie zu gruppieren. Beide Grundlagen kommen deshalb auf
+    dasselbe, und die feinere kostete eine halbe Minute Vorlauf, um alle
+    Konfigurationen vorab abzuzählen.
+
+    Eigene Funktion und kein Ausdruck mitten in der Schleife, damit sie sich
+    prüfen lässt, ohne fünf Stunden zu rechnen.
+    """
+    if erledigt <= 0:
+        return timedelta(0)
+    je_einheit = verstrichen_s / erledigt
+    return timedelta(seconds=round(je_einheit * max(0, offen - erledigt)))
+
+
 def lauf(kerne: int | None = None, nur_erste: int | None = None) -> int:
     """Den Lauf starten oder fortsetzen."""
     import multiprocessing as mp
@@ -418,6 +454,11 @@ def lauf(kerne: int | None = None, nur_erste: int | None = None) -> int:
     protokolliere(
         f"Start: {len(alle)} Handpaare insgesamt, {len(fertig)} schon fertig, "
         f"{len(offen)} offen, {kerne} Kerne"
+    )
+    protokolliere(
+        "Grundlage der Restzeitschätzung: gemessene Sekunden je fertigem "
+        "Handpaar dieser Sitzung, hochgerechnet auf die offenen. Siehe "
+        "restschaetzung() für die Begründung."
     )
     if not offen:
         protokolliere("Nichts zu tun – alle Handpaare liegen vor.")
@@ -442,7 +483,7 @@ def lauf(kerne: int | None = None, nur_erste: int | None = None) -> int:
             if verstrichen - zuletzt_gemeldet >= 60 or erledigt == len(offen):
                 zuletzt_gemeldet = verstrichen
                 je_einheit = verstrichen / erledigt
-                rest = timedelta(seconds=round(je_einheit * (len(offen) - erledigt)))
+                rest = restschaetzung(verstrichen, erledigt, len(offen))
                 anteil = 100 * (len(fertig) + erledigt) / len(alle)
                 protokolliere(
                     f"{len(fertig) + erledigt}/{len(alle)} ({anteil:.2f} %) · "

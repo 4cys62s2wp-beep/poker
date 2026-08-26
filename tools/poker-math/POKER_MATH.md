@@ -353,3 +353,43 @@ Am stärksten trifft es AKo: 12 Kombos werden zu 6.*
 Die vollständige Blocker-Verteilung über alle möglichen Mengen bekannter
 Karten steht in `b3_kombinatorik.json` — mit bestem Fall, schlimmstem Fall und
 Mittelwert je Anzahl bekannter Karten.
+
+---
+
+## Was B4 ergeben hat — die Preflop-Equity-Matrix
+
+Alle 169 Starthand-Klassen gegen alle 169, **exakt enumeriert** über sämtliche
+Boards. Keine Simulation, keine Stichprobe, kein Konfidenzintervall.
+
+**Umfang.** 14365 Handpaare, 80,625,607,595 gezählte
+Einzelfälle, rund fünfeinhalb Stunden auf vier Kernen. Möglich wird das durch
+die Farb-Isomorphie: A♥K♥ gegen Q♠Q♦ ist dieselbe Rechnung wie A♠K♠ gegen
+Q♥Q♦. Von 812 175 konkreten Paarungen bleiben so 47 086 wirklich verschiedene
+übrig — Faktor 17,25.
+
+**Die Datei prüft sich selbst.** Beim Zusammenbauen laufen drei Prüfungen über
+die gesamte Matrix, und eine Abweichung bricht ab, statt eine Datei zu
+schreiben, die richtig aussieht:
+
+| Prüfung | Ergebnis |
+|---------|----------|
+| Die Equity beider Seiten summiert sich bei jedem Paar auf eins | erfüllt |
+| Geteilte Pötte zählen für beide Seiten zur Hälfte | erfüllt |
+| Eine Hand gegen sich selbst bekommt genau 50 % | erfüllt |
+
+### Die Farbbeziehung ist keine Nebensache
+
+*Bei 7408 von 14365 Handpaaren hängt die Equity um mehr als einen Prozentpunkt davon ab, wie die Farben zwischen den Händen liegen.*
+
+*Am stärksten wirkt die Farbbeziehung bei 92s gegen JTs: zwischen 28,24 % und 32,20 %, also 3,96 pp Unterschied.*
+
+Deshalb steht in der Ausgabe nicht nur der gewichtete Mittelwert je Handpaar,
+sondern jede unterscheidbare Farbkonfiguration mit ihrer Häufigkeit. Wo die
+Spanne über einem Prozentpunkt liegt, trägt das Matchup ein Kennzeichen: Die
+App darf dort keinen Einzelwert zeigen, ohne die Spanne zu nennen.
+
+**Begründung** für diesen Aufwand: Genau hier entstehen die widersprüchlichen
+Tabellen. Zwei Quellen nennen für dasselbe Handpaar verschiedene Zahlen, beide
+haben recht — die eine meinte suited gegen suited mit gemeinsamer Farbe, die
+andere ohne. Wer nur den Mittelwert nennt, kann diesen Widerspruch nicht
+auflösen, sondern nur fortsetzen.

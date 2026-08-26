@@ -964,3 +964,36 @@ dass die nächste Ausnahme leichter fällt als diese.
 **Was dagegen keine Ausnahme braucht.** Der Streifen an der Unterkante für
 die Systemgesten war schon frei; er ist ein anderer Fall und in `global.css`
 als `--gestenstreifen` geregelt.
+
+---
+
+## E-029 · 2026-08-27 · Die Restzeitschätzung bleibt bei Handpaaren
+
+**Warteschlange W-001, jetzt abgearbeitet.** Der Auftrag (C4) verlangte,
+die Grundlage der Restzeitschätzung zu prüfen und auf gemessene Sekunden je
+fertiger Einheit gegen die Zahl der verbleibenden Einheiten umzustellen.
+
+**Befund.** Genau das tut der Code bereits: `verstrichen / erledigt` mal
+offene Handpaare. Meine eigene Verschärfung in W-001 — je **Farbkonfiguration**
+statt je Handpaar — wäre die feinere Grundlage, weil die Arbeit dort anfällt.
+
+**Gewählt.** Die Grundlage bleibt das Handpaar. Stattdessen ist die Rechnung
+aus der Schleife in die eigene Funktion `restschaetzung()` gewandert, mit der
+Begründung im Docstring, und der Lauf schreibt seine Grundlage jetzt beim
+Start ins Protokoll.
+
+**Alternative:** Vor dem Lauf alle Farbkonfigurationen abzählen und danach
+schätzen.
+
+**Warum nicht:** Nachgemessen mitten im Lauf (E-024) sind es 3,26
+Konfigurationen je fertigem gegen 3,28 je offenem Handpaar — die feinere
+Grundlage käme auf dasselbe Ergebnis. Der Grund ist die alphabetische
+Sortierung der Klassen: Sie mischt Paare, suited und offsuit durch, statt sie
+zu gruppieren. Dafür kostete das Abzählen rund eine halbe Minute Vorlauf bei
+jedem Start. Genauigkeit, die man nicht sieht, gegen Wartezeit, die man sieht.
+
+**Was der eigentliche Mangel war.** Die Frage „worauf beruht diese Zahl?"
+ließ sich nur beantworten, indem man einen Ausdruck mitten in einer Schleife
+las. Das ist jetzt behoben — und durch fünf Tests abgedeckt, darunter der
+Fall „noch kein einziges Handpaar fertig", der vorher eine Division durch null
+gewesen wäre.

@@ -32,6 +32,19 @@ interface ProValue {
   enabled: boolean;
   /** Aktives, bezahltes Abo. */
   pro: boolean;
+  /**
+   * **Der zentrale Schalter.** Ist er `true`, ist JEDES Feature offen –
+   * ohne Sperre, ohne Limit, ohne Paywall.
+   *
+   * Er ist wahr, wenn die Monetarisierung aus ist (heutiger Zustand), oder
+   * wenn ein bezahltes Abo läuft, oder während der Testphase.
+   *
+   * Die Oberfläche liest diesen Wert, statt die Regel selbst zu bilden. Vorher
+   * stand `!enabled || pro || trialActive` an acht Stellen im Code – acht
+   * Kopien einer Entscheidung, die an genau einer Stelle getroffen werden
+   * muss. Siehe ENTSCHEIDUNGEN.md, E-009.
+   */
+  fullAccess: boolean;
   /** Der volle Berechtigungssatz – null, solange keiner vorliegt.
       Wird für die Kündigungs-Führung gebraucht (Apple vs. Web). */
   entitlement: Entitlement | null;
@@ -216,11 +229,18 @@ export function ProProvider({ children }: { children: ReactNode }) {
     }
   }, [config.enabled, effectiveTrialStart, startTrialState]);
 
+  /* Der zentrale Schalter (E-009). Genau hier – und nur hier – wird
+     entschieden, ob alles offen ist. Heute ist er durch `enabled: false` in
+     public/monetization.json dauerhaft wahr; ein einziger Wert in dieser
+     Datei stellt das wieder um. */
+  const fullAccess = !config.enabled || pro || trialActive;
+
   const value = useMemo<ProValue>(
     () => ({
       config,
       enabled: config.enabled,
       pro,
+      fullAccess,
       entitlement,
       cancelRoute: cancelRouteFor(entitlement),
       trialActive,
@@ -236,8 +256,9 @@ export function ProProvider({ children }: { children: ReactNode }) {
       closePaywall,
       paywallReason,
     }),
-    [config, pro, entitlement, trialActive, daysLeft, effectiveTrialStart, startTrialState, access,
-     can, consume, startCheckout, manageBilling, openPaywall, closePaywall, paywallReason],
+    [config, pro, fullAccess, entitlement, trialActive, daysLeft, effectiveTrialStart,
+     startTrialState, access, can, consume, startCheckout, manageBilling, openPaywall,
+     closePaywall, paywallReason],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

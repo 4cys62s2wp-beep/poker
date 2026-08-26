@@ -23,8 +23,8 @@ export function ScenarioTrainer() {
   const { lang, content } = useLang();
   const L = STR[lang];
   const P = PRO_STR[lang];
-  const { enabled, pro, trialActive } = usePro();
-  const unlocked = !enabled || pro || trialActive;
+  const { fullAccess } = usePro();
+  const unlocked = fullAccess;
   // Die Warteschlange wird aus den Inhalten abgeleitet: Ein Sprachwechsel
   // liefert sofort die Szenarien der neuen Sprache (kein eingefrorener State).
   // `round` erzwingt eine neue Mischung, sobald alle Szenarien durch sind.

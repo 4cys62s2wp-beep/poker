@@ -10,9 +10,8 @@ export function ProInsightsPage() {
   const { lang, content } = useLang();
   const L = STR[lang];
   const P = PRO_STR[lang];
-  // `pro` heißt hier `hasPro`, weil `pro` unten für ein einzelnes Profil steht.
-  const { enabled, pro: hasPro, trialActive } = usePro();
-  const unlocked = !enabled || hasPro || trialActive;
+  const { fullAccess } = usePro();
+  const unlocked = fullAccess;
   const [openId, setOpenId] = useState<string | null>(content.proProfiles[0].id);
 
   // Gesperrt: Kopf und ein echter Vorgeschmack (erster Kopf) bleiben sichtbar –

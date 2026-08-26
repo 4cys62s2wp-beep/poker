@@ -179,3 +179,112 @@ umgeschrieben. Sonst ließe sich ein Abo durch bloßes Wiederherstellen von
 Konto zu Konto weiterreichen, und der ursprüngliche Käufer verlöre still
 seinen Zugang. Ein echter Umzug braucht einen Menschen — selten genug, um ihn
 von Hand zu machen, und zu gefährlich, um ihn zu automatisieren.
+
+---
+
+## E-009 · 2026-08-26 · Scope-Korrektur
+
+**Kein aktiver Bezahl-Layer. Ein Schalter, nicht ein Rückbau.**
+
+Neue Vorgabe nach Marktrecherche: Kein Feature ist kostenpflichtig, alle
+Features sind frei zugänglich. Die Architektur aus Phase 1 bleibt vollständig
+bestehen.
+
+- **Gewählt:** `"enabled": false` in `public/monetization.json` bleibt der
+  eine Schalter. Zusätzlich bekommt der Kontext einen abgeleiteten Wert
+  `fullAccess`, den die Oberfläche liest, statt die Regel selbst zu bilden.
+- **Verworfene Alternative 1:** Ein zweiter Schalter (`allFree: true`) neben
+  `enabled`. Zwei Schalter für einen Zustand sind ein Widerspruch, der
+  irgendwann eintritt — dann steht einer auf „frei" und der andere auf „zahlen".
+- **Verworfene Alternative 2:** Die Gating-Aufrufe entfernen. Genau das war
+  ausgeschlossen, und zu Recht: Sie wieder einzubauen wäre teurer als sie
+  stehenzulassen, und ungeprüfter neuer Code ist gefährlicher als geprüfter
+  alter.
+
+**Was sich dabei herausstellte:** Acht Seiten bildeten die Regel
+`!enabled || pro || trialActive` **selbst**. Das Ergebnis stimmte überall,
+aber es waren acht Kopien derselben Entscheidung — und damit acht Stellen, an
+denen der „eine Konfigurationswert" beim nächsten Umbau nicht mehr reicht. Sie
+lesen jetzt alle denselben Wert. Offener Punkt O-1 ist damit wirklich
+erledigt, nicht nur fast.
+
+**Abgesichert:** Ein Test liest die **ausgelieferte**
+`public/monetization.json` und prüft, dass ein frischer Nutzer ohne Abo und
+ohne Testphase auf **jedes** Feature Vollzugriff hat. Wer den Wert
+versehentlich umlegt, sieht es im Testlauf und nicht beim Nutzer.
+
+---
+
+## E-010 · 2026-08-26 · Scope-Korrektur
+
+**Phase 4 wird beschnitten — festgehalten, bevor sie beginnt.**
+
+Ersatzlos gestrichen: Modus B (animierter Pokertisch), Multiplayer-
+Vorbereitung, `MULTIPLAYER_SPÄTER.md`.
+
+**Begründung (übernommen):** Simulierte Pokertische mit Spielgeld-Ökonomie
+treiben die Altersfreigabe hoch — Apple 17+/18+, in Deutschland § 10b JuSchG
+bei glücksspielähnlichen Mechanismen. Das kostet Reichweite, ohne Umsatz zu
+bringen.
+
+**Es bleibt:** 4.1 Zustandsmodell · 4.2 nur Modus A (kompakt) · 4.3 Gesten mit
+asymmetrischer Sicherheit · 4.4 Onboarding · 4.5 **Szenario-Drill** statt
+Hand-Replayer · 4.6 kein Echtgeld.
+
+**4.5 neu gerahmt:** Kein Poker-Spiel, sondern ein Drill. Eine Situation, eine
+Entscheidung, eine Auflösung. Keine Chip-Ökonomie, kein Spielgeld-Guthaben,
+keine Sitzung über mehrere Hände mit Stackverlauf.
+
+**Nichts davon war begonnen.** Im Baum steht kein Modus-B-Code, keine
+Multiplayer-Vorbereitung und kein Replayer — es gibt also nichts zu
+entfernen. Der Auftrag für Phase 4 (die Punkte 4.1–4.6 im Wortlaut) liegt mir
+nicht vor; festgehalten ist hier nur, was davon **nicht** gebaut wird.
+
+**Offene Spannung, die ich nicht allein auflösen darf:** Dieselbe Begründung
+trifft auf drei Dinge zu, die **bereits gebaut, getestet und live** sind — den
+Übungstisch gegen Bots, den Pokerabend-Tisch und den Online-Tisch. Sie haben
+keine Spielgeld-Ökonomie (kein Guthaben, kein Chipkauf, kein Verlauf über
+Sitzungen), aber sie sind simulierte Pokertische. Gestrichen wurde
+ausdrücklich die *Vorbereitung*, nicht der Bestand — und die stehende Regel
+lautet, dass nichts Funktionstragendes ohne Ersatz gelöscht wird. Deshalb
+bleibt der Bestand **unangetastet**, und die Frage steht als Nr. 1 in
+`docs/TODO_MANUELL.md`.
+
+---
+
+## E-011 · 2026-08-26 · Scope-Korrektur
+
+**Hub-Struktur endgültig: Lernen · Nachschlagen · Live-Session.**
+
+Die bisherige Gliederung (Lernen · Live spielen · Session-Tools) wird ersetzt.
+Kein vierter Einstieg — der Platzhalter „Mit Freunden spielen" entfällt.
+
+Die neue Trennlinie ist nicht das Thema, sondern die **Absicht**:
+
+| Bereich | Woran man ihn erkennt |
+|---|---|
+| **Lernen** | Es gibt einen Fortschritt. Man kommt wieder und ist weiter als vorher |
+| **Nachschlagen** | Es gibt keinen Fortschritt. Man will eine Antwort und ist danach fertig |
+| **Live-Session** | Man sitzt am echten Tisch. Die App zählt, rechnet, verwaltet |
+
+**Zuordnungen, die eine Entscheidung verlangten:**
+
+- **Übungstisch → Lernen.** Er ist die Übung zum Kurs und speist die
+  Spielstil-Analyse. Unter „Live-Session" wäre er das einzige, was *nicht* am
+  echten Tisch passiert.
+- **Spielstil-Analyse → Lernen.** Sie zeigt Fortschritt. Genau das ist das
+  Merkmal von „Lernen".
+- **Live-Coach → Nachschlagen.** „Ich habe diese Hand, was tun?" ist eine
+  Frage mit einer Antwort, kein Fortschritt. Verworfen: Live-Session — dort
+  gehört hin, was der Tisch *braucht*, nicht was ein Spieler *fragt*.
+- **Pokerabend + Online-Tisch → Live-Session.** Beide sind Werkzeuge für einen
+  echten Abend: Sie verwalten Karten, Chips und Blinds für Menschen, die
+  zusammensitzen.
+- **Bankroll → Live-Session.** Er erfasst Ergebnisse echter Sitzungen.
+  Verworfen: ein eigener vierter Bereich — es gibt keinen vierten Einstieg.
+- **Glossar → Nachschlagen.** Es lag unter „Lernen", hat aber keinen
+  Fortschritt. Es ist das Musterbeispiel für Nachschlagen.
+
+**Alle alten Adressen leiten weiter.** Keine einzige Seite wird unerreichbar;
+das wird wie in Phase 3.3 im Browser nachgeklickt, nicht am Quelltext
+behauptet.

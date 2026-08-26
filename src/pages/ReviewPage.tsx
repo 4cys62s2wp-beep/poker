@@ -26,8 +26,8 @@ export function ReviewPage() {
   const { lang, content } = useLang();
   const L = STR[lang];
   const P = PRO_STR[lang];
-  const { enabled, pro, trialActive } = usePro();
-  const unlocked = !enabled || pro || trialActive;
+  const { fullAccess } = usePro();
+  const unlocked = fullAccess;
   const [selected, setSelected] = useState<number | null>(null);
   const [sessionDone, setSessionDone] = useState(0);
 

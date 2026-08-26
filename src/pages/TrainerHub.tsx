@@ -22,8 +22,8 @@ export function TrainerHub() {
   const { lang } = useLang();
   const L = STR[lang];
   const P = PRO_STR[lang];
-  const { enabled, pro, trialActive } = usePro();
-  const unlocked = !enabled || pro || trialActive;
+  const { fullAccess } = usePro();
+  const unlocked = fullAccess;
   const today = new Date();
   const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   const dailyDone = data.daily?.date === todayStr;

@@ -32,8 +32,8 @@ export function PushFoldTrainer() {
   const { lang, content } = useLang();
   const L = STR[lang];
   const P = PRO_STR[lang];
-  const { enabled, pro, trialActive } = usePro();
-  const unlocked = !enabled || pro || trialActive;
+  const { fullAccess } = usePro();
+  const unlocked = fullAccess;
   const chartSets = useMemo(
     () => content.pushCharts.map((c) => ({ ...c, set: expandRangeSpec(c.push) })),
     [content],

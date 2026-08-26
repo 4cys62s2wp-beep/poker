@@ -14,9 +14,9 @@ export function ModulePage() {
   const { lang, content } = useLang();
   const L = STR[lang];
   const P = PRO[lang];
-  const { enabled, pro, trialActive } = usePro();
+  const { fullAccess } = usePro();
   /* Ohne Monetarisierung, mit Abo oder in der Testphase bleibt alles offen. */
-  const unlocked = !enabled || pro || trialActive;
+  const unlocked = fullAccess;
   const module = content.modules.find((m) => m.id === (moduleId ?? ''));
 
   if (!module) {

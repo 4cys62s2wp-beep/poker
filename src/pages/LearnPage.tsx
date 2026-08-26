@@ -34,10 +34,10 @@ export function LearnPage() {
   const { data } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
-  const { enabled, pro, trialActive } = usePro();
+  const { fullAccess } = usePro();
   /* Ohne Monetarisierung, mit Abo oder in der Testphase ist alles offen –
      dann sieht die Seite exakt so aus wie bisher. */
-  const unlocked = !enabled || pro || trialActive;
+  const unlocked = fullAccess;
   const [query, setQuery] = useState('');
 
   const hits = useMemo<SearchHit[]>(() => {

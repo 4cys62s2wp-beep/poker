@@ -8,7 +8,18 @@
    der Abwesenheit einer Datei besteht, ist unsichtbar – und erzeugte bei
    jedem Seitenaufruf einen 404 in der Konsole. Fehlt sie trotzdem (ältere
    Installation, Einzeldatei-Vorschau), bleibt die Monetarisierung ebenfalls
-   aus. Beide Wege führen zum selben sicheren Ergebnis. */
+   aus. Beide Wege führen zum selben sicheren Ergebnis.
+
+   `enabled` ist DER Schalter
+   --------------------------
+   Aktuell ist kein Feature kostenpflichtig (ENTSCHEIDUNGEN.md, E-009). Das
+   ist kein Rückbau, sondern dieser eine Wert: Solange er `false` ist, liefert
+   `checkAccess()` für jedes Feature `allowed`, und `usePro().fullAccess` ist
+   wahr. Ihn umzulegen – zusammen mit einer erreichbaren `functionsBaseUrl` –
+   schaltet das vollständig gebaute Gating wieder scharf.
+
+   Nachgewiesen in `src/lib/__tests__/allesFrei.test.ts`: Der Test liest diese
+   ausgelieferte Datei und prüft beide Richtungen. */
 
 export interface MonetizationConfig {
   /** Master-Schalter. false = alles gratis (Standard ohne Datei). */

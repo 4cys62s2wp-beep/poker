@@ -1,0 +1,5 @@
+eval7==0.1.11
+phevaluator==0.6.0
+pokerkit==0.7.5
+pytest==9.1.1
+treys==0.1.8

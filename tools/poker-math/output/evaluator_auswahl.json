@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "zweck": "Nachweis, dass die gewählte Hand-Bewertungsbibliothek die Regeln von Texas Hold'em korrekt umsetzt, samt Geschwindigkeits- und Lizenzvergleich der Kandidaten.",
+  "methode": "exakt",
+  "erzeugt_am": "2026-08-26T08:20:06+00:00",
+  "laufzeit_s": 55.2,
+  "umgebung": {
+    "python": "3.11.15",
+    "maschine": "x86_64",
+    "system": "Linux"
+  },
+  "nachweis": {
+    "geprüfte_blaetter": 2598960,
+    "verfahren": "Jede Bibliothek wird über ALLE Fünfkartenblätter gegen einen unabhängigen, direkt aus den Spielregeln geschriebenen Evaluator gehalten. Verglichen wird die Ordnung, nicht der Zahlenwert: gleiche Stärkeklassen und gleiche Reihenfolge.",
+    "unterscheidbare_stärkeklassen": 7462,
+    "kategorien_haeufigkeit": {
+      "Straight Flush": 40,
+      "Vierling": 624,
+      "Full House": 3744,
+      "Flush": 5108,
+      "Straße": 10200,
+      "Drilling": 54912,
+      "Zwei Paare": 123552,
+      "Ein Paar": 1098240,
+      "High Card": 1302540
+    },
+    "summe_kategorien": 2598960,
+    "referenz_evaluator": "src/referenz_evaluator.py",
+    "dauer_referenzlauf_s": 16.5
+  },
+  "kandidaten": [
+    {
+      "bibliothek": "eval7",
+      "version": "0.1.11",
+      "lizenz": "MIT License",
+      "klassen_referenz": 7462,
+      "klassen_bibliothek": 7462,
+      "gleiche_klassen": true,
+      "monoton": true,
+      "abweichungen": [],
+      "dauer_s": 3.63,
+      "blaetter_pro_s": 836953
+    },
+    {
+      "bibliothek": "phevaluator",
+      "version": "0.6.0",
+      "lizenz": "Apache Software License",
+      "klassen_referenz": 7462,
+      "klassen_bibliothek": 7462,
+      "gleiche_klassen": true,
+      "monoton": true,
+      "abweichungen": [],
+      "dauer_s": 11.02,
+      "blaetter_pro_s": 190203
+    },
+    {
+      "bibliothek": "treys",
+      "version": "0.1.8",
+      "lizenz": "MIT License",
+      "klassen_referenz": 7462,
+      "klassen_bibliothek": 7462,
+      "gleiche_klassen": true,
+      "monoton": true,
+      "abweichungen": [],
+      "dauer_s": 4.72,
+      "blaetter_pro_s": 68623
+    },
+    {
+      "bibliothek": "pokerkit",
+      "version": "0.7.5",
+      "lizenz": "MIT License",
+      "geprueft": 20147,
+      "gleiche_klassen": true,
+      "monoton": true,
+      "abweichungen": [],
+      "dauer_s": 1.11,
+      "blaetter_pro_s": 3225
+    }
+  ],
+  "gewaehlt": "eval7",
+  "begruendung_kurz": "Alle vier Bibliotheken sind nachweislich regelkonform – die Wahl entscheidet daher nicht über Korrektheit, sondern über Geschwindigkeit, Wartungsstand und Lizenz. eval7 ist die schnellste, steht unter MIT und wird gepflegt. Ausführlich in ENTSCHEIDUNGEN.md, E-012.",
+  "gegenprobe_im_testlauf": "phevaluator bleibt als zweite Meinung in der Testsuite: Jede in der App verwendete Größe wird stichprobenartig mit beiden Bibliotheken gerechnet."
+}

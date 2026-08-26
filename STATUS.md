@@ -209,3 +209,4 @@ stehen gesammelt in `RUNME.sh` — nichts davon läuft automatisch.
 | `docs/SCREEN_STRUKTUR.md` | Navigation vorher/nachher |
 | `docs/ERREICHBARKEIT.md` | Jeder Bildschirm, Weg und Rückweg |
 | `docs/TOKEN_AUDIT.md` | Farb- und Pixelwerte, was umgestellt wurde |
+| `tools/poker-math/STATUS.md` | Eigenes Arbeitspaket auf `feature/poker-math`: Generator für alle Zahlen der App |

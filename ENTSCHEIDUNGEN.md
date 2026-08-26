@@ -288,3 +288,75 @@ Die neue Trennlinie ist nicht das Thema, sondern die **Absicht**:
 **Alle alten Adressen leiten weiter.** Keine einzige Seite wird unerreichbar;
 das wird wie in Phase 3.3 im Browser nachgeklickt, nicht am Quelltext
 behauptet.
+
+---
+
+## E-012 · 2026-08-26 · Poker-Mathematik
+
+**Hand-Evaluator: `eval7`.**
+
+Vier Kandidaten waren zu vergleichen. Die Kriterien lauteten Geschwindigkeit,
+Korrektheit, Wartungsstand und Lizenz.
+
+### Der Befund, der die Entscheidung verschoben hat
+
+**Alle vier sind nachweislich korrekt.** Jede wurde über **alle 2 598 960**
+Fünfkartenblätter gegen einen unabhängig geschriebenen Regel-Evaluator
+gehalten (pokerkit über eine deterministische Stichprobe von 20 147 Blättern,
+weil es zweihundertmal langsamer ist). Alle vier erzeugen dieselben **7 462**
+Stärkeklassen in derselben Reihenfolge.
+
+Damit ist Korrektheit **kein Unterscheidungsmerkmal**. Die Wahl entscheidet
+nur noch über Geschwindigkeit, Pflege und Lizenz — und ist deshalb auch
+risikoarm: Ein späterer Wechsel ändert keine einzige Zahl.
+
+### Die Messung
+
+| | Version | Blätter/s | Lizenz | letzte Veröffentlichung |
+|---|---|---:|---|---|
+| **eval7** | 0.1.11 | **836 953** | MIT | vor 28 Tagen |
+| phevaluator | 0.6.0 | 190 203 | Apache 2.0 | vor 46 Tagen |
+| treys | 0.1.8 | 68 623 | MIT | vor 1527 Tagen |
+| pokerkit | 0.7.5 | 3 225 | MIT | vor 4 Tagen |
+
+Gemessen auf Siebenkarten-Blättern, also der echten Arbeitslast. Zahlen aus
+`tools/poker-math/output/evaluator_auswahl.json`, erzeugt von
+`src/pruefe_evaluatoren.py`.
+
+- **Gewählt: eval7.** Viereinhalbmal schneller als der Zweitplatzierte,
+  zweihundertsechzigmal schneller als pokerkit, MIT-Lizenz, aktiv gepflegt.
+- **Warum Geschwindigkeit hier wirklich zählt:** B4 verlangt alle 169
+  Starthände gegen alle 169. Bei exakter Auswertung sind das Größenordnungen
+  von 10¹⁰ Blattbewertungen. Zwischen 837 000/s und 3 200/s liegt der
+  Unterschied zwischen einem Lauf über Stunden und einem über Monate.
+
+### Die verworfenen Alternativen, mit ihrem jeweiligen Vorzug
+
+- **phevaluator** — die naheliegende zweite Wahl und deshalb **nicht
+  entfernt**: Sie bleibt in der Testsuite als *zweite Meinung* installiert.
+  Apache 2.0 ist unproblematisch, aber verlangt beim Weitergeben mehr
+  Sorgfalt als MIT.
+- **treys** — reines Python, dadurch überall lauffähig ohne Übersetzer. Aber
+  seit über vier Jahren keine Veröffentlichung, und zwölfmal langsamer.
+- **pokerkit** — die am aktivsten gepflegte und mit Abstand mächtigste (eine
+  vollständige Spiel-Engine, nicht nur ein Evaluator). Für diese Aufgabe das
+  falsche Werkzeug: Sie ist auf Ausdrucksstärke gebaut, nicht auf Milliarden
+  von Auswertungen.
+
+### Was mich am Vorgehen wichtiger ist als die Wahl selbst
+
+Der Referenz-Evaluator (`src/referenz_evaluator.py`) ist **nicht** ein
+Wegwerf-Prüfskript, sondern bleibt dauerhaft. In ihn fließen die **Regeln**
+des Spiels — dass ein Flush eine Straße schlägt, dass das Ass in A-2-3-4-5
+als Eins zählt. In ihn fließt **keine Zahl**: keine Häufigkeit, keine
+Klassenzahl, kein Vergleichswert aus einer Quelle.
+
+Die Kategorienverteilung im Bericht (40 Straight Flushes, 624 Vierlinge und
+so weiter) ist **gezählt**, nicht nachgeschlagen. Genau so ist es für alle
+folgenden Blöcke vorgesehen.
+
+- **Verworfene Alternative:** Die Bibliothek gegen bekannte Werte aus einer
+  Quelle prüfen.
+- **Begründung:** Das hätte genau die Abhängigkeit hergestellt, die dieses
+  Arbeitspaket ausschließen soll. Ein Vollständigkeitsbeweis über alle
+  Blätter ist zudem stärker als jede Stichprobe aus einer Tabelle.

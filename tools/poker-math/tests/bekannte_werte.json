@@ -1,0 +1,31 @@
+{
+  "_hinweis": [
+    "Diese Datei ist ABSICHTLICH LEER und wird von Lorenz selbst gefüllt.",
+    "",
+    "Zweck: eine unabhängige Gegenprobe. Die Werte hier stammen aus einer Quelle,",
+    "der DU vertraust – nicht aus dem Gedächtnis eines Modells und nicht aus einer",
+    "Webseite, die Claude aufgerufen hat. Genau darin liegt ihr Wert.",
+    "",
+    "Claude trägt hier nichts ein. Täte es das, prüfte sich die Rechnung gegen",
+    "dieselbe Quelle, aus der sie stammt – und der ganze Zweck wäre dahin.",
+    "",
+    "Format je Eintrag:",
+    "  block     Welche Ausgabedatei, ohne .json (z. B. \"b1_outs\")",
+    "  pfad      Punktgetrennter Weg in die Datei hinein, Listen über den Index.",
+    "            Beispiel: \"outs.8.turn_oder_river\"",
+    "  wert      Der erwartete Wert",
+    "  toleranz  Erlaubte absolute Abweichung. Bei gerundeten Quellwerten",
+    "            großzügig wählen (z. B. 0.0005 bei vier Nachkommastellen).",
+    "  quelle    Woher der Wert stammt – Buch, Seite, Programm, was auch immer.",
+    "            Freitext, nur für dich.",
+    "",
+    "Beispiel (auskommentiert, weil die Datei leer bleiben soll):",
+    "  { \"block\": \"b1_outs\", \"pfad\": \"outs.8.turn_oder_river\",",
+    "    \"wert\": 0.0, \"toleranz\": 0.0005, \"quelle\": \"...\" }",
+    "",
+    "Solange \"werte\" leer ist, meldet der Test das offen und läuft durch.",
+    "Sobald etwas drinsteht, wird geprüft – und ein Pfad, der ins Leere zeigt,",
+    "ist ein Fehler, kein stilles Überspringen."
+  ],
+  "werte": []
+}

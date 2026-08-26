@@ -48,7 +48,7 @@ Verhalten der laufenden App etwas, was Geld betrifft.
 | `3624b84` | Phase 1.4: Apple-Signaturprüfung, Ereignis-Übersetzung, Adapter | 357 |
 | `17bd681` | Phase 1.5 + 1.6: Secrets, `SETUP_PAYMENTS.md`, Checkout ohne URL im Bundle → **Gate 1** | 357 |
 | `5ccd621` | Phase 2: Hub-Screen, Bereichsstruktur, Design-Tokens, Spielstil-Analyse → **Gate 2** | 357 |
-| *dieser* | Phase 3: Token-Audit, Erreichbarkeit, PWA, Gating-Test, toter Code | **365** |
+| `62b5357` | Phase 3: Token-Audit, Erreichbarkeit, PWA, Gating-Test, toter Code | **365** |
 
 Zusammenfassung der ganzen Sitzung: **`SESSION_REPORT.md`**.
 

@@ -17,7 +17,7 @@ Drei Arbeitspakete, strikt nacheinander. Alle drei abgeschlossen.
 | `3624b84` | 1.4 | Apple-Signaturprüfung, Ereignis-Übersetzung, Firebase-Adapter |
 | `17bd681` | 1.5/1.6 | Secrets, `SETUP_PAYMENTS.md`, Checkout ohne URL im Bundle |
 | `5ccd621` | 2 | Hub-Screen, Bereichsstruktur, Design-Tokens, Spielstil-Analyse |
-| *dieser* | 3 | Qualitätsdurchlauf |
+| `62b5357` | 3 | Qualitätsdurchlauf |
 
 **365 Tests grün** (davon 29 Firestore-Regeltests gegen den Emulator),
 Typecheck sauber, Build sauber, 0 Schwachstellen.

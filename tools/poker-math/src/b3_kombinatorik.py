@@ -32,7 +32,16 @@ from karten import (
 from metadaten import Faelle, metadatenblock, ohne_evaluator, schreibe, zs
 
 #: Zählt mit, was diese Rechnung durchgeht – für die Herkunftsanzeige.
-FAELLE = Faelle()
+ZAEHLSTELLEN = {
+    "zweikartenblaetter_eingeordnet": zs("eingeordnete Zweikartenblätter",
+                                         "two-card hands classified"),
+    "bekannte_kartenmengen_geprueft": zs("geprüfte Mengen bekannter Karten",
+                                         "sets of known cards checked"),
+    "starthandklassen_am_board_geprueft": zs("am Board geprüfte Starthand-Klassen",
+                                             "starting-hand classes checked at the board"),
+}
+
+FAELLE = Faelle(ZAEHLSTELLEN)
 
 
 def typ_von(kuerzel: str) -> str:
@@ -159,7 +168,7 @@ def beispiel_am_board(hand: str, board: str) -> dict:
 
 
 def berechne() -> dict:
-    globals()["FAELLE"] = Faelle()
+    globals()["FAELLE"] = Faelle(ZAEHLSTELLEN)
     je_typ = kombos_je_typ()
     klassen = klassen_je_typ()
 

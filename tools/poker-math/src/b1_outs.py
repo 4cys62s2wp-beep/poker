@@ -49,7 +49,19 @@ from metadaten import (
 #: Metadatenblock und von dort in die Herkunftsanzeige der App: „über wie
 #: viele Fälle wurde gerechnet?" darf keine hergeleitete Behauptung sein,
 #: sondern eine Beobachtung am laufenden Code.
-FAELLE = Faelle()
+#: Jede Zählstelle einmal benannt, in beiden Sprachen. Die Namen stehen in
+#: der Herkunftsanzeige der App und sagen, was mit „Fällen" gemeint ist.
+ZAEHLSTELLEN = {
+    "turn_river_paare": zs("Paare aus Turn- und Riverkarte",
+                           "pairs of turn and river card"),
+    "fuenfkartenblaetter_bewertet": zs("bewertete Fünfkartenblätter",
+                                       "five-card hands evaluated"),
+    "kandidatenkarten_geprueft": zs("geprüfte Kandidatenkarten",
+                                    "candidate cards checked"),
+    "gegnerhaende_geprueft": zs("geprüfte Gegnerhände", "opponent hands checked"),
+}
+
+FAELLE = Faelle(ZAEHLSTELLEN)
 
 #: Bis zu wie vielen Outs die Tabelle geht. Darüber hinaus kommt die Situation
 #: praktisch nicht vor; die Rechnung selbst hätte damit kein Problem.
@@ -435,7 +447,7 @@ def pruefe_gegenbeispiele() -> list[dict]:
 def berechne() -> dict:
     # Der Zähler beginnt bei null: Er soll diesen Lauf beschreiben, nicht
     # alles, was ein Testlauf vorher durch das Modul geschickt hat.
-    globals()["FAELLE"] = Faelle()
+    globals()["FAELLE"] = Faelle(ZAEHLSTELLEN)
     z = standard_annahmen()["kartenzahlen"]
     nach_flop = z["unbekannt_nach_flop"]
     nach_turn = z["unbekannt_nach_turn"]

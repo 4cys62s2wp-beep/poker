@@ -93,9 +93,14 @@ def test_jede_datei_nennt_ihre_fallzahl(datei):
     f = m["faelle_enumeriert"]
     assert f["gesamt"] > 0, f"{datei.name}: null Fälle gezählt"
     assert f["je_teil"], f"{datei.name}: keine Aufschlüsselung der Fälle"
-    assert sum(f["je_teil"].values()) == f["gesamt"], (
+    assert sum(t["anzahl"] for t in f["je_teil"]) == f["gesamt"], (
         f"{datei.name}: die Aufschlüsselung ergibt nicht die Gesamtzahl"
     )
+    for teil in f["je_teil"]:
+        # Der Name jeder Zählstelle steht in der Herkunftsanzeige der App.
+        assert set(teil["bezeichnung"]) == {"de", "en"}, (
+            f"{datei.name}: Zählstelle '{teil['schluessel']}' nicht zweisprachig"
+        )
 
 
 @pytest.mark.parametrize("datei", BLOCKDATEIEN, ids=lambda p: p.name)

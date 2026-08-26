@@ -48,10 +48,24 @@
     },
     "faelle_enumeriert": {
       "gesamt": 294,
-      "je_teil": {
-        "einsatzgroessen_gerechnet": 8,
-        "outs_schwellen_geprueft": 286
-      }
+      "je_teil": [
+        {
+          "schluessel": "einsatzgroessen_gerechnet",
+          "bezeichnung": {
+            "de": "gerechnete Einsatzgrößen",
+            "en": "bet sizes computed"
+          },
+          "anzahl": 8
+        },
+        {
+          "schluessel": "outs_schwellen_geprueft",
+          "bezeichnung": {
+            "de": "geprüfte Outs-Schwellen",
+            "en": "outs thresholds checked"
+          },
+          "anzahl": 286
+        }
+      ]
     },
     "evaluator": {
       "name": null,
@@ -60,8 +74,8 @@
         "en": "Nothing is evaluated here, it is arithmetic: the bet is a fraction of the pot, and the threshold follows from it. No hand-evaluation library is involved."
       }
     },
-    "erzeugt_am": "2026-08-26T18:54:15+00:00",
-    "laufzeit_s": 0.036,
+    "erzeugt_am": "2026-08-26T19:08:19+00:00",
+    "laufzeit_s": 0.043,
     "umgebung": {
       "python": "3.11.15",
       "system": "Linux",

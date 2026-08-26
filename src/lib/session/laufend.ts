@@ -25,6 +25,14 @@ export interface Spieler {
   eingekauft: number;
   /** Sein Stand beim letzten Eintragen, in Chips. `null` = ausgeschieden. */
   stand: number | null;
+  /** Wann er ausgeschieden ist, in Millisekunden seit 1970 — `null`, solange
+   *  er noch dabei ist.
+   *
+   *  Der Zeitpunkt, nicht der Platz: Aus ihm ergibt sich die Reihenfolge von
+   *  selbst, und er ist die einzige Angabe, die am Tisch ohnehin anfällt. Wer
+   *  stattdessen Plätze einträgt, hat beim nächsten Rebuy zwei Angaben, die
+   *  einander widersprechen können. */
+  raus_um?: number | null;
 }
 
 export interface LaufendeSession {
@@ -52,7 +60,8 @@ function istSpieler(v: unknown): v is Spieler {
   const o = v as Record<string, unknown>;
   return typeof o.name === 'string'
     && typeof o.eingekauft === 'number'
-    && (o.stand === null || typeof o.stand === 'number');
+    && (o.stand === null || typeof o.stand === 'number')
+    && (o.raus_um === undefined || o.raus_um === null || typeof o.raus_um === 'number');
 }
 
 /** Liest den Zustand. Alles, was nicht passt, gilt als „keine Session".

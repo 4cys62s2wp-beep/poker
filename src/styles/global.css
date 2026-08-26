@@ -2333,8 +2333,22 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .tisch-zeit.knapp { color: var(--akzent); }
 
+/* Eine Angabe: die Beschriftung dicht über ihrer Zahl, damit die Abstände
+   zwischen den drei Angaben größer sind als die innerhalb einer. */
+.tisch-angabe {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* Alle drei Zahlen sind aus zwei Metern lesbar — das ist eine Untergrenze,
+   keine Rangfolge. Die Rangfolge machen Größe, Farbe und Ort: die Zeit weiß
+   und am größten, die geltenden Blinds im Akzent, die kommenden gedämpft.
+   Nachgemessen mit `npm run tisch`; die nötige Größe rechnet das Skript aus
+   Leseabstand und Sehwinkel aus, sie steht in docs/tisch.json. */
 .tisch-blinds {
-  font-size: clamp(32px, 11vw, 76px);
+  font-size: clamp(64px, 19vw, 148px);
   font-weight: var(--fw-bold);
   line-height: var(--lh-tight);
   font-variant-numeric: var(--ziffern);
@@ -2342,7 +2356,8 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .tisch-naechste {
-  font-size: var(--fs-fliesstext);
+  font-size: clamp(58px, 15vw, 96px);
+  line-height: var(--lh-tight);
   color: var(--text-dim);
   font-variant-numeric: var(--ziffern);
 }

@@ -16,7 +16,6 @@ export const STR = defineStrings(
     farbeHinzu: 'Farbe hinzufügen',
     farbeWeg: 'Entfernen',
 
-    spieler: 'Spieler',
     einsatzTitel: 'Geld im Spiel?',
     einsatzSub: 'Freiwillig. Ohne Angabe wird kein Kurs gerechnet.',
     euroJeSpieler: 'Euro je Person',
@@ -49,7 +48,6 @@ export const STR = defineStrings(
     hinweisSorteLiegt: 'Eine Farbe bleibt im Koffer — fünf Werte sind am Tisch das Äußerste.',
 
     stufenTitel: 'Blindstufen',
-    stufe: (n: number) => `Stufe ${n}`,
     finaleGut: (bb: number) => `Am Ende bleiben den letzten drei im Schnitt ${bb} Big Blinds — das trägt ein Finale.`,
     finaleZuKurz: (noetig: number) =>
       `Für so viele Startchips ist der Abend zu kurz. Mit dieser Steigung bräuchte es etwa ${Math.round(noetig / 60)} Stunden.`,
@@ -65,7 +63,7 @@ export const STR = defineStrings(
     // ── Tisch ───────────────────────────────────────────────────────────
     blinds: 'Blinds',
     restzeit: 'Restzeit',
-    naechste: 'Nächste Stufe',
+    danach: 'Danach',
     letzteStufe: 'Letzte Stufe',
     pause: 'Pause',
     weiter: 'Weiter',
@@ -90,7 +88,6 @@ export const STR = defineStrings(
     farbeHinzu: 'Add colour',
     farbeWeg: 'Remove',
 
-    spieler: 'Players',
     einsatzTitel: 'Money involved?',
     einsatzSub: 'Optional. Without it, no rate is worked out.',
     euroJeSpieler: 'Euro per person',
@@ -122,7 +119,6 @@ export const STR = defineStrings(
     hinweisSorteLiegt: 'One colour stays in the case — five values is the most a table can handle.',
 
     stufenTitel: 'Blind levels',
-    stufe: (n: number) => `Level ${n}`,
     finaleGut: (bb: number) => `At the end the last three average ${bb} big blinds — that carries a final.`,
     finaleZuKurz: (noetig: number) =>
       `The evening is too short for that many starting chips. At this rate it would take about ${Math.round(noetig / 60)} hours.`,
@@ -137,7 +133,7 @@ export const STR = defineStrings(
 
     blinds: 'Blinds',
     restzeit: 'Time left',
-    naechste: 'Next level',
+    danach: 'Then',
     letzteStufe: 'Final level',
     pause: 'Pause',
     weiter: 'Resume',

@@ -260,3 +260,75 @@ Vor ihnen lag ein Menü.
 
 Die elf Sackgassen aus der früheren Prüfung sind bereits behoben — der Lauf
 findet keine mehr. Was er stattdessen fand, war die Tiefe.
+
+---
+
+## 8. Das Tischgerät: drei Angaben, aus zwei Metern lesbar
+
+Zwei Geräterollen, zwei verschiedene Aufgaben. Das **private Gerät** gehört
+einer Person und liegt in ihrer Hand; das **Tischgerät** liegt in der Mitte,
+alle sehen es, niemand hält es. Für das Tischgerät gelten deshalb eigene
+Regeln.
+
+### Regel 8.1 — Höchstens drei Angaben
+
+Auf dem Tischgerät stehen die geltenden Blinds, die Restzeit der Stufe und
+die kommenden Blinds. Sonst nichts.
+
+**Begründung.** Der Bildschirm ist so groß, wie er ist. Jede vierte Angabe
+nimmt den drei übrigen Platz weg, und Platz ist hier nicht Komfort, sondern
+die eigentliche Leistung: Die Zahl muss aus zwei Metern lesbar sein, sonst
+nimmt jemand das Gerät hoch — und in dem Moment ist es kein Tischgerät mehr,
+sondern ein weiteres Handy in einer Hand.
+
+Was dabei weggefallen ist und warum, steht in `ENTSCHEIDUNGEN.md`, E-027.
+
+### Regel 8.2 — Die nötige Schriftgröße wird gerechnet, nicht geschätzt
+
+Ein Zeichen ist bequem lesbar, wenn es unter einem Sehwinkel von rund 0,3°
+erscheint. Daraus folgt für zwei Meter Abstand:
+
+```
+Zeichenhöhe   = 2000 mm × tan(0,3°)        ≈ 10,5 mm
+Schriftgröße  = 10,5 mm ÷ 0,7              ≈ 15,0 mm   (Versalhöhe ≈ 70 %)
+in CSS-Pixeln = 15,0 mm ÷ (25,4/96) mm     ≈ 56,5 px
+```
+
+**Begründung.** „Groß genug" ist keine prüfbare Angabe. 56,5 px ist eine.
+Die Rechnung steht im Messskript, ihre Zwischenwerte in `docs/tisch.json`,
+und der Test rechnet sie ein zweites Mal nach — sonst wird aus der
+gerechneten Zahl über die Zeit wieder eine behauptete.
+
+### Regel 8.3 — Alle drei Angaben liegen über dieser Grenze
+
+Die Grenze ist eine Untergrenze, keine Rangfolge. Die Rangfolge machen
+Größe, Farbe und Ort: die Restzeit weiß und am größten, die geltenden Blinds
+im Akzent, die kommenden gedämpft.
+
+**Begründung.** Wäre die dritte Angabe zu klein für zwei Meter, wäre sie in
+Wahrheit keine Angabe des Tischgeräts, sondern eine, die man in die Hand
+nehmen muss — also eine, die dort nicht hingehört.
+
+Gemessen (`npm run tisch`):
+
+| Angabe | Handy, 390 px | Tablet quer, 1024 px |
+|--------|---------------|----------------------|
+| Restzeit | 105,3 px | 220 px |
+| Blinds jetzt | 74,1 px | 148 px |
+| Blinds danach | 58,5 px | 96 px |
+| **nötig** | **56,5 px** | **56,5 px** |
+
+### Regel 8.4 — Gemessen wird im Browser, bei beiden Gerätebreiten
+
+`npm run tisch` legt einen laufenden Abend in den Gerätespeicher, öffnet den
+Tischbildschirm bei 390 px und bei 1024 px und schreibt jede sichtbare
+Textzeile mit ihrer tatsächlichen Schriftgröße nach `docs/tisch.json`.
+
+**Begründung.** Dieselbe wie in Abschnitt 6: Eine Schriftgröße aus `clamp()`
+kennt man erst, wenn ein Browser sie ausgerechnet hat. Im Quelltext steht
+`clamp(58px, 15vw, 96px)` — was daraus wird, entscheidet die Fensterbreite.
+
+Mitgemessen und mitgeprüft werden außerdem: keine Navigationsleiste, kein
+Überlauf in beide Richtungen, zwei Bedienknöpfe von mindestens 44 px im
+unteren Drittel, und ein freier Streifen an der Unterkante für die
+Systemgesten.

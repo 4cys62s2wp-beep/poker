@@ -6,6 +6,13 @@
    Stufe und die nächste Stufe. Jede weitere Angabe kostet Größe, und Größe
    ist hier die eigentliche Leistung — aus zwei Metern lesbar.
 
+   Was hier bewusst fehlt: die Nummer der Stufe und die Zahl der verbliebenen
+   Spieler. Beides ist interessant, aber niemand am Tisch braucht es, um zu
+   wissen, was er setzen muss. Die Blindwerte benennen die Stufe besser als
+   ihre Nummer, und wer noch dabei ist, sieht man am Tisch. Gemessen wird
+   diese Regel, nicht behauptet: `npm run tisch` zählt die Elemente mit
+   Zahlen im gerenderten Ergebnis.
+
    Vollbild ohne die normale Navigationsleiste: Wer den Tisch führt, soll
    nicht versehentlich ins Glossar wischen. Verlassen geht über eine bewusste
    Bestätigung.
@@ -119,18 +126,27 @@ export function TischPage() {
   return (
     <div className={`tisch${laeuft ? '' : ' pausiert'}`}>
       <div className="tisch-kopf">
-        <span>{L.stufe(stufeIndex + 1)}</span>
         {!laeuft && <span className="tisch-pausiert">{L.pausiert}</span>}
-        <span>{session.spieler.filter((s) => s.stand !== null).length} · {L.spieler}</span>
       </div>
 
       <div className="tisch-mitte">
-        <span className="tisch-marke">{L.blinds}</span>
-        <span className="tisch-blinds">{sb} / {bb}</span>
+        <div className="tisch-angabe">
+          <span className="tisch-marke">{L.blinds}</span>
+          <span className="tisch-blinds">{sb} / {bb}</span>
+        </div>
+
         <span className={`tisch-zeit${knapp ? ' knapp' : ''}`}>{alsUhr(rest_ms)}</span>
-        <span className="tisch-naechste">
-          {naechste ? `${L.naechste}: ${naechste[0]} / ${naechste[1]}` : L.letzteStufe}
-        </span>
+
+        <div className="tisch-angabe">
+          {naechste ? (
+            <>
+              <span className="tisch-marke">{L.danach}</span>
+              <span className="tisch-naechste">{naechste[0]} / {naechste[1]}</span>
+            </>
+          ) : (
+            <span className="tisch-naechste">{L.letzteStufe}</span>
+          )}
+        </div>
       </div>
 
       <div className="tisch-unten">

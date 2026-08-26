@@ -892,3 +892,45 @@ durchschlägt.
 Wort. Rund jeder zwölfte Mann sieht Rot und Grün nicht zuverlässig
 auseinander — ausgerechnet die beiden Farben, mit denen man „richtig" und
 „falsch" gern anzeigt.
+
+---
+
+## E-027 · 2026-08-26 · Das Tischgerät zeigt drei Angaben — Stufennummer und Spielerzahl fallen weg
+
+**Der Auftrag** setzt für das Gerät in der Tischmitte eine Obergrenze: „nur
+gemeinsame Information, große Schrift, aus zwei Metern lesbar, höchstens drei
+Angaben".
+
+**Vorher** standen fünf Dinge auf dem Bildschirm: die Nummer der laufenden
+Stufe, die Zahl der verbliebenen Spieler, die geltenden Blinds, die Restzeit
+und die kommenden Blinds. Gemessen (`npm run tisch`, 390 px) waren die Blinds
+dabei 42,9 px groß und die kommende Stufe 15 px — zu klein für zwei Meter.
+
+**Gewählt.** Stufennummer und Spielerzahl sind entfernt. Übrig bleiben
+Restzeit, geltende Blinds, kommende Blinds.
+
+**Warum diese drei.** Sie sind genau die Fragen, die am Tisch laut gestellt
+werden: „Wie lange noch?", „Was ist der Big Blind?", „Was kommt als
+Nächstes?" Die Stufennummer beantwortet keine davon — die Blindwerte benennen
+die Stufe besser als ihre Nummer. Und wer noch dabei ist, sieht man am Tisch,
+indem man aufschaut.
+
+**Alternative 1:** Alle fünf lassen und kleiner setzen.
+
+**Warum nicht:** Dann ist die Regel gebrochen, um die es geht. Aus zwei
+Metern unlesbar heißt: Jemand nimmt das Gerät hoch, und in dem Moment ist es
+kein Tischgerät mehr, sondern ein weiteres Handy in einer Hand.
+
+**Alternative 2:** Die Stufennummer klein als Beschriftung stehen lassen.
+
+**Warum nicht:** Eine kleine Zahl neben großen Zahlen ist keine Beschriftung,
+sondern eine vierte Angabe in Tarnkleidung. Die Grenze wäre damit
+verhandelbar, und die nächste Ausnahme käme in der nächsten Woche.
+
+**Nachgemessen statt behauptet.** Die nötige Schriftgröße ist ausgerechnet,
+nicht gesetzt: bei 2 m Abstand und einem Sehwinkel von 0,3° ergibt sich eine
+Zeichenhöhe von 10,5 mm, bei einer Versalhöhe von 70 % der Schriftgröße also
+15 mm, und bei 25,4/96 mm je CSS-Pixel **56,5 px**. Gemessen liegen jetzt
+alle drei Angaben darüber: Handy 105,3 / 74,1 / 58,5 px, Tablet quer
+220 / 148 / 96 px. Der Rechenweg steht in `docs/tisch.json`, der Test rechnet
+ihn nach.

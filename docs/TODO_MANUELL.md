@@ -58,13 +58,30 @@ nicht. Eine Verzweigung zu bauen, die niemand ausprobieren kann, hieße,
 ungetesteten Code für einen Fall zu schreiben, dessen genaue Form noch offen
 ist.
 
-### 5. „Sign in with Apple" einbauen
+### 5. Google-Anmeldung einmal auf dem echten Gerät ausprobieren
+**Warum:** Die Sicherheitsrichtlinie blockierte bis heute das Hilfsskript, das
+Firebase für die Anmeldung lädt — die Anmeldung hätte still nichts getan. Der
+Fehler ist behoben und durch 11 Tests gegen Wiederkehr gesichert
+(`src/lib/csp.ts`), aber gegen die **echten** Google-Server ist er nie gelaufen:
+Diese Umgebung erreicht `apis.google.com` nicht.
+
+**Was zu tun ist:** Auf dem iPhone die Seite öffnen, Profil → „Mit Google
+anmelden". Erwartet wird ein Popup. Passiert nichts, in Safari unter
+Einstellungen → Erweitert → Web-Inspektor die Konsole ansehen — dort steht
+dann, welche Quelle fehlt.
+
+**Falls das Popup blockiert wird:** Die App fällt automatisch auf eine
+Weiterleitung zurück. Voraussetzung ist, dass die Domain in der Firebase-
+Konsole unter Authentication → Einstellungen → Autorisierte Domains steht —
+das ist bereits erledigt.
+
+### 6. „Sign in with Apple" einbauen
 **Warum:** Apples Regel 4.8 verlangt es, sobald eine Drittanbieter-Anmeldung
 angeboten wird. Google-Anmeldung ist eingebaut — die Pflicht besteht also.
 
 **Voraussetzung:** Apple-Developer-Account.
 
-### 6. Preisentscheidung iOS vs. Web
+### 7. Preisentscheidung iOS vs. Web
 **Die Zahlen** stehen in `SETUP_PAYMENTS.md`, Abschnitt 1. Kurz: Bei 4,99 €
 bleiben über Stripe ~3,88 €, über Apple 3,56 € (15 %) oder 2,93 € (30 %).
 
@@ -75,7 +92,7 @@ begründungsbedürftig, sobald jemand beides sieht.
 **Meine Empfehlung für den Start:** gleicher Preis. Preisunterschiede
 zwischen Plattformen verärgern Nutzer mehr, als sie einbringen.
 
-### 7. Small Business Program beantragen
+### 8. Small Business Program beantragen
 15 % statt 30 % — aber nur, wenn man sich **aktiv anmeldet**. Passiert nicht
 von selbst. Erste Handlung nach Erhalt des Developer-Accounts.
 
@@ -83,7 +100,7 @@ von selbst. Erste Handlung nach Erhalt des Developer-Accounts.
 
 ## 🟡 Lohnend — wenn Zeit ist
 
-### 8. Testphase serverseitig führen
+### 9. Testphase serverseitig führen
 **Stand:** Der Beginn der Testphase liegt lokal und ist gegen einfaches
 Zurücksetzen abgesichert (`src/lib/pro/trialAnchor.ts`, 8 Tests). Wer den
 kompletten Browser-Speicher löscht, bekommt eine neue Testphase — verliert
@@ -93,7 +110,7 @@ dabei aber allen Lernfortschritt.
 sollte den Beginn beim ersten Anmelden serverseitig festschreiben. Dafür
 müssen die Cloud Functions laufen.
 
-### 9. Off-Scale-Abstände bildschirmweise angleichen
+### 10. Off-Scale-Abstände bildschirmweise angleichen
 **Umfang:** ~110 Werte, die nicht auf dem 4er-Raster liegen (5, 7, 11, 13,
 15 px). Vollständige Liste in `docs/TOKEN_AUDIT.md`, Abschnitt 3.
 
@@ -103,7 +120,7 @@ verschieben das Bild leise in eine Richtung, die niemand beabsichtigt hat.
 
 **Vorgehen:** Bildschirm für Bildschirm, mit Vorher-Nachher-Vergleich.
 
-### 10. Spielstil-Analyse am Online-Tisch
+### 11. Spielstil-Analyse am Online-Tisch
 **Stand:** Nur der Übungstisch wird ausgewertet. Der Pokerabend-Tisch nicht
 (mehrere Menschen an einem Gerät — nicht zuordenbar), der Online-Tisch auch
 nicht (dort geht nur ein Zug-*Wunsch* an den Gastgeber, der abgelehnt werden
@@ -112,7 +129,7 @@ kann).
 **Machbar wäre es**, wenn der Gastgeber die tatsächlich angewandten Züge
 zurückmeldet. Aufwand mittel, Nutzen ebenfalls.
 
-### 11. Freunde-Rangliste
+### 12. Freunde-Rangliste
 Die Freundesliste steht, eine Wochen-Rangliste nach Lern-XP wäre der
 stärkste Motivator, den die App noch nicht hat. Braucht ein neues Dokument
 `stats/{uid}` mit Name und XP, das nur Freunde lesen dürfen — plus
@@ -125,7 +142,7 @@ Fremde belohnt Menge statt Verstehen, und wer auf Platz 400 landet, hört auf.
 
 ## 🟢 Zum Nachlesen
 
-### 12. Was der Abo-Schutz leistet — und was nicht
+### 13. Was der Abo-Schutz leistet — und was nicht
 **Geschützt:** Der Abo-*Status*. Er kommt aus `entitlements/{uid}` und darf
 laut `firestore.rules` nur der Server schreiben. Durch Tests gegen den
 Emulator belegt, und im Browser gegengeprüft: Weder eine direkte Adresse noch
@@ -137,7 +154,7 @@ Wer die Entwicklerwerkzeuge öffnet, kommt an die Texte.
 Das ist eine bewusste Abwägung (`ENTSCHEIDUNGEN.md`, E-003), kein Versehen.
 Wer später hochpreisige Inhalte verkauft, muss sie neu treffen.
 
-### 13. Wo was steht
+### 14. Wo was steht
 
 | Datei | Inhalt |
 |---|---|

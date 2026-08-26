@@ -1,26 +1,24 @@
+import { readFileSync } from 'node:fs';
+import { buildCsp, isValidAuthDomain } from './src/lib/csp';
 import { defineConfig, type Plugin } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 
-// Content-Security-Policy nur im Produktions-Build injizieren:
-// Der Dev-Server braucht Inline-Skripte/WebSockets, der Einzeldatei-Build Inline-Bundles.
-// connect-src erlaubt neben 'self' nur die Firebase-Endpunkte (Auth + Firestore).
-// wss:// steht mit dabei, weil CSP Schemata strikt trennt: eine https-Quelle
-// erlaubt keine WebSocket-Verbindung zum selben Host. Firestore nutzt normalerweise
-// WebChannel über HTTPS, kann aber je nach Netz auf WebSockets wechseln.
-const CSP = [
-  "default-src 'self'",
-  "script-src 'self'",
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data:",
-  "font-src 'self' data:",
-  "connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://www.googleapis.com wss://firestore.googleapis.com",
-  "worker-src 'self'",
-  "manifest-src 'self'",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "frame-src 'none'",
-].join('; ');
+/* Die Anmelde-Domain steht in public/firebase-config.json und wird hier zur
+   BAUZEIT gelesen, statt sie fest einzutragen: Wer das Projekt wechselt,
+   tauscht die Konfigurationsdatei – und die Richtlinie zieht automatisch mit,
+   statt still auf die alte Domain zu zeigen.
+
+   Die Richtlinie selbst steht in src/lib/csp.ts und ist dort getestet. Hier
+   bleibt nur das Lesen der Datei. */
+function authDomainFromConfig(): string | null {
+  try {
+    const raw = JSON.parse(readFileSync('public/firebase-config.json', 'utf8')) as unknown;
+    const d = (raw as { authDomain?: unknown }).authDomain;
+    return isValidAuthDomain(d) ? d : null;
+  } catch {
+    return null;
+  }
+}
 
 function cspPlugin(): Plugin {
   return {
@@ -29,7 +27,7 @@ function cspPlugin(): Plugin {
     transformIndexHtml(html) {
       return html.replace(
         '<meta charset="UTF-8" />',
-        `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${CSP}" />`,
+        `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${buildCsp(authDomainFromConfig())}" />`,
       );
     },
   };

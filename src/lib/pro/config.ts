@@ -1,8 +1,14 @@
 /* Monetarisierungs-Konfiguration.
-   Liegt neben der index.html als monetization.json. Fehlt die Datei, ist die
-   Monetarisierung komplett aus – die App verhält sich wie eine reine
+   Liegt neben der index.html als monetization.json und wird mit
+   `"enabled": false` ausgeliefert – die App verhält sich damit wie eine reine
    Gratis-Version, ohne Paywall, ohne Preise, ohne Upgrade-Hinweise.
-   Siehe SETUP_PAYMENTS.md. */
+   Siehe SETUP_PAYMENTS.md.
+
+   Die Datei wird mitgeliefert, statt zu fehlen: Ein Ausschalter, der nur aus
+   der Abwesenheit einer Datei besteht, ist unsichtbar – und erzeugte bei
+   jedem Seitenaufruf einen 404 in der Konsole. Fehlt sie trotzdem (ältere
+   Installation, Einzeldatei-Vorschau), bleibt die Monetarisierung ebenfalls
+   aus. Beide Wege führen zum selben sicheren Ergebnis. */
 
 export interface MonetizationConfig {
   /** Master-Schalter. false = alles gratis (Standard ohne Datei). */

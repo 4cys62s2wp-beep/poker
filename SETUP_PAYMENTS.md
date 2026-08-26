@@ -4,10 +4,16 @@ Der gesamte Code steht und ist geprüft. Was fehlt, sind **Konten** — und die
 gibt es nach eigener Planung ab Oktober 2026. Diese Anleitung sagt, was dann
 in welcher Reihenfolge zu tun ist.
 
-**Solange `public/monetization.json` fehlt, ist die Monetarisierung aus.** Die
-App ist dann genau das, was sie heute ist: vollständig kostenlos, ohne Preise,
-ohne Sperren, ohne Upgrade-Hinweise. Diese eine Datei schaltet alles scharf —
-und zwar erst, wenn alles andere nachweislich funktioniert.
+**Solange in `public/monetization.json` `"enabled": false` steht, ist die
+Monetarisierung aus.** Die App ist dann genau das, was sie heute ist:
+vollständig kostenlos, ohne Preise, ohne Sperren, ohne Upgrade-Hinweise. Diese
+eine Datei schaltet alles scharf — und zwar erst, wenn alles andere
+nachweislich funktioniert.
+
+Zwei Riegel, nicht einer: `"enabled": true` allein reicht nicht. Ohne gültige
+`https`-Adresse in `functionsBaseUrl` bleibt alles aus. Der Grund steht in
+`src/lib/pro/config.ts`: Lieber gar keine Paywall als eine, die ins Leere
+führt. Fehlt die Datei ganz, ist ebenfalls alles aus.
 
 Löst ab: `MONETIZATION_SETUP.md` (dort stand Paddle als Merchant of Record im
 Mittelpunkt; mit StoreKit als Pflichtweg auf iOS ändert sich die Rechnung).
@@ -151,7 +157,14 @@ Die Statusmaschine dahinter steht in `docs/STATUSMASCHINE.md`.
 
 ### Schritt 7 — Erst jetzt scharfschalten
 
-`public/monetization.json` aus der Vorlage anlegen, committen, pushen.
+In `public/monetization.json` `"enabled"` auf `true` setzen und
+`functionsBaseUrl`, `priceMonthly` sowie – falls angeboten – `priceAnnual`
+ausfüllen. Committen, pushen, und **danach auf dem Handy nachsehen**, ob die
+Preise stehen und der Kaufweg bis zur Stripe-Seite führt.
+
+Der Schlüssel `_hinweis` in der Datei wird ignoriert und darf stehen bleiben.
+
+Zurückdrehen geht genauso schnell: `"enabled"` wieder auf `false`.
 
 ---
 

@@ -1,0 +1,8 @@
+{
+  "_hinweis": "Hauptschalter der Monetarisierung. Solange 'enabled' false ist, gibt es keine Paywall, keine Preise und keine Upgrade-Hinweise – die App ist vollständig gratis. Zum Einschalten ab Oktober: SETUP_PAYMENTS.md, Abschnitt 6. 'enabled': true wirkt nur zusammen mit einer gültigen https-Adresse in 'functionsBaseUrl'; ohne sie bleibt alles aus.",
+  "enabled": false,
+  "functionsBaseUrl": "",
+  "hasAnnual": false,
+  "priceMonthly": "",
+  "priceAnnual": ""
+}

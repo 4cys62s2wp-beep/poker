@@ -70,14 +70,14 @@ alle etwas, das Code nicht liefern kann:
 **Falls doch weitergearbeitet werden soll, ohne auf Konten zu warten**, ist
 die lohnendste offene Arbeit in dieser Reihenfolge:
 
-- **Freunde-Rangliste** (`docs/TODO_MANUELL.md` Nr. 11) — die Freundesliste
+- **Freunde-Rangliste** (`docs/TODO_MANUELL.md` Nr. 12) — die Freundesliste
   steht bereits; nötig ist ein Dokument `stats/{uid}` mit Name und XP, das nur
   Freunde lesen dürfen, plus Regeln **und** Regeltests in
   `src/lib/__tests__/rules.test.ts`
-- **Off-Scale-Abstände bildschirmweise** (Nr. 9) — Liste in
+- **Off-Scale-Abstände bildschirmweise** (Nr. 10) — Liste in
   `docs/TOKEN_AUDIT.md` Abschnitt 3. **Nicht** per Suchen-und-Ersetzen: Das
   ist eine optische Änderung, keine Umbenennung
-- **Spielstil-Erfassung am Online-Tisch** (Nr. 10) — setzt voraus, dass der
+- **Spielstil-Erfassung am Online-Tisch** (Nr. 11) — setzt voraus, dass der
   Gastgeber die tatsächlich angewandten Züge zurückmeldet
 
 ---
@@ -105,7 +105,7 @@ Entfernt (durch den Hub ersetzt, nichts ging verloren):
 | O-1 | `enabled/pro/trialActive` zu `hasAccess(feature)` zusammenfassen | Phase 2 | ✅ erledigt: `can()` / `checkAccess()` in `src/lib/pro/plan.ts`, Screens rufen nur noch das |
 | O-2 | Statistik-Seite zur Spielstil-Analyse | Phase 2 | ✅ erledigt: `src/pages/StatsPage.tsx` unter `/live/statistik` |
 | O-3 | `customers/{uid}` → `entitlements/{uid}` umziehen | Phase 1.3 | ✅ erledigt, 29 Regeltests gegen den Emulator |
-| O-4 | Spielstil-Erfassung fehlt am Online-Tisch (dort geht nur ein Zug-*Wunsch* an den Gastgeber, der abgelehnt werden kann) | später | offen, bewusst — `docs/TODO_MANUELL.md` Nr. 10 |
+| O-4 | Spielstil-Erfassung fehlt am Online-Tisch (dort geht nur ein Zug-*Wunsch* an den Gastgeber, der abgelehnt werden kann) | später | offen, bewusst — `docs/TODO_MANUELL.md` Nr. 11 |
 | O-5 | **Zahlungs-Texte müssen im iOS-Build anders lauten.** `src/i18n/pages/pro.ts` nennt „Über Stripe – mit Apple Pay, Google Pay, Kreditkarte, PayPal oder SEPA". In der iOS-App ist das (a) falsch, weil dort StoreKit zahlt, und (b) ein Verstoß gegen Richtlinie 3.1.1 | vor dem ersten iOS-Build, **zwingend** | offen — `docs/TODO_MANUELL.md` Nr. 4 |
 | O-6 | Testphase serverseitig führen | wenn Cloud Functions laufen | offen — lokal gegen einfaches Zurücksetzen abgesichert (`trialAnchor.ts`), siehe Risiko 5 |
 
@@ -127,7 +127,7 @@ Entfernt (durch den Hub ersetzt, nichts ging verloren):
    der Weg endet heute in der Hülle.
 4. **Preisgestaltung iOS ≠ Web.** Apple behält 15–30 %. Wer beide Wege gleich
    bepreist, verdient auf iOS deutlich weniger. Zahlen in `SETUP_PAYMENTS.md`,
-   Empfehlung in `docs/TODO_MANUELL.md` Nr. 6.
+   Empfehlung in `docs/TODO_MANUELL.md` Nr. 7.
 5. **Die Testphase läuft lokal.** Wer den *gesamten* Browser-Speicher löscht,
    bekommt eine neue — und verliert dabei allen Lernfortschritt. Das bloße
    Zurücksetzen des Datums wirkt nicht mehr (`src/lib/pro/trialAnchor.ts`,
@@ -143,7 +143,7 @@ Entfernt (durch den Hub ersetzt, nichts ging verloren):
 ```bash
 git checkout feature/payments-und-hub
 npm install
-npm test            # 365 Unit-Tests, braucht nichts weiter
+npm test            # 376 Unit-Tests, braucht nichts weiter
 npm run test:rules  # 29 Firestore-Regeltests gegen den Emulator (braucht Java)
 npx tsc --noEmit    # Typecheck inkl. functions/src
 npm run build       # muss fehlerfrei durchlaufen

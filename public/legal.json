@@ -1,0 +1,8 @@
+{
+  "_hinweis": "Anbieterdaten für das Impressum nach § 5 DDG. Erst wenn 'provider', 'street', 'city' und eine gültige 'email' ausgefüllt sind, zeigt die App ein Impressum. Unvollständige Angaben werden verworfen – ein Impressum darf nicht halb dastehen. ACHTUNG: Vor dem Ausfüllen die Rechtslage als Minderjähriger klären, siehe docs/TODO_MANUELL.md Nr. 1.",
+  "provider": "",
+  "street": "",
+  "city": "",
+  "country": "Deutschland",
+  "email": ""
+}

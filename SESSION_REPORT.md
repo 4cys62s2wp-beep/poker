@@ -19,7 +19,7 @@ Drei Arbeitspakete, strikt nacheinander. Alle drei abgeschlossen.
 | `5ccd621` | 2 | Hub-Screen, Bereichsstruktur, Design-Tokens, Spielstil-Analyse |
 | `62b5357` | 3 | Qualitätsdurchlauf |
 
-**365 Tests grün** (davon 29 Firestore-Regeltests gegen den Emulator),
+**376 Tests grün** (davon 29 Firestore-Regeltests gegen den Emulator),
 Typecheck sauber, Build sauber, 0 Schwachstellen.
 
 ---
@@ -155,6 +155,37 @@ Test: „Testphase durch lokalen Eingriff reaktivierbar: **nein**".
 Wer den gesamten Speicher löscht, bekommt eine neue Testphase — und verliert
 dabei allen Lernfortschritt. Für ein 5-€-Abo ist das eine angemessene Hürde.
 
+### Der schwerste Fund der Sitzung: die Google-Anmeldung wäre nie gelaufen
+
+Die Konsolenprüfung über alle 33 Bildschirme meldete auf dem Profil einen
+CSP-Verstoß: `script-src 'self'` blockierte
+`https://apis.google.com/js/api.js`. Genau dieses Skript lädt Firebase für
+Popup und Weiterleitung — **die gerade erst eingerichtete Google-Anmeldung
+hätte auf dem echten Gerät nie funktioniert.**
+
+Das ist die unangenehmste Sorte Fehler: Er zeigt sich nicht als Absturz,
+sondern als eine Anmeldung, die einfach nichts tut, plus einer Konsolenzeile,
+die niemand sieht. Kein Test hätte ihn gefunden, weil kein Test die
+Sicherheitsrichtlinie gegen die Anmeldung gehalten hat.
+
+**Behoben und gegen Wiederkehr gesichert:** Die Richtlinie steht jetzt in
+`src/lib/csp.ts`, wird zur Bauzeit mit der Anmelde-Domain aus
+`public/firebase-config.json` zusammengesetzt und hat **11 eigene Tests** —
+darunter einer, der einen Hostnamen mit Semikolon abweist, weil der sonst
+eine zweite, selbst gewählte Direktive in die Richtlinie schreiben könnte.
+
+### Zwei 404 bei jedem Seitenaufruf
+
+`monetization.json` und `legal.json` waren als *fehlende* Dateien gedacht —
+fehlt die Datei, ist das Feature aus. Das funktionierte, erzeugte aber bei
+jedem Start zwei rote Zeilen in der Konsole. Eine Konsole, in der immer Rot
+steht, wird nicht mehr gelesen.
+
+Beide werden jetzt ausgeliefert: ausdrücklich ausgeschaltet bzw. als leere
+Vorlage. Die Prüfroutinen bleiben unverändert streng — `enabled: true` wirkt
+weiterhin nur mit gültiger `https`-Adresse, ein halbes Impressum zählt
+weiterhin als keines.
+
 ### Erreichbarkeit
 
 Alle 30 Bildschirme, **im Browser geklickt statt am Quelltext gelesen**.
@@ -210,7 +241,7 @@ gebauten `dist/`-Ordner und Chromium:
 
 ```bash
 npm run build        # Voraussetzung für alles Weitere
-npm test             # 365 Unit-Tests
+npm test             # 376 Unit-Tests
 npm run test:rules   # 29 Firestore-Regeltests (braucht Java)
 npx tsc --noEmit     # Typecheck inkl. functions/src
 npm audit            # Abhängigkeiten

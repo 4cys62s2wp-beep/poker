@@ -73,5 +73,6 @@ npx firebase-tools@15.28.1 deploy --only functions
 
 # --- 7. Monetarisierung einschalten --------------------------------
 # Erst wenn Schritt 6 nachweislich funktioniert hat:
-#   public/monetization.json aus der Vorlage anlegen, committen, pushen.
+#   In public/monetization.json "enabled" auf true setzen und
+#   functionsBaseUrl + Preise eintragen. Committen, pushen.
 # Vorher bleibt die App vollständig gratis – das ist Absicht.

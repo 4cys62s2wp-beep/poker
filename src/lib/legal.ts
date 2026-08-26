@@ -1,8 +1,12 @@
 /* Anbieterdaten für Impressum & Co.
-   Kommen aus legal.json neben der index.html. Ohne Datei zeigt die App nur
-   die Teile, die ohne persönliche Angaben korrekt sind (Datenschutz-Hinweise,
+   Kommen aus legal.json neben der index.html, die als leere Vorlage
+   mitgeliefert wird. Solange die Felder leer sind, zeigt die App nur die
+   Teile, die ohne persönliche Angaben korrekt sind (Datenschutz-Hinweise,
    Spielerschutz). Ein Impressum darf nicht erfunden werden – deshalb
-   erscheint es erst, wenn die Daten wirklich hinterlegt sind. */
+   erscheint es erst, wenn die Daten wirklich hinterlegt sind, und ein
+   unvollständiger Satz zählt als nicht hinterlegt.
+
+   Fehlt die Datei ganz, gilt dasselbe. */
 
 export interface LegalConfig {
   /** Vollständiger Name bzw. Firma des Anbieters. */

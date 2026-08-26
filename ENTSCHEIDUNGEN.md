@@ -147,7 +147,7 @@ zurücksetzt, bekommt beliebig oft neue sieben Tage.
 - **Was der Anker nicht leistet:** Wer den gesamten Speicher löscht, bekommt
   eine neue Testphase — und verliert dabei allen Lernfortschritt. Für ein
   5-€-Abo ist das eine angemessene Hürde. Als offener Punkt O-6 in `STATUS.md`
-  und als Nr. 8 in `docs/TODO_MANUELL.md` vermerkt.
+  und als Nr. 9 in `docs/TODO_MANUELL.md` vermerkt.
 - **Nicht betroffen:** Das bezahlte Abo. Dessen Status kommt aus
   `entitlements/{uid}` und darf laut `firestore.rules` nur der Server
   schreiben — durch Emulator-Tests belegt.

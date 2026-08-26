@@ -55,7 +55,12 @@ from karten import (
 )
 
 WURZEL = Path(__file__).resolve().parent.parent
+#: Der gesicherte Stand – wird in git geführt und bewusst fortgeschrieben.
 TEILDATEI = WURZEL / "output" / "b4_teil" / "matchups.jsonl"
+#: Wohin der LAUFENDE Prozess schreibt. Bewusst nicht in git: Eine Datei, die
+#: ein Prozess gerade beschreibt, kann nicht gleichzeitig committet und sauber
+#: sein. Mit `--sichern` wandert der Inhalt in die Datei darüber.
+LAUFDATEI = WURZEL / "output" / "b4_teil" / "matchups.live.jsonl"
 LOGDATEI = WURZEL / "output" / "b4_lauf.log"
 ZIELDATEI = WURZEL / "output" / "b4_preflop_equity.json"
 
@@ -238,23 +243,56 @@ def arbeitsliste() -> list[tuple[str, str]]:
     return [(a, b) for i, a in enumerate(klassen) for b in klassen[i:]]
 
 
-def bereits_fertig() -> set[tuple[str, str]]:
-    """Was in der Teildatei schon steht. Kaputte letzte Zeile wird verworfen."""
-    if not TEILDATEI.exists():
-        return set()
-    fertig = set()
-    with TEILDATEI.open(encoding="utf-8") as f:
+def _lies_zeilen(pfad: Path):
+    """Alle brauchbaren Zeilen einer Teildatei. Kaputte werden übersprungen."""
+    if not pfad.exists():
+        return
+    with pfad.open(encoding="utf-8") as f:
         for zeile in f:
             zeile = zeile.strip()
             if not zeile:
                 continue
             try:
-                d = json.loads(zeile)
+                yield json.loads(zeile)
             except json.JSONDecodeError:
                 # Abbruch mitten im Schreiben: Diese Einheit gilt als offen.
                 continue
-            fertig.add((d["hand_a"], d["hand_b"]))
-    return fertig
+
+
+def alle_ergebnisse() -> dict:
+    """Gesicherter Stand und laufender Schreibstrom zusammen.
+
+    Bei Dopplung gewinnt der laufende – er ist der jüngere.
+    """
+    ergebnisse: dict = {}
+    for pfad in (TEILDATEI, LAUFDATEI):
+        for d in _lies_zeilen(pfad):
+            ergebnisse[(d["hand_a"], d["hand_b"])] = d
+    return ergebnisse
+
+
+def bereits_fertig() -> set:
+    return set(alle_ergebnisse())
+
+
+def sichere() -> int:
+    """Den laufenden Schreibstrom in den gesicherten Stand übernehmen.
+
+    Danach ist der Arbeitsbaum wieder sauber und der Fortschritt liegt in git.
+    Geschrieben wird sortiert, damit dieselbe Menge Ergebnisse immer dieselbe
+    Datei ergibt – sonst wäre jeder Sicherungsschritt ein großer Diff.
+    """
+    ergebnisse = alle_ergebnisse()
+    if not ergebnisse:
+        protokolliere("Nichts zu sichern.")
+        return 0
+    TEILDATEI.parent.mkdir(parents=True, exist_ok=True)
+    with TEILDATEI.open("w", encoding="utf-8") as f:
+        for schluessel in sorted(ergebnisse):
+            f.write(json.dumps(ergebnisse[schluessel], ensure_ascii=False) + "\n")
+    LAUFDATEI.unlink(missing_ok=True)
+    protokolliere(f"Gesichert: {len(ergebnisse)} von {len(arbeitsliste())} Handpaaren")
+    return 0
 
 
 def protokolliere(text: str) -> None:
@@ -294,12 +332,12 @@ def lauf(kerne: int | None = None, nur_erste: int | None = None) -> int:
         protokolliere("Nichts zu tun – alle Handpaare liegen vor.")
         return 0
 
-    TEILDATEI.parent.mkdir(parents=True, exist_ok=True)
+    LAUFDATEI.parent.mkdir(parents=True, exist_ok=True)
     begonnen = time.perf_counter()
     erledigt = 0
     zuletzt_gemeldet = 0.0
 
-    with mp.Pool(kerne) as pool, TEILDATEI.open("a", encoding="utf-8") as ziel:
+    with mp.Pool(kerne) as pool, LAUFDATEI.open("a", encoding="utf-8") as ziel:
         for ergebnis in pool.imap_unordered(_arbeite, offen, chunksize=1):
             ziel.write(json.dumps(ergebnis, ensure_ascii=False) + "\n")
             ziel.flush()
@@ -377,21 +415,10 @@ def zusammenbauen() -> int:
     from metadaten import metadatenblock, schreibe
 
     start = time.perf_counter()
-    if not TEILDATEI.exists():
-        protokolliere("Keine Teildatei – erst den Lauf starten.")
+    eintraege = alle_ergebnisse()
+    if not eintraege:
+        protokolliere("Noch nichts gerechnet – erst den Lauf starten.")
         return 1
-
-    eintraege: dict[tuple[str, str], dict] = {}
-    with TEILDATEI.open(encoding="utf-8") as f:
-        for zeile in f:
-            zeile = zeile.strip()
-            if not zeile:
-                continue
-            try:
-                d = json.loads(zeile)
-            except json.JSONDecodeError:
-                continue
-            eintraege[(d["hand_a"], d["hand_b"])] = d  # spätere Zeile gewinnt
 
     erwartet = arbeitsliste()
     fehlend = [p for p in erwartet if p not in eintraege]
@@ -481,6 +508,8 @@ def zusammenbauen() -> int:
 def main(argv: list[str]) -> int:
     if "--zusammenbauen" in argv:
         return zusammenbauen()
+    if "--sichern" in argv:
+        return sichere()
     kerne = None
     nur = None
     for i, a in enumerate(argv):

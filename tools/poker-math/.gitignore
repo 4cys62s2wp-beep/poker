@@ -2,3 +2,10 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Der laufende Schreibstrom von B4. Eine Datei, die ein Prozess gerade
+# beschreibt, kann nicht gleichzeitig committet und sauber sein. Der Stand
+# wird mit `--sichern` bewusst nach output/b4_teil/matchups.jsonl übernommen.
+output/b4_teil/matchups.live.jsonl
+output/b4_stdout.log
+output/b4.pid

@@ -63,7 +63,8 @@ Gestartet am 26.08.2026, Option 1 (exakt, kein Monte Carlo), auf drei Kernen.
 | Gemessen | rund 2,1 s je Handpaar |
 | Geschätzte Gesamtdauer | **rund 8,5 Stunden** |
 | Fortschritt | `output/b4_lauf.log` |
-| Zwischenstand | `output/b4_teil/matchups.jsonl`, eine Zeile je fertigem Handpaar |
+| Laufender Strom | `output/b4_teil/matchups.live.jsonl` – **nicht** in git |
+| Gesicherter Stand | `output/b4_teil/matchups.jsonl` – in git, eine Zeile je fertigem Handpaar |
 
 ### Wenn der Lauf abbricht
 
@@ -81,6 +82,32 @@ angehängt wurde.
 
 Nach jedem Handpaar wird geschrieben **und** `fsync` aufgerufen. Ein
 Stromausfall kostet höchstens die gerade laufende Einheit.
+
+### Warum zwei Dateien
+
+Eine Datei, die ein Prozess gerade beschreibt, kann nicht gleichzeitig
+committet und sauber sein — jeder Commit ist im selben Augenblick veraltet.
+Deshalb schreibt der Lauf in `matchups.live.jsonl` (nicht in git), und der
+Stand wird bewusst übernommen:
+
+```bash
+PYTHONPATH=src .venv/bin/python src/b4_preflop_equity.py --sichern
+```
+
+Danach steht alles in `matchups.jsonl`, der Arbeitsbaum ist sauber und der
+Fortschritt liegt in git. Geschrieben wird sortiert, damit dieselbe Menge
+Ergebnisse immer dieselbe Datei ergibt — sonst wäre jede Sicherung ein großer
+Diff. Beim Fortsetzen liest der Lauf **beide** Dateien.
+
+### Den Lauf beenden
+
+```bash
+kill "$(cat output/b4.pid)"
+```
+
+Nicht `pkill -f b4_preflop_equity`: Das trifft auch die eigene Shell, wenn der
+Suchbegriff in ihrer Kommandozeile steht. Genau so ist mir dieser Lauf einmal
+mitsamt der Sitzung abgestürzt.
 
 ### Wenn der Lauf durch ist
 

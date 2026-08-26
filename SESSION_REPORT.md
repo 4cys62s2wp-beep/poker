@@ -40,8 +40,23 @@ inhaltlichen: ob der Online-Tisch in die App gehört.
 - Vier Browserläufe an der gebauten App, alle ohne Beanstandung:
   `npm run wege` (Erreichbarkeit, 49 Bildschirme),
   `npm run tisch` (Lesbarkeit am Tisch, zwei Gerätebreiten),
-  `npm run durchgang` (ein vollständiger Abend, 17 Schritte),
+  `npm run durchgang` (ein vollständiger Abend plus Lernbildschirm, 20 Schritte),
   `npm run pruefen` (Kontrast, Tippflächen, Abstände, 49 Bildschirme).
+
+**Drei Dinge, die vorher behauptet und jetzt gemessen sind:**
+
+- **Ohne Netz.** Der Durchgang schaltet das Netz im Browser wirklich ab und
+  lädt neu. Der Tisch kommt zurück, die Uhr läuft weiter, der Abend ist da.
+  Vorher war das aus dem Quelltext geschlossen.
+- **Der Weg von B4 in die App.** Er war gebaut, aber noch nie gelaufen — die
+  Datei entsteht erst nach Stunden. Jetzt läuft er in einem Test gegen eine
+  Probe mit drei Handpaaren und wird von derselben Ladeprüfung angenommen,
+  die im Browser läuft. Wenn der Rechenlauf durch ist, scheitert dieser
+  Schritt nicht mehr an der Form.
+- **Die Zahlen im Lehrtext.** Sechzehn Sätze der Art „9 Outs × 4 = 36 %,
+  exakt 35,0 %" werden gegen die gerechneten Daten gehalten. Alle stimmen.
+  Gegen genau diese Art von abgeschriebener Zahl ist das ganze Projekt
+  gebaut.
 
 ---
 

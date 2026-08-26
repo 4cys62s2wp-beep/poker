@@ -145,6 +145,9 @@ export function PotOddsDrill() {
 
   function antworte(nutzerMeintLohnt: boolean) {
     if (antwort !== null || !aufloesung) return;
+    /* Der Stoß in der Hand ist am Tisch die einzige Rückmeldung, die
+       ankommt — man schaut nicht hin, und laut ist es auch. */
+   
     setAntwort(nutzerMeintLohnt);
     setVerlauf((v) => [...v, nutzerMeintLohnt === aufloesung.lohnt]);
   }

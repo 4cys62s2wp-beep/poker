@@ -726,3 +726,241 @@ Zwei Programme mit derselben Aufgabe sind keine Redundanz. Geblieben ist das
 Node-Skript, weil die App es beim Bauen ohnehin aufruft. Das Python-Skript
 ist gelöscht, aber nicht spurlos: An seiner Stelle liegt eine Datei, die
 sagt, wohin es gegangen ist und warum.
+
+---
+
+## E-021 · 2026-08-26 · Apple-Wurzelzertifikat: Wert raus, Prüfung bleibt
+
+**Auftrag (C3).** Prüfen, ob ein aktiver Pfad den Fingerabdruck erreicht.
+Falls nicht: entfernen.
+
+**Gefunden.** Kein aktiver Pfad.
+
+- Der Auslieferungsablauf (`.github/workflows`) baut die Seite und stellt sie
+  auf GitHub Pages. **Firebase Functions werden nicht ausgeliefert** — der
+  Webhook existiert im Quelltext und läuft nirgends.
+- Der Weg zu StoreKit greift nur, wenn `isNativeIos` wahr ist
+  (`src/lib/payments/provider.ts`). Es gibt keinen nativen iOS-Build.
+- `linkAppleTransaction` wird von `src/` nirgends aufgerufen.
+
+**Gewählt.** Der **Wert** ist entfernt, die **Prüfung** bleibt vollständig.
+Der Fingerabdruck ist jetzt ein Pflichtargument und kommt als Geheimnis
+`APPLE_ROOT_CA_SHA256` aus der Umgebung; fehlt es, nimmt der Webhook nichts
+an und antwortet mit 503.
+
+**Alternative:** Den ganzen Apple-Weg löschen — appleVerify.ts, appleWebhook,
+linkAppleTransaction — und ihn bei Wiederaufnahme der Zahlungen neu bauen.
+
+**Warum nicht:** E-009 hält ausdrücklich fest, dass die Payment-Architektur
+aus Phase 1 **vollständig bestehen bleibt** — sie ist korrekt gebaut und wird
+später gebraucht. Der Auftrag C3 nennt als Problem außerdem nicht den Code,
+sondern den ungeprüften Wert. Die Prüfkette selbst ist echte Arbeit mit 18
+Tests dahinter; sie noch einmal zu schreiben wäre Verlust ohne Gewinn.
+
+**Was der Umbau bringt, was Löschen nicht gebracht hätte:** Aus einer stillen
+ungeprüften Annahme wird eine laute Forderung. Wer den Weg wieder anschaltet,
+**muss** den Fingerabdruck selbst bilden:
+
+```
+openssl x509 -in AppleRootCA-G3.cer -inform DER -fingerprint -sha256 -noout
+```
+
+Er kann ihn nicht mehr aus Versehen erben.
+
+**Abweichung vom Auftrag, bewusst.** C3 nennt „Eintrag Nr. 2 in
+docs/TODO_MANUELL.md". Nr. 2 ist „Impressum als Minderjähriger klären" — ein
+rechtlicher Punkt, der nichts damit zu tun hat. Gemeint ist ersichtlich
+Nr. 3, „Apple Root CA gegenprüfen". Entfernt wurde Nr. 3. Nr. 2 steht
+unverändert.
+
+---
+
+## E-022 · 2026-08-26 · Freunde-Rangliste bleibt gestrichen
+
+**Entschieden (C2).** Der Eintrag stammt aus dem Mehrspieler-Paket, das wegen
+der Altersfreigabe entfernt wurde. Ranglisten setzen außerdem eine
+Nutzermasse voraus, die es nicht gibt — eine Rangliste unter drei Leuten ist
+keine.
+
+**Alternative:** Den Eintrag in `docs/TODO_MANUELL.md` löschen.
+
+**Warum nicht:** Ein gelöschter Eintrag taucht in einem halben Jahr als „gute
+Idee" wieder auf, und dann fängt die Überlegung von vorn an. Nr. 13 steht
+deshalb als durchgestrichene Zeile mit Begründung da.
+
+---
+
+## E-023 · 2026-08-26 · Vorschaukarte je Aufgabe bleibt ungebaut
+
+**Entschieden (C1).** Die allgemeine Karte reicht. Der Umbau von `HashRouter`
+auf `BrowserRouter` samt vorab erzeugter Seiten bleibt ungebaut.
+
+**Alternative:** Den Router jetzt umbauen und die Seiten vorab erzeugen.
+
+**Warum nicht:** Teilbare Links entfalten ihren Wert erst, wenn es Nutzer
+gibt, die teilen. Aktuell gibt es keine. Vorab erzeugte Seiten müssten
+dagegen bei jeder Datenänderung neu erzeugt werden — dauerhafte Last für
+einen erst später eintretenden Vorteil.
+
+Beides ist **eine** Entscheidung und keine zwei: Ohne Router-Umbau keine
+eigenen Seiten, ohne eigene Seiten keine eigene Karte. Fällig, sobald das
+Hosting feststeht. Als zusammenhängender Eintrag in `BACKLOG.md`.
+
+Damit ist B-007 in `BLOCKER.md` beantwortet und geschlossen.
+
+---
+
+## E-024 · 2026-08-26 · Restzeit von B4: Grundlage geprüft, ein Zählfehler gefunden
+
+**Auftrag (C4).** Prüfen, worauf die laufende Restzeitschätzung beruht, und
+gegebenenfalls auf Sekunden je Farbkonfiguration umstellen.
+
+**Gefunden — die Grundlage.** Die Schätzung rechnet aus den in **diesem Lauf**
+fertigen Handpaaren hoch (`je_einheit = verstrichen / erledigt`). Der Verdacht
+war, dass sie dadurch systematisch zu optimistisch ist, weil frühe Handpaare
+billiger sind.
+
+**Nachgemessen — der Verdacht trifft hier nicht zu.** Die Zahl der
+Farbkonfigurationen je Handpaar ist über die Arbeitsliste hinweg fast
+gleichverteilt: 3,26 je fertigem gegen 3,28 je offenem Handpaar. Beide
+Grundlagen kommen deshalb aufs Gleiche — 15,6 Stunden Arbeitszeit über
+Konfigurationen gegen 15,8 Stunden über Handpaare. Der Grund ist die
+alphabetische Sortierung der Klassen: Sie mischt Paare, suited und offsuit
+durch, statt sie zu gruppieren.
+
+**Gefunden — ein echter Zählfehler.** Der Kopfkommentar von
+`b4_preflop_equity.py` nennt **47 008** verschiedene Rechnungen. Vollständig
+nachgezählt sind es **47 086**. Die Differenz von 78 ist exakt die Zahl der
+Handpaare aus derselben Rangkombination, einmal offsuit und einmal suited —
+`32o` gegen `32s`, `42o` gegen `42s`, und so weiter, C(13,2) = 78 Stück, jedes
+mit genau einer Farbkonfiguration. Sie fehlen in der dokumentierten Zahl.
+
+Nachgerechnet mit einem lesenden Skript, zweifach abgesichert: einmal über
+alle 14 365 Handpaare einzeln (36 s), einmal über 21 Signaturen aus Handtyp
+und Rangüberschneidung. Beide Wege ergeben 47 086.
+
+**Nicht geändert, und warum.** Die Umstellung im Code betrifft
+`tools/poker-math/`. Der Ordner gehört dem laufenden Prozess (A1), und eine
+Änderung dort würde ohnehin erst nach einem Neustart wirken. Beides — die
+Umstellung der Schätzgrundlage und die Korrektur der 47 008 — steht in
+`WARTESCHLANGE.md`.
+
+---
+
+## E-025 · 2026-08-26 · Eine Akzentfarbe — Regel sofort, Umbau später
+
+**Vorgabe (Phase 1.2).** Genau eine Akzentfarbe, reserviert für den
+Live-Bereich, sonst neutrale Grautöne.
+
+**Gewählt.** Die Regel gilt ab sofort für neu gebaute Bildschirme.
+`--akzent` (#4fbf8e) ist die eine Akzentfarbe. Der Bestand behält vorerst
+seine vier Bereichsfarben.
+
+**Alternative:** Alle 37 Bildschirme in derselben Nacht umstellen.
+
+**Warum nicht:** Ein Farbumbau über 37 Bildschirme ist keine Änderung,
+sondern eine Neugestaltung. Der Unterschied wäre morgen früh nicht mehr
+prüfbar — man könnte nicht auseinanderhalten, was Absicht war und was
+Kollateralschaden. Und die Regel selbst ist damit nicht schwächer: Jeder
+Bildschirm, der ab heute entsteht, hält sie ein, und das sind in dieser Nacht
+die wichtigsten.
+
+**Was stattdessen sofort passiert ist:** Der alte Live-Akzent `--felt-light`
+lag bei 3,92 zu 1 auf dunklem Grund und war damit als Text schlicht
+unzulässig. Der neue Akzent liegt bei 8,32 zu 1. Das war kein
+Geschmacksurteil, sondern ein Messfehler, der jetzt behoben ist.
+
+**Wo der Umbau steht:** `BACKLOG.md`, gemeinsam mit der Ablösung der drei
+Alt-Schriftstufen.
+
+---
+
+## E-026 · 2026-08-26 · Ergebniszahlen bekommen eigene Farben
+
+**Gefunden.** `--danger` (#e05c55) erreicht auf dem Kartengrund 4,73 zu 1.
+Für eine kleine Zustandsanzeige ist das zulässig, für eine Ergebniszahl
+verlangt Phase 1.2 sieben.
+
+**Gewählt.** Zwei neue Töne nur für die Ergebnisstufe: `--ergebnis-gut`
+(#6ec97d, 9,36 zu 1) und `--ergebnis-schlecht` (#f29b95, 8,98 zu 1).
+`--ok` und `--danger` bleiben unverändert für kleine Anzeigen.
+
+**Alternative:** `--ok` und `--danger` selbst aufhellen.
+
+**Warum nicht:** Dann wären alle bestehenden Zustandsanzeigen mit
+umgestellt — dieselbe Art unprüfbarer Nachtaktion wie oben. Zwei zusätzliche
+Töne für genau einen Zweck sind ehrlicher als eine Änderung, die überall
+durchschlägt.
+
+**Zusätzlich:** Das Urteil im Drill trägt jetzt ein Zeichen (✓ / ✕) vor dem
+Wort. Rund jeder zwölfte Mann sieht Rot und Grün nicht zuverlässig
+auseinander — ausgerechnet die beiden Farben, mit denen man „richtig" und
+„falsch" gern anzeigt.
+
+---
+
+## E-027 · 2026-08-26 · Das Tischgerät zeigt drei Angaben — Stufennummer und Spielerzahl fallen weg
+
+**Der Auftrag** setzt für das Gerät in der Tischmitte eine Obergrenze: „nur
+gemeinsame Information, große Schrift, aus zwei Metern lesbar, höchstens drei
+Angaben".
+
+**Vorher** standen fünf Dinge auf dem Bildschirm: die Nummer der laufenden
+Stufe, die Zahl der verbliebenen Spieler, die geltenden Blinds, die Restzeit
+und die kommenden Blinds. Gemessen (`npm run tisch`, 390 px) waren die Blinds
+dabei 42,9 px groß und die kommende Stufe 15 px — zu klein für zwei Meter.
+
+**Gewählt.** Stufennummer und Spielerzahl sind entfernt. Übrig bleiben
+Restzeit, geltende Blinds, kommende Blinds.
+
+**Warum diese drei.** Sie sind genau die Fragen, die am Tisch laut gestellt
+werden: „Wie lange noch?", „Was ist der Big Blind?", „Was kommt als
+Nächstes?" Die Stufennummer beantwortet keine davon — die Blindwerte benennen
+die Stufe besser als ihre Nummer. Und wer noch dabei ist, sieht man am Tisch,
+indem man aufschaut.
+
+**Alternative 1:** Alle fünf lassen und kleiner setzen.
+
+**Warum nicht:** Dann ist die Regel gebrochen, um die es geht. Aus zwei
+Metern unlesbar heißt: Jemand nimmt das Gerät hoch, und in dem Moment ist es
+kein Tischgerät mehr, sondern ein weiteres Handy in einer Hand.
+
+**Alternative 2:** Die Stufennummer klein als Beschriftung stehen lassen.
+
+**Warum nicht:** Eine kleine Zahl neben großen Zahlen ist keine Beschriftung,
+sondern eine vierte Angabe in Tarnkleidung. Die Grenze wäre damit
+verhandelbar, und die nächste Ausnahme käme in der nächsten Woche.
+
+**Nachgemessen statt behauptet.** Die nötige Schriftgröße ist ausgerechnet,
+nicht gesetzt: bei 2 m Abstand und einem Sehwinkel von 0,3° ergibt sich eine
+Zeichenhöhe von 10,5 mm, bei einer Versalhöhe von 70 % der Schriftgröße also
+15 mm, und bei 25,4/96 mm je CSS-Pixel **56,5 px**. Gemessen liegen jetzt
+alle drei Angaben darüber: Handy 105,3 / 74,1 / 58,5 px, Tablet quer
+220 / 148 / 96 px. Der Rechenweg steht in `docs/tisch.json`, der Test rechnet
+ihn nach.
+
+---
+
+## E-028 · 2026-08-26 · Die untere Navigationsleiste bekommt Abstände
+
+**Gefunden.** `npm run pruefen` meldet auf allen 49 Bildschirmen dieselbe
+Stelle: Die drei Ziele der unteren Leiste berühren einander, Abstand 0 px.
+Phase 1 des Auftrags verlangt 44 × 44 Punkt **mit mindestens 8 Punkt
+Abstand**.
+
+**Gewählt.** `gap: var(--tipp-abstand)` auf der Leiste. Bei 390 px Breite
+bleibt jedes Ziel rund 124 px breit — weit über der Mindestgröße.
+
+**Alternative:** Die Leiste als Ausnahme führen und die Regel für sie
+aussetzen.
+
+**Warum nicht:** Tab-Leisten stoßen üblicherweise aneinander, das stimmt —
+und es wäre hier das schwächere Argument. Zwei Flächen ohne Abstand sind eine
+Fläche mit zwei Bedeutungen: Ein Tipp knapp neben der Mitte landet auf dem
+Nachbarn, und der Nutzer erfährt nie, warum er auf einmal woanders ist. Der
+Preis für die Regel sind 16 von 390 Pixeln. Der Preis für die Ausnahme wäre,
+dass die nächste Ausnahme leichter fällt als diese.
+
+**Was dagegen keine Ausnahme braucht.** Der Streifen an der Unterkante für
+die Systemgesten war schon frei; er ist ein anderer Fall und in `global.css`
+als `--gestenstreifen` geregelt.

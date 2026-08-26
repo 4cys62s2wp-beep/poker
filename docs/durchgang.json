@@ -1,0 +1,233 @@
+{
+  "geprueft_am": "2026-08-26T21:24:14.911Z",
+  "breite": 390,
+  "seitenfehler": [],
+  "abgebrochen_bei": null,
+  "schritte": [
+    {
+      "name": "Einrichten öffnen",
+      "ergebnis": {
+        "ueberschrift": "Abend einrichten",
+        "startknopf_gesperrt": true,
+        "startknopf_text": "Erst Koffer und Spieler eintragen"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Koffer eintragen",
+      "ergebnis": {
+        "zeilen": 3,
+        "chips_gesamt": 300
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Spieler eintragen",
+      "ergebnis": {
+        "spieler": 5
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Dauer und Tempo wählen",
+      "ergebnis": {
+        "dauer_gewaehlt": "true"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Ergebnis erscheint, bevor irgendetwas beginnt",
+      "ergebnis": {
+        "startchips": "380",
+        "blindstufen": 9,
+        "erste_stufe": "1 / 2",
+        "letzte_stufe": "15 / 30",
+        "finale_satz": "Am Ende bleiben den letzten drei im Schnitt 21 Big Blinds — das trägt ein Finale."
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Start ist jetzt freigegeben",
+      "ergebnis": {
+        "gesperrt": false,
+        "text": "Abend starten"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Abend starten",
+      "ergebnis": {
+        "adresse": "#/session/live",
+        "navigationsleiste": false,
+        "zeit": "19:59",
+        "blinds": "1 / 2",
+        "danach": "2 / 4",
+        "gespeichert_spieler": 5,
+        "gespeichert_startchips": 380,
+        "gespeichert_stufen": 9,
+        "laeuft": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Die Uhr läuft wirklich",
+      "ergebnis": {
+        "vorher": "19:59",
+        "nachher": "19:57",
+        "hat_sich_bewegt": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Die Startseite bietet Fortsetzen statt Menü",
+      "ergebnis": {
+        "text": "LÄUFT GERADE · Zurück in die Runde · Seit gerade eben · 5 Spieler · Lorenz, Mira, Jonas, Ada, Ben",
+        "ziel": "#/session/live",
+        "oben_px": 76,
+        "fuehrt_an_den_tisch": true,
+        "nennt_namen": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Neu laden setzt an derselben Stelle fort",
+      "ergebnis": {
+        "vorher": "19:56",
+        "nachher": "19:56",
+        "abstand_s": 0,
+        "abend_noch_da": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Pause hält an",
+      "ergebnis": {
+        "vorher": "19:55",
+        "nachher": "19:55",
+        "steht_still": true,
+        "marke_sichtbar": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Weiter läuft an derselben Stelle an",
+      "ergebnis": {
+        "vorher": "19:55",
+        "gleich_danach": "19:55",
+        "spaeter": "19:53",
+        "kein_sprung": true,
+        "laeuft_wieder": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Ohne Netz weiterspielen",
+      "ergebnis": {
+        "service_worker_angemeldet": true,
+        "neu_geladen_ohne_netz": true,
+        "zeit": "19:52",
+        "blinds": "1 / 2",
+        "abend_noch_da": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Ein Ereignis am Tisch erfassen",
+      "ergebnis": {
+        "zeilen": 5,
+        "griffe": 4,
+        "dauer_ms": 856,
+        "noch_dabei_text": "4 noch dabei",
+        "ausgeschieden": 1,
+        "raus_um_gesetzt": true,
+        "nachgekauft": 1,
+        "blatt_wieder_zu": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Beenden fragt nach und tut es dann",
+      "ergebnis": {
+        "gefragt": true,
+        "frage": "Abend wirklich beenden?",
+        "adresse_danach": "#/session/abende",
+        "abend_beendet": true,
+        "abende_gespeichert": 1
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Der Abend steht in der Liste",
+      "ergebnis": {
+        "abende": 1,
+        "erste_karte": "Mi., 26. August 2026 · Ada · gewonnen · 5 Personen · gerade eben",
+        "namen_als_knoepfe": 5,
+        "namen": [
+          "Ada",
+          "Lorenz",
+          "Mira",
+          "Jonas",
+          "Ben"
+        ]
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Ein Tipp auf einen Namen führt zu dieser Person",
+      "ergebnis": {
+        "getippt": "Ada",
+        "adresse": "#/session/spieler/Ada",
+        "ueberschrift": "Ada",
+        "untertitel": "1 Abend, 1 Sieg.",
+        "abende": 1,
+        "suchfeld": 0
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Ein Tipp auf einen Abend zeigt den Abend",
+      "ergebnis": {
+        "adresse": "#/session/abende/<id>",
+        "zeilen": 5,
+        "plaetze": [
+          "1.",
+          "2.",
+          "2.",
+          "2.",
+          "5."
+        ],
+        "zurueck_sichtbar": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Der Drill zeigt eine Aufgabe",
+      "ergebnis": {
+        "groesste": {
+          "klasse": "drill-zugbild",
+          "px": 27
+        },
+        "zweitgroesste": {
+          "klasse": "drill-frage",
+          "px": 19
+        },
+        "knoepfe": 2
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Zwischen Eingabe und Ergebnis liegt nichts",
+      "ergebnis": {
+        "dauer_ms": 40,
+        "knopf_bewegt_px": 0,
+        "oben": 656,
+        "links": 16,
+        "ergebnis_px": 78,
+        "ergebnis_text": "31,5 %",
+        "uebergang": "0s",
+        "belebung": "none"
+      },
+      "uebersprungen": false
+    }
+  ]
+}

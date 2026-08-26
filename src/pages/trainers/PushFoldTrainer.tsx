@@ -63,7 +63,7 @@ export function PushFoldTrainer() {
   if (!unlocked) {
     return (
       <div>
-        <Link to="/lernen/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
+        <Link to="/lernen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
           {L.back}
         </Link>
         <div className="page-header">
@@ -80,7 +80,7 @@ export function PushFoldTrainer() {
 
   return (
     <div>
-      <Link to="/lernen/trainer" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
+      <Link to="/lernen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
         {L.back}
       </Link>
       <div className="page-header">

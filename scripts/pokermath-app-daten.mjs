@@ -33,9 +33,14 @@ import { fileURLToPath } from 'node:url';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
 const WURZEL = resolve(HIER, '..');
-const QUELLE = join(WURZEL, 'tools', 'poker-math', 'output');
-const ZIEL = join(WURZEL, 'public', 'pokermath');
-const SW = join(WURZEL, 'public', 'sw.js');
+/* Die drei Pfade lassen sich über Umgebungsvariablen umlenken. Das ist keine
+   Einstellung für den Alltag — im Normalfall bleibt es bei den Vorgaben —,
+   sondern für die Prüfung: Sie lässt dieses Skript gegen eine kleine
+   Probedatei laufen, ohne die ausgelieferten Zahlen anzufassen. Ein Skript,
+   das sich nur im Ernstfall ausführen lässt, wird erst im Ernstfall geprüft. */
+const QUELLE = process.env.POKERMATH_QUELLE ?? join(WURZEL, 'tools', 'poker-math', 'output');
+const ZIEL = process.env.POKERMATH_ZIEL ?? join(WURZEL, 'public', 'pokermath');
+const SW = process.env.POKERMATH_SW ?? join(WURZEL, 'public', 'sw.js');
 
 /**
  * Version des Datenvertrags zwischen Rechenausgabe und App.

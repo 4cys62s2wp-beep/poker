@@ -43,9 +43,16 @@
 
   /* Kartenfarben (4-Color-Deck) */
   --suit-s: #23241f;
-  --suit-h: #c43e38;
+  /* Vierfarbdeck. Die drei bunten Farben sind gegen die Kartenfläche
+     (#e9e5d7) gerechnet und liegen alle über 4,5 zu 1: Herz 4,66 · Karo
+     4,58 · Kreuz 4,68 · Pik 12,39. Gemessen mit `npm run pruefen`, das die
+     Verläufe darüber mit einrechnet. Herz und Kreuz waren vorher 4,07 und
+     3,94 — sie sind nur so weit abgedunkelt, bis die Grenze erreicht ist.
+     Die Farbe ist ohnehin nicht das Unterscheidungsmerkmal; das ist das
+     Zeichen selbst. */
+  --suit-h: #b43934;
   --suit-d: #2565b8;
-  --suit-c: #2c7f42;
+  --suit-c: #28723b;
 
   /* ── Bereichs-Akzente ────────────────────────────────────────────────
      Je Hub-Karte eine eigene Farbe: Wiedererkennung schlägt Lesen. Nach
@@ -88,13 +95,72 @@
      Eine Familie mit echten Gewichtsabstufungen statt drei Familien.
      --fs-stat ist bewusst groß UND leicht: Größe allein schlägt sonst in
      Lautstärke um. (R3) */
+  /* ═══════════════════════════════════════════════════════════════════
+     DESIGNFUNDAMENT — die fünf Stufen, benannt nach Verwendung
+     ═══════════════════════════════════════════════════════════════════
+
+     Fünf Stufen, keine sieben. Eine Skala, deren Stufen nach ihrer
+     Verwendung heißen, lässt sich beim Bauen richtig wählen; eine, deren
+     Stufen nach Auszeichnungsebenen heißen (h1, h2, h3), verführt dazu,
+     die Größe zu nehmen, die gerade passt.
+
+     Begründung der Abstände steht in DESIGN.md. Kurz: „Ergebnis" ist um ein
+     Vielfaches größer als „Fließtext", weil die Prozentzahl der Grund ist,
+     warum jemand die App geöffnet hat. Alles andere ist Beiwerk und darf so
+     aussehen. */
+
+  /** Die eine Zahl, wegen der der Bildschirm existiert. Fett, nie dünn. */
+  --fs-ergebnis: clamp(64px, 20vw, 116px);
+  --fs-ueberschrift: clamp(19px, 2.4vw, 23px);
+  --fs-fliesstext: 15px;
+  --fs-beschriftung: 13.2px;
+  --fs-kleingedrucktes: 11.5px;
+
+  /* Ziffern in gleicher Breite. Ohne das springt eine hochzählende Anzeige
+     bei jedem Wechsel, weil die 1 schmaler ist als die 8 — am Tisch, wo der
+     Timer läuft, ist das der Unterschied zwischen ruhig und zappelig. */
+  --ziffern: tabular-nums;
+
+  /* ── Die eine Akzentfarbe ────────────────────────────────────────────
+     Reserviert für den Live-Bereich. Alles andere ist neutral: Wenn jede
+     Ecke der App ihre eigene Farbe hat, heißt Farbe nichts mehr.
+     Gegenüber dem alten --felt-light aufgehellt, weil der bei 3,92 zu 1 auf
+     dunklem Grund unter der Grenze lag und damit als Text nicht zulässig
+     war. Jetzt 8,32 zu 1. */
+  --akzent: #4fbf8e;
+  --akzent-dim: rgba(79, 191, 142, 0.16);
+
+  /* ── Ergebniszahlen ──────────────────────────────────────────────────
+     Eigene Töne, weil für sie 7 zu 1 gilt und nicht 4,5 zu 1. --ok und
+     --danger erfüllen das nicht und bleiben den kleinen Zustandsanzeigen
+     vorbehalten. Nachgemessen im Test `design.test.ts`. */
+  --ergebnis-gut: #6ec97d;
+  --ergebnis-schlecht: #f29b95;
+
+  /* ── Bedienung ───────────────────────────────────────────────────────
+     44 Punkt ist die kleinste Fläche, die ein Daumen zuverlässig trifft
+     (Apple HIG). 8 Punkt Abstand dazwischen, damit zwei Ziele nicht als
+     eines wirken. Die unteren 24 Punkt bleiben frei: Dort liegen die
+     Systemgesten, und ein Knopf, der mit dem Wischen zum Startbildschirm
+     konkurriert, verliert. */
+  --tipp-min: 44px;
+  --tipp-abstand: 8px;
+  --gestenstreifen: 24px;
+
+  /* ── Ende Designfundament ──────────────────────────────────────────── */
+
   --fs-stat: clamp(38px, 9vw, 58px);
   --fs-h1: clamp(27px, 4.4vw, 38px);
-  --fs-h2: clamp(19px, 2.4vw, 23px);
+  /* Altbestand. Wo eine alte Stufe mit einer neuen zusammenfällt, zeigt sie
+     dorthin — dann gibt es den Wert genau einmal. --fs-stat, --fs-h1 und
+     --fs-h3 haben keine Entsprechung in der Fünferskala und werden abgebaut;
+     die Prüfung in `design.test.ts` zählt ihre Verwendungen und lässt die
+     Zahl nicht wachsen. */
+  --fs-h2: var(--fs-ueberschrift);
   --fs-h3: 16.5px;
-  --fs-body: 15px;
-  --fs-small: 13.2px;
-  --fs-tiny: 11.5px;
+  --fs-body: var(--fs-fliesstext);
+  --fs-small: var(--fs-beschriftung);
+  --fs-tiny: var(--fs-kleingedrucktes);
 
   --fw-light: 300;
   --fw-regular: 500;
@@ -107,7 +173,7 @@
   /* ── Bedienung ───────────────────────────────────────────────────────
      44 px ist die kleinste Fläche, die sich auf einem Handy zuverlässig
      mit dem Daumen treffen lässt (Apple HIG). Alles Tippbare hält das ein. */
-  --touch-min: 44px;
+  --touch-min: var(--tipp-min);
 
   /* ── Sichere Bereiche ────────────────────────────────────────────────
      In der installierten PWA reicht der Inhalt bis unter die Notch und
@@ -438,6 +504,12 @@ table.data td {
     -webkit-backdrop-filter: blur(14px);
     border-top: 1px solid var(--border);
     z-index: 60;
+    /* Die drei Ziele berührten einander. Zwei Flächen ohne Abstand sind eine
+       Fläche mit zwei Bedeutungen: Ein Tipp knapp neben der Mitte landet auf
+       dem Nachbarn, und niemand weiß hinterher, warum. Begründung und die
+       verworfene Alternative (Tab-Leisten stoßen üblicherweise aneinander)
+       stehen in ENTSCHEIDUNGEN.md, E-028. */
+    gap: var(--tipp-abstand);
   }
   .bottom-nav a {
     flex: 1;
@@ -656,6 +728,16 @@ h2.section-title::after {
   border: 1px solid var(--border);
   color: var(--text-dim);
   white-space: nowrap;
+}
+
+/* Eine Marke, die ein Weg ist, muss man treffen können. Der Zurück-Link auf
+   jedem Bildschirm war 29 Pixel hoch — knapp zwei Drittel dessen, was ein
+   Finger sicher trifft, und er steht auf 49 Bildschirmen. Nur der anklickbare
+   Fall wird größer; die Marke als reine Beschriftung bleibt, wie sie ist. */
+a.pill,
+button.pill {
+  min-height: var(--tipp-min);
+  padding-inline: var(--sp-4);
 }
 
 .pill.gold { background: var(--gold-dim); color: var(--gold-bright); border-color: rgba(212, 175, 94, 0.32); }
@@ -1574,17 +1656,19 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
    bewegen. Wer gerade eine Entscheidung getroffen hat, soll die Zahl lesen,
    nicht eine Animation abwarten. */
 .drill-zahl {
-  font-size: clamp(64px, 20vw, 116px);
+  font-size: var(--fs-ergebnis);
   font-weight: var(--fw-bold);
   line-height: 0.95;
   letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: var(--ziffern);
   transition: none;
   animation: none;
 }
 
-.drill-zahl.gut { color: var(--ok); }
-.drill-zahl.schlecht { color: var(--danger); }
+/* Eigene Töne für die Ergebnisstufe: --ok und --danger erreichen die
+   geforderten 7 zu 1 nicht (siehe DESIGN.md, Abschnitt 2). */
+.drill-zahl.gut { color: var(--ergebnis-gut); }
+.drill-zahl.schlecht { color: var(--ergebnis-schlecht); }
 
 .drill-zahl-label {
   font-size: var(--fs-body);
@@ -1676,8 +1760,20 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-body);
 }
 
-.drill-urteil.gut strong { color: var(--ok); }
-.drill-urteil.schlecht strong { color: var(--danger); }
+.drill-urteil.gut strong { color: var(--ergebnis-gut); }
+.drill-urteil.schlecht strong { color: var(--ergebnis-schlecht); }
+
+/* Zustand nicht nur an der Farbe: Rund jeder zwölfte Mann sieht Rot und Grün
+   nicht zuverlässig auseinander — ausgerechnet die beiden Farben, mit denen
+   man „richtig" und „falsch" gern anzeigt. Das Zeichen davor sagt es auch
+   ohne Farbe. */
+.drill-urteil strong::before {
+  margin-right: var(--sp-2);
+  font-weight: var(--fw-bold);
+}
+
+.drill-urteil.gut strong::before { content: '✓'; }
+.drill-urteil.schlecht strong::before { content: '✕'; }
 
 /* Untereinander, nicht nebeneinander: Mit dem Herkunftszeichen passen beide
    Werte auf einem Handy nicht mehr in eine Zeile, und ein Umbruch mitten
@@ -1736,7 +1832,8 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   margin-top: auto;
   padding-top: var(--sp-3);
   position: sticky;
-  bottom: var(--sp-4);
+  /* Der Gestenstreifen bleibt frei – dort gewinnt immer das System. */
+  bottom: var(--gestenstreifen);
   min-height: var(--drill-bedienung-h);
   /* Oben ausgeblendet, unten deckend: So sieht man, dass darüber Text
      weitergeht, statt ihn blass durch die Leiste schimmern zu sehen. */
@@ -1745,18 +1842,18 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 @media (max-width: 920px) {
   .drill-unten {
-    bottom: calc(var(--nav-h) + var(--safe-bottom) + var(--sp-2));
+    bottom: calc(var(--nav-h) + var(--safe-bottom) + var(--tipp-abstand));
   }
 }
 
 .drill-knoepfe {
   display: flex;
-  gap: var(--sp-3);
+  gap: var(--tipp-abstand);
 }
 
 .drill-knopf {
   flex: 1 1 0;
-  min-height: 60px;
+  min-height: calc(var(--tipp-min) + var(--sp-4));
   border-radius: var(--radius);
   border: 1px solid var(--border-strong);
   background: var(--bg-elev);
@@ -2049,4 +2146,644 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .herkunft-leise {
   font-size: var(--fs-tiny) !important;
   color: var(--text-faint) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Startseite: drei Einstiege, ungleich gewichtet
+   ═══════════════════════════════════════════════════════════════════════
+
+   Die Gewichtung folgt der Nutzungssituation und nicht der Wichtigkeit:
+
+   - LIVE-SESSION wird unter Zeitdruck geöffnet, oft einhändig, während man
+     mit der anderen Hand Chips stapelt. Deshalb unten und am größten — der
+     Daumen erreicht die untere Bildschirmhälfte, mehr nicht.
+   - LERNEN wird in Ruhe geöffnet. Mitte, mittlere Größe.
+   - NACHSCHLAGEN wird geöffnet, wenn man schon weiß, was man sucht. Oben und
+     klein: Wer gezielt sucht, findet auch ein kleines Ziel.
+
+   Alles Tippbare hält --tipp-min ein, die Abstände --tipp-abstand.
+   ------------------------------------------------------------------- */
+
+.start {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tipp-abstand);
+  max-width: 560px;
+}
+
+.start-einstieg {
+  display: block;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: inherit;
+  text-decoration: none;
+  padding: var(--sp-4);
+  min-height: var(--tipp-min);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.start-einstieg:active {
+  background: var(--bg-card-hover);
+}
+
+.start-einstieg .titel {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+}
+
+.start-einstieg .unter {
+  display: block;
+  margin-top: var(--sp-1);
+  color: var(--text-dim);
+  font-size: var(--fs-beschriftung);
+}
+
+/* Klein — oben. */
+.start-einstieg.klein .titel { font-size: var(--fs-fliesstext); }
+.start-einstieg.klein .unter { font-size: var(--fs-kleingedrucktes); }
+
+/* Mittel — Mitte. */
+.start-einstieg.mittel { padding: var(--sp-5) var(--sp-4); }
+.start-einstieg.mittel .titel { font-size: var(--fs-ueberschrift); }
+
+/* Groß — unten, im Daumenbereich. Als einziger Einstieg mit der
+   Akzentfarbe: Er ist der einzige, der unter Zeitdruck gesucht wird, und
+   Farbe findet man schneller als Text. */
+.start-einstieg.gross {
+  padding: var(--sp-6) var(--sp-5);
+  border-color: var(--akzent);
+  background: linear-gradient(180deg, var(--akzent-dim), transparent);
+}
+
+.start-einstieg.gross .titel {
+  font-size: calc(var(--fs-ueberschrift) * 1.35);
+  color: var(--akzent);
+}
+
+.start-einstieg.gross .unter { font-size: var(--fs-fliesstext); }
+
+/* ── Fortsetzen statt Menü ─────────────────────────────────────────────
+   Wer eine angebrochene Runde hat, will keinen Einstieg, sondern zurück.
+   Deshalb ganz oben und deutlicher als alles andere. */
+.start-fortsetzen {
+  display: block;
+  border-radius: var(--radius);
+  border: 1px solid var(--akzent);
+  background: var(--akzent-dim);
+  color: inherit;
+  text-decoration: none;
+  padding: var(--sp-5);
+  min-height: var(--tipp-min);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.start-fortsetzen .marke {
+  display: block;
+  font-size: var(--fs-kleingedrucktes);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--akzent);
+  font-weight: var(--fw-bold);
+}
+
+.start-fortsetzen .titel {
+  display: block;
+  margin-top: var(--sp-1);
+  font-family: var(--font-display);
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+}
+
+.start-fortsetzen .unter {
+  display: block;
+  margin-top: var(--sp-1);
+  font-size: var(--fs-beschriftung);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+/* ── Erster Start: ein Satz statt einer Fortschrittszahl ────────────── */
+.start-erklaerung {
+  margin: 0;
+  padding: var(--sp-4) 0;
+  font-size: var(--fs-fliesstext);
+  color: var(--text-dim);
+  max-width: 46ch;
+}
+
+/* ── Die schmale Zeile mit Streak, Level, XP ────────────────────────── */
+.start-stand {
+  display: flex;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+  padding-top: var(--sp-4);
+  margin-top: var(--sp-2);
+  border-top: 1px solid var(--border);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Live-Session
+   ═══════════════════════════════════════════════════════════════════════
+
+   Zwei Geräterollen, zwei Gestaltungen:
+
+   **Das Tischgerät** liegt in der Mitte, alle schauen darauf, niemand hält
+   es. Es zeigt drei Angaben — Blinds, Restzeit, nächste Stufe — in der
+   größten Schrift, die geht. Aus zwei Metern lesbar heißt: die Restzeit
+   füllt die Bildschirmbreite.
+
+   **Das private Gerät** gehört einem Spieler und zeigt dessen eigene
+   Rechnungen. Das ist der Drill und der Rechner, nicht dieser Bildschirm.
+
+   Vollbild ohne Navigationsleiste: Wer den Tisch führt, soll nicht
+   versehentlich ins Glossar wischen.
+   ------------------------------------------------------------------- */
+
+.tisch {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-deep);
+  padding: calc(var(--safe-top) + var(--sp-4)) var(--sp-4)
+           calc(var(--safe-bottom) + var(--gestenstreifen)) var(--sp-4);
+}
+
+.tisch-kopf {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-size: var(--fs-beschriftung);
+  color: var(--text-faint);
+}
+
+/* Die drei Angaben. Mehr steht hier nicht — jede weitere kostet Größe. */
+.tisch-mitte {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-5);
+  text-align: center;
+  min-height: 0;
+}
+
+.tisch-marke {
+  font-size: var(--fs-beschriftung);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* Die Restzeit ist die Zahl, wegen der das Gerät auf dem Tisch liegt.
+   Größer als --fs-ergebnis: Sie wird aus zwei Metern gelesen, nicht aus
+   Armlänge. */
+.tisch-zeit {
+  font-size: clamp(72px, 27vw, 220px);
+  font-weight: var(--fw-bold);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  font-variant-numeric: var(--ziffern);
+  color: var(--text);
+}
+
+.tisch-zeit.knapp { color: var(--akzent); }
+
+/* Eine Angabe: die Beschriftung dicht über ihrer Zahl, damit die Abstände
+   zwischen den drei Angaben größer sind als die innerhalb einer. */
+.tisch-angabe {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* Alle drei Zahlen sind aus zwei Metern lesbar — das ist eine Untergrenze,
+   keine Rangfolge. Die Rangfolge machen Größe, Farbe und Ort: die Zeit weiß
+   und am größten, die geltenden Blinds im Akzent, die kommenden gedämpft.
+   Nachgemessen mit `npm run tisch`; die nötige Größe rechnet das Skript aus
+   Leseabstand und Sehwinkel aus, sie steht in docs/tisch.json. */
+.tisch-blinds {
+  font-size: clamp(64px, 19vw, 148px);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  font-variant-numeric: var(--ziffern);
+  color: var(--akzent);
+}
+
+.tisch-naechste {
+  font-size: clamp(58px, 15vw, 96px);
+  line-height: var(--lh-tight);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+.tisch-unten {
+  flex: 0 0 auto;
+  display: flex;
+  gap: var(--tipp-abstand);
+}
+
+.tisch-knopf {
+  flex: 1 1 0;
+  min-height: calc(var(--tipp-min) + var(--sp-4));
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tisch-knopf.haupt {
+  border-color: var(--akzent);
+  color: var(--akzent);
+}
+
+.tisch-knopf:active { background: var(--bg-card-hover); }
+
+/* Pausiert: der ganze Bildschirm sagt es, nicht nur ein kleines Zeichen. */
+.tisch.pausiert .tisch-zeit { color: var(--text-faint); }
+
+.tisch-pausiert {
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Bewusste Bestätigung vor dem Verlassen ──────────────────────────── */
+.tisch-frage {
+  position: fixed;
+  inset: 0;
+  z-index: 310;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--scrim-strong);
+}
+
+.tisch-frage-blatt {
+  width: 100%;
+  max-width: 560px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: var(--sp-5) var(--sp-5) calc(var(--safe-bottom) + var(--sp-5));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* ── Stände am Tisch ─────────────────────────────────────────────────── */
+
+/* Ein Ereignis am Tisch — jemand kauft nach, jemand ist raus — darf keine
+   halbe Minute kosten. Deshalb eine Zeile je Person und ein Griff je
+   Ereignis: kein Auswählen, kein Bestätigen, kein zweiter Bildschirm. */
+.tisch-frage-blatt.staende {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.stand-zeile {
+  display: flex;
+  align-items: center;
+  gap: var(--tipp-abstand);
+}
+
+.stand-name {
+  flex: 1 1 auto;
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ausgeschieden wird nicht nur an der Farbe erkennbar gemacht: Die Zeile
+   verliert ihr Gewicht, und an die Stelle der Knöpfe tritt ein einziger. */
+.stand-zeile.raus .stand-name {
+  color: var(--text-faint);
+  font-weight: var(--fw-normal);
+  text-decoration: line-through;
+}
+
+.stand-chips {
+  width: 5.5em;
+  min-height: var(--tipp-min);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-fliesstext);
+  font-variant-numeric: var(--ziffern);
+  text-align: right;
+  padding: 0 var(--sp-2);
+}
+
+.tisch-knopf.schmal {
+  flex: 0 0 auto;
+  min-width: var(--tipp-min);
+  min-height: var(--tipp-min);
+  padding: 0 var(--sp-3);
+  font-size: var(--fs-beschriftung);
+}
+
+/* ── Frühere Abende ──────────────────────────────────────────────────── */
+
+.abende-leer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  align-items: flex-start;
+}
+
+.abende-knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--sp-5);
+  text-decoration: none;
+}
+
+.abende-namen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+}
+
+.abende-namen-reihe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tipp-abstand);
+}
+
+/* Ein Name ist hier ein Weg, kein Text. Also sieht er aus wie ein Knopf und
+   ist so groß wie einer — das Suchfeld, das es nicht gibt, wird durch diese
+   Fläche ersetzt. */
+.abende-name {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tipp-min);
+  padding: 0 var(--sp-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+}
+
+.abende-name:active { background: var(--bg-card-hover); }
+
+.abende-liste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tipp-abstand);
+}
+
+.abend-karte {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-4);
+  min-height: var(--tipp-min);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.abend-karte:active { background: var(--bg-card-hover); }
+
+.abend-datum {
+  font-size: var(--fs-beschriftung);
+  color: var(--text-dim);
+}
+
+.abend-sieger {
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+}
+
+.abend-kopfzahlen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  margin-bottom: var(--sp-5);
+}
+
+.abend-kopfzahlen > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.abend-kopfzahlen > div > span:last-child {
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: var(--ziffern);
+}
+
+.abend-tabelle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tipp-abstand);
+}
+
+.abend-zeile {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.abend-platz {
+  min-width: 2.2em;
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: var(--ziffern);
+  color: var(--akzent);
+}
+
+/* Ausgeschieden ist an der Form erkennbar, nicht nur an der Farbe. */
+.abend-zeile.raus .abend-platz { color: var(--text-faint); }
+
+.abend-stand {
+  margin-left: auto;
+  font-variant-numeric: var(--ziffern);
+  color: var(--text-dim);
+}
+
+/* ── Einrichten ──────────────────────────────────────────────────────── */
+.einrichten {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  max-width: 560px;
+}
+
+.einrichten-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.einrichten-block h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+}
+
+.einrichten-block .hinweis {
+  margin: 0;
+  font-size: var(--fs-beschriftung);
+  color: var(--text-dim);
+}
+
+.einrichten-zeile {
+  display: flex;
+  gap: var(--tipp-abstand);
+  align-items: center;
+}
+
+.einrichten-zeile input {
+  min-height: var(--tipp-min);
+  min-width: 0;
+  flex: 1 1 0;
+  padding: 0 var(--sp-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-fliesstext);
+  font-variant-numeric: var(--ziffern);
+}
+
+.einrichten-zeile input.schmal { flex: 0 0 6.5em; }
+
+.einrichten-wahl {
+  display: flex;
+  gap: var(--tipp-abstand);
+  flex-wrap: wrap;
+}
+
+.einrichten-wahl button {
+  flex: 1 1 8em;
+  min-height: var(--tipp-min);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: var(--fs-beschriftung);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.einrichten-wahl button[aria-pressed='true'] {
+  border-color: var(--akzent);
+  color: var(--akzent);
+  background: var(--akzent-dim);
+}
+
+.einrichten-knopf {
+  min-height: calc(var(--tipp-min) + var(--sp-3));
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.einrichten-knopf.haupt {
+  border-color: var(--akzent);
+  background: var(--akzent);
+  color: var(--bg-deep);
+  font-weight: var(--fw-bold);
+}
+
+.einrichten-knopf:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.einrichten-ergebnis {
+  border: 1px solid var(--akzent);
+  border-radius: var(--radius);
+  background: var(--akzent-dim);
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.einrichten-gross {
+  font-size: var(--fs-ergebnis);
+  font-weight: var(--fw-bold);
+  line-height: 0.95;
+  font-variant-numeric: var(--ziffern);
+  color: var(--akzent);
+}
+
+.einrichten-warnung {
+  margin: 0;
+  font-size: var(--fs-beschriftung);
+  color: var(--gold);
+}
+
+.einrichten-warnung::before {
+  content: '!';
+  display: inline-block;
+  margin-right: var(--sp-2);
+  font-weight: var(--fw-bold);
+}
+
+.einrichten-tabelle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  font-size: var(--fs-beschriftung);
+  font-variant-numeric: var(--ziffern);
+}
+
+.einrichten-tabelle > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.einrichten-stufen {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7em, 1fr));
+  gap: var(--sp-2);
+  font-size: var(--fs-beschriftung);
+  font-variant-numeric: var(--ziffern);
+}
+
+.einrichten-stufen span {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-2);
+  text-align: center;
+  color: var(--text-dim);
 }

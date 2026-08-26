@@ -32,6 +32,22 @@ export function SessionPage() {
   const entries: Array<{
     to: string; icon: IconName; title: string; body: string; when: string; accent: string;
   }> = [
+    /* Zuerst der Abend selbst: Chipverteilung, Blindstruktur und Uhr in
+       einem Weg. Die einzelnen Rechner darunter bleiben — wer nur schnell
+       etwas nachrechnen will, braucht keinen ganzen Abend. */
+    {
+      to: '/session/live/einrichten', icon: 'table',
+      title: L.abendTitle, body: L.abendBody, when: L.abendWhen,
+      accent: 'var(--akzent)',
+    },
+    /* Danach das, was von den Abenden bleibt. Es steht direkt hinter dem
+       Abend selbst, weil man es am Tag danach sucht — und weil der Weg zu
+       einer Person nur über diese Liste führt. */
+    {
+      to: '/session/abende', icon: 'crown',
+      title: L.abendeTitle, body: L.abendeBody, when: L.abendeWhen,
+      accent: 'var(--akzent-dim)',
+    },
     {
       to: '/session/chips', icon: 'chip',
       title: L.chipsTitle, body: L.chipsBody, when: L.chipsWhen,
@@ -46,6 +62,15 @@ export function SessionPage() {
       to: '/session/tisch', icon: 'table',
       title: L.tableTitle, body: L.tableBody, when: L.tableWhen,
       accent: 'var(--accent-live)',
+    },
+    /* Der Online-Tisch stand hinter dem Ein-Gerät-Tisch und lag damit bei
+       drei Berührungen. Jetzt steht er daneben. Ob er bleibt, ist eine
+       Frage der Altersfreigabe und keine der Navigation — sie steht im
+       Abschlussbericht. */
+    {
+      to: '/session/tisch/online', icon: 'friends',
+      title: L.onlineTitle, body: L.onlineBody, when: L.onlineWhen,
+      accent: 'var(--info)',
     },
     {
       to: '/session/bankroll', icon: 'notes',

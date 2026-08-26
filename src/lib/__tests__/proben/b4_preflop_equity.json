@@ -1,0 +1,116 @@
+{
+  "metadaten": {
+    "schema_version": 2,
+    "block": "b4_preflop_equity",
+    "zweck": {
+      "de": "Probedatei für die Prüfung des Umwandlungsskripts. Nicht gerechnet, nicht ausgeliefert.",
+      "en": "Sample file for testing the conversion script. Not computed, not shipped."
+    },
+    "methode": "exakt",
+    "annahmen": {
+      "sicht": {
+        "de": "Heldensicht. Bekannt sind ausschließlich die eigenen zwei Karten und das sichtbare Board. Über die Karten der Gegner wird nichts angenommen.",
+        "en": "The hero's point of view. Known are only your own two cards and the visible board. Nothing is assumed about anyone else's cards."
+      },
+      "unbekannte_karten": {
+        "de": "Alle übrigen Karten gelten als unbekannt und verbleiben im Deck: 47 nach dem Flop, 46 nach dem Turn. Es wird NICHT herausgerechnet, dass ein Teil davon bereits als Gegnerhand ausgeteilt ist.",
+        "en": "Every other card counts as unknown and stays in the deck: 47 after the flop, 46 after the turn. It is NOT discounted that some of them have already been dealt to opponents."
+      },
+      "warum_diese_sicht": "Sie ist die einzige, die ein Spieler am Tisch tatsächlich einnehmen kann. Rechnungen, die ausgeteilte Gegnerkarten aus dem Deck nehmen, liefern leicht andere Zahlen – beide sind richtig, aber sie beantworten verschiedene Fragen. Vermischt man sie, entstehen genau die Tabellen, die einander widersprechen.",
+      "split_pot": {
+        "de": "Geteilte Pötte zählen in jeder Equity-Rechnung als 0,5 für jede Seite.",
+        "en": "Split pots count as 0.5 for each side in every equity computation."
+      },
+      "kartenzahlen": {
+        "deck": 52,
+        "eigene_karten": 2,
+        "unbekannt_nach_flop": 47,
+        "unbekannt_nach_turn": 46
+      },
+      "block_spezifisch": {
+        "probe": {
+          "de": "Diese Datei ist von Hand gebaut und enthält drei Handpaare.",
+          "en": "This file is hand-built and holds three hand pairs."
+        }
+      }
+    },
+    "faelle_enumeriert": {
+      "gesamt": 3,
+      "je_teil": [
+        {
+          "schluessel": "probe",
+          "bezeichnung": {
+            "de": "Fälle in der Probe",
+            "en": "cases in the sample"
+          },
+          "anzahl": 3
+        }
+      ]
+    },
+    "evaluator": {
+      "name": "eval7",
+      "version": "0.1.11",
+      "gegenprobe": "phevaluator 0.6.0",
+      "nachweis": "Über alle 2 598 960 Fünfkartenblätter gegen einen unabhängigen Evaluator aus den Spielregeln geprüft; siehe output/evaluator_auswahl.json und ENTSCHEIDUNGEN.md, E-012."
+    },
+    "erzeugt_am": "2026-08-26T19:08:19+00:00",
+    "laufzeit_s": 0.089,
+    "umgebung": {
+      "python": "3.11.15",
+      "system": "Linux",
+      "maschine": "x86_64"
+    },
+    "reproduzierbar": "Derselbe Lauf liefert bis auf 'erzeugt_am' und 'laufzeit_s' Bit für Bit dieselbe Datei."
+  },
+  "matchups": [
+    {
+      "hand_a": "AA",
+      "hand_b": "AA",
+      "equity_a": 0.5,
+      "spanne_pp": 0.0,
+      "spanne_relevant": false
+    },
+    {
+      "hand_a": "AA",
+      "hand_b": "72o",
+      "equity_a": 0.8767,
+      "spanne_pp": 0.31,
+      "spanne_relevant": false
+    },
+    {
+      "hand_a": "AKs",
+      "hand_b": "QQ",
+      "equity_a": 0.4612,
+      "spanne_pp": 1.82,
+      "spanne_relevant": true,
+      "farbkonfigurationen": [
+        {
+          "beziehung": {
+            "de": "keine gemeinsame Farbe",
+            "en": "no shared suit"
+          },
+          "haeufigkeit": 2,
+          "equity_a": 0.4703
+        },
+        {
+          "beziehung": {
+            "de": "eine gemeinsame Farbe",
+            "en": "one shared suit"
+          },
+          "haeufigkeit": 2,
+          "equity_a": 0.4521
+        }
+      ]
+    }
+  ],
+  "befunde": [
+    {
+      "schluessel": "probe_befund",
+      "aussage": "Eine Hand gegen sich selbst gewinnt genau 50,0 % — geteilte Pötte zur Hälfte gezählt.",
+      "aussage_en": "A hand against itself wins exactly 50.0 % — split pots counted as one half.",
+      "beleg": {
+        "equity_a": 0.5
+      }
+    }
+  ]
+}

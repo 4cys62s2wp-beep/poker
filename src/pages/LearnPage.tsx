@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { moduleProgress, useAppState } from '../state/AppState';
 import { useLang, levelLabel } from '../i18n';
 import { STR } from '../i18n/pages/learn';
+import { STR as TRAINER_TEXTE } from '../i18n/pages/trainerhub';
+import { TRAINER } from '../lib/trainerliste';
 import { Icon, IconTile, type IconName } from '../components/Icon';
 import { usePro } from '../lib/pro/ProProvider';
 import { isFreeModule } from '../lib/pro/plan';
@@ -89,7 +91,26 @@ export function LearnPage() {
     to: string; icon: IconName; tone: 'gold' | 'green' | 'blue' | 'red' | 'violet';
     title: string; sub: string; badge?: string;
   }> = [
-    { to: '/lernen/trainer', icon: 'trainer', tone: 'gold', title: L.trainerTitle, sub: L.trainerSub },
+    /* Die sieben Trainer stehen hier einzeln statt hinter einem Menü.
+       Grund: Start → Lernen → Trainer → einzelner Trainer sind drei
+       Berührungen, und die dritte führte auf einen Bildschirm, dessen
+       einziger Zweck ein Menü war. Jetzt sind es zwei. Die Trefferquote,
+       die dort stand, steht jetzt an der Kachel — sie ist die Auskunft,
+       wegen der man hinschaut. */
+    ...TRAINER.map((t) => {
+      const stats = data.trainers[t.id];
+      const quote = stats && stats.attempts > 0
+        ? Math.round((100 * stats.correct) / stats.attempts)
+        : null;
+      return {
+        to: t.zu,
+        icon: t.zeichen,
+        tone: t.ton,
+        title: TRAINER_TEXTE[lang].trainers[t.id].title,
+        sub: TRAINER_TEXTE[lang].trainers[t.id].desc,
+        badge: quote === null ? undefined : L.trainerQuote(quote),
+      };
+    }),
     {
       to: '/lernen/wiederholen', icon: 'repeat', tone: 'blue',
       title: L.reviewTitle, sub: L.reviewSub,

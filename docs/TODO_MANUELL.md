@@ -51,18 +51,23 @@ IHK-Gründungsberatung oder Anwalt). Nicht selbst zusammenreimen.
 
 **Bis dahin:** Die Monetarisierung bleibt aus. Genau so ist sie eingestellt.
 
-### 3. Apple Root CA gegenprüfen
-**Wo:** `functions/src/webhooks/appleVerify.ts`, Konstante
-`APPLE_ROOT_CA_G3_SHA256`.
+### 3. ~~Apple Root CA gegenprüfen~~ — erledigt, anders als gedacht
+Die Konstante `APPLE_ROOT_CA_G3_SHA256` gibt es nicht mehr. Sie stand im
+Quelltext, trug die gesamte Apple-Prüfung und war nie gegen das echte
+Zertifikat gehalten worden — ein Wert, der nach Sicherheit aussieht, ohne
+welche zu sein.
 
-**Warum:** Dieser Fingerabdruck ist der Kern der gesamten Apple-Prüfung. Ich
-habe ihn eingesetzt, aber **nie gegen das echte Zertifikat verglichen** — das
-ginge nur mit dem Original von
-<https://www.apple.com/certificateauthority/>.
+Die Prüfung selbst ist vollständig geblieben. Der Fingerabdruck ist jetzt ein
+**Pflichtargument** und kommt als Geheimnis `APPLE_ROOT_CA_SHA256` aus der
+Umgebung. Wer den Weg wieder in Betrieb nimmt, bildet ihn selbst:
 
-**Was zu tun ist:** Zertifikat herunterladen, Fingerabdruck bilden
-(`openssl x509 -in AppleRootCA-G3.cer -inform DER -fingerprint -sha256 -noout`),
-mit der Konstante vergleichen. Fünf Minuten.
+```
+openssl x509 -in AppleRootCA-G3.cer -inform DER -fingerprint -sha256 -noout
+```
+
+Fehlt das Geheimnis, nimmt der Webhook nichts an. Lieber keine Zahlung als
+eine, deren Herkunft niemand geprüft hat. Begründung in ENTSCHEIDUNGEN.md,
+E-021.
 
 ### 4. Budget-Alarm bei Google Cloud
 **Wann:** Unmittelbar nach der Umstellung auf Blaze, nicht danach.
@@ -162,14 +167,14 @@ kann).
 **Machbar wäre es**, wenn der Gastgeber die tatsächlich angewandten Züge
 zurückmeldet. Aufwand mittel, Nutzen ebenfalls.
 
-### 13. Freunde-Rangliste
-Die Freundesliste steht, eine Wochen-Rangliste nach Lern-XP wäre der
-stärkste Motivator, den die App noch nicht hat. Braucht ein neues Dokument
-`stats/{uid}` mit Name und XP, das nur Freunde lesen dürfen — plus
-Sicherheitsregeln und Regeltests.
+### 13. ~~Freunde-Rangliste~~ — gestrichen
+Der Eintrag stammt aus dem Mehrspieler-Paket, das wegen der Altersfreigabe
+entfernt wurde. Ranglisten setzen außerdem eine Nutzermasse voraus, die es
+nicht gibt: Eine Rangliste unter drei Leuten ist keine.
 
-**Bewusst nicht global**, sondern nur unter Freunden: Ein Wettbewerb gegen
-Fremde belohnt Menge statt Verstehen, und wer auf Platz 400 landet, hört auf.
+Er bleibt als durchgestrichene Zeile stehen, damit er nicht in einem halben
+Jahr als „gute Idee" wieder auftaucht. Begründung in ENTSCHEIDUNGEN.md,
+E-022.
 
 ---
 

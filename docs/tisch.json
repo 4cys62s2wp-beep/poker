@@ -1,0 +1,320 @@
+{
+  "erzeugt_am": "2026-08-26T20:51:17.257Z",
+  "leseabstand": {
+    "abstand_mm": 2000,
+    "sehwinkel_grad": 0.3,
+    "versalhoehe_anteil": 0.7,
+    "zeichenhoehe_mm": 10.47,
+    "noetige_schriftgroesse_px": 56.5,
+    "rechenweg": "Zeichenhöhe = Abstand × tan(Sehwinkel); Schriftgröße = Zeichenhöhe ÷ Versalhöhen-Anteil ÷ (25,4/96) mm je CSS-Pixel"
+  },
+  "groesste_angabe_px": 220,
+  "messungen": [
+    {
+      "geraet": "handy",
+      "breite": 390,
+      "fensterhoehe_px": 844,
+      "navigationsleiste_vorhanden": false,
+      "grund_farbe": "rgb(12, 17, 14)",
+      "alle_texte": [
+        {
+          "text": "Pausiert",
+          "klasse": "tisch-pausiert",
+          "schriftgroesse_px": 19,
+          "fett": "800",
+          "ziffern": "normal",
+          "oben_px": 16,
+          "hoehe_px": 30,
+          "breite_px": 104
+        },
+        {
+          "text": "Blinds",
+          "klasse": "tisch-marke",
+          "schriftgroesse_px": 13.2,
+          "fett": "400",
+          "ziffern": "normal",
+          "oben_px": 232,
+          "hoehe_px": 21,
+          "breite_px": 55
+        },
+        {
+          "text": "25 / 50",
+          "klasse": "tisch-blinds",
+          "schriftgroesse_px": 74.1,
+          "fett": "800",
+          "ziffern": "tabular-nums",
+          "oben_px": 258,
+          "hoehe_px": 85,
+          "breite_px": 247
+        },
+        {
+          "text": "20:00",
+          "klasse": "tisch-zeit",
+          "schriftgroesse_px": 105.3,
+          "fett": "800",
+          "ziffern": "tabular-nums",
+          "oben_px": 365,
+          "hoehe_px": 95,
+          "breite_px": 282
+        },
+        {
+          "text": "Danach",
+          "klasse": "tisch-marke",
+          "schriftgroesse_px": 13.2,
+          "fett": "400",
+          "ziffern": "normal",
+          "oben_px": 482,
+          "hoehe_px": 21,
+          "breite_px": 63
+        },
+        {
+          "text": "50 / 100",
+          "klasse": "tisch-naechste",
+          "schriftgroesse_px": 58.5,
+          "fett": "400",
+          "ziffern": "tabular-nums",
+          "oben_px": 507,
+          "hoehe_px": 67,
+          "breite_px": 227
+        },
+        {
+          "text": "Weiter",
+          "klasse": "tisch-knopf haupt",
+          "schriftgroesse_px": 15,
+          "fett": "800",
+          "ziffern": "normal",
+          "oben_px": 760,
+          "hoehe_px": 60,
+          "breite_px": 114
+        },
+        {
+          "text": "Stände",
+          "klasse": "tisch-knopf",
+          "schriftgroesse_px": 15,
+          "fett": "800",
+          "ziffern": "normal",
+          "oben_px": 760,
+          "hoehe_px": 60,
+          "breite_px": 114
+        },
+        {
+          "text": "Beenden",
+          "klasse": "tisch-knopf",
+          "schriftgroesse_px": 15,
+          "fett": "800",
+          "ziffern": "normal",
+          "oben_px": 760,
+          "hoehe_px": 60,
+          "breite_px": 114
+        }
+      ],
+      "angaben": [
+        {
+          "text": "25 / 50",
+          "klasse": "tisch-blinds",
+          "schriftgroesse_px": 74.1,
+          "fett": "800",
+          "ziffern": "tabular-nums",
+          "oben_px": 258,
+          "hoehe_px": 85,
+          "breite_px": 247
+        },
+        {
+          "text": "20:00",
+          "klasse": "tisch-zeit",
+          "schriftgroesse_px": 105.3,
+          "fett": "800",
+          "ziffern": "tabular-nums",
+          "oben_px": 365,
+          "hoehe_px": 95,
+          "breite_px": 282
+        },
+        {
+          "text": "50 / 100",
+          "klasse": "tisch-naechste",
+          "schriftgroesse_px": 58.5,
+          "fett": "400",
+          "ziffern": "tabular-nums",
+          "oben_px": 507,
+          "hoehe_px": 67,
+          "breite_px": 227
+        }
+      ],
+      "knoepfe": [
+        {
+          "text": "Weiter",
+          "breite_px": 114,
+          "hoehe_px": 60,
+          "unterkante_abstand_px": 24
+        },
+        {
+          "text": "Stände",
+          "breite_px": 114,
+          "hoehe_px": 60,
+          "unterkante_abstand_px": 24
+        },
+        {
+          "text": "Beenden",
+          "breite_px": 114,
+          "hoehe_px": 60,
+          "unterkante_abstand_px": 24
+        }
+      ],
+      "seitlicher_ueberlauf_px": 0,
+      "mitte_ueberlauf_px": 0
+    },
+    {
+      "geraet": "tablet-quer",
+      "breite": 1024,
+      "fensterhoehe_px": 768,
+      "navigationsleiste_vorhanden": false,
+      "grund_farbe": "rgb(12, 17, 14)",
+      "alle_texte": [
+        {
+          "text": "Pausiert",
+          "klasse": "tisch-pausiert",
+          "schriftgroesse_px": 23,
+          "fett": "800",
+          "ziffern": "normal",
+          "oben_px": 16,
+          "hoehe_px": 37,
+          "breite_px": 126
+        },
+        {
+          "text": "Blinds",
+          "klasse": "tisch-marke",
+          "schriftgroesse_px": 13.2,
+          "fett": "400",
+          "ziffern": "normal",
+          "oben_px": 82,
+          "hoehe_px": 21,
+          "breite_px": 55
+        },
+        {
+          "text": "25 / 50",
+          "klasse": "tisch-blinds",
+          "schriftgroesse_px": 148,
+          "fett": "800",
+          "ziffern": "tabular-nums",
+          "oben_px": 107,
+          "hoehe_px": 170,
+          "breite_px": 494
+        },
+        {
+          "text": "20:00",
+          "klasse": "tisch-zeit",
+          "schriftgroesse_px": 220,
+          "fett": "800",
+          "ziffern": "tabular-nums",
+          "oben_px": 299,
+          "hoehe_px": 198,
+          "breite_px": 590
+        },
+        {
+          "text": "Danach",
+          "klasse": "tisch-marke",
+          "schriftgroesse_px": 13.2,
+          "fett": "400",
+          "ziffern": "normal",
+          "oben_px": 519,
+          "hoehe_px": 21,
+          "breite_px": 63
+        },
+        {
+          "text": "50 / 100",
+          "klasse": "tisch-naechste",
+          "schriftgroesse_px": 96,
+          "fett": "400",
+          "ziffern": "tabular-nums",
+          "oben_px": 544,
+          "hoehe_px": 110,
+          "breite_px": 375
+        },
+        {
+          "text": "Weiter",
+          "klasse": "tisch-knopf haupt",
+          "schriftgroesse_px": 15,
+          "fett": "800",
+          "ziffern": "normal",
+          "oben_px": 684,
+          "hoehe_px": 60,
+          "breite_px": 325
+        },
+        {
+          "text": "Stände",
+          "klasse": "tisch-knopf",
+          "schriftgroesse_px": 15,
+          "fett": "800",
+          "ziffern": "normal",
+          "oben_px": 684,
+          "hoehe_px": 60,
+          "breite_px": 325
+        },
+        {
+          "text": "Beenden",
+          "klasse": "tisch-knopf",
+          "schriftgroesse_px": 15,
+          "fett": "800",
+          "ziffern": "normal",
+          "oben_px": 684,
+          "hoehe_px": 60,
+          "breite_px": 325
+        }
+      ],
+      "angaben": [
+        {
+          "text": "25 / 50",
+          "klasse": "tisch-blinds",
+          "schriftgroesse_px": 148,
+          "fett": "800",
+          "ziffern": "tabular-nums",
+          "oben_px": 107,
+          "hoehe_px": 170,
+          "breite_px": 494
+        },
+        {
+          "text": "20:00",
+          "klasse": "tisch-zeit",
+          "schriftgroesse_px": 220,
+          "fett": "800",
+          "ziffern": "tabular-nums",
+          "oben_px": 299,
+          "hoehe_px": 198,
+          "breite_px": 590
+        },
+        {
+          "text": "50 / 100",
+          "klasse": "tisch-naechste",
+          "schriftgroesse_px": 96,
+          "fett": "400",
+          "ziffern": "tabular-nums",
+          "oben_px": 544,
+          "hoehe_px": 110,
+          "breite_px": 375
+        }
+      ],
+      "knoepfe": [
+        {
+          "text": "Weiter",
+          "breite_px": 325,
+          "hoehe_px": 60,
+          "unterkante_abstand_px": 24
+        },
+        {
+          "text": "Stände",
+          "breite_px": 325,
+          "hoehe_px": 60,
+          "unterkante_abstand_px": 24
+        },
+        {
+          "text": "Beenden",
+          "breite_px": 325,
+          "hoehe_px": 60,
+          "unterkante_abstand_px": 24
+        }
+      ],
+      "seitlicher_ueberlauf_px": 0,
+      "mitte_ueberlauf_px": 0
+    }
+  ]
+}

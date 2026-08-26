@@ -24,6 +24,24 @@ export const STR = defineStrings(
     tableBody: 'Die App übernimmt Karten, Chips, Blinds und Showdown. Das Gerät wandert reihum.',
     tableWhen: 'Wenn kein Kartendeck da ist',
 
+    onlineTitle: 'Online-Tisch',
+    onlineBody:
+      'Wenn nicht alle am selben Tisch sitzen: Jeder öffnet den Tisch auf '
+      + 'seinem Gerät und sieht denselben Stand.',
+    onlineWhen: 'Wenn jemand nicht dabei sein kann',
+
+    abendTitle: 'Abend führen',
+    abendBody:
+      'Koffer eintragen, Blinds ausrechnen lassen, Uhr laufen lassen. Das '
+      + 'Gerät liegt in der Mitte und zeigt allen dasselbe.',
+    abendWhen: 'Vom ersten bis zum letzten Blatt',
+
+    abendeTitle: 'Frühere Abende',
+    abendeBody:
+      'Wer war dabei, wie lange ging es, wer hatte am Ende die Chips. Ein '
+      + 'Tipp auf einen Namen zeigt alle Abende dieser Person.',
+    abendeWhen: 'Am Tag danach',
+
     bankrollTitle: 'Bankroll',
     bankrollBody: 'Ergebnisse festhalten – Live und Online getrennt, mit Verlauf und Export.',
     bankrollWhen: 'Nach der Session',
@@ -49,6 +67,24 @@ export const STR = defineStrings(
     tableTitle: 'Poker night',
     tableBody: 'The app handles cards, chips, blinds and showdown. The device passes around the table.',
     tableWhen: 'When there is no deck around',
+
+    onlineTitle: 'Online table',
+    onlineBody:
+      'When not everyone is at the same table: each person opens the table on '
+      + 'their own device and sees the same state.',
+    onlineWhen: 'When somebody cannot make it',
+
+    abendTitle: 'Run the evening',
+    abendBody:
+      'Enter the case, let the blinds be worked out, start the clock. The '
+      + 'device lies in the middle and shows everyone the same thing.',
+    abendWhen: 'From the first hand to the last',
+
+    abendeTitle: 'Earlier evenings',
+    abendeBody:
+      'Who was there, how long it went, who had the chips at the end. A tap '
+      + 'on a name shows every evening that person played.',
+    abendeWhen: 'The day after',
 
     bankrollTitle: 'Bankroll',
     bankrollBody: 'Log your results – live and online kept apart, with history and export.',

@@ -44,20 +44,24 @@
 
 import { createHash, createVerify, X509Certificate } from 'node:crypto';
 
-/**
- * SHA-256-Fingerabdruck der Apple Root CA G3.
+/*
+ * Hier stand ein fest hinterlegter SHA-256-Fingerabdruck der Apple Root CA G3.
  *
- * Fest hinterlegt statt aus der Kette gelesen – das ist der Kern der ganzen
- * Prüfung. Ein Angreifer kann eine vollständige, in sich stimmige Kette
- * bauen; woran er scheitert, ist dieser Wert.
+ * Er ist entfernt worden, und zwar aus demselben Grund, aus dem in dieser App
+ * keine Pokerzahl aus dem Gedächtnis stammt: Er war nie gegen das echte
+ * Zertifikat von https://www.apple.com/certificateauthority/ verglichen
+ * worden. Ein Wert, der die gesamte Prüfung trägt und den niemand geprüft
+ * hat, ist schlimmer als gar keiner — er sieht nach Sicherheit aus.
  *
- * TODO (Apple): Vor dem ersten Echtbetrieb gegen das Zertifikat von
- * https://www.apple.com/certificateauthority/ gegenprüfen. Der Wert unten ist
- * der öffentlich dokumentierte Fingerabdruck der Apple Root CA G3; er wird
- * hier nicht blind vertraut, sondern gehört einmal von Hand bestätigt.
+ * Die Prüfung selbst bleibt vollständig erhalten. Nur der Fingerabdruck ist
+ * jetzt ein Pflichtargument: Wer diesen Weg wieder in Betrieb nimmt, muss ihn
+ * selbst bilden und übergeben —
+ *
+ *   openssl x509 -in AppleRootCA-G3.cer -inform DER -fingerprint -sha256 -noout
+ *
+ * — und kann ihn nicht aus Versehen ungeprüft erben. Siehe ENTSCHEIDUNGEN.md,
+ * E-021.
  */
-export const APPLE_ROOT_CA_G3_SHA256 =
-  '63:34:3A:BF:B8:9A:6A:03:EB:B5:7E:9B:3F:5F:A7:BE:7C:4F:5C:75:6F:30:17:B3:A8:C4:88:C3:65:3E:91:79';
 
 export type AppleVerifyResult =
   | { ok: true; payload: Record<string, unknown> }
@@ -69,6 +73,7 @@ export type AppleVerifyFailure =
   | 'kette-fehlt'
   | 'kette-unlesbar'
   | 'kette-unterbrochen'
+  | 'wurzel-nicht-festgelegt'
   | 'wurzel-unbekannt'
   | 'zertifikat-abgelaufen'
   | 'signatur-falsch'
@@ -82,8 +87,12 @@ export interface AppleVerifyOptions {
   expectedBundleId?: string;
   /** Zeitpunkt der Prüfung (ms). */
   now: number;
-  /** Fingerabdruck der erwarteten Wurzel. Für Tests überschreibbar. */
-  trustedRootFingerprint?: string;
+  /** SHA-256-Fingerabdruck der erwarteten Wurzel, Großbuchstaben mit
+      Doppelpunkten. **Pflicht.** Kein Vorgabewert: Ein fest hinterlegter
+      Fingerabdruck, den niemand gegen das Zertifikat gehalten hat, sieht nach
+      Sicherheit aus, ohne welche zu sein. Wer diesen Weg in Betrieb nimmt,
+      bildet ihn selbst. */
+  trustedRootFingerprint: string;
 }
 
 function decodeBase64Url(part: string): Buffer {
@@ -142,9 +151,10 @@ export function verifyAppleNotification(
     }
   }
 
-  // --- 2. Ist die Wurzel wirklich Apples? Gegen den FESTEN Wert, nicht gegen
-  //        das mitgeschickte Zertifikat.
-  const expectedRoot = opts.trustedRootFingerprint ?? APPLE_ROOT_CA_G3_SHA256;
+  // --- 2. Ist die Wurzel wirklich Apples? Gegen den ÜBERGEBENEN Wert, nicht
+  //        gegen das mitgeschickte Zertifikat.
+  const expectedRoot = opts.trustedRootFingerprint;
+  if (!expectedRoot) return { ok: false, reason: 'wurzel-nicht-festgelegt' };
   const root = chain[chain.length - 1];
   if (fingerprintOf(root) !== expectedRoot.toUpperCase()) {
     return { ok: false, reason: 'wurzel-unbekannt' };

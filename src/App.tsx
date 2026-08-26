@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { Layout } from './components/Layout';
+import { horcheAufBedienung } from './lib/design/haptik';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Onboarding } from './components/Onboarding';
 import { PaywallModal } from './components/pro/PaywallModal';
@@ -18,7 +20,6 @@ import { LessonPage } from './pages/LessonPage';
 import { ReviewPage } from './pages/ReviewPage';
 import { DailyQuizPage } from './pages/DailyQuizPage';
 import { ProInsightsPage } from './pages/ProInsightsPage';
-import { TrainerHub } from './pages/TrainerHub';
 import { ScenarioTrainer } from './pages/trainers/ScenarioTrainer';
 import { PushFoldTrainer } from './pages/trainers/PushFoldTrainer';
 import { PreflopTrainer } from './pages/trainers/PreflopTrainer';
@@ -30,6 +31,11 @@ import { OutsTrainer } from './pages/trainers/OutsTrainer';
 import { PlayPage } from './pages/PlayPage';
 import { CoachPage } from './pages/CoachPage';
 import { PayoutPage } from './pages/session/PayoutPage';
+import { AbendePage } from './pages/live/AbendePage';
+import { AbendPage } from './pages/live/AbendPage';
+import { EinrichtenPage } from './pages/live/EinrichtenPage';
+import { SpielerPage } from './pages/live/SpielerPage';
+import { TischPage } from './pages/live/TischPage';
 import { EquityCalc } from './pages/tools/EquityCalc';
 import { RangeViewer } from './pages/tools/RangeViewer';
 import { OddsTables } from './pages/tools/OddsTables';
@@ -76,11 +82,21 @@ function istGeteilteAufgabe(pfad: string): boolean {
 
 export function App() {
   const ort = useLocation();
+
+  /* Die haptische Rückmeldung wird an einer Stelle für die ganze App
+     angemeldet. In jeden Bildschirm einzeln geschrieben, fehlte sie beim
+     nächsten neuen Knopf, und niemandem fiele es auf. */
+  useEffect(() => horcheAufBedienung(document), []);
+
   return (
     <ErrorBoundary>
       {!istGeteilteAufgabe(ort.pathname) && <Onboarding />}
       <PaywallModal />
       <Routes>
+        {/* Der Tischbildschirm liegt bewusst außerhalb des Layouts: Vollbild
+            ohne die normale Navigation. Wer den Tisch führt, soll nicht
+            versehentlich ins Glossar wischen. */}
+        <Route path="/session/live" element={<TischPage />} />
         <Route element={<Layout />}>
           {/* ── Hub ──────────────────────────────────────────────────── */}
           <Route index element={<HubPage />} />
@@ -98,7 +114,12 @@ export function App() {
           {/* Die Aufgabe steht in der Adresse. Wer den Link öffnet,
               sieht dieselbe Situation – ohne Datenbank, ohne Server. */}
           <Route path="/lernen/drill/:code" element={<PotOddsDrill />} />
-          <Route path="/lernen/trainer" element={<TrainerHub />} />
+          {/* Der Trainer-Hub war ein Bildschirm, dessen einziger Zweck ein
+              Menü war — und er lag zwischen Lernseite und Trainer, also bei
+              drei Berührungen. Die sieben Trainer stehen jetzt samt ihrer
+              Trefferquote auf der Lernseite. Die Adresse bleibt als
+              Umleitung, damit alte Lesezeichen nicht ins Leere laufen. */}
+          <Route path="/lernen/trainer" element={<Navigate to="/lernen" replace />} />
           <Route path="/lernen/trainer/szenario" element={<ScenarioTrainer />} />
           <Route path="/lernen/trainer/pushfold" element={<PushFoldTrainer />} />
           <Route path="/lernen/trainer/preflop" element={<PreflopTrainer />} />
@@ -133,6 +154,10 @@ export function App() {
           <Route path="/session" element={<SessionPage />} />
           <Route path="/session/chips" element={<ChipCalculator />} />
           <Route path="/session/auszahlung" element={<PayoutPage />} />
+          <Route path="/session/live/einrichten" element={<EinrichtenPage />} />
+          <Route path="/session/abende" element={<AbendePage />} />
+          <Route path="/session/abende/:id" element={<AbendPage />} />
+          <Route path="/session/spieler/:name" element={<SpielerPage />} />
           <Route path="/session/tisch" element={<LocalTablePage />} />
           <Route path="/session/tisch/online" element={<OnlineTablePage />} />
           <Route path="/session/bankroll" element={<BankrollTracker />} />

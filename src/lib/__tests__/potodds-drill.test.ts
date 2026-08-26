@@ -336,3 +336,83 @@ describe('Der Service Worker kennt den Datenstand', () => {
     }
   });
 });
+
+// ---------------------------------------------------------------------------
+// „Warum diese Zahl" — die Herkunftsangabe muss stimmen
+// ---------------------------------------------------------------------------
+
+/** Löst einen Feldpfad wie `b1_outs.outs[8].turn_oder_river` in den Dateien auf.
+ *
+ *  Der Sinn: Die App behauptet neben jeder Zahl, wo sie steht. Eine Behauptung,
+ *  die niemand prüft, ist eine Zierde. Dieser Test öffnet die Datei und schaut
+ *  nach. */
+function amPfad(pfad: string): unknown {
+  const [datei, ...rest] = pfad.split('.');
+  const dateien: Record<string, unknown> = { b1_outs: B1, b2_potodds: B2 };
+  let wert = dateien[datei];
+  if (wert === undefined) throw new Error(`Unbekannte Datei "${datei}" in "${pfad}"`);
+  for (const stueck of rest) {
+    const treffer = stueck.match(/^([A-Za-z_]+)(\[(\d+)\])?$/);
+    if (!treffer) throw new Error(`Unlesbares Pfadstück "${stueck}" in "${pfad}"`);
+    wert = (wert as Record<string, unknown>)[treffer[1]];
+    if (treffer[3] !== undefined) wert = (wert as unknown[])[Number(treffer[3])];
+    if (wert === undefined) throw new Error(`"${pfad}" führt ins Leere bei "${stueck}"`);
+  }
+  return wert;
+}
+
+describe('Die Herkunftsangabe zeigt auf die Zahl, die angezeigt wird', () => {
+  it('prüft sich zuerst selbst', () => {
+    expect(amPfad('b1_outs.block')).toBe('b1_outs');
+    expect(() => amPfad('b1_outs.gibtsnicht')).toThrow(/ins Leere/);
+    expect(() => amPfad('b9.x')).toThrow(/Unbekannte Datei/);
+  });
+
+  it('trifft für jede Aufgabe jeden einzelnen Wert', () => {
+    for (const z of alleZustaende()) {
+      const a = baueAufgabe(B1, B2, z);
+      const l = loese(a);
+      expect(amPfad(a.pfade.outs)).toBe(a.zugbild.outs);
+      expect(amPfad(l.pfade.equity)).toBe(l.equity);
+      expect(amPfad(l.pfade.equityTurn)).toBe(l.equityTurn);
+      expect(amPfad(l.pfade.noetig)).toBe(l.noetig);
+      expect(amPfad(l.pfade.mindestOuts)).toBe(l.mindestOuts);
+    }
+  });
+
+  it('nennt für jeden Wert die richtige Datei', () => {
+    const a = baueAufgabe(B1, B2, alleZustaende()[0]);
+    const l = loese(a);
+    for (const p of [a.pfade.outs, l.pfade.equity, l.pfade.equityTurn]) {
+      expect(p.startsWith('b1_outs.')).toBe(true);
+    }
+    for (const p of [l.pfade.noetig, l.pfade.mindestOuts]) {
+      expect(p.startsWith('b2_potodds.')).toBe(true);
+    }
+  });
+});
+
+describe('Der Herkunftsblock trägt alles, was die Anzeige verspricht', () => {
+  it.each([['b1_outs', B1], ['b2_potodds', B2]] as const)('%s', (_name, d) => {
+    const h = d.herkunft;
+    expect(['exakt', 'monte-carlo']).toContain(h.methode);
+    expect(h.zweck.length).toBeGreaterThan(0);
+    expect(h.annahmen.sicht.length).toBeGreaterThan(0);
+    expect(h.annahmen.unbekannte_karten.length).toBeGreaterThan(0);
+    expect(h.annahmen.split_pot.length).toBeGreaterThan(0);
+    expect(h.annahmen.kartenzahlen.deck).toBeGreaterThan(h.annahmen.kartenzahlen.unbekannt_nach_flop);
+    expect(h.annahmen.kartenzahlen.unbekannt_nach_flop)
+      .toBeGreaterThan(h.annahmen.kartenzahlen.unbekannt_nach_turn);
+    expect(Number.isNaN(new Date(h.erzeugt_am).getTime())).toBe(false);
+    expect(h.quelle.length).toBeGreaterThan(0);
+  });
+
+  it('lässt fehlende Angaben ausdrücklich leer, statt sie zu erfinden', () => {
+    /* Solange B-002 und B-003 offen sind, MÜSSEN diese Felder null sein.
+       Stünde hier eine Zahl, käme sie nicht aus der Rechnung – und dieser
+       Test schlüge an, bevor sie jemand für bare Münze nimmt. */
+    expect(B1.herkunft.faelle_enumeriert).toBeNull();
+    expect(B2.herkunft.faelle_enumeriert).toBeNull();
+    expect(B2.herkunft.bibliothek).toBeNull();
+  });
+});

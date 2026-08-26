@@ -21,11 +21,16 @@
      ist.
    - Einhändig: alles Tippbare liegt im unteren Drittel.
    - Zwischen Antwort und Auflösung bewegt sich nichts.
-   - Kein Zeitdruck, kein Countdown, kein Konto, kein Netz. */
+   - Kein Zeitdruck, kein Countdown, kein Konto, kein Netz.
+
+   Und: Neben jeder gerechneten Zahl steht ihr Herkunftszeichen. Nicht neben
+   Topf und Einsatz — die sind der Maßstab der Aufgabe und stehen in keiner
+   Datei. Neben allem, was aus B1 oder B2 kommt, steht es. */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BackLink } from '../../components/ui';
 import { CardsRow } from '../../components/PlayingCard';
+import { Zahl } from '../../components/Herkunft';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/potoddsdrill';
 import { ladeB1, ladeB2 } from '../../lib/pokermath/laden';
@@ -118,7 +123,7 @@ export function PotOddsDrill() {
     );
   }
 
-  if (!aufgabe || !aufloesung) {
+  if (!daten || !aufgabe || !aufloesung) {
     return (
       <div>
         <BackLink to="/lernen" label={L.back} />
@@ -142,19 +147,27 @@ export function PotOddsDrill() {
             <>
               <div className="drill-frage">{L.question}</div>
               <div className="drill-zugbild">{aufgabe.zugbild.name}</div>
-              <div className="drill-outs">
-                {L.outsOf(aufgabe.zugbild.outs, aufgabe.zugbild.zielkategorie)}
-              </div>
+              <Zahl
+                className="drill-outs"
+                wert={L.outsOf(aufgabe.zugbild.outs, aufgabe.zugbild.zielkategorie)}
+                quelle={{ quellen: [{ pfad: aufgabe.pfade.outs, herkunft: daten.b1.herkunft }] }}
+              />
             </>
           ) : (
             <>
-              <div className={`drill-zahl${aufloesung.lohnt ? ' gut' : ' schlecht'}`}>
-                {alsProzent(aufloesung.equity, lang)}
-              </div>
+              <Zahl
+                className={`drill-zahl${aufloesung.lohnt ? ' gut' : ' schlecht'}`}
+                wert={alsProzent(aufloesung.equity, lang)}
+                quelle={{ quellen: [{ pfad: aufloesung.pfade.equity, herkunft: daten.b1.herkunft }] }}
+              />
               <div className="drill-zahl-label">{L.equityLabel}</div>
               <div className="drill-gegen">
                 <span className="drill-gegen-label">{L.neededLabel}</span>
-                <span className="drill-gegen-wert">{alsProzent(aufloesung.noetig, lang)}</span>
+                <Zahl
+                  className="drill-gegen-wert"
+                  wert={alsProzent(aufloesung.noetig, lang)}
+                  quelle={{ quellen: [{ pfad: aufloesung.pfade.noetig, herkunft: daten.b2.herkunft }] }}
+                />
               </div>
             </>
           )}
@@ -198,20 +211,40 @@ export function PotOddsDrill() {
                 <strong>{richtig ? L.right : L.wrong}</strong>
                 <span>{aufloesung.lohnt ? L.verdictYes : L.verdictNo}</span>
               </div>
+              {/* Direkt unter das Urteil, nicht ans Ende: Wenn der Abstand
+                  hauchdünn ist, gehört das zum Urteil dazu. Weiter unten
+                  stünde es unter der Bedienleiste, und „Daneben" bliebe
+                  härter stehen, als es die Zahl hergibt. */}
+              {aufloesung.grenzfall && <p className="drill-hinweis warn">{L.closeNote}</p>}
               <div className="drill-neben">
                 <span>
                   <span className="drill-neben-label">{L.turnLabel}</span>
-                  <span className="drill-neben-wert">{alsProzent(aufloesung.equityTurn, lang)}</span>
+                  <Zahl
+                    className="drill-neben-wert"
+                    wert={alsProzent(aufloesung.equityTurn, lang)}
+                    quelle={{ quellen: [{ pfad: aufloesung.pfade.equityTurn, herkunft: daten.b1.herkunft }] }}
+                  />
                 </span>
                 <span>
                   <span className="drill-neben-label">{L.gapLabel}</span>
-                  <span className="drill-neben-wert">{alsProzentpunkte(aufloesung.abstandPp, lang)}</span>
+                  {/* Der Abstand steht in keiner Datei – die App bildet ihn
+                      aus zwei Werten. Also nennt die Herkunft beide, jede mit
+                      ihren eigenen Annahmen. */}
+                  <Zahl
+                    className="drill-neben-wert"
+                    wert={alsProzentpunkte(aufloesung.abstandPp, lang)}
+                    quelle={{ quellen: [
+                      { pfad: aufloesung.pfade.equity, herkunft: daten.b1.herkunft },
+                      { pfad: aufloesung.pfade.noetig, herkunft: daten.b2.herkunft },
+                    ] }}
+                  />
                 </span>
               </div>
-              <p className="drill-hinweis">
-                {aufloesung.mindestOuts === null ? L.minOutsNone : L.minOuts(aufloesung.mindestOuts)}
-              </p>
-              {aufloesung.grenzfall && <p className="drill-hinweis warn">{L.closeNote}</p>}
+              <Zahl
+                className="drill-hinweis"
+                wert={aufloesung.mindestOuts === null ? L.minOutsNone : L.minOuts(aufloesung.mindestOuts)}
+                quelle={{ quellen: [{ pfad: aufloesung.pfade.mindestOuts, herkunft: daten.b2.herkunft }] }}
+              />
               <p className="drill-hinweis muted">{L.assumption}</p>
             </div>
           )}

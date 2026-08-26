@@ -552,3 +552,56 @@ Ziffer auftaucht, vor der kein Bezeichnerzeichen steht (`b1` ist keine Zahl,
 `12` schon). Der Test prüft sich zuerst an einem Beispiel selbst.
 
 Größen und Abstände stehen deshalb vollständig in `global.css`.
+
+---
+
+## E-018 · 2026-08-26 · „Warum diese Zahl"
+
+**Lage.** Neben jeder angezeigten Zahl soll ein Zeichen stehen, das ihre
+Herkunft aufklappt. Drei Entscheidungen waren dabei nicht selbstverständlich.
+
+### Ein Blatt von unten statt einer Ausklappzeile
+
+**Gewählt:** Ein Blatt, das über den Inhalt fährt.
+
+**Alternative:** Eine Zeile, die sich unter der Zahl auftut — das ist es, was
+„aufklappen" wörtlich heißt.
+
+**Warum trotzdem nicht:** Sie verschiebt alles darunter. Im Pot-Odds-Drill
+ist genau das verboten; die Lage bewegt sich zwischen Antwort und Auflösung
+um null Pixel, und eine Ausklappzeile hätte das zunichtegemacht. Das Blatt
+kommt außerdem von unten, wo der Daumen ist.
+
+### Zwei Sätze sind formuliert, nicht aus den Daten
+
+Alles im Blatt kommt wörtlich aus dem Herkunftsblock — mit einer Ausnahme:
+Die Erklärungen zu `exakt` und `monte-carlo`. Sie stehen in
+`src/i18n/pages/herkunft.ts` und lauten sinngemäß „jeder mögliche Fall wurde
+einzeln durchgerechnet" beziehungsweise „sehr viele zufällig gezogene".
+
+**Warum das zulässig ist:** Sie sagen nichts über einen konkreten Wert aus,
+sondern erklären das Fachwort, das in den Daten steht. Die Regel K2 richtet
+sich gegen formulierte Aussagen **über Zahlen** („wächst", „ab hier kippt
+es"); eine Worterklärung ist keine.
+
+**Warum es trotzdem hier steht:** Damit es auffällt, falls jemand später auf
+die Idee kommt, in derselben Datei noch etwas anderes zu „erklären".
+
+### Fehlende Angaben werden benannt, nicht gefüllt
+
+`faelle_enumeriert` ist in allen Blöcken `null`, `bibliothek` in B2 und B3.
+Das Blatt sagt das in Gold und mit einem ganzen Satz, statt den Abschnitt
+wegzulassen. Eine weggelassene Zeile sieht aus wie eine Zeile, die es nicht
+gibt; eine benannte Lücke sieht aus wie eine Lücke.
+
+Ein Test hält das von der anderen Seite fest: Solange B-002 und B-003 offen
+sind, **müssen** diese Felder `null` sein. Stünde dort eine Zahl, käme sie
+nicht aus der Rechnung — und der Test schlägt an, bevor jemand sie für bare
+Münze nimmt.
+
+### Der Feldpfad wird nachgeprüft
+
+Die App behauptet neben jeder Zahl, wo sie steht. Ein Test löst diesen Pfad
+in der echten Datei auf und vergleicht den Wert dort mit dem angezeigten —
+für alle 64 Aufgaben und alle fünf Zahlen. Ohne diesen Test wäre die
+Herkunftsangabe eine Zierde: Sie sähe genauso aus, wenn sie falsch wäre.

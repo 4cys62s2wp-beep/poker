@@ -77,6 +77,18 @@ export interface Aufgabe {
   einsatzBetrag: number;
   /** Was im Topf läge, wenn beide bezahlt haben. Nur zur Anzeige. */
   endpot: number;
+  /** Wo die Werte dieser Aufgabe in welcher Datei stehen.
+   *
+   *  Für die Herkunftsanzeige („Warum diese Zahl"). Die Pfade entstehen hier
+   *  und nicht im Bildschirm: Dort darf keine Ziffer stehen, und ein
+   *  Feldpfad enthält einen Index. */
+  pfade: {
+    outs: string;
+    /** Präfix der Outs-Zeile, z. B. `b1_outs.outs[8]`. */
+    outsZeile: string;
+    /** Präfix der Einsatzgröße, z. B. `b2_potodds.einsatzgroessen[3]`. */
+    einsatz: string;
+  };
 }
 
 export interface Aufloesung {
@@ -94,6 +106,13 @@ export interface Aufloesung {
   grenzfall: boolean;
   /** So viele Outs bräuchte es mindestens. Aus B2, Feld `mindest_outs_beide`. */
   mindestOuts: number | null;
+  /** Wo jeder einzelne Wert steht — vollständige Feldpfade. */
+  pfade: {
+    equity: string;
+    equityTurn: string;
+    noetig: string;
+    mindestOuts: string;
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -129,8 +148,9 @@ export function baueAufgabe(b1: B1Outs, b2: B2PotOdds, zustand: DrillZustand): A
   const einsatz = b2.einsatzgroessen[zustand.einsatz];
   if (!einsatz) throw new Error(`Einsatzgröße ${zustand.einsatz} gibt es nicht`);
 
-  const outsZeile = b1.outs.find((z) => z.outs === zugbild.outs);
-  if (!outsZeile) throw new Error(`Für ${zugbild.outs} Outs steht keine Zeile in B1`);
+  const outsIndex = b1.outs.findIndex((z) => z.outs === zugbild.outs);
+  if (outsIndex < 0) throw new Error(`Für ${zugbild.outs} Outs steht keine Zeile in B1`);
+  const outsZeile = b1.outs[outsIndex];
 
   const { zaehler, nenner } = bruchTeile(einsatz.einsatz_als_bruch);
   const spanne = potFaktorSpanne(nenner);
@@ -153,6 +173,11 @@ export function baueAufgabe(b1: B1Outs, b2: B2PotOdds, zustand: DrillZustand): A
     pot,
     einsatzBetrag,
     endpot: pot + einsatzBetrag + einsatzBetrag,
+    pfade: {
+      outs: `b1_outs.zugbilder[${zustand.zugbild}].outs`,
+      outsZeile: `b1_outs.outs[${outsIndex}]`,
+      einsatz: `b2_potodds.einsatzgroessen[${zustand.einsatz}]`,
+    },
   };
 }
 
@@ -186,6 +211,12 @@ export function loese(aufgabe: Aufgabe): Aufloesung {
     lohnt: equity >= noetig,
     grenzfall: Math.abs(abstandPp) < GRENZFALL_PP,
     mindestOuts: aufgabe.einsatz.mindest_outs_beide,
+    pfade: {
+      equity: `${aufgabe.pfade.outsZeile}.turn_oder_river`,
+      equityTurn: `${aufgabe.pfade.outsZeile}.turn`,
+      noetig: `${aufgabe.pfade.einsatz}.noetige_equity`,
+      mindestOuts: `${aufgabe.pfade.einsatz}.mindest_outs_beide`,
+    },
   };
 }
 

@@ -1679,10 +1679,20 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .drill-urteil.gut strong { color: var(--ok); }
 .drill-urteil.schlecht strong { color: var(--danger); }
 
+/* Untereinander, nicht nebeneinander: Mit dem Herkunftszeichen passen beide
+   Werte auf einem Handy nicht mehr in eine Zeile, und ein Umbruch mitten
+   in der Reihe sieht nach einem Fehler aus. */
 .drill-neben {
   display: flex;
-  gap: var(--sp-5);
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.drill-neben > span {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
 }
 
 .drill-neben-label {
@@ -1690,7 +1700,6 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-faint);
-  margin-right: var(--sp-2);
 }
 
 .drill-neben-wert {
@@ -1791,4 +1800,192 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-small);
   font-variant-numeric: tabular-nums;
   color: var(--text-faint);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   „Warum diese Zahl" — Herkunftsanzeige
+   ═══════════════════════════════════════════════════════════════════════
+
+   Das Zeichen muss zwei Dinge zugleich sein: auffindbar und unaufdringlich.
+   Deshalb hat es eine feste Größe, auch neben einer 78-Pixel-Zahl — es soll
+   nicht mitwachsen, sondern daneben stehen bleiben.
+   ------------------------------------------------------------------- */
+
+.herkunft-zeichen {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Fest, nicht relativ: Neben der großen Ergebniszahl würde ein `em`-Maß
+     das Zeichen auf Daumengröße aufblasen. */
+  width: 26px;
+  height: 26px;
+  margin-left: 5px;
+  vertical-align: middle;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-faint);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+.herkunft-zeichen:hover,
+.herkunft-zeichen:focus-visible {
+  color: var(--gold);
+  background: var(--gold-dim);
+}
+
+/* Die Tippfläche ist größer als das Zeichen: 26 px sieht man kaum, 44 px
+   trifft man. Der zusätzliche Rand liegt außerhalb des Sichtbaren und
+   verschiebt deshalb nichts. */
+.herkunft-zeichen::after {
+  content: '';
+  position: absolute;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  transform: translate(-9px, -9px);
+}
+
+.herkunft-grund {
+  position: fixed;
+  inset: 0;
+  z-index: 240;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(6, 9, 7, 0.72);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+/* Von unten, wo der Daumen ist. Höchstens vier Fünftel des Bildschirms,
+   damit sichtbar bleibt, dass darunter die Aufgabe weiterliegt. */
+.herkunft-blatt {
+  width: 100%;
+  max-width: 560px;
+  max-height: 80svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-bottom: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow);
+  padding-bottom: var(--safe-bottom);
+}
+
+.herkunft-kopf {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-5) var(--sp-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.herkunft-titel {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+}
+
+.herkunft-wert {
+  margin-top: var(--sp-1);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--gold-bright);
+}
+
+/* Im Blatt selbst hat der Wert kein zweites Fragezeichen zu suchen. */
+.herkunft-wert .herkunft-zeichen {
+  display: none;
+}
+
+.herkunft-zu {
+  flex: 0 0 auto;
+  min-height: var(--touch-min);
+  padding: 0 var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.herkunft-inhalt {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--sp-4) var(--sp-5) var(--sp-6);
+}
+
+.herkunft-abschnitt + .herkunft-abschnitt {
+  margin-top: var(--sp-5);
+}
+
+/* Bei einer abgeleiteten Zahl stehen mehrere Quellen untereinander. Die
+   Trennlinie macht sichtbar, wo die eine aufhört und die nächste anfängt. */
+.herkunft-vorspann {
+  margin: 0 0 var(--sp-4);
+  font-size: var(--fs-small);
+  color: var(--text);
+}
+
+.herkunft-quelle + .herkunft-quelle {
+  margin-top: var(--sp-6);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--border-strong);
+}
+
+.herkunft-abschnitt h3 {
+  margin: 0 0 var(--sp-2);
+  font-family: var(--font-body);
+  font-size: var(--fs-tiny);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.herkunft-abschnitt p {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-small);
+  line-height: var(--lh-normal);
+  color: var(--text-dim);
+}
+
+.herkunft-feld {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.herkunft-feld-name {
+  font-size: var(--fs-tiny);
+  color: var(--text-faint);
+}
+
+.herkunft-pfad {
+  display: block;
+  margin-bottom: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: var(--fs-tiny);
+  color: var(--text-bright);
+  word-break: break-all;
+}
+
+/* Eine fehlende Angabe wird nicht versteckt, sondern markiert. */
+.herkunft-fehlt {
+  color: var(--gold) !important;
 }

@@ -31,7 +31,8 @@ export type IconName =
   | 'lock'
   | 'check'
   | 'crown'
-  | 'table';
+  | 'table'
+  | 'info';
 
 interface Props {
   name: IconName;
@@ -263,6 +264,17 @@ function paths(name: IconName) {
           <rect x="4.8" y="10.5" width="14.4" height="9.7" rx="2.2" />
           <path d="M8.3 10.5V7.8a3.7 3.7 0 0 1 7.4 0v2.7" />
           <path d="M12 14.4v2.2" />
+        </g>
+      );
+    /* Fragezeichen im Kreis – steht neben jeder gerechneten Zahl und öffnet
+       ihre Herkunft. Bewusst dünn und klein: Es soll auffindbar sein, ohne
+       die Zahl daneben zu stören. */
+    case 'info':
+      return (
+        <g {...STROKE}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M9.6 9.2a2.5 2.5 0 1 1 3.1 2.9c-.5.2-.7.6-.7 1.1v.6" />
+          <path d="M12 16.9v.1" />
         </g>
       );
     case 'check':

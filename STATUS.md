@@ -11,9 +11,10 @@ Projekts, unverändert übernommen.
 - **Hauptverzeichnis:** `/home/user/poker` auf `feature/poker-math` —
   **nicht anfassen.** Kein Branchwechsel dort, keine Schreibzugriffe auf
   `tools/poker-math/`, insbesondere nicht auf `output/`.
-- **Letzte Aktualisierung:** 2026-08-26, nach Aufgabe 2
-- **Stand in einem Satz:** Datenschnittstelle und Pot-Odds-Drill stehen und
-  sind geprüft; die Herkunftsanzeige und die teilbaren Adressen fehlen noch.
+- **Letzte Aktualisierung:** 2026-08-26, nach Aufgabe 3
+- **Stand in einem Satz:** Datenschnittstelle, Pot-Odds-Drill und die
+  Herkunftsanzeige stehen und sind geprüft; offen sind nur noch die
+  teilbaren Adressen.
 
 ---
 
@@ -23,7 +24,7 @@ Projekts, unverändert übernommen.
 |---|---------|-------|
 | 1 | Datenschnittstelle: schlankes, direkt ladbares Format aus B1–B3, reproduzierbar erzeugt, beim Laden **laut** validiert | ✅ fertig |
 | 2 | Pot-Odds-Trainer: der erste echte Bildschirm | ✅ fertig |
-| 3 | „Warum diese Zahl": Herkunft neben jeder Zahl, aufklappbar | ⬜ offen |
+| 3 | „Warum diese Zahl": Herkunft neben jeder Zahl, aufklappbar | ✅ fertig |
 | 4 | Teilbare Ergebnisse: Zustand in der Adresse, Vorschaubild-Metadaten | ⬜ offen |
 
 Reihenfolge ist bindend: eine Aufgabe vollständig abschließen und committen,
@@ -181,18 +182,73 @@ einer Zahl fällt das niemandem auf.
 
 ---
 
+## Aufgabe 3 — was jetzt steht
+
+**Die Komponente:** `src/components/Herkunft.tsx`, Texte in
+`src/i18n/pages/herkunft.ts`.
+
+Neben jeder gerechneten Zahl steht ein Fragezeichen im Kreis, 26 px, in
+gedämpftem Grau. Die Tippfläche darum ist 44 px groß, liegt aber außerhalb
+des Sichtbaren und verschiebt deshalb nichts. Wer tippt, bekommt ein Blatt
+von unten mit:
+
+| Abschnitt | Woher |
+|-----------|-------|
+| Wo sie steht | der Feldpfad, z. B. `b1_outs.outs[6].turn_oder_river` |
+| Wie gerechnet wurde | `herkunft.methode` und `herkunft.faelle_enumeriert` |
+| Wofür der Block gerechnet wurde | `herkunft.zweck`, wörtlich |
+| Woraus gerechnet wurde | Sicht, unbekannte Karten, Kartenzahlen, Split-Pötte |
+| Was zu beachten ist | jede `besonderheiten[].satz`, wörtlich |
+| Womit gerechnet wurde | `herkunft.bibliothek` mit Version |
+| Stand | `herkunft.erzeugt_am` und `herkunft.quelle` |
+
+**Es wird nichts nachformuliert.** Die einzige Ausnahme sind zwei Sätze, die
+erklären, was „exakt" und „monte-carlo" bedeuten. Sie sagen nichts über einen
+konkreten Wert, sondern über das Wort, das in den Daten steht — ohne sie wäre
+die Anzeige für den wertlos, für den sie gedacht ist.
+
+**Fehlende Angaben werden benannt, nicht gefüllt.** Wo `faelle_enumeriert`
+oder `bibliothek` `null` ist, steht ein Satz in Gold, der genau das sagt. Ein
+Test hält das fest: Solange B-002 und B-003 offen sind, **müssen** diese
+Felder `null` sein. Stünde da eine Zahl, käme sie nicht aus der Rechnung.
+
+**Der wichtigste Test:** Der Feldpfad wird gegen die echte Datei aufgelöst,
+und der Wert dort muss der angezeigte sein — für alle 64 Aufgaben und alle
+fünf Zahlen. Eine Herkunftsangabe, die niemand prüft, ist eine Zierde.
+
+**Wo Zeichen stehen und wo nicht:** Neben Outs, Trefferquote, nötiger Equity,
+Turn-Wert, Abstand und Mindest-Outs. **Nicht** neben Topf, Einsatz und
+Endtopf — die sind der Maßstab der Aufgabe und stehen in keiner Datei. Der
+Abstand steht auch in keiner Datei: Ihn bildet die App aus zwei Werten,
+deshalb nennt sein Blatt **beide** Quellen, jede mit ihren eigenen Annahmen.
+
+**Warum ein Blatt und keine Ausklappzeile:** Eine Zeile, die sich unter der
+Zahl auftut, verschiebt alles darunter — und im Drill darf sich nichts
+bewegen. Das Blatt fährt über den Inhalt und kommt von unten, wo der Daumen
+ist.
+
+Die Komponente ist nicht an den Drill gebunden. Jeder Bildschirm, der eine
+gerechnete Zahl zeigt, kann sie verwenden; bisher tut es nur der Drill.
+
+---
+
 ## Was als Nächstes zu tun ist
 
-**Aufgabe 3 — „Warum diese Zahl".** Baut auf dem `herkunft`-Block auf, der
-schon in jeder Datei liegt. Neben jeder angezeigten Zahl ein unaufdringliches
-Zeichen; wer es antippt, sieht Rechenweg, Annahmen, Bibliothek und Version.
-Zwei Angaben fehlen dort noch (B-002, B-003) — die App muss das offen sagen,
-statt eine Zahl zu erfinden. Der Satz über die Zwei-Karten-Annahme, der heute
-in der Auflösung steht, gehört dorthin.
+**Aufgabe 4 — teilbare Ergebnisse.** Jede Situation bekommt eine eigene
+Adresse, die den Zustand vollständig kodiert; wer sie öffnet, sieht dieselbe
+Aufgabe. Keine Datenbank, kein Server — der Zustand lebt in der Adresse.
+Dazu Vorschaubild-Angaben, damit ein geteilter Link in WhatsApp und Discord
+als Karte erscheint.
 
-**Aufgabe 4**: Zustand vollständig in der Adresse, keine Datenbank, kein
-Server. Dazu Vorschaubild-Metadaten, damit ein geteilter Link in WhatsApp und
-Discord als Karte erscheint.
+Die Grundlage liegt schon: `DrillZustand` sind drei kleine Zahlen
+(`zugbild`, `einsatz`, `potFaktor`), und `baueAufgabe` wirft, wenn ein
+Zustand nicht zu den Daten passt. Zu klären ist, was passiert, wenn sich die
+Daten ändern und ein alter Link auf einen anderen Index zeigt — ein
+Fingerabdruck der Daten in der Adresse wäre der saubere Weg.
+
+Offen und in `BLOCKER.md` festgehalten: B-006 fragt, ob der
+Willkommensdialog übersprungen werden darf, wenn jemand über einen geteilten
+Link direkt auf einer Aufgabe landet.
 
 ---
 

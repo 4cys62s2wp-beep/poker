@@ -38,10 +38,10 @@ export const STR = defineStrings(
        zu allen. „bis zum Straße" stand einen Durchlauf lang da. */
     outsOf: (n: number, ziel: string) => `${n} Outs · Ziel: ${ziel}`,
 
-    assumption:
-      'Zwei Karten zu sehen setzt voraus, dass auf dem Turn nicht noch einmal '
-      + 'gesetzt wird. Deshalb steht der Turn-Wert daneben — er ist die '
-      + 'vorsichtige Lesart.',
+    /* Ein Satz, nicht drei: Die lange Fassung hat die Mindest-Outs unter die
+       Bedienleiste geschoben. Was sie erklärte — dass der Turn-Wert die
+       vorsichtige Lesart ist — sagt die Beschriftung daneben ohnehin. */
+    assumption: 'Zwei Karten zu sehen heißt: auf dem Turn wird nicht noch einmal gesetzt.',
 
     next: 'Nächste Aufgabe',
     score: (richtig: number, gesamt: number) => `${richtig} von ${gesamt}`,
@@ -80,9 +80,7 @@ export const STR = defineStrings(
     minOutsNone: 'No number of outs in this table makes this bet pay for itself.',
     outsOf: (n: number, ziel: string) => `${n} outs · target: ${ziel}`,
 
-    assumption:
-      'Seeing two cards assumes there is no second bet on the turn. That is '
-      + 'why the turn figure sits beside it — it is the cautious reading.',
+    assumption: 'Seeing two cards assumes no second bet on the turn.',
 
     next: 'Next hand',
     score: (richtig: number, gesamt: number) => `${richtig} of ${gesamt}`,

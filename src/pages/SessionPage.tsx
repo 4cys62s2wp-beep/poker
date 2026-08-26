@@ -40,6 +40,14 @@ export function SessionPage() {
       title: L.abendTitle, body: L.abendBody, when: L.abendWhen,
       accent: 'var(--akzent)',
     },
+    /* Danach das, was von den Abenden bleibt. Es steht direkt hinter dem
+       Abend selbst, weil man es am Tag danach sucht — und weil der Weg zu
+       einer Person nur über diese Liste führt. */
+    {
+      to: '/session/abende', icon: 'crown',
+      title: L.abendeTitle, body: L.abendeBody, when: L.abendeWhen,
+      accent: 'var(--akzent-dim)',
+    },
     {
       to: '/session/chips', icon: 'chip',
       title: L.chipsTitle, body: L.chipsBody, when: L.chipsWhen,

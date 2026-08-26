@@ -188,6 +188,44 @@ await schritt('Weiter läuft an derselben Stelle an', async () => {
   };
 });
 
+await schritt('Ein Ereignis am Tisch erfassen', async () => {
+  /* Der Auftrag setzt eine Obergrenze: unter dreißig Sekunden. Gemessen wird
+     hier beides — die Zahl der Griffe (das ist die eigentliche Aussage) und
+     die Zeit, die der Browser dafür braucht. */
+  const begonnen = Date.now();
+  let griffe = 0;
+
+  await seite.getByRole('button', { name: 'Stände' }).click(); griffe += 1;
+  await seite.waitForTimeout(200);
+  const zeilen = await seite.locator('.stand-zeile').count();
+
+  /* Ben ist raus. */
+  await seite.locator('.stand-zeile').last().getByRole('button', { name: 'Raus' }).click();
+  griffe += 1;
+  await seite.waitForTimeout(150);
+
+  /* Ada kauft nach. */
+  await seite.locator('.stand-zeile').nth(3).getByRole('button', { name: 'Nachgekauft' }).click();
+  griffe += 1;
+  await seite.waitForTimeout(150);
+
+  const nochDabei = (await seite.locator('.tisch-frage-blatt.staende .hinweis').last().innerText()).trim();
+  await seite.getByRole('button', { name: 'Fertig' }).click(); griffe += 1;
+  await seite.waitForTimeout(250);
+
+  const gespeichert = await seite.evaluate((k) => JSON.parse(localStorage.getItem(k)), SCHLUESSEL);
+  return {
+    zeilen,
+    griffe,
+    dauer_ms: Date.now() - begonnen,
+    noch_dabei_text: nochDabei,
+    ausgeschieden: gespeichert.spieler.filter((p) => p.stand === null).length,
+    raus_um_gesetzt: gespeichert.spieler.some((p) => typeof p.raus_um === 'number'),
+    nachgekauft: gespeichert.spieler.filter((p) => p.eingekauft > gespeichert.startchips).length,
+    blatt_wieder_zu: await seite.locator('.tisch-frage-blatt.staende').count() === 0,
+  };
+});
+
 await schritt('Beenden fragt nach und tut es dann', async () => {
   await seite.getByRole('button', { name: 'Beenden', exact: true }).click();
   await seite.waitForTimeout(300);
@@ -200,6 +238,47 @@ await schritt('Beenden fragt nach und tut es dann', async () => {
     frage,
     adresse_danach: new URL(seite.url()).hash,
     abend_beendet: await seite.evaluate((k) => localStorage.getItem(k) === null, SCHLUESSEL),
+    abende_gespeichert: await seite.evaluate(
+      () => JSON.parse(localStorage.getItem('pokermentor-session-abende-v1') ?? '[]').length,
+    ),
+  };
+});
+
+await schritt('Der Abend steht in der Liste', async () => {
+  const karten = seite.locator('.abend-karte');
+  const namen = seite.locator('.abende-namen-reihe .abende-name');
+  return {
+    abende: await karten.count(),
+    erste_karte: (await karten.first().innerText()).trim().replace(/\n/g, ' · '),
+    namen_als_knoepfe: await namen.count(),
+    namen: await namen.allInnerTexts(),
+  };
+});
+
+await schritt('Ein Tipp auf einen Namen führt zu dieser Person', async () => {
+  /* Kein Suchfeld: Der Weg zu früheren Abenden führt über den Namen. */
+  const name = (await seite.locator('.abende-namen-reihe .abende-name').first().innerText()).trim();
+  await seite.locator('.abende-namen-reihe .abende-name').first().click();
+  await seite.waitForTimeout(400);
+  return {
+    getippt: name,
+    adresse: decodeURIComponent(new URL(seite.url()).hash),
+    ueberschrift: (await seite.locator('h1').first().innerText()).trim(),
+    untertitel: (await seite.locator('.page-header .sub, .page-header p').first().innerText()).trim(),
+    abende: await seite.locator('.abend-karte').count(),
+    suchfeld: await seite.locator('input[type="search"]').count(),
+  };
+});
+
+await schritt('Ein Tipp auf einen Abend zeigt den Abend', async () => {
+  await seite.locator('.abend-karte').first().click();
+  await seite.waitForTimeout(400);
+  const zeilen = seite.locator('.abend-zeile');
+  return {
+    adresse: new URL(seite.url()).hash.replace(/\/\d+$/, '/<id>'),
+    zeilen: await zeilen.count(),
+    plaetze: (await seite.locator('.abend-platz').allInnerTexts()).map((t) => t.trim()),
+    zurueck_sichtbar: await seite.locator('a[href="#/session/abende"]').count() > 0,
   };
 });
 

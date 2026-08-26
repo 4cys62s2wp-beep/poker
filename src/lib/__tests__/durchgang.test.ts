@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(12);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(16);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -154,6 +154,93 @@ describe('Die Uhr am Tisch', () => {
   });
 });
 
+describe('Ein Ereignis am Tisch', () => {
+  it('kostet vier Griffe für zwei Ereignisse', () => {
+    /* Der Auftrag setzt dreißig Sekunden als Obergrenze. Die eigentliche
+       Aussage ist aber die Zahl der Griffe: aufmachen, tippen, tippen,
+       zumachen. Wer dafür eine Eingabemaske bauen muss, überschreitet die
+       Grenze auch dann, wenn der Browser schnell ist. */
+    const e = schritt('Ein Ereignis am Tisch erfassen');
+    expect(e.griffe as number).toBeLessThanOrEqual(4);
+    expect(e.dauer_ms as number).toBeLessThan(30_000);
+  });
+
+  it('zeigt jede Person in einer eigenen Zeile', () => {
+    const e = schritt('Ein Ereignis am Tisch erfassen');
+    expect(e.zeilen).toBe(5);
+  });
+
+  it('schreibt Ausscheiden mit dem Zeitpunkt fort, nicht mit einem Platz', () => {
+    /* Der Zeitpunkt fällt am Tisch ohnehin an; ein Platz wäre eine zweite
+       Angabe, die dem Stand widersprechen kann. */
+    const e = schritt('Ein Ereignis am Tisch erfassen');
+    expect(e.ausgeschieden).toBe(1);
+    expect(e.raus_um_gesetzt).toBe(true);
+  });
+
+  it('rechnet einen Nachkauf auf das Eingekaufte an', () => {
+    expect(schritt('Ein Ereignis am Tisch erfassen').nachgekauft).toBe(1);
+  });
+
+  it('sagt in einem Satz, wie viele noch dabei sind', () => {
+    const e = schritt('Ein Ereignis am Tisch erfassen');
+    expect(String(e.noch_dabei_text)).toMatch(/^4 /);
+  });
+
+  it('macht das Blatt wieder zu und gibt den Tisch frei', () => {
+    expect(schritt('Ein Ereignis am Tisch erfassen').blatt_wieder_zu).toBe(true);
+  });
+});
+
+describe('Was vom Abend bleibt', () => {
+  it('legt den beendeten Abend in die Liste', () => {
+    const e = schritt('Beenden fragt nach und tut es dann');
+    expect(e.abende_gespeichert).toBe(1);
+    expect(e.adresse_danach).toBe('#/session/abende');
+  });
+
+  it('zeigt Datum, Sieger und Umfang in einer Zeile', () => {
+    const e = schritt('Der Abend steht in der Liste');
+    expect(e.abende).toBe(1);
+    expect(String(e.erste_karte)).toMatch(/gewonnen/);
+    expect(String(e.erste_karte)).toMatch(/5 Personen/);
+  });
+
+  it('stellt jeden Namen als Knopf hin, statt ein Suchfeld anzubieten', () => {
+    const e = schritt('Der Abend steht in der Liste');
+    expect(e.namen_als_knoepfe).toBe(5);
+    const t = schritt('Ein Tipp auf einen Namen führt zu dieser Person');
+    expect(t.suchfeld, 'Ein Suchfeld verlangt, dass man den Namen gleich '
+      + 'schreibt wie damals — bei handgetippten Namen trifft das nicht zu.')
+      .toBe(0);
+  });
+
+  it('führt vom Namen zu den Abenden dieser Person', () => {
+    const t = schritt('Ein Tipp auf einen Namen führt zu dieser Person');
+    expect(t.adresse).toBe(`#/session/spieler/${t.getippt}`);
+    expect(t.ueberschrift).toBe(t.getippt);
+    expect(t.abende as number).toBeGreaterThanOrEqual(1);
+    expect(String(t.untertitel)).toMatch(/Abend/);
+  });
+
+  it('zeigt im Abend jede Person mit ihrem gerechneten Platz', () => {
+    const e = schritt('Ein Tipp auf einen Abend zeigt den Abend');
+    expect(e.zeilen).toBe(5);
+    const plaetze = (e.plaetze as string[]).map((t) => Number(t.replace('.', '')));
+    expect(plaetze[0]).toBe(1);
+    /* Die Plätze steigen und sind nie erfunden: Gleichstand teilt sich einen
+       Platz, danach wird entsprechend übersprungen. */
+    for (let i = 1; i < plaetze.length; i += 1) {
+      expect(plaetze[i]).toBeGreaterThanOrEqual(plaetze[i - 1]);
+    }
+    expect(Math.max(...plaetze)).toBeLessThanOrEqual(plaetze.length);
+  });
+
+  it('lässt von jedem dieser Bildschirme einen Weg zurück', () => {
+    expect(schritt('Ein Tipp auf einen Abend zeigt den Abend').zurueck_sichtbar).toBe(true);
+  });
+});
+
 describe('Beenden', () => {
   it('fragt nach, statt es einfach zu tun', () => {
     /* Ein Fehlgriff auf dem Tischgerät darf nicht den Abend beenden. */
@@ -162,9 +249,12 @@ describe('Beenden', () => {
     expect(String(e.frage)).toMatch(/\?$/);
   });
 
-  it('beendet danach wirklich und führt zurück', () => {
+  it('beendet danach wirklich und zeigt, was geblieben ist', () => {
+    /* Nicht zurück ins Menü, sondern in die Liste der Abende: Der eben
+       beendete Abend ist das Erste, was jemand danach sehen will — und es
+       ist zugleich der Beweis, dass er nicht verloren ist. */
     const e = schritt('Beenden fragt nach und tut es dann');
     expect(e.abend_beendet).toBe(true);
-    expect(e.adresse_danach).toBe('#/session');
+    expect(e.adresse_danach).toBe('#/session/abende');
   });
 });

@@ -283,6 +283,12 @@ sondern ein weiteres Handy in einer Hand.
 
 Was dabei weggefallen ist und warum, steht in `ENTSCHEIDUNGEN.md`, E-027.
 
+Die Grenze zählt **Angaben**, nicht Knöpfe. Ein Knopf steht unten und nimmt
+den Zahlen keinen Platz; eine Angabe steht in der Mitte und tut es. Für die
+Bedienung gilt trotzdem eine eigene Obergrenze: höchstens drei nebeneinander,
+weil ein vierter bei 390 Pixern jeden auf unter eine Fingerbreite drückt.
+Nachgemessen wird beides.
+
 ### Regel 8.2 — Die nötige Schriftgröße wird gerechnet, nicht geschätzt
 
 Ein Zeichen ist bequem lesbar, wenn es unter einem Sehwinkel von rund 0,3°

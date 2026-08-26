@@ -1,8 +1,8 @@
 {
-  "geprueft_am": "2026-08-26T20:16:43Z",
+  "geprueft_am": "2026-08-26T20:50:53Z",
   "breite": 390,
-  "erreichbar": 91,
-  "bildschirme": 42,
+  "erreichbar": 92,
+  "bildschirme": 43,
   "groesste_tiefe": 2,
   "sackgassen": [],
   "tiefer_als_zwei": [],
@@ -227,6 +227,12 @@
     },
     {
       "hash": "#/rechtliches",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/session/abende",
       "tiefe": 2,
       "zurueck": true,
       "inhalt": false

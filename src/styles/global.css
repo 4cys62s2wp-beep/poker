@@ -2423,6 +2423,189 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   gap: var(--sp-3);
 }
 
+/* ── Stände am Tisch ─────────────────────────────────────────────────── */
+
+/* Ein Ereignis am Tisch — jemand kauft nach, jemand ist raus — darf keine
+   halbe Minute kosten. Deshalb eine Zeile je Person und ein Griff je
+   Ereignis: kein Auswählen, kein Bestätigen, kein zweiter Bildschirm. */
+.tisch-frage-blatt.staende {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.stand-zeile {
+  display: flex;
+  align-items: center;
+  gap: var(--tipp-abstand);
+}
+
+.stand-name {
+  flex: 1 1 auto;
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ausgeschieden wird nicht nur an der Farbe erkennbar gemacht: Die Zeile
+   verliert ihr Gewicht, und an die Stelle der Knöpfe tritt ein einziger. */
+.stand-zeile.raus .stand-name {
+  color: var(--text-faint);
+  font-weight: var(--fw-normal);
+  text-decoration: line-through;
+}
+
+.stand-chips {
+  width: 5.5em;
+  min-height: var(--tipp-min);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-fliesstext);
+  font-variant-numeric: var(--ziffern);
+  text-align: right;
+  padding: 0 var(--sp-2);
+}
+
+.tisch-knopf.schmal {
+  flex: 0 0 auto;
+  min-width: var(--tipp-min);
+  min-height: var(--tipp-min);
+  padding: 0 var(--sp-3);
+  font-size: var(--fs-beschriftung);
+}
+
+/* ── Frühere Abende ──────────────────────────────────────────────────── */
+
+.abende-leer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  align-items: flex-start;
+}
+
+.abende-knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--sp-5);
+  text-decoration: none;
+}
+
+.abende-namen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+}
+
+.abende-namen-reihe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tipp-abstand);
+}
+
+/* Ein Name ist hier ein Weg, kein Text. Also sieht er aus wie ein Knopf und
+   ist so groß wie einer — das Suchfeld, das es nicht gibt, wird durch diese
+   Fläche ersetzt. */
+.abende-name {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tipp-min);
+  padding: 0 var(--sp-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+}
+
+.abende-name:active { background: var(--bg-card-hover); }
+
+.abende-liste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tipp-abstand);
+}
+
+.abend-karte {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-4);
+  min-height: var(--tipp-min);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.abend-karte:active { background: var(--bg-card-hover); }
+
+.abend-datum {
+  font-size: var(--fs-beschriftung);
+  color: var(--text-dim);
+}
+
+.abend-sieger {
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+}
+
+.abend-kopfzahlen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  margin-bottom: var(--sp-5);
+}
+
+.abend-kopfzahlen > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.abend-kopfzahlen > div > span:last-child {
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: var(--ziffern);
+}
+
+.abend-tabelle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tipp-abstand);
+}
+
+.abend-zeile {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.abend-platz {
+  min-width: 2.2em;
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: var(--ziffern);
+  color: var(--akzent);
+}
+
+/* Ausgeschieden ist an der Form erkennbar, nicht nur an der Farbe. */
+.abend-zeile.raus .abend-platz { color: var(--text-faint); }
+
+.abend-stand {
+  margin-left: auto;
+  font-variant-numeric: var(--ziffern);
+  color: var(--text-dim);
+}
+
 /* ── Einrichten ──────────────────────────────────────────────────────── */
 .einrichten {
   display: flex;

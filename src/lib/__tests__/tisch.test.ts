@@ -134,8 +134,14 @@ describe.each(T.messungen)('Tischgerät bei $breite px ($geraet)', (m) => {
     expect(m.seitlicher_ueberlauf_px).toBe(0);
   });
 
-  it('hat genau zwei Bedienknöpfe, beide groß genug zum Treffen', () => {
-    expect(m.knoepfe).toHaveLength(2);
+  it('hat höchstens drei Bedienknöpfe, alle groß genug zum Treffen', () => {
+    /* Die Dreierregel begrenzt die *Angaben*, nicht die Bedienung — sie
+       schützt die Schriftgröße, und Knöpfe stehen unten und nehmen den
+       Zahlen keinen Platz. Trotzdem eine Obergrenze: Drei nebeneinander
+       füllen die Breite bei 390 px aus; ein vierter würde jeden auf unter
+       eine Fingerbreite drücken. */
+    expect(m.knoepfe.length).toBeGreaterThanOrEqual(2);
+    expect(m.knoepfe.length).toBeLessThanOrEqual(3);
     for (const k of m.knoepfe) {
       expect(k.hoehe_px, k.text).toBeGreaterThanOrEqual(TIPP_MIN);
       expect(k.breite_px, k.text).toBeGreaterThanOrEqual(TIPP_MIN);

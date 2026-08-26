@@ -1,5 +1,5 @@
 {
-  "erzeugt_am": "2026-08-26T20:32:21.567Z",
+  "erzeugt_am": "2026-08-26T20:51:17.257Z",
   "leseabstand": {
     "abstand_mm": 2000,
     "sehwinkel_grad": 0.3,
@@ -85,7 +85,17 @@
           "ziffern": "normal",
           "oben_px": 760,
           "hoehe_px": 60,
-          "breite_px": 175
+          "breite_px": 114
+        },
+        {
+          "text": "Stände",
+          "klasse": "tisch-knopf",
+          "schriftgroesse_px": 15,
+          "fett": "800",
+          "ziffern": "normal",
+          "oben_px": 760,
+          "hoehe_px": 60,
+          "breite_px": 114
         },
         {
           "text": "Beenden",
@@ -95,7 +105,7 @@
           "ziffern": "normal",
           "oben_px": 760,
           "hoehe_px": 60,
-          "breite_px": 175
+          "breite_px": 114
         }
       ],
       "angaben": [
@@ -133,13 +143,19 @@
       "knoepfe": [
         {
           "text": "Weiter",
-          "breite_px": 175,
+          "breite_px": 114,
+          "hoehe_px": 60,
+          "unterkante_abstand_px": 24
+        },
+        {
+          "text": "Stände",
+          "breite_px": 114,
           "hoehe_px": 60,
           "unterkante_abstand_px": 24
         },
         {
           "text": "Beenden",
-          "breite_px": 175,
+          "breite_px": 114,
           "hoehe_px": 60,
           "unterkante_abstand_px": 24
         }
@@ -222,7 +238,17 @@
           "ziffern": "normal",
           "oben_px": 684,
           "hoehe_px": 60,
-          "breite_px": 492
+          "breite_px": 325
+        },
+        {
+          "text": "Stände",
+          "klasse": "tisch-knopf",
+          "schriftgroesse_px": 15,
+          "fett": "800",
+          "ziffern": "normal",
+          "oben_px": 684,
+          "hoehe_px": 60,
+          "breite_px": 325
         },
         {
           "text": "Beenden",
@@ -232,7 +258,7 @@
           "ziffern": "normal",
           "oben_px": 684,
           "hoehe_px": 60,
-          "breite_px": 492
+          "breite_px": 325
         }
       ],
       "angaben": [
@@ -270,13 +296,19 @@
       "knoepfe": [
         {
           "text": "Weiter",
-          "breite_px": 492,
+          "breite_px": 325,
+          "hoehe_px": 60,
+          "unterkante_abstand_px": 24
+        },
+        {
+          "text": "Stände",
+          "breite_px": 325,
           "hoehe_px": 60,
           "unterkante_abstand_px": 24
         },
         {
           "text": "Beenden",
-          "breite_px": 492,
+          "breite_px": 325,
           "hoehe_px": 60,
           "unterkante_abstand_px": 24
         }

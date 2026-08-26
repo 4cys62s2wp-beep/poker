@@ -75,6 +75,17 @@ export const STR = defineStrings(
     verlassenNein: 'Weiterspielen',
     keineSession: 'Es läuft gerade kein Abend.',
     einrichten: 'Abend einrichten',
+
+    // ── Stände am Tisch ─────────────────────────────────────────────────
+    staende: 'Stände',
+    staendeTitel: 'Wer hat wie viel?',
+    staendeSub: 'Grob genügt. Leer lassen ist auch eine Antwort.',
+    chips: 'Chips',
+    rebuy: 'Nachgekauft',
+    raus: 'Raus',
+    dochDabei: 'Doch dabei',
+    fertig: 'Fertig',
+    nochDabei: (n: number) => `${n} noch dabei`,
   },
   {
     einrichtenTitel: 'Set up the evening',
@@ -145,5 +156,16 @@ export const STR = defineStrings(
     verlassenNein: 'Keep playing',
     keineSession: 'No evening is running right now.',
     einrichten: 'Set up the evening',
+
+    // ── Stände am Tisch ─────────────────────────────────────────────────
+    staende: 'Stacks',
+    staendeTitel: 'Who has how much?',
+    staendeSub: 'Roughly is enough. Leaving it blank is an answer too.',
+    chips: 'Chips',
+    rebuy: 'Rebought',
+    raus: 'Out',
+    dochDabei: 'Back in',
+    fertig: 'Done',
+    nochDabei: (n: number) => `${n} still in`,
   },
 );

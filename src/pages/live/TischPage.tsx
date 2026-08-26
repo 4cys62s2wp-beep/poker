@@ -35,8 +35,9 @@ import { bestaetigt, umschlag } from '../../lib/design/haptik';
 import { gleichIstEsSoweit, haltWach, stufeGewechselt } from '../../lib/live/signal';
 import { anhalten, fortsetzen, standDerUhr } from '../../lib/live/uhr';
 import { alsUhr } from '../../lib/session/dauer';
+import { archiviere, ergaenze, ladeAbende, speichereAbende } from '../../lib/session/abende';
 import {
-  ladeLaufende, speichereLaufende, type LaufendeSession,
+  ladeLaufende, nochDabei, speichereLaufende, type LaufendeSession,
 } from '../../lib/session/laufend';
 
 export function TischPage() {
@@ -47,6 +48,7 @@ export function TischPage() {
   const [session, setSession] = useState<LaufendeSession | null | 'laedt'>('laedt');
   const [jetzt, setJetzt] = useState(Date.now());
   const [frage, setFrage] = useState(false);
+  const [staende, setStaende] = useState(false);
   const gewarnt = useRef<number | null>(null);
   const letzteStufe = useRef<number | null>(null);
 
@@ -116,11 +118,21 @@ export function TischPage() {
   }
 
   function beenden() {
-    /* Der Stand bleibt erhalten — Phase 4 legt ihn in die Sitzungsliste.
-       Heute endet die laufende Runde, und das ist die bewusste Handlung, um
-       die es hier geht. */
+    if (session === null || session === 'laedt') return;
+    /* Erst in die Abende schreiben, dann die laufende Runde beenden. In
+       dieser Reihenfolge, weil ein Abbruch dazwischen die Erinnerung behält
+       statt sie zu verlieren: Ein doppelter Eintrag wird beim Aufnehmen
+       erkannt, ein verlorener nicht. */
+    speichereAbende(ergaenze(ladeAbende(), archiviere(session, Date.now())));
     speichereLaufende(null);
-    navigate('/session');
+    navigate('/session/abende');
+  }
+
+  /** Ein Ereignis am Tisch — ein Griff, keine Eingabemaske. */
+  function aendere(i: number, wie: (s: LaufendeSession['spieler'][number]) => LaufendeSession['spieler'][number]) {
+    if (session === null || session === 'laedt') return;
+    bestaetigt();
+    schreibe({ ...session, spieler: session.spieler.map((p, j) => (j === i ? wie(p) : p)) });
   }
 
   return (
@@ -153,10 +165,66 @@ export function TischPage() {
         <button type="button" className="tisch-knopf haupt" onClick={pauseUmschalten}>
           {laeuft ? L.pause : L.weiter}
         </button>
+        <button type="button" className="tisch-knopf" onClick={() => { bestaetigt(); setStaende(true); }}>
+          {L.staende}
+        </button>
         <button type="button" className="tisch-knopf" onClick={() => { bestaetigt(); setFrage(true); }}>
           {L.verlassen}
         </button>
       </div>
+
+      {staende && (
+        <div className="tisch-frage" role="dialog" aria-modal="true" aria-label={L.staendeTitel}>
+          <div className="tisch-frage-blatt staende">
+            <strong>{L.staendeTitel}</strong>
+            <span className="hinweis">{L.staendeSub}</span>
+
+            {session.spieler.map((p, i) => (
+              <div key={i} className={`stand-zeile${p.stand === null ? ' raus' : ''}`}>
+                <span className="stand-name">{p.name}</span>
+                {p.stand === null ? (
+                  <button type="button" className="tisch-knopf schmal"
+                    onClick={() => aendere(i, (x) => ({ ...x, stand: 0, raus_um: null }))}>
+                    {L.dochDabei}
+                  </button>
+                ) : (
+                  <>
+                    <input
+                      className="stand-chips"
+                      aria-label={`${p.name} · ${L.chips}`}
+                      inputMode="numeric"
+                      value={p.stand || ''}
+                      placeholder={L.chips}
+                      onChange={(e) => aendere(i, (x) => ({
+                        ...x, stand: Number(e.target.value.replace(/\D/g, '')),
+                      }))}
+                    />
+                    <button type="button" className="tisch-knopf schmal"
+                      onClick={() => aendere(i, (x) => ({
+                        ...x,
+                        eingekauft: x.eingekauft + session.startchips,
+                        stand: (x.stand ?? 0) + session.startchips,
+                      }))}>
+                      {L.rebuy}
+                    </button>
+                    <button type="button" className="tisch-knopf schmal"
+                      onClick={() => aendere(i, (x) => ({
+                        ...x, stand: null, raus_um: Date.now(),
+                      }))}>
+                      {L.raus}
+                    </button>
+                  </>
+                )}
+              </div>
+            ))}
+
+            <span className="hinweis">{L.nochDabei(nochDabei(session).length)}</span>
+            <button type="button" className="tisch-knopf haupt" onClick={() => { bestaetigt(); setStaende(false); }}>
+              {L.fertig}
+            </button>
+          </div>
+        </div>
+      )}
 
       {frage && (
         <div className="tisch-frage" role="dialog" aria-modal="true" aria-label={L.verlassenFrage}>

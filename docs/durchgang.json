@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-26T20:39:48.375Z",
+  "geprueft_am": "2026-08-26T20:52:31.590Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -110,12 +110,71 @@
       "uebersprungen": false
     },
     {
+      "name": "Ein Ereignis am Tisch erfassen",
+      "ergebnis": {
+        "zeilen": 5,
+        "griffe": 4,
+        "dauer_ms": 864,
+        "noch_dabei_text": "4 noch dabei",
+        "ausgeschieden": 1,
+        "raus_um_gesetzt": true,
+        "nachgekauft": 1,
+        "blatt_wieder_zu": true
+      },
+      "uebersprungen": false
+    },
+    {
       "name": "Beenden fragt nach und tut es dann",
       "ergebnis": {
         "gefragt": true,
         "frage": "Abend wirklich beenden?",
-        "adresse_danach": "#/session",
-        "abend_beendet": true
+        "adresse_danach": "#/session/abende",
+        "abend_beendet": true,
+        "abende_gespeichert": 1
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Der Abend steht in der Liste",
+      "ergebnis": {
+        "abende": 1,
+        "erste_karte": "Mi., 26. August 2026 · Ada · gewonnen · 5 Personen · gerade eben",
+        "namen_als_knoepfe": 5,
+        "namen": [
+          "Ada",
+          "Lorenz",
+          "Mira",
+          "Jonas",
+          "Ben"
+        ]
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Ein Tipp auf einen Namen führt zu dieser Person",
+      "ergebnis": {
+        "getippt": "Ada",
+        "adresse": "#/session/spieler/Ada",
+        "ueberschrift": "Ada",
+        "untertitel": "1 Abend, 1 Sieg.",
+        "abende": 1,
+        "suchfeld": 0
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Ein Tipp auf einen Abend zeigt den Abend",
+      "ergebnis": {
+        "adresse": "#/session/abende/<id>",
+        "zeilen": 5,
+        "plaetze": [
+          "1.",
+          "2.",
+          "2.",
+          "2.",
+          "5."
+        ],
+        "zurueck_sichtbar": true
       },
       "uebersprungen": false
     }

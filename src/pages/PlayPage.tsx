@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { STR as NAV } from '../i18n/pages/layout';
+import { BackLink } from '../components/ui';
 import { createHandTracker, type HandTracker } from '../lib/poker/stats';
 import { CardsRow } from '../components/PlayingCard';
 import { IconTile } from '../components/Icon';
@@ -217,7 +219,8 @@ export function PlayPage() {
   if (numOpponents === null) {
     return (
       <div>
-        <div className="page-header">
+        <BackLink to="/lernen" label={NAV[lang].navLearn} />
+      <div className="page-header">
           <div className="eyebrow">{L.eyebrow}</div>
           <h1>{L.title}</h1>
           <p className="sub">{L.intro}</p>

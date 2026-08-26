@@ -3,6 +3,8 @@
    damit der eigene Koffer beim nächsten Abend sofort wieder da ist. */
 
 import { useEffect, useMemo, useState } from 'react';
+import { STR as NAV } from '../../i18n/pages/layout';
+import { BackLink } from '../../components/ui';
 import { planChips, type ChipInput } from '../../lib/chips';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/chips';
@@ -126,6 +128,7 @@ export function ChipCalculator() {
 
   return (
     <div>
+      <BackLink to="/session" label={NAV[lang].navSession} />
       <div className="page-header">
         <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>

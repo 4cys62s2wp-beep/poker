@@ -88,7 +88,7 @@ export function HandExplorer() {
 
   return (
     <div>
-      <Link to="/tools" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
+      <Link to="/nachschlagen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
         {L.back}
       </Link>
       <div className="page-header">

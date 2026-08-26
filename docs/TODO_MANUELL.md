@@ -5,9 +5,42 @@ Geschäftsentscheidung — Code allein löst es nicht.
 
 ---
 
+## 🔴 Entscheidung, die nur du treffen kannst
+
+### 1. Bleiben die simulierten Pokertische?
+**Warum die Frage jetzt kommt:** Die Scope-Korrektur streicht Modus B und die
+Multiplayer-Vorbereitung mit der Begründung, dass simulierte Pokertische mit
+Spielgeld-Ökonomie die Altersfreigabe hochtreiben — Apple 17+/18+, in
+Deutschland § 10b JuSchG bei glücksspielähnlichen Mechanismen.
+
+**Dieselbe Begründung trifft auf drei Dinge zu, die schon gebaut, getestet und
+live sind:**
+
+| | Was es ist | Spielgeld-Ökonomie? |
+|---|---|:---:|
+| Übungstisch | gegen Computergegner, `/lernen/uebungstisch` | nein |
+| Pokerabend | Karten und Chips für Menschen am selben Tisch | nein |
+| Online-Tisch | dasselbe über mehrere Geräte | nein |
+
+Keines hat ein Guthaben, einen Chipkauf oder einen Verlauf über Sitzungen
+hinweg. Sie sind aber **simulierte Pokertische**, und darauf zielt die
+Einstufung.
+
+**Was ich getan habe:** nichts entfernt. Gestrichen wurde ausdrücklich die
+*Vorbereitung*, nicht der Bestand, und die stehende Regel lautet, dass nichts
+Funktionstragendes ohne Ersatz gelöscht wird. Der Übungstisch ist außerdem die
+Datenquelle der Spielstil-Analyse — mit ihm fiele auch die weg.
+
+**Was du entscheiden musst:** ob die Reichweiten-Rechnung, die für Modus B
+gilt, auch für diese drei gilt. Wenn ja, sag es — dann kommen sie raus, und
+die Spielstil-Analyse braucht eine neue Quelle. Details in `ENTSCHEIDUNGEN.md`,
+E-010.
+
+---
+
 ## 🔴 Blockierend — vor dem ersten Euro Umsatz
 
-### 1. Impressum als Minderjähriger klären
+### 2. Impressum als Minderjähriger klären
 **Warum es dringend ist:** Sobald Geld fließt, greift die
 Anbieterkennzeichnung nach § 5 DDG. Als Minderjähriger ist die Rechtslage
 nicht trivial — Verträge sind schwebend unwirksam, und die Frage, wer
@@ -18,7 +51,7 @@ IHK-Gründungsberatung oder Anwalt). Nicht selbst zusammenreimen.
 
 **Bis dahin:** Die Monetarisierung bleibt aus. Genau so ist sie eingestellt.
 
-### 2. Apple Root CA gegenprüfen
+### 3. Apple Root CA gegenprüfen
 **Wo:** `functions/src/webhooks/appleVerify.ts`, Konstante
 `APPLE_ROOT_CA_G3_SHA256`.
 
@@ -31,7 +64,7 @@ ginge nur mit dem Original von
 (`openssl x509 -in AppleRootCA-G3.cer -inform DER -fingerprint -sha256 -noout`),
 mit der Konstante vergleichen. Fünf Minuten.
 
-### 3. Budget-Alarm bei Google Cloud
+### 4. Budget-Alarm bei Google Cloud
 **Wann:** Unmittelbar nach der Umstellung auf Blaze, nicht danach.
 
 **Warum:** Blaze rechnet nach Nutzung ab. Eine Endlosschleife in einer
@@ -44,7 +77,7 @@ Funktion kostet echtes Geld, und es merkt niemand, bis die Rechnung kommt.
 
 ## 🟠 Wichtig — vor dem ersten iOS-Build
 
-### 4. Zahlungs-Texte für iOS trennen
+### 5. Zahlungs-Texte für iOS trennen
 **Wo:** `src/i18n/pages/pro.ts`, Schlüssel `securePay` und die FAQ-Antwort
 „Wie wird bezahlt?".
 
@@ -58,7 +91,7 @@ nicht. Eine Verzweigung zu bauen, die niemand ausprobieren kann, hieße,
 ungetesteten Code für einen Fall zu schreiben, dessen genaue Form noch offen
 ist.
 
-### 5. Google-Anmeldung einmal auf dem echten Gerät ausprobieren
+### 6. Google-Anmeldung einmal auf dem echten Gerät ausprobieren
 **Warum:** Die Sicherheitsrichtlinie blockierte bis heute das Hilfsskript, das
 Firebase für die Anmeldung lädt — die Anmeldung hätte still nichts getan. Der
 Fehler ist behoben und durch 11 Tests gegen Wiederkehr gesichert
@@ -75,13 +108,13 @@ Weiterleitung zurück. Voraussetzung ist, dass die Domain in der Firebase-
 Konsole unter Authentication → Einstellungen → Autorisierte Domains steht —
 das ist bereits erledigt.
 
-### 6. „Sign in with Apple" einbauen
+### 7. „Sign in with Apple" einbauen
 **Warum:** Apples Regel 4.8 verlangt es, sobald eine Drittanbieter-Anmeldung
 angeboten wird. Google-Anmeldung ist eingebaut — die Pflicht besteht also.
 
 **Voraussetzung:** Apple-Developer-Account.
 
-### 7. Preisentscheidung iOS vs. Web
+### 8. Preisentscheidung iOS vs. Web
 **Die Zahlen** stehen in `SETUP_PAYMENTS.md`, Abschnitt 1. Kurz: Bei 4,99 €
 bleiben über Stripe ~3,88 €, über Apple 3,56 € (15 %) oder 2,93 € (30 %).
 
@@ -92,7 +125,7 @@ begründungsbedürftig, sobald jemand beides sieht.
 **Meine Empfehlung für den Start:** gleicher Preis. Preisunterschiede
 zwischen Plattformen verärgern Nutzer mehr, als sie einbringen.
 
-### 8. Small Business Program beantragen
+### 9. Small Business Program beantragen
 15 % statt 30 % — aber nur, wenn man sich **aktiv anmeldet**. Passiert nicht
 von selbst. Erste Handlung nach Erhalt des Developer-Accounts.
 
@@ -100,7 +133,7 @@ von selbst. Erste Handlung nach Erhalt des Developer-Accounts.
 
 ## 🟡 Lohnend — wenn Zeit ist
 
-### 9. Testphase serverseitig führen
+### 10. Testphase serverseitig führen
 **Stand:** Der Beginn der Testphase liegt lokal und ist gegen einfaches
 Zurücksetzen abgesichert (`src/lib/pro/trialAnchor.ts`, 8 Tests). Wer den
 kompletten Browser-Speicher löscht, bekommt eine neue Testphase — verliert
@@ -110,7 +143,7 @@ dabei aber allen Lernfortschritt.
 sollte den Beginn beim ersten Anmelden serverseitig festschreiben. Dafür
 müssen die Cloud Functions laufen.
 
-### 10. Off-Scale-Abstände bildschirmweise angleichen
+### 11. Off-Scale-Abstände bildschirmweise angleichen
 **Umfang:** ~110 Werte, die nicht auf dem 4er-Raster liegen (5, 7, 11, 13,
 15 px). Vollständige Liste in `docs/TOKEN_AUDIT.md`, Abschnitt 3.
 
@@ -120,7 +153,7 @@ verschieben das Bild leise in eine Richtung, die niemand beabsichtigt hat.
 
 **Vorgehen:** Bildschirm für Bildschirm, mit Vorher-Nachher-Vergleich.
 
-### 11. Spielstil-Analyse am Online-Tisch
+### 12. Spielstil-Analyse am Online-Tisch
 **Stand:** Nur der Übungstisch wird ausgewertet. Der Pokerabend-Tisch nicht
 (mehrere Menschen an einem Gerät — nicht zuordenbar), der Online-Tisch auch
 nicht (dort geht nur ein Zug-*Wunsch* an den Gastgeber, der abgelehnt werden
@@ -129,7 +162,7 @@ kann).
 **Machbar wäre es**, wenn der Gastgeber die tatsächlich angewandten Züge
 zurückmeldet. Aufwand mittel, Nutzen ebenfalls.
 
-### 12. Freunde-Rangliste
+### 13. Freunde-Rangliste
 Die Freundesliste steht, eine Wochen-Rangliste nach Lern-XP wäre der
 stärkste Motivator, den die App noch nicht hat. Braucht ein neues Dokument
 `stats/{uid}` mit Name und XP, das nur Freunde lesen dürfen — plus
@@ -142,7 +175,7 @@ Fremde belohnt Menge statt Verstehen, und wer auf Platz 400 landet, hört auf.
 
 ## 🟢 Zum Nachlesen
 
-### 13. Was der Abo-Schutz leistet — und was nicht
+### 14. Was der Abo-Schutz leistet — und was nicht
 **Geschützt:** Der Abo-*Status*. Er kommt aus `entitlements/{uid}` und darf
 laut `firestore.rules` nur der Server schreiben. Durch Tests gegen den
 Emulator belegt, und im Browser gegengeprüft: Weder eine direkte Adresse noch
@@ -154,7 +187,7 @@ Wer die Entwicklerwerkzeuge öffnet, kommt an die Texte.
 Das ist eine bewusste Abwägung (`ENTSCHEIDUNGEN.md`, E-003), kein Versehen.
 Wer später hochpreisige Inhalte verkauft, muss sie neu treffen.
 
-### 14. Wo was steht
+### 15. Wo was steht
 
 | Datei | Inhalt |
 |---|---|

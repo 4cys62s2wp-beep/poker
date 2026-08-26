@@ -1,13 +1,19 @@
 import { defineStrings } from '..';
 
 /* Navigations- und Rahmen-Texte. Muster für alle Seiten-Wörterbücher:
-   defineStrings(deutsch, englisch) – beide Objekte müssen dieselben Schlüssel haben. */
+   defineStrings(deutsch, englisch) – beide Objekte müssen dieselben Schlüssel haben.
+
+   Die Gruppennamen folgen den drei Absichten aus ENTSCHEIDUNGEN.md, E-011.
+   Die `mobile*`-Kürzel sind bewusst kürzer als die vollen Namen: In der
+   unteren Leiste steht 10,5-px-Text in einer Zelle von rund 97 px Breite –
+   „Nachschlagen" passt dort nicht, „Suchen" schon. Der Bereich heißt trotzdem
+   überall sonst „Nachschlagen". */
 export const STR = defineStrings(
   {
     navOverview: 'Übersicht',
     navLearn: 'Lernen',
-    navLive: 'Live spielen',
-    navTools: 'Session-Tools',
+    navLookup: 'Nachschlagen',
+    navSession: 'Live-Session',
     navYou: 'Du',
     start: 'Start',
     learnPath: 'Lernpfad',
@@ -15,14 +21,23 @@ export const STR = defineStrings(
     review: 'Wiederholen',
     trainer: 'Trainer',
     glossary: 'Glossar',
+    lookupAll: 'Alles nachschlagen',
     liveCoach: 'Live-Coach',
+    handExplorer: 'Starthände',
+    ranges: 'Range-Charts',
+    odds: 'Odds-Tabellen',
+    equity: 'Equity-Rechner',
+    tells: 'Tells & Reads',
     practiceTable: 'Übungstisch',
     pokerNight: 'Pokerabend',
     onlineTable: 'Online-Tisch',
-    tools: 'Tools',
+    chipCalc: 'Chip-Rechner',
+    payout: 'Auszahlung',
+    bankroll: 'Bankroll',
     profile: 'Profil',
     mobileLearn: 'Lernen',
-    mobileLive: 'Live',
+    mobileLookup: 'Suchen',
+    mobileSession: 'Session',
     mobileYou: 'Du',
     playStyle: 'Spielstil',
     level: 'Level',
@@ -31,8 +46,8 @@ export const STR = defineStrings(
   {
     navOverview: 'Overview',
     navLearn: 'Learn',
-    navLive: 'Play live',
-    navTools: 'Session tools',
+    navLookup: 'Reference',
+    navSession: 'Live session',
     navYou: 'You',
     start: 'Home',
     learnPath: 'Learning Path',
@@ -40,14 +55,23 @@ export const STR = defineStrings(
     review: 'Review',
     trainer: 'Trainers',
     glossary: 'Glossary',
+    lookupAll: 'Everything',
     liveCoach: 'Live Coach',
+    handExplorer: 'Starting Hands',
+    ranges: 'Range Charts',
+    odds: 'Odds Tables',
+    equity: 'Equity Calculator',
+    tells: 'Tells & Reads',
     practiceTable: 'Practice Table',
     pokerNight: 'Poker Night',
     onlineTable: 'Online Table',
-    tools: 'Tools',
+    chipCalc: 'Chip Calculator',
+    payout: 'Payouts',
+    bankroll: 'Bankroll',
     profile: 'Profile',
     mobileLearn: 'Learn',
-    mobileLive: 'Live',
+    mobileLookup: 'Look up',
+    mobileSession: 'Session',
     mobileYou: 'You',
     playStyle: 'Style',
     level: 'Level',

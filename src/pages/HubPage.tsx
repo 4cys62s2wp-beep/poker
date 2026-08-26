@@ -13,8 +13,15 @@
    - eine schmale Kopfzeile mit Streak, Level und XP – sichtbar, aber nicht
      der Held des Screens (Anforderung 2.2)
    - EIN Quick Access: die eine Sache, die gerade ansteht
-   - drei Karten, je mit eigener Farbe und eigenem Bildzeichen
-   - ein vierter, sichtbar deaktivierter Platz für „Mit Freunden spielen“ */
+   - genau drei Karten, je mit eigener Farbe und eigenem Bildzeichen
+
+   Die drei trennen nach ABSICHT, nicht nach Thema (ENTSCHEIDUNGEN.md, E-011):
+   Lernen hat einen Fortschritt, Nachschlagen hat keinen, Live-Session
+   passiert am echten Tisch.
+
+   Einen vierten Einstieg gibt es nicht. Hier stand ein Platzhalter „Mit
+   Freunden spielen“; er ist ersatzlos gestrichen. Ein Platzhalter, der nicht
+   kommt, ist ein Versprechen, das man bricht. */
 
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -40,6 +47,7 @@ export function HubPage() {
      Lektionen“ sagt einem Neuling nichts, „Kurs, Trainer und Wiederholung“
      schon (Anforderung 2.2). */
   const isFirstTime = doneLessons === 0 && data.handsPlayed === 0 && data.xp === 0;
+  const sessionCount = data.sessions.length;
 
   const nextLesson = useMemo(() => {
     for (const m of content.modules) {
@@ -170,39 +178,29 @@ export function HubPage() {
         />
 
         <HubCard
-          to="/live"
-          icon="coach"
+          to="/nachschlagen"
+          icon="search"
+          accent="tools"
+          title={L.lookupTitle}
+          subtitle={L.lookupSub}
+          /* Kein Fortschritt, kein Balken – das ist hier das Merkmal des
+             Bereichs und keine fehlende Information. */
+          status={isFirstTime ? undefined : L.lookupStatus}
+        />
+
+        <HubCard
+          to="/session"
+          icon="chip"
           accent="live"
-          title={L.liveTitle}
-          subtitle={L.liveSub}
+          title={L.sessionTitle}
+          subtitle={L.sessionSub}
           status={
             isFirstTime
               ? undefined
-              : data.handsPlayed > 0
-                ? L.liveStatusHands(data.handsPlayed)
-                : L.liveStatusCoach
+              : sessionCount > 0
+                ? L.sessionStatusPlayed(sessionCount)
+                : L.sessionStatus
           }
-        />
-
-        <HubCard
-          to="/tools"
-          icon="tools"
-          accent="tools"
-          title={L.toolsTitle}
-          subtitle={L.toolsSub}
-          status={isFirstTime ? undefined : L.toolsStatus}
-        />
-
-        {/* Vierter Platz: im Raster vorgesehen, noch nicht gebaut
-            (Anforderung 2.1). Sichtbar als Platzhalter statt als Lücke –
-            wer ihn sieht, weiß, dass da noch etwas kommt. */}
-        <HubCard
-          to=""
-          icon="friends"
-          accent="friends"
-          title={L.friendsTitle}
-          subtitle={L.friendsSub}
-          comingSoon
         />
       </div>
 

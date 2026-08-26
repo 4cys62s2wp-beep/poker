@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { STR as NAV } from '../i18n/pages/layout';
+import { BackLink } from '../components/ui';
 import { Link } from 'react-router-dom';
 import type { QuizQuestion } from '../content/types';
 import { Icon } from '../components/Icon';
@@ -69,6 +71,7 @@ export function ReviewPage() {
 
   return (
     <div>
+      <BackLink to="/lernen" label={NAV[lang].navLearn} />
       <div className="page-header">
         <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>

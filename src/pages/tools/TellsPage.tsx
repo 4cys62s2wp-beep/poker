@@ -24,7 +24,7 @@ export function TellsPage() {
 
   return (
     <div>
-      <Link to="/tools" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
+      <Link to="/nachschlagen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
         {L.backToTools}
       </Link>
       <div className="page-header">

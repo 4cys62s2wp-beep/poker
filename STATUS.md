@@ -6,7 +6,7 @@ Datei** und weiß, wo es steht.
 
 - **Branch:** `feature/payments-und-hub`
 - **Abgezweigt von:** `claude/poker-learning-app-concept-ml0xm6` @ `eb7899b`
-- **Letzte Aktualisierung:** 2026-08-26, nach Phase 3
+- **Letzte Aktualisierung:** 2026-08-26, nach der Scope-Korrektur
 - **Veröffentlicht:** ja. `feature/payments-und-hub` wurde ohne Umweg
   (Fast-Forward) nach `claude/poker-learning-app-concept-ml0xm6` gezogen und
   gepusht; der Workflow „Test & Deploy" ist bei `c4989bb` grün durchgelaufen.
@@ -26,6 +26,17 @@ Drei Arbeitspakete, strikt nacheinander:
 2. **Phase 2 — Informationsarchitektur & Design** ✅ *fertig, Gate 2 erfüllt*
 3. **Phase 3 — Qualitätsdurchlauf** ✅ *fertig*
 
+Danach kam eine **Scope-Korrektur** (E-009 bis E-011):
+
+4. **Kein aktiver Bezahl-Layer** ✅ — alle Features frei, per Schalter statt
+   Rückbau. Die Architektur aus Phase 1 bleibt vollständig stehen.
+5. **Hub endgültig: Lernen · Nachschlagen · Live-Session** ✅ — kein vierter
+   Einstieg.
+6. **Phase 4 beschnitten** 📌 *festgehalten, nicht begonnen* — Modus B und die
+   Multiplayer-Vorbereitung sind gestrichen. Der Auftrag für die verbleibenden
+   Punkte 4.1–4.6 liegt mir im Wortlaut **nicht** vor; E-010 hält nur fest,
+   was **nicht** gebaut wird.
+
 ---
 
 ## Das Wichtigste zuerst
@@ -36,9 +47,14 @@ muss als Cloud Function gebaut werden — und die sind derzeit **nicht
 deploybar** (Blaze-Tarif fehlt, siehe `BLOCKER.md` B-001). Deshalb: Code
 vollständig gebaut, gegen den **Emulator** geprüft, Deploy auf später.
 
-**Die Monetarisierung ist aus und bleibt es**, solange keine
-`public/monetization.json` existiert. Keine Änderung dieser Sitzung ändert am
-Verhalten der laufenden App etwas, was Geld betrifft.
+**Kein Feature ist kostenpflichtig.** Der Schalter dafür ist ein einziger
+Wert: `"enabled": false` in `public/monetization.json`. Solange er steht,
+liefert `checkAccess()` für jedes Feature `allowed` und `usePro().fullAccess`
+ist wahr. Ein Test liest die ausgelieferte Datei und würde rot, wenn das
+kippt (`src/lib/__tests__/allesFrei.test.ts`).
+
+Die Zahlungsarchitektur aus Phase 1 bleibt vollständig erhalten und wird
+später gebraucht — sie ist nur ausgeschaltet, nicht ausgebaut.
 
 ---
 
@@ -55,7 +71,10 @@ Verhalten der laufenden App etwas, was Geld betrifft.
 | `5ccd621` | Phase 2: Hub-Screen, Bereichsstruktur, Design-Tokens, Spielstil-Analyse → **Gate 2** | 357 |
 | `62b5357` | Phase 3: Token-Audit, Erreichbarkeit, PWA, Gating-Test, toter Code | 365 |
 | `c166a37` | Commit-Hash der dritten Phase nachgetragen | 365 |
-| `c4989bb` | CSP: Google-Anmeldung war blockiert; Konfigurationsdateien ausgeliefert | **376** |
+| `c4989bb` | CSP: Google-Anmeldung war blockiert; Konfigurationsdateien ausgeliefert | 376 |
+| `9f560f0` · `9d9e828` | Veröffentlichung, Konto-Verknüpfung iOS ↔ Web | 376 |
+| `c5aecc7` | Zentraler Zugriffsschalter `fullAccess`, alles frei (E-009) | 385 |
+| *dieser* | Hub endgültig: Lernen · Nachschlagen · Live-Session (E-011) | **399** |
 
 Zusammenfassung der ganzen Sitzung: **`SESSION_REPORT.md`**.
 
@@ -63,35 +82,44 @@ Zusammenfassung der ganzen Sitzung: **`SESSION_REPORT.md`**.
 
 ## Exakt nächster Schritt
 
-**Es gibt keinen Schritt mehr, der ohne einen Menschen weitergeht.**
+**Auf eine Entscheidung wartend, nicht auf Arbeit.**
 
-Die drei blockierenden Punkte stehen in `docs/TODO_MANUELL.md` und brauchen
-alle etwas, das Code nicht liefern kann:
+Die größte offene Frage steht als Nr. 1 in `docs/TODO_MANUELL.md`: Ob die
+Begründung, mit der Modus B und die Multiplayer-Vorbereitung gestrichen
+wurden (Altersfreigabe bei simulierten Pokertischen), auch für den bereits
+gebauten **Übungstisch**, den **Pokerabend-Tisch** und den **Online-Tisch**
+gelten soll. Ich habe nichts davon entfernt — gestrichen war ausdrücklich die
+*Vorbereitung*, nicht der Bestand. Fällt die Entscheidung gegen sie, braucht
+die Spielstil-Analyse eine neue Datenquelle.
 
-1. **Impressum als Minderjähriger fachlich klären** — bevor Geld fließt
-2. **Apple Root CA gegenprüfen** — der Fingerabdruck in
-   `functions/src/webhooks/appleVerify.ts` wurde nie gegen das echte
-   Zertifikat verglichen (fünf Minuten mit `openssl`)
-3. **Budget-Alarm bei Google Cloud** — unmittelbar bei der Blaze-Umstellung
+**Falls Phase 4 beginnen soll:** Der Auftrag für 4.1 bis 4.6 liegt mir nicht
+vor. Bekannt ist nur, was gestrichen ist (E-010) und dass 4.5 ein
+**Szenario-Drill** wird: eine Situation, eine Entscheidung, eine Auflösung —
+keine Chip-Ökonomie, kein Spielgeld-Guthaben, keine Sitzung über mehrere
+Hände mit Stackverlauf.
 
-**Falls doch weitergearbeitet werden soll, ohne auf Konten zu warten**, ist
-die lohnendste offene Arbeit in dieser Reihenfolge:
+**Was ohne Entscheidung weitergehen könnte**, in dieser Reihenfolge:
 
-- **Freunde-Rangliste** (`docs/TODO_MANUELL.md` Nr. 12) — die Freundesliste
+- **Freunde-Rangliste** (`docs/TODO_MANUELL.md` Nr. 13) — die Freundesliste
   steht bereits; nötig ist ein Dokument `stats/{uid}` mit Name und XP, das nur
-  Freunde lesen dürfen, plus Regeln **und** Regeltests in
-  `src/lib/__tests__/rules.test.ts`
-- **Off-Scale-Abstände bildschirmweise** (Nr. 10) — Liste in
-  `docs/TOKEN_AUDIT.md` Abschnitt 3. **Nicht** per Suchen-und-Ersetzen: Das
-  ist eine optische Änderung, keine Umbenennung
-- **Spielstil-Erfassung am Online-Tisch** (Nr. 11) — setzt voraus, dass der
-  Gastgeber die tatsächlich angewandten Züge zurückmeldet
-
----
+  Freunde lesen dürfen, plus Regeln **und** Regeltests
+- **Off-Scale-Abstände bildschirmweise** (Nr. 11) — Liste in
+  `docs/TOKEN_AUDIT.md` Abschnitt 3. **Nicht** per Suchen-und-Ersetzen
+- **Auszahlungs-Rechner erweitern** — Deals und ICM fehlen bewusst; für ein
+  Heimspiel ist beides Overkill, für einen ernsteren Turnierabend nicht
 
 ## Dateien gerade in Arbeit
 
 **Keine.** Der Baum ist sauber, alles ist committet und gepusht.
+
+Neu angelegt in der Scope-Korrektur:
+- `src/pages/ReferencePage.tsx`, `src/pages/SessionPage.tsx` — die zwei neuen
+  Bereichsseiten (ersetzen `LivePage` und `ToolsHub`)
+- `src/pages/session/PayoutPage.tsx` + `src/lib/poker/payout.ts` + Test —
+  der Auszahlungs-Rechner, den es noch nicht gab (14 Tests)
+- `src/lib/__tests__/allesFrei.test.ts` — der Beweis, dass alles frei ist
+- `BackLink` in `src/components/ui` — der strukturelle Rückweg als eigene
+  Komponente, weil elf Seiten gar keinen hatten
 
 Neu angelegt in Phase 3 und danach:
 - `src/lib/csp.ts` + Test — die Sicherheitsrichtlinie, jetzt geprüft
@@ -114,8 +142,8 @@ Entfernt (durch den Hub ersetzt, nichts ging verloren):
 | O-1 | `enabled/pro/trialActive` zu `hasAccess(feature)` zusammenfassen | Phase 2 | ✅ erledigt: `can()` / `checkAccess()` in `src/lib/pro/plan.ts`, Screens rufen nur noch das |
 | O-2 | Statistik-Seite zur Spielstil-Analyse | Phase 2 | ✅ erledigt: `src/pages/StatsPage.tsx` unter `/live/statistik` |
 | O-3 | `customers/{uid}` → `entitlements/{uid}` umziehen | Phase 1.3 | ✅ erledigt, 29 Regeltests gegen den Emulator |
-| O-4 | Spielstil-Erfassung fehlt am Online-Tisch (dort geht nur ein Zug-*Wunsch* an den Gastgeber, der abgelehnt werden kann) | später | offen, bewusst — `docs/TODO_MANUELL.md` Nr. 11 |
-| O-5 | **Zahlungs-Texte müssen im iOS-Build anders lauten.** `src/i18n/pages/pro.ts` nennt „Über Stripe – mit Apple Pay, Google Pay, Kreditkarte, PayPal oder SEPA". In der iOS-App ist das (a) falsch, weil dort StoreKit zahlt, und (b) ein Verstoß gegen Richtlinie 3.1.1 | vor dem ersten iOS-Build, **zwingend** | offen — `docs/TODO_MANUELL.md` Nr. 4 |
+| O-4 | Spielstil-Erfassung fehlt am Online-Tisch (dort geht nur ein Zug-*Wunsch* an den Gastgeber, der abgelehnt werden kann) | später | offen, bewusst — `docs/TODO_MANUELL.md` Nr. 12 |
+| O-5 | **Zahlungs-Texte müssen im iOS-Build anders lauten.** `src/i18n/pages/pro.ts` nennt „Über Stripe – mit Apple Pay, Google Pay, Kreditkarte, PayPal oder SEPA". In der iOS-App ist das (a) falsch, weil dort StoreKit zahlt, und (b) ein Verstoß gegen Richtlinie 3.1.1 | vor dem ersten iOS-Build, **zwingend** | offen — `docs/TODO_MANUELL.md` Nr. 5 |
 | O-6 | Testphase serverseitig führen | wenn Cloud Functions laufen | offen — lokal gegen einfaches Zurücksetzen abgesichert (`trialAnchor.ts`), siehe Risiko 5 |
 
 ---
@@ -130,13 +158,13 @@ Entfernt (durch den Hub ersetzt, nichts ging verloren):
    Signaturprüfung läuft gegen selbst erzeugte Testschlüssel — die Logik stimmt
    dann, aber echte Apple-Schlüssel und -Formate hat noch nie jemand
    dagegengehalten (B-002). Der hinterlegte Root-Fingerabdruck ist ungeprüft
-   (`docs/TODO_MANUELL.md` Nr. 2).
+   (`docs/TODO_MANUELL.md` Nr. 3).
 3. **Eine PWA kann StoreKit nicht aufrufen.** Der iOS-Weg setzt eine native
    Hülle voraus, die es noch nicht gibt. Der Code ist darauf vorbereitet, aber
    der Weg endet heute in der Hülle.
 4. **Preisgestaltung iOS ≠ Web.** Apple behält 15–30 %. Wer beide Wege gleich
    bepreist, verdient auf iOS deutlich weniger. Zahlen in `SETUP_PAYMENTS.md`,
-   Empfehlung in `docs/TODO_MANUELL.md` Nr. 7.
+   Empfehlung in `docs/TODO_MANUELL.md` Nr. 8.
 5. **Die Testphase läuft lokal.** Wer den *gesamten* Browser-Speicher löscht,
    bekommt eine neue — und verliert dabei allen Lernfortschritt. Das bloße
    Zurücksetzen des Datums wirkt nicht mehr (`src/lib/pro/trialAnchor.ts`,

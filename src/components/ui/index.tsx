@@ -266,6 +266,40 @@ export function EmptyState({
  * in der Suche. Ein struktureller Rückweg ist immer richtig – und das
  * Browser-Zurück funktioniert zusätzlich weiter.
  */
+/**
+ * Der strukturelle Rückweg als eigene Komponente.
+ *
+ * Warum eigenständig und nicht nur in `PageHeader`: Ein Teil der Seiten baut
+ * seine Kopfzeile noch selbst (`<div className="page-header">`). Ohne diese
+ * Komponente hätten sie gar keinen Rückweg – und genau das war der Fall:
+ * Ein Durchlauf über alle Seiten fand **elf** Seiten ohne Rückweg im Inhalt.
+ * Auf dem Desktop fiel das nicht auf, weil dort die Seitenleiste steht; unter
+ * 920 px ist sie ausgeblendet, und die untere Leiste kennt nur vier Ziele.
+ * Auf dem Handy waren diese Seiten damit Sackgassen.
+ *
+ * Der Rückweg führt IMMER eine Ebene nach oben in der Struktur, nie
+ * „Browser-Zurück": Wer über einen geteilten Link direkt auf einer
+ * Detailseite landet, hat kein Zurück.
+ */
+export function BackLink({ to, label }: { to: string; label?: string }) {
+  return (
+    <Link
+      to={to}
+      className="small"
+      style={{
+        /* Eigene Zeile, nicht inline: Sonst stünde der Rückweg neben der
+           Bereichszeile und beide läsen sich als ein Text. */
+        display: 'flex', alignItems: 'center', gap: 'var(--sp-1)',
+        width: 'fit-content',
+        color: 'var(--text-dim)', textDecoration: 'none',
+        marginBottom: 'var(--sp-2)', minHeight: 'var(--touch-min)',
+      }}
+    >
+      <span aria-hidden="true">←</span> {label ?? 'Zurück'}
+    </Link>
+  );
+}
+
 export function PageHeader({
   eyebrow, title, sub, backTo, backLabel, actions,
 }: {
@@ -278,22 +312,7 @@ export function PageHeader({
 }) {
   return (
     <div className="page-header">
-      {backTo && (
-        <Link
-          to={backTo}
-          className="small"
-          style={{
-            /* Eigene Zeile, nicht inline: Sonst stünde der Rückweg neben der
-               Bereichszeile und beide läsen sich als ein Text. */
-            display: 'flex', alignItems: 'center', gap: 'var(--sp-1)',
-            width: 'fit-content',
-            color: 'var(--text-dim)', textDecoration: 'none',
-            marginBottom: 'var(--sp-2)', minHeight: 'var(--touch-min)',
-          }}
-        >
-          <span aria-hidden="true">←</span> {backLabel ?? 'Zurück'}
-        </Link>
-      )}
+      {backTo && <BackLink to={backTo} label={backLabel} />}
       {eyebrow && <div className="eyebrow">{eyebrow}</div>}
       <div className="row between wrap" style={{ gap: 'var(--sp-3)' }}>
         <h1>{title}</h1>

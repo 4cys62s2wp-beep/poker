@@ -150,3 +150,51 @@ Vollständige Erreichbarkeitstabelle: `docs/ERREICHBARKEIT.md` (Phase 3.3).
   Startbildschirm, nicht den Inhalt der Seiten.
 - **Die Kartenlounge-Identität bleibt.** Filzgrün, Gold, Fraunces, das eigene
   Icon-Set (siehe `DESIGN_REFERENZ.md`, R8).
+
+
+---
+
+# Nachtrag: Die endgültige Gliederung (26.08.2026)
+
+Die oben beschriebene Struktur (Lernen · Live spielen · Session-Tools) ist
+**überholt**. Nach einer Scope-Korrektur gilt endgültig:
+
+| # | Bereich | Merkmal |
+|---|---|---|
+| 1 | **Lernen** `/lernen` | Es gibt einen Fortschritt |
+| 2 | **Nachschlagen** `/nachschlagen` | Es gibt keinen — man will eine Antwort |
+| 3 | **Live-Session** `/session` | Man sitzt am echten Tisch |
+
+**Kein vierter Einstieg.** Der Platzhalter „Mit Freunden spielen" ist ersatzlos
+gestrichen — ein Platzhalter, der nicht kommt, ist ein gebrochenes Versprechen.
+
+## Was sich gegenüber der ersten Gliederung ändert
+
+| | vorher | jetzt |
+|---|---|---|
+| Trennlinie | Thema | **Absicht** |
+| Glossar | Lernen | Nachschlagen (es hat keinen Fortschritt) |
+| Live-Coach | Live spielen | Nachschlagen (eine Frage, eine Antwort) |
+| Übungstisch, Spielstil | Live spielen | Lernen (Übung und Fortschritt) |
+| Pokerabend, Chips, Bankroll | verteilt | Live-Session |
+| Auszahlungs-Rechner | gab es nicht | Live-Session |
+
+Die vollständige Begründung je Zuordnung steht in `ENTSCHEIDUNGEN.md`, E-011.
+
+## Warum zwei verschiedene Darstellungen für die Bereichsseiten
+
+- **Nachschlagen** zeigt ein dichtes Raster plus Suchfeld: sieben Einträge,
+  deren Namen für sich sprechen. Sieben große Karten wären Scrollen statt
+  Nachschlagen — und die Vorgabe lautet zwei Schritte bis zum Ziel.
+- **Live-Session** zeigt vier große Karten mit je einer Zeile „wann brauche
+  ich das?": Drei davon haben einen festen Zeitpunkt im Ablauf eines Abends
+  (vorher — währenddessen — danach). Diese Reihenfolge ist die eigentliche
+  Information; ein Raster würde sie verstecken.
+
+## Die Suche
+
+Sie sucht über die Bereiche **und** über das Glossar. Ein Nutzer, der
+„Squeeze" eintippt, kann nicht wissen, dass das ein Glossareintrag ist und
+keine eigene Seite. Ein Glossartreffer führt nach
+`/nachschlagen/glossar?q=Squeeze` — der Begriff steht dort bereits im Feld.
+Das sind die zwei Schritte.

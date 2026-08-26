@@ -5,6 +5,8 @@
    dasselbe Gerät benutzen. */
 
 import { useMemo, useState } from 'react';
+import { STR as NAV } from '../../i18n/pages/layout';
+import { BackLink } from '../../components/ui';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import { PlayingCard } from '../../components/PlayingCard';
@@ -122,7 +124,8 @@ export function LocalTablePage() {
   if (screen === 'setup') {
     return (
       <div>
-        <div className="page-header">
+        <BackLink to="/session" label={NAV[lang].navSession} />
+      <div className="page-header">
           <div className="eyebrow">{L.eyebrow}</div>
           <h1>{L.title}</h1>
           <p className="sub">{L.sub}</p>
@@ -212,7 +215,7 @@ export function LocalTablePage() {
             </div>
 
             <p className="small faint" style={{ marginTop: 10 }}>
-              <Link to="/tools/chips">{L.fromChipCalc}</Link>
+              <Link to="/session/chips">{L.fromChipCalc}</Link>
             </p>
 
             {setupError && <div className="feedback-box bad" role="alert" style={{ marginTop: 12 }}>{setupError}</div>}
@@ -227,7 +230,7 @@ export function LocalTablePage() {
           <div style={{ fontWeight: 800, marginBottom: 6 }}>{L.tipTitle}</div>
           <p className="small muted">{L.tip}</p>
           <p className="small faint" style={{ marginTop: 10 }}>
-            {L.onlineHint} <Link to="/live/tisch/online">{L.onlineLink}</Link>
+            {L.onlineHint} <Link to="/session/tisch/online">{L.onlineLink}</Link>
           </p>
         </div>
       </div>

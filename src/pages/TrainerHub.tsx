@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import { STR as NAV } from '../i18n/pages/layout';
+import { BackLink } from '../components/ui';
 import { Icon, IconTile, type IconName } from '../components/Icon';
 import { useAppState } from '../state/AppState';
 import { useLang } from '../i18n';
@@ -30,6 +32,7 @@ export function TrainerHub() {
 
   return (
     <div>
+      <BackLink to="/lernen" label={NAV[lang].navLearn} />
       <div className="page-header">
         <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>

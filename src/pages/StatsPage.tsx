@@ -14,7 +14,7 @@ import { EmptyState, PageHeader, StatPill } from '../components/ui';
 import { useAppState } from '../state/AppState';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/stats';
-import { STR as LIVE } from '../i18n/pages/live';
+import { STR as NAV } from '../i18n/pages/layout';
 import {
   assessStyle,
   computeStats,
@@ -40,7 +40,7 @@ export function StatsPage() {
   const { data } = useAppState();
   const { lang } = useLang();
   const L = STR[lang];
-  const LV = LIVE[lang];
+  const NV = NAV[lang];
 
   const stats = computeStats(data.handFacts);
   const style = assessStyle(stats);
@@ -50,13 +50,13 @@ export function StatsPage() {
   if (stats.hands === 0) {
     return (
       <div>
-        <PageHeader title={L.title} backTo="/live" backLabel={LV.eyebrow} />
+        <PageHeader title={L.title} backTo="/lernen" backLabel={NV.navLearn} />
         <EmptyState
           icon="chart"
           title={L.emptyTitle}
           body={L.emptyBody}
           actionLabel={L.emptyCta}
-          actionTo="/live/uebungstisch"
+          actionTo="/lernen/uebungstisch"
         />
       </div>
     );
@@ -74,8 +74,8 @@ export function StatsPage() {
       <PageHeader
         title={L.title}
         sub={L.sub}
-        backTo="/live"
-        backLabel={LV.eyebrow}
+        backTo="/lernen"
+        backLabel={NV.navLearn}
       />
 
       {/* ── Umfang und Belastbarkeit ──────────────────────────────────── */}
@@ -213,7 +213,7 @@ export function StatsPage() {
       </div>
 
       <p className="small faint" style={{ marginTop: 'var(--sp-5)' }}>
-        <Link to="/live">← {LV.eyebrow}</Link>
+        <Link to="/lernen">← {NV.navLearn}</Link>
       </p>
     </div>
   );

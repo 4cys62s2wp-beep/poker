@@ -24,11 +24,10 @@ export function Layout() {
   useSectionHeadings(mainRef);
 
   /* Die Seitenleiste folgt derselben Gliederung wie der Hub: drei Absichten
-     plus Persönliches. Vorher waren es vier Gruppen mit zwölf Links, benannt
-     nach der ART der Sache („Anwenden“) statt nach der ABSICHT – dort lagen
-     Live-Coach, Übungstisch, Pokerabend und Rechner nebeneinander, obwohl sie
-     für völlig verschiedene Situationen gedacht sind.
-     (docs/SCREEN_STRUKTUR.md) */
+     plus Persönliches – Lernen (mit Fortschritt), Nachschlagen (ohne) und
+     Live-Session (am echten Tisch). Vorher waren es vier Gruppen, benannt
+     nach der ART der Sache („Anwenden“) statt nach der ABSICHT.
+     (docs/SCREEN_STRUKTUR.md, ENTSCHEIDUNGEN.md E-011) */
   const navGroups: Array<{ label: string; items: Array<{ to: string; icon: IconName; label: string; end?: boolean }> }> = [
     { label: L.navOverview, items: [{ to: '/', icon: 'spade', label: L.start, end: true }] },
     {
@@ -37,22 +36,27 @@ export function Layout() {
         { to: '/lernen', icon: 'learn', label: L.learnPath },
         { to: '/lernen/trainer', icon: 'trainer', label: L.trainer },
         { to: '/lernen/wiederholen', icon: 'repeat', label: L.review },
+        { to: '/lernen/uebungstisch', icon: 'play', label: L.practiceTable },
+        { to: '/lernen/statistik', icon: 'chart', label: L.playStyle },
         { to: '/lernen/pros', icon: 'chip', label: L.proInsights },
-        { to: '/lernen/glossar', icon: 'glossary', label: L.glossary },
       ],
     },
     {
-      label: L.navLive,
+      label: L.navLookup,
       items: [
-        { to: '/live/coach', icon: 'coach', label: L.liveCoach },
-        { to: '/live/tisch', icon: 'table', label: L.pokerNight },
-        { to: '/live/uebungstisch', icon: 'play', label: L.practiceTable },
-        { to: '/live/statistik', icon: 'chart', label: L.playStyle },
+        { to: '/nachschlagen', icon: 'search', label: L.lookupAll },
+        { to: '/nachschlagen/coach', icon: 'coach', label: L.liveCoach },
+        { to: '/nachschlagen/glossar', icon: 'glossary', label: L.glossary },
       ],
     },
     {
-      label: L.navTools,
-      items: [{ to: '/tools', icon: 'tools', label: L.tools }],
+      label: L.navSession,
+      items: [
+        { to: '/session/chips', icon: 'chip', label: L.chipCalc },
+        { to: '/session/auszahlung', icon: 'crown', label: L.payout },
+        { to: '/session/tisch', icon: 'table', label: L.pokerNight },
+        { to: '/session/bankroll', icon: 'notes', label: L.bankroll },
+      ],
     },
     {
       label: L.navYou,
@@ -64,16 +68,20 @@ export function Layout() {
     },
   ];
 
-  /* Untere Leiste: vier Punkte MIT Beschriftung.
-     Fünf waren zu viele, und drei ohne Beschriftung (wie bei der Referenz)
-     funktionieren nur, wenn alle Ziele konventionell sind – ein Symbol für
-     „Live-Coach“ ist ohne Wort nicht erratbar.
-     Die vier entsprechen genau den drei Hub-Karten plus Persönliches. */
+  /* Untere Leiste: vier Punkte MIT Beschriftung – Start plus die drei
+     Bereiche. Ohne Beschriftung (wie bei der Referenz-App) funktioniert das
+     nur, wenn alle Ziele konventionell sind; ein Symbol für „Nachschlagen“
+     ist ohne Wort nicht erratbar.
+
+     Warum „Du“ hier NICHT mehr steht: Mit drei Bereichen wären es fünf
+     Punkte, und „Nachschlagen“ passt bei 390 px Breite dann nicht mehr in
+     seine Zelle. Das Profil sitzt stattdessen rechts oben in der mobilen
+     Kopfzeile – sichtbar und beschriftet, nicht versteckt. */
   const mobileItems: Array<{ to: string; icon: IconName; label: string; end?: boolean }> = [
     { to: '/', icon: 'spade', label: L.start, end: true },
     { to: '/lernen', icon: 'learn', label: L.mobileLearn },
-    { to: '/live', icon: 'coach', label: L.mobileLive },
-    { to: '/profil', icon: 'profile', label: L.mobileYou },
+    { to: '/nachschlagen', icon: 'search', label: L.mobileLookup },
+    { to: '/session', icon: 'chip', label: L.mobileSession },
   ];
 
   /* Längste Übereinstimmung zuerst: '/lernen/trainer' muss vor '/lernen'
@@ -82,16 +90,24 @@ export function Layout() {
     ['/lernen/wiederholen', L.review],
     ['/lernen/tagesquiz', L.dailyQuiz],
     ['/lernen/pros', L.proInsights],
-    ['/lernen/glossar', L.glossary],
+    ['/lernen/uebungstisch', L.practiceTable],
+    ['/lernen/statistik', L.playStyle],
     ['/lernen/trainer', L.trainer],
     ['/lernen', L.learnPath],
-    ['/live/tisch/online', L.onlineTable],
-    ['/live/tisch', L.pokerNight],
-    ['/live/uebungstisch', L.practiceTable],
-    ['/live/statistik', L.playStyle],
-    ['/live/coach', L.liveCoach],
-    ['/live', L.navLive],
-    ['/tools', L.tools],
+    ['/nachschlagen/coach', L.liveCoach],
+    ['/nachschlagen/glossar', L.glossary],
+    ['/nachschlagen/haende', L.handExplorer],
+    ['/nachschlagen/ranges', L.ranges],
+    ['/nachschlagen/odds', L.odds],
+    ['/nachschlagen/equity', L.equity],
+    ['/nachschlagen/tells', L.tells],
+    ['/nachschlagen', L.navLookup],
+    ['/session/tisch/online', L.onlineTable],
+    ['/session/tisch', L.pokerNight],
+    ['/session/chips', L.chipCalc],
+    ['/session/auszahlung', L.payout],
+    ['/session/bankroll', L.bankroll],
+    ['/session', L.navSession],
     ['/profil', L.profile],
     ['/freunde', FR.navFriends],
     ['/pro', P.navPro],
@@ -178,6 +194,17 @@ export function Layout() {
             <Icon name="spade" size={15} />
           </span>
           <span className="grad">PokerMentor</span>
+          {/* Der Weg zum Profil auf dem Handy. Er stand vorher in der unteren
+              Leiste; dort ist mit drei Bereichen kein Platz mehr für einen
+              fünften beschrifteten Punkt. Hier ist er sichtbar, beschriftet
+              und auf jedem Bildschirm erreichbar. */}
+          <NavLink
+            to="/profil"
+            className={({ isActive }) => `mobile-top-you${isActive ? ' active' : ''}`}
+          >
+            <Icon name="profile" size={16} />
+            <span>{L.mobileYou}</span>
+          </NavLink>
         </div>
         <main className="main" ref={mainRef}>
           <Outlet />

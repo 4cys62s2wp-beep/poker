@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
+import { STR as NAV } from '../i18n/pages/layout';
+import { BackLink } from '../components/ui';
 import { CardPicker } from '../components/CardPicker';
 import { CardsRow } from '../components/PlayingCard';
 import type { Card } from '../lib/poker/cards';
@@ -133,6 +135,7 @@ export function CoachPage() {
 
   return (
     <div>
+      <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
       <div className="page-header">
         <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>

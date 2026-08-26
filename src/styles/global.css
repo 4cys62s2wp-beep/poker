@@ -1419,3 +1419,71 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
     min-height: 52px;
   }
 }
+
+/* ── Bereich „Nachschlagen" ──────────────────────────────────────────────
+   Zwei Bausteine, die es vorher nicht gab. */
+
+/* Für Hilfstechnik sichtbar, am Bildschirm nicht. Das Suchfeld trägt sein
+   Label im Platzhalter – der verschwindet aber beim Tippen, und ein
+   Screenreader liest ihn ohnehin nicht als Beschriftung. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Begriffs-Plakette in den Suchtreffern: ein Wort, ein Ziel.
+   min-height statt fester Höhe, damit ein langer Begriff umbrechen darf,
+   ohne die Trefferfläche zu verkleinern. */
+.chip-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+}
+
+.chip-link:hover {
+  border-color: var(--gold-dim);
+  color: var(--gold-bright);
+}
+
+/* Profil-Knopf in der mobilen Kopfzeile.
+   Er ersetzt den fünften Punkt in der unteren Leiste: Mit drei Bereichen
+   passt „Nachschlagen" dort nicht mehr in seine Zelle. Hier oben ist der Weg
+   zum Profil sichtbar, beschriftet und auf jedem Bildschirm gleich. */
+.mobile-top-you {
+  display: none;
+}
+
+@media (max-width: 920px) {
+  .mobile-top-you {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    margin-left: auto;
+    min-height: var(--touch-min);
+    padding: 0 var(--sp-2);
+    color: var(--text-dim);
+    font-size: var(--fs-small);
+    font-weight: var(--fw-medium);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-top-you.active {
+    color: var(--gold-bright);
+  }
+}

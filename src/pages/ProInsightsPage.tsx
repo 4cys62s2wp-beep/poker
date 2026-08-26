@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { STR as NAV } from '../i18n/pages/layout';
+import { BackLink } from '../components/ui';
 import { Icon } from '../components/Icon';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/proinsights';
@@ -21,7 +23,8 @@ export function ProInsightsPage() {
     const teaserInitials = teaser.name.split(' ').map((w) => w[0]).join('').slice(0, 2);
     return (
       <div>
-        <div className="page-header">
+        <BackLink to="/lernen" label={NAV[lang].navLearn} />
+      <div className="page-header">
           <div className="eyebrow">{L.eyebrow}</div>
           <h1>{L.title}</h1>
           <p className="sub">{L.sub}</p>
@@ -58,6 +61,7 @@ export function ProInsightsPage() {
 
   return (
     <div>
+      <BackLink to="/lernen" label={NAV[lang].navLearn} />
       <div className="page-header">
         <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>

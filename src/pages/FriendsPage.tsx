@@ -5,6 +5,8 @@
    ruhig, was fehlt – sie zeigt nie eine kaputte oder leere Oberfläche. */
 
 import { useEffect, useState, type FormEvent } from 'react';
+import { STR as NAV } from '../i18n/pages/layout';
+import { BackLink } from '../components/ui';
 import { Link } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { useCloud } from '../lib/cloud/CloudProvider';
@@ -34,11 +36,14 @@ export function FriendsPage() {
   }, [copied]);
 
   const header = (
-    <div className="page-header">
-      <div className="eyebrow">{F.eyebrow}</div>
-      <h1>{F.title}</h1>
-      <p className="sub">{F.sub}</p>
-    </div>
+    <>
+      <BackLink to="/profil" label={NAV[lang].profile} />
+      <div className="page-header">
+        <div className="eyebrow">{F.eyebrow}</div>
+        <h1>{F.title}</h1>
+        <p className="sub">{F.sub}</p>
+      </div>
+    </>
   );
 
   /* --- Zustände ohne Freundesfunktion ---------------------------------- */

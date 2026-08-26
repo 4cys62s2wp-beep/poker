@@ -2,11 +2,12 @@
 
    CACHE-Version bei jeder Strukturänderung erhöhen: Beim Aktivieren werden
    alle anderen Versionen gelöscht. In v6 hat sich die gesamte Navigation
-   geändert (Hub → Bereich → Detail) – ein alter Zwischenspeicher hätte
+   geändert (Hub → Bereich → Detail), in v7 die Gliederung erneut
+   (Lernen · Nachschlagen · Live-Session) – ein alter Zwischenspeicher hätte
    Nutzern beim ersten Start noch die alte Startseite gezeigt.
    Strategie: Navigation network-first (Fallback Cache), Assets cache-first. */
 
-const CACHE = 'pokermentor-v6';
+const CACHE = 'pokermentor-v7';
 const CORE = ['./', './index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

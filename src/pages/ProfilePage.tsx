@@ -6,6 +6,12 @@ import { STR } from '../i18n/pages/profile';
 import { CloudAccountCard } from '../components/CloudAccountCard';
 import { ShareCard } from '../components/ShareCard';
 import { downloadBlob } from '../lib/download';
+import { Link } from 'react-router-dom';
+import { Icon, type IconName } from '../components/Icon';
+import { STR as FRIENDS } from '../i18n/pages/friends';
+import { STR as LEGAL } from '../i18n/pages/legal';
+import { STR as PRO_STR } from '../i18n/pages/pro';
+import { usePro } from '../lib/pro/ProProvider';
 
 export function ProfilePage() {
   const {
@@ -13,6 +19,7 @@ export function ProfilePage() {
     profiles, activeProfile, createProfile, switchProfile, deleteProfile, updateProfile,
   } = useAppState();
   const { lang, setLang, content } = useLang();
+  const proCtx = usePro();
   const P = STR[lang];
   const [nameInput, setNameInput] = useState(data.name);
   const [emailInput, setEmailInput] = useState(activeProfile.email ?? '');
@@ -141,6 +148,19 @@ export function ProfilePage() {
 
       <div className="section-title">{P.accountSection}</div>
       <CloudAccountCard />
+
+      {/* Freunde und Rechtliches standen nur in der Seitenleiste – die unter
+          920 px ausgeblendet ist. Auf dem Handy waren beide Seiten damit
+          nicht erreichbar, obwohl die alte Erreichbarkeitstabelle „über
+          Profil" behauptete. Diese Zeilen sind die Korrektur. */}
+      <div style={{ display: 'grid', gap: 'var(--sp-2)', maxWidth: 560, marginTop: 'var(--sp-3)' }}>
+        <ProfilLink to="/freunde" icon="friends" label={FRIENDS[lang].navFriends} />
+        {proCtx.enabled && <ProfilLink to="/pro" icon="crown" label={PRO_STR[lang].navPro} />}
+        <ProfilLink to="/rechtliches" icon="notes" label={LEGAL[lang].navLegal} />
+        {/* § 312k BGB: ohne Anmeldung erreichbar, deshalb dauerhaft sichtbar,
+            sobald es überhaupt etwas zu kündigen gibt. */}
+        {proCtx.enabled && <ProfilLink to="/kuendigen" icon="trash" label={LEGAL[lang].cancelNav} />}
+      </div>
 
       <div className="section-title">{P.profilesSection}</div>
       <div className="card" style={{ maxWidth: 560 }}>
@@ -370,5 +390,24 @@ export function ProfilePage() {
 
       <div className="suit-deco">♠ ♥ ♦ ♣</div>
     </div>
+  );
+}
+
+/** Eine Zeile in der Liste „von hier aus weiter". */
+function ProfilLink({ to, icon, label }: { to: string; icon: IconName; label: string }) {
+  return (
+    <Link
+      to={to}
+      className="card clickable"
+      style={{
+        display: 'flex', alignItems: 'center', gap: 'var(--sp-3)',
+        padding: 'var(--sp-3) var(--sp-4)', minHeight: 'var(--touch-min)',
+        textDecoration: 'none', color: 'inherit',
+      }}
+    >
+      <span style={{ color: 'var(--gold)', display: 'flex' }}><Icon name={icon} size={18} /></span>
+      <span style={{ flex: 1, fontWeight: 'var(--fw-medium)' }}>{label}</span>
+      <span aria-hidden="true" style={{ color: 'var(--text-faint)' }}>›</span>
+    </Link>
   );
 }

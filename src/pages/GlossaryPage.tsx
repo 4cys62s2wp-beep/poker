@@ -1,4 +1,7 @@
 import { useMemo, useState } from 'react';
+import { STR as NAV } from '../i18n/pages/layout';
+import { BackLink } from '../components/ui';
+import { useSearchParams } from 'react-router-dom';
 import type { GlossaryCategory } from '../content/types';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/glossarypage';
@@ -20,7 +23,13 @@ const CATEGORIES: Array<GlossaryCategory | 'Alle'> = [
 export function GlossaryPage() {
   const { lang, content } = useLang();
   const L = STR[lang];
-  const [query, setQuery] = useState('');
+  /* ?q=… kommt aus der Suche im Bereich „Nachschlagen": Wer dort einen
+     Begriff antippt, soll ihn hier bereits eingesetzt vorfinden – das ist der
+     zweite der zwei Schritte bis zum Ziel. Nur der Startwert wird übernommen;
+     danach gehört das Feld dem Nutzer, deshalb kein useEffect, der ihn
+     zurückschreibt. */
+  const [params] = useSearchParams();
+  const [query, setQuery] = useState(() => (params.get('q') ?? '').slice(0, 60));
   const [category, setCategory] = useState<GlossaryCategory | 'Alle'>('Alle');
 
   const glossary = content.glossary;
@@ -35,6 +44,7 @@ export function GlossaryPage() {
 
   return (
     <div>
+      <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
       <div className="page-header">
         <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>

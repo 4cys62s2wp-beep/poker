@@ -23,7 +23,7 @@
       "name": "Live-Coach",
       "short_name": "Coach",
       "description": "Hand eingeben und Empfehlung erhalten",
-      "url": "./#/live/coach",
+      "url": "./#/nachschlagen/coach",
       "icons": [
         {
           "src": "./icons/icon-192.png",
@@ -35,7 +35,7 @@
       "name": "Pokerabend",
       "short_name": "Tisch",
       "description": "Die App übernimmt Karten, Chips und Blinds",
-      "url": "./#/live/tisch",
+      "url": "./#/session/tisch",
       "icons": [
         {
           "src": "./icons/icon-192.png",
@@ -59,7 +59,7 @@
       "name": "Übungstisch",
       "short_name": "Spielen",
       "description": "Gegen Computergegner üben",
-      "url": "./#/live/uebungstisch",
+      "url": "./#/lernen/uebungstisch",
       "icons": [
         {
           "src": "./icons/icon-192.png",

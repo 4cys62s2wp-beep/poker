@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
+import { STR as NAV } from '../i18n/pages/layout';
+import { BackLink } from '../components/ui';
 import { Link } from 'react-router-dom';
 import { moduleProgress, useAppState } from '../state/AppState';
 import { useLang, levelLabel } from '../i18n';
 import { STR } from '../i18n/pages/learn';
-import { Icon } from '../components/Icon';
+import { Icon, IconTile, type IconName } from '../components/Icon';
 import { usePro } from '../lib/pro/ProProvider';
 import { isFreeModule } from '../lib/pro/plan';
 
@@ -31,7 +33,7 @@ function makeSnippet(text: string, query: string): string {
 }
 
 export function LearnPage() {
-  const { data } = useAppState();
+  const { data, dueReviewCount } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
   const { fullAccess } = usePro();
@@ -80,8 +82,31 @@ export function LearnPage() {
 
   const searching = query.trim().length >= 3;
 
+  const heute = new Date().toISOString().slice(0, 10);
+  const quizOffen = data.daily?.date !== heute;
+
+  const uebungen: Array<{
+    to: string; icon: IconName; tone: 'gold' | 'green' | 'blue' | 'red' | 'violet';
+    title: string; sub: string; badge?: string;
+  }> = [
+    { to: '/lernen/trainer', icon: 'trainer', tone: 'gold', title: L.trainerTitle, sub: L.trainerSub },
+    {
+      to: '/lernen/wiederholen', icon: 'repeat', tone: 'blue',
+      title: L.reviewTitle, sub: L.reviewSub,
+      badge: dueReviewCount > 0 ? L.reviewDue(dueReviewCount) : undefined,
+    },
+    {
+      to: '/lernen/tagesquiz', icon: 'check', tone: 'green',
+      title: L.quizTitle, sub: L.quizSub,
+      badge: quizOffen ? L.quizOpen : undefined,
+    },
+    { to: '/lernen/uebungstisch', icon: 'play', tone: 'red', title: L.practiceTitle, sub: L.practiceSub },
+    { to: '/lernen/statistik', icon: 'chart', tone: 'violet', title: L.styleTitle, sub: L.styleSub },
+  ];
+
   return (
     <div>
+      <BackLink to="/" label={NAV[lang].start} />
       <div className="page-header">
         <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>
@@ -115,6 +140,30 @@ export function LearnPage() {
 
       {!searching && (
         <>
+        {/* Üben und festigen.
+            Dieser Block hat lange gefehlt, und das Fehlen war unsichtbar:
+            Trainer, Wiederholen, Tages-Quiz, Übungstisch und Spielstil-Analyse
+            standen nur in der Seitenleiste – die unter 920 px ausgeblendet
+            ist. Auf dem Handy waren sie damit über den Lernbereich gar nicht
+            erreichbar. Ein Durchlauf über alle Seiten hat es aufgedeckt. */}
+        <div className="section-title">{L.practiceGroupTitle}</div>
+        <div className="grid cols-2" style={{ marginBottom: 'var(--sp-5)' }}>
+          {uebungen.map((u) => (
+            <Link key={u.to} to={u.to} className="card clickable">
+              <div className="row" style={{ alignItems: 'flex-start' }}>
+                <IconTile name={u.icon} tone={u.tone} />
+                <div style={{ minWidth: 0 }}>
+                  <div className="row" style={{ gap: 'var(--sp-2)', flexWrap: 'wrap' }}>
+                    <span style={{ fontWeight: 'var(--fw-bold)' }}>{u.title}</span>
+                    {u.badge && <span className="pill gold">{u.badge}</span>}
+                  </div>
+                  <div className="small muted" style={{ marginTop: 3 }}>{u.sub}</div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
         <Link to="/lernen/pros" className="card clickable" style={{ display: 'block', marginBottom: 16, borderColor: 'rgba(212,175,94,0.35)' }}>
           <div className="row between wrap">
             <div>

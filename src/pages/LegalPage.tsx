@@ -3,6 +3,8 @@
    erfundene Angaben wären schlimmer als keine. */
 
 import { useEffect, useState } from 'react';
+import { STR as NAV } from '../i18n/pages/layout';
+import { BackLink } from '../components/ui';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/legal';
 import { loadLegalConfig, type LegalConfig } from '../lib/legal';
@@ -35,6 +37,7 @@ export function LegalPage() {
 
   return (
     <div>
+      <BackLink to="/profil" label={NAV[lang].profile} />
       <div className="page-header">
         <div className="eyebrow">{L.navLegal}</div>
         <h1>{L.title}</h1>

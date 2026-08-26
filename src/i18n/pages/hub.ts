@@ -30,20 +30,17 @@ export const STR = defineStrings(
 
     // Die drei Karten
     learnTitle: 'Lernen',
-    learnSub: 'Kurs, Trainer und Wiederholung – vom ersten Blatt bis GTO',
+    learnSub: 'Kurs, Trainer, Übungstisch – vom ersten Blatt bis GTO',
     learnStatus: (done: number, total: number) => `${done} von ${total} Lektionen`,
 
-    liveTitle: 'Live spielen',
-    liveSub: 'Coach für den echten Pokerabend, Übungstisch, Spielstil-Analyse',
-    liveStatusCoach: 'Live-Coach, Tisch und Analyse',
-    liveStatusHands: (n: number) => `${n} ${n === 1 ? 'Hand' : 'Hände'} gespielt`,
+    lookupTitle: 'Nachschlagen',
+    lookupSub: 'Glossar, Starthände, Ranges, Odds – und der Live-Coach',
+    lookupStatus: 'Zwei Schritte bis zur Antwort',
 
-    toolsTitle: 'Session-Tools',
-    toolsSub: 'Chip-Rechner, Blind-Struktur, Bankroll und Rechner',
-    toolsStatus: 'Alles für den Abend',
-
-    friendsTitle: 'Mit Freunden spielen',
-    friendsSub: 'Kommt bald',
+    sessionTitle: 'Live-Session',
+    sessionSub: 'Chips einteilen, Blinds hochziehen, gerecht auszahlen',
+    sessionStatus: 'Alles für den Abend',
+    sessionStatusPlayed: (n: number) => `${n} ${n === 1 ? 'Session' : 'Sessions'} erfasst`,
 
     // Erstnutzer
     firstTimeTitle: 'Wo willst du anfangen?',
@@ -69,20 +66,17 @@ export const STR = defineStrings(
     continueTable: 'Resume poker night',
 
     learnTitle: 'Learn',
-    learnSub: 'Course, trainers and review – from your first hand to GTO',
+    learnSub: 'Course, trainers, practice table – from your first hand to GTO',
     learnStatus: (done: number, total: number) => `${done} of ${total} lessons`,
 
-    liveTitle: 'Play live',
-    liveSub: 'Coach for a real poker night, practice table, playing-style analysis',
-    liveStatusCoach: 'Live coach, table and analysis',
-    liveStatusHands: (n: number) => `${n} ${n === 1 ? 'hand' : 'hands'} played`,
+    lookupTitle: 'Reference',
+    lookupSub: 'Glossary, starting hands, ranges, odds – and the live coach',
+    lookupStatus: 'Two steps to an answer',
 
-    toolsTitle: 'Session tools',
-    toolsSub: 'Chip calculator, blind structure, bankroll and calculators',
-    toolsStatus: 'Everything for the evening',
-
-    friendsTitle: 'Play with friends',
-    friendsSub: 'Coming soon',
+    sessionTitle: 'Live session',
+    sessionSub: 'Split the chips, raise the blinds, pay out fairly',
+    sessionStatus: 'Everything for the evening',
+    sessionStatusPlayed: (n: number) => `${n} ${n === 1 ? 'session' : 'sessions'} logged`,
 
     firstTimeTitle: 'Where do you want to start?',
     firstTimeSub:

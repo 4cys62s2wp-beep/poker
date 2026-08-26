@@ -454,3 +454,42 @@ kann und die jetzt durch eine belegbare ersetzt ist.
 Straße geben kann, hängt am Board. Auf einem verbundenen Board schlagen 28 von
 1035 Gegner-Kombos Heros Straße, auf einem unverbundenen null. Das stand
 vorher als Behauptung in der Dokumentation und ist jetzt ausgezählt.
+
+---
+
+## E-016 · 2026-08-26 · Datenschnittstelle
+
+**Zwei Fassungen der Daten: eine für den Nachweis, eine für den Bildschirm.**
+
+- **Gewählt:** Der Generator schreibt die vollständige Fassung nach
+  `tools/poker-math/output/` und eine verschlankte nach `public/pokermath/`.
+  Nur die zweite liest die App. Erzeugt werden beide von
+  `src/app_schnittstelle.py` in einem Zug.
+- **Verworfene Alternative 1:** Die App liest die vollständigen Dateien.
+  B4 wird mehrere Dutzend Megabyte groß — das über das Netz zu holen, um
+  daraus 14 365 Zahlen zu zeigen, wäre nicht vertretbar.
+- **Verworfene Alternative 2:** Ein manueller Kopierschritt nach `public/`.
+  Er wird irgendwann vergessen, und dann zeigt die App wochenlang alte Zahlen,
+  ohne dass es auffällt.
+
+**Die Feldnamen bleiben deutsch**, auch im TypeScript. Eine
+Übersetzungsschicht wäre genau die Stelle, an der `turn_oder_river` irgendwann
+auf das Turn-Feld gemappt wird und es niemandem auffällt.
+
+**Der Annahmenblock ist nicht optional.** Fehlt er, lehnt der Loader die Datei
+ab. Eine Wahrscheinlichkeit ohne ihre Annahme ist nicht ungenau, sondern
+bedeutungslos — und die App zeigt sie an, wo sie Zahlen zeigt.
+
+**Vertragsversion statt Schemaprüfung allein.** Ein Feld kann seine Bedeutung
+ändern, ohne seinen Typ zu ändern; dann sieht die falsche Zahl völlig richtig
+aus. Passt die Version nicht, wird abgelehnt — auch bei sonst gültiger Datei.
+
+**Der Loader prüft auch Aussagen über die Sache, nicht nur Typen:**
+`turn_oder_river` kleiner als `turn`, eine nötige Equity über 50 %, eine
+Blocker-Zeile, die nicht aufgeht. Das sind genau die Fehler, bei denen jeder
+Einzelwert für sich gültig aussieht.
+
+**Und er setzt K3 durch:** Ist bei einem Handpaar `spanne_relevant` gesetzt und
+fehlen die Farbkonfigurationen, wird die **ganze Datei** abgelehnt. Die App
+kann damit nicht in einen Zustand geraten, in dem sie einen Einzelwert ohne
+die Spanne zeigen möchte und es nicht merkt.

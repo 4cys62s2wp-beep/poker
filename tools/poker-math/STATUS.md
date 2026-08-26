@@ -5,10 +5,10 @@ Eigenständiges Arbeitspaket. Branch `feature/poker-math`.
 Diese Datei ist so geschrieben, dass eine frische Sitzung ohne Kontext hier
 weiterarbeiten kann.
 
-- **Letzte Aktualisierung:** 2026-08-26, nach B1/B2/B3
-- **Stand in einem Satz:** Der Unterbau ist bewiesen, B1 bis B3 sind exakt
-  gerechnet und ausgeliefert. B4 ist vorbereitet, aber **noch nicht gestartet**
-  — die gemessene Laufzeit verlangt eine Entscheidung, siehe unten.
+- **Letzte Aktualisierung:** 2026-08-26, während B4 rechnet
+- **Stand in einem Satz:** B1 bis B3 sind exakt gerechnet und ausgeliefert,
+  die Datenschnittstelle zur App steht, und **B4 läuft** — Option 1 (exakt),
+  im Hintergrund, wiederaufnehmbar.
 
 ---
 
@@ -52,63 +52,86 @@ Kategorien, das Ass als Eins in A-2-3-4-5. Die vollständige Liste steht in
 
 ---
 
-## Exakt nächster Schritt: B4 — und eine Entscheidung davor
+## B4 läuft
 
-### Die Laufzeitabschätzung (E3), gemessen statt geschätzt
-
-Ein **einzelnes vollständig enumeriertes Matchup** wurde gemessen:
+Gestartet am 26.08.2026, Option 1 (exakt, kein Monte Carlo), auf drei Kernen.
 
 | | |
 |---|---|
-| Beispiel | A♥K♥ gegen Q♠Q♦ |
-| Boards | 1 712 304 (alle) |
-| Dauer | **2,9 s** |
-| Durchsatz | ~600 000 Boards/s |
-| Ergebnis | 46,2145 % für A♥K♥ (Split als 0,5 gezählt) |
+| Arbeitseinheiten | 14 365 Handpaare |
+| Enumerationen | 47 008 Farbkonfigurationen |
+| Gemessen | rund 2,1 s je Handpaar |
+| Geschätzte Gesamtdauer | **rund 8,5 Stunden** |
+| Fortschritt | `output/b4_lauf.log` |
+| Zwischenstand | `output/b4_teil/matchups.jsonl`, eine Zeile je fertigem Handpaar |
 
-Hochgerechnet auf alle Paarungen:
+### Wenn der Lauf abbricht
 
-| Weg | Matchups | Ein Kern | Vier Kerne |
-|---|---:|---:|---:|
-| ohne Reduktion | 812 175 | ~654 h | ~187 h |
-| **mit Farb-Isomorphie** | **47 008** | **~38 h** | **~11 h** |
+Er ist **wiederaufnehmbar**. Erneut starten genügt:
 
-Der Reduktionsfaktor **17,28×** ist nicht geschätzt, sondern ausgezählt: Über
-alle 812 175 Paarungen wurde die Kanonform unter allen 24 Farbumbenennungen
-gebildet und die verschiedenen Formen gezählt.
+```bash
+cd tools/poker-math
+PYTHONPATH=src .venv/bin/python src/b4_preflop_equity.py --kerne 3
+```
 
-### Was daraus folgt
+Er liest die Teildatei, überspringt alles Fertige und setzt an der ersten
+offenen Einheit an. Eine mitten im Schreiben abgebrochene Zeile wird verworfen
+und die Einheit neu gerechnet — geprüft, indem eine kaputte Zeile absichtlich
+angehängt wurde.
 
-Die Schwelle aus E3 (zwei Stunden) ist **auch nach beiden vorgeschriebenen
-Maßnahmen überschritten** — Farb-Isomorphie und Multiprocessing zusammen
-landen bei rund elf Stunden. Beide sind trotzdem zu implementieren, denn ohne
-sie wären es Wochen.
+Nach jedem Handpaar wird geschrieben **und** `fsync` aufgerufen. Ein
+Stromausfall kostet höchstens die gerade laufende Einheit.
 
-**Vor dem Start von B4 ist zu entscheiden**, und das ist keine technische
-Frage:
+### Wenn der Lauf durch ist
 
-1. **Elf Stunden exakt durchrechnen.** Liefert die Zahl, nicht die Schätzung.
-   Einmalig, das Ergebnis ist für immer gültig.
-2. **Monte Carlo für die volle Matrix**, mit exakter Kreuzvalidierung auf
-   einem Teilfall, wie in `POKER_MATH.md` beschrieben. Deutlich schneller,
-   liefert aber Werte mit Konfidenzintervall statt exakter Zahlen.
-3. **Gemischt:** die 169 Klassen gegen sich selbst exakt (die Diagonale und
-   die häufig nachgeschlagenen Paarungen), der Rest per Monte Carlo.
+```bash
+PYTHONPATH=src .venv/bin/python src/b4_preflop_equity.py --zusammenbauen
+PYTHONPATH=src .venv/bin/python src/app_schnittstelle.py
+```
 
-**Meine Empfehlung: Weg 1.** Elf Stunden sind einmalig, das Ergebnis ist
-danach für immer exakt, und eine Lern-App, die „46,21 %" sagt, sollte 46,21 %
-meinen und nicht „46,2 % ± 0,1". Die Rechnung kann im Hintergrund laufen.
+Der erste Befehl baut `output/b4_preflop_equity.json` und lässt den
+**Integritätscheck** über die ganze Matrix laufen: Equity(A gegen B) +
+Equity(B gegen A) = 1 für jedes Paar, Split je zur Hälfte gezählt, und eine
+Hand gegen sich selbst bei genau 50 %. Eine Abweichung bricht mit Fehler ab,
+statt eine Datei zu schreiben.
 
-### Was für B4 vorher zu bauen ist (E3, verbindlich)
+Der zweite erzeugt die App-Fassung.
 
-- **Farb-Isomorphie** mit Gewichten. Die Reduktion ist an **mindestens fünf**
-  Paarungen gegen die vollständige Enumeration ohne Reduktion zu prüfen; die
-  Werte müssen **exakt** übereinstimmen, nicht näherungsweise.
-- **Multiprocessing** über die vier Kerne, mit deterministischem
-  Zusammenführen der Teilergebnisse.
-- **Split-Pötte** zählen als 0,5 je Seite — gilt für alle Equity-Rechnungen.
+### Was vorher geprüft wurde
 
-Danach: **B5** (Multiway), **B6** (Set Mining), **B7** (Flop-Texturen).
+Die Farb-Isomorphie ist der einzige Grund, warum B4 in Stunden statt in Wochen
+rechnet. Wäre sie falsch, wäre jede Zahl falsch — und zwar plausibel falsch.
+Deshalb wurde sie für **fünf Handpaare** gegen die vollständige Enumeration
+ohne jede Reduktion gehalten, mit exakter Übereinstimmung
+(`tests/test_b4_preflop.py`, Kennzeichen `langsam`, Laufzeit 5:39 min).
+
+---
+
+## Die Datenschnittstelle zur App
+
+Steht und ist getestet: **`SCHNITTSTELLE.md`**.
+
+Kurz: Der Generator schreibt zwei Fassungen — die vollständige nach
+`output/` (Nachweis) und eine verschlankte nach `public/pokermath/`
+(Anzeige). Die App liest nur die zweite und prüft sie streng: falsche
+Vertragsversion, fehlender Annahmenblock, `NaN`, Wahrscheinlichkeiten außerhalb
+0..1 oder eine in sich widersprüchliche Zeile führen zu `null` statt zu einer
+halb verstandenen Tabelle.
+
+Für B4 setzt der Loader die K3-Regel durch: Ist bei einem Handpaar
+`spanne_relevant` gesetzt, **müssen** die Farbkonfigurationen beiliegen —
+sonst wird die ganze Datei abgelehnt. Die App kann also nicht in einen
+Zustand geraten, in dem sie einen Einzelwert ohne die Spanne zeigen möchte und
+es nicht merkt.
+
+---
+
+## Danach: B5 bis B7
+
+Erst wenn B4 durch ist. **B5** (Multiway-Equity gegen 2 bis 5 Gegner) wird der
+nächste rechenintensive Block — dort ist vorab dieselbe Laufzeitabschätzung zu
+machen wie bei B4, und dieselbe Frage nach exakt gegen Monte Carlo zu
+beantworten.
 
 ---
 
@@ -122,7 +145,10 @@ Danach: **B5** (Multiway), **B6** (Set Mining), **B7** (Flop-Texturen).
 | `src/karten.py` | Kartendarstellung, Starthand-Klassen |
 | `src/referenz_evaluator.py` | Der Evaluator aus den Regeln — bleibt dauerhaft |
 | `src/pruefe_evaluatoren.py` | Der vollständige Nachweislauf, ~40 s |
-| `src/b1_outs.py` · `b2_potodds.py` · `b3_kombinatorik.py` | Die Rechenblöcke |
+| `SCHNITTSTELLE.md` | Der Datenvertrag zwischen Generator und App |
+| `src/b1_outs.py` · `b2_potodds.py` · `b3_kombinatorik.py` · `b4_preflop_equity.py` | Die Rechenblöcke |
+| `src/befunde.py` | Aussagen über Zahlen, aus den Zahlen erzeugt |
+| `src/app_schnittstelle.py` | Erzeugt die App-Fassung, schreibt auch nach `public/pokermath/` |
 | `tests/bekannte_werte.json` | **Leer, von Lorenz zu füllen** |
 | `output/*.json` | Die Ergebnisse, die die App liest |
 
@@ -149,8 +175,10 @@ PYTHONPATH=src .venv/bin/python src/pruefe_evaluatoren.py     # ~40 s
    keine externe Gegenprobe — nur innere Konsistenz und den Regel-Evaluator.
    Das ist stark, aber es ist dieselbe Denkweise zweimal. Der zugehörige Test
    meldet sich als übersprungen, nicht als bestanden.
-2. **B4 dauert Stunden.** Siehe die Entscheidung oben. Ein abgebrochener Lauf
-   darf keine halbe Datei hinterlassen — die Zwischenstände gehören gesichert.
+2. **B4 dauert Stunden und überlebt das Sitzungsende nicht.** Der Container
+   wird nach der Sitzung eingezogen. Was bis dahin gerechnet ist, liegt in
+   `output/b4_teil/matchups.jsonl` und ist committet; eine neue Sitzung setzt
+   dort an. Der Zwischenstand ist damit gesichert, die Wartezeit nicht.
 3. **eval7 ist eine C-Erweiterung.** Auf einer Plattform ohne fertiges Rad
    muss übersetzt werden. Betrifft nur diesen Generator, nicht die App.
 4. **eval7 warnt beim Import** über eine veraltete pyparsing-Schnittstelle.

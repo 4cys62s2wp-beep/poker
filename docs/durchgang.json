@@ -1,0 +1,123 @@
+{
+  "geprueft_am": "2026-08-26T20:39:48.375Z",
+  "breite": 390,
+  "seitenfehler": [],
+  "abgebrochen_bei": null,
+  "schritte": [
+    {
+      "name": "Einrichten öffnen",
+      "ergebnis": {
+        "ueberschrift": "Abend einrichten",
+        "startknopf_gesperrt": true,
+        "startknopf_text": "Erst Koffer und Spieler eintragen"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Koffer eintragen",
+      "ergebnis": {
+        "zeilen": 3,
+        "chips_gesamt": 300
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Spieler eintragen",
+      "ergebnis": {
+        "spieler": 5
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Dauer und Tempo wählen",
+      "ergebnis": {
+        "dauer_gewaehlt": "true"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Ergebnis erscheint, bevor irgendetwas beginnt",
+      "ergebnis": {
+        "startchips": "380",
+        "blindstufen": 9,
+        "erste_stufe": "1 / 2",
+        "letzte_stufe": "15 / 30",
+        "finale_satz": "Am Ende bleiben den letzten drei im Schnitt 21 Big Blinds — das trägt ein Finale."
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Start ist jetzt freigegeben",
+      "ergebnis": {
+        "gesperrt": false,
+        "text": "Abend starten"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Abend starten",
+      "ergebnis": {
+        "adresse": "#/session/live",
+        "navigationsleiste": false,
+        "zeit": "19:59",
+        "blinds": "1 / 2",
+        "danach": "2 / 4",
+        "gespeichert_spieler": 5,
+        "gespeichert_startchips": 380,
+        "gespeichert_stufen": 9,
+        "laeuft": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Die Uhr läuft wirklich",
+      "ergebnis": {
+        "vorher": "19:59",
+        "nachher": "19:57",
+        "hat_sich_bewegt": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Neu laden setzt an derselben Stelle fort",
+      "ergebnis": {
+        "vorher": "19:57",
+        "nachher": "19:57",
+        "abstand_s": 0,
+        "abend_noch_da": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Pause hält an",
+      "ergebnis": {
+        "vorher": "19:56",
+        "nachher": "19:56",
+        "steht_still": true,
+        "marke_sichtbar": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Weiter läuft an derselben Stelle an",
+      "ergebnis": {
+        "vorher": "19:56",
+        "gleich_danach": "19:56",
+        "spaeter": "19:54",
+        "kein_sprung": true,
+        "laeuft_wieder": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Beenden fragt nach und tut es dann",
+      "ergebnis": {
+        "gefragt": true,
+        "frage": "Abend wirklich beenden?",
+        "adresse_danach": "#/session",
+        "abend_beendet": true
+      },
+      "uebersprungen": false
+    }
+  ]
+}

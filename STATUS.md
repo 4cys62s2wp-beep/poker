@@ -35,20 +35,26 @@ Projekts, unverändert übernommen.
 | 2 | Startseite mit drei ungleich gewichteten Einstiegen und Fortsetzen-Karte; jeder Bildschirm in höchstens zwei Berührungen, null Sackgassen — im Browser bei 390 px gemessen | `DESIGN.md` 7, `docs/wege.json`, `wege.test.ts` |
 | 3.1 | Chipverteilung aus vorhandenem Material: kleinster Chip = Small Blind, grobe Fünferleiter | `src/lib/live/verteilung.ts`, `live.test.ts` |
 | 3.2 | Blindstruktur: gleichmäßige Steigung, Faktor gedeckelt auf 1,6, Zielgröße für das Finale hergeleitet | `src/lib/live/blinds.ts`, `live.test.ts` |
-| 3.3 | Timer, Ton und Vorwarnung, Wachhalten des Bildschirms | `src/lib/live/signal.ts`, `src/pages/live/TischPage.tsx` |
-| 3.4 | Laufender Abend überlebt Neuladen und Schließen: bei jeder Änderung lokal geschrieben, kein Speicherknopf | `src/lib/session/laufend.ts` |
+| 3.3 | Timer aus Zeitstempeln, Ton mit Vorwarnung, Bildschirm bleibt an; Tischgerät zeigt drei Angaben, alle aus zwei Metern lesbar (nachgemessen) | `src/lib/live/uhr.ts`, `uhr.test.ts`, `docs/tisch.json`, `tisch.test.ts` |
+| 3.4 | Laufender Abend überlebt Neuladen und Schließen; kein Speicherknopf, kein Netzaufruf im ganzen Live-Pfad | `src/lib/session/laufend.ts`, `uhr.test.ts` |
+| 3 | Ein vollständiger Durchgang vom Koffer bis zur laufenden Uhr, im Browser durchgeklickt | `docs/durchgang.json`, `durchgang.test.ts` |
+
+**Stand der Prüfungen:** 621 Tests grün, Typprüfung sauber, drei Browserläufe
+ohne Beanstandung (`npm run wege`, `npm run tisch`, `npm run durchgang`).
 
 **In Arbeit**
 
-Phase 3 ist gebaut, aber die Tests für Timer und Zustand (Pause/Fortsetzen,
-Überleben eines Neuladens) fehlen noch. Die Rechenwege aus 3.1 und 3.2 sind
-abgedeckt, der Zeitverlauf nicht.
+Phase 3 ist abgeschlossen. Als Nächstes steht Phase 4 an, dort ist noch
+nichts gebaut.
 
 **Als Nächstes**
 
-1. Tests für Pause/Fortsetzen und für den überlebenden Zustand.
-2. Phase 4: Abende und Spieler (nur Name, frühere Abende über den Namen finden).
-3. Warteschlange abarbeiten, sobald B4 fertig ist (`WARTESCHLANGE.md`, W-001 und W-002).
+1. Phase 4: Abende und Spieler — nur Name, Stände und Zeit im Abend,
+   unterbrochener Abend fortsetzbar, frühere Abende über einen Spielernamen
+   finden, grobe Erfassung am Tisch in unter 30 Sekunden.
+2. Phase 5 gegenprüfen: `BACKLOG.md` gegen die elf genannten Punkte.
+3. Warteschlange abarbeiten, sobald B4 fertig ist (`WARTESCHLANGE.md`,
+   W-001 und W-002), danach `npm run daten` und der Zusammenführungs-Lauf.
 <!-- NACHTLAUF-ENDE -->
 
 ---

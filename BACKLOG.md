@@ -260,3 +260,67 @@ sie bei allem, was fehlt, und das ist bisher richtig so.
 heute wirklich, auf einem echten Mobilfunknetz? Solange das niemand gemessen
 hat, ist die Optimierung eine Vermutung — und die App liefert dafür eine
 Zusage auf, die heute uneingeschränkt gilt.
+
+---
+
+## Ein-Geräte-Tisch — gebaut, entfernt, nur mit Altersentscheidung zurück
+
+> **Vorbehalt.** Dieser Eintrag kommt **nicht nebenbei** zurück. Er setzt eine
+> ausdrückliche Entscheidung über eine höhere Altersstufe voraus — getroffen,
+> bevor eine Zeile davon wieder eingebaut wird, nicht danach begründet.
+
+**Worum es geht.** Ein Tisch für einen Abend ohne Kartendeck: Die App
+übernimmt Karten, Chips, Blinds und Showdown, das Gerät wandert reihum. Er
+lag unter `/session/tisch`, war fertig und geprüft und ist am 27.08.2026
+entfernt worden (E-030). Der Code steht in der Historie:
+`src/pages/table/LocalTablePage.tsx` und `src/lib/table/local.ts`, zuletzt
+vollständig in Commit `fc9848d`.
+
+**Warum es wertvoll wäre.** Es ist die einzige Funktion, die einen Pokerabend
+auch dann trägt, wenn niemand ein Kartendeck dabeihat. Sie war die
+meistgenannte Idee des ursprünglichen Mehrspieler-Pakets.
+
+**Was daran schwierig ist.** Nicht die Technik — die stand. Schwierig ist der
+Rahmen: Gespieltes Poker ist etwas anderes als verwaltetes, und die
+Altersstufe der App hängt daran. Eine Rückkehr verlangt außerdem, dass die
+Zusage „nur Zahlenverwaltung und Lehrmaterial als Standbild" ausdrücklich
+zurückgenommen wird — sonst stehen zwei Versprechen nebeneinander, die
+einander widersprechen.
+
+**Was es voraussetzt.** Die Altersentscheidung, und danach eine Prüfung, was
+sie sonst noch mitzieht: Store-Angaben, Impressum, die Frage, ob ein
+Minderjähriger die App unter diesen Angaben veröffentlichen kann.
+
+---
+
+## Online-Tisch mit Code und QR — gebaut, entfernt, nur mit Altersentscheidung zurück
+
+> **Vorbehalt.** Wie oben: Rückkehr nur über eine ausdrückliche Entscheidung
+> über die Altersstufe, vorher getroffen und nicht nachträglich begründet.
+
+**Worum es geht.** Mehrere Geräte spielen über einen sechsstelligen Code oder
+einen QR-Code an einem gemeinsamen Tisch, jeder sieht seine eigenen Karten.
+Gespielt wurde mit Punkten, nie mit Geld. Er lag unter
+`/session/tisch/online`, entfernt am 27.08.2026 (E-030). Der Code:
+`src/pages/table/OnlineTablePage.tsx`, `src/lib/table/online.ts` und
+`src/lib/table/protocol.ts` — Letzteres mit 814 Zeilen Tests, die den
+Zustandsabgleich zwischen Geräten absichern.
+
+**Warum es wertvoll wäre.** Es ist die einzige Funktion für den Fall, dass
+jemand nicht dabei sein kann. Und das Protokoll ist der aufwendigste Teil des
+ganzen Projekts gewesen — es löst optimistische Konflikte zwischen Geräten
+ohne Server-Logik.
+
+**Was daran schwierig ist.** Dasselbe wie oben, und zusätzlich: Der
+Online-Tisch bringt fremde Menschen an einen Tisch. Das ist eine andere
+Größenordnung von Verantwortung als eine Runde unter Freunden — Moderation,
+Meldewege, Umgang mit Namen, die andere lesen.
+
+**Was es voraussetzt.** Die Altersentscheidung. Und die Firestore-Regeln:
+Der Block `match /tables/{code}` in `firestore.rules` ist **absichtlich
+stehengeblieben**, samt seinen Tests. Eine Regeländerung ist eine
+Bereitstellung und keine Aufräumarbeit — sie gehört in eine Sitzung, in der
+jemand auf die Datenbank schaut. Solange sie steht, dürfen angemeldete Nutzer
+theoretisch Tischräume anlegen, die kein Client mehr benutzt. Das ist kein
+Datenleck, aber es ist eine offene Tür, die beim nächsten Aufspielen zugehen
+sollte.

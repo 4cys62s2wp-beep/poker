@@ -8,8 +8,6 @@ import { PaywallModal } from './components/pro/PaywallModal';
 import { UpgradePage } from './pages/UpgradePage';
 import { LegalPage } from './pages/LegalPage';
 import { CancelPage } from './pages/CancelPage';
-import { LocalTablePage } from './pages/table/LocalTablePage';
-import { OnlineTablePage } from './pages/table/OnlineTablePage';
 import { HubPage } from './pages/HubPage';
 import { ReferencePage } from './pages/ReferencePage';
 import { SessionPage } from './pages/SessionPage';
@@ -158,8 +156,6 @@ export function App() {
           <Route path="/session/abende" element={<AbendePage />} />
           <Route path="/session/abende/:id" element={<AbendPage />} />
           <Route path="/session/spieler/:name" element={<SpielerPage />} />
-          <Route path="/session/tisch" element={<LocalTablePage />} />
-          <Route path="/session/tisch/online" element={<OnlineTablePage />} />
           <Route path="/session/bankroll" element={<BankrollTracker />} />
 
           {/* ── Persönliches ─────────────────────────────────────────── */}
@@ -182,14 +178,18 @@ export function App() {
           <Route path="/glossar" element={<Navigate to="/nachschlagen/glossar" replace />} />
           <Route path="/coach" element={<Navigate to="/nachschlagen/coach" replace />} />
 
-          <Route path="/tisch" element={<Navigate to="/session/tisch" replace />} />
-          <Route path="/tisch/online" element={<Navigate to="/session/tisch/online" replace />} />
+          {/* Der Tisch ist aus dem inhaltlichen Rahmen gefallen (E-030). Die
+              alten Links bleiben trotzdem: Ein geteilter Link darf nicht ins
+              Leere laufen, nur weil eine Entscheidung gefallen ist. Ziel ist
+              der Bereich, in dem der Tisch lag. */}
+          <Route path="/tisch" element={<Navigate to="/session" replace />} />
+          <Route path="/tisch/online" element={<Navigate to="/session" replace />} />
 
           {/* Gliederung vom 26.08.2026 – nur einen Tag alt, aber im
               PWA-Manifest und in geteilten Links bereits unterwegs. */}
           <Route path="/live/coach" element={<Navigate to="/nachschlagen/coach" replace />} />
-          <Route path="/live/tisch" element={<Navigate to="/session/tisch" replace />} />
-          <Route path="/live/tisch/online" element={<Navigate to="/session/tisch/online" replace />} />
+          <Route path="/live/tisch" element={<Navigate to="/session" replace />} />
+          <Route path="/live/tisch/online" element={<Navigate to="/session" replace />} />
           <Route path="/live/uebungstisch" element={<Navigate to="/lernen/uebungstisch" replace />} />
           <Route path="/live/statistik" element={<Navigate to="/lernen/statistik" replace />} />
           <Route path="/live" element={<Navigate to="/" replace />} />

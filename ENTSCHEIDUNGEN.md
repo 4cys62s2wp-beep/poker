@@ -997,3 +997,49 @@ ließ sich nur beantworten, indem man einen Ausdruck mitten in einer Schleife
 las. Das ist jetzt behoben — und durch fünf Tests abgedeckt, darunter der
 Fall „noch kein einziges Handpaar fertig", der vorher eine Division durch null
 gewesen wäre.
+
+---
+
+## E-030 · 2026-08-27 · Beide Tische fallen aus dem Rahmen
+
+**Entschieden vom Auftraggeber (W-003).** Der Ein-Geräte-Tisch
+(`/session/tisch`) und der Online-Tisch (`/session/tisch/online`) sind beides
+gespieltes Poker, nicht verwaltetes. Der inhaltliche Rahmen erlaubt zwei
+Arten von Inhalt: reine Zahlenverwaltung — Listen, Stände, Uhren, Rechner —
+und Lehrmaterial als Standbild. Ein Tisch, an dem Hände gespielt werden, ist
+keines von beidem.
+
+**Umgesetzt.** Beide Bildschirme, ihre Bibliotheken, ihre Texte und ihre
+Tests sind entfernt: neun Dateien, rund 2700 Zeilen, davon 938 Zeilen Tests.
+Beide stehen mit ausdrücklichem Vorbehalt in `BACKLOG.md`.
+
+**Der Vorbehalt ist der eigentliche Inhalt dieser Entscheidung.** Sie kommen
+nur über eine ausdrückliche Entscheidung über eine höhere Altersstufe zurück
+— vorher getroffen, nicht nachträglich begründet. Ein Backlog-Eintrag ohne
+diesen Satz wäre in einem halben Jahr eine „gute Idee, die mal fertig war",
+und genau so schleicht sich ein Rahmen zurück, den jemand bewusst gezogen
+hat.
+
+**Alternative:** Die Bildschirme stehen lassen und nur nicht mehr verlinken.
+
+**Warum nicht:** Unverlinkter Code ist keine Entscheidung, sondern ein
+Aufschub. Er läuft weiter, er wird mitausgeliefert, er taucht in jeder
+Suche auf — und der Nächste, der ihn findet, hält die fehlende Verlinkung
+für ein Versehen und behebt es.
+
+**Was die alten Adressen angeht:** `/tisch`, `/tisch/online`, `/live/tisch`
+und `/live/tisch/online` leiten weiter auf `/session`. Ein geteilter Link
+darf nicht ins Leere laufen, nur weil eine Entscheidung gefallen ist.
+
+**Was diese Entscheidung offenlässt — bitte lesen.** Unter
+`/lernen/uebungstisch` liegt der **Übungstisch**: eine vollständige Partie
+gegen Bots, mit Engine, Gegnerlogik und Showdown. Nach demselben Maßstab ist
+auch er gespieltes Poker und nicht verwaltetes. Er ist **nicht** entfernt,
+weil der Auftrag zwei Bildschirme namentlich genannt hat und ich einen
+dritten nicht ungefragt dazunehme — eine Entscheidung über den Rahmen gehört
+dem Auftraggeber, auch wenn sie in dieselbe Richtung zeigt. Er sollte beim
+nächsten Mal ausdrücklich mitentschieden werden.
+
+**Nachgemessen.** Nach dem Entfernen: 41 statt 43 eigene Bildschirme, größte
+Tiefe weiterhin 2, null Sackgassen, null unerreichbare Adressen. 707 Tests
+grün.

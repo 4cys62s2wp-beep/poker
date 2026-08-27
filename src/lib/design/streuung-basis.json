@@ -28,8 +28,6 @@
   "src/pages/session/PayoutPage.tsx": 6,
   "src/pages/SessionPage.tsx": 3,
   "src/pages/StatsPage.tsx": 17,
-  "src/pages/table/LocalTablePage.tsx": 70,
-  "src/pages/table/OnlineTablePage.tsx": 79,
   "src/pages/tools/BankrollTracker.tsx": 30,
   "src/pages/tools/ChipCalculator.tsx": 47,
   "src/pages/tools/EquityCalc.tsx": 15,

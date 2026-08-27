@@ -24,37 +24,45 @@ Projekts, unverändert übernommen.
 <!-- NACHTLAUF-ANFANG -->
 ## Nachtlauf 2026-08-26/27 — abgeschlossen
 
-**Alles aus dem Auftrag ist fertig. Die Warteschlange ist leer.**
+**Alles aus dem Auftrag ist fertig. Die Warteschlange ist leer, alle drei
+Einträge sind erledigt.**
 
 | Phase | Was | Nachweis |
 |-------|-----|----------|
-| Teil C | Apple-Fingerabdruck entfernt, Prüfung bleibt Pflicht; Vorschaukarte und Freunde-Rangliste als Entscheidung abgelegt | `ENTSCHEIDUNGEN.md` E-021 bis E-024 |
+| Teil C | Apple-Fingerabdruck entfernt; Vorschaukarte und Freunde-Rangliste als Entscheidung abgelegt | E-021 bis E-024 |
 | 0 | Bestandsaufnahme | `BESTAND.md` |
 | 1 | Designfundament: fünf Schriftstufen, eine Akzentfarbe, gerechneter Kontrast, Haptik an einer Stelle | `DESIGN.md` 1–6 |
 | 2 | Startseite und Wege: höchstens zwei Berührungen, null Sackgassen | `DESIGN.md` 7, `docs/wege.json` |
 | 3 | Live-Session vollständig, vom Koffer bis zur laufenden Uhr | `src/lib/live/*`, `docs/tisch.json` |
 | 4 | Abende führen, ablegen, über einen Namen wiederfinden | `src/lib/session/abende.ts` |
-| 5 | `BACKLOG.md` mit dreizehn beschriebenen Einträgen | `doku.test.ts` |
-| B4 | Preflop-Equity-Matrix fertig gerechnet und in der App | `public/pokermath/b4_preflop_equity.json` |
-| W-001 | Restzeitschätzung geprüft, in eine testbare Funktion gezogen | `ENTSCHEIDUNGEN.md` E-029 |
+| 5 | `BACKLOG.md` mit vierzehn beschriebenen Einträgen | `doku.test.ts` |
+| B4 | Preflop-Equity-Matrix fertig gerechnet und in der App | `public/pokermath/b4_preflop_equity.bin` |
+| W-001 | Restzeitschätzung geprüft, in eine testbare Funktion gezogen | E-029 |
 | W-002 | 47 008 → 47 086 korrigiert, mit neun Tests abgesichert | `test_b4_preflop.py` |
+| W-003 | Beide Tische entfernt, mit Vorbehalt in den Backlog | E-030 |
+| extra | Equity-Matrix als Binärdatei: 5005 KB → 203 KB, 99 ms → 8 ms | E-031, `docs/binaerformat.json` |
 
 **Der Stand der Prüfungen**
 
-- **775 JavaScript-Tests grün, null übersprungen.** Typprüfung sauber,
+- **875 JavaScript-Tests grün, null übersprungen.** Typprüfung sauber,
   `npm run build` baut durch.
 - **336 Python-Tests grün.**
-- Vier Browserläufe ohne Beanstandung: `npm run wege` (Erreichbarkeit),
-  `npm run tisch` (Lesbarkeit am Tisch), `npm run durchgang` (ein
-  vollständiger Abend plus Lernbildschirm, 20 Schritte), `npm run pruefen`
-  (Kontrast, Tippflächen, Abstände über 49 Bildschirme).
+- Fünf Messläufe ohne Beanstandung: `npm run wege` (Erreichbarkeit, 41 eigene
+  Bildschirme, keine Sackgasse), `npm run tisch` (Lesbarkeit am Tisch),
+  `npm run durchgang` (ein vollständiger Abend plus Lernbildschirm, 20
+  Schritte), `npm run pruefen` (Kontrast, Tippflächen, Abstände über 49
+  Bildschirme, null Befunde), `npm run binaer` (Größe und Ladezeit der
+  Matrix).
 
-**Was offen ist**
+**Was offen ist — beides Entscheidungen, keine Arbeit**
 
-Genau eine Sache, und sie ist keine technische: **W-003 — gehört der
-Online-Tisch noch in die App?** Das ist eine Entscheidung des Auftraggebers
-über den inhaltlichen Rahmen, kein fehlendes Stück Arbeit. Ausführlich in
-`WARTESCHLANGE.md` und `SESSION_REPORT.md`.
+1. **Der Übungstisch** unter `/lernen/uebungstisch` ist eine vollständige
+   Partie gegen Bots. Nach demselben Maßstab wie W-003 ist auch er gespieltes
+   Poker. Nicht entfernt, weil der Auftrag zwei Bildschirme namentlich nannte
+   (E-030).
+2. **Die Firestore-Regeln für `/tables/`** stehen noch, obwohl kein Client
+   sie mehr benutzt. Eine Regeländerung ist eine Bereitstellung, keine
+   Aufräumarbeit.
 
 **Zuerst lesen:** `SESSION_REPORT.md` (Bericht), `NACHTLAUF.log` (Verlauf).
 <!-- NACHTLAUF-ENDE -->

@@ -111,16 +111,15 @@ war zwei Stunden vorher gegen eine Probe mit drei Handpaaren geprüft worden,
 weil ein Formfehler nach fünfeinhalb Stunden Rechnung die schlechteste Zeit
 für einen Fehler gewesen wäre.
 
-**Eine Zahl zum Nachdenken:** Die Anzeigefassung ist **5,0 MB** groß und wird
-für den Offline-Betrieb mitgespeichert. Das ist der Preis für „jede Zahl aus
-den gerechneten Daten". Ob das so bleiben soll oder ob die Matrix nachgeladen
-statt mitgeliefert wird, steht in `BACKLOG.md`.
+**Die Anzeigefassung war 5,0 MB groß — jetzt sind es 203 KB.** Die Matrix
+liegt als Binärdatei vor: Equity in Basispunkten, zwei Byte je
+Farbkonfiguration. Kein Wert fehlt. Details unten.
 
 ---
 
-## Die Warteschlange ist leer
+## Die Warteschlange ist leer — auch W-003
 
-Beide technischen Einträge sind nach dem Ende des Rechenlaufs abgearbeitet:
+Alle drei Einträge sind erledigt.
 
 - **W-002 war ein echter Fehler.** Der Kopfkommentar von
   `b4_preflop_equity.py` nannte über Monate 47 008 wirklich verschiedene
@@ -128,14 +127,67 @@ Beide technischen Einträge sind nach dem Ende des Rechenlaufs abgearbeitet:
   derselben Rangkombination, einmal offsuit und einmal suited. Gerechnet
   wurde immer richtig — nur die Beschreibung war falsch, und niemandem fiel
   es auf, weil keine Prüfung sie anfasste. Neun Tests zählen sie jetzt nach.
-- **W-001 wurde anders erledigt als geplant.** Die von Ihnen verlangte
-  Grundlage der Restzeitschätzung war bereits im Code. Meine eigene
-  Verschärfung hätte hier nichts gebracht (nachgemessen: 3,26 gegen 3,28) und
-  eine halbe Minute Vorlauf je Start gekostet. Der eigentliche Mangel war,
-  dass die Grundlage nirgends stand. Sie steht jetzt in einer eigenen,
-  prüfbaren Funktion und im Startprotokoll. Begründung in E-029.
-- **W-003** ist keine technische Sperre, sondern eine Frage an Sie. Siehe
-  unten.
+- **W-001 wurde anders erledigt als geplant.** Die verlangte Grundlage der
+  Restzeitschätzung war bereits im Code. Meine eigene Verschärfung hätte
+  hier nichts gebracht (nachgemessen: 3,26 gegen 3,28) und eine halbe Minute
+  Vorlauf je Start gekostet. Der eigentliche Mangel war, dass die Grundlage
+  nirgends stand. Begründung in E-029.
+- **W-003 haben Sie entschieden:** Beide Tische fallen aus dem Rahmen. Neun
+  Dateien entfernt, rund 2700 Zeilen, davon 938 Zeilen Tests. Beide stehen
+  mit ausdrücklichem Vorbehalt in `BACKLOG.md` — Rückkehr nur über eine
+  vorher getroffene Entscheidung zur Altersstufe (E-030).
+
+**Zwei Dinge dazu, die Sie wissen sollten:**
+
+1. **Der Übungstisch unter `/lernen/uebungstisch` steht noch.** Er ist eine
+   vollständige Partie gegen Bots, mit Engine, Gegnerlogik und Showdown —
+   nach demselben Maßstab ebenfalls gespieltes Poker. Ich habe ihn nicht
+   entfernt, weil Sie zwei Bildschirme genannt haben und ein dritter Ihre
+   Entscheidung ist, nicht meine. Er gehört beim nächsten Mal ausdrücklich
+   mitentschieden.
+2. **Die Firestore-Regeln für `/tables/` sind absichtlich stehengeblieben.**
+   Eine Regeländerung ist eine Bereitstellung und keine Aufräumarbeit.
+   Solange sie steht, dürfen angemeldete Nutzer theoretisch Tischräume
+   anlegen, die kein Client mehr benutzt. Kein Datenleck, aber eine offene
+   Tür, die beim nächsten Aufspielen zugehen sollte.
+
+---
+
+## Die Equity-Matrix als Binärdatei
+
+Gemessen, nicht überschlagen (`npm run binaer`, Median aus neun Läufen im
+Browser):
+
+| | vorher (JSON) | nachher (Binär + Kopf) | Faktor |
+|---|---|---|---|
+| roh | 5005,5 KB | **203,3 KB** | 24,6 |
+| gepackt | 277,2 KB | **116,2 KB** | 2,4 |
+| Abruf + Auswertung | 98,9 ms | **8,1 ms** | 12,2 |
+
+**Ihre Erwartung von 150 KB ist um 53 KB verfehlt.** Wo die Bytes liegen und
+was es kosten würde, sie zu holen, steht in E-031 — kurz: zwei weitere
+Schritte, die beide Klarheit gegen Bytes tauschen, und dafür sind 53 KB zu
+wenig.
+
+**Der überraschende Teil der Messung:** Über die Leitung war der Unterschied
+nie 25-fach, sondern 2,4-fach. Zahlentext komprimiert sehr gut, und jeder
+ernsthafte Hoster komprimiert. Wer nur roh gegen roh vergleicht, rechnet sich
+einen Faktor schön, den kein Nutzer je sieht. Der echte Gewinn liegt im
+Gerät — der Service Worker hält die Datei ungepackt vor — und in der
+Auswertung.
+
+Geprüft mit 164 Tests gegen die Rechenausgabe selbst, Toleranz ein
+Basispunkt, mit Gegenprobe.
+
+**Der Backlog-Eintrag zum Nachladen ist gestrichen.** Er stand auf der
+Annahme, 5 MB seien zu viel für den ersten Start. Wichtiger als die Bytes:
+Die Zusage „funktioniert vollständig ohne Netz" bleibt damit
+uneingeschränkt. Nachladen hätte sie geteilt, und eine Zusage mit Fußnote
+ist am Küchentisch ohne Empfang keine.
+
+**Zur Kenntnis:** Heute liest kein einziger Bildschirm die Matrix. `ladeB4`
+existiert, der Starthand-Vergleich ist noch nicht daran angeschlossen. Die
+203 KB liegen derzeit ungenutzt im Gerät — vorher waren es 5,0 MB ungenutzt.
 
 ---
 
@@ -155,6 +207,8 @@ sieben aus dieser Nacht:
 | E-027 | Das Tischgerät verliert Stufennummer und Spielerzahl | Damit die drei übrigen Angaben groß genug für zwei Meter werden. Nachgerechnet: 56,5 Pixel sind nötig |
 | E-028 | Die untere Navigationsleiste bekommt Abstände | Kostet 16 von 390 Pixeln. Die Ausnahme hätte gekostet, dass die nächste leichter fällt |
 | E-029 | Die Restzeitschätzung bleibt bei Handpaaren statt Farbkonfigurationen | Ich weiche hier von meiner eigenen Vorgabe in W-001 ab — die feinere Grundlage kommt nachgemessen aufs Gleiche und kostet Vorlauf |
+| E-030 | Beide Tische entfernt statt nur entlinkt | Unverlinkter Code ist keine Entscheidung, sondern ein Aufschub. Enthält den offenen Punkt zum Übungstisch |
+| E-031 | Binärformat bei 203 KB belassen statt auf 150 KB zu drücken | Ich verfehle Ihre Erwartung um 53 KB und sage warum, statt Klarheit gegen Bytes zu tauschen |
 
 ---
 
@@ -193,8 +247,7 @@ Stoß für einen Fehler hält.
 
 ## Was ich als nächsten Schritt empfehle
 
-**Den Live-Bereich einmal an einem echten Abend benutzen, bevor irgendetwas
-anderes gebaut wird.**
+**Den Live-Bereich einmal an einem echten Abend benutzen. Nichts davor.**
 
 Er ist vollständig geprüft, aber alles daran ist gerechnet und gemessen —
 nichts davon ist erlebt. Ein Abend zu fünft mit einem echten Koffer
@@ -203,8 +256,8 @@ zwanzig Minuten je Stufe sich richtig anfühlen, ob die Vorwarnung eine
 Minute vorher reicht, ob die Erfassung wirklich niemanden unterbricht, ob
 die Uhr aus zwei Metern tatsächlich lesbar ist und nicht nur rechnerisch.
 
-Danach erst: die Entscheidung zu W-003, dann der Umbau der alten
-Bildschirme.
+Danach erst: der Übungstisch (siehe oben), der Umbau der alten Bildschirme
+auf das Designfundament, und die Firestore-Regeln beim nächsten Aufspielen.
 
 Was ich **nicht** empfehle: neue Funktionen. Der Backlog hat zwölf
 beschriebene Einträge; keiner davon ist so wertvoll wie die Antwort auf die

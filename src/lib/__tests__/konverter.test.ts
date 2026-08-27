@@ -21,11 +21,13 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { pruefeB4 } from '../pokermath/laden';
+import { leseMatrix } from '../pokermath/b4binaer';
 
 const PROBE = 'src/lib/__tests__/proben/b4_preflop_equity.json';
 
 let arbeit = '';
 let ausgabe: unknown;
+let matrix: unknown;
 let swText = '';
 
 beforeAll(() => {
@@ -51,6 +53,9 @@ beforeAll(() => {
   });
 
   ausgabe = JSON.parse(readFileSync(join(ziel, 'b4_preflop_equity.json'), 'utf8'));
+  /* Die Matrix liegt seit E-031 als Binärdatei daneben. */
+  const roh = readFileSync(join(ziel, 'b4_preflop_equity.bin'));
+  matrix = leseMatrix(roh.buffer.slice(roh.byteOffset, roh.byteOffset + roh.byteLength) as ArrayBuffer);
   swText = readFileSync(sw, 'utf8');
 });
 
@@ -65,20 +70,20 @@ describe('Der B4-Weg von der Rechenausgabe in die App', () => {
 
   it('liefert etwas, das die Ladeprüfung der App annimmt', () => {
     /* Dieselbe Funktion, die im Browser läuft — keine nachgebaute. */
-    const d = pruefeB4(ausgabe);
+    const d = pruefeB4(ausgabe, matrix);
     expect(d.matchups).toHaveLength(3);
     expect(d.befunde).toHaveLength(1);
   });
 
   it('bringt Farbkonfigurationen genau dort mit, wo die Spanne zählt', () => {
-    for (const m of pruefeB4(ausgabe).matchups) {
+    for (const m of pruefeB4(ausgabe, matrix).matchups) {
       expect(m.spanne_relevant, `${m.a} gegen ${m.b}`)
         .toBe(m.farbkonfigurationen !== undefined);
     }
   });
 
   it('gibt einer Hand gegen sich selbst genau die Hälfte', () => {
-    const selbst = pruefeB4(ausgabe).matchups.filter((m) => m.a === m.b);
+    const selbst = pruefeB4(ausgabe, matrix).matchups.filter((m) => m.a === m.b);
     expect(selbst.length).toBeGreaterThan(0);
     for (const m of selbst) expect(Math.abs(m.equity_a - 0.5)).toBeLessThan(1e-9);
   });
@@ -92,7 +97,7 @@ describe('Der B4-Weg von der Rechenausgabe in die App', () => {
   });
 
   it('trägt die Befunde zweisprachig ein', () => {
-    const b = pruefeB4(ausgabe).befunde[0];
+    const b = pruefeB4(ausgabe, matrix).befunde[0];
     expect(b.aussage.de).toMatch(/50,0 %/);
     expect(b.aussage.en).toMatch(/50\.0 %/);
   });
@@ -101,7 +106,10 @@ describe('Der B4-Weg von der Rechenausgabe in die App', () => {
     /* Bliebe der Cache-Name gleich, zeigte ein installiertes Gerät nach neuen
        Zahlen weiter die alten — und das fällt bei einer Zahl niemandem auf. */
     expect(swText).not.toMatch(/DATEN_STAND = 'alt'/);
-    expect(swText).toMatch(/DATEN_DATEIEN = \['\.\/pokermath\/b4_preflop_equity\.json'\]/);
+    expect(swText).toMatch(/pokermath\/b4_preflop_equity\.json/);
+    /* Die Binärdatei gehört genauso in den Offline-Vorrat: Fehlt sie dort,
+       startet die App ohne Netz und zeigt beim ersten Handpaar nichts. */
+    expect(swText).toMatch(/pokermath\/b4_preflop_equity\.bin/);
   });
 });
 

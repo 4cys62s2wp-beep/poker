@@ -30,9 +30,11 @@ import {
   type Fallzahl,
   type Herkunft,
   type Kopf,
+  type Matchup,
   type Text,
 } from './typen';
 import { bruchTeile } from './bruch';
+import { leseMatrix } from './b4binaer';
 
 /** Ein Schemafehler mit dem Pfad, an dem er auftrat.
  *
@@ -377,11 +379,16 @@ export function pruefeB3(roh: unknown): B3Kombinatorik {
   };
 }
 
-export function pruefeB4(roh: unknown): B4Equity {
-  const k = pruefeKopf(roh, 'b4_preflop_equity');
-  return {
-    ...k,
-    matchups: jedes(k.matchups, 'b4_preflop_equity.matchups', (e, p) => {
+/**
+ * Prüft die Matrix — egal, ob sie aus dem JSON oder aus der Binärdatei kam.
+ *
+ * Der Leser der Binärdatei baut dieselbe Liste, die früher im JSON stand.
+ * Sie hier trotzdem noch einmal durch dieselben Prüfungen zu schicken ist
+ * Absicht: Ein Format, dem man beim Lesen glaubt, ist ein Format, dessen
+ * Fehler man erst auf dem Bildschirm sieht.
+ */
+export function pruefeMatchups(roh: unknown, pfad = 'b4_preflop_equity.matchups'): Matchup[] {
+  return jedes(roh, pfad, (e, p) => {
       const o = objekt(e, p);
       const m = {
         a: text(o.a, `${p}.a`, 4),
@@ -421,7 +428,14 @@ export function pruefeB4(roh: unknown): B4Equity {
         }
       }
       return m;
-    }),
+  });
+}
+
+export function pruefeB4(roh: unknown, matchups?: unknown): B4Equity {
+  const k = pruefeKopf(roh, 'b4_preflop_equity');
+  return {
+    ...k,
+    matchups: pruefeMatchups(matchups ?? k.matchups),
     befunde: pruefeBefunde(k.befunde, 'b4_preflop_equity.befunde'),
   };
 }
@@ -433,7 +447,7 @@ export function pruefeB4(roh: unknown): B4Equity {
 const ORDNER = 'pokermath';
 const zwischenspeicher = new Map<string, Promise<unknown>>();
 
-async function hole<T>(block: string, pruefe: (roh: unknown) => T): Promise<T> {
+async function hole<T>(block: string, pruefe: (roh: unknown) => T | Promise<T>): Promise<T> {
   if (!zwischenspeicher.has(block)) {
     zwischenspeicher.set(block, (async () => {
       let roh: unknown;
@@ -457,9 +471,33 @@ async function hole<T>(block: string, pruefe: (roh: unknown) => T): Promise<T> {
 export const ladeB1 = () => hole('b1_outs', pruefeB1);
 export const ladeB2 = () => hole('b2_potodds', pruefeB2);
 export const ladeB3 = () => hole('b3_kombinatorik', pruefeB3);
-/** Die Equity-Matrix. Deutlich größer als die anderen drei – deshalb wird
- *  sie nur geladen, wo sie gebraucht wird, und nicht beim Start. */
-export const ladeB4 = () => hole('b4_preflop_equity', pruefeB4);
+/**
+ * Die Equity-Matrix. Zwei Dateien, ein Aufruf.
+ *
+ * Herkunft und Befunde stehen als JSON daneben — Text, klein, die Grundlage
+ * von „Warum diese Zahl?". Die Matrix selbst kommt aus einer Binärdatei:
+ * 199 KB statt 5005 KB, ohne dass ein einziger Wert fehlt. Die Begründung
+ * steht in `b4binaer.ts`.
+ *
+ * Auch hier gilt: deutlich größer als die anderen drei Blöcke, deshalb erst
+ * geladen, wo sie gebraucht wird, und nicht beim Start.
+ */
+export const ladeB4 = () => hole('b4_preflop_equity', async (roh) => {
+  const url = new URL(`${ORDNER}/b4_preflop_equity.bin`, document.baseURI).toString();
+  let puffer: ArrayBuffer;
+  try {
+    const antwort = await fetch(url, { cache: 'no-store' });
+    if (!antwort.ok) {
+      throw new SchemaFehler('b4_preflop_equity.bin',
+        `konnte nicht geladen werden (HTTP ${antwort.status})`);
+    }
+    puffer = await antwort.arrayBuffer();
+  } catch (fehler) {
+    if (fehler instanceof SchemaFehler) throw fehler;
+    throw new SchemaFehler('b4_preflop_equity.bin', `ist nicht erreichbar: ${fehler}`);
+  }
+  return pruefeB4(roh, leseMatrix(puffer));
+});
 
 /** Nur für Tests. */
 export function _leereZwischenspeicher(): void {

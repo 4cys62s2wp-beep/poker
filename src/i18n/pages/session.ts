@@ -20,15 +20,7 @@ export const STR = defineStrings(
     payoutBody: 'Preisgeld auf die vorderen Plätze verteilen – nach einer Struktur, über die vorher niemand streitet.',
     payoutWhen: 'Bevor gespielt wird, nicht danach',
 
-    tableTitle: 'Pokerabend',
-    tableBody: 'Die App übernimmt Karten, Chips, Blinds und Showdown. Das Gerät wandert reihum.',
-    tableWhen: 'Wenn kein Kartendeck da ist',
 
-    onlineTitle: 'Online-Tisch',
-    onlineBody:
-      'Wenn nicht alle am selben Tisch sitzen: Jeder öffnet den Tisch auf '
-      + 'seinem Gerät und sieht denselben Stand.',
-    onlineWhen: 'Wenn jemand nicht dabei sein kann',
 
     abendTitle: 'Abend führen',
     abendBody:
@@ -64,15 +56,7 @@ export const STR = defineStrings(
     payoutBody: 'Spread the prize pool over the top places – using a structure nobody argues about afterwards.',
     payoutWhen: 'Before play starts, not after',
 
-    tableTitle: 'Poker night',
-    tableBody: 'The app handles cards, chips, blinds and showdown. The device passes around the table.',
-    tableWhen: 'When there is no deck around',
 
-    onlineTitle: 'Online table',
-    onlineBody:
-      'When not everyone is at the same table: each person opens the table on '
-      + 'their own device and sees the same state.',
-    onlineWhen: 'When somebody cannot make it',
 
     abendTitle: 'Run the evening',
     abendBody:

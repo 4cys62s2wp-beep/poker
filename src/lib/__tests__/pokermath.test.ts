@@ -8,6 +8,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { SchemaFehler, pruefeB1, pruefeB2, pruefeB3, pruefeB4 } from '../pokermath/laden';
 import { ERWARTETE_VERTRAG_VERSION } from '../pokermath/typen';
+import { leseMatrix } from '../pokermath/b4binaer';
 
 function lade(name: string): unknown {
   const pfad = `public/pokermath/${name}.json`;
@@ -197,32 +198,40 @@ describe('Innere Widersprüche werden erkannt – nicht nur Typen', () => {
 // für „noch nicht fertig gerechnet" gewöhnt einem das Rotsein an.
 
 const B4_PFAD = 'public/pokermath/b4_preflop_equity.json';
-const B4_DA = existsSync(B4_PFAD);
+const B4_BINAER = 'public/pokermath/b4_preflop_equity.bin';
+const B4_DA = existsSync(B4_PFAD) && existsSync(B4_BINAER);
 
 describe.skipIf(!B4_DA)('B4 wird angenommen, sobald er gerechnet ist', () => {
+  /* Zwei Dateien seit E-031: Herkunft und Befunde als JSON, die Matrix als
+     Binärdatei. Geprüft wird das Ergebnis beider zusammen — genau das, was
+     die App im Browser bekommt. */
   const B4 = () => JSON.parse(readFileSync(B4_PFAD, 'utf8'));
+  const MATRIX = () => {
+    const roh = readFileSync(B4_BINAER);
+    return leseMatrix(roh.buffer.slice(roh.byteOffset, roh.byteOffset + roh.byteLength) as ArrayBuffer);
+  };
 
   it('nimmt die ausgelieferte Datei an', () => {
-    const d = pruefeB4(B4());
+    const d = pruefeB4(B4(), MATRIX());
     expect(d.matchups.length).toBeGreaterThan(0);
     expect(d.befunde.length).toBeGreaterThan(0);
   });
 
   it('bringt Farbkonfigurationen genau dort mit, wo die Spanne zählt', () => {
-    for (const m of pruefeB4(B4()).matchups) {
+    for (const m of pruefeB4(B4(), MATRIX()).matchups) {
       expect(m.spanne_relevant).toBe(m.farbkonfigurationen !== undefined);
     }
   });
 
   it('kennt jedes Handpaar nur einmal', () => {
-    const gesehen = new Set(pruefeB4(B4()).matchups.map((m) => `${m.a}|${m.b}`));
-    expect(gesehen.size).toBe(pruefeB4(B4()).matchups.length);
+    const gesehen = new Set(pruefeB4(B4(), MATRIX()).matchups.map((m) => `${m.a}|${m.b}`));
+    expect(gesehen.size).toBe(pruefeB4(B4(), MATRIX()).matchups.length);
   });
 
   it('gibt einer Hand gegen sich selbst genau die Hälfte', () => {
     /* Das muss gelten, wenn die Rechnung stimmt – und es ist die Prüfung,
        die einen Vorzeichenfehler in der Gewichtung sofort auffliegen ließe. */
-    for (const m of pruefeB4(B4()).matchups.filter((x) => x.a === x.b)) {
+    for (const m of pruefeB4(B4(), MATRIX()).matchups.filter((x) => x.a === x.b)) {
       expect(Math.abs(m.equity_a - 0.5)).toBeLessThan(1e-9);
     }
   });

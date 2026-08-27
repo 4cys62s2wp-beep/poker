@@ -997,3 +997,123 @@ ließ sich nur beantworten, indem man einen Ausdruck mitten in einer Schleife
 las. Das ist jetzt behoben — und durch fünf Tests abgedeckt, darunter der
 Fall „noch kein einziges Handpaar fertig", der vorher eine Division durch null
 gewesen wäre.
+
+---
+
+## E-030 · 2026-08-27 · Beide Tische fallen aus dem Rahmen
+
+**Entschieden vom Auftraggeber (W-003).** Der Ein-Geräte-Tisch
+(`/session/tisch`) und der Online-Tisch (`/session/tisch/online`) sind beides
+gespieltes Poker, nicht verwaltetes. Der inhaltliche Rahmen erlaubt zwei
+Arten von Inhalt: reine Zahlenverwaltung — Listen, Stände, Uhren, Rechner —
+und Lehrmaterial als Standbild. Ein Tisch, an dem Hände gespielt werden, ist
+keines von beidem.
+
+**Umgesetzt.** Beide Bildschirme, ihre Bibliotheken, ihre Texte und ihre
+Tests sind entfernt: neun Dateien, rund 2700 Zeilen, davon 938 Zeilen Tests.
+Beide stehen mit ausdrücklichem Vorbehalt in `BACKLOG.md`.
+
+**Der Vorbehalt ist der eigentliche Inhalt dieser Entscheidung.** Sie kommen
+nur über eine ausdrückliche Entscheidung über eine höhere Altersstufe zurück
+— vorher getroffen, nicht nachträglich begründet. Ein Backlog-Eintrag ohne
+diesen Satz wäre in einem halben Jahr eine „gute Idee, die mal fertig war",
+und genau so schleicht sich ein Rahmen zurück, den jemand bewusst gezogen
+hat.
+
+**Alternative:** Die Bildschirme stehen lassen und nur nicht mehr verlinken.
+
+**Warum nicht:** Unverlinkter Code ist keine Entscheidung, sondern ein
+Aufschub. Er läuft weiter, er wird mitausgeliefert, er taucht in jeder
+Suche auf — und der Nächste, der ihn findet, hält die fehlende Verlinkung
+für ein Versehen und behebt es.
+
+**Was die alten Adressen angeht:** `/tisch`, `/tisch/online`, `/live/tisch`
+und `/live/tisch/online` leiten weiter auf `/session`. Ein geteilter Link
+darf nicht ins Leere laufen, nur weil eine Entscheidung gefallen ist.
+
+**Was diese Entscheidung offenlässt — bitte lesen.** Unter
+`/lernen/uebungstisch` liegt der **Übungstisch**: eine vollständige Partie
+gegen Bots, mit Engine, Gegnerlogik und Showdown. Nach demselben Maßstab ist
+auch er gespieltes Poker und nicht verwaltetes. Er ist **nicht** entfernt,
+weil der Auftrag zwei Bildschirme namentlich genannt hat und ich einen
+dritten nicht ungefragt dazunehme — eine Entscheidung über den Rahmen gehört
+dem Auftraggeber, auch wenn sie in dieselbe Richtung zeigt. Er sollte beim
+nächsten Mal ausdrücklich mitentschieden werden.
+
+**Nachgemessen.** Nach dem Entfernen: 41 statt 43 eigene Bildschirme, größte
+Tiefe weiterhin 2, null Sackgassen, null unerreichbare Adressen. 707 Tests
+grün.
+
+---
+
+## E-031 · 2026-08-27 · Die Equity-Matrix als Binärdatei
+
+**Auftrag.** Equity als Ganzzahl in Basispunkten, zwei Byte je
+Farbkonfiguration, dazu ein Index über Handpaar und Konfiguration. Erwartung
+nach überschlägiger Rechnung: rund 150 KB statt 5,0 MB.
+
+**Gebaut.** `public/pokermath/b4_preflop_equity.bin`, geschrieben von
+`scripts/pokermath-app-daten.mjs`, gelesen von `src/lib/pokermath/b4binaer.ts`.
+Herkunft und Befunde bleiben JSON: Sie sind Text, sie sind klein, und sie
+sind die Grundlage von „Warum diese Zahl?". Text in ein Binärformat zu
+pressen spart nichts und kostet Lesbarkeit.
+
+**Kein Wert fehlt.** Dieselben 14 365 Handpaare, dieselben 25 473
+Farbkonfigurationen, dieselben Häufigkeiten. Eine Datei kleiner zu machen,
+indem man Daten daraus entfernt, wäre keine Leistung.
+
+### Gemessen, nicht überschlagen (`npm run binaer`)
+
+| | vorher (JSON) | nachher (Binär + Kopf) | Faktor |
+|---|---|---|---|
+| roh | 5005,5 KB | **203,3 KB** | 24,6 |
+| gepackt (gzip -9) | 277,2 KB | **116,2 KB** | 2,4 |
+| Abruf + Auswertung, Median aus 9 Läufen | 98,9 ms | **8,1 ms** | 12,2 |
+
+**Die Erwartung von 150 KB ist um 53 KB verfehlt.** Roh sind es 203,3 KB. Wo
+die Bytes liegen: 100,6 KB in der Handpaar-Tabelle (14 365 × 7 Byte) und
+101,9 KB in der Konfigurationstabelle (25 473 × 4 Byte). Auf 150 KB käme man
+mit zwei weiteren Schritten — die Klassenpaare aus der Position ableiten
+statt speichern (−28 KB) und die Spanne nur dort ablegen, wo keine
+Konfigurationen danebenstehen (−15 KB). Beide sind nicht gemacht: Der erste
+verlegt die Reihenfolge der 169 Klassen aus der Datei in den Lesecode, der
+zweite macht die Sätze verschieden lang und damit den Index zu einer
+Rechnung statt zu einer Multiplikation. 53 KB sind das nicht wert.
+
+### Der überraschende Teil der Messung
+
+**Über die Leitung war der Unterschied nie 25-fach, sondern 2,4-fach.** Das
+JSON packt sich von 5005 KB auf 277 KB — Zahlentext komprimiert sehr gut.
+Wer nur roh gegen roh vergleicht, rechnet sich einen Faktor schön, den kein
+Nutzer je sieht.
+
+Der Gewinn liegt woanders, und dort ist er echt:
+
+- **Im Gerät.** Der Service Worker hält die Datei offline vor, und dort liegt
+  sie ungepackt: 203 KB statt 5,0 MB.
+- **In der Auswertung.** 8 ms statt 99 ms. `JSON.parse` baut für jedes
+  Handpaar Objekte; der Binärleser läuft einmal durch die Bytes.
+
+### Der Backlog-Eintrag „Matrix nachladen statt mitliefern" ist gestrichen
+
+**Warum.** Er stand auf der Annahme, 5 MB seien zu viel, um sie beim ersten
+Start mitzuliefern. Diese Annahme ist weg: 116 KB über die Leitung und 8 ms
+Auswertung sind kein Grund, irgendetwas nachzuladen.
+
+**Was das Streichen zusätzlich spart**, und das ist der wichtigere Teil: Die
+Zusage „funktioniert vollständig ohne Netz" bleibt **uneingeschränkt**.
+Nachladen hätte sie geteilt — für den Live-Bereich immer, für den
+Starthand-Vergleich erst nach dem ersten Aufruf mit Empfang. Eine Zusage mit
+Fußnote ist am Küchentisch ohne Empfang keine.
+
+**Alternative:** Den Eintrag stehen lassen, weil die 150 KB nicht erreicht
+sind.
+
+**Warum nicht:** Die Zahl war ein Mittel, nicht der Zweck. Der Zweck war,
+das Nachladen überflüssig zu machen, und das ist erreicht — deutlicher, als
+die Erwartung es verlangt hätte.
+
+**Zur Kenntnis:** Heute liest **kein einziger Bildschirm** die Matrix.
+`ladeB4` existiert, der Starthand-Vergleich ist noch nicht daran
+angeschlossen. Die 203 KB liegen also derzeit ungenutzt im Gerät — vorher
+waren es 5,0 MB ungenutzt.

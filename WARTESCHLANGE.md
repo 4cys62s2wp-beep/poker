@@ -6,6 +6,9 @@ Nicht „später" — sondern: was fehlt, damit es geht.
 Eine Einheit wird höchstens zweimal erneut versucht. Danach bleibt sie liegen
 und erscheint im Abschlussbericht als Entscheidungsbedarf.
 
+> **Diese Warteschlange ist am 27.08.2026 geschlossen worden.** Alle drei
+> Einträge sind erledigt. Was hier steht, ist Nachweis, keine offene Arbeit.
+
 ---
 
 ## ✅ W-001 · Restzeitschätzung von B4 auf Konfigurationen umstellen
@@ -65,7 +68,7 @@ statt 47 086 lässt den Test fallen.
 
 ---
 
-## W-003 · Gehört der Online-Tisch noch in die App?
+## ✅ W-003 · Gehört der Online-Tisch noch in die App?
 
 **Was.** Unter `/session/tisch/online` liegt ein Tisch, an dem mehrere Geräte
 über einen Code zusammenspielen. Gespielt wird mit Punkten, nicht mit Geld.
@@ -92,4 +95,10 @@ den man entfernen kann, ohne dass ein Weg zerbricht. Der Wegetest würde die
 auch der Ein-Geräte-Tisch (`/session/tisch`) — beide sind gespieltes Poker.
 Fällt die Grenze aus B1 streng aus, fallen beide.
 
-**Versuche:** 0 — hier fehlt keine Technik, hier fehlt eine Entscheidung.
+**Entschieden am 27.08.2026 vom Auftraggeber.** Beide Tische — der
+Online-Tisch und der Ein-Geräte-Tisch — fallen aus dem Rahmen. Umgesetzt:
+neun Dateien entfernt, beide mit Vorbehalt in `BACKLOG.md`, Begründung in
+`ENTSCHEIDUNGEN.md`, E-030. Nachgemessen: 41 statt 43 Bildschirme, weiterhin
+null Sackgassen.
+
+**Versuche:** 0 — hier fehlte keine Technik, hier fehlte eine Entscheidung.

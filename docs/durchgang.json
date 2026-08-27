@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-26T23:03:11.158Z",
+  "geprueft_am": "2026-08-27T06:08:51.788Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -136,7 +136,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 860,
+        "dauer_ms": 892,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -160,7 +160,7 @@
       "name": "Der Abend steht in der Liste",
       "ergebnis": {
         "abende": 1,
-        "erste_karte": "Mi., 26. August 2026 · Ada · gewonnen · 5 Personen · gerade eben",
+        "erste_karte": "Do., 27. August 2026 · Ada · gewonnen · 5 Personen · gerade eben",
         "namen_als_knoepfe": 5,
         "namen": [
           "Ada",
@@ -218,12 +218,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 37,
+        "dauer_ms": 34,
         "knopf_bewegt_px": 0,
         "oben": 656,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "35,0 %",
+        "ergebnis_text": "31,5 %",
         "uebergang": "0s",
         "belebung": "none"
       },

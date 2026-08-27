@@ -340,6 +340,62 @@ await schritt('Ein Tipp auf einen Abend zeigt den Abend', async () => {
   };
 });
 
+/* ── Die Startseite: die drei Karten sind die Navigation ───────────────────
+   Seit E-032 gibt es keine untere Leiste mehr. Damit tragen die drei Karten
+   die Navigation allein — und dann dürfen sie nicht oben kleben, während die
+   untere Bildschirmhälfte leer bleibt. Ausgerechnet die ist die, die der
+   Daumen erreicht. */
+
+await schritt('Die Startseite füllt den Bildschirm', async () => {
+  await seite.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.start-einstieg.gross');
+  await seite.waitForTimeout(400);
+  return seite.evaluate(() => {
+    const masse = (auswahl) => {
+      const el = document.querySelector(auswahl);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { oben: Math.round(r.top), unten: Math.round(r.bottom), hoehe: Math.round(r.height) };
+    };
+    const gross = masse('.start-einstieg.gross');
+    return {
+      untere_leiste: document.querySelectorAll('nav.bottom-nav').length,
+      scrollt: document.documentElement.scrollHeight > window.innerHeight + 1,
+      fensterhoehe: window.innerHeight,
+      reihenfolge: [...document.querySelectorAll('.start-einstieg')]
+        .map((el) => el.className.replace('start-einstieg ', '')),
+      klein: masse('.start-einstieg.klein'),
+      mittel: masse('.start-einstieg.mittel'),
+      gross,
+      /* Was zwischen der untersten Karte und dem Bildschirmrand steht. Mehr
+         als der Sicherheitsabstand ist Leerraum. */
+      rest_unten_px: gross ? window.innerHeight - gross.unten : null,
+      gestenstreifen_px: Number.parseInt(
+        getComputedStyle(document.documentElement).getPropertyValue('--gestenstreifen'), 10,
+      ),
+      stand_oben_px: masse('.start-stand')?.oben ?? null,
+      lernen_text: document.querySelector('.start-einstieg.mittel .unter')?.textContent.trim(),
+    };
+  });
+});
+
+await schritt('Jeder Bildschirm hat einen sichtbaren Weg zur Startseite', async () => {
+  /* Ohne untere Leiste trägt die Marke oben diesen Weg. Geprüft wird an
+     einem tief liegenden Bildschirm, nicht an der Startseite selbst. */
+  await seite.goto(`${GRUND}/#/nachschlagen/glossar`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForTimeout(400);
+  const marke = seite.locator('.mobile-top-marke');
+  const kasten = await marke.boundingBox();
+  await marke.click();
+  await seite.waitForTimeout(400);
+  return {
+    sichtbar: await marke.count() > 0,
+    hoehe_px: Math.round(kasten?.height ?? 0),
+    breite_px: Math.round(kasten?.width ?? 0),
+    fuehrt_nach: new URL(seite.url()).hash || '#/',
+  };
+});
+
 /* ── Das private Gerät: der Drill ──────────────────────────────────────────
    Der Auftrag beschreibt zwei Geräterollen. Der Tisch ist gemessen
    (`npm run tisch`); das private Gerät ist der Lernbildschirm, und für ihn

@@ -147,6 +147,7 @@
   --tipp-abstand: 8px;
   --gestenstreifen: 24px;
 
+
   /* ── Ende Designfundament ──────────────────────────────────────────── */
 
   --fs-stat: clamp(38px, 9vw, 58px);
@@ -186,7 +187,6 @@
   /* ── Schatten und Maße ───────────────────────────────────────────── */
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   --shadow-soft: 0 3px 14px rgba(0, 0, 0, 0.3);
-  --nav-h: 64px;
 
   /* ── Bewegung ────────────────────────────────────────────────────────
      Sparsam und funktional: Bewegung zeigt, WOHER etwas kommt, sie
@@ -325,6 +325,19 @@ table.data td {
   min-height: 100dvh;
 }
 
+/* Die Spalte neben der Seitenleiste: Kopfzeile oben, Inhalt darunter.
+   Als Flex-Spalte, damit der Inhalt die übrige Höhe bekommt, ohne dass
+   irgendwo eine Kopfzeilenhöhe hingeschrieben werden muss. Der erste Versuch
+   rechnete mit 56 px; gemessen waren es 58, und genau diese zwei Pixel
+   machten die Startseite scrollbar. Eine Höhe, die sich ergibt, kann nicht
+   um zwei Pixel danebenliegen. */
+.inhalt {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .sidebar {
   width: 252px;
   flex-shrink: 0;
@@ -435,12 +448,12 @@ table.data td {
   max-width: 1140px;
 }
 
-/* Mobile: Top-Brand + Bottom-Navigation */
+/* Mobile: Kopfzeile mit Marke. Eine untere Leiste gibt es nicht mehr —
+   sie führte zu denselben Zielen wie die drei Karten der Startseite und
+   machte „Start" damit zu einem Bildschirm ohne eigenen Inhalt. Die
+   Begründung steht in ENTSCHEIDUNGEN.md, E-032, und als Regel in
+   DESIGN.md, Abschnitt 10. */
 .mobile-top {
-  display: none;
-}
-
-.bottom-nav {
   display: none;
 }
 
@@ -452,6 +465,8 @@ table.data td {
     display: flex;
     align-items: center;
     gap: 9px;
+    /* Zwischen Marke und „Du" ist Platz, damit kein Fehlgriff passiert. */
+    justify-content: space-between;
     /* index.html setzt viewport-fit=cover + black-translucent: Auf iPhones mit
        Notch/Dynamic Island liegt der Header sonst unter der Statusleiste.
        Links/rechts fuer das Querformat (Notch seitlich). */
@@ -483,54 +498,15 @@ table.data td {
     color: transparent;
   }
   .main {
+    flex: 1 1 auto;
     padding-top: 18px;
-    padding-bottom: calc(var(--nav-h) + 34px); /* Fallback ohne env()-Support */
-    padding-bottom: calc(var(--nav-h) + 34px + env(safe-area-inset-bottom, 0px));
+    /* Unten steht nur noch der Streifen für die Systemgesten. Vorher lagen
+       hier zusätzlich 64 Pixel für die untere Leiste — das war der Leerraum
+       am unteren Rand der Startseite. */
+    padding-bottom: var(--gestenstreifen); /* Fallback ohne env()-Support */
+    padding-bottom: calc(var(--gestenstreifen) + env(safe-area-inset-bottom, 0px));
     padding-left: calc(clamp(16px, 4vw, 48px) + env(safe-area-inset-left, 0px));
     padding-right: calc(clamp(16px, 4vw, 48px) + env(safe-area-inset-right, 0px));
-  }
-  .bottom-nav {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    padding-left: env(safe-area-inset-left, 0px);
-    padding-right: env(safe-area-inset-right, 0px);
-    background: var(--scrim-strong);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-top: 1px solid var(--border);
-    z-index: 60;
-    /* Die drei Ziele berührten einander. Zwei Flächen ohne Abstand sind eine
-       Fläche mit zwei Bedeutungen: Ein Tipp knapp neben der Mitte landet auf
-       dem Nachbarn, und niemand weiß hinterher, warum. Begründung und die
-       verworfene Alternative (Tab-Leisten stoßen üblicherweise aneinander)
-       stehen in ENTSCHEIDUNGEN.md, E-028. */
-    gap: var(--tipp-abstand);
-  }
-  .bottom-nav a {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    font-size: 10.5px;
-    /* 10.5px ist klein – daher --text-dim statt --text-faint
-       (8.1:1 statt 6.3:1 auf dem Nav-Hintergrund). */
-    color: var(--text-dim);
-    font-weight: 700;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .bottom-nav a .ico {
-    font-size: 21px;
-    line-height: 1;
-  }
-  .bottom-nav a.active {
-    color: var(--gold-bright);
   }
 }
 
@@ -1486,7 +1462,6 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 /* Mindestgröße für alles Tippbare. 44 px ist die kleinste Fläche, die sich
    auf einem Handy zuverlässig mit dem Daumen treffen lässt – darunter tippt
    man daneben, und zwar auch mit ruhiger Hand. */
-.bottom-nav a,
 .btn,
 .nav-link {
   min-height: var(--touch-min);
@@ -1551,6 +1526,20 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 @media (max-width: 920px) {
+  /* Die Marke ist der Weg zurück zur Startseite. Sie muss deshalb so groß
+     sein wie jedes andere Ziel — als Text wäre sie zwar sichtbar, aber
+     nicht sicher zu treffen. */
+  .mobile-top-marke {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: var(--tipp-min);
+    padding-right: var(--sp-2);
+    color: inherit;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   .mobile-top-you {
     display: inline-flex;
     align-items: center;
@@ -1598,8 +1587,15 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
      78 und nicht 70: Bei 70 blieb der Fragebildschirm exakt so hoch wie das
      Fenster, das `sticky` griff dort also nicht — und die Knöpfe standen
      43 px höher als der Weiter-Knopf danach. Zwei Flächen, die sich um
-     17 px überlappen, laden zum versehentlichen Doppeltipp ein. Jetzt greift
-     das `sticky` in beiden Zuständen, und beide sitzen auf derselben Linie. */
+     17 px überlappen, laden zum versehentlichen Doppeltipp ein.
+
+     Nachtrag (E-032): Genau das kam zurück, als mit der unteren Leiste auch
+     ihre 98 Pixel Innenabstand verschwanden — die Knöpfe sprangen wieder,
+     diesmal um 34 px. Eine Zahl, die auf eine andere Zahl abgestimmt ist,
+     hält nur, bis sich die andere ändert. Auf dem Handy bekommt der Drill
+     deshalb seine Höhe jetzt vom Hauptbereich (Regel weiter unten im
+     Handy-Block), und dieser Wert ist nur noch der Rückfall für breite
+     Geräte. */
   min-height: 78svh;
   max-width: 560px;
 
@@ -1842,7 +1838,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 @media (max-width: 920px) {
   .drill-unten {
-    bottom: calc(var(--nav-h) + var(--safe-bottom) + var(--tipp-abstand));
+    bottom: calc(var(--safe-bottom) + var(--gestenstreifen));
   }
 }
 
@@ -2164,11 +2160,66 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
    Alles Tippbare hält --tipp-min ein, die Abstände --tipp-abstand.
    ------------------------------------------------------------------- */
 
+/* Die drei Karten SIND die Navigation, seit die untere Leiste weg ist
+   (E-032). Deshalb teilen sie sich die Fläche vollständig auf, statt oben zu
+   kleben: Ein Bildschirm, dessen untere Hälfte leer ist, sieht aus, als
+   fehle etwas — und die untere Hälfte ist ausgerechnet die, die der Daumen
+   erreicht.
+
+   Keine festen Höhen, sondern Anteile. `1fr` je Karte hieße drei gleich
+   große; die Gewichtung folgt der Nutzungssituation und steht unten. */
 .start {
   display: flex;
   flex-direction: column;
   gap: var(--tipp-abstand);
   max-width: 560px;
+}
+
+/* Nur dort, wo die Karten die Navigation sind: auf dem Handy. Auf breiten
+   Geräten steht die Seitenleiste daneben, und dann wäre eine bildschirmhohe
+   Startseite eine leere Fläche mit drei Karten darin. */
+@media (max-width: 920px) {
+  /* Der Hauptbereich bekommt die Höhe, die die Kopfzeile übrig lässt, und
+     gibt sie an die Startseite weiter. Nur dort, wo die Karten die
+     Navigation sind: auf breiten Geräten steht die Seitenleiste daneben,
+     und eine bildschirmhohe Startseite wäre dort eine leere Fläche mit drei
+     Karten darin. */
+  .main:has(.start),
+  .main:has(.drill) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Der Drill sitzt in einem eigenen Rahmen der Seitenkomponente, die
+     Startseite nicht. Deshalb wird die Höhe an jeden Zwischenschritt
+     weitergereicht, statt auf ein direktes Kind zu zeigen: Ein Selektor, der
+     die Verschachtelung einer Seite kennt, bricht, sobald jemand ein <div>
+     ergänzt — und zwar lautlos. */
+  .main:has(.start) > *,
+  .main:has(.drill) > * {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .main .start,
+  .main .drill {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  /* Die Karten teilen sich, was nach Fortsetzen-Karte und Kennzahlen übrig
+     bleibt. Die Zahlen sind Anteile, keine Höhen: 1 zu 1,5 zu 2,4. */
+  .start-einstieg.klein { flex: 1 1 0; }
+  .start-einstieg.mittel { flex: 1.5 1 0; }
+  .start-einstieg.gross { flex: 2.4 1 0; }
+
+  .start-einstieg {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 
 .start-einstieg {
@@ -2275,7 +2326,11 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 /* ── Die schmale Zeile mit Streak, Level, XP ────────────────────────── */
+/* Ganz oben, direkt unter der Kopfzeile: Sie ist eine Auskunft, kein Ziel.
+   Stünde sie unten, drückte sie die große Karte aus dem Daumenbereich und
+   erzeugte genau den Leerraum, den es hier nicht geben soll. */
 .start-stand {
+  flex: 0 0 auto;
   display: flex;
   gap: var(--sp-5);
   flex-wrap: wrap;

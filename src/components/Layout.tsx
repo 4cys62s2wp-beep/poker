@@ -34,7 +34,6 @@ export function Layout() {
       label: L.navLearn,
       items: [
         { to: '/lernen', icon: 'learn', label: L.learnPath },
-        { to: '/lernen/trainer', icon: 'trainer', label: L.trainer },
         { to: '/lernen/wiederholen', icon: 'repeat', label: L.review },
         { to: '/lernen/uebungstisch', icon: 'play', label: L.practiceTable },
         { to: '/lernen/statistik', icon: 'chart', label: L.playStyle },
@@ -54,7 +53,6 @@ export function Layout() {
       items: [
         { to: '/session/chips', icon: 'chip', label: L.chipCalc },
         { to: '/session/auszahlung', icon: 'crown', label: L.payout },
-        { to: '/session/tisch', icon: 'table', label: L.pokerNight },
         { to: '/session/bankroll', icon: 'notes', label: L.bankroll },
       ],
     },
@@ -68,22 +66,6 @@ export function Layout() {
     },
   ];
 
-  /* Untere Leiste: vier Punkte MIT Beschriftung – Start plus die drei
-     Bereiche. Ohne Beschriftung (wie bei der Referenz-App) funktioniert das
-     nur, wenn alle Ziele konventionell sind; ein Symbol für „Nachschlagen“
-     ist ohne Wort nicht erratbar.
-
-     Warum „Du“ hier NICHT mehr steht: Mit drei Bereichen wären es fünf
-     Punkte, und „Nachschlagen“ passt bei 390 px Breite dann nicht mehr in
-     seine Zelle. Das Profil sitzt stattdessen rechts oben in der mobilen
-     Kopfzeile – sichtbar und beschriftet, nicht versteckt. */
-  const mobileItems: Array<{ to: string; icon: IconName; label: string; end?: boolean }> = [
-    { to: '/', icon: 'spade', label: L.start, end: true },
-    { to: '/lernen', icon: 'learn', label: L.mobileLearn },
-    { to: '/nachschlagen', icon: 'search', label: L.mobileLookup },
-    { to: '/session', icon: 'chip', label: L.mobileSession },
-  ];
-
   /* Längste Übereinstimmung zuerst: '/lernen/trainer' muss vor '/lernen'
      stehen, sonst hieße jede Trainer-Seite „Lernpfad“. */
   const titles: Array<[prefix: string, title: string]> = [
@@ -92,7 +74,6 @@ export function Layout() {
     ['/lernen/pros', L.proInsights],
     ['/lernen/uebungstisch', L.practiceTable],
     ['/lernen/statistik', L.playStyle],
-    ['/lernen/trainer', L.trainer],
     ['/lernen', L.learnPath],
     ['/nachschlagen/coach', L.liveCoach],
     ['/nachschlagen/glossar', L.glossary],
@@ -102,8 +83,6 @@ export function Layout() {
     ['/nachschlagen/equity', L.equity],
     ['/nachschlagen/tells', L.tells],
     ['/nachschlagen', L.navLookup],
-    ['/session/tisch/online', L.onlineTable],
-    ['/session/tisch', L.pokerNight],
     ['/session/chips', L.chipCalc],
     ['/session/auszahlung', L.payout],
     ['/session/bankroll', L.bankroll],
@@ -188,12 +167,18 @@ export function Layout() {
         </div>
       </aside>
 
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div className="inhalt">
         <div className="mobile-top">
-          <span className="spade">
-            <Icon name="spade" size={15} />
-          </span>
-          <span className="grad">PokerMentor</span>
+          {/* Seit die untere Leiste weg ist (E-032), ist die Marke der Weg
+              zurück zur Startseite. Sie steht auf jedem Bildschirm an
+              derselben Stelle — genau das, was eine Marke oben links seit
+              jeher bedeutet, und was ein Nutzer dort ohnehin antippt. */}
+          <NavLink to="/" end className="mobile-top-marke">
+            <span className="spade">
+              <Icon name="spade" size={15} />
+            </span>
+            <span className="grad">PokerMentor</span>
+          </NavLink>
           {/* Der Weg zum Profil auf dem Handy. Er stand vorher in der unteren
               Leiste; dort ist mit drei Bereichen kein Platz mehr für einen
               fünften beschrifteten Punkt. Hier ist er sichtbar, beschriftet
@@ -210,17 +195,6 @@ export function Layout() {
           <Outlet />
         </main>
       </div>
-
-      <nav className="bottom-nav">
-        {mobileItems.map((item) => (
-          <NavLink key={item.to} to={item.to} end={item.end} className={({ isActive }) => (isActive ? 'active' : '')}>
-            <span className="ico">
-              <Icon name={item.icon} size={21} />
-            </span>
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
 
       {/* Level-Ups und Badges tauchen ohne Nutzeraktion auf – ohne Live-Region
           bekommt ein Screenreader davon nichts mit. „polite“ statt „assertive“:

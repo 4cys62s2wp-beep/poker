@@ -31,7 +31,9 @@ export const STR = defineStrings(
     // Die drei Karten
     learnTitle: 'Lernen',
     learnSub: 'Kurs, Trainer, Übungstisch – vom ersten Blatt bis GTO',
-    learnStatus: (done: number, total: number) => `${done} von ${total} Lektionen`,
+    learnStatus: (done: number) => (done === 1
+      ? '1 Lektion abgeschlossen'
+      : `${done} Lektionen abgeschlossen`),
 
     lookupTitle: 'Nachschlagen',
     lookupSub: 'Glossar, Starthände, Ranges, Odds – und der Live-Coach',
@@ -81,7 +83,9 @@ export const STR = defineStrings(
 
     learnTitle: 'Learn',
     learnSub: 'Course, trainers, practice table – from your first hand to GTO',
-    learnStatus: (done: number, total: number) => `${done} of ${total} lessons`,
+    learnStatus: (done: number) => (done === 1
+      ? '1 lesson completed'
+      : `${done} lessons completed`),
 
     lookupTitle: 'Reference',
     lookupSub: 'Glossary, starting hands, ranges, odds – and the live coach',

@@ -22,8 +22,14 @@
    will keinen Einstieg, sondern zurück.
 
    Beim allerersten Öffnen steht dort stattdessen ein Satz, der sagt, was die
-   App tut. Eine Fortschrittszahl wäre dort sinnlos: „0 von 49 Lektionen"
-   sagt einem Neuling nichts.
+   App tut. Eine Fortschrittszahl wäre dort sinnlos.
+
+   Die drei Karten sind die Navigation
+   -----------------------------------
+   Es gibt keine untere Leiste mehr. Sie führte zu denselben Zielen wie die
+   Karten und machte diesen Bildschirm damit zu einem ohne eigenen Inhalt —
+   das war der Grund für die leere untere Hälfte, nicht ein Layoutfehler
+   (E-032). Deshalb teilen sich die Karten die Fläche vollständig auf.
 
    Größen und Abstände stehen vollständig in `global.css`, Abschnitt
    „Startseite". In dieser Datei steht keine Gestaltungszahl. */
@@ -51,7 +57,10 @@ export function HubPage() {
   const [laufend, setLaufend] = useState<LaufendeSession | null>(null);
   useEffect(() => { setLaufend(ladeLaufende()); }, []);
 
-  const totalLessons = content.modules.reduce((s, m) => s + m.lessons.length, 0);
+  /* Nur, was wirklich abgeschlossen wurde — ohne Nenner. Eine Gesamtzahl ist
+     eine Zusage über den Inhalt, und die deckt der vorhandene nicht: Sie
+     zählt Lektionen, die es gibt, und verspricht damit stillschweigend, dass
+     sie vollständig sind. Siehe E-032. */
   const doneLessons = Object.keys(data.completedLessons).length;
 
   /* Erstnutzer erkennen wir daran, dass noch nichts passiert ist. */
@@ -81,27 +90,10 @@ export function HubPage() {
         <p className="start-erklaerung">{L.wasDieAppTut}</p>
       ) : null}
 
-      {/* ── Klein, oben ───────────────────────────────────────────────── */}
-      <Link to="/nachschlagen" className="start-einstieg klein">
-        <span className="titel">{L.lookupTitle}</span>
-        <span className="unter">{L.lookupSub}</span>
-      </Link>
-
-      {/* ── Mittel, Mitte ─────────────────────────────────────────────── */}
-      <Link to="/lernen" className="start-einstieg mittel">
-        <span className="titel">{L.learnTitle}</span>
-        <span className="unter">
-          {erstesMal ? L.learnSub : L.learnStatus(doneLessons, totalLessons)}
-        </span>
-      </Link>
-
-      {/* ── Groß, unten, im Daumenbereich ─────────────────────────────── */}
-      <Link to="/session" className="start-einstieg gross">
-        <span className="titel">{L.sessionTitle}</span>
-        <span className="unter">{L.sessionSub}</span>
-      </Link>
-
-      {/* ── Stand: sichtbar, aber nicht der Held des Bildschirms ───────── */}
+      {/* ── Stand: eine Auskunft, kein Ziel ──────────────────────────────
+          Sie steht oben, nicht unten. Unten drückte sie die große Karte aus
+          dem Daumenbereich und erzeugte genau den Leerraum am unteren Rand,
+          den es hier nicht geben darf (E-032). */}
       {!erstesMal && (
         <div className="start-stand">
           <StatPill
@@ -119,6 +111,26 @@ export function HubPage() {
           )}
         </div>
       )}
+      {/* ── Klein, oben ───────────────────────────────────────────────── */}
+      <Link to="/nachschlagen" className="start-einstieg klein">
+        <span className="titel">{L.lookupTitle}</span>
+        <span className="unter">{L.lookupSub}</span>
+      </Link>
+
+      {/* ── Mittel, Mitte ─────────────────────────────────────────────── */}
+      <Link to="/lernen" className="start-einstieg mittel">
+        <span className="titel">{L.learnTitle}</span>
+        <span className="unter">
+          {erstesMal ? L.learnSub : L.learnStatus(doneLessons)}
+        </span>
+      </Link>
+
+      {/* ── Groß, unten, im Daumenbereich ─────────────────────────────── */}
+      <Link to="/session" className="start-einstieg gross">
+        <span className="titel">{L.sessionTitle}</span>
+        <span className="unter">{L.sessionSub}</span>
+      </Link>
+
     </div>
   );
 }

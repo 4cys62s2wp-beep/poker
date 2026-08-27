@@ -22,7 +22,7 @@ export function ModulePage() {
   if (!module) {
     return (
       <div className="card">
-        {L.notFound} <Link to="/lernen" style={{ color: 'var(--gold-bright)' }}>{L.backToPath}</Link>
+        {L.notFound} <Link to="/lernen" style={{ color: 'var(--auszeichnung-lesbar)' }}>{L.backToPath}</Link>
       </div>
     );
   }

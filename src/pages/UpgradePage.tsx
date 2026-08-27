@@ -183,7 +183,7 @@ export function UpgradePage() {
         {L.benefits.map((b) => (
           <div key={b.t} className="card" style={{ padding: '15px 16px' }}>
             <div className="row" style={{ alignItems: 'flex-start', gap: 10 }}>
-              <span style={{ color: 'var(--gold-bright)', marginTop: 2 }}>
+              <span style={{ color: 'var(--auszeichnung-lesbar)', marginTop: 2 }}>
                 <Icon name="check" size={17} />
               </span>
               <div>
@@ -211,7 +211,7 @@ export function UpgradePage() {
               <tr key={r[0]}>
                 <td>{r[0]}</td>
                 <td style={{ textAlign: 'right', color: 'var(--text-dim)' }}>{r[1]}</td>
-                <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--gold-bright)' }}>{r[2]}</td>
+                <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--auszeichnung-lesbar)' }}>{r[2]}</td>
               </tr>
             ))}
           </tbody>

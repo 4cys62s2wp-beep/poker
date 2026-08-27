@@ -291,3 +291,29 @@ jemand auf die Datenbank schaut. Solange sie steht, dürfen angemeldete Nutzer
 theoretisch Tischräume anlegen, die kein Client mehr benutzt. Das ist kein
 Datenleck, aber es ist eine offene Tür, die beim nächsten Aufspielen zugehen
 sollte.
+
+---
+
+## Weitere Farbwelten über Hell und Dunkel hinaus
+
+**Worum es geht.** Statt zwei Tokensätzen mehrere: gedämpft, kontraststark,
+warm, kühl — Farbwelten, zwischen denen jemand wählt, so wie manche Apps eine
+Handvoll Themes anbieten. Die Technik dafür steht seit E-034 bereit: Jeder
+farbige Token liegt in einem Block, den ein Attribut auswählt; eine weitere
+Welt wäre ein weiterer Block.
+
+**Warum es wertvoll wäre.** Ein kontraststarker Satz hilft Menschen, denen
+4,5 zu 1 nicht reicht — die Grenze ist ein Mindestmaß und kein Komfortwert.
+Und ein gedämpfter Satz für sehr dunkle Räume wäre am Pokertisch das, was der
+Live-Bereich heute pauschal löst.
+
+**Was daran schwierig ist.** Nicht das Anlegen, sondern das Pflegen. Bei sechs
+Textfarben, sechs Farbmarken und fünf Flächen sind es 60 Kontrastwerte je
+Welt; der Test rechnet sie alle, aber er kann nicht entscheiden, welcher Ton
+gut aussieht. Diese Beurteilung bleibt Handarbeit und wächst mit jeder Welt —
+und sie fällt bei **jeder** Farbänderung erneut an, nicht nur beim Anlegen.
+
+**Was es voraussetzt.** Einen Grund, der von außen kommt: jemanden, dem die
+zwei Sätze nicht genügen, und zwar mit Angabe, woran es liegt. „Mehr Auswahl"
+ist keiner — die zwei Sätze sind nicht deshalb zwei, weil niemand an mehr
+gedacht hätte.

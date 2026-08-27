@@ -143,7 +143,7 @@ export function ProInsightsPage() {
         {content.edgeSpots.map((e, i) => (
           <div key={i} className="card">
             <div className="row" style={{ marginBottom: 8 }}>
-              <span style={{ color: 'var(--gold-bright)' }}>
+              <span style={{ color: 'var(--auszeichnung-lesbar)' }}>
                 <Icon name="flame" size={18} />
               </span>
               <span style={{ fontWeight: 800 }}>{e.title}</span>

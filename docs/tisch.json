@@ -1,5 +1,5 @@
 {
-  "erzeugt_am": "2026-08-27T06:27:17.042Z",
+  "erzeugt_am": "2026-08-27T07:01:23.624Z",
   "leseabstand": {
     "abstand_mm": 2000,
     "sehwinkel_grad": 0.3,
@@ -15,7 +15,7 @@
       "breite": 390,
       "fensterhoehe_px": 844,
       "navigationsleiste_vorhanden": false,
-      "grund_farbe": "rgb(12, 17, 14)",
+      "grund_farbe": "rgb(244, 242, 236)",
       "alle_texte": [
         {
           "text": "Pausiert",
@@ -168,7 +168,7 @@
       "breite": 1024,
       "fensterhoehe_px": 768,
       "navigationsleiste_vorhanden": false,
-      "grund_farbe": "rgb(12, 17, 14)",
+      "grund_farbe": "rgb(244, 242, 236)",
       "alle_texte": [
         {
           "text": "Pausiert",

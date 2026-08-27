@@ -44,7 +44,7 @@ export function OnlineBadge({ className, style }: { className?: string; style?: 
       {open > 0 && (
         <span
           style={{
-            background: 'var(--gold)',
+            background: 'var(--auszeichnung)',
             color: '#271e08',
             borderRadius: 99,
             fontSize: 11,

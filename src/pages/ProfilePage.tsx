@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { ALL_MODULES } from '../content';
 import { useAppState, xpThreshold } from '../state/AppState';
+import { MODI } from '../lib/design/modus';
+import { useFarbmodus } from '../lib/design/FarbmodusProvider';
 import { useLang, levelTitleFor } from '../i18n';
 import { STR } from '../i18n/pages/profile';
 import { CloudAccountCard } from '../components/CloudAccountCard';
@@ -21,6 +23,7 @@ export function ProfilePage() {
   const { lang, setLang, content } = useLang();
   const proCtx = usePro();
   const P = STR[lang];
+  const { modus, setzeModus } = useFarbmodus();
   const [nameInput, setNameInput] = useState(data.name);
   const [emailInput, setEmailInput] = useState(activeProfile.email ?? '');
   const [confirmReset, setConfirmReset] = useState(false);
@@ -307,6 +310,26 @@ export function ProfilePage() {
           </button>
         </div>
 
+        {/* Die Farbwahl steht hier und nicht auf der Startseite: Sie wird
+            einmal getroffen und dann jahrelang nicht mehr. Ein Platz auf der
+            Startseite kostet Fläche, die drei Karten brauchen. */}
+        <div className="stat-label" style={{ marginTop: 12, marginBottom: 5 }}>{P.modusLabel}</div>
+        <div className="row" role="radiogroup" aria-label={P.modusLabel}>
+          {MODI.map((m) => (
+            <button
+              key={m}
+              type="button"
+              role="radio"
+              aria-checked={modus === m}
+              className={modus === m ? 'btn sm primary' : 'btn sm'}
+              onClick={() => setzeModus(m)}
+            >
+              {P.modusName[m]}
+            </button>
+          ))}
+        </div>
+        <p className="small faint" style={{ marginTop: 6 }}>{P.modusHinweis}</p>
+
         <hr className="divider" />
 
         {!confirmReset ? (
@@ -405,7 +428,7 @@ function ProfilLink({ to, icon, label }: { to: string; icon: IconName; label: st
         textDecoration: 'none', color: 'inherit',
       }}
     >
-      <span style={{ color: 'var(--gold)', display: 'flex' }}><Icon name={icon} size={18} /></span>
+      <span style={{ color: 'var(--auszeichnung)', display: 'flex' }}><Icon name={icon} size={18} /></span>
       <span style={{ flex: 1, fontWeight: 'var(--fw-medium)' }}>{label}</span>
       <span aria-hidden="true" style={{ color: 'var(--text-faint)' }}>›</span>
     </Link>

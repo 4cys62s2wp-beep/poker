@@ -45,13 +45,23 @@ const ERGEBNIS_AB_PX = 40;
 const wege = JSON.parse(readFileSync('docs/wege.json', 'utf8'));
 const bildschirme = wege.wege.filter((w) => w.inhalt).map((w) => w.hash);
 
-const browser = await chromium.launch();
-const kontext = await browser.newContext({ viewport: { width: BREITE, height: HOEHE }, locale: 'de-DE' });
-await kontext.addInitScript(() => localStorage.setItem('pokermentor-lang-v1', 'de'));
-const seite = await kontext.newPage();
+/* Beide Farbmodi, nicht nur der gerade eingestellte. Ein Lauf über den
+   dunklen Satz sagt genau nichts über den hellen — und der helle ist der,
+   den niemand von uns täglich sieht. Verstreute Farbwerte, die kein Token
+   benutzen, fallen genau hier auf und nirgends sonst. */
+const MODI = ['dunkel', 'hell'];
 
+const browser = await chromium.launch();
 const befunde = [];
 const geprueft = [];
+
+for (const modus of MODI) {
+const kontext = await browser.newContext({ viewport: { width: BREITE, height: HOEHE }, locale: 'de-DE' });
+await kontext.addInitScript(([m]) => {
+  localStorage.setItem('pokermentor-lang-v1', 'de');
+  localStorage.setItem('pokermentor-farbmodus-v1', m);
+}, [modus]);
+const seite = await kontext.newPage();
 
 for (const hash of bildschirme) {
   await seite.goto(`${GRUND}/${hash}`, { waitUntil: 'domcontentloaded' });
@@ -262,8 +272,11 @@ for (const hash of bildschirme) {
     });
   }
 
-  geprueft.push(hash);
-  for (const b of messung.befunde) befunde.push({ bildschirm: hash, ...b });
+  geprueft.push(`${modus}:${hash}`);
+  for (const b of messung.befunde) befunde.push({ modus, bildschirm: hash, ...b });
+}
+
+await kontext.close();
 }
 
 await browser.close();
@@ -272,9 +285,9 @@ await browser.close();
  *  zwanzig: Die Stelle im Stilblatt ist dieselbe. */
 const nachArt = new Map();
 for (const b of befunde) {
-  const schluessel = `${b.art} · ${b.marke}`;
+  const schluessel = `${b.modus} · ${b.art} · ${b.marke}`;
   const eintrag = nachArt.get(schluessel)
-    ?? { art: b.art, marke: b.marke, bildschirme: [], beispiel: b };
+    ?? { modus: b.modus, art: b.art, marke: b.marke, bildschirme: [], beispiel: b };
   eintrag.bildschirme.push(b.bildschirm);
   nachArt.set(schluessel, eintrag);
 }
@@ -290,7 +303,9 @@ const ergebnis = {
     tipp_min_px: TIPP_MIN,
     tipp_abstand_px: TIPP_ABSTAND,
   },
-  bildschirme: geprueft.length,
+  modi: MODI,
+  bildschirme: geprueft.length / MODI.length,
+  messungen: geprueft.length,
   befunde_gesamt: befunde.length,
   stellen_gesamt: stellen.length,
   je_art: [...befunde.reduce((m, b) => m.set(b.art, (m.get(b.art) ?? 0) + 1), new Map())]
@@ -300,7 +315,8 @@ const ergebnis = {
 
 writeFileSync('docs/pruefung.json', `${JSON.stringify(ergebnis, null, 2)}\n`, 'utf-8');
 
-console.log(`${geprueft.length} Bildschirme geprüft, ${befunde.length} Befunde an ${stellen.length} Stellen.`);
+console.log(`${geprueft.length / MODI.length} Bildschirme in ${MODI.length} Modi geprüft `
+  + `(${geprueft.length} Messungen), ${befunde.length} Befunde an ${stellen.length} Stellen.`);
 for (const a of ergebnis.je_art) console.log(`  ${String(a.anzahl).padStart(4)}  ${a.art}`);
 console.log('\nDie zehn häufigsten Stellen:');
 for (const s of stellen.slice(0, 10)) {
@@ -308,5 +324,5 @@ for (const s of stellen.slice(0, 10)) {
   const zusatz = s.art === 'kontrast-zu-gering' ? ` (${b.verhaeltnis} statt ${b.noetig})`
     : s.art === 'tippflaeche-zu-klein' ? ` (${b.breite_px}×${b.hoehe_px})`
       : s.art === 'tippflaechen-zu-eng' ? ` (${b.abstand_px} px)` : '';
-  console.log(`  ${String(s.bildschirme.length).padStart(3)}×  ${s.marke}${zusatz}`);
+  console.log(`  ${String(s.bildschirme.length).padStart(3)}×  [${s.modus}] ${s.marke}${zusatz}`);
 }

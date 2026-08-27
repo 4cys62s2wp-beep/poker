@@ -98,9 +98,9 @@ export function PushFoldTrainer() {
       <div className="card" style={{ maxWidth: 720 }}>
         <p style={{ marginBottom: 14 }}>
           {L.introBefore}
-          <strong style={{ color: 'var(--gold-bright)' }}>{L.stackApprox(chart.stack)}</strong>
+          <strong style={{ color: 'var(--auszeichnung-lesbar)' }}>{L.stackApprox(chart.stack)}</strong>
           {L.introAfterStack}
-          <strong style={{ color: 'var(--gold-bright)' }}>{chart.position}</strong> ({POSITION_NAMES[chart.position]})
+          <strong style={{ color: 'var(--auszeichnung-lesbar)' }}>{chart.position}</strong> ({POSITION_NAMES[chart.position]})
           {L.introAfterPosition}
         </p>
 

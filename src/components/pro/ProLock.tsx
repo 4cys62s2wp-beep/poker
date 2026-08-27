@@ -33,7 +33,7 @@ export function ProLock({ text, title, compact }: Props) {
         style={{
           width: 44, height: 44, borderRadius: 14, display: 'inline-flex',
           alignItems: 'center', justifyContent: 'center', marginBottom: 12,
-          background: 'var(--gold-dim)', color: 'var(--gold-bright)',
+          background: 'var(--auszeichnung-schwach)', color: 'var(--auszeichnung-lesbar)',
           border: '1px solid rgba(212,175,94,0.34)',
         }}
       >

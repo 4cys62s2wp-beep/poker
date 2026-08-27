@@ -267,7 +267,7 @@ function DueBubble() {
     <span
       style={{
         marginLeft: 'auto',
-        background: 'var(--gold)',
+        background: 'var(--auszeichnung)',
         color: '#271e08',
         borderRadius: 99,
         fontSize: 11,

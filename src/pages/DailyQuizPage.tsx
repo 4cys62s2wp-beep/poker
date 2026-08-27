@@ -69,7 +69,7 @@ export function DailyQuizPage() {
 
       {alreadyDone && !started && (
         <div className="card" style={{ maxWidth: 640, textAlign: 'center', padding: 36 }}>
-          <div style={{ color: 'var(--gold-bright)', marginBottom: 10 }}>
+          <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
             <Icon name="sun" size={38} />
           </div>
           <h2 style={{ fontSize: 20, marginBottom: 8 }}>{L.doneTitle}</h2>
@@ -81,7 +81,7 @@ export function DailyQuizPage() {
 
       {!alreadyDone && !started && (
         <div className="card" style={{ maxWidth: 640, textAlign: 'center', padding: 36 }}>
-          <div style={{ color: 'var(--gold-bright)', marginBottom: 10 }}>
+          <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
             <Icon name="sun" size={38} />
           </div>
           <h2 style={{ fontSize: 20, marginBottom: 8 }}>{L.readyTitle}</h2>

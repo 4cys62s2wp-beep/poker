@@ -56,7 +56,7 @@ export function SessionPage() {
     {
       to: '/session/auszahlung', icon: 'crown',
       title: L.payoutTitle, body: L.payoutBody, when: L.payoutWhen,
-      accent: 'var(--gold)',
+      accent: 'var(--auszeichnung)',
     },
     /* Hier standen der Ein-Geräte-Tisch und der Online-Tisch. Beide sind
        aus dem inhaltlichen Rahmen gefallen: Sie sind gespieltes Poker, nicht

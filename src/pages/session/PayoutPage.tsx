@@ -117,7 +117,7 @@ export function PayoutPage() {
                     <td
                       style={{
                         padding: 'var(--sp-3) var(--sp-4)', width: '3.5rem',
-                        color: a.platz === 1 ? 'var(--gold)' : 'var(--text-dim)',
+                        color: a.platz === 1 ? 'var(--auszeichnung)' : 'var(--text-dim)',
                         fontWeight: 'var(--fw-bold)', fontVariantNumeric: 'tabular-nums',
                       }}
                     >

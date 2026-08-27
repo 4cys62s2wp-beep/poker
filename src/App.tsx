@@ -78,6 +78,22 @@ function istGeteilteAufgabe(pfad: string): boolean {
   return /^\/lernen\/drill\/.+/.test(pfad);
 }
 
+/** Bereiche, die den dunklen Tokensatz erzwingen.
+ *
+ *  Der Live-Bereich bleibt in jedem Modus dunkel: Das Gerät liegt bei
+ *  gedimmtem Licht auf einem Pokertisch, und eine helle Fläche blendet die
+ *  Runde und beleuchtet Gesichter. Nachschlagen und Lernen folgen der Wahl,
+ *  die Live-Session nicht.
+ *
+ *  Das steht hier und nicht in den Bildschirmen: Ein Sonderfall je Bildschirm
+ *  fehlt beim nächsten neuen — und dann sitzt jemand mit einer weißen Fläche
+ *  am Tisch. */
+const DUNKEL_ERZWUNGEN = ['/session'];
+
+function erzwingtDunkel(pfad: string): boolean {
+  return DUNKEL_ERZWUNGEN.some((p) => pfad === p || pfad.startsWith(`${p}/`));
+}
+
 export function App() {
   const ort = useLocation();
 
@@ -90,6 +106,12 @@ export function App() {
     <ErrorBoundary>
       {!istGeteilteAufgabe(ort.pathname) && <Onboarding />}
       <PaywallModal />
+      {/* Der dunkle Satz gilt für alles darunter — er hängt am Attribut,
+          nicht an `:root`. Kein Bildschirm weiß davon. */}
+      <div
+        className="modus-rahmen"
+        {...(erzwingtDunkel(ort.pathname) ? { 'data-modus': 'dunkel' } : {})}
+      >
       <Routes>
         {/* Der Tischbildschirm liegt bewusst außerhalb des Layouts: Vollbild
             ohne die normale Navigation. Wer den Tisch führt, soll nicht
@@ -206,6 +228,7 @@ export function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
+      </div>
     </ErrorBoundary>
   );
 }

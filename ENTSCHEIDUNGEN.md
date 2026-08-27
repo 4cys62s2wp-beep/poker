@@ -1193,3 +1193,78 @@ Jetzt steht dort „3 Lektionen abgeschlossen". Ein Test hält fest, dass in
 diesem Satz genau **eine** Zahl vorkommt, und dass die Funktion nur ein
 Argument annimmt: Wer eine Gesamtzahl übergeben kann, zeigt sie irgendwann
 wieder an.
+
+---
+
+## E-033 · 2026-08-27 · Farbtokens heißen nach Verwendung, nicht nach Farbe
+
+**Vorbedingung für die Farbmodi, vom Auftraggeber so gestellt.** `--gold`,
+`--felt` und `--violet` sagen, welche Farbe ein Token hat. Für einen hellen
+Modus ist das die falsche Sorte Name: Ein Farbname ist ein Wert, der sich
+nicht ändern darf; ein Verwendungsname ist einer, der es kann.
+
+**Umbenannt:** `--gold` → `--auszeichnung` (Fortschritt, Rang, Pro),
+`--felt` → `--flaeche-tisch`, `--violet` → `--kategorie-sozial`, samt aller
+Abstufungen. In einem zweiten Durchgang dann die Helligkeitsstufen:
+`--ok-bright` und Verwandte heißen jetzt `--*-lesbar`, `--text-bright` heißt
+`--text-stark`. Auch „bright" ist keine Verwendung — im hellen Modus müsste
+die lesbare Variante *dunkel* sein.
+
+**Getrennt committet**, beide Male ohne einen einzigen geänderten Farbwert.
+Wer später sucht, wann ein Ton anders wurde, soll nicht durch eine
+Umbenennung waten.
+
+**Alternative:** Die Namen lassen und die Modi darüberlegen.
+
+**Warum nicht:** Dann stünde in `[data-modus="hell"]` die Zeile
+`--gold: #7d5f14;` — ein dunkles Ocker, das „Gold" heißt. Der nächste, der
+das liest, hält es für einen Fehler und „korrigiert" es.
+
+---
+
+## E-034 · 2026-08-27 · Drei Modi, keine fünf Farbwelten
+
+**Vom Auftraggeber entschieden.** Hell, Dunkel, Systemvorgabe. Die Idee
+weiterer Farbwelten ist in `BACKLOG.md` notiert, nicht gebaut.
+
+**Die Begründung ist eine Rechnung.** Jede Farbwelt verlangt dieselbe
+Prüfung wie die anderen: Bei sechs Textfarben, sechs Farbmarken und fünf
+Flächen sind das 60 Kontrastwerte je Welt. Bei drei Modi (von denen einer
+keine eigene Welt ist) sind es 120; bei fünf Welten wären es 300 — und jede
+Farbänderung an einer Stelle zieht alle nach sich. Der Test rechnet sie zwar
+alle, aber er kann nicht entscheiden, welcher Ton **gut** aussieht. Das bleibt
+Handarbeit, und die wächst mit jeder Welt.
+
+**Was stattdessen zählt.** Zwei Sätze, die beide sitzen, sind mehr wert als
+fünf, von denen drei nur die Prüfung bestehen.
+
+**Alternative:** Fünf Welten anlegen und die Pflege dem Test überlassen.
+
+**Warum nicht:** Der Test prüft Lesbarkeit, nicht Stimmigkeit. Eine Welt, die
+4,5 zu 1 erreicht und trotzdem aussieht wie ein Unfall, ist grün.
+
+### Die Regel, die über der Auswahl steht
+
+**Der Live-Bereich bleibt in jedem Modus dunkel.** Das Gerät liegt bei
+gedimmtem Licht auf einem Pokertisch; eine helle Fläche blendet die Runde und
+beleuchtet Gesichter. Umgesetzt nicht als Sonderfall in einem Bildschirm,
+sondern über den Tokensatz: Weil der dunkle Satz an `[data-modus="dunkel"]`
+hängt und nicht nur an `:root`, erzwingt ihn jedes Element mit diesem Attribut
+für alles darunter. `App.tsx` setzt es an genau einer Stelle.
+
+### Was die Prüfung dabei gefunden hat
+
+Der Kontrastlauf über **beide** Modi am gerenderten Ergebnis meldete eine
+Stelle: Der Hauptknopf trug im hellen Modus dunkle Schrift auf dunklem Gold,
+**2,76 zu 1**. Ursache war mein eigener Fehler — ich hatte den Farbverlauf des
+Knopfs mit abgedunkelt, weil `--auszeichnung` als Textfarbe im hellen Modus
+dunkel sein muss.
+
+Behoben, indem die Knopfflächen aus den Modusblöcken herausgenommen wurden:
+Ein gefüllter Knopf ist eine eigene Fläche mit eigener Schriftfarbe, er steht
+nicht auf dem Seitengrund, sondern auf sich selbst — genau wie die
+Kartenfarben. Der mittlere Farbstopp hat dafür einen eigenen Token bekommen.
+
+**Das ist das Argument für den Lauf über beide Modi.** Die Tokenprüfung war
+grün: Jeder einzelne Token hielt seine Grenze. Der Fehler entstand erst aus
+der Kombination, und die sieht nur ein Browser.

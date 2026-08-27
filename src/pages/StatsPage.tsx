@@ -129,7 +129,7 @@ export function StatsPage() {
         className="card"
         style={{
           marginBottom: 'var(--sp-5)', padding: 'var(--sp-5)',
-          borderColor: hint ? 'var(--gold-dim)' : 'var(--border)',
+          borderColor: hint ? 'var(--auszeichnung-schwach)' : 'var(--border)',
         }}
       >
         {hint ? (
@@ -290,13 +290,13 @@ function StyleChart({
             harte Kante – die Anzeige soll nicht sicherer wirken, als sie ist. */}
         <circle
           cx={x} cy={y} r={reliable ? 9 : 7}
-          fill={reliable ? 'var(--gold)' : 'var(--text-faint)'}
+          fill={reliable ? 'var(--auszeichnung)' : 'var(--text-faint)'}
           opacity={reliable ? 1 : 0.45}
         />
         <circle
           cx={x} cy={y} r={reliable ? 16 : 13}
           fill="none"
-          stroke={reliable ? 'var(--gold)' : 'var(--text-faint)'}
+          stroke={reliable ? 'var(--auszeichnung)' : 'var(--text-faint)'}
           strokeWidth="1.5"
           opacity={reliable ? 0.35 : 0.2}
         />

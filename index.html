@@ -4,6 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0b100d" />
+    <!-- Farbmodus vor dem ersten Zeichnen setzen.
+         Ohne dieses Skript sieht man beim Start kurz den dunklen Satz und
+         dann den hellen — ein Aufblitzen, das sich nachher nicht mehr
+         wegdiskutieren lässt. Es läuft vor dem Stilblatt und vor React.
+         Schlüssel und Werte stehen doppelt (hier und in
+         src/lib/design/modus.ts); ein Test hält sie zusammen. -->
+    <script>
+      (function () {
+        try {
+          var wahl = localStorage.getItem('pokermentor-farbmodus-v1');
+          if (wahl !== 'hell' && wahl !== 'dunkel') {
+            wahl = window.matchMedia('(prefers-color-scheme: light)').matches ? 'hell' : 'dunkel';
+          }
+          document.documentElement.setAttribute('data-modus', wahl);
+          document.documentElement.style.colorScheme = wahl === 'hell' ? 'light' : 'dark';
+        } catch (e) {
+          document.documentElement.setAttribute('data-modus', 'dunkel');
+        }
+      })();
+    </script>
     <meta name="description" content="PokerMentor – Deine Poker-Schule: Lerne Strategien, trainiere Skills und werde ein besserer Spieler. Für Online- und Live-Poker. Auch auf Englisch verfügbar." />
     <!-- Link-Vorschau (WhatsApp, Instagram, iMessage, X): og:url/og:image nach Domain-Umzug anpassen, siehe DOMAIN_SETUP.md -->
     <meta property="og:type" content="website" />

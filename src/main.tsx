@@ -11,11 +11,13 @@ import { restoreFromMirrorIfNeeded } from './lib/storage';
 import '@fontsource-variable/fraunces';
 import '@fontsource-variable/manrope';
 import './styles/global.css';
+import { FarbmodusProvider } from './lib/design/FarbmodusProvider';
 
 function render() {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
       <HashRouter>
+        <FarbmodusProvider>
         <LanguageProvider>
           <AppStateProvider>
             <CloudProvider>
@@ -27,6 +29,7 @@ function render() {
             </CloudProvider>
           </AppStateProvider>
         </LanguageProvider>
+        </FarbmodusProvider>
       </HashRouter>
     </React.StrictMode>,
   );

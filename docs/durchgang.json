@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-27T06:31:28.322Z",
+  "geprueft_am": "2026-08-27T06:58:11.094Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -136,7 +136,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 874,
+        "dauer_ms": 870,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -201,6 +201,74 @@
       "uebersprungen": false
     },
     {
+      "name": "Die Farbwahl liegt unter dem Personensymbol",
+      "ergebnis": {
+        "anzahl": 3,
+        "eintraege": [
+          {
+            "text": "Systemvorgabe",
+            "gewaehlt": true
+          },
+          {
+            "text": "Hell",
+            "gewaehlt": false
+          },
+          {
+            "text": "Dunkel",
+            "gewaehlt": false
+          }
+        ],
+        "auf_startseite": false
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Umschalten wirkt sofort und wird gemerkt",
+      "ergebnis": {
+        "dunkel": {
+          "grund": "rgb(12, 17, 14)",
+          "attribut": "dunkel",
+          "farbschema": "dark",
+          "gespeichert": "dunkel"
+        },
+        "hell": {
+          "grund": "rgb(244, 242, 236)",
+          "attribut": "hell",
+          "farbschema": "light",
+          "gespeichert": "hell"
+        },
+        "hat_gewechselt": true,
+        "ohne_neuladen": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Nach dem Neuladen steht die Farbe vor dem ersten Zeichnen fest",
+      "ergebnis": {
+        "bei_domcontentloaded": "hell",
+        "spaeter": "hell",
+        "skript_vor_stilblatt": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Der Live-Bereich bleibt dunkel, auch bei heller Wahl",
+      "ergebnis": {
+        "live": {
+          "wahl_am_dokument": "hell",
+          "rahmen_attribut": "dunkel",
+          "grund": "#0c110e",
+          "text": "#ece9df",
+          "akzent": "#4fbf8e"
+        },
+        "lernen": {
+          "rahmen_attribut": null,
+          "grund": "#f4f2ec"
+        }
+      },
+      "uebersprungen": false
+    },
+    {
       "name": "Die Startseite füllt den Bildschirm",
       "ergebnis": {
         "untere_leiste": 0,
@@ -261,12 +329,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 23,
+        "dauer_ms": 29,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "27,8 %",
+        "ergebnis_text": "54,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },

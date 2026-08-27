@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-27T06:40:51.418Z",
+  "geprueft_am": "2026-08-27T06:55:52.705Z",
   "breite": 390,
   "grenzwerte": {
     "kontrast_ergebnis": 7,
@@ -8,7 +8,12 @@
     "tipp_min_px": 44,
     "tipp_abstand_px": 8
   },
+  "modi": [
+    "dunkel",
+    "hell"
+  ],
   "bildschirme": 49,
+  "messungen": 98,
   "befunde_gesamt": 0,
   "stellen_gesamt": 0,
   "je_art": [],

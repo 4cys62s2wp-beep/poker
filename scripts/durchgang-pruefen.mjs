@@ -340,6 +340,109 @@ await schritt('Ein Tipp auf einen Abend zeigt den Abend', async () => {
   };
 });
 
+/* ── Die Farbmodi ─────────────────────────────────────────────────────────
+   Drei Modi, und einer davon ist eine Regel und keine Farbwelt: Die
+   Systemvorgabe löst zu hell oder dunkel auf. Über allem steht, dass der
+   Live-Bereich in jedem Modus dunkel bleibt. */
+
+await schritt('Die Farbwahl liegt unter dem Personensymbol', async () => {
+  await seite.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('[role="radiogroup"]');
+  await seite.waitForTimeout(300);
+  const knoepfe = seite.locator('[role="radiogroup"] button');
+  const anzahl = await knoepfe.count();
+  const eintraege = [];
+  for (let i = 0; i < anzahl; i += 1) {
+    eintraege.push({
+      text: (await knoepfe.nth(i).innerText()).trim(),
+      gewaehlt: await knoepfe.nth(i).getAttribute('aria-checked') === 'true',
+    });
+  }
+  return {
+    anzahl,
+    eintraege,
+    /* Nicht auf der Startseite: Die Wahl wird einmal getroffen und dann
+       jahrelang nicht mehr; Fläche dort brauchen die drei Karten. */
+    auf_startseite: await seite.evaluate(async () => {
+      const antwort = await fetch('./index.html');
+      return (await antwort.text()).includes('radiogroup');
+    }),
+  };
+});
+
+await schritt('Umschalten wirkt sofort und wird gemerkt', async () => {
+  /* Beide Richtungen, damit die Messung nicht davon abhängt, was das
+     Testgerät zufällig vorgibt: erst ausdrücklich dunkel, dann hell. */
+  const lies = () => seite.evaluate(() => ({
+    grund: getComputedStyle(document.body).backgroundColor,
+    attribut: document.documentElement.getAttribute('data-modus'),
+    farbschema: getComputedStyle(document.documentElement).colorScheme,
+    gespeichert: localStorage.getItem('pokermentor-farbmodus-v1'),
+  }));
+  const knoepfe = seite.locator('[role="radiogroup"] button');
+
+  await knoepfe.nth(2).click();
+  await seite.waitForTimeout(200);
+  const dunkel = await lies();
+
+  await knoepfe.nth(1).click();
+  await seite.waitForTimeout(200);
+  const hell = await lies();
+
+  return {
+    dunkel,
+    hell,
+    hat_gewechselt: dunkel.grund !== hell.grund,
+    /* Ohne Neustart: Zwischen Klick und Farbe liegt kein Neuladen. */
+    ohne_neuladen: await seite.evaluate(() => performance.getEntriesByType('navigation').length === 1),
+  };
+});
+
+await schritt('Nach dem Neuladen steht die Farbe vor dem ersten Zeichnen fest', async () => {
+  /* Gemessen wird das Attribut zum frühestmöglichen Zeitpunkt und die
+     Reihenfolge im Dokument: Läuft das Skript vor dem Stilblatt, kann es
+     kein Aufblitzen geben. */
+  const frueh = [];
+  const horcher = async () => {
+    try { frueh.push(await seite.evaluate(() => document.documentElement.getAttribute('data-modus'))); } catch { /* zu früh */ }
+  };
+  seite.on('domcontentloaded', horcher);
+  await seite.reload({ waitUntil: 'commit' });
+  await seite.waitForTimeout(700);
+  seite.off('domcontentloaded', horcher);
+  const roh = await seite.evaluate(async () => (await (await fetch('./index.html')).text()));
+  return {
+    bei_domcontentloaded: frueh[0] ?? null,
+    spaeter: await seite.evaluate(() => document.documentElement.getAttribute('data-modus')),
+    skript_vor_stilblatt: roh.indexOf('data-modus') < roh.search(/<link[^>]+rel="stylesheet"/),
+  };
+});
+
+await schritt('Der Live-Bereich bleibt dunkel, auch bei heller Wahl', async () => {
+  /* Die Wahl steht auf „hell" — der Schritt davor hat sie gesetzt. */
+  await seite.goto(`${GRUND}/#/session`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForTimeout(400);
+  const werte = await seite.evaluate(() => {
+    const rahmen = document.querySelector('.modus-rahmen');
+    const c = getComputedStyle(rahmen);
+    const w = document.documentElement;
+    return {
+      wahl_am_dokument: w.getAttribute('data-modus'),
+      rahmen_attribut: rahmen.getAttribute('data-modus'),
+      grund: c.getPropertyValue('--bg').trim(),
+      text: c.getPropertyValue('--text').trim(),
+      akzent: c.getPropertyValue('--akzent').trim(),
+    };
+  });
+  await seite.goto(`${GRUND}/#/lernen`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForTimeout(300);
+  const lernen = await seite.evaluate(() => ({
+    rahmen_attribut: document.querySelector('.modus-rahmen').getAttribute('data-modus'),
+    grund: getComputedStyle(document.querySelector('.modus-rahmen')).getPropertyValue('--bg').trim(),
+  }));
+  return { live: werte, lernen };
+});
+
 /* ── Die Startseite: die drei Karten sind die Navigation ───────────────────
    Seit E-032 gibt es keine untere Leiste mehr. Damit tragen die drei Karten
    die Navigation allein — und dann dürfen sie nicht oben kleben, während die

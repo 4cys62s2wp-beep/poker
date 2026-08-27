@@ -5,46 +5,21 @@
 
 :root {
   /* Grund */
-  --bg: #0c110e;
-  --bg-deep: #090d0b;
-  --bg-elev: #121814;
-  --bg-card: #161e19;
-  --bg-card-hover: #1b241e;
-  --border: rgba(236, 233, 223, 0.075);
-  --border-strong: rgba(236, 233, 223, 0.16);
 
   /* Tischfläche — die grüne Fläche, auf der Karten liegen. Der Name sagt,
      wofür sie da ist, nicht welche Farbe sie hat: „Filz" wäre in einem
      hellen Modus eine Lüge über den Wert dahinter. */
-  --flaeche-tisch: #1d5a43;
-  --flaeche-tisch-hell: #2f7f5e;
-  --flaeche-tisch-tief: #12382b;
 
   /* Auszeichnung — Fortschritt, Rang, Pro. Alles, was jemand erreicht hat.
      Hieß bis E-033 „Gold". Ein Farbname ist ein Wert, der sich nicht ändern
      darf; ein Verwendungsname ist einer, der es kann. */
-  --auszeichnung: #d4af5e;
-  --auszeichnung-lesbar: #edcf87;
-  --auszeichnung-tief: #a8843b;
-  --auszeichnung-schwach: rgba(212, 175, 94, 0.14);
 
   /* Text */
-  --text: #ece9df;
-  --text-dim: #a8a79b;
   /* WCAG AA (4.5:1) auf allen Flächen – gemessen: 6.14:1 auf --bg,
      5.48:1 auf --bg-card, 5.80:1 auf --bg-elev (vorher #757467 = 3.61:1). */
-  --text-faint: #949384;
 
   /* Signale */
-  --ok: #58b368;
-  --ok-dim: rgba(88, 179, 104, 0.14);
-  --danger: #e05c55;
-  --danger-dim: rgba(224, 92, 85, 0.13);
-  --info: #5590d9;
-  --info-dim: rgba(85, 144, 217, 0.14);
   /* Kategorie „mit anderen" — Freunde, geteilte Aufgaben. */
-  --kategorie-sozial: #9b7fd4;
-  --kategorie-sozial-schwach: rgba(155, 127, 212, 0.14);
 
   /* Kartenfarben (4-Color-Deck) */
   --suit-s: #23241f;
@@ -67,7 +42,6 @@
   --accent-learn: var(--auszeichnung);
   --accent-learn-dim: var(--auszeichnung-schwach);
   --accent-live: var(--flaeche-tisch-hell);
-  --accent-live-dim: rgba(47, 127, 94, 0.16);
   --accent-tools: var(--info);
   --accent-tools-dim: var(--info-dim);
   /* Vierter Platz: „Mit Freunden spielen“ – im Raster vorgesehen, noch nicht
@@ -132,15 +106,11 @@
      Gegenüber dem alten --flaeche-tisch-hell aufgehellt, weil der bei 3,92 zu 1 auf
      dunklem Grund unter der Grenze lag und damit als Text nicht zulässig
      war. Jetzt 8,32 zu 1. */
-  --akzent: #4fbf8e;
-  --akzent-dim: rgba(79, 191, 142, 0.16);
 
   /* ── Ergebniszahlen ──────────────────────────────────────────────────
      Eigene Töne, weil für sie 7 zu 1 gilt und nicht 4,5 zu 1. --ok und
      --danger erfüllen das nicht und bleiben den kleinen Zustandsanzeigen
      vorbehalten. Nachgemessen im Test `design.test.ts`. */
-  --ergebnis-gut: #6ec97d;
-  --ergebnis-schlecht: #f29b95;
 
   /* ── Bedienung ───────────────────────────────────────────────────────
      44 Punkt ist die kleinste Fläche, die ein Daumen zuverlässig trifft
@@ -206,9 +176,123 @@
      deshalb einen Namen verdienen. Einmalige Stützfarben in Verläufen
      bleiben absichtlich als Literale stehen – für jede einen Token
      anzulegen ergäbe 78 Tokens mit je einer Verwendung. */
-  --text-stark: #d8d5cb;
   --auf-auszeichnung: #271e08;          /* Text auf goldenem Grund */
   --on-ok: #0a1a0e;            /* Text auf grünem Grund */
+
+  /* Wiederkehrende Schleier auf dunklem Grund. */
+
+  /* Verlaufs-Stützen von Gold und Filz: kommen je zweimal vor (Marke und
+     Hauptknopf) und gehören deshalb zusammen benannt – sonst driften sie
+     beim nächsten Feinschliff auseinander. */
+
+  /* Reines Weiß für Fokus-Ringe: absichtlich NICHT --text. Der Ring muss
+     auf jedem Untergrund maximal auffallen, auch auf hellen Karten. */
+
+  /* Die letzten wiederholten Verlaufs-Stützen: Knopfflächen (Gold, Grün,
+     Rot). Damit ist jeder mehrfach benutzte Farbwert benannt; was danach
+     bleibt, kommt genau einmal vor. */
+
+  --font-body: 'Manrope Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+
+  /* ── Knopfflächen ────────────────────────────────────────────────────
+     Modusunabhängig, genau wie die Kartenfarben. Ein gefüllter Knopf ist
+     eine eigene Fläche mit eigener Schriftfarbe; er steht nicht auf dem
+     Seitengrund, sondern auf sich selbst. Als der helle Modus sie zuerst
+     mit abdunkelte, stand dunkle Schrift auf dunklem Gold — 2,76 zu 1,
+     gefunden von `npm run pruefen` im hellen Durchgang. */
+  --knopf-auszeichnung-hell: #f0d492;
+  --knopf-auszeichnung-tief: #b3893f;
+  --btn-ok-hi: #6fc580;
+  --btn-danger-hi: #933936;
+  --btn-danger-lo: #7c2b2b;
+  /* Der mittlere Farbstopp des Hauptknopfs. Vorher stand dort
+     `--auszeichnung` — der ist als Textfarbe im hellen Modus dunkel,
+     und damit wurde der Knopf mit dunkler Schrift unlesbar. */
+  --knopf-auszeichnung-mitte: #d4af5e;
+
+}
+/* ═══════════════════════════════════════════════════════════════════════
+   FARBMODI — dunkel, hell, und die Systemvorgabe dazwischen
+   ═══════════════════════════════════════════════════════════════════════
+
+   Jeder farbige Token steht **genau einmal je Modus**. Keine Kopie, kein
+   zweiter Block für dieselben Werte: Zwei Stellen mit derselben Farbe gehen
+   auseinander, und zwar an der Stelle, die niemand ansieht.
+
+   Die drei Modi
+   -------------
+   „Dunkel" ist zugleich der Grundzustand — `:root` und `[data-modus=dunkel]`
+   teilen sich denselben Block. Das ist kein Zufall, sondern die Regel unten:
+   Wer den dunklen Satz erzwingen will, setzt ein Attribut und bekommt genau
+   dieselben Werte.
+
+   Die **Systemvorgabe** steht hier bewusst NICHT als
+   `@media (prefers-color-scheme)`. Sonst stünde jeder helle Wert zweimal —
+   einmal für die Vorgabe, einmal für die ausdrückliche Wahl. Stattdessen
+   löst die App die Vorgabe beim Start zu „hell" oder „dunkel" auf und setzt
+   das Attribut; die Systemänderung wird mitgehört. Siehe
+   `src/lib/design/modus.ts`.
+
+   Die Regel, die über der Auswahl steht
+   -------------------------------------
+   **Der Live-Bereich bleibt in jedem Modus dunkel.** Das Gerät liegt bei
+   gedimmtem Licht auf einem Pokertisch; eine helle Fläche blendet die Runde
+   und beleuchtet Gesichter. Nachschlagen und Lernen folgen der Wahl, die
+   Live-Session nicht.
+
+   Umgesetzt ist das nicht als Sonderfall in einem Bildschirm, sondern hier:
+   Weil der dunkle Satz an `[data-modus="dunkel"]` hängt und nicht nur an
+   `:root`, erzwingt jedes Element mit diesem Attribut den dunklen Satz für
+   alles darunter. Der Live-Bereich setzt es einmal, in `App.tsx`.
+
+   Kontrast
+   --------
+   Beide Sätze halten dieselben Grenzen: 7 zu 1 für Ergebniszahlen, 4,5 zu 1
+   für alles Übrige. Nachgerechnet wird das in `farbmodi.test.ts` — für jede
+   Kombination aus Token und Modus, nicht nur für den gerade aktiven. Keine
+   dieser Zahlen steht irgendwo geschrieben; jede wird gerechnet.
+
+   Die Tabelle mit den gemessenen Werten steht in DESIGN.md, Abschnitt 11.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Dunkel ─────────────────────────────────────────────────────────────
+   Der Grundzustand. Warme, entsättigte Grüntöne statt neutralem Grau: Das
+   Auge liest sie bei wenig Licht ruhiger, und die App liegt abends auf dem
+   Tisch. */
+:root,
+[data-modus="dunkel"] {
+  --bg: #0c110e;
+  --bg-deep: #090d0b;
+  --bg-elev: #121814;
+  --bg-card: #161e19;
+  --bg-card-hover: #1b241e;
+  --border: rgba(236, 233, 223, 0.075);
+  --border-strong: rgba(236, 233, 223, 0.16);
+  --flaeche-tisch: #1d5a43;
+  --flaeche-tisch-hell: #2f7f5e;
+  --flaeche-tisch-tief: #12382b;
+  --auszeichnung: #d4af5e;
+  --auszeichnung-lesbar: #edcf87;
+  --auszeichnung-tief: #a8843b;
+  --auszeichnung-schwach: rgba(212, 175, 94, 0.14);
+  --text: #ece9df;
+  --text-dim: #a8a79b;
+  --text-faint: #949384;
+  --ok: #58b368;
+  --ok-dim: rgba(88, 179, 104, 0.14);
+  --danger: #e05c55;
+  --danger-dim: rgba(224, 92, 85, 0.13);
+  --info: #5590d9;
+  --info-dim: rgba(85, 144, 217, 0.14);
+  --kategorie-sozial: #9b7fd4;
+  --kategorie-sozial-schwach: rgba(155, 127, 212, 0.14);
+  --accent-live-dim: rgba(47, 127, 94, 0.16);
+  --akzent: #4fbf8e;
+  --akzent-dim: rgba(79, 191, 142, 0.16);
+  --ergebnis-gut: #6ec97d;
+  --ergebnis-schlecht: #f29b95;
+  --text-stark: #d8d5cb;
   --ok-lesbar: #90d69c;
   --info-lesbar: #94bdea;
   --danger-lesbar: #eda49f;
@@ -216,8 +300,6 @@
   --warn: #e0a542;
   --warn-lesbar: #e8bd7a;
   --warn-dim: rgba(224, 165, 66, 0.14);
-
-  /* Wiederkehrende Schleier auf dunklem Grund. */
   --veil-1: rgba(236, 233, 223, 0.04);
   --veil-2: rgba(236, 233, 223, 0.05);
   --veil-3: rgba(236, 233, 223, 0.08);
@@ -228,33 +310,86 @@
   --auszeichnung-a40: rgba(212, 175, 94, 0.4);
   --auszeichnung-a45: rgba(212, 175, 94, 0.45);
   --auszeichnung-lesbar-a35: rgba(237, 207, 135, 0.35);
-
-  /* Verlaufs-Stützen von Gold und Filz: kommen je zweimal vor (Marke und
-     Hauptknopf) und gehören deshalb zusammen benannt – sonst driften sie
-     beim nächsten Feinschliff auseinander. */
   --auszeichnung-verlauf-hell: #f3dda2;
   --auszeichnung-verlauf-tief: #b08c42;
   --flaeche-tisch-verlauf-hell: #2f7f5e;
   --flaeche-tisch-verlauf-tief: #123a2b;
-
-  /* Reines Weiß für Fokus-Ringe: absichtlich NICHT --text. Der Ring muss
-     auf jedem Untergrund maximal auffallen, auch auf hellen Karten. */
   --focus-ring: #fff;
   --lift-hi: rgba(255, 255, 255, 0.35);
   --lift-shadow: rgba(0, 0, 0, 0.5);
-
-  /* Die letzten wiederholten Verlaufs-Stützen: Knopfflächen (Gold, Grün,
-     Rot). Damit ist jeder mehrfach benutzte Farbwert benannt; was danach
-     bleibt, kommt genau einmal vor. */
-  --knopf-auszeichnung-hell: #f0d492;
-  --knopf-auszeichnung-tief: #b3893f;
-  --btn-ok-hi: #6fc580;
-  --btn-danger-hi: #933936;
-  --btn-danger-lo: #7c2b2b;
-
-  --font-body: 'Manrope Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
 }
+
+/* ── Hell ───────────────────────────────────────────────────────────────
+   Kein Reinweiß als Fläche und kein Reinschwarz für Text. Beides ermüdet:
+   Reinweiß, weil es bei Tageslicht mehr Licht zurückwirft als Papier und
+   das Auge dauernd nachregelt; Reinschwarz auf Weiß, weil der harte
+   Hell-Dunkel-Sprung Nachbilder erzeugt. Deshalb ein warmes Off-White
+   (#f4f2ec) und ein sehr dunkles Grüngrau (#1c211d) — dieselbe warme
+   Grundstimmung wie im dunklen Satz, nur umgedreht.
+
+   Der Akzent ist NICHT derselbe Wert. Derselbe Grünton besteht die
+   Kontrastprüfung nicht auf beiden Gründen: #4fbf8e erreicht auf dunklem
+   Grund 8,3 zu 1 und auf hellem 1,9. Der helle Akzent #0a6b47 hat denselben
+   Farbton (158 Grad gegen 154 Grad — dieselbe Farbe, anderer Helligkeitswert)
+   und erreicht 5,6 zu 1. */
+[data-modus="hell"] {
+  --bg: #f4f2ec;
+  --bg-deep: #efece5;
+  --bg-elev: #fbfaf6;
+  --bg-card: #fdfcf9;
+  --bg-card-hover: #f2efe7;
+  --border: rgba(28, 33, 29, 0.12);
+  --border-strong: rgba(28, 33, 29, 0.26);
+  --flaeche-tisch: #14503b;
+  --flaeche-tisch-hell: #1d7a58;
+  --flaeche-tisch-tief: #0e3b2c;
+  --auszeichnung: #7d5f14;
+  --auszeichnung-lesbar: #5f4810;
+  --auszeichnung-tief: #5a430f;
+  --auszeichnung-schwach: rgba(125, 95, 20, 0.12);
+  --text: #1c211d;
+  --text-dim: #4b514c;
+  --text-faint: #5c6259;
+  --ok: #1a7a38;
+  --ok-dim: rgba(26, 122, 56, 0.12);
+  --danger: #a8261e;
+  --danger-dim: rgba(168, 38, 30, 0.11);
+  --info: #1b5aa8;
+  --info-dim: rgba(27, 90, 168, 0.12);
+  --kategorie-sozial: #5b3f9c;
+  --kategorie-sozial-schwach: rgba(91, 63, 156, 0.12);
+  --accent-live-dim: rgba(10, 107, 71, 0.14);
+  --akzent: #0a6b47;
+  --akzent-dim: rgba(10, 107, 71, 0.12);
+  --ergebnis-gut: #0f5a32;
+  --ergebnis-schlecht: #95231c;
+  --text-stark: #0f120f;
+  --ok-lesbar: #14622d;
+  --info-lesbar: #164a8c;
+  --danger-lesbar: #8f1f18;
+  --kategorie-sozial-lesbar: #4c3484;
+  --warn: #8a5c11;
+  --warn-lesbar: #744d0e;
+  --warn-dim: rgba(138, 92, 17, 0.13);
+  --veil-1: rgba(28, 33, 29, 0.03);
+  --veil-2: rgba(28, 33, 29, 0.045);
+  --veil-3: rgba(28, 33, 29, 0.07);
+  --scrim: rgba(28, 33, 29, 0.45);
+  --scrim-strong: rgba(28, 33, 29, 0.65);
+  --auszeichnung-a28: rgba(125, 95, 20, 0.28);
+  --auszeichnung-a30: rgba(125, 95, 20, 0.3);
+  --auszeichnung-a40: rgba(125, 95, 20, 0.4);
+  --auszeichnung-a45: rgba(125, 95, 20, 0.45);
+  --auszeichnung-lesbar-a35: rgba(95, 72, 16, 0.35);
+  --auszeichnung-verlauf-hell: #c9a24e;
+  --auszeichnung-verlauf-tief: #8a681a;
+  --flaeche-tisch-verlauf-hell: #1d7a58;
+  --flaeche-tisch-verlauf-tief: #0f3f2f;
+  --focus-ring: #1c211d;
+  --lift-hi: rgba(255, 255, 255, 0.6);
+  --lift-shadow: rgba(0, 0, 0, 0.12);
+}
+
 
 /* Wer im Betriebssystem „Bewegung reduzieren“ gewählt hat, meint es ernst –
    für manche Menschen lösen Animationen Übelkeit oder Schwindel aus. */
@@ -323,6 +458,17 @@ table.data td {
 /* ==========================================================================
    Layout
    ========================================================================== */
+
+/* Der Rahmen, an dem der Live-Bereich den dunklen Satz erzwingt. Er darf
+   die Höhenkette nicht unterbrechen — deshalb selbst eine Spalte über die
+   volle Höhe. */
+.modus-rahmen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg-deep);
+}
 
 .app-shell {
   display: flex;
@@ -670,7 +816,7 @@ h2.section-title::after {
 .btn:disabled { opacity: 0.38; cursor: default; transform: none; }
 
 .btn.primary {
-  background: linear-gradient(160deg, var(--knopf-auszeichnung-hell), var(--auszeichnung) 52%, var(--knopf-auszeichnung-tief));
+  background: linear-gradient(160deg, var(--knopf-auszeichnung-hell), var(--knopf-auszeichnung-mitte) 52%, var(--knopf-auszeichnung-tief));
   border-color: rgba(240, 212, 146, 0.5);
   color: var(--auf-auszeichnung);
   box-shadow: 0 2px 10px var(--auszeichnung-a28), inset 0 1px 0 var(--lift-hi);

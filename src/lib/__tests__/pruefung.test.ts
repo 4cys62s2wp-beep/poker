@@ -37,7 +37,9 @@ interface Pruefung {
     tipp_min_px: number;
     tipp_abstand_px: number;
   };
+  modi: string[];
   bildschirme: number;
+  messungen: number;
   befunde_gesamt: number;
   stellen_gesamt: number;
   je_art: Array<{ art: string; anzahl: number }>;
@@ -82,6 +84,15 @@ describe('Die Prüfung misst das Richtige', () => {
     const erwartet = WEGE.wege.filter((w) => w.inhalt).length;
     expect(P.bildschirme, 'Nach einem neuen Bildschirm `npm run pruefen` erneut ausführen')
       .toBe(erwartet);
+  });
+
+  it('misst beide Farbmodi, nicht nur den eingestellten', () => {
+    /* Ein Lauf über den dunklen Satz sagt nichts über den hellen — und der
+       helle ist der, den niemand von uns täglich sieht. Genau dort ist der
+       Fehler aufgetaucht, den dieser Lauf gefunden hat: dunkle Schrift auf
+       dunklem Gold, 2,76 zu 1. */
+    expect(P.modi).toEqual(['dunkel', 'hell']);
+    expect(P.messungen).toBe(P.bildschirme * P.modi.length);
   });
 });
 

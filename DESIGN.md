@@ -502,3 +502,123 @@ Scrollen, die Reihenfolge klein → mittel → groß, die Live-Session mindesten
 doppelt so hoch wie die kleinste Karte, unter der letzten Karte genau der
 Gestenstreifen, die Kennzahlen über den Karten, und die Marke als 44 Pixel
 großer Weg nach `#/`.
+
+---
+
+## 11. Drei Farbmodi
+
+Hell, Dunkel, Systemvorgabe. Die Systemvorgabe ist keine dritte Farbwelt,
+sondern eine Regel darüber, welche der beiden gerade gilt: Die App löst sie
+beim Start auf und hört auf Änderungen, solange niemand ausdrücklich gewählt
+hat. Fünf Farbwelten sind bewusst nicht das Ziel — die Begründung steht in
+`ENTSCHEIDUNGEN.md`, E-034.
+
+### Regel 11.1 — Der Live-Bereich bleibt in jedem Modus dunkel
+
+Das Gerät liegt bei gedimmtem Licht auf einem Pokertisch. Eine helle Fläche
+blendet die Runde und beleuchtet Gesichter — beides ist am Tisch mehr als ein
+Schönheitsfehler. Nachschlagen und Lernen folgen der Wahl, die Live-Session
+nicht.
+
+**Wie das umgesetzt ist, gehört zur Regel.** Nicht als Sonderfall in einem
+Bildschirm: Ein Sonderfall je Bildschirm fehlt beim nächsten neuen, und dann
+sitzt jemand mit einer weißen Fläche am Tisch. Stattdessen hängt der dunkle
+Tokensatz an `[data-modus="dunkel"]` und nicht nur an `:root`. Jedes Element
+mit diesem Attribut erzwingt ihn für alles darunter. Der Live-Bereich setzt es
+einmal, in `App.tsx`, an einer Liste von Bereichen — heute steht dort genau
+ein Eintrag.
+
+### Regel 11.2 — Jeder farbige Token steht genau einmal je Modus
+
+Zwei Stellen mit derselben Farbe gehen auseinander, und zwar an der Stelle,
+die niemand ansieht. Deshalb keine Kopie für die Systemvorgabe, kein zweiter
+Block für den Live-Bereich. Ein Test prüft, dass beide Sätze **dieselben**
+Tokens kennen und dass kein Token in beiden denselben Wert hat — wäre er
+gleich, gehörte er nach `:root`.
+
+### Die Flächen
+
+| Fläche | dunkel | hell |
+|--------|--------|------|
+| `--bg` | `#0c110e` | `#f4f2ec` |
+| `--bg-deep` | `#090d0b` | `#efece5` |
+| `--bg-elev` | `#121814` | `#fbfaf6` |
+| `--bg-card` | `#161e19` | `#fdfcf9` |
+| `--bg-card-hover` | `#1b241e` | `#f2efe7` |
+
+Im hellen Modus **kein Reinweiß**: Es wirft bei Tageslicht mehr Licht zurück
+als Papier, und das Auge regelt dauernd nach. Und **kein Reinschwarz** für
+Text: Der harte Hell-Dunkel-Sprung erzeugt beim Weiterlesen Nachbilder.
+Stattdessen ein warmes Off-White und ein sehr dunkles Grüngrau — dieselbe
+warme Grundstimmung wie im dunklen Satz, nur umgedreht.
+
+### Gemessene Kontraste
+
+Jeder Wert unten ist der **schlechteste** über alle fünf Flächen. Keine dieser
+Zahlen steht im Quelltext; `farbmodi.test.ts` rechnet sie bei jedem Lauf neu.
+
+| Token | dunkel | schlechtester Kontrast | hell | schlechtester Kontrast | Grenze |
+|-------|--------|------------------------|------|------------------------|--------|
+| `--ergebnis-gut` | `#6ec97d` | **7,83** | `#0f5a32` | **7,04** | 7,00 |
+| `--ergebnis-schlecht` | `#f29b95` | **7,51** | `#95231c` | **7,02** | 7,00 |
+| `--text` | `#ece9df` | **13,12** | `#1c211d` | **13,86** | 4,50 |
+| `--text-dim` | `#a8a79b` | **6,58** | `#4b514c` | **6,90** | 4,50 |
+| `--text-faint` | `#949384` | **5,13** | `#5c6259` | **5,32** | 4,50 |
+| `--text-stark` | `#d8d5cb` | **10,85** | `#0f120f` | **15,98** | 4,50 |
+| `--akzent` | `#4fbf8e` | **6,96** | `#0a6b47` | **5,55** | 4,50 |
+| `--auszeichnung` | `#d4af5e` | **7,66** | `#7d5f14` | **5,06** | 4,50 |
+| `--ok-lesbar` auf `--ok-dim` | `#90d69c` | **7,35** | `#14622d` | **5,40** | 4,50 |
+| `--danger-lesbar` auf `--danger-dim` | `#eda49f` | **6,83** | `#8f1f18` | **6,28** | 4,50 |
+| `--info-lesbar` auf `--info-dim` | `#94bdea` | **6,70** | `#164a8c` | **6,25** | 4,50 |
+| `--warn-lesbar` auf `--warn-dim` | `#e8bd7a` | **6,99** | `#744d0e` | **5,34** | 4,50 |
+| `--kategorie-sozial-lesbar` auf `--kategorie-sozial-schwach` | `#bda6e8` | **6,09** | `#4c3484` | **6,96** | 4,50 |
+| `--auszeichnung-lesbar` auf `--auszeichnung-schwach` | `#edcf87` | **8,03** | `#5f4810` | **6,28** | 4,50 |
+
+Die letzten sechs Zeilen stehen auf einer durchscheinenden Fläche. Was der
+Text wirklich unter sich hat, hängt davon ab, was unter der Fläche liegt —
+deshalb wird die gedämpfte Farbe erst auf jeden Grund gelegt und dann
+gerechnet.
+
+### Regel 11.3 — Der Akzent braucht je Modus einen eigenen Wert
+
+Derselbe Grünton besteht die Prüfung nicht auf beiden Gründen. Nachgerechnet
+statt behauptet: Der dunkle Akzent erreicht auf hellem Grund **2,04 zu 1**,
+der helle auf dunklem Grund **2,91 zu 1** — beide weit unter 4,5.
+
+Die beiden Werte bleiben trotzdem dieselbe Farbe: Farbton 158 Grad gegen 154
+Grad. Gleiche Farbe, andere Helligkeit. Ein Test hält fest, dass zwischen
+ihnen höchstens 20 Grad liegen — mehr wären zwei Farben, nicht zwei Fassungen
+einer.
+
+### Regel 11.4 — Erfolg und Fehler bleiben zusätzlich an der Form erkennbar
+
+Unverändert gegenüber Abschnitt 2: Das Urteil im Drill trägt ein Zeichen
+(✓ / ✕) vor dem Wort, eine ausgeschiedene Zeile ist durchgestrichen, eine
+angehaltene Uhr trägt das Wort „Pausiert". Ein Modus ändert daran nichts —
+er ändert Farben, und Farbe war hier nie das einzige Merkmal.
+
+### Regel 11.5 — Kein Aufblitzen
+
+Die Wahl steht vor dem ersten Zeichnen fest. Ein kurzes Skript im `<head>`
+von `index.html` liest den Speicher und setzt dasselbe Attribut, bevor das
+Stilblatt geladen ist. Nachgemessen im Durchgang: Das Attribut ist schon bei
+`DOMContentLoaded` gesetzt, und das Skript steht im Dokument vor dem ersten
+Stilblatt.
+
+Der Schlüssel steht dadurch zweimal — im Skript und in `modus.ts`. Ein Test
+hält beide zusammen; ohne ihn blitzt es irgendwann wieder, und niemand weiß
+warum.
+
+### Was diese Regeln festhält
+
+- `farbmodi.test.ts`: jede Kombination aus Token, Fläche und Modus; beide
+  Sätze vollständig und deckungsgleich; jeder Token in genau einer Rolle;
+  kein Reinweiß, kein Reinschwarz; der Akzent als eigener Wert und dieselbe
+  Farbe.
+- `npm run pruefen`: derselbe Kontrast, aber am **gerenderten** Ergebnis und
+  in **beiden** Modi — 49 Bildschirme, 98 Messungen. Genau dieser Lauf hat
+  den einzigen echten Fehler dieser Änderung gefunden: dunkle Schrift auf
+  dunklem Gold im hellen Modus, 2,76 zu 1.
+- `durchgang.test.ts`: drei Einträge mit vorausgewählter Systemvorgabe, unter
+  dem Personensymbol statt auf der Startseite, Umschalten in beide Richtungen
+  ohne Neustart, kein Aufblitzen, Live-Bereich dunkel bei heller Wahl.

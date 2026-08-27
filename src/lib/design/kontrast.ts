@@ -30,6 +30,52 @@ export function kontrast(a: string, b: string): number {
   return (hell + 0.05) / (dunkel + 0.05);
 }
 
+/** Eine Farbe mit Alpha, wie sie in `rgba(...)` steht. */
+export interface MitAlpha {
+  rgb: [number, number, number];
+  alpha: number;
+}
+
+/** `#rrggbb` oder `rgba(r, g, b, a)` in Anteile und Deckkraft zerlegen. */
+export function zerlege(farbe: string): MitAlpha {
+  const roh = farbe.trim();
+  const m = roh.match(/^rgba?\(([^)]+)\)$/i);
+  if (m) {
+    const teile = m[1].split(/[,/]/).map((x) => Number.parseFloat(x.trim()));
+    if (teile.length < 3 || teile.slice(0, 3).some(Number.isNaN)) {
+      throw new Error(`"${farbe}" ist kein lesbares rgb/rgba`);
+    }
+    return {
+      rgb: [teile[0], teile[1], teile[2]],
+      alpha: teile.length > 3 && !Number.isNaN(teile[3]) ? teile[3] : 1,
+    };
+  }
+  const [r, g, b] = kanaele(roh).map((x) => x * 255);
+  return { rgb: [r, g, b], alpha: 1 };
+}
+
+/** Als `#rrggbb` zurückschreiben. */
+export function alsHex(rgb: [number, number, number]): string {
+  return `#${rgb.map((x) => Math.round(Math.min(255, Math.max(0, x)))
+    .toString(16).padStart(2, '0')).join('')}`;
+}
+
+/**
+ * Eine durchscheinende Farbe auf einen Grund legen.
+ *
+ * Nötig, weil die gedämpften Flächen (`--ok-dim` und Verwandte) als `rgba`
+ * über der Kartenfläche liegen. Ihr Kontrast gegen den Text darauf lässt sich
+ * nur ausrechnen, wenn man vorher weiß, welche Farbe dabei herauskommt —
+ * sonst prüfte man eine Farbe, die so nie auf dem Bildschirm steht.
+ */
+export function legeAuf(oben: string, unten: string): string {
+  const o = zerlege(oben);
+  const u = zerlege(unten);
+  return alsHex([0, 1, 2].map(
+    (i) => o.rgb[i] * o.alpha + u.rgb[i] * (1 - o.alpha),
+  ) as [number, number, number]);
+}
+
 /** Was die App verlangt.
  *
  *  7 zu 1 für Ergebniszahlen: Sie werden am Tisch gelesen, oft mit dem

@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(22);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(26);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -281,6 +281,67 @@ describe('Was vom Abend bleibt', () => {
 
   it('lässt von jedem dieser Bildschirme einen Weg zurück', () => {
     expect(schritt('Ein Tipp auf einen Abend zeigt den Abend').zurueck_sichtbar).toBe(true);
+  });
+});
+
+describe('Die Farbmodi', () => {
+  it('bietet drei Möglichkeiten mit der Systemvorgabe vorausgewählt', () => {
+    const e = schritt('Die Farbwahl liegt unter dem Personensymbol');
+    const eintraege = e.eintraege as Array<{ text: string; gewaehlt: boolean }>;
+    expect(e.anzahl).toBe(3);
+    expect(eintraege.map((x) => x.text)).toEqual(['Systemvorgabe', 'Hell', 'Dunkel']);
+    expect(eintraege.filter((x) => x.gewaehlt).map((x) => x.text)).toEqual(['Systemvorgabe']);
+  });
+
+  it('liegt unter dem Personensymbol und nicht auf der Startseite', () => {
+    /* Die Wahl wird einmal getroffen und dann jahrelang nicht mehr. Fläche
+       auf der Startseite brauchen die drei Karten. */
+    expect(schritt('Die Farbwahl liegt unter dem Personensymbol').auf_startseite).toBe(false);
+  });
+
+  it('wirkt sofort, ohne Neustart, in beide Richtungen', () => {
+    const e = schritt('Umschalten wirkt sofort und wird gemerkt');
+    expect(e.hat_gewechselt).toBe(true);
+    expect(e.ohne_neuladen).toBe(true);
+  });
+
+  it('merkt sich die Wahl und zieht das Farbschema des Browsers mit', () => {
+    /* Ohne `color-scheme` stünde ein weißes Eingabefeld im dunklen
+       Bildschirm, und niemand wüsste warum. */
+    const e = schritt('Umschalten wirkt sofort und wird gemerkt');
+    for (const satz of ['dunkel', 'hell'] as const) {
+      const m = e[satz] as { attribut: string; farbschema: string; gespeichert: string };
+      expect(m.attribut).toBe(satz);
+      expect(m.gespeichert).toBe(satz);
+      expect(m.farbschema).toBe(satz === 'hell' ? 'light' : 'dark');
+    }
+  });
+
+  it('steht vor dem ersten Zeichnen fest — kein Aufblitzen', () => {
+    const e = schritt('Nach dem Neuladen steht die Farbe vor dem ersten Zeichnen fest');
+    expect(e.bei_domcontentloaded).toBe(e.spaeter);
+    expect(e.skript_vor_stilblatt, 'Das Skript muss vor dem Stilblatt stehen').toBe(true);
+  });
+});
+
+describe('Der Live-Bereich folgt der Wahl nicht', () => {
+  it('bleibt dunkel, auch wenn hell gewählt ist', () => {
+    /* Das Gerät liegt bei gedimmtem Licht auf einem Pokertisch; eine helle
+       Fläche blendet die Runde und beleuchtet Gesichter. */
+    const e = schritt('Der Live-Bereich bleibt dunkel, auch bei heller Wahl');
+    const live = e.live as Record<string, string>;
+    expect(live.wahl_am_dokument).toBe('hell');
+    expect(live.rahmen_attribut).toBe('dunkel');
+    expect(live.grund).toBe('#0c110e');
+  });
+
+  it('lässt Lernen und Nachschlagen der Wahl folgen', () => {
+    /* Die Ausnahme gilt für den Live-Bereich und sonst nirgends — sonst
+       wäre sie keine Ausnahme, sondern ein zweiter dunkler Modus. */
+    const e = schritt('Der Live-Bereich bleibt dunkel, auch bei heller Wahl');
+    const lernen = e.lernen as Record<string, string | null>;
+    expect(lernen.rahmen_attribut).toBeNull();
+    expect(lernen.grund).not.toBe((e.live as Record<string, string>).grund);
   });
 });
 

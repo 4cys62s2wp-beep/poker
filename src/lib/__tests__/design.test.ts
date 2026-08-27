@@ -16,7 +16,7 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { KONTRAST_ERGEBNIS, KONTRAST_UEBRIG, kontrast } from '../design/kontrast';
+import { KONTRAST_UEBRIG, kontrast } from '../design/kontrast';
 import { summe, zaehleStreuung } from '../design/streuung';
 
 const CSS = readFileSync('src/styles/global.css', 'utf8');
@@ -49,33 +49,29 @@ function wert(name: string, tiefe = 0): string {
 
 // ---------------------------------------------------------------------------
 
-describe('Kontrast — gerechnet, nicht behauptet', () => {
-  const GRUND = ['--bg', '--bg-card'] as const;
+/* Der Kontrast steht seit E-034 in `farbmodi.test.ts`: Er gilt je Modus,
+   und die Farbtokens liegen nicht mehr im `:root`-Block, sondern in zwei
+   Sätzen daneben. Hier bliebe sonst eine halbe Prüfung stehen, die nur den
+   Grundzustand kennt — und eine halbe Prüfung sieht aus wie eine ganze. */
 
+describe('Kontrast wird woanders geprüft', () => {
   it('rechnet richtig (die Prüfung prüft sich selbst)', () => {
-    // Die beiden Extreme der Norm.
     expect(kontrast('#000000', '#ffffff')).toBeCloseTo(21, 2);
     expect(kontrast('#777777', '#777777')).toBeCloseTo(1, 6);
   });
 
-  it.each(['--ergebnis-gut', '--ergebnis-schlecht'])(
-    '%s erreicht 7 zu 1 auf jedem Grund', (name) => {
-      for (const grund of GRUND) {
-        expect(kontrast(wert(name), wert(grund))).toBeGreaterThanOrEqual(KONTRAST_ERGEBNIS);
-      }
-    });
-
-  it.each(['--akzent', '--text', '--text-dim', '--text-faint', '--text-stark', '--auszeichnung'])(
-    '%s erreicht 4,5 zu 1 auf jedem Grund', (name) => {
-      for (const grund of GRUND) {
-        expect(kontrast(wert(name), wert(grund))).toBeGreaterThanOrEqual(KONTRAST_UEBRIG);
-      }
-    });
-
   it('erkennt eine zu blasse Farbe', () => {
     /* Der alte Live-Akzent lag bei 3,92 zu 1 und war damit als Text nicht
        zulässig. Genau dieser Fall soll auffallen. */
-    expect(kontrast('#2f7f5e', wert('--bg'))).toBeLessThan(KONTRAST_UEBRIG);
+    expect(kontrast('#2f7f5e', '#0c110e')).toBeLessThan(KONTRAST_UEBRIG);
+  });
+
+  it('lässt die Modusprüfung nicht verschwinden', () => {
+    /* Wer diesen Verweis löscht, muss sich überlegen, wo der Kontrast
+       stattdessen geprüft wird. */
+    const modi = readFileSync('src/lib/__tests__/farbmodi.test.ts', 'utf8');
+    expect(modi).toContain('KONTRAST_ERGEBNIS');
+    expect(modi).toContain('KONTRAST_UEBRIG');
   });
 });
 

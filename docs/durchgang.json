@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-27T05:55:45.456Z",
+  "geprueft_am": "2026-08-27T06:08:51.788Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -136,7 +136,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 871,
+        "dauer_ms": 892,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -218,12 +218,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 42,
+        "dauer_ms": 34,
         "knopf_bewegt_px": 0,
         "oben": 656,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "54,1 %",
+        "ergebnis_text": "31,5 %",
         "uebergang": "0s",
         "belebung": "none"
       },

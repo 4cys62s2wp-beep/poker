@@ -1,0 +1,35 @@
+{
+  "gemessen_am": "2026-08-27T06:06:49.923Z",
+  "laeufe": 9,
+  "groesse": {
+    "vorher": {
+      "roh_byte": 5125610,
+      "gepackt_byte": 283878
+    },
+    "nachher": {
+      "binaer_roh_byte": 203851,
+      "binaer_gepackt_byte": 117049,
+      "kopf_roh_byte": 4278,
+      "kopf_gepackt_byte": 1982,
+      "roh_byte": 208129,
+      "gepackt_byte": 119031
+    },
+    "faktor_roh": 24.6,
+    "faktor_gepackt": 2.4
+  },
+  "ladezeit": {
+    "json": {
+      "median_ms": 98.9,
+      "kleinste_ms": 81.6,
+      "groesste_ms": 179.6
+    },
+    "binaer": {
+      "median_ms": 8.1,
+      "kleinste_ms": 4.8,
+      "groesste_ms": 17.1
+    },
+    "faktor": 12.2
+  },
+  "handpaare": 14365,
+  "konfigurationen_ausgeliefert": 25473
+}

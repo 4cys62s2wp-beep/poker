@@ -14,7 +14,7 @@
    alten zeigen, ohne dass es jemandem auffällt. Ein neuer Datenstand ergibt
    einen neuen Cache-Namen, und der alte wird beim Aktivieren gelöscht. */
 const DATEN_STAND = '2026-08-26T22-59-59-00-00';
-const DATEN_DATEIEN = ['./pokermath/b1_outs.json', './pokermath/b2_potodds.json', './pokermath/b3_kombinatorik.json', './pokermath/b4_preflop_equity.json'];
+const DATEN_DATEIEN = ['./pokermath/b1_outs.json', './pokermath/b2_potodds.json', './pokermath/b3_kombinatorik.json', './pokermath/b4_preflop_equity.json', './pokermath/b4_preflop_equity.bin'];
 /* ── Ende des erzeugten Bereichs ──────────────────────────────────────── */
 
 /* Die Zahl davor bei jeder Strukturänderung erhöhen (siehe Kopf der Datei). */

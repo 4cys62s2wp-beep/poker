@@ -356,6 +356,170 @@ function appB4(d) {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Das Binärformat der Equity-Matrix
+// ---------------------------------------------------------------------------
+
+/**
+ * Warum die Matrix als Binärdatei ausgeliefert wird.
+ *
+ * Als JSON ist sie 5,0 MB groß, und der Service Worker speichert sie für den
+ * Offline-Betrieb vollständig mit. Der Grund ist nicht die Datenmenge,
+ * sondern ihre Verpackung: `"equity_a": 0.195705` sind 22 Zeichen für eine
+ * Zahl, die in zwei Byte passt. Eine Equity ist ein Anteil zwischen 0 und 1;
+ * in Basispunkten — Hundertstelprozent — ausgedrückt ist sie eine ganze Zahl
+ * zwischen 0 und 10 000, und feiner als ein Basispunkt zeigt die App nie
+ * etwas an.
+ *
+ * Was NICHT weggelassen wird: kein einziger Wert. Die Binärdatei trägt
+ * dieselben Handpaare, dieselben Farbkonfigurationen und dieselben
+ * Häufigkeiten wie die JSON-Fassung. Eine Datei kleiner zu machen, indem man
+ * Daten daraus entfernt, wäre keine Leistung.
+ *
+ * Herkunft und Befunde bleiben JSON: Sie sind Text, sie sind klein, und sie
+ * sind die Grundlage von „Warum diese Zahl?". Text in ein Binärformat zu
+ * pressen spart nichts und kostet Lesbarkeit.
+ *
+ * Aufbau (alles little-endian):
+ *
+ *   "PMB4"            4 Byte   Kennung
+ *   version           uint8    = 1
+ *   reserviert        uint8    = 0
+ *   handpaare         uint32
+ *   konfigurationen   uint32
+ *   klassen           uint8    169 Starthand-Klassen
+ *   beziehungen       uint8    Zahl der verschiedenen Beziehungstexte
+ *   je Klasse         4 Byte   ASCII, mit Null aufgefüllt ("AA\0\0", "AKs\0")
+ *   je Beziehung      2 × (uint8 Länge + UTF-8)   deutsch, englisch
+ *   je Handpaar       7 Byte   klasse_a, klasse_b, equity_bp (uint16),
+ *                              konf_anzahl, spanne_hundertstel_pp (uint16)
+ *   je Konfiguration  4 Byte   equity_bp (uint16), haeufigkeit, beziehung
+ *
+ * Die Konfigurationen eines Handpaars stehen hintereinander; der Anfang
+ * ergibt sich aus der Summe der `konf_anzahl` aller vorherigen Handpaare.
+ * Ein Feld für den Versatz wäre vier Byte je Handpaar für eine Zahl, die man
+ * ausrechnen kann.
+ *
+ * `spanne_hundertstel_pp` gilt nur, wenn ein Handpaar **keine**
+ * Konfigurationen mitbringt. Wo welche dastehen, wird die Spanne aus ihnen
+ * gerechnet — sonst stünden zwei Zahlen da, die einander widersprechen
+ * können.
+ */
+const BINAER_KENNUNG = 'PMB4';
+const BINAER_VERSION = 1;
+
+/** Ein Anteil zwischen 0 und 1 als Basispunkte. */
+function basispunkte(anteil) {
+  const bp = Math.round(anteil * 10000);
+  if (bp < 0 || bp > 10000) {
+    throw new Error(`Equity ${anteil} liegt außerhalb von 0 bis 1`);
+  }
+  return bp;
+}
+
+/** Baut die Binärdatei aus der bereits geprüften Anzeigefassung. */
+function b4Binaer(app) {
+  const klassen = [];
+  const klassenIndex = new Map();
+  const beziehungen = [];
+  const beziehungIndex = new Map();
+
+  const merkeKlasse = (name) => {
+    if (!klassenIndex.has(name)) {
+      klassenIndex.set(name, klassen.length);
+      klassen.push(name);
+    }
+    return klassenIndex.get(name);
+  };
+  const merkeBeziehung = (paar) => {
+    const schluessel = `${paar.de}\u0000${paar.en}`;
+    if (!beziehungIndex.has(schluessel)) {
+      beziehungIndex.set(schluessel, beziehungen.length);
+      beziehungen.push(paar);
+    }
+    return beziehungIndex.get(schluessel);
+  };
+
+  /* Erst sammeln, dann schreiben – die Länge der Tabellen muss vor dem
+     ersten Byte feststehen. */
+  const paare = app.matchups.map((m) => ({
+    a: merkeKlasse(m.a),
+    b: merkeKlasse(m.b),
+    equity: basispunkte(m.equity_a),
+    spanne: Math.round(m.spanne_pp * 100),
+    konf: (m.farbkonfigurationen ?? []).map((k) => ({
+      equity: basispunkte(k.equity_a),
+      haeufigkeit: k.haeufigkeit,
+      beziehung: merkeBeziehung(k.beziehung),
+    })),
+  }));
+
+  if (klassen.length > 255) throw new Error(`${klassen.length} Klassen passen nicht in ein Byte`);
+  if (beziehungen.length > 255) throw new Error('Zu viele Beziehungstexte für ein Byte');
+  for (const p of paare) {
+    if (p.konf.length > 255) throw new Error('Zu viele Konfigurationen für ein Byte');
+    if (p.spanne > 65535) throw new Error(`Spanne ${p.spanne} passt nicht in zwei Byte`);
+    for (const k of p.konf) {
+      if (k.haeufigkeit > 255) {
+        throw new Error(`Häufigkeit ${k.haeufigkeit} passt nicht in ein Byte`);
+      }
+    }
+  }
+
+  const kodierer = new TextEncoder();
+  const beziehungBytes = beziehungen.map((b) => [kodierer.encode(b.de), kodierer.encode(b.en)]);
+  for (const [de, en] of beziehungBytes) {
+    if (de.length > 255 || en.length > 255) throw new Error('Beziehungstext zu lang für ein Byte Länge');
+  }
+
+  const konfGesamt = paare.reduce((n, p) => n + p.konf.length, 0);
+  const laenge = 4 + 1 + 1 + 4 + 4 + 1 + 1
+    + klassen.length * 4
+    + beziehungBytes.reduce((n, [de, en]) => n + 1 + de.length + 1 + en.length, 0)
+    + paare.length * 7
+    + konfGesamt * 4;
+
+  const puffer = new ArrayBuffer(laenge);
+  const sicht = new DataView(puffer);
+  const bytes = new Uint8Array(puffer);
+  let i = 0;
+
+  for (const zeichen of BINAER_KENNUNG) bytes[i++] = zeichen.charCodeAt(0);
+  sicht.setUint8(i++, BINAER_VERSION);
+  sicht.setUint8(i++, 0);
+  sicht.setUint32(i, paare.length, true); i += 4;
+  sicht.setUint32(i, konfGesamt, true); i += 4;
+  sicht.setUint8(i++, klassen.length);
+  sicht.setUint8(i++, beziehungen.length);
+
+  for (const name of klassen) {
+    const roh = kodierer.encode(name);
+    if (roh.length > 4) throw new Error(`Klassenname ${name} ist länger als vier Byte`);
+    bytes.set(roh, i);
+    i += 4;
+  }
+  for (const [de, en] of beziehungBytes) {
+    sicht.setUint8(i++, de.length); bytes.set(de, i); i += de.length;
+    sicht.setUint8(i++, en.length); bytes.set(en, i); i += en.length;
+  }
+  for (const p of paare) {
+    sicht.setUint8(i++, p.a);
+    sicht.setUint8(i++, p.b);
+    sicht.setUint16(i, p.equity, true); i += 2;
+    sicht.setUint8(i++, p.konf.length);
+    sicht.setUint16(i, p.konf.length === 0 ? p.spanne : 0, true); i += 2;
+  }
+  for (const p of paare) {
+    for (const k of p.konf) {
+      sicht.setUint16(i, k.equity, true); i += 2;
+      sicht.setUint8(i++, k.haeufigkeit);
+      sicht.setUint8(i++, k.beziehung);
+    }
+  }
+  if (i !== laenge) throw new Error(`Binärdatei: ${i} Byte geschrieben, ${laenge} berechnet`);
+  return Buffer.from(puffer);
+}
+
 /** Kürzen, ohne die Bedeutung zu verschieben.
  *
  *  Sechs Nachkommastellen sind ein Millionstel – feiner, als jede Anzeige je
@@ -383,7 +547,14 @@ function runde(wert, stellen) {
 function serviceWorkerText(ergebnisse) {
   const staende = ergebnisse.map(([, i]) => i.herkunft.erzeugt_am).sort();
   const stand = staende[staende.length - 1].replace(/[^0-9A-Za-z]/g, '-');
-  const dateien = ergebnisse.map(([name]) => `'./pokermath/${name}.json'`).join(', ');
+  /* Die Binärdatei gehört genauso in den Offline-Vorrat wie die JSON-Dateien.
+     Fehlt sie dort, startet die App ohne Netz — und zeigt beim ersten
+     Handpaar einen leeren Bildschirm. */
+  const dateien = ergebnisse
+    .map(([name]) => `'./pokermath/${name}.json'`)
+    .concat(ergebnisse.some(([n]) => n === 'b4_preflop_equity')
+      ? ["'./pokermath/b4_preflop_equity.bin'"] : [])
+    .join(', ');
 
   const text = readFileSync(SW, 'utf8');
   const zeilen = [
@@ -435,11 +606,43 @@ function main() {
      Deshalb wird sein neuer Inhalt VOR dem ersten Schreibzugriff gebaut. */
   const sw = serviceWorkerText(ergebnisse);
 
+  /* B4 wird geteilt: Herkunft und Befunde bleiben JSON (Text, klein, die
+     Grundlage von „Warum diese Zahl?"), die Matrix wandert in die
+     Binärdatei. Gebaut wird sie hier, VOR dem ersten Schreibzugriff — sie
+     gehört zum Alles-oder-nichts wie alles andere auch. */
+  const b4 = ergebnisse.find(([name]) => name === 'b4_preflop_equity');
+  let messung = null;
+  if (b4) {
+    const [, inhalt] = b4;
+    const alsJson = Buffer.byteLength(JSON.stringify(inhalt) + '\n');
+    const binaer = b4Binaer(inhalt);
+    /* Was in der Binärdatei steht, steht nicht noch einmal im JSON. */
+    b4[1] = { ...inhalt, matchups: undefined, matrix: 'b4_preflop_equity.bin' };
+    delete b4[1].matchups;
+    const rest = Buffer.byteLength(JSON.stringify(b4[1]) + '\n');
+    messung = {
+      vorher_json_byte: alsJson,
+      nachher_binaer_byte: binaer.length,
+      nachher_kopf_json_byte: rest,
+      nachher_gesamt_byte: binaer.length + rest,
+      verhaeltnis: Math.round((alsJson / (binaer.length + rest)) * 10) / 10,
+      handpaare: inhalt.matchups.length,
+      konfigurationen: inhalt.matchups.reduce(
+        (n, m) => n + (m.farbkonfigurationen?.length ?? 0), 0,
+      ),
+      binaer,
+    };
+  }
+
   mkdirSync(ZIEL, { recursive: true });
   for (const [name, inhalt] of ergebnisse) {
     const text = JSON.stringify(inhalt) + '\n';
     writeFileSync(join(ZIEL, `${name}.json`), text, 'utf8');
     gebaut.push([name, text.length]);
+  }
+  if (messung) {
+    writeFileSync(join(ZIEL, 'b4_preflop_equity.bin'), messung.binaer);
+    gebaut.push(['b4_preflop_equity.bin', messung.binaer.length]);
   }
   writeFileSync(SW, sw.text, 'utf8');
 
@@ -452,6 +655,19 @@ function main() {
   console.log(`Vertrag Version ${VERTRAG_VERSION} · geschrieben nach public/pokermath/`);
 
   console.log(`Service Worker auf Datenstand ${sw.stand} gesetzt (public/sw.js).`);
+
+  if (messung) {
+    const kb = (n) => `${(n / 1024).toFixed(1)} KB`;
+    console.log(
+      `\nDie Equity-Matrix als Binärdatei:\n`
+      + `  vorher  (JSON)          ${kb(messung.vorher_json_byte).padStart(10)}\n`
+      + `  nachher (Binärdatei)    ${kb(messung.nachher_binaer_byte).padStart(10)}\n`
+      + `  nachher (Kopf als JSON) ${kb(messung.nachher_kopf_json_byte).padStart(10)}\n`
+      + `  nachher (zusammen)      ${kb(messung.nachher_gesamt_byte).padStart(10)}`
+      + `   ·  Faktor ${messung.verhaeltnis}\n`
+      + `  ${messung.handpaare} Handpaare, ${messung.konfigurationen} Farbkonfigurationen`,
+    );
+  }
 
   /* Was die Herkunftsanzeige verspricht, hier einmal laut nachgezählt – wer
      das Skript laufen lässt, soll sehen, dass die Angaben da sind. */

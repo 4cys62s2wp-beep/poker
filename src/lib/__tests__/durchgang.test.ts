@@ -346,11 +346,60 @@ describe('Der Live-Bereich folgt der Wahl nicht', () => {
 });
 
 describe('Die Startseite trägt die Navigation allein', () => {
-  it('hat keine untere Leiste', () => {
-    /* Sie führte zu denselben Zielen wie die drei Karten und machte „Start"
-       damit zu einem Bildschirm ohne eigenen Inhalt (E-032). Dass sie weg
-       ist, prüft ein Test und nicht ein guter Vorsatz. */
-    expect(schritt('Die Startseite füllt den Bildschirm').untere_leiste).toBe(0);
+  /* Die drei folgenden Prüfungen sichern eine **Regel**, keinen Selektor.
+     Die erste Fassung suchte nach `nav.bottom-nav` und war damit wertlos:
+     Eine neue Leiste hieße beim nächsten Mal anders und käme durch. Geprüft
+     wird deshalb, was ein Screenreader als Navigation sieht — `<nav>` und
+     `role="navigation"` — und wo es auf dem Bildschirm sitzt.
+
+     Worum es geht: Auf der Startseite SIND die drei Karten die Navigation.
+     Eine zweite Navigation daneben führt zu denselben Zielen und macht
+     diesen Bildschirm damit zu einem ohne eigenen Inhalt — das war der
+     Grund für die leere untere Hälfte, nicht ein Layoutfehler (E-032). Und
+     der untere Rand gehört der großen Karte: Er ist der Teil, den der Daumen
+     erreicht. */
+
+  it('trägt höchstens eine Navigation — nicht zwei nebeneinander', () => {
+    const e = schritt('Die Startseite füllt den Bildschirm');
+    const navigationen = e.navigationen as Array<{ marke: string }>;
+    /* Alles ab der zweiten ist zu viel — und die Meldung nennt sie beim
+       Namen, damit niemand raten muss, welche gemeint ist. */
+    expect(navigationen.slice(1).map((n) => n.marke),
+      'Zwei Navigationen auf einem Bildschirm führen zu denselben Zielen. '
+      + 'Eine davon ist überflüssig — und die überflüssige nimmt den Karten '
+      + 'die Fläche.').toEqual([]);
+  });
+
+  it('lässt keine Navigation am unteren Bildschirmrand sitzen', () => {
+    /* „Unterer Rand" ist hier nicht geschätzt, sondern aus der Regel
+       abgeleitet: Unterhalb der großen Karte steht nur noch der
+       Gestenstreifen. Was tiefer sitzt als ihre Unterkante, sitzt dort, wo
+       eine Tableiste säße. */
+    const e = schritt('Die Startseite füllt den Bildschirm');
+    const gross = e.gross as { unten: number };
+    const navigationen = e.navigationen as Array<{
+      marke: string; unten: number; abstand_unterkante: number; spannt_die_breite: boolean;
+    }>;
+    const unten = navigationen.filter((n) => n.unten > gross.unten);
+    expect(unten.map((n) => `${n.marke} endet ${n.abstand_unterkante} px über dem Rand`),
+      'Der untere Rand gehört der großen Karte — er ist der Teil, den der '
+      + 'Daumen erreicht.').toEqual([]);
+  });
+
+  it('erkennt eine zurückgekehrte Leiste an ihrer Form, nicht an ihrem Namen', () => {
+    /* Die Gegenprobe zur Prüfung selbst: Eine Leiste am unteren Rand spannt
+       die Breite und endet dicht am Rand. Genau diese beiden Merkmale werden
+       gemessen — eine Umbenennung ändert daran nichts. */
+    const e = schritt('Die Startseite füllt den Bildschirm');
+    const navigationen = e.navigationen as Array<{
+      marke: string; spannt_die_breite: boolean; abstand_unterkante: number;
+    }>;
+    const leistenartig = navigationen.filter(
+      (n) => n.spannt_die_breite && n.abstand_unterkante < 96,
+    );
+    expect(leistenartig.map((n) => n.marke),
+      'Breit, unten, und eine Navigation: Das ist eine Tableiste, egal wie '
+      + 'die Klasse heißt.').toEqual([]);
   });
 
   it('passt ohne Scrollen auf den Bildschirm', () => {

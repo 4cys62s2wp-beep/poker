@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-27T06:58:11.094Z",
+  "geprueft_am": "2026-08-27T07:19:58.168Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -136,7 +136,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 870,
+        "dauer_ms": 897,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -271,7 +271,7 @@
     {
       "name": "Die Startseite füllt den Bildschirm",
       "ergebnis": {
-        "untere_leiste": 0,
+        "navigationen": [],
         "scrollt": false,
         "fensterhoehe": 844,
         "reihenfolge": [
@@ -329,12 +329,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 29,
+        "dauer_ms": 46,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "54,1 %",
+        "ergebnis_text": "24,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },

@@ -462,7 +462,32 @@ await schritt('Die Startseite füllt den Bildschirm', async () => {
     };
     const gross = masse('.start-einstieg.gross');
     return {
-      untere_leiste: document.querySelectorAll('nav.bottom-nav').length,
+      /* Nicht nach einer Klasse suchen, sondern nach der Rolle: Eine neue
+         Leiste hieße beim nächsten Mal anders, und ein Test auf
+         `nav.bottom-nav` ginge dann durch. Gezählt wird, was für einen
+         Screenreader Navigation IST — <nav> und role="navigation" —, und
+         jede davon wird vermessen. */
+      navigationen: [...document.querySelectorAll('nav, [role="navigation"]')]
+        .filter((el) => {
+          const r = el.getBoundingClientRect();
+          const st = getComputedStyle(el);
+          return r.width > 0 && r.height > 0
+            && st.visibility !== 'hidden' && st.display !== 'none';
+        })
+        .map((el) => {
+          const r = el.getBoundingClientRect();
+          return {
+            marke: el.tagName.toLowerCase()
+              + (el.className ? `.${String(el.className).trim().split(/\s+/).join('.')}` : ''),
+            oben: Math.round(r.top),
+            unten: Math.round(r.bottom),
+            breite: Math.round(r.width),
+            /* Der Abstand der Unterkante zum unteren Bildschirmrand. Klein
+               heißt: sitzt dort, wo eine Tableiste sitzen würde. */
+            abstand_unterkante: Math.round(window.innerHeight - r.bottom),
+            spannt_die_breite: r.width > window.innerWidth * 0.6,
+          };
+        }),
       scrollt: document.documentElement.scrollHeight > window.innerHeight + 1,
       fensterhoehe: window.innerHeight,
       reihenfolge: [...document.querySelectorAll('.start-einstieg')]

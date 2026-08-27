@@ -13,16 +13,20 @@
   --border: rgba(236, 233, 223, 0.075);
   --border-strong: rgba(236, 233, 223, 0.16);
 
-  /* Filz */
-  --felt: #1d5a43;
-  --felt-light: #2f7f5e;
-  --felt-dark: #12382b;
+  /* Tischfläche — die grüne Fläche, auf der Karten liegen. Der Name sagt,
+     wofür sie da ist, nicht welche Farbe sie hat: „Filz" wäre in einem
+     hellen Modus eine Lüge über den Wert dahinter. */
+  --flaeche-tisch: #1d5a43;
+  --flaeche-tisch-hell: #2f7f5e;
+  --flaeche-tisch-tief: #12382b;
 
-  /* Gold */
-  --gold: #d4af5e;
-  --gold-bright: #edcf87;
-  --gold-deep: #a8843b;
-  --gold-dim: rgba(212, 175, 94, 0.14);
+  /* Auszeichnung — Fortschritt, Rang, Pro. Alles, was jemand erreicht hat.
+     Hieß bis E-033 „Gold". Ein Farbname ist ein Wert, der sich nicht ändern
+     darf; ein Verwendungsname ist einer, der es kann. */
+  --auszeichnung: #d4af5e;
+  --auszeichnung-hell: #edcf87;
+  --auszeichnung-tief: #a8843b;
+  --auszeichnung-schwach: rgba(212, 175, 94, 0.14);
 
   /* Text */
   --text: #ece9df;
@@ -38,8 +42,9 @@
   --danger-dim: rgba(224, 92, 85, 0.13);
   --info: #5590d9;
   --info-dim: rgba(85, 144, 217, 0.14);
-  --violet: #9b7fd4;
-  --violet-dim: rgba(155, 127, 212, 0.14);
+  /* Kategorie „mit anderen" — Freunde, geteilte Aufgaben. */
+  --kategorie-sozial: #9b7fd4;
+  --kategorie-sozial-schwach: rgba(155, 127, 212, 0.14);
 
   /* Kartenfarben (4-Color-Deck) */
   --suit-s: #23241f;
@@ -59,16 +64,16 @@
      dreimaliger Nutzung tippt man auf die Farbe, nicht auf das Wort.
      Alle drei stammen aus der bestehenden Palette – keine neuen Farbwelten.
      (docs/DESIGN_REFERENZ.md, R2) */
-  --accent-learn: var(--gold);
-  --accent-learn-dim: var(--gold-dim);
-  --accent-live: var(--felt-light);
+  --accent-learn: var(--auszeichnung);
+  --accent-learn-dim: var(--auszeichnung-schwach);
+  --accent-live: var(--flaeche-tisch-hell);
   --accent-live-dim: rgba(47, 127, 94, 0.16);
   --accent-tools: var(--info);
   --accent-tools-dim: var(--info-dim);
   /* Vierter Platz: „Mit Freunden spielen“ – im Raster vorgesehen, noch nicht
      gebaut. Der Token steht hier, damit die Lücke sichtbar geplant ist. */
-  --accent-friends: var(--violet);
-  --accent-friends-dim: var(--violet-dim);
+  --accent-friends: var(--kategorie-sozial);
+  --accent-friends-dim: var(--kategorie-sozial-schwach);
 
   /* ── Abstands-Skala ──────────────────────────────────────────────────
      Ein Rhythmus für die ganze App. Gleichmäßige Abstände lesen sich als
@@ -124,7 +129,7 @@
   /* ── Die eine Akzentfarbe ────────────────────────────────────────────
      Reserviert für den Live-Bereich. Alles andere ist neutral: Wenn jede
      Ecke der App ihre eigene Farbe hat, heißt Farbe nichts mehr.
-     Gegenüber dem alten --felt-light aufgehellt, weil der bei 3,92 zu 1 auf
+     Gegenüber dem alten --flaeche-tisch-hell aufgehellt, weil der bei 3,92 zu 1 auf
      dunklem Grund unter der Grenze lag und damit als Text nicht zulässig
      war. Jetzt 8,32 zu 1. */
   --akzent: #4fbf8e;
@@ -202,12 +207,12 @@
      bleiben absichtlich als Literale stehen – für jede einen Token
      anzulegen ergäbe 78 Tokens mit je einer Verwendung. */
   --text-bright: #d8d5cb;
-  --on-gold: #271e08;          /* Text auf goldenem Grund */
+  --auf-auszeichnung: #271e08;          /* Text auf goldenem Grund */
   --on-ok: #0a1a0e;            /* Text auf grünem Grund */
   --ok-bright: #90d69c;
   --info-bright: #94bdea;
   --danger-bright: #eda49f;
-  --violet-bright: #bda6e8;
+  --kategorie-sozial-hell: #bda6e8;
   --warn: #e0a542;
   --warn-bright: #e8bd7a;
   --warn-dim: rgba(224, 165, 66, 0.14);
@@ -218,19 +223,19 @@
   --veil-3: rgba(236, 233, 223, 0.08);
   --scrim: rgba(9, 13, 11, 0.75);
   --scrim-strong: rgba(9, 13, 11, 0.92);
-  --gold-a28: rgba(212, 175, 94, 0.28);
-  --gold-a30: rgba(212, 175, 94, 0.3);
-  --gold-a40: rgba(212, 175, 94, 0.4);
-  --gold-a45: rgba(212, 175, 94, 0.45);
-  --gold-bright-a35: rgba(237, 207, 135, 0.35);
+  --auszeichnung-a28: rgba(212, 175, 94, 0.28);
+  --auszeichnung-a30: rgba(212, 175, 94, 0.3);
+  --auszeichnung-a40: rgba(212, 175, 94, 0.4);
+  --auszeichnung-a45: rgba(212, 175, 94, 0.45);
+  --auszeichnung-hell-a35: rgba(237, 207, 135, 0.35);
 
   /* Verlaufs-Stützen von Gold und Filz: kommen je zweimal vor (Marke und
      Hauptknopf) und gehören deshalb zusammen benannt – sonst driften sie
      beim nächsten Feinschliff auseinander. */
-  --gold-grad-hi: #f3dda2;
-  --gold-grad-lo: #b08c42;
-  --felt-grad-hi: #2f7f5e;
-  --felt-grad-lo: #123a2b;
+  --auszeichnung-verlauf-hell: #f3dda2;
+  --auszeichnung-verlauf-tief: #b08c42;
+  --flaeche-tisch-verlauf-hell: #2f7f5e;
+  --flaeche-tisch-verlauf-tief: #123a2b;
 
   /* Reines Weiß für Fokus-Ringe: absichtlich NICHT --text. Der Ring muss
      auf jedem Untergrund maximal auffallen, auch auf hellen Karten. */
@@ -241,8 +246,8 @@
   /* Die letzten wiederholten Verlaufs-Stützen: Knopfflächen (Gold, Grün,
      Rot). Damit ist jeder mehrfach benutzte Farbwert benannt; was danach
      bleibt, kommt genau einmal vor. */
-  --btn-gold-hi: #f0d492;
-  --btn-gold-lo: #b3893f;
+  --knopf-auszeichnung-hell: #f0d492;
+  --knopf-auszeichnung-tief: #b3893f;
   --btn-ok-hi: #6fc580;
   --btn-danger-hi: #933936;
   --btn-danger-lo: #7c2b2b;
@@ -371,15 +376,15 @@ table.data td {
   width: 34px;
   height: 34px;
   border-radius: 9px;
-  background: linear-gradient(150deg, var(--felt-grad-hi), var(--felt-grad-lo));
-  border: 1px solid var(--gold-bright-a35);
-  color: var(--gold-bright);
+  background: linear-gradient(150deg, var(--flaeche-tisch-verlauf-hell), var(--flaeche-tisch-verlauf-tief));
+  border: 1px solid var(--auszeichnung-hell-a35);
+  color: var(--auszeichnung-hell);
   font-size: 17px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), var(--shadow-soft);
 }
 
 .brand .grad {
-  background: linear-gradient(115deg, var(--gold-grad-hi), var(--gold) 55%, var(--gold-grad-lo));
+  background: linear-gradient(115deg, var(--auszeichnung-verlauf-hell), var(--auszeichnung) 55%, var(--auszeichnung-verlauf-tief));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -413,8 +418,8 @@ table.data td {
 }
 
 .nav-link.active {
-  background: var(--gold-dim);
-  color: var(--gold-bright);
+  background: var(--auszeichnung-schwach);
+  color: var(--auszeichnung-hell);
 }
 
 .nav-link.active::before {
@@ -425,7 +430,7 @@ table.data td {
   bottom: 20%;
   width: 3px;
   border-radius: 0 3px 3px 0;
-  background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+  background: linear-gradient(180deg, var(--auszeichnung-hell), var(--auszeichnung-tief));
 }
 
 .nav-link .ico {
@@ -486,13 +491,13 @@ table.data td {
     width: 30px;
     height: 30px;
     border-radius: 8px;
-    background: linear-gradient(150deg, var(--felt-grad-hi), var(--felt-grad-lo));
-    border: 1px solid var(--gold-bright-a35);
-    color: var(--gold-bright);
+    background: linear-gradient(150deg, var(--flaeche-tisch-verlauf-hell), var(--flaeche-tisch-verlauf-tief));
+    border: 1px solid var(--auszeichnung-hell-a35);
+    color: var(--auszeichnung-hell);
     font-size: 15px;
   }
   .mobile-top .grad {
-    background: linear-gradient(115deg, var(--gold-grad-hi), var(--gold) 55%, var(--gold-grad-lo));
+    background: linear-gradient(115deg, var(--auszeichnung-verlauf-hell), var(--auszeichnung) 55%, var(--auszeichnung-verlauf-tief));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -522,7 +527,7 @@ table.data td {
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--auszeichnung);
   margin-bottom: 10px;
 }
 
@@ -530,7 +535,7 @@ table.data td {
   content: '';
   width: 22px;
   height: 1px;
-  background: linear-gradient(90deg, var(--gold), transparent);
+  background: linear-gradient(90deg, var(--auszeichnung), transparent);
 }
 
 .page-header {
@@ -665,10 +670,10 @@ h2.section-title::after {
 .btn:disabled { opacity: 0.38; cursor: default; transform: none; }
 
 .btn.primary {
-  background: linear-gradient(160deg, var(--btn-gold-hi), var(--gold) 52%, var(--btn-gold-lo));
+  background: linear-gradient(160deg, var(--knopf-auszeichnung-hell), var(--auszeichnung) 52%, var(--knopf-auszeichnung-tief));
   border-color: rgba(240, 212, 146, 0.5);
-  color: var(--on-gold);
-  box-shadow: 0 2px 10px var(--gold-a28), inset 0 1px 0 var(--lift-hi);
+  color: var(--auf-auszeichnung);
+  box-shadow: 0 2px 10px var(--auszeichnung-a28), inset 0 1px 0 var(--lift-hi);
 }
 
 .btn.primary:hover { filter: brightness(1.06); }
@@ -716,12 +721,12 @@ button.pill {
   padding-inline: var(--sp-4);
 }
 
-.pill.gold { background: var(--gold-dim); color: var(--gold-bright); border-color: rgba(212, 175, 94, 0.32); }
+.pill.gold { background: var(--auszeichnung-schwach); color: var(--auszeichnung-hell); border-color: rgba(212, 175, 94, 0.32); }
 .pill.ok { background: var(--ok-dim); color: var(--ok-bright); border-color: rgba(88, 179, 104, 0.32); }
 .pill.info { background: var(--info-dim); color: var(--info-bright); border-color: rgba(85, 144, 217, 0.32); }
 .pill.danger { background: var(--danger-dim); color: var(--danger-bright); border-color: rgba(224, 92, 85, 0.32); }
 .pill.warn { background: var(--warn-dim); color: var(--warn-bright); border-color: rgba(224, 165, 66, 0.32); }
-.pill.violet { background: var(--violet-dim); color: var(--violet-bright); border-color: rgba(155, 127, 212, 0.32); }
+.pill.violet { background: var(--kategorie-sozial-schwach); color: var(--kategorie-sozial-hell); border-color: rgba(155, 127, 212, 0.32); }
 
 /* ==========================================================================
    Fortschritt
@@ -738,8 +743,8 @@ button.pill {
 .progressbar > div {
   height: 100%;
   border-radius: 99px;
-  background: linear-gradient(90deg, var(--gold-deep), var(--gold-bright));
-  box-shadow: 0 0 8px var(--gold-a40);
+  background: linear-gradient(90deg, var(--auszeichnung-tief), var(--auszeichnung-hell));
+  box-shadow: 0 0 8px var(--auszeichnung-a40);
   transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -935,7 +940,7 @@ button.pill {
 .prose p { margin: 0 0 14px; color: var(--text-bright); }
 .prose ul { margin: 0 0 14px 20px; }
 .prose li { margin-bottom: 7px; color: var(--text-bright); }
-.prose strong { color: var(--gold-bright); font-weight: 750; }
+.prose strong { color: var(--auszeichnung-hell); font-weight: 750; }
 
 .lesson-section { margin-bottom: 34px; }
 
@@ -969,8 +974,8 @@ button.pill {
 .callout.example { background: var(--info-dim); border-color: rgba(85, 144, 217, 0.28); }
 .callout.example .label { color: var(--info-bright); }
 
-.callout.tip { background: var(--gold-dim); border-color: var(--gold-a28); }
-.callout.tip .label { color: var(--gold-bright); }
+.callout.tip { background: var(--auszeichnung-schwach); border-color: var(--auszeichnung-a28); }
+.callout.tip .label { color: var(--auszeichnung-hell); }
 
 .table-wrap {
   overflow-x: auto;
@@ -995,7 +1000,7 @@ table.data th {
   text-align: left;
   padding: 11px 15px;
   background: rgba(212, 175, 94, 0.08);
-  color: var(--gold-bright);
+  color: var(--auszeichnung-hell);
   font-weight: 800;
   font-size: 12.5px;
   letter-spacing: 0.4px;
@@ -1081,7 +1086,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .table-felt {
   position: relative;
   background:
-    radial-gradient(ellipse at 50% 40%, var(--felt-light) 0%, var(--felt) 52%, var(--felt-dark) 100%);
+    radial-gradient(ellipse at 50% 40%, var(--flaeche-tisch-hell) 0%, var(--flaeche-tisch) 52%, var(--flaeche-tisch-tief) 100%);
   border: 11px solid #241509;
   outline: 1.5px solid rgba(237, 207, 135, 0.28);
   border-radius: 46% / 58%;
@@ -1108,12 +1113,12 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .seat.folded { opacity: 0.42; }
 
 .seat.acting {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 2px var(--gold-a45), 0 0 22px var(--gold-a30);
+  border-color: var(--auszeichnung);
+  box-shadow: 0 0 0 2px var(--auszeichnung-a45), 0 0 22px var(--auszeichnung-a30);
 }
 
 .seat .name { font-size: 13px; font-weight: 800; }
-.seat .stack { font-size: 12.5px; color: var(--gold-bright); font-weight: 700; }
+.seat .stack { font-size: 12.5px; color: var(--auszeichnung-hell); font-weight: 700; }
 .seat .tag { font-size: 10.5px; color: var(--text-faint); font-weight: 600; }
 
 .chip-bet {
@@ -1133,7 +1138,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   width: 11px;
   height: 11px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 32%, var(--gold-grad-hi), var(--gold) 68%);
+  background: radial-gradient(circle at 35% 32%, var(--auszeichnung-verlauf-hell), var(--auszeichnung) 68%);
   border: 1.5px dashed rgba(60, 40, 5, 0.55);
 }
 
@@ -1164,7 +1169,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .game-log .street-mark {
-  color: var(--gold-bright);
+  color: var(--auszeichnung-hell);
   font-weight: 800;
   margin-top: 6px;
 }
@@ -1190,8 +1195,8 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   white-space: nowrap;
 }
 
-.coach-verdict.v-raise { background: var(--gold-dim); border-color: var(--gold-a40); }
-.coach-verdict.v-raise .v-action { color: var(--gold-bright); }
+.coach-verdict.v-raise { background: var(--auszeichnung-schwach); border-color: var(--auszeichnung-a40); }
+.coach-verdict.v-raise .v-action { color: var(--auszeichnung-hell); }
 .coach-verdict.v-call { background: var(--ok-dim); border-color: rgba(88, 179, 104, 0.4); }
 .coach-verdict.v-call .v-action { color: var(--ok-bright); }
 .coach-verdict.v-check { background: var(--info-dim); border-color: rgba(85, 144, 217, 0.4); }
@@ -1212,7 +1217,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   background: rgba(236, 233, 223, 0.14);
 }
 
-.step-dots .dot.on { background: var(--gold); box-shadow: 0 0 7px rgba(212, 175, 94, 0.55); }
+.step-dots .dot.on { background: var(--auszeichnung); box-shadow: 0 0 7px rgba(212, 175, 94, 0.55); }
 
 .segmented {
   display: inline-flex;
@@ -1238,8 +1243,8 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .segmented button.on {
-  background: linear-gradient(160deg, var(--btn-gold-hi), var(--gold) 55%, var(--btn-gold-lo));
-  color: var(--on-gold);
+  background: linear-gradient(160deg, var(--knopf-auszeichnung-hell), var(--auszeichnung) 55%, var(--knopf-auszeichnung-tief));
+  color: var(--auf-auszeichnung);
 }
 
 /* ==========================================================================
@@ -1256,10 +1261,10 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .tell-item .t-ico { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
 .tell-item .t-name { font-weight: 800; font-size: 15px; }
-.tell-item .t-read { color: var(--gold-bright); font-size: 13.5px; font-weight: 700; margin-top: 2px; }
+.tell-item .t-read { color: var(--auszeichnung-hell); font-size: 13.5px; font-weight: 700; margin-top: 2px; }
 .tell-item .t-desc { color: var(--text-dim); font-size: 14px; margin-top: var(--sp-1); }
 
-.stars { color: var(--gold); letter-spacing: 1.5px; font-size: 12.5px; white-space: nowrap; }
+.stars { color: var(--auszeichnung); letter-spacing: 1.5px; font-size: 12.5px; white-space: nowrap; }
 .stars .off { color: rgba(236, 233, 223, 0.16); }
 
 .glossary-item {
@@ -1285,7 +1290,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .search-input:focus, .text-input:focus {
-  border-color: var(--gold);
+  border-color: var(--auszeichnung);
   box-shadow: 0 0 0 3px rgba(212, 175, 94, 0.16);
 }
 
@@ -1306,7 +1311,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .toast {
   background: linear-gradient(175deg, var(--veil-1), transparent 45%), var(--bg-card);
-  border: 1px solid var(--gold-a45);
+  border: 1px solid var(--auszeichnung-a45);
   border-radius: 13px;
   padding: var(--sp-3) 18px;
   font-size: 14px;
@@ -1316,7 +1321,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   max-width: 330px;
 }
 
-.toast .t-title { color: var(--gold-bright); }
+.toast .t-title { color: var(--auszeichnung-hell); }
 .toast .t-sub { color: var(--text-dim); font-weight: 550; font-size: 13px; }
 
 @keyframes toast-in {
@@ -1350,11 +1355,11 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .badge-tile .b-ico { font-size: 31px; filter: grayscale(1); opacity: 0.32; transition: filter 0.3s, opacity 0.3s; }
 .badge-tile.earned .b-ico { filter: none; opacity: 1; }
-.badge-tile.earned { border-color: var(--gold-a30); }
+.badge-tile.earned { border-color: var(--auszeichnung-a30); }
 .badge-tile .b-name { font-size: 13px; font-weight: 800; }
 .badge-tile .b-desc { font-size: 11.5px; color: var(--text-faint); line-height: 1.4; }
 
-.slider { width: 100%; accent-color: var(--gold); }
+.slider { width: 100%; accent-color: var(--auszeichnung); }
 
 .range-legend {
   display: flex;
@@ -1513,8 +1518,8 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .chip-link:hover {
-  border-color: var(--gold-dim);
-  color: var(--gold-bright);
+  border-color: var(--auszeichnung-schwach);
+  color: var(--auszeichnung-hell);
 }
 
 /* Profil-Knopf in der mobilen Kopfzeile.
@@ -1555,7 +1560,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   }
 
   .mobile-top-you.active {
-    color: var(--gold-bright);
+    color: var(--auszeichnung-hell);
   }
 }
 
@@ -1639,7 +1644,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .drill-outs {
   font-size: var(--fs-body);
-  color: var(--gold);
+  color: var(--auszeichnung);
   font-weight: var(--fw-medium);
 }
 
@@ -1808,7 +1813,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   max-width: 46ch;
 }
 
-.drill-hinweis.warn { color: var(--gold); }
+.drill-hinweis.warn { color: var(--auszeichnung); }
 
 .drill-fehler-titel {
   font-size: var(--fs-h3);
@@ -1873,9 +1878,9 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .drill-knopf.weiter {
   width: 100%;
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--on-gold);
+  background: var(--auszeichnung);
+  border-color: var(--auszeichnung);
+  color: var(--auf-auszeichnung);
 }
 
 .drill-knopf:active {
@@ -1883,7 +1888,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .drill-knopf.weiter:active {
-  background: var(--gold-bright);
+  background: var(--auszeichnung-hell);
 }
 
 .drill-stand {
@@ -1923,8 +1928,8 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .herkunft-zeichen:hover,
 .herkunft-zeichen:focus-visible {
-  color: var(--gold);
-  background: var(--gold-dim);
+  color: var(--auszeichnung);
+  background: var(--auszeichnung-schwach);
 }
 
 /* Die Tippfläche ist größer als das Zeichen: 26 px sieht man kaum, 44 px
@@ -1987,7 +1992,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-h3);
   font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
-  color: var(--gold-bright);
+  color: var(--auszeichnung-hell);
 }
 
 /* Im Blatt selbst hat der Wert kein zweites Fragezeichen zu suchen. */
@@ -2041,7 +2046,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-weight: var(--fw-bold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--auszeichnung);
 }
 
 .herkunft-abschnitt p {
@@ -2077,7 +2082,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 /* Eine fehlende Angabe wird nicht versteckt, sondern markiert. */
 .herkunft-fehlt {
-  color: var(--gold) !important;
+  color: var(--auszeichnung) !important;
 }
 
 /* Der Fuß der Bedienleiste: Punktestand links, Teilen rechts.
@@ -2473,7 +2478,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .tisch-pausiert {
   font-size: var(--fs-ueberschrift);
   font-weight: var(--fw-bold);
-  color: var(--gold);
+  color: var(--auszeichnung);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -2803,7 +2808,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .einrichten-warnung {
   margin: 0;
   font-size: var(--fs-beschriftung);
-  color: var(--gold);
+  color: var(--auszeichnung);
 }
 
 .einrichten-warnung::before {

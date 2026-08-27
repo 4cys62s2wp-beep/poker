@@ -127,7 +127,7 @@ export function Onboarding() {
           style={{
             width: 52, height: 52, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
             borderRadius: 16, background: 'linear-gradient(135deg, #1d5a43, #123527)',
-            border: '1px solid rgba(212,175,94,0.35)', marginBottom: 14, color: 'var(--gold)',
+            border: '1px solid rgba(212,175,94,0.35)', marginBottom: 14, color: 'var(--auszeichnung)',
           }}
         >
           <Icon name="spade" size={26} />

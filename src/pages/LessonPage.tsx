@@ -36,7 +36,7 @@ export function LessonPage() {
   if (!found) {
     return (
       <div className="card">
-        {L.notFound} <Link to="/lernen" style={{ color: 'var(--gold-bright)' }}>{L.backToPath}</Link>
+        {L.notFound} <Link to="/lernen" style={{ color: 'var(--auszeichnung-hell)' }}>{L.backToPath}</Link>
       </div>
     );
   }

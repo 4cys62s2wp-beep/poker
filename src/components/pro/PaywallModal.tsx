@@ -53,7 +53,7 @@ export function PaywallModal() {
           style={{
             width: 46, height: 46, borderRadius: 14, display: 'inline-flex',
             alignItems: 'center', justifyContent: 'center', marginBottom: 13,
-            background: 'var(--gold-dim)', color: 'var(--gold-bright)',
+            background: 'var(--auszeichnung-schwach)', color: 'var(--auszeichnung-hell)',
             border: '1px solid rgba(212,175,94,0.34)',
           }}
         >

@@ -274,7 +274,7 @@ export function PlayPage() {
                 }
                 setCoachMode(e.target.checked);
               }}
-              style={{ width: 18, height: 18, accentColor: 'var(--gold)' }}
+              style={{ width: 18, height: 18, accentColor: 'var(--auszeichnung)' }}
             />
             <div>
               <div className="row" style={{ fontWeight: 700 }}>

@@ -405,7 +405,7 @@ function ProfilLink({ to, icon, label }: { to: string; icon: IconName; label: st
         textDecoration: 'none', color: 'inherit',
       }}
     >
-      <span style={{ color: 'var(--gold)', display: 'flex' }}><Icon name={icon} size={18} /></span>
+      <span style={{ color: 'var(--auszeichnung)', display: 'flex' }}><Icon name={icon} size={18} /></span>
       <span style={{ flex: 1, fontWeight: 'var(--fw-medium)' }}>{label}</span>
       <span aria-hidden="true" style={{ color: 'var(--text-faint)' }}>›</span>
     </Link>

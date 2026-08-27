@@ -65,7 +65,7 @@ describe('Kontrast — gerechnet, nicht behauptet', () => {
       }
     });
 
-  it.each(['--akzent', '--text', '--text-dim', '--text-faint', '--text-bright', '--auszeichnung'])(
+  it.each(['--akzent', '--text', '--text-dim', '--text-faint', '--text-stark', '--auszeichnung'])(
     '%s erreicht 4,5 zu 1 auf jedem Grund', (name) => {
       for (const grund of GRUND) {
         expect(kontrast(wert(name), wert(grund))).toBeGreaterThanOrEqual(KONTRAST_UEBRIG);

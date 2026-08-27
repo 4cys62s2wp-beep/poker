@@ -94,7 +94,7 @@ export function ReviewPage() {
 
       {unlocked && !current && (
         <div className="card" style={{ maxWidth: 640, textAlign: 'center', padding: 36 }}>
-          <div style={{ color: 'var(--auszeichnung-hell)', marginBottom: 10 }}>
+          <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
             <Icon name="repeat" size={38} />
           </div>
           {data.reviews.length === 0 ? (

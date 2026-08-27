@@ -94,7 +94,7 @@ export function PotOddsTrainer() {
           </div>
           <div>
             <div className="stat-label">{L.callLabel}</div>
-            <div className="big-stat" style={{ color: 'var(--auszeichnung-hell)' }}>{bet}</div>
+            <div className="big-stat" style={{ color: 'var(--auszeichnung-lesbar)' }}>{bet}</div>
           </div>
         </div>
 

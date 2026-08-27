@@ -306,7 +306,7 @@ function paths(name: IconName) {
 /** Icon in einer gestalteten Kachel (für Hub-Karten und Navigation). */
 export function IconTile({ name, tone = 'gold', size = 40 }: { name: IconName; tone?: 'gold' | 'green' | 'blue' | 'red' | 'violet'; size?: number }) {
   const tones: Record<string, { bg: string; color: string; border: string }> = {
-    gold: { bg: 'var(--auszeichnung-schwach)', color: 'var(--auszeichnung-hell)', border: 'rgba(212,175,94,0.3)' },
+    gold: { bg: 'var(--auszeichnung-schwach)', color: 'var(--auszeichnung-lesbar)', border: 'rgba(212,175,94,0.3)' },
     green: { bg: 'var(--ok-dim)', color: '#90d69c', border: 'rgba(88,179,104,0.3)' },
     blue: { bg: 'var(--info-dim)', color: '#94bdea', border: 'rgba(85,144,217,0.3)' },
     red: { bg: 'var(--danger-dim)', color: '#eda49f', border: 'rgba(224,92,85,0.3)' },

@@ -268,7 +268,7 @@ export function FriendsPage() {
                 fontSize: 20,
                 fontWeight: 800,
                 letterSpacing: '0.12em',
-                color: 'var(--auszeichnung-hell)',
+                color: 'var(--auszeichnung-lesbar)',
                 background: 'var(--auszeichnung-schwach)',
                 border: '1px solid rgba(212,175,94,0.3)',
                 borderRadius: 10,
@@ -339,7 +339,7 @@ function Avatar({ name }: { name: string }) {
         fontSize: 14,
         flexShrink: 0,
         background: 'var(--auszeichnung-schwach)',
-        color: 'var(--auszeichnung-hell)',
+        color: 'var(--auszeichnung-lesbar)',
         border: '1px solid rgba(212,175,94,0.3)',
       }}
     >

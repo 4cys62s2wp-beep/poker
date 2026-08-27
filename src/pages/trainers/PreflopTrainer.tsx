@@ -91,13 +91,13 @@ export function PreflopTrainer() {
         {scenario.kind === 'rfi' ? (
           <p style={{ marginBottom: 14 }}>
             {L.rfiIntroBefore}
-            <strong style={{ color: 'var(--auszeichnung-hell)' }}>{scenario.position}</strong> (
+            <strong style={{ color: 'var(--auszeichnung-lesbar)' }}>{scenario.position}</strong> (
             {POSITION_NAMES[scenario.position]}){L.rfiIntroAfter}
           </p>
         ) : (
           <p style={{ marginBottom: 14 }}>
             {L.bbIntroBefore}
-            <strong style={{ color: 'var(--auszeichnung-hell)' }}>{L.bbIntroStrong}</strong>
+            <strong style={{ color: 'var(--auszeichnung-lesbar)' }}>{L.bbIntroStrong}</strong>
             {L.bbIntroAfter}
           </p>
         )}

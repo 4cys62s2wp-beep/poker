@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-27T07:19:58.168Z",
+  "geprueft_am": "2026-08-27T08:16:18.054Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -79,13 +79,15 @@
       "uebersprungen": false
     },
     {
-      "name": "Die Startseite bietet Fortsetzen statt Menü",
+      "name": "Die laufende Runde steht in der großen Karte",
       "ergebnis": {
-        "text": "LÄUFT GERADE · Zurück in die Runde · Seit gerade eben · 5 Spieler · Lorenz, Mira, Jonas, Ada, Ben",
+        "text": "Läuft gerade · Läuft seit gerade eben · 5 Spieler · Blinds 1/2 · Zurück in die Runde · Chips, Auszahlung, frühere Abende",
         "ziel": "#/session/live",
-        "oben_px": 76,
+        "knopf_hoehe": 60,
         "fuehrt_an_den_tisch": true,
-        "nennt_namen": true
+        "nennt_spielerzahl": true,
+        "nennt_blinds": true,
+        "alte_karte_oben": 0
       },
       "uebersprungen": false
     },
@@ -136,7 +138,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 897,
+        "dauer_ms": 881,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -280,24 +282,148 @@
           "gross"
         ],
         "klein": {
-          "oben": 188,
-          "unten": 319,
-          "hoehe": 131
+          "oben": 76,
+          "unten": 179,
+          "hoehe": 103
         },
         "mittel": {
-          "oben": 327,
-          "unten": 518,
-          "hoehe": 191
+          "oben": 187,
+          "unten": 461,
+          "hoehe": 274
         },
         "gross": {
-          "oben": 526,
+          "oben": 469,
           "unten": 820,
-          "hoehe": 294
+          "hoehe": 351
         },
         "rest_unten_px": 24,
         "gestenstreifen_px": 24,
-        "stand_oben_px": null,
-        "lernen_text": "Kurs, Trainer, Übungstisch – vom ersten Blatt bis GTO"
+        "stand_oben_px": 386,
+        "lernen_text": "So funktioniert Texas Hold'em",
+        "fuellung": [
+          {
+            "karte": "klein",
+            "innen_px": 69,
+            "belegt_px": 69,
+            "anteil": 1.004,
+            "ueberlauf_px": 0
+          },
+          {
+            "karte": "mittel",
+            "innen_px": 240,
+            "belegt_px": 192,
+            "anteil": 0.798,
+            "ueberlauf_px": 0
+          },
+          {
+            "karte": "gross",
+            "innen_px": 317,
+            "belegt_px": 179,
+            "anteil": 0.566,
+            "ueberlauf_px": 0
+          }
+        ]
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Die Karten sind auf jedem Bezugsgerät innen gefüllt",
+      "ergebnis": {
+        "messungen": [
+          {
+            "geraet": "375x667",
+            "scrollt": false,
+            "rest_unten_px": 24,
+            "karten": [
+              {
+                "karte": "klein",
+                "aussen_px": 103,
+                "innen_px": 69,
+                "belegt_px": 69,
+                "anteil": 1.004,
+                "ueberlauf_px": 0
+              },
+              {
+                "karte": "mittel",
+                "aussen_px": 222,
+                "innen_px": 188,
+                "belegt_px": 188,
+                "anteil": 0.998,
+                "ueberlauf_px": 0
+              },
+              {
+                "karte": "gross",
+                "aussen_px": 226,
+                "innen_px": 192,
+                "belegt_px": 179,
+                "anteil": 0.934,
+                "ueberlauf_px": 0
+              }
+            ]
+          },
+          {
+            "geraet": "390x844",
+            "scrollt": false,
+            "rest_unten_px": 24,
+            "karten": [
+              {
+                "karte": "klein",
+                "aussen_px": 103,
+                "innen_px": 69,
+                "belegt_px": 69,
+                "anteil": 1.004,
+                "ueberlauf_px": 0
+              },
+              {
+                "karte": "mittel",
+                "aussen_px": 274,
+                "innen_px": 240,
+                "belegt_px": 192,
+                "anteil": 0.798,
+                "ueberlauf_px": 0
+              },
+              {
+                "karte": "gross",
+                "aussen_px": 351,
+                "innen_px": 317,
+                "belegt_px": 179,
+                "anteil": 0.566,
+                "ueberlauf_px": 0
+              }
+            ]
+          },
+          {
+            "geraet": "360x740",
+            "scrollt": false,
+            "rest_unten_px": 24,
+            "karten": [
+              {
+                "karte": "klein",
+                "aussen_px": 103,
+                "innen_px": 69,
+                "belegt_px": 69,
+                "anteil": 1.004,
+                "ueberlauf_px": 0
+              },
+              {
+                "karte": "mittel",
+                "aussen_px": 243,
+                "innen_px": 209,
+                "belegt_px": 192,
+                "anteil": 0.917,
+                "ueberlauf_px": 0
+              },
+              {
+                "karte": "gross",
+                "aussen_px": 278,
+                "innen_px": 244,
+                "belegt_px": 179,
+                "anteil": 0.735,
+                "ueberlauf_px": 0
+              }
+            ]
+          }
+        ]
       },
       "uebersprungen": false
     },
@@ -329,12 +455,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 46,
+        "dauer_ms": 47,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "24,1 %",
+        "ergebnis_text": "54,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },

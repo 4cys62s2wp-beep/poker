@@ -143,23 +143,32 @@ await schritt('Die Uhr läuft wirklich', async () => {
   return { vorher, nachher, hat_sich_bewegt: vorher !== nachher };
 });
 
-await schritt('Die Startseite bietet Fortsetzen statt Menü', async () => {
-  /* Wer die App öffnet, während ein Abend läuft, soll nicht durch ein Menü.
-     Ganz oben steht die laufende Runde, mit Startzeit und Namen. */
+await schritt('Die laufende Runde steht in der großen Karte', async () => {
+  /* „Fortsetzen statt Menü" (Phase 2) gilt weiter — die Runde steht auf der
+     Startseite und ist einen Tipp entfernt. Sie steht seit E-035 aber nicht
+     mehr in einer eigenen kleinen Karte oben, sondern in der großen unten:
+     Dieselbe Auskunft zweimal auf einem Bildschirm ist einmal zu viel, und
+     unten ist sie größer und im Daumenbereich. */
   await seite.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.start-einstieg.gross');
   await seite.waitForTimeout(400);
-  const karte = seite.locator('.start-fortsetzen');
+  const karte = seite.locator('.start-einstieg.gross');
   const text = (await karte.innerText()).trim().replace(/\n/g, ' · ');
-  const ziel = await karte.getAttribute('href');
-  const obenAbstand = await karte.evaluate((el) => Math.round(el.getBoundingClientRect().top));
-  await karte.click();
+  const knopf = karte.locator('.start-knopf');
+  const ziel = await knopf.getAttribute('href');
+  const kasten = await knopf.boundingBox();
+  await knopf.click();
   await seite.waitForTimeout(400);
   return {
     text,
     ziel,
-    oben_px: obenAbstand,
+    knopf_hoehe: Math.round(kasten?.height ?? 0),
     fuehrt_an_den_tisch: new URL(seite.url()).hash === '#/session/live',
-    nennt_namen: /Lorenz/.test(text),
+    nennt_spielerzahl: /\d+ Spieler/.test(text),
+    nennt_blinds: /Blinds \d+\/\d+/.test(text),
+    /* Die alte Karte oben darf nicht mehr da sein — sonst stünde dasselbe
+       zweimal. */
+    alte_karte_oben: await seite.locator('.start-fortsetzen').count(),
   };
 });
 
@@ -502,9 +511,108 @@ await schritt('Die Startseite füllt den Bildschirm', async () => {
         getComputedStyle(document.documentElement).getPropertyValue('--gestenstreifen'), 10,
       ),
       stand_oben_px: masse('.start-stand')?.oben ?? null,
-      lernen_text: document.querySelector('.start-einstieg.mittel .unter')?.textContent.trim(),
+      lernen_text: document.querySelector('.start-einstieg.mittel .name')?.textContent.trim(),
+
+      /* Wie viel der Innenfläche einer Karte ihr Inhalt wirklich belegt.
+         Die Karten füllen die Höhe des Bildschirms; wenn ihr Inhalt das
+         nicht tut, sieht die Karte innen leer aus — genau das war der
+         Anlass für E-035. Gemessen wird senkrecht, weil nur senkrecht
+         gestreckt wird: von der Oberkante des ersten bis zur Unterkante des
+         letzten Kindes, geteilt durch die Innenhöhe. */
+      fuellung: [...document.querySelectorAll('.start-einstieg')].map((karte) => {
+        const st = getComputedStyle(karte);
+        const innen = karte.clientHeight
+          - Number.parseFloat(st.paddingTop) - Number.parseFloat(st.paddingBottom);
+        const kinder = [...karte.children].filter((k) => {
+          const r = k.getBoundingClientRect();
+          return r.width > 0 && r.height > 0;
+        });
+        if (kinder.length === 0 || innen <= 0) return null;
+        /* Die Summe der Kindhöhen samt Außenabständen — siehe die
+           ausführliche Begründung im Schritt „Die Karten sind auf jedem
+           Bezugsgerät innen gefüllt". */
+        const belegt = kinder.reduce((n, k) => {
+          const ks = getComputedStyle(k);
+          return n + k.getBoundingClientRect().height
+            + Number.parseFloat(ks.marginTop) + Number.parseFloat(ks.marginBottom);
+        }, 0);
+        return {
+          karte: karte.className.replace('start-einstieg ', ''),
+          innen_px: Math.round(innen),
+          belegt_px: Math.round(belegt),
+          anteil: Math.round((belegt / innen) * 1000) / 1000,
+          /* Abgeschnitten wäre schlimmer als leer. */
+          ueberlauf_px: Math.max(0, karte.scrollHeight - karte.clientHeight),
+        };
+      }).filter(Boolean),
     };
   });
+});
+
+/* ── Innen gefüllt, nicht nur außen groß ──────────────────────────────────
+   Die Karten füllen die Bildschirmhöhe. Solange ihr Inhalt aus zwei
+   Textzeilen bestand, sahen sie deswegen innen leer aus — der Anlass für
+   E-035. Der Schritt darüber misst das auf dem Gerät des Durchgangs; dieser
+   misst es auf allen drei Bezugsgeräten aus DESIGN.md, Regel 10.1, denn
+   eine Karte, die nur auf einem davon gefüllt ist, ist nicht gefüllt. */
+
+await schritt('Die Karten sind auf jedem Bezugsgerät innen gefüllt', async () => {
+  const urspruenglich = seite.viewportSize();
+  const messungen = [];
+  for (const [breite, hoehe] of [[375, 667], [390, 844], [360, 740]]) {
+    await seite.setViewportSize({ width: breite, height: hoehe });
+    await seite.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+    await seite.waitForSelector('.start-einstieg.gross');
+    await seite.waitForTimeout(400);
+    messungen.push({
+      geraet: `${breite}x${hoehe}`,
+      ...(await seite.evaluate(() => ({
+        scrollt: document.documentElement.scrollHeight > window.innerHeight + 1,
+        /* Was zwischen der untersten Karte und dem Bildschirmrand bleibt. */
+        rest_unten_px: Math.round(window.innerHeight
+          - document.querySelector('.start-einstieg.gross').getBoundingClientRect().bottom),
+        karten: [...document.querySelectorAll('.start-einstieg')].map((karte) => {
+          const st = getComputedStyle(karte);
+          const innen = karte.clientHeight
+            - Number.parseFloat(st.paddingTop) - Number.parseFloat(st.paddingBottom);
+          const kinder = [...karte.children].filter((k) => {
+            const r = k.getBoundingClientRect();
+            return r.width > 0 && r.height > 0;
+          });
+          if (kinder.length === 0 || innen <= 0) return null;
+          /* Die Summe der Kindhöhen samt ihrer eigenen Außenabstände — nicht
+             die Spanne vom ersten zum letzten Kind: Eine Spanne zählt die
+             Lücke dazwischen als belegt mit und wäre bei einer Karte, die
+             ihre zwei Zeilen an den oberen und den unteren Rand schiebt,
+             immer 1. Die Abstände zählen mit, weil sie zur Gestaltung
+             gehören; was übrig bleibt, ist der Rest, den die
+             Höhenverteilung nicht vergeben konnte. In einer Flexspalte
+             fallen Außenabstände nicht zusammen, die Summe ist also
+             genau. */
+          const belegt = kinder.reduce((n, k) => {
+            const ks = getComputedStyle(k);
+            return n + k.getBoundingClientRect().height
+              + Number.parseFloat(ks.marginTop) + Number.parseFloat(ks.marginBottom);
+          }, 0);
+          return {
+            karte: karte.className.replace('start-einstieg ', ''),
+            /* Die Außenhöhe steht mit im Protokoll, damit die Tabelle in
+               DESIGN.md, Regel 10.1, aus derselben Messung kommt wie die
+               Füllung und nicht aus einer zweiten von Hand. */
+            aussen_px: Math.round(karte.getBoundingClientRect().height),
+            innen_px: Math.round(innen),
+            belegt_px: Math.round(belegt),
+            anteil: Math.round((belegt / innen) * 1000) / 1000,
+            ueberlauf_px: Math.max(0, karte.scrollHeight - karte.clientHeight),
+          };
+        }).filter(Boolean),
+      }))),
+    });
+  }
+  await seite.setViewportSize(urspruenglich);
+  await seite.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForTimeout(300);
+  return { messungen };
 });
 
 await schritt('Jeder Bildschirm hat einen sichtbaren Weg zur Startseite', async () => {

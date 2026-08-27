@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(26);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(27);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -129,25 +129,41 @@ describe('Der Übergang an den Tisch', () => {
 });
 
 describe('Fortsetzen statt Menü', () => {
-  it('steht ganz oben auf der Startseite', () => {
-    /* „Ganz oben" ist nachgemessen, nicht behauptet: Die Karte liegt im
-       obersten Achtel eines 844 Pixel hohen Bildschirms. */
-    const e = schritt('Die Startseite bietet Fortsetzen statt Menü');
-    expect(e.oben_px as number).toBeLessThan(120);
+  /* Die Regel aus Phase 2 gilt weiter: Läuft eine Runde, steht sie auf der
+     Startseite und ist einen Tipp entfernt. Seit E-035 steht sie nicht mehr
+     in einer eigenen kleinen Karte oben, sondern in der großen unten — sie
+     ist dort größer und im Daumenbereich, und dieselbe Auskunft zweimal auf
+     einem Bildschirm ist einmal zu viel. */
+
+  it('steht in der großen Karte und nicht mehr in einer eigenen darüber', () => {
+    const e = schritt('Die laufende Runde steht in der großen Karte');
+    expect(e.alte_karte_oben).toBe(0);
   });
 
-  it('nennt Startzeit und Namen', () => {
-    const e = schritt('Die Startseite bietet Fortsetzen statt Menü');
-    expect(e.nennt_namen).toBe(true);
-    expect(String(e.text)).toMatch(/Seit /);
+  it('nennt Startzeit, Spielerzahl und Blindstufe', () => {
+    /* Wer die App am Tisch aufmacht, will wissen, ob das noch die Runde von
+       vorhin ist. Die Startzeit allein beantwortet das; Spielerzahl und
+       Blindstufe machen aus der Karte zugleich die Auskunft, für die man
+       sonst hineingehen müsste (E-035). */
+    const e = schritt('Die laufende Runde steht in der großen Karte');
+    expect(String(e.text)).toMatch(/Läuft seit /);
+    expect(e.nennt_spielerzahl).toBe(true);
+    expect(e.nennt_blinds).toBe(true);
   });
 
   it('führt in die Runde und nicht in ihr Menü', () => {
     /* Wer die App öffnet, während der Abend läuft, will die Uhr sehen. Ein
        Zwischenschritt ist an dieser Stelle einer zu viel. */
-    const e = schritt('Die Startseite bietet Fortsetzen statt Menü');
+    const e = schritt('Die laufende Runde steht in der großen Karte');
     expect(e.ziel).toBe('#/session/live');
     expect(e.fuehrt_an_den_tisch).toBe(true);
+  });
+
+  it('macht den Weg zurück groß genug für einen Daumen', () => {
+    /* Der Knopf wird einhändig getroffen, während die andere Hand Chips
+       stapelt. Die Mindestgröße aus DESIGN.md ist die Untergrenze. */
+    const e = schritt('Die laufende Runde steht in der großen Karte');
+    expect(e.knopf_hoehe as number).toBeGreaterThanOrEqual(44);
   });
 });
 
@@ -434,13 +450,170 @@ describe('Die Startseite trägt die Navigation allein', () => {
     expect(e.rest_unten_px).toBe(e.gestenstreifen_px);
   });
 
-  it('stellt die Kennzahlen über die Karten, nicht darunter', () => {
-    /* Unten drückten sie die große Karte aus dem Daumenbereich. Beim ersten
-       Öffnen gibt es sie noch nicht — dann ist hier nichts zu prüfen. */
+  it('hält die Kennzahlen aus dem Daumenbereich heraus', () => {
+    /* Streak, Level und XP standen einmal unter den Karten und drückten die
+       große aus dem Daumenbereich. Seit E-035 stehen sie in der Lernkarte —
+       sie gehören zum Lernteil und wirkten in einer eigenen Zeile darüber
+       abgetrennt. Was von der alten Regel bleibt und hier geprüft wird: Sie
+       stehen oberhalb der großen Karte, nicht darin und nicht darunter.
+
+       Beim ersten Öffnen gibt es sie noch nicht — dann ist hier nichts zu
+       prüfen. */
     const e = schritt('Die Startseite füllt den Bildschirm');
     if (e.stand_oben_px === null) return;
     expect(e.stand_oben_px as number)
-      .toBeLessThan((e.klein as { oben: number }).oben);
+      .toBeLessThan((e.gross as { oben: number }).oben);
+  });
+});
+
+/* ── Die Karten sind innen gefüllt ────────────────────────────────────────
+   Die Karten füllen die Bildschirmhöhe (Regel 10.1). Solange ihr Inhalt aus
+   zwei Textzeilen bestand, waren sie deshalb außen groß und innen leer —
+   der Anlass für E-035. Was das erkennt, ist nicht die Höhe der Karte,
+   sondern das Verhältnis von belegter zu verfügbarer Innenfläche. */
+
+/** Der kleinste Anteil, den eine Karte belegen darf.
+ *
+ *  Gemessen wird die Summe der Kindhöhen samt ihrer eigenen Abstände,
+ *  geteilt durch die Innenhöhe der Karte. Nicht die Spanne vom ersten zum
+ *  letzten Kind: Die zählt die Lücke dazwischen als belegt mit und wäre bei
+ *  einer Karte, die ihre zwei Zeilen an den oberen und den unteren Rand
+ *  schiebt, immer 1. Was übrig bleibt, ist der Leerraum, den die
+ *  Höhenverteilung nicht vergeben konnte — und genau der ist gemeint.
+ *
+ *  Die Zahl ist gemessen, nicht gewählt. Zwei Messreihen:
+ *
+ *  1. Was heute vorkommt: 72 Werte — drei Karten × drei Bezugsgeräte aus
+ *     Regel 10.1 × beide Sprachen × die vier Zustände der Startseite
+ *     (erstes Öffnen, benutzt, mit früheren Abenden, laufende Runde). Der
+ *     kleinste Wert war **0,492**: die große Karte auf dem 390 × 844 großen
+ *     Gerät im Zustand „benutzt, aber noch nie gespielt". Sie hat dort außer
+ *     dem Knopf nichts zu zeigen und muss trotzdem die größte Karte sein
+ *     (Regel 10.2) — der Leerraum ist dort keine Nachlässigkeit, sondern die
+ *     Folge zweier Regeln, die beide gelten.
+ *  2. Was der Test fangen muss: derselbe Bildschirm im Zustand vor E-035 —
+ *     Karten, deren Inhalt aus zwei Textzeilen besteht. Nachgestellt, indem
+ *     genau die Kinder ausgeblendet wurden, die dieser Durchgang hinzugefügt
+ *     hat. Ergebnis für die beiden unteren Karten: 0,142 bis **0,230**.
+ *
+ *  Der Schwellwert liegt eine Textzeile unter dem kleinsten Wert aus (1):
+ *  Eine Zeile im Fließtext ist auf jener Karte 22 von 351 Pixeln, also 0,063;
+ *  0,492 − 0,063 = 0,429, abgerundet auf das nächste Zehntel. Eine
+ *  Übersetzung, die eine Zeile anders umbricht, soll den Test nicht rot
+ *  machen.
+ *
+ *  Nach unten bleibt fast doppelt so viel Abstand wie nach oben
+ *  (0,4 → 0,230 gegenüber 0,4 → 0,492). Der Schwellwert trennt also die
+ *  beiden Fälle, statt zwischen ihnen zu kleben.
+ *
+ *  Was diese Messung NICHT sieht: ob ein Kind mit der Fläche etwas anfängt.
+ *  Ein Knopf, der auf die volle Höhe gestreckt wird, belegt sie — und sieht
+ *  aus wie ein leerer Rahmen mit einem Wort darin. Der erste Versuch tat
+ *  genau das: 0,89 gemessen, 176 Pixel hohes Rechteck auf dem Bild. Dagegen
+ *  hilft keine Zahl, sondern der Deckel in `global.css` (Abschnitt
+ *  „Startseite") und ein Blick auf das Bild. Dieselbe Lehre wie in
+ *  DESIGN.md 11.6, an einer anderen Stelle: Eine Prüfung sichert die
+ *  Eigenschaft, die sie misst, nicht die Absicht dahinter. */
+const MINDESTFUELLUNG = 0.4;
+
+interface Fuellung {
+  karte: string;
+  aussen_px: number;
+  innen_px: number;
+  belegt_px: number;
+  anteil: number;
+  ueberlauf_px: number;
+}
+
+describe('Die Karten sind innen gefüllt, nicht nur außen groß', () => {
+  const messungen = (schritt('Die Karten sind auf jedem Bezugsgerät innen gefüllt')
+    .messungen as Array<{
+      geraet: string; scrollt: boolean; rest_unten_px: number; karten: Fuellung[];
+    }>);
+
+  it('misst auf allen drei Bezugsgeräten aus Regel 10.1', () => {
+    /* Eine Karte, die nur auf einem Gerät gefüllt ist, ist nicht gefüllt.
+       Genau die Geräte, für die DESIGN.md die Höhen ausweist. */
+    expect(messungen.map((m) => m.geraet)).toEqual(['375x667', '390x844', '360x740']);
+    for (const m of messungen) expect(m.karten).toHaveLength(3);
+  });
+
+  it('lässt keine Karte unter den gemessenen Mindestanteil fallen', () => {
+    for (const m of messungen) {
+      for (const k of m.karten) {
+        expect(
+          k.anteil,
+          `Die Karte „${k.karte}" belegt auf ${m.geraet} nur ${k.anteil} ihrer `
+          + `Innenfläche (${k.belegt_px} von ${k.innen_px} px). Eine Karte, die `
+          + 'die Bildschirmhöhe füllt, aber innen leer bleibt, sieht aus wie ein '
+          + 'Versehen — das war der Anlass für E-035. Entweder fehlt der Karte '
+          + 'Inhalt, oder ein Kind darf die übrige Höhe nicht mehr aufnehmen. '
+          + 'Eine dekorative Abbildung ist ausdrücklich nicht die Antwort: Sie '
+          + 'füllt dieselbe Fläche, ohne etwas zu sagen.',
+        ).toBeGreaterThanOrEqual(MINDESTFUELLUNG);
+      }
+    }
+  });
+
+  it('schneidet dabei nichts ab — abgeschnitten wäre schlimmer als leer', () => {
+    /* Die Gegenprobe zum Anteil: Wer eine Karte füllt, indem er mehr
+       hineinlegt, als hineinpasst, hat sie nicht gefüllt, sondern
+       beschnitten. */
+    for (const m of messungen) {
+      for (const k of m.karten) {
+        expect(k.ueberlauf_px, `Die Karte „${k.karte}" läuft auf ${m.geraet} um `
+          + `${k.ueberlauf_px} px über.`).toBe(0);
+      }
+    }
+  });
+
+  it('scrollt auf keinem der drei Geräte', () => {
+    /* Dieselbe Regel wie im Schritt darüber, hier auf allen drei Geräten:
+       Die Startseite passt, sie wird nicht gescrollt. */
+    for (const m of messungen) {
+      expect(m.scrollt, `Die Startseite scrollt auf ${m.geraet}.`).toBe(false);
+    }
+  });
+
+  it('hält auf jedem Gerät die Reihenfolge klein < mittel < groß', () => {
+    /* Regel 10.2 gilt nicht nur auf dem Gerät des Durchgangs. Sie stand
+       vorübergehend auf dem Kopf: Als die Lernkarte Streak, Level und XP
+       aufnahm, war sie auf dem 375 × 667 großen Gerät 235 Pixel hoch und
+       die Live-Session darunter 209 — die größte Karte war die mittlere.
+       Aufgefallen ist das erst, als diese Messung auf drei Geräten lief. */
+    for (const m of messungen) {
+      const h = (name: string) => m.karten.find((k) => k.karte === name)!.aussen_px;
+      expect(h('klein'), `${m.geraet}: klein gegen mittel`).toBeLessThan(h('mittel'));
+      expect(h('mittel'), `${m.geraet}: mittel gegen groß`).toBeLessThan(h('gross'));
+    }
+  });
+
+  it('gibt der Live-Session auf jedem Gerät mindestens die doppelte Höhe', () => {
+    /* Deutlich größer, nicht ein bisschen — dieselbe Schwelle wie im Schritt
+       darüber, hier auf allen drei Bezugsgeräten. */
+    for (const m of messungen) {
+      const h = (name: string) => m.karten.find((k) => k.karte === name)!.aussen_px;
+      expect(h('gross'), m.geraet).toBeGreaterThanOrEqual(h('klein') * 2);
+    }
+  });
+
+  it('lässt unter der letzten Karte auf jedem Gerät nur den Gestenstreifen', () => {
+    const streifen = schritt('Die Startseite füllt den Bildschirm').gestenstreifen_px;
+    for (const m of messungen) {
+      expect(m.rest_unten_px, m.geraet).toBe(streifen);
+    }
+  });
+
+  it('misst auch auf dem Gerät des Durchgangs selbst', () => {
+    /* Der Schritt, der die Höhenverteilung prüft, misst die Füllung mit —
+       damit die beiden Messungen nicht auseinanderlaufen können. */
+    const e = schritt('Die Startseite füllt den Bildschirm');
+    const fuellung = e.fuellung as Fuellung[];
+    expect(fuellung).toHaveLength(3);
+    for (const k of fuellung) {
+      expect(k.anteil, `Karte „${k.karte}"`).toBeGreaterThanOrEqual(MINDESTFUELLUNG);
+      expect(k.ueberlauf_px).toBe(0);
+    }
   });
 });
 

@@ -497,11 +497,19 @@ Eine Zahl, die auf eine andere Zahl abgestimmt ist, hält nur bis zur nächsten
 
 ### Was diese Regeln festhält
 
-`durchgang.test.ts` prüft am gerenderten Ergebnis: keine untere Leiste, kein
-Scrollen, die Reihenfolge klein → mittel → groß, die Live-Session mindestens
-doppelt so hoch wie die kleinste Karte, unter der letzten Karte genau der
+`durchgang.test.ts` prüft am gerenderten Ergebnis: kein Scrollen, die
+Reihenfolge klein → mittel → groß, die Live-Session mindestens doppelt so
+hoch wie die kleinste Karte, unter der letzten Karte genau der
 Gestenstreifen, die Kennzahlen über den Karten, und die Marke als 44 Pixel
 großer Weg nach `#/`.
+
+Dass keine zweite Navigation zurückkommt, prüft er an der **Rolle** und an
+der **Lage**, nicht an einer Klasse: höchstens ein Element mit
+Navigationsrolle (`<nav>` oder `role="navigation"`), keines unterhalb der
+großen Karte, und keines, das breit ist und dicht am unteren Rand endet. Die
+erste Fassung suchte nach `nav.bottom-nav` und war damit wertlos — eine neue
+Leiste hieße beim nächsten Mal anders und käme durch. Gegengeprüft: Eine
+eingebaute Probeleiste ohne diese Klasse lässt beide Lageprüfungen fallen.
 
 ---
 
@@ -609,16 +617,45 @@ Der Schlüssel steht dadurch zweimal — im Skript und in `modus.ts`. Ein Test
 hält beide zusammen; ohne ihn blitzt es irgendwann wieder, und niemand weiß
 warum.
 
+### Regel 11.6 — Der Lauf über beide Modi ist die eigentliche Prüfung
+
+Eine Tokenprüfung sichert **Bausteine**, nicht ihre **Zusammensetzung**.
+
+Das ist keine Vermutung, sondern die Lehre aus dem einzigen echten Fehler
+dieser Änderung. Der Hauptknopf trug im hellen Modus dunkle Schrift auf
+dunklem Gold — **2,76 zu 1**, gut vierzig Prozent unter der Grenze. Und
+dabei war die Tokenprüfung **grün**: `--auf-auszeichnung` war als Schriftfarbe
+in Ordnung, `--auszeichnung` war als Textfarbe in Ordnung. Jeder Baustein
+hielt seine Grenze. Erst ihre Zusammensetzung — dunkle Schrift auf einem
+Farbverlauf, dessen dunkelster Stopp ausgerechnet die Textfarbe war — ergab
+etwas Unlesbares.
+
+Diese Zusammensetzung entsteht im Browser. Sie steht in keiner Datei: Der
+Verlauf kommt aus einer Regel, die Schriftfarbe aus einer zweiten, der Grund
+darunter aus einer dritten, und welcher Farbstopp gerade hinter dem Wort
+liegt, entscheidet die Zeilenumbrechung. Kein Test über Werte kann das sehen.
+
+**Daraus folgt die Reihenfolge, in der diese beiden Prüfungen stehen.** Der
+Lauf über beide Modi am gerenderten Ergebnis (`npm run pruefen`) ist nicht
+die Zugabe zur Tokenprüfung, sondern die eigentliche Prüfung; die
+Tokenprüfung ist der schnelle Vorabfilter, der die groben Fehler abfängt,
+bevor ein Browser startet. Wer einmal Zeit sparen muss, spart sie bei der
+Tokenprüfung — nicht hier.
+
+Und deshalb läuft er über **beide** Modi und nicht über den eingestellten.
+Der helle Satz ist der, den niemand von uns täglich sieht; ein Lauf über den
+dunklen sagt über ihn genau nichts.
+
 ### Was diese Regeln festhält
 
 - `farbmodi.test.ts`: jede Kombination aus Token, Fläche und Modus; beide
   Sätze vollständig und deckungsgleich; jeder Token in genau einer Rolle;
   kein Reinweiß, kein Reinschwarz; der Akzent als eigener Wert und dieselbe
-  Farbe.
+  Farbe. Dazu die Liste der Bereiche, die den dunklen Satz erzwingen: Sie hat
+  genau einen Eintrag, und der Test schlägt bei jeder Erweiterung fehl — mit
+  der Begründung in der Fehlermeldung, damit sie gelesen wird.
 - `npm run pruefen`: derselbe Kontrast, aber am **gerenderten** Ergebnis und
-  in **beiden** Modi — 49 Bildschirme, 98 Messungen. Genau dieser Lauf hat
-  den einzigen echten Fehler dieser Änderung gefunden: dunkle Schrift auf
-  dunklem Gold im hellen Modus, 2,76 zu 1.
+  in **beiden** Modi — 49 Bildschirme, 98 Messungen. Siehe Regel 11.6.
 - `durchgang.test.ts`: drei Einträge mit vorausgewählter Systemvorgabe, unter
   dem Personensymbol statt auf der Startseite, Umschalten in beide Richtungen
   ohne Neustart, kein Aufblitzen, Live-Bereich dunkel bei heller Wahl.

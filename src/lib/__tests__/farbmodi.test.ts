@@ -211,11 +211,53 @@ describe('Der Live-Bereich erzwingt den dunklen Satz', () => {
     expect(inBildschirmen).not.toMatch(/data-modus/);
   });
 
-  it('nennt den Live-Bereich als einzigen Fall', () => {
+  /**
+   * Warum die Liste genau einen Eintrag hat, und warum das ein Test ist.
+   *
+   * Eine Ausnahme von der Nutzerwahl ist eine Bevormundung. Sie ist hier
+   * gerechtfertigt, und zwar aus einem einzigen Grund — der unten in der
+   * Fehlermeldung steht. Für jeden weiteren Bereich müsste derselbe Grund
+   * gelten, und das tut er fast nie: Wer im Bus lernt, hat andere
+   * Lichtverhältnisse als wer am Tisch sitzt.
+   *
+   * Der Test schlägt deshalb bei **jeder** Erweiterung fehl, auch bei einer
+   * gut gemeinten. Das ist die Absicht: Wer die Liste erweitert, soll die
+   * Begründung lesen müssen und die Erweiterung bewusst vertreten — nicht
+   * nebenbei einen zweiten Bereich mitnehmen, weil es gerade passt.
+   */
+  const WARUM_NUR_LIVE = [
+    'Der Live-Bereich ist die einzige Ausnahme von der Farbwahl der Nutzerin.',
+    '',
+    'Der Grund, und er gilt nur dort: Das Gerät liegt bei gedimmtem Licht auf',
+    'einem Pokertisch. Eine helle Fläche blendet die Runde und beleuchtet',
+    'Gesichter — am Pokertisch ist beides mehr als ein Schönheitsfehler.',
+    '',
+    'Für jeden weiteren Bereich müsste derselbe Grund gelten. Wer im Bus lernt',
+    'oder auf dem Sofa nachschlägt, hat andere Lichtverhältnisse als wer am',
+    'Tisch sitzt — dort entscheidet die Nutzerin, nicht die App.',
+    '',
+    'Wenn Sie diesen Test gerade lesen, weil Sie die Liste erweitert haben:',
+    'Vertreten Sie die Erweiterung bewusst, halten Sie den Grund in',
+    'ENTSCHEIDUNGEN.md fest, und setzen Sie ERWARTETE_BEREICHE hier nach.',
+  ].join('\n');
+
+  /** Was heute erzwungen wird. Bewusst als Konstante: Wer sie ändert, ändert
+   *  eine Entscheidung und keinen Testwert. */
+  const ERWARTETE_BEREICHE = ['/session'];
+
+  it('erzwingt den dunklen Satz für genau einen Bereich', () => {
     const liste = APP.match(/const DUNKEL_ERZWUNGEN = \[([^\]]*)\]/);
-    expect(liste, 'Die Liste der erzwungenen Bereiche fehlt').not.toBeNull();
+    expect(liste, 'Die Liste der erzwungenen Bereiche fehlt in App.tsx').not.toBeNull();
     const bereiche = [...liste![1].matchAll(/'([^']+)'/g)].map((m) => m[1]);
-    expect(bereiche).toEqual(['/session']);
+    expect(bereiche, WARUM_NUR_LIVE).toEqual(ERWARTETE_BEREICHE);
+  });
+
+  it('hält die Begründung im Test selbst fest', () => {
+    /* Eine Fehlermeldung, die auf ein Dokument verweist, wird nicht gelesen.
+       Eine, die den Grund enthält, schon. */
+    expect(WARUM_NUR_LIVE).toContain('gedimmtem Licht');
+    expect(WARUM_NUR_LIVE).toContain('blendet die Runde');
+    expect(WARUM_NUR_LIVE).toContain('beleuchtet');
   });
 
   it('hängt der dunkle Satz an einem Attribut und nicht nur an :root', () => {

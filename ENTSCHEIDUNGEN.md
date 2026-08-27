@@ -1268,3 +1268,120 @@ Kartenfarben. Der mittlere Farbstopp hat dafür einen eigenen Token bekommen.
 **Das ist das Argument für den Lauf über beide Modi.** Die Tokenprüfung war
 grün: Jeder einzelne Token hielt seine Grenze. Der Fehler entstand erst aus
 der Kombination, und die sieht nur ein Browser.
+
+---
+
+## E-035 · 2026-08-27 · Die Karten tragen Inhalt, keine Abbildungen
+
+**Stand:** entschieden und umgesetzt.
+
+**Die Lage.** Seit E-032 füllen die drei Karten der Startseite die
+Bildschirmhöhe. Ihr Inhalt bestand aus zwei Textzeilen — einer Überschrift
+und einem Halbsatz. Die Höhenregel streckte diese zwei Zeilen über die ganze
+Fläche. Die Karten waren damit außen groß und innen leer.
+
+**Die Entscheidung.** Die Höhenregel bleibt, der Inhalt kommt dazu. Jede
+Karte bekommt das, was sie ohnehin zu sagen hat — und wird dadurch zugleich
+ein kürzerer Weg. Was genau, steht in DESIGN.md, Regel 10.5.
+
+### Warum keine dekorativen Abbildungen
+
+Der naheliegende Griff wäre ein Bild gewesen: Karten, Chips, ein Tisch. Eine
+Abbildung füllt die Fläche sofort und ohne Nachdenken.
+
+**Sie sagt aber nichts.** Wer die Karte „Nachschlagen" ansieht, weiß nach
+einem Bild von Spielkarten genau so viel wie vorher — nämlich, dass es um
+Poker geht, was auf jedem Bildschirm dieser App zutrifft. Ein Feld mit der
+Aufschrift „Glossar" sagt, was dahinter liegt, **und** ist der Weg dorthin.
+
+**Sie altert schlecht.** Ein Bild ist an einen Stil gebunden, an eine
+Auflösung, an einen Geschmack. Es muss mitgepflegt werden, ohne je etwas
+beizutragen. Inhalt, den es ohnehin gibt, altert mit der App und nicht
+gegen sie.
+
+**Sie kostet zweimal.** Erst Bytes, dann Aufmerksamkeit: Auf einer Fläche,
+die der Daumen unter Zeitdruck trifft, steht sie zwischen der Hand und ihrem
+Ziel.
+
+**Alternative:** Eine ruhige Fläche mit Farbverlauf statt eines Bildes.
+
+**Warum nicht:** Dasselbe Argument in schwächerer Form. Eine Fläche, die
+nichts sagt, ist eine Fläche, die nichts sagt — ob sie nun ein Bild trägt
+oder einen Verlauf. Der Unterschied ist nur, wie lange es dauert, bis es
+auffällt.
+
+### Der Fehler, den dabei fast dieselbe Falle gestellt hätte
+
+Der erste Versuch ließ den Hauptknopf der großen Karte auf die übrige Höhe
+wachsen — bis zum Vierfachen der Mindest-Tippgröße. Die Füllungsmessung sprang
+damit auf **0,89**, und auf dem Bildschirmfoto stand ein **176 Pixel hohes
+leeres Rechteck mit einem Wort in der Mitte**.
+
+Das ist genau der Fehler, den dieser Durchgang beseitigen sollte: Fläche, die
+gefüllt aussieht und nichts sagt — nur in Knopfform statt in Bildform. Die
+Messung konnte ihn nicht sehen; sie zählt, ob ein Kind die Höhe belegt, nicht,
+ob das Kind etwas damit anfängt.
+
+**Was daraus folgt.** Die Knöpfe der Startseite werden höchstens so hoch wie
+ein großer Knopf sonst in dieser App (`--tipp-min + --sp-4`). Die übrige Höhe
+verteilt die große Karte zwischen ihren Gruppen statt um sie herum:
+Überschrift oben, Knopf unten im Daumenbereich.
+
+**Und was daraus über Prüfungen folgt:** Eine Messung sichert die Eigenschaft,
+die sie misst — nicht die Absicht dahinter. Dieselbe Lehre wie bei den
+Farbtokens (DESIGN.md 11.6), an einer anderen Stelle gefunden.
+
+### Der Schwellwert ist gemessen, nicht gewählt
+
+Der Auftrag verlangte ausdrücklich, den Anteil aus der Messung abzuleiten und
+zu begründen, statt eine Zahl zu setzen. Zwei Messreihen:
+
+- **Was heute vorkommt:** 72 Werte — drei Karten × drei Bezugsgeräte × beide
+  Sprachen × vier Zustände der Startseite. Kleinster Wert **0,492**.
+- **Was der Test fangen muss:** derselbe Bildschirm im Zustand vor dieser
+  Entscheidung, nachgestellt durch Ausblenden genau der neuen Kinder:
+  **0,142 bis 0,230**.
+
+Der Schwellwert liegt eine Textzeile unter dem kleinsten Wert der ersten
+Reihe: 0,492 − 0,063 = 0,429, abgerundet **0,4**. Nach unten bleibt fast
+doppelt so viel Abstand wie nach oben.
+
+### Zwei Regelbrüche, die erst die Messung auf drei Geräten zeigte
+
+**Die mittlere Karte war zeitweise die größte.** Als die Lernkarte Streak,
+Level und XP aufnahm, war sie auf dem 375 × 667 großen Gerät 235 Pixel hoch
+und die Live-Session darunter 209 — Regel 10.2 stand auf dem Kopf. Der bis
+dahin einzige Durchgang lief nur auf 390 × 844 und war grün. Behoben, indem
+die Kennzahlen in einer Zeile stehen statt in drei Säulen; geprüft wird die
+Reihenfolge jetzt auf allen drei Bezugsgeräten.
+
+**Die Anteile teilten die falsche Größe.** Mit `flex-basis: 0` teilten
+1 zu 1,5 zu 2,4 die **gesamte** Höhe. Weil die Lernkarte den meisten Inhalt
+hat, landete sie an ihrer Mindesthöhe, und die ganze übrige Höhe floss in die
+Live-Session: 415 Pixel Karte für 274 Pixel Inhalt. Behoben mit
+`flex-basis: auto` — zuerst der Inhalt, dann der Rest.
+
+### Zwei Änderungen, die der Auftrag nicht wörtlich verlangt hat
+
+Beide entstanden aus seiner eigenen Regel („Inhalt, den sie ohnehin hat"),
+und beide sind hier vermerkt, damit sie nicht unbemerkt bleiben:
+
+1. **Der zuletzt gespielte Abend steht in der großen Karte**, wenn keine Runde
+   läuft. Der Auftrag nannte für diesen Fall nur den Startknopf. Ohne die
+   Zeile hat die größte Karte der Seite genau ein Kind zu zeigen; gemessen
+   0,6 der Innenfläche. Die Zeile ist Inhalt, den die App hat, und ein Tipp
+   darauf führt direkt zu diesem Abend.
+2. **Gespielte Abende zählen als Benutzung.** Vorher hing „erstes Öffnen" nur
+   an Lektionen, XP und Händen. Wer die App ausschließlich für den Pokerabend
+   benutzt, hätte auch nach dem zehnten Abend noch den Satz vor sich gehabt,
+   der erklärt, was die App tut. Aufgefallen im Durchgang: Er spielt einen
+   vollständigen Abend und landet danach auf einer Startseite, die ihn für
+   einen Neuling hält.
+
+### Was die Wege dazugewonnen haben
+
+Sechs Bildschirme sind eine Berührung näher gerückt, weil der Inhalt der
+Karten zugleich der Weg ist: die vier Nachschlage-Ziele, das Einrichten eines
+Abends und die nächste offene Lektion. Die Tiefe-1-Liste in DESIGN.md,
+Abschnitt 7, ist von vier auf zehn Adressen gewachsen; größte Tiefe unverändert
+zwei, null Sackgassen.

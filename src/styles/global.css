@@ -2360,28 +2360,58 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
     min-height: 0;
   }
 
-  /* Die Karten teilen sich, was nach Fortsetzen-Karte und Kennzahlen übrig
-     bleibt. Die Zahlen sind Anteile, keine Höhen: 1 zu 1,5 zu 2,4. */
-  .start-einstieg.klein { flex: 1 1 0; }
-  .start-einstieg.mittel { flex: 1.5 1 0; }
-  .start-einstieg.gross { flex: 2.4 1 0; }
+  /* Was übrig bleibt, bekommen die beiden unteren Karten im Verhältnis
+     1 zu 2,4. Die Zahlen sind Anteile, keine Höhen.
+
+     „Nachschlagen" wächst nicht mit. Es hat seit E-035 vier Felder und eine
+     Überschrift, und damit ist es fertig: Ein größeres Feld trifft man
+     nicht besser, sobald es die Mindestgröße hat. Jeder Pixel, den die
+     oberste Karte darüber hinaus nähme, fehlt unten im Daumenbereich —
+     gemessen auf dem 375 × 667 großen Gerät, wo alle Karten dicht an ihrer
+     Mindesthöhe stehen: Mit Anteil für die oberste Karte war die
+     Live-Session nur 1,99-mal so hoch wie sie und verfehlte damit Regel
+     10.2. */
+  .start-einstieg.klein { flex: 0 1 auto; }
+  .start-einstieg.mittel { flex: 1 1 auto; }
+  .start-einstieg.gross { flex: 2.4 1 auto; }
+
+  /* Der Bezugspunkt ist der Inhalt (`flex-basis: auto`), nicht null. Mit
+     `flex-basis: 0` teilen die Anteile die GESAMTE Höhe, und weil die
+     Lernkarte den meisten Inhalt hat, landete sie an ihrer Mindesthöhe,
+     während die ganze übrige Höhe in die Live-Session floss: 415 Pixel
+     Karte für 274 Pixel Inhalt, gemessen 0,66. Mit `auto` steht zuerst der
+     Inhalt, und nur der Rest wird geteilt — dann bleibt keine Karte innen
+     leer, während eine andere klemmt. */
 
   .start-einstieg {
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
+
+  /* Die große Karte verteilt ihre übrige Höhe zwischen den Gruppen statt um
+     sie herum: Überschrift oben, der Knopf unten im Daumenbereich. Zentriert
+     lag der Knopf in der Kartenmitte und darunter stand ein leerer Streifen —
+     ausgerechnet dort, wo der Daumen hinkommt. */
+  .start-einstieg.gross {
+    justify-content: space-between;
+  }
 }
 
 .start-einstieg {
-  display: block;
+  display: flex;
+  flex-direction: column;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--bg-card);
   color: inherit;
   text-decoration: none;
   padding: var(--sp-4);
-  min-height: var(--tipp-min);
+  /* Nie unter den eigenen Inhalt schrumpfen. Die Anteile in der
+     Höhenverteilung teilen die ÜBRIGE Höhe auf, nicht die nötige —
+     ohne diese Zeile drückt der Anteil den Inhalt auf schmalen Geräten
+     aus der Karte heraus. Gemessen bei 375 × 667: 37 Pixel. */
+  min-height: min-content;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -2403,19 +2433,194 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-beschriftung);
 }
 
+/* ── Inhalt der Karten ──────────────────────────────────────────────────
+   Die Karten füllen die Höhe (Abschnitt 10). Zwei Textzeilen, auf eine ganze
+   Karte gestreckt, sehen aus wie ein Versehen — also trägt jede das, was sie
+   ohnehin zu sagen hat, und wird dadurch zugleich ein kürzerer Weg (E-035).
+   Keine dekorativen Abbildungen: Sie füllen Fläche, ohne etwas auszusagen. */
+
+/* Der Kopf ist der Weg auf die Bereichsübersicht. Eigener Link, weil die
+   Karte selbst keiner mehr sein kann — sie enthält welche, und ein Link im
+   Link ist kein gültiges HTML. */
+.start-kopf {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Die vier häufigsten Ziele aus „Nachschlagen", jedes direkt an sein Ziel.
+   Eine Reihe: Bei 390 px bleiben so gut 80 px je Feld — genug zum Treffen.
+   Ein fünftes drückte alle vier unter die Mindestgröße. */
+.start-felder {
+  display: flex;
+  gap: var(--tipp-abstand);
+  margin-top: var(--sp-2);
+  /* Die übrige Höhe der Karte geht in die Felder, nicht in Leerraum: Sie
+     sind der Inhalt der Karte, und ein größeres Feld ist ein leichter zu
+     treffendes Ziel. Der Deckel ist das Doppelte der Mindestgröße —
+     darüber liest sich die Reihe wie eine Knopfleiste und tritt gegen die
+     große Karte unten an, die den Daumen zuerst bekommen soll. */
+  flex: 1 1 auto;
+  max-height: calc(var(--tipp-min) * 2);
+}
+
+.start-feld {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--tipp-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  color: var(--text-dim);
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+  line-height: var(--lh-tight);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.start-feld:active { background: var(--bg-card-hover); }
+
+/* Die nächste offene Lektion. Der Name ist das, was jemand wiedererkennt —
+   deshalb steht er größer als die Zeile darüber. */
+.start-lektion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin-top: var(--sp-2);
+}
+
+.start-lektion .marke {
+  font-size: var(--fs-kleingedrucktes);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.start-lektion .name {
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+}
+
+/* Der Knopf in einer Karte. Volle Breite, weil er die Hauptsache der Karte
+   ist und nicht eine Wahl zwischen mehreren. */
+.start-knopf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tipp-min);
+  margin-top: var(--sp-2);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-fliesstext);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.start-knopf:active { background: var(--bg-card-hover); }
+
+.start-knopf.haupt {
+  border-color: var(--akzent);
+  color: var(--akzent);
+}
+
+/* Der Knopf darf die übrige Höhe aufnehmen — aber nur bis zu der Höhe, die
+   ein großer Knopf in dieser App hat (`.tisch-knopf`, Abschnitt
+   Live-Session). Darüber hört er auf, wie ein Knopf auszusehen, und wird
+   ein leerer Rahmen mit einem Wort in der Mitte. Das ist derselbe Fehler
+   wie eine dekorative Abbildung, nur in Knopfform: gefüllte Fläche, die
+   nichts sagt. Nachgesehen am Bild, nicht an der Zahl — die Messung hielt
+   den 176 Pixel hohen Rahmen für gefüllt. */
+.start-einstieg .start-knopf {
+  flex: 1 1 auto;
+  max-height: calc(var(--tipp-min) + var(--sp-4));
+}
+
+/* Ein schmaler Balken, der den Anteil zeigt und keine Zahl nennt — aus
+   demselben Grund wie der Text daneben (E-032): Ein Anteil an dem, was es
+   gibt, ist keine Zusage darüber, wie viel es geben wird. */
+.start-balken {
+  height: var(--sp-1);
+  margin-top: var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--veil-3);
+  overflow: hidden;
+}
+
+.start-balken > div {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--akzent);
+}
+
+/* Der zuletzt gespielte Abend in der großen Karte. Gebaut wie die nächste
+   Lektion in der Karte darüber — dieselbe Art Auskunft, dieselbe Form. */
+.start-abend {
+  /* Eine Zeile, nicht zwei: Auf dem kleinsten Bezugsgerät standen alle drei
+     Karten schon auf ihrer Mindesthöhe, und die zweite Zeile machte die
+     Seite um 5 Pixel scrollbar. Sie ist auch inhaltlich keine zweite Zeile
+     wert — „Zuletzt" ist eine Beschriftung, keine Überschrift. Reicht die
+     Breite nicht, bricht sie von selbst um. */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--sp-2);
+  row-gap: var(--sp-1);
+  margin-top: var(--sp-2);
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.start-abend .marke {
+  font-size: var(--fs-kleingedrucktes);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.start-abend .name {
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+}
+
+/* Der Weg auf die Bereichsübersicht, wenn der Knopf schon woandershin
+   führt. Klein und unten: Er ist die Ausweichmöglichkeit, nicht das Ziel. */
+.start-mehr {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-faint);
+  text-decoration: none;
+  text-align: center;
+}
+
 /* Klein — oben. */
 .start-einstieg.klein .titel { font-size: var(--fs-fliesstext); }
 .start-einstieg.klein .unter { font-size: var(--fs-kleingedrucktes); }
 
 /* Mittel — Mitte. */
-.start-einstieg.mittel { padding: var(--sp-5) var(--sp-4); }
+.start-einstieg.mittel { padding: var(--sp-4); }
 .start-einstieg.mittel .titel { font-size: var(--fs-ueberschrift); }
 
 /* Groß — unten, im Daumenbereich. Als einziger Einstieg mit der
    Akzentfarbe: Er ist der einzige, der unter Zeitdruck gesucht wird, und
    Farbe findet man schneller als Text. */
 .start-einstieg.gross {
-  padding: var(--sp-6) var(--sp-5);
+  /* Weniger Polster als früher: Die Karte trägt jetzt Inhalt, und der
+     braucht die Höhe. Auf einem 375 × 667 großen Gerät entscheiden diese
+     Pixel darüber, ob die Seite scrollt. */
+  padding: var(--sp-4);
   border-color: var(--akzent);
   background: linear-gradient(180deg, var(--akzent-dim), transparent);
 }
@@ -2469,25 +2674,55 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 /* ── Erster Start: ein Satz statt einer Fortschrittszahl ────────────── */
 .start-erklaerung {
+  /* Kein eigener Innenabstand: Der Abstand zwischen den Kindern der
+     Startseite kommt aus dem gap der Spalte. Ein Element, das ihn zusätzlich
+     mitbringt, setzt ihn doppelt — bei 375 × 667 waren das die 2 Pixel, um
+     die die Seite scrollte, während die Karten schon auf ihrer
+     Mindesthöhe standen. */
   margin: 0;
-  padding: var(--sp-4) 0;
+  padding: 0;
   font-size: var(--fs-fliesstext);
   color: var(--text-dim);
   max-width: 46ch;
 }
 
 /* ── Die schmale Zeile mit Streak, Level, XP ────────────────────────── */
-/* Ganz oben, direkt unter der Kopfzeile: Sie ist eine Auskunft, kein Ziel.
-   Stünde sie unten, drückte sie die große Karte aus dem Daumenbereich und
-   erzeugte genau den Leerraum, den es hier nicht geben soll. */
+/* Streak, Level und XP stehen seit E-035 IN der Lernkarte: Sie gehören zum
+   Lernteil und wirkten in einer eigenen Zeile darüber abgetrennt. */
 .start-stand {
   flex: 0 0 auto;
   display: flex;
-  gap: var(--sp-5);
-  flex-wrap: wrap;
-  padding-top: var(--sp-4);
+  align-items: baseline;
+  gap: var(--sp-4);
+  /* Eine Zeile, kein Umbruch: Drei Kennzahlen, die auf zwei Zeilen rutschen,
+     kosten Höhe, die auf einem 667 Pixel hohen Gerät fehlt — dort steht
+     jede Karte auf ihrer Mindesthöhe, und was die Lernkarte nimmt, fehlt
+     der Live-Session unten. */
+  flex-wrap: nowrap;
+  padding-top: var(--sp-3);
   margin-top: var(--sp-2);
   border-top: 1px solid var(--border);
+}
+
+/* Zahl und Beschriftung nebeneinander statt untereinander. */
+.start-stand .wert {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+  min-width: 0;
+  font-size: var(--fs-beschriftung);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  font-variant-numeric: var(--ziffern);
+}
+
+.start-stand .wert .marke {
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-medium);
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

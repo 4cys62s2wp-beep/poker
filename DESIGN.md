@@ -232,7 +232,7 @@ geprüft.
 ## 7. Wege und Tiefen
 
 Gemessen am **gerenderten** Ergebnis bei 390 Pixel Breite mit
-`npm run wege`. Ergebnis in `docs/wege.json`, Stand 2026-08-26T20:01:29Z.
+`npm run wege`. Ergebnis in `docs/wege.json`, Stand 2026-08-27T08:03:15Z.
 
 **41 eigene Bildschirme**, größte Tiefe **2**, **null Sackgassen**, **null unerreichbare Adressen**.
 
@@ -242,20 +242,40 @@ Gemessen am **gerenderten** Ergebnis bei 390 Pixel Breite mit
 
 ### Tiefe 1 — eine Berührung
 
-`/lernen` · `/nachschlagen` · `/profil` · `/session`
+`/lernen` · `/lernen/m1/m1-l1` · `/nachschlagen` · `/nachschlagen/coach` ·
+`/nachschlagen/glossar` · `/nachschlagen/haende` · `/nachschlagen/odds` ·
+`/profil` · `/session` · `/session/live/einrichten`
 
-Vier statt drei: `/profil` hängt an der unteren Navigation und ist
-damit von überall eine Berührung entfernt. Das ist Absicht — wer
-seinen Namen ändern will, sucht ihn nicht unter einem der drei
-Einstiege.
+Zehn statt vier, und das ist der Ertrag von E-035: Die Karten auf der
+Startseite tragen seither Inhalt statt zweier Textzeilen, und dieser Inhalt
+ist zugleich der kurze Weg. Sechs Bildschirme sind dadurch eine Berührung
+näher gerückt:
+
+| Bildschirm | vorher | jetzt | wodurch |
+|------------|--------|-------|---------|
+| `/nachschlagen/glossar` | 2 | 1 | eines der vier Felder in der Karte „Nachschlagen" |
+| `/nachschlagen/haende` | 2 | 1 | dito |
+| `/nachschlagen/odds` | 2 | 1 | dito |
+| `/nachschlagen/coach` | 2 | 1 | dito |
+| `/session/live/einrichten` | 2 | 1 | der Knopf „Abend starten" in der großen Karte |
+| `/lernen/m1/m1-l1` | 3 | 1 | der Knopf an der nächsten offenen Lektion |
+
+`/profil` liegt weiterhin bei eins — nicht mehr über die untere Leiste, die
+es seit E-032 nicht mehr gibt, sondern über das Personensymbol oben rechts.
+Wer seinen Namen oder den Farbmodus ändern will, sucht das nicht unter einem
+der drei Einstiege.
+
+`/session/abende` ist von zwei auf zwei geblieben, hat aber einen zweiten Weg
+bekommen: Der zuletzt gespielte Abend steht in der großen Karte und führt
+direkt zu sich selbst.
 
 ### Tiefe 2 — zwei Berührungen
 
 **Lernen** — `/lernen/drill` · `/lernen/m1` · `/lernen/m2` · `/lernen/m3` · `/lernen/m4` · `/lernen/m5` · `/lernen/m6` · `/lernen/m7` · `/lernen/m8` · `/lernen/m9` · `/lernen/pros` · `/lernen/statistik` · `/lernen/tagesquiz` · `/lernen/trainer/equity` · `/lernen/trainer/handranking` · `/lernen/trainer/outs` · `/lernen/trainer/potodds` · `/lernen/trainer/preflop` · `/lernen/trainer/pushfold` · `/lernen/trainer/szenario` · `/lernen/uebungstisch` · `/lernen/wiederholen`
 
-**Nachschlagen** — `/nachschlagen/coach` · `/nachschlagen/equity` · `/nachschlagen/glossar` · `/nachschlagen/haende` · `/nachschlagen/odds` · `/nachschlagen/ranges` · `/nachschlagen/tells`
+**Nachschlagen** — `/nachschlagen/equity` · `/nachschlagen/ranges` · `/nachschlagen/tells`
 
-**Live-Session** — `/session/auszahlung` · `/session/bankroll` · `/session/chips` · `/session/tisch` · `/session/tisch/online`
+**Live-Session** — `/session/abende` · `/session/auszahlung` · `/session/bankroll` · `/session/chips`
 
 **Übriges** — `/freunde` · `/rechtliches`
 
@@ -455,17 +475,33 @@ frei. Diese 98 Pixel waren der Leerraum, den man sah.
 
 ### Regel 10.1 — Die drei Karten füllen die Höhe
 
-Keine festen Höhen, sondern Anteile: 1 zu 1,5 zu 2,4 von oben nach unten.
-Nachgemessen auf drei schmalen Geräten:
+Keine festen Höhen. Zuerst steht der Inhalt jeder Karte, dann wird verteilt,
+was übrig bleibt — im Verhältnis 1 zu 2,4 zwischen „Lernen" und
+„Live-Session".
 
-| Gerät | Nachschlagen | Lernen | Live-Session | unter der letzten Karte |
-|-------|--------------|--------|--------------|--------------------------|
-| 375 × 667 | 101 px | 147 px | **223 px** | 24 px |
-| 390 × 844 | 137 px | 201 px | **310 px** | 24 px |
-| 360 × 740 | 116 px | 169 px | **259 px** | 24 px |
+**„Nachschlagen" bekommt keinen Anteil.** Es hat vier Felder und eine
+Überschrift, und damit ist es fertig: Ein Feld, das schon die Mindestgröße
+hat, trifft man nicht besser, wenn es höher wird. Jeder Pixel darüber hinaus
+fehlt unten im Daumenbereich.
 
-Die 24 Pixel sind der Gestenstreifen aus Abschnitt 3. Mehr steht dort nicht,
-und gescrollt wird auf keinem der drei Geräte.
+**Der Bezugspunkt ist der Inhalt, nicht null.** Teilten die Anteile die
+gesamte Höhe, landete die inhaltsreichste Karte an ihrer Mindesthöhe und die
+ganze übrige Höhe flösse in eine einzige: gemessen 415 Pixel Karte für 274
+Pixel Inhalt.
+
+Nachgemessen mit `npm run durchgang` auf drei schmalen Geräten, im Zustand
+nach einem gespielten Abend:
+
+| Gerät | Nachschlagen | Lernen | Live-Session | unter der letzten Karte | Füllung |
+|-------|--------------|--------|--------------|--------------------------|---------|
+| 375 × 667 | 103 px | 222 px | **226 px** | 24 px | 1.00 / 1.00 / 0.93 |
+| 390 × 844 | 103 px | 274 px | **351 px** | 24 px | 1.00 / 0.80 / 0.57 |
+| 360 × 740 | 103 px | 243 px | **278 px** | 24 px | 1.00 / 0.92 / 0.73 |
+
+Die letzte Spalte ist der Anteil der Innenfläche, den der Inhalt belegt
+(Regel 10.5). Die Zahlen vor dem Gestenstreifen sind der Streifen aus
+Abschnitt 3. Mehr steht dort nicht, und gescrollt wird auf keinem der drei
+Geräte.
 
 ### Regel 10.2 — Die Live-Session liegt unten und ist am größten
 
@@ -473,6 +509,17 @@ und gescrollt wird auf keinem der drei Geräte.
 andere Hand Chips stapelt. Der Daumen erreicht die untere Bildschirmhälfte,
 mehr nicht. Die anderen beiden werden in Ruhe geöffnet; wer gezielt
 nachschlägt, findet auch ein kleines Ziel.
+
+„Am größten" heißt: mindestens doppelt so hoch wie die kleinste Karte, und
+höher als die mittlere. Beides wird auf allen drei Bezugsgeräten geprüft,
+nicht nur auf einem — die Regel stand schon einmal auf dem Kopf, ohne dass
+es auffiel: Als die Lernkarte Streak, Level und XP aufnahm, war sie auf dem
+375 × 667 großen Gerät 235 Pixel hoch und die Live-Session darunter 209.
+
+Die große Karte verteilt ihre übrige Höhe außerdem **zwischen** ihren
+Gruppen, nicht um sie herum: Überschrift oben, der Knopf unten im
+Daumenbereich. Zentriert lag der Knopf in der Kartenmitte und darunter stand
+ein leerer Streifen — ausgerechnet dort, wo der Daumen hinkommt.
 
 ### Regel 10.3 — Der Weg zur Startseite hängt an der Marke
 
@@ -495,13 +542,52 @@ und diese zwei Pixel machten die Seite scrollbar.
 Eine Zahl, die auf eine andere Zahl abgestimmt ist, hält nur bis zur nächsten
 Änderung der anderen. Eine Höhe, die sich ergibt, kann nicht danebenliegen.
 
+### Regel 10.5 — Jede Karte trägt Inhalt, keine Abbildung
+
+Eine Karte, die die Bildschirmhöhe füllt, aber innen aus zwei Textzeilen
+besteht, sieht aus wie ein Versehen. Jede Karte trägt deshalb das, was sie
+ohnehin zu sagen hat — und ist dadurch zugleich ein kürzerer Weg (E-035):
+
+| Karte | Inhalt | Ziel des Inhalts |
+|-------|--------|------------------|
+| Nachschlagen | vier Felder: Glossar, Starthände, Odds, Live-Coach | jedes direkt an sein Ziel, nicht auf die Übersicht |
+| Lernen | die nächste offene Lektion mit Namen, ein Knopf dorthin, ein Balken ohne Gesamtzahl, Streak/Level/XP | der Knopf führt direkt in die Lektion |
+| Live-Session | läuft eine Runde: Dauer, Spielerzahl, Blindstufe, Knopf zurück; sonst: der zuletzt gespielte Abend und der Knopf, der einen neuen startet | beide Ziele ohne Zwischenschritt |
+
+Die Überschrift jeder Karte bleibt antippbar und führt auf die
+Bereichsübersicht. Die Karten selbst sind deshalb keine Links mehr, sondern
+Kästen: Ein Link in einem Link ist kein gültiges HTML.
+
+**Keine dekorativen Abbildungen.** Sie füllen Fläche, ohne etwas auszusagen,
+und altern schlecht. Inhalt, den es ohnehin gibt, füllt dieselbe Fläche und
+verkürzt zugleich den Weg.
+
+**Gemessen wird das, nicht behauptet.** `npm run durchgang` bestimmt für jede
+Karte auf jedem der drei Bezugsgeräte den Anteil der Innenfläche, den ihr
+Inhalt belegt — die Summe der Kindhöhen samt Abständen, geteilt durch die
+Innenhöhe. Nicht die Spanne vom ersten zum letzten Kind: Die zählt die Lücke
+dazwischen mit und wäre bei zwei Zeilen an Ober- und Unterkante immer 1.
+Unterschreitet eine Karte 0,4, schlägt der Test an. Woher die 0,4 kommt,
+steht in `durchgang.test.ts`; kurz: kleinster gemessener Wert über 72
+Kombinationen (0,492) minus eine Textzeile, gegen 0,142 bis 0,230 im Zustand
+vor E-035.
+
+**Was diese Messung nicht sieht.** Ob ein Kind mit der Fläche etwas anfängt.
+Der erste Versuch ließ den Hauptknopf auf die volle Höhe wachsen: 0,89
+gemessen, auf dem Bild ein 176 Pixel hohes leeres Rechteck. Das ist derselbe
+Fehler wie eine dekorative Abbildung, nur in Knopfform. Dagegen hilft keine
+Zahl, sondern ein Deckel — die Knöpfe der Startseite werden höchstens so
+hoch wie ein großer Knopf in dieser App — und ein Blick auf das Bild.
+Dieselbe Lehre wie in Abschnitt 11.6.
+
 ### Was diese Regeln festhält
 
 `durchgang.test.ts` prüft am gerenderten Ergebnis: kein Scrollen, die
 Reihenfolge klein → mittel → groß, die Live-Session mindestens doppelt so
 hoch wie die kleinste Karte, unter der letzten Karte genau der
-Gestenstreifen, die Kennzahlen über den Karten, und die Marke als 44 Pixel
-großer Weg nach `#/`.
+Gestenstreifen, die Kennzahlen oberhalb der großen Karte, die Füllung jeder
+Karte, und die Marke als 44 Pixel großer Weg nach `#/`. Reihenfolge,
+Verhältnis, Gestenstreifen und Füllung auf allen drei Bezugsgeräten.
 
 Dass keine zweite Navigation zurückkommt, prüft er an der **Rolle** und an
 der **Lage**, nicht an einer Klasse: höchstens ein Element mit

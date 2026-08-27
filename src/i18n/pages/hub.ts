@@ -40,7 +40,7 @@ export const STR = defineStrings(
     lookupStatus: 'Zwei Schritte bis zur Antwort',
 
     sessionTitle: 'Live-Session',
-    sessionSub: 'Chips einteilen, Blinds hochziehen, gerecht auszahlen',
+    sessionSub: 'Chips, Blinds und Uhr für den Abend',
     sessionStatus: 'Alles für den Abend',
     sessionStatusPlayed: (n: number) => `${n} ${n === 1 ? 'Session' : 'Sessions'} erfasst`,
 
@@ -49,9 +49,34 @@ export const STR = defineStrings(
        tut — keine Fortschrittszahl. „0 von 49 Lektionen" sagt einem Neuling
        nichts. */
     wasDieAppTut:
-      'PokerMentor rechnet dir vor, was sich lohnt — und zeigt dir zu jeder '
-      + 'Zahl, wie sie entstanden ist. Am Tisch führt es die Blinds, die Zeit '
-      + 'und die Chips.',
+      'Rechnet dir vor, was sich lohnt — und zeigt zu jeder Zahl, wie sie '
+      + 'entstanden ist. Am Tisch führt sie Blinds, Zeit und Chips.',
+
+    // ── Inhalt der drei Karten ──────────────────────────────────────────
+    // Kein Schmuck, sondern das, was die Karte ohnehin zu sagen hat — und
+    // damit zugleich ein kürzerer Weg ins Ziel (E-035).
+    feldGlossar: 'Glossar',
+    feldHaende: 'Starthände',
+    feldOdds: 'Odds',
+    feldCoach: 'Live-Coach',
+
+    weiterMit: 'Weiter mit',
+    ersteLektion: 'Erste Lektion',
+    weiterlernen: 'Weiterlernen',
+    anfangen: 'Anfangen',
+    alleLektionenFertig: 'Alle Lektionen durch',
+    nochmalDurchgehen: 'Noch einmal durchgehen',
+    fortschritt: 'Fortschritt im Kurs',
+
+    abendStarten: 'Abend starten',
+    zurueckInDieRunde: 'Zurück in die Runde',
+    sessionAlles: 'Chips, Auszahlung, frühere Abende',
+    laeuftSeit: (dauer: string) => `Läuft seit ${dauer}`,
+    laeuftMit: (spieler: number, sb: number, bb: number) =>
+      `${spieler === 1 ? '1 Spieler' : `${spieler} Spieler`} · Blinds ${sb}/${bb}`,
+
+    letzterAbendMarke: 'Zuletzt',
+    letzterAbend: (datum: string, sieger: string) => `${datum} · ${sieger} gewonnen`,
 
     fortsetzenMarke: 'Läuft gerade',
     fortsetzenTitel: 'Zurück in die Runde',
@@ -92,7 +117,7 @@ export const STR = defineStrings(
     lookupStatus: 'Two steps to an answer',
 
     sessionTitle: 'Live session',
-    sessionSub: 'Split the chips, raise the blinds, pay out fairly',
+    sessionSub: 'Chips, blinds and clock for the evening',
     sessionStatus: 'Everything for the evening',
     sessionStatusPlayed: (n: number) => `${n} ${n === 1 ? 'session' : 'sessions'} logged`,
 
@@ -100,6 +125,29 @@ export const STR = defineStrings(
       'PokerMentor works out what pays — and shows you, for every number, how '
       + 'it came about. At the table it runs the blinds, the clock and the '
       + 'chips.',
+
+    feldGlossar: 'Glossary',
+    feldHaende: 'Starting hands',
+    feldOdds: 'Odds',
+    feldCoach: 'Live coach',
+
+    weiterMit: 'Continue with',
+    ersteLektion: 'First lesson',
+    weiterlernen: 'Keep learning',
+    anfangen: 'Start',
+    alleLektionenFertig: 'All lessons done',
+    nochmalDurchgehen: 'Go through again',
+    fortschritt: 'Progress through the course',
+
+    abendStarten: 'Start an evening',
+    zurueckInDieRunde: 'Back to the round',
+    sessionAlles: 'Chips, payout, earlier evenings',
+    laeuftSeit: (dauer: string) => `Running for ${dauer}`,
+    laeuftMit: (spieler: number, sb: number, bb: number) =>
+      `${spieler === 1 ? '1 player' : `${spieler} players`} · blinds ${sb}/${bb}`,
+
+    letzterAbendMarke: 'Last',
+    letzterAbend: (datum: string, sieger: string) => `${datum} · ${sieger} won`,
 
     fortsetzenMarke: 'Running now',
     fortsetzenTitel: 'Back into the round',

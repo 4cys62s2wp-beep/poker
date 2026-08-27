@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(20);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(22);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -281,6 +281,72 @@ describe('Was vom Abend bleibt', () => {
 
   it('lässt von jedem dieser Bildschirme einen Weg zurück', () => {
     expect(schritt('Ein Tipp auf einen Abend zeigt den Abend').zurueck_sichtbar).toBe(true);
+  });
+});
+
+describe('Die Startseite trägt die Navigation allein', () => {
+  it('hat keine untere Leiste', () => {
+    /* Sie führte zu denselben Zielen wie die drei Karten und machte „Start"
+       damit zu einem Bildschirm ohne eigenen Inhalt (E-032). Dass sie weg
+       ist, prüft ein Test und nicht ein guter Vorsatz. */
+    expect(schritt('Die Startseite füllt den Bildschirm').untere_leiste).toBe(0);
+  });
+
+  it('passt ohne Scrollen auf den Bildschirm', () => {
+    expect(schritt('Die Startseite füllt den Bildschirm').scrollt).toBe(false);
+  });
+
+  it('ordnet die Karten von klein nach groß, von oben nach unten', () => {
+    const e = schritt('Die Startseite füllt den Bildschirm');
+    expect(e.reihenfolge).toEqual(['klein', 'mittel', 'gross']);
+    const [k, m, g] = ['klein', 'mittel', 'gross']
+      .map((n) => e[n] as { oben: number; hoehe: number });
+    expect(k.oben).toBeLessThan(m.oben);
+    expect(m.oben).toBeLessThan(g.oben);
+  });
+
+  it('gibt der Live-Session die größte Fläche', () => {
+    /* Sie wird unter Zeitdruck getroffen, oft einhändig, und der Daumen
+       erreicht die untere Bildschirmhälfte — mehr nicht. */
+    const e = schritt('Die Startseite füllt den Bildschirm');
+    const hoehe = (n: string) => (e[n] as { hoehe: number }).hoehe;
+    expect(hoehe('gross')).toBeGreaterThan(hoehe('mittel'));
+    expect(hoehe('mittel')).toBeGreaterThan(hoehe('klein'));
+    /* Deutlich größer, nicht ein bisschen: mindestens das Doppelte der
+       kleinsten Karte. */
+    expect(hoehe('gross')).toBeGreaterThanOrEqual(hoehe('klein') * 2);
+  });
+
+  it('lässt unter der letzten Karte nur den Sicherheitsabstand', () => {
+    /* Genau der Streifen für die Systemgesten aus DESIGN.md — kein Pixel
+       mehr. Alles darüber hinaus ist der Leerraum, um den es hier ging. */
+    const e = schritt('Die Startseite füllt den Bildschirm');
+    expect(e.rest_unten_px).toBe(e.gestenstreifen_px);
+  });
+
+  it('stellt die Kennzahlen über die Karten, nicht darunter', () => {
+    /* Unten drückten sie die große Karte aus dem Daumenbereich. Beim ersten
+       Öffnen gibt es sie noch nicht — dann ist hier nichts zu prüfen. */
+    const e = schritt('Die Startseite füllt den Bildschirm');
+    if (e.stand_oben_px === null) return;
+    expect(e.stand_oben_px as number)
+      .toBeLessThan((e.klein as { oben: number }).oben);
+  });
+});
+
+describe('Ohne untere Leiste braucht jeder Bildschirm einen Weg zurück', () => {
+  it('trägt die Marke oben als sichtbaren Weg zur Startseite', () => {
+    const e = schritt('Jeder Bildschirm hat einen sichtbaren Weg zur Startseite');
+    expect(e.sichtbar).toBe(true);
+    expect(e.fuehrt_nach).toBe('#/');
+  });
+
+  it('macht diesen Weg so groß, dass man ihn trifft', () => {
+    /* Sichtbar allein genügt nicht: Ein 29 Pixel hoher Weg ist einer, den
+       man dreimal antippt. */
+    const e = schritt('Jeder Bildschirm hat einen sichtbaren Weg zur Startseite');
+    expect(e.hoehe_px as number).toBeGreaterThanOrEqual(44);
+    expect(e.breite_px as number).toBeGreaterThanOrEqual(44);
   });
 });
 

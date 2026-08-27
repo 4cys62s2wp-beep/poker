@@ -3,7 +3,7 @@
   "src/components/CloudAccountCard.tsx": 25,
   "src/components/ErrorBoundary.tsx": 5,
   "src/components/Icon.tsx": 15,
-  "src/components/Layout.tsx": 19,
+  "src/components/Layout.tsx": 17,
   "src/components/Onboarding.tsx": 25,
   "src/components/pro/PaywallModal.tsx": 15,
   "src/components/pro/ProLock.tsx": 13,

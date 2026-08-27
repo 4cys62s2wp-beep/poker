@@ -434,3 +434,71 @@ ist das Zeichen selbst.
 Seither: **null Befunde**. Hier steht ausdrücklich keine Sperrklinke: Ab null
 ist jeder neue Befund eine Verschlechterung, und die soll auffallen, bevor
 ein Nutzer sie bemerkt.
+
+---
+
+## 10. Es gibt keine untere Navigationsleiste
+
+Die Startseite hat drei Karten, und die sind die Navigation. Eine zweite
+Navigation daneben — eine Tableiste am unteren Rand — gibt es nicht, und sie
+kommt auch nicht zurück.
+
+**Begründung.** Sie führte zu denselben drei Zielen wie die Karten. Damit war
+„Start" ein Bildschirm ohne eigenen Inhalt: Alles, was er anbot, bot die
+Leiste auch, und zwar von überall. Ein Bildschirm, dessen einziger Zweck
+darin besteht, Wege anzubieten, die es schon gibt, hat keinen Inhalt — und
+genau daher kam die leere untere Bildschirmhälfte. Sie war kein
+Layoutproblem.
+
+Das Zweite, was daran hing: Die Leiste hielt sich 98 Pixel am unteren Rand
+frei. Diese 98 Pixel waren der Leerraum, den man sah.
+
+### Regel 10.1 — Die drei Karten füllen die Höhe
+
+Keine festen Höhen, sondern Anteile: 1 zu 1,5 zu 2,4 von oben nach unten.
+Nachgemessen auf drei schmalen Geräten:
+
+| Gerät | Nachschlagen | Lernen | Live-Session | unter der letzten Karte |
+|-------|--------------|--------|--------------|--------------------------|
+| 375 × 667 | 101 px | 147 px | **223 px** | 24 px |
+| 390 × 844 | 137 px | 201 px | **310 px** | 24 px |
+| 360 × 740 | 116 px | 169 px | **259 px** | 24 px |
+
+Die 24 Pixel sind der Gestenstreifen aus Abschnitt 3. Mehr steht dort nicht,
+und gescrollt wird auf keinem der drei Geräte.
+
+### Regel 10.2 — Die Live-Session liegt unten und ist am größten
+
+**Begründung.** Sie wird unter Zeitdruck geöffnet, oft einhändig, während die
+andere Hand Chips stapelt. Der Daumen erreicht die untere Bildschirmhälfte,
+mehr nicht. Die anderen beiden werden in Ruhe geöffnet; wer gezielt
+nachschlägt, findet auch ein kleines Ziel.
+
+### Regel 10.3 — Der Weg zur Startseite hängt an der Marke
+
+Ohne Leiste braucht jeder Bildschirm einen sichtbaren Rückweg. Den trägt die
+Marke oben links: auf jedem Bildschirm dieselbe Stelle, 44 Pixel hoch. Der
+Sackgassen-Lauf prüft es an jedem Bildschirm, nicht stichprobenartig.
+
+### Regel 10.4 — Höhen ergeben sich, sie werden nicht hingeschrieben
+
+Startseite und Drill bekommen ihre Höhe vom Hauptbereich, der sie von der
+Kopfzeile bekommt. Nirgends steht eine Zahl dafür.
+
+**Begründung.** Vorher tat es der Drill mit `min-height: 78svh` — ein Wert,
+der auf die Navigationshöhe abgestimmt war. Als die Navigation verschwand,
+sprang der Antwortknopf wieder um 34 Pixel, genau der Fehler, den diese Zahl
+einmal geheilt hatte. Und der erste Versuch, die Höhe der Startseite
+auszurechnen, setzte die Kopfzeile mit 56 Pixeln an; gemessen waren es 58,
+und diese zwei Pixel machten die Seite scrollbar.
+
+Eine Zahl, die auf eine andere Zahl abgestimmt ist, hält nur bis zur nächsten
+Änderung der anderen. Eine Höhe, die sich ergibt, kann nicht danebenliegen.
+
+### Was diese Regeln festhält
+
+`durchgang.test.ts` prüft am gerenderten Ergebnis: keine untere Leiste, kein
+Scrollen, die Reihenfolge klein → mittel → groß, die Live-Session mindestens
+doppelt so hoch wie die kleinste Karte, unter der letzten Karte genau der
+Gestenstreifen, die Kennzahlen über den Karten, und die Marke als 44 Pixel
+großer Weg nach `#/`.

@@ -1117,3 +1117,79 @@ die Erwartung es verlangt hätte.
 `ladeB4` existiert, der Starthand-Vergleich ist noch nicht daran
 angeschlossen. Die 203 KB liegen also derzeit ungenutzt im Gerät — vorher
 waren es 5,0 MB ungenutzt.
+
+---
+
+## E-032 · 2026-08-27 · Die untere Leiste entfällt, die drei Karten sind die Navigation
+
+**Vom Auftraggeber erkannt und entschieden.** Die untere Leiste und die drei
+Karten der Startseite führten zu denselben Zielen. Damit war „Start" ein
+Bildschirm ohne eigenen Inhalt — und **das** war der Grund für die leere
+untere Bildschirmhälfte, nicht ein Layoutfehler.
+
+Diese Diagnose ist der eigentliche Wert der Entscheidung. Ich hatte den
+Leerraum vor mir und ihn nicht erkannt: Phase 2 hat die Startseite gemessen
+(Erreichbarkeit, Tiefe, Sackgassen) und dabei geprüft, ob man überall
+hinkommt — nicht, ob die Wege dorthin doppelt sind. Eine Prüfung findet nur,
+wonach sie sucht.
+
+**Umgesetzt.**
+
+- Die Leiste ist entfernt, samt ihrer Höhe `--nav-h` und den 98 Pixeln
+  Innenabstand, die der Hauptbereich für sie freihielt. Diese 98 Pixel waren
+  der Leerraum.
+- Die drei Karten teilen die verfügbare Höhe unter sich auf, im Verhältnis
+  1 zu 1,5 zu 2,4. Keine festen Höhen: Auf einem 667 Pixel hohen Gerät sind
+  es 101/147/223, auf einem 844er 137/201/310.
+- Reihenfolge von oben nach unten: NACHSCHLAGEN, LERNEN, LIVE-SESSION. Die
+  Live-Session liegt unten und ist am größten — das stand seit Phase 1 in
+  `DESIGN.md` und war nicht umgesetzt.
+- Die Kennzahlenzeile steht jetzt über den Karten. Unten drückte sie die
+  große Karte aus dem Daumenbereich.
+- Nachgemessen auf drei schmalen Geräten (375×667, 390×844, 360×740): kein
+  Scrollen, und zwischen der untersten Karte und dem Bildschirmrand stehen
+  **genau 24 Pixel** — der Gestenstreifen aus `DESIGN.md`, kein Pixel mehr.
+
+**Der Weg zurück.** Ohne Leiste braucht jeder Bildschirm einen sichtbaren Weg
+zur Startseite. Den trägt jetzt die Marke oben links — auf jedem Bildschirm
+an derselben Stelle, 44 Pixel hoch, und genau das, was eine Marke oben links
+seit jeher bedeutet. Der Sackgassen-Lauf danach: 41 Bildschirme, **null
+Sackgassen**, größte Tiefe weiterhin 2.
+
+**Alternative:** Die Leiste behalten und der Startseite eigenen Inhalt geben
+— eine Übersicht, Empfehlungen, „weiter, wo du warst".
+
+**Warum nicht:** Das hätte den doppelten Weg nicht beseitigt, sondern
+verdeckt. Und es hätte einen Bildschirm erfunden, den niemand verlangt hat,
+um eine Leiste zu rechtfertigen, die niemand braucht. Wenn zwei Dinge zum
+selben Ziel führen, entfernt man eines — man erfindet keinen Grund für beide.
+
+### Was dabei zurückkam und wieder behoben ist
+
+Mit der Leiste verschwanden ihre 98 Pixel Innenabstand — und damit sprang im
+Drill der Antwortknopf wieder um 34 Pixel zwischen Frage und Auflösung. Genau
+dieser Fehler stand schon einmal im Kommentar von `.drill`, damals als 43
+Pixel, und war mit einer auf die Navigationshöhe abgestimmten Zahl
+(`min-height: 78svh`) geheilt worden.
+
+Eine Zahl, die auf eine andere Zahl abgestimmt ist, hält nur, bis sich die
+andere ändert. Auf dem Handy bekommen Startseite und Drill ihre Höhe jetzt
+vom Hauptbereich, der sie von der Kopfzeile bekommt — niemand schreibt mehr
+eine Höhe hin. Gemessen: 0 Pixel Bewegung.
+
+Der erste Versuch tat das noch mit einer gesetzten Kopfzeilenhöhe von 56 px.
+Gemessen waren es 58, und diese zwei Pixel machten die Startseite scrollbar.
+Auch das ist jetzt weg: Eine Höhe, die sich ergibt, kann nicht um zwei Pixel
+danebenliegen.
+
+### „3 von 49 Lektionen" ist gestrichen
+
+Der Satz war zwei Aussagen in einem: was jemand geschafft hat, und wie viel
+es insgesamt gibt. Die zweite ist eine Zusage über den Inhalt, und die deckt
+der vorhandene nicht — sie zählt, was da ist, und verspricht dabei
+stillschweigend, dass es vollständig ist.
+
+Jetzt steht dort „3 Lektionen abgeschlossen". Ein Test hält fest, dass in
+diesem Satz genau **eine** Zahl vorkommt, und dass die Funktion nur ein
+Argument annimmt: Wer eine Gesamtzahl übergeben kann, zeigt sie irgendwann
+wieder an.

@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-27T06:08:51.788Z",
+  "geprueft_am": "2026-08-27T06:31:28.322Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -136,7 +136,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 892,
+        "dauer_ms": 874,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -201,6 +201,49 @@
       "uebersprungen": false
     },
     {
+      "name": "Die Startseite füllt den Bildschirm",
+      "ergebnis": {
+        "untere_leiste": 0,
+        "scrollt": false,
+        "fensterhoehe": 844,
+        "reihenfolge": [
+          "klein",
+          "mittel",
+          "gross"
+        ],
+        "klein": {
+          "oben": 188,
+          "unten": 319,
+          "hoehe": 131
+        },
+        "mittel": {
+          "oben": 327,
+          "unten": 518,
+          "hoehe": 191
+        },
+        "gross": {
+          "oben": 526,
+          "unten": 820,
+          "hoehe": 294
+        },
+        "rest_unten_px": 24,
+        "gestenstreifen_px": 24,
+        "stand_oben_px": null,
+        "lernen_text": "Kurs, Trainer, Übungstisch – vom ersten Blatt bis GTO"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Jeder Bildschirm hat einen sichtbaren Weg zur Startseite",
+      "ergebnis": {
+        "sichtbar": true,
+        "hoehe_px": 44,
+        "breite_px": 171,
+        "fuehrt_nach": "#/"
+      },
+      "uebersprungen": false
+    },
+    {
       "name": "Der Drill zeigt eine Aufgabe",
       "ergebnis": {
         "groesste": {
@@ -218,12 +261,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 34,
+        "dauer_ms": 23,
         "knopf_bewegt_px": 0,
-        "oben": 656,
+        "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "31,5 %",
+        "ergebnis_text": "27,8 %",
         "uebergang": "0s",
         "belebung": "none"
       },

@@ -70,3 +70,43 @@ describe('EN-Inhalte spiegeln DE strukturell', () => {
     expect(EN_BUNDLE.edgeSpots.length).toBe(DE_BUNDLE.edgeSpots.length);
   });
 });
+
+/* ---------------------------------------------------------------------------
+   Der Lernstand nennt keinen Nenner
+   ---------------------------------------------------------------------------
+   „3 von 49 Lektionen" ist zwei Aussagen in einem Satz: was jemand geschafft
+   hat, und wie viel es insgesamt gibt. Die zweite ist eine Zusage über den
+   Inhalt, und die deckt der vorhandene nicht — sie zählt, was da ist, und
+   verspricht dabei stillschweigend, dass es vollständig ist. Also nur die
+   erste. Siehe ENTSCHEIDUNGEN.md, E-032. */
+
+describe('Der Lernstand auf der Startseite', () => {
+  it('nennt nur, was abgeschlossen wurde', async () => {
+    const { STR } = await import('../../i18n/pages/hub');
+    for (const sprache of ['de', 'en'] as const) {
+      for (const anzahl of [0, 1, 3, 49]) {
+        const satz = STR[sprache].learnStatus(anzahl);
+        expect(satz, `${sprache}/${anzahl}`).toContain(String(anzahl));
+        /* Keine zweite Zahl im Satz — die wäre der Nenner. */
+        const zahlen = satz.match(/\d+/g) ?? [];
+        expect(zahlen, `${sprache}/${anzahl}: "${satz}"`).toHaveLength(1);
+      }
+    }
+  });
+
+  it('nimmt nur ein Argument entgegen', async () => {
+    /* Ein zweites wäre die Gesamtzahl — und wer sie übergeben kann, zeigt
+       sie irgendwann wieder an. */
+    const { STR } = await import('../../i18n/pages/hub');
+    expect(STR.de.learnStatus.length).toBe(1);
+    expect(STR.en.learnStatus.length).toBe(1);
+  });
+
+  it('beugt sich der Einzahl', async () => {
+    const { STR } = await import('../../i18n/pages/hub');
+    expect(STR.de.learnStatus(1)).toMatch(/^1 Lektion /);
+    expect(STR.de.learnStatus(2)).toMatch(/^2 Lektionen /);
+    expect(STR.en.learnStatus(1)).toMatch(/^1 lesson /);
+    expect(STR.en.learnStatus(2)).toMatch(/^2 lessons /);
+  });
+});

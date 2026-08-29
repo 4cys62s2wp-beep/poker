@@ -580,6 +580,58 @@ Zahl, sondern ein Deckel — die Knöpfe der Startseite werden höchstens so
 hoch wie ein großer Knopf in dieser App — und ein Blick auf das Bild.
 Dieselbe Lehre wie in Abschnitt 11.6.
 
+### Regel 10.6 — Die Startseite hat zwei Zustände
+
+Seit E-036 sieht die Startseite verschieden aus, je nachdem, ob gerade
+gespielt wird.
+
+| | **Alltag** (keine Runde läuft) | **Am Tisch** (eine Runde läuft) |
+|---|---|---|
+| Ganz oben | die **Hand des Tages**: große Karten, eine Frage, zwei Knöpfe | nichts davon |
+| Die drei Karten | stehen auf ihrem Inhalt | teilen sich die Höhe (Regel 10.1) |
+| Live-Session | unterste Karte | unterste **und größte** Karte (Regel 10.2) |
+| Scrollen | auf kurzen Geräten ja | **nie** |
+
+**Begründung.** Wer das Gerät zwischen Chips und Karten aufnimmt, will die
+Uhr sehen, keine Übungsaufgabe. Und wer die App auf dem Sofa öffnet, will
+nicht als Erstes ein Menü. Das sind zwei Situationen, keine zwei Meinungen
+über dieselbe.
+
+Die Höhenregeln 10.1 und 10.2 sind damit nicht abgeschafft, sondern an die
+Lage gebunden, für die sie geschrieben wurden. `durchgang.test.ts` prüft
+beide Zustände getrennt.
+
+**Was in beiden Zuständen gilt:** Die Live-Session ist die unterste Karte,
+die Marke oben trägt den Rückweg, und unter der letzten Karte steht nichts
+als der Gestenstreifen.
+
+### Regel 10.7 — Die Hand des Tages ist ohne Scrollen beantwortbar
+
+Auf **jedem** Bezugsgerät. Wonach man scrollen muss, sind die Wege — und
+Wege darf man suchen. Eine Aufgabe unterhalb des Bildrands ist dagegen keine
+Aufgabe, sondern eine, die man findet, wenn man ohnehin schon sucht.
+
+### Regel 10.8 — Der Gegenstand ist keine Verzierung
+
+E-035 verbietet dekorative Abbildungen. Große Spielkarten sind keine.
+
+Die Trennlinie ist nicht „Bild oder Text", sondern **trägt es die Sache oder
+umrahmt es sie**. Der Prüfstein: Deckt man die Karten in einer Aufgabe ab,
+ist die Aufgabe nicht mehr lösbar. Deckt man eine Abbildung von Chips ab,
+ändert sich nichts.
+
+Spielkarten werden deshalb in erkennbarer Größe gezeigt — in der Hand des
+Tages 62 Pixel, mit zweitem Index unten rechts wie auf einer echten Karte.
+Die Größe `xl` mit 96 Pixeln steht für die Aufgabenbildschirme bereit.
+
+### Regel 10.9 — Jeder Bereich hat seine Farbe
+
+Nachschlagen blau, Lernen gold, Live-Session grün. Farbe ist hier keine
+Verzierung, sondern die schnellste Art zu sagen, wo man ist: Man findet eine
+Farbe, bevor man ein Wort gelesen hat. Die Töne sind keine neuen — es sind
+die, die die App für diese Bereiche ohnehin verwendet, und sie laufen durch
+denselben Kontrastlauf über beide Modi wie alles andere.
+
 ### Was diese Regeln festhält
 
 `durchgang.test.ts` prüft am gerenderten Ergebnis: kein Scrollen, die

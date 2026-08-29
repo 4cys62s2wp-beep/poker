@@ -3,10 +3,18 @@ import { RANK_CHARS, SUIT_CHARS, SUIT_SYMBOLS, parseCard, rankOf, suitOf } from 
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/playingcard';
 
+/** Wie groß die Karte gezeichnet wird.
+ *
+ *  `xl` ist seit E-036 dazugekommen. Der Grund steht dort ausführlich; kurz:
+ *  Poker hat genau einen Gegenstand, den man ansehen will, und der war in
+ *  dieser App 48 Pixel breit. Eine Karte, die man erkennt, bevor man liest,
+ *  ist keine Verzierung — sie ist der Inhalt. */
+type Groesse = 'sm' | 'md' | 'lg' | 'xl';
+
 interface Props {
   /** Karte als Zahl (0–51) oder String ("As"). Ohne Angabe: Kartenrücken. */
   card?: Card | string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: Groesse;
 }
 
 export function PlayingCard({ card, size = 'md' }: Props) {
@@ -34,11 +42,20 @@ export function PlayingCard({ card, size = 'md' }: Props) {
         <span className="c-suit">{symbol}</span>
       </span>
       <span className="center-suit">{symbol}</span>
+      {/* Der zweite Index unten rechts, auf dem Kopf — wie auf einer echten
+          Karte. Er ist der Grund, warum ein Blatt in der Hand von beiden
+          Seiten lesbar ist, und er ist das Kennzeichen, an dem das Auge
+          eine Spielkarte erkennt, bevor es den Rang liest.
+          `aria-hidden`: Für einen Screenreader ist er eine Wiederholung. */}
+      <span className="corner unten" aria-hidden="true">
+        {displayRank}
+        <span className="c-suit">{symbol}</span>
+      </span>
     </div>
   );
 }
 
-export function CardsRow({ cards, size = 'md' }: { cards: Array<Card | string | undefined>; size?: 'sm' | 'md' | 'lg' }) {
+export function CardsRow({ cards, size = 'md' }: { cards: Array<Card | string | undefined>; size?: Groesse }) {
   return (
     <div className="cards-row">
       {cards.map((c, i) => (

@@ -1385,3 +1385,141 @@ Karten zugleich der Weg ist: die vier Nachschlage-Ziele, das Einrichten eines
 Abends und die nächste offene Lektion. Die Tiefe-1-Liste in DESIGN.md,
 Abschnitt 7, ist von vier auf zehn Adressen gewachsen; größte Tiefe unverändert
 zwei, null Sackgassen.
+
+---
+
+## E-036 · 2026-08-29 · Die App bekommt einen Grund, geöffnet zu werden
+
+**Stand:** entschieden, erster Teil umgesetzt.
+
+**Der Anlass.** Der Auftraggeber, Besitzer und einziger täglicher Nutzer
+sagt: Die App liegt auf dem Startbildschirm, und er tippt sie fast nie an.
+Nicht zum Lernen, nicht zum Spielen. Das ist die härteste Rückmeldung, die
+eine App bekommen kann, und sie ist kein Geschmacksurteil — sie ist ein
+Messwert.
+
+### Was ein Rundgang durch die eigene App zeigt
+
+Aufgenommen wurden dreizehn Bildschirme bei 390 Pixeln Breite. Was auf allen
+gleich aussieht:
+
+1. **Poker ist unsichtbar.** Auf keinem Bildschirm ist der Gegenstand zu
+   sehen, um den es geht. Wo Karten vorkommen — im Drill —, sind sie 48
+   Pixel breit und stehen als graue Leiste neben dem Text, während die
+   Bildschirmmitte leer bleibt. Eine Poker-App, auf der man kein Poker
+   sieht.
+2. **Jeder Bildschirm beginnt mit Hausaufgaben.** Erst ein Absatz Fließtext,
+   dann ein Menü, dann eine Entscheidung, und danach passiert etwas. Bis zur
+   ersten Handlung: zwei bis drei Berührungen und drei Sätze.
+3. **Es gibt kein „heute".** Zwischen zwei Öffnungen ändert sich nichts. Ein
+   Tages-Quiz existiert — zwei Ebenen tief, auf der Startseite nie erwähnt.
+4. **Der Fortschritt ist eine Wand aus Nullen.** Das Profil zeigt acht
+   Kennzahlen, für neue Nutzer achtmal null, dazu „0/49" und „0/22".
+5. **Nichts belohnt.** Eine richtige Antwort ändert Text. 22 Abzeichen sind
+   angelegt und werden nie gezeigt, bevor man sie hat.
+
+**Der gemeinsame Nenner:** Der App fehlen keine Funktionen. Sie hat acht
+Trainer, ein Tages-Quiz, Szenarien, Push/Fold, einen Wiederholungsstapel und
+einen Übungstisch. Sie versteckt sie hinter Menüs und erzählt sie in
+Fließtext.
+
+### Die Entscheidung
+
+**Beim Öffnen steht eine Hand da und eine Frage. Kein Menü.**
+
+Das ist die ganze These. Alles Weitere folgt daraus:
+
+- **Die Hand des Tages** steht ganz oben auf der Startseite, mit großen
+  Karten, einer Frage und zwei Knöpfen. Sie ist beantwortbar, ohne einen
+  einzigen Weg zu gehen. Morgen steht eine andere da.
+- **Die Karten werden groß.** Von 48 auf 62 Pixel in der Hand und mit
+  zweitem Index unten rechts wie auf einer echten Karte. Eine Größe `xl` mit
+  96 Pixeln steht für die Bildschirme bereit, die als Nächstes drankommen.
+- **Jeder Bereich bekommt seine Farbe.** Nachschlagen blau, Lernen gold,
+  Live-Session grün. Farbe findet man, bevor man ein Wort gelesen hat.
+- **Die Woche wird sichtbar.** Sieben Punkte statt einer Zahl.
+- **Die Antwort bekommt einen Moment.** Die Auflösung tritt auf, die eigenen
+  Karten heben sich kurz.
+
+### Warum eine Hand pro Tag und nicht „unendlich üben"
+
+Unendlich üben gibt es schon — der Drill liegt einen Weg entfernt und wird
+nicht benutzt. Ein Angebot, das immer da ist, ist nie dringend. Genau ein
+Stück pro Tag ist die einzige Menge, die morgen wieder einen Grund erzeugt.
+
+### Warum das nichts Neues rechnet
+
+Die Hand des Tages zieht aus **demselben** Generator wie der Pot-Odds-Drill
+und löst mit derselben Funktion. Neu ist allein die **Auswahl**: Der Tag
+wird zu einem Startwert verrechnet (FNV-1a), der Startwert speist einen
+wiederholbaren Zufallsstrom (mulberry32), und der zieht die Aufgabe. Damit
+gilt die Regel des Projekts unverändert: Jede Zahl kommt aus
+`tools/poker-math/`.
+
+Ein Test führt das vor: Aus dem gezogenen Zustand allein muss sich dieselbe
+Aufgabe und dieselbe Auflösung ergeben.
+
+**Warum aus dem Datum und nicht aus dem Zufall:** Wer mittags noch einmal
+öffnet, soll dieselbe Hand sehen — sonst ist die Antwort von heute Morgen
+verschwunden und die Frage war nichts wert. Und alle Geräte ziehen dieselbe
+Hand, ohne dass ein Server sie verteilen müsste. Das ist der billigste
+denkbare tägliche Inhalt: keine Zeile Serverkode, funktioniert im Flugzeug.
+
+Der Tag ist der **lokale** Tag. Nach UTC gerechnet bekäme jemand um 23 Uhr
+die Hand von morgen und um 1 Uhr dieselbe noch einmal.
+
+### Der Widerspruch zu E-035, und wie er aufgelöst ist
+
+E-035 hat festgehalten: keine dekorativen Abbildungen. Große Spielkarten
+sehen zunächst wie ein Verstoß aus.
+
+Sie sind keiner. Was E-035 verbietet, ist **Fläche, die nichts sagt** — ein
+Bild von Chips auf einer Karte, deren Thema „Nachschlagen" ist, sagt nichts,
+was der Rest des Bildschirms nicht schon sagt. Eine Herz-Dame in einer
+Aufgabe über Herz-Damen ist dagegen der Gegenstand selbst. Die Trennlinie
+ist nicht „Bild oder Text", sondern „trägt es die Sache oder umrahmt es
+sie".
+
+Der Prüfstein: Deckt man die Karten ab, ist die Aufgabe nicht mehr lösbar.
+Deckt man eine Abbildung von Chips ab, ändert sich nichts.
+
+### Was das kostet: Die Startseite scrollt jetzt — außer am Tisch
+
+Ausgerechnet und in Kauf genommen: Drei Karten mit Inhalt und eine Aufgabe
+brauchen zusammen rund 670 Pixel. Ein 667 Pixel hohes Gerät hat nach
+Kopfzeile und Rändern 567. Auf dem Bezugsgerät 390 × 844 passt es genau; auf
+dem kürzesten scrollt es.
+
+**Zwei Dinge machen das vertretbar:**
+
+1. **Die Aufgabe steht immer oben und ist immer ohne Scrollen zu
+   beantworten** — auf jedem der drei Bezugsgeräte geprüft. Wonach man
+   scrollen muss, sind die Wege, und Wege darf man suchen.
+2. **Am Tisch tritt der Fall nicht ein.** Läuft eine Runde, entfällt die
+   Hand des Tages: Wer das Gerät zwischen Chips und Karten aufnimmt, will
+   die Uhr sehen, keine Übungsaufgabe. Der Bildschirm ist dann wieder genau
+   der aus E-032/E-035 — kein Scrollen, Live-Session doppelt so hoch wie die
+   kleinste Karte, darunter nur der Gestenstreifen.
+
+Die Höhenregeln aus E-032/E-035 sind damit **nicht abgeschafft, sondern an
+die Lage gebunden, für die sie gedacht waren.** Der Durchgang misst seither
+beide Zustände getrennt.
+
+**Alternative:** Die Aufgabe kleiner machen, damit alles auf ein 667 Pixel
+hohes Gerät passt.
+
+**Warum nicht:** Dann wären die Karten wieder Briefmarken, und der einzige
+Grund, die App zu öffnen, sähe aus wie eine Fußnote. Die Größe ist hier
+nicht Geschmack, sondern die Aussage.
+
+### Was noch nicht getan ist
+
+Diese Entscheidung beschreibt mehr, als heute umgesetzt ist. Offen und
+bewusst als Nächstes vorgesehen:
+
+- Der Drill und die acht Trainer zeigen die Karten weiterhin klein.
+- Das Profil ist weiterhin eine Wand aus Nullen; die 22 Abzeichen werden
+  nicht gezeigt, bevor man sie hat.
+- Die Bereichsfarben stehen bisher nur auf der Startseite, nicht auf den
+  Bildschirmen der Bereiche selbst.
+- Die Fließtext-Absätze am Kopf jedes Bildschirms sind unverändert.

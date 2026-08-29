@@ -75,6 +75,28 @@ export const STR = defineStrings(
     laeuftMit: (spieler: number, sb: number, bb: number) =>
       `${spieler === 1 ? '1 Spieler' : `${spieler} Spieler`} · Blinds ${sb}/${bb}`,
 
+    /* ── Die Hand des Tages (E-036) ─────────────────────────────────── */
+    heuteMarke: 'Heute',
+    heuteHand: 'Deine Hand',
+    heuteFlop: 'Flop',
+    heuteFrage: 'Lohnt der Call?',
+    heuteJa: 'Lohnt sich',
+    heuteNein: 'Lohnt nicht',
+    heuteRichtig: 'Richtig',
+    heuteDaneben: 'Daneben',
+    heuteSetzt: (einsatz: string, topf: string) => `Er setzt ${einsatz} in ${topf}.`,
+    heuteGegen: (equity: string, noetig: string) => `${equity} gegen ${noetig} nötig`,
+    heuteKnapp: 'Hauchdünn — hier entscheidet niemand falsch.',
+    heuteWarum: 'Warum? Ganze Rechnung ansehen',
+    heuteSerie: (tage: number) => (tage === 1 ? '1 Tag in Folge' : `${tage} Tage in Folge`),
+    heuteErsterTag: 'Erster Tag',
+    heuteMorgen: 'Morgen wartet die nächste Hand',
+    heuteWoche: 'Die letzten sieben Tage',
+    heuteTagOffen: 'noch offen',
+    heuteTagRichtig: 'richtig',
+    heuteTagFalsch: 'daneben',
+    heuteTagNichts: 'nicht dabei',
+
     letzterAbendMarke: 'Zuletzt',
     letzterAbend: (datum: string, sieger: string) => `${datum} · ${sieger} gewonnen`,
 
@@ -145,6 +167,28 @@ export const STR = defineStrings(
     laeuftSeit: (dauer: string) => `Running for ${dauer}`,
     laeuftMit: (spieler: number, sb: number, bb: number) =>
       `${spieler === 1 ? '1 player' : `${spieler} players`} · blinds ${sb}/${bb}`,
+
+    /* ── Hand of the day (E-036) ────────────────────────────────────── */
+    heuteMarke: 'Today',
+    heuteHand: 'Your hand',
+    heuteFlop: 'Flop',
+    heuteFrage: 'Is the call worth it?',
+    heuteJa: 'Worth it',
+    heuteNein: 'Not worth it',
+    heuteRichtig: 'Correct',
+    heuteDaneben: 'Not quite',
+    heuteSetzt: (einsatz: string, topf: string) => `He bets ${einsatz} into ${topf}.`,
+    heuteGegen: (equity: string, noetig: string) => `${equity} against ${noetig} needed`,
+    heuteKnapp: 'Razor thin — nobody decides wrong here.',
+    heuteWarum: 'Why? See the full calculation',
+    heuteSerie: (tage: number) => (tage === 1 ? '1 day in a row' : `${tage} days in a row`),
+    heuteErsterTag: 'Day one',
+    heuteMorgen: 'Tomorrow brings the next hand',
+    heuteWoche: 'The last seven days',
+    heuteTagOffen: 'still open',
+    heuteTagRichtig: 'correct',
+    heuteTagFalsch: 'not quite',
+    heuteTagNichts: 'not played',
 
     letzterAbendMarke: 'Last',
     letzterAbend: (datum: string, sieger: string) => `${datum} · ${sieger} won`,

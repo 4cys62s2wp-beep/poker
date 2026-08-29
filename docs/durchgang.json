@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-27T08:16:18.054Z",
+  "geprueft_am": "2026-08-29T19:18:12.691Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -92,10 +92,40 @@
       "uebersprungen": false
     },
     {
+      "name": "Am Tisch bleibt die Startseite der Bildschirm von vorher",
+      "ergebnis": {
+        "hand_des_tages_da": 0,
+        "scrollt": false,
+        "reihenfolge": [
+          "klein",
+          "mittel",
+          "gross"
+        ],
+        "klein": {
+          "oben": 76,
+          "unten": 179,
+          "hoehe": 103
+        },
+        "mittel": {
+          "oben": 187,
+          "unten": 432,
+          "hoehe": 244
+        },
+        "gross": {
+          "oben": 440,
+          "unten": 820,
+          "hoehe": 380
+        },
+        "rest_unten_px": 24,
+        "gestenstreifen_px": 24
+      },
+      "uebersprungen": false
+    },
+    {
       "name": "Neu laden setzt an derselben Stelle fort",
       "ergebnis": {
-        "vorher": "19:56",
-        "nachher": "19:56",
+        "vorher": "19:55",
+        "nachher": "19:55",
         "abstand_s": 0,
         "abend_noch_da": true
       },
@@ -127,7 +157,7 @@
       "ergebnis": {
         "service_worker_angemeldet": true,
         "neu_geladen_ohne_netz": true,
-        "zeit": "19:52",
+        "zeit": "19:51",
         "blinds": "1 / 2",
         "abend_noch_da": true
       },
@@ -138,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 881,
+        "dauer_ms": 868,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -162,7 +192,7 @@
       "name": "Der Abend steht in der Liste",
       "ergebnis": {
         "abende": 1,
-        "erste_karte": "Do., 27. August 2026 · Ada · gewonnen · 5 Personen · gerade eben",
+        "erste_karte": "Sa., 29. August 2026 · Ada · gewonnen · 5 Personen · gerade eben",
         "namen_als_knoepfe": 5,
         "namen": [
           "Ada",
@@ -274,31 +304,41 @@
       "name": "Die Startseite füllt den Bildschirm",
       "ergebnis": {
         "navigationen": [],
-        "scrollt": false,
+        "scrollt": true,
         "fensterhoehe": 844,
+        "heute": {
+          "ist_erstes_kind": true,
+          "steht_ueber_den_karten": true,
+          "knoepfe": 2,
+          "knopf_hoehe": 52,
+          "knoepfe_ohne_scrollen": true,
+          "karten_sichtbar": 5,
+          "kartenbreite_px": 62,
+          "wochenpunkte": 7
+        },
         "reihenfolge": [
           "klein",
           "mittel",
           "gross"
         ],
         "klein": {
-          "oben": 76,
-          "unten": 179,
+          "oben": 362,
+          "unten": 465,
           "hoehe": 103
         },
         "mittel": {
-          "oben": 187,
-          "unten": 461,
-          "hoehe": 274
+          "oben": 473,
+          "unten": 683,
+          "hoehe": 210
         },
         "gross": {
-          "oben": 469,
-          "unten": 820,
-          "hoehe": 351
+          "oben": 691,
+          "unten": 888,
+          "hoehe": 197
         },
-        "rest_unten_px": 24,
+        "rest_unten_px": -44,
         "gestenstreifen_px": 24,
-        "stand_oben_px": 386,
+        "stand_oben_px": 632,
         "lernen_text": "So funktioniert Texas Hold'em",
         "fuellung": [
           {
@@ -310,16 +350,16 @@
           },
           {
             "karte": "mittel",
-            "innen_px": 240,
-            "belegt_px": 192,
-            "anteil": 0.798,
+            "innen_px": 176,
+            "belegt_px": 176,
+            "anteil": 0.998,
             "ueberlauf_px": 0
           },
           {
             "karte": "gross",
-            "innen_px": 317,
-            "belegt_px": 179,
-            "anteil": 0.566,
+            "innen_px": 163,
+            "belegt_px": 163,
+            "anteil": 1.002,
             "ueberlauf_px": 0
           }
         ]
@@ -332,8 +372,10 @@
         "messungen": [
           {
             "geraet": "375x667",
-            "scrollt": false,
-            "rest_unten_px": 24,
+            "scrollt": true,
+            "rest_unten_px": -221,
+            "heute_knoepfe_ohne_scrollen": true,
+            "letzte_karte": "gross",
             "karten": [
               {
                 "karte": "klein",
@@ -345,26 +387,28 @@
               },
               {
                 "karte": "mittel",
-                "aussen_px": 222,
-                "innen_px": 188,
-                "belegt_px": 188,
+                "aussen_px": 210,
+                "innen_px": 176,
+                "belegt_px": 176,
                 "anteil": 0.998,
                 "ueberlauf_px": 0
               },
               {
                 "karte": "gross",
-                "aussen_px": 226,
-                "innen_px": 192,
-                "belegt_px": 179,
-                "anteil": 0.934,
+                "aussen_px": 197,
+                "innen_px": 163,
+                "belegt_px": 163,
+                "anteil": 1.002,
                 "ueberlauf_px": 0
               }
             ]
           },
           {
             "geraet": "390x844",
-            "scrollt": false,
-            "rest_unten_px": 24,
+            "scrollt": true,
+            "rest_unten_px": -44,
+            "heute_knoepfe_ohne_scrollen": true,
+            "letzte_karte": "gross",
             "karten": [
               {
                 "karte": "klein",
@@ -376,26 +420,28 @@
               },
               {
                 "karte": "mittel",
-                "aussen_px": 274,
-                "innen_px": 240,
-                "belegt_px": 192,
-                "anteil": 0.798,
+                "aussen_px": 210,
+                "innen_px": 176,
+                "belegt_px": 176,
+                "anteil": 0.998,
                 "ueberlauf_px": 0
               },
               {
                 "karte": "gross",
-                "aussen_px": 351,
-                "innen_px": 317,
-                "belegt_px": 179,
-                "anteil": 0.566,
+                "aussen_px": 197,
+                "innen_px": 163,
+                "belegt_px": 163,
+                "anteil": 1.002,
                 "ueberlauf_px": 0
               }
             ]
           },
           {
             "geraet": "360x740",
-            "scrollt": false,
-            "rest_unten_px": 24,
+            "scrollt": true,
+            "rest_unten_px": -148,
+            "heute_knoepfe_ohne_scrollen": true,
+            "letzte_karte": "gross",
             "karten": [
               {
                 "karte": "klein",
@@ -407,23 +453,46 @@
               },
               {
                 "karte": "mittel",
-                "aussen_px": 243,
-                "innen_px": 209,
-                "belegt_px": 192,
-                "anteil": 0.917,
+                "aussen_px": 210,
+                "innen_px": 176,
+                "belegt_px": 176,
+                "anteil": 0.998,
                 "ueberlauf_px": 0
               },
               {
                 "karte": "gross",
-                "aussen_px": 278,
-                "innen_px": 244,
-                "belegt_px": 179,
-                "anteil": 0.735,
+                "aussen_px": 197,
+                "innen_px": 163,
+                "belegt_px": 163,
+                "anteil": 1.002,
                 "ueberlauf_px": 0
               }
             ]
           }
         ]
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Die Hand des Tages wird auf der Startseite beantwortet",
+      "ergebnis": {
+        "frage": "Lohnt der Call?",
+        "karten_vorher": [
+          "Herz Ass",
+          "Herz König",
+          "Herz Neun",
+          "Herz Sieben",
+          "Kreuz Zwei"
+        ],
+        "punkte_offen_vorher": 1,
+        "urteil": "Richtig",
+        "zahlen": "54,1 % gegen 30,0 % nötig",
+        "warum_ziel": "#/lernen/drill/4-4-5-npxu",
+        "knoepfe_weg": 0,
+        "punkt_gefuellt": 1,
+        "urteil_nach_neuladen": "Richtig",
+        "frage_wieder_da": 0,
+        "hand_bleibt": true
       },
       "uebersprungen": false
     },
@@ -455,12 +524,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 47,
+        "dauer_ms": 38,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "54,1 %",
+        "ergebnis_text": "16,5 %",
         "uebergang": "0s",
         "belebung": "none"
       },

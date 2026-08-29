@@ -172,6 +172,48 @@ await schritt('Die laufende Runde steht in der großen Karte', async () => {
   };
 });
 
+/* ── Der Tischzustand ──────────────────────────────────────────────────────
+   Läuft eine Runde, entfällt die Hand des Tages (E-036): Wer das Gerät
+   zwischen Chips und Karten aufnimmt, will die Uhr sehen, keine
+   Übungsaufgabe. Der Bildschirm ist dann wieder genau der aus E-032/E-035 —
+   und für ihn gelten dessen Regeln unverändert. Gemessen wird das hier,
+   solange die Runde noch läuft. */
+
+await schritt('Am Tisch bleibt die Startseite der Bildschirm von vorher', async () => {
+  await seite.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.start-einstieg.gross');
+  await seite.waitForTimeout(400);
+  const gemessen = await seite.evaluate(() => {
+    const masse = (auswahl) => {
+      const el = document.querySelector(auswahl);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { oben: Math.round(r.top), unten: Math.round(r.bottom), hoehe: Math.round(r.height) };
+    };
+    const gross = masse('.start-einstieg.gross');
+    return {
+      /* Der Punkt: keine Tagesaufgabe, solange gespielt wird. */
+      hand_des_tages_da: document.querySelectorAll('.heute').length,
+      scrollt: document.documentElement.scrollHeight > window.innerHeight + 1,
+      reihenfolge: [...document.querySelectorAll('.start-einstieg')]
+        .map((el) => el.className.replace('start-einstieg ', '')),
+      klein: masse('.start-einstieg.klein'),
+      mittel: masse('.start-einstieg.mittel'),
+      gross,
+      rest_unten_px: gross ? window.innerHeight - gross.unten : null,
+      gestenstreifen_px: Number.parseInt(
+        getComputedStyle(document.documentElement).getPropertyValue('--gestenstreifen'), 10,
+      ),
+    };
+  });
+  /* Zurück an den Tisch: Die folgenden Schritte prüfen die laufende Runde
+     weiter, und dieser Abstecher darf sie nicht unterbrechen. */
+  await seite.goto(`${GRUND}/#/session/live`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.tisch-zeit');
+  await seite.waitForTimeout(300);
+  return gemessen;
+});
+
 await schritt('Neu laden setzt an derselben Stelle fort', async () => {
   const vorher = (await seite.locator('.tisch-zeit').innerText()).trim();
   await seite.reload({ waitUntil: 'domcontentloaded' });
@@ -499,6 +541,33 @@ await schritt('Die Startseite füllt den Bildschirm', async () => {
         }),
       scrollt: document.documentElement.scrollHeight > window.innerHeight + 1,
       fensterhoehe: window.innerHeight,
+
+      /* Die Hand des Tages (E-036). Gemessen wird nicht, dass es sie gibt,
+         sondern dass sie das Erste ist und dass man sie beantworten kann,
+         ohne zu scrollen: Eine Aufgabe unterhalb des Bildrands ist keine
+         Aufgabe, sondern eine, die man findet, wenn man schon sucht. */
+      heute: (() => {
+        const el = document.querySelector('.heute');
+        if (!el) return null;
+        const knoepfe = [...el.querySelectorAll('.heute-knopf')];
+        const eltern = el.parentElement;
+        return {
+          ist_erstes_kind: eltern ? eltern.firstElementChild === el : false,
+          steht_ueber_den_karten: el.getBoundingClientRect().bottom
+            <= (document.querySelector('.start-einstieg')?.getBoundingClientRect().top ?? 0),
+          knoepfe: knoepfe.length,
+          knopf_hoehe: knoepfe.length
+            ? Math.round(Math.min(...knoepfe.map((k) => k.getBoundingClientRect().height))) : 0,
+          knoepfe_ohne_scrollen: knoepfe.length > 0
+            && knoepfe.every((k) => k.getBoundingClientRect().bottom <= window.innerHeight),
+          karten_sichtbar: el.querySelectorAll('.pcard').length,
+          kartenbreite_px: Math.round(
+            el.querySelector('.pcard')?.getBoundingClientRect().width ?? 0,
+          ),
+          wochenpunkte: el.querySelectorAll('.heute-woche .punkt').length,
+        };
+      })(),
+
       reihenfolge: [...document.querySelectorAll('.start-einstieg')]
         .map((el) => el.className.replace('start-einstieg ', '')),
       klein: masse('.start-einstieg.klein'),
@@ -571,6 +640,15 @@ await schritt('Die Karten sind auf jedem Bezugsgerät innen gefüllt', async () 
         /* Was zwischen der untersten Karte und dem Bildschirmrand bleibt. */
         rest_unten_px: Math.round(window.innerHeight
           - document.querySelector('.start-einstieg.gross').getBoundingClientRect().bottom),
+        /* Die Hand des Tages muss auf JEDEM Gerät beantwortbar sein, ohne
+           zu scrollen — auch auf dem kurzen, auf dem die Seite als Ganzes
+           nicht mehr auf einen Bildschirm passt (E-036). */
+        heute_knoepfe_ohne_scrollen: (() => {
+          const k = [...document.querySelectorAll('.heute-knopf')];
+          return k.length === 2 && k.every((x) => x.getBoundingClientRect().bottom <= window.innerHeight);
+        })(),
+        letzte_karte: [...document.querySelectorAll('.start-einstieg')]
+          .pop()?.className.replace('start-einstieg ', '') ?? null,
         karten: [...document.querySelectorAll('.start-einstieg')].map((karte) => {
           const st = getComputedStyle(karte);
           const innen = karte.clientHeight
@@ -613,6 +691,54 @@ await schritt('Die Karten sind auf jedem Bezugsgerät innen gefüllt', async () 
   await seite.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
   await seite.waitForTimeout(300);
   return { messungen };
+});
+
+/* ── Die Hand des Tages lässt sich sofort beantworten ─────────────────────
+   Der ganze Zweck dieses Bildschirmteils ist, dass man ihn benutzen kann,
+   ohne irgendwohin zu gehen. Geprüft wird deshalb nicht seine Anwesenheit,
+   sondern der Vorgang: antippen, Auflösung lesen, neu laden, Auflösung steht
+   immer noch da. Ohne den letzten Teil wäre die Antwort von heute Morgen
+   mittags verschwunden. */
+
+await schritt('Die Hand des Tages wird auf der Startseite beantwortet', async () => {
+  await seite.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.heute-knopf');
+  await seite.waitForTimeout(300);
+  const vorher = await seite.evaluate(() => ({
+    frage: document.querySelector('.heute-frage strong')?.textContent.trim(),
+    karten: [...document.querySelectorAll('.heute .pcard')].map((k) => k.getAttribute('aria-label')),
+    punkte_offen: document.querySelectorAll('.heute-woche .punkt.offen').length,
+  }));
+  await seite.locator('.heute-knopf').first().click();
+  await seite.waitForSelector('.heute-aufloesung');
+  await seite.waitForTimeout(300);
+  const danach = await seite.evaluate(() => ({
+    urteil: document.querySelector('.heute-aufloesung .urteil')?.textContent.trim(),
+    zahlen: document.querySelector('.heute-aufloesung .zahlen')?.textContent.trim(),
+    warum_ziel: document.querySelector('.heute-warum')?.getAttribute('href'),
+    knoepfe_weg: document.querySelectorAll('.heute-knopf').length,
+    punkt_gefuellt: document.querySelectorAll(
+      '.heute-woche .punkt.richtig, .heute-woche .punkt.falsch',
+    ).length,
+  }));
+  await seite.reload({ waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.heute-aufloesung');
+  await seite.waitForTimeout(300);
+  const nachNeuladen = await seite.evaluate(() => ({
+    urteil: document.querySelector('.heute-aufloesung .urteil')?.textContent.trim(),
+    frage_wieder_da: document.querySelectorAll('.heute-knopf').length,
+    karten: [...document.querySelectorAll('.heute .pcard')].map((k) => k.getAttribute('aria-label')),
+  }));
+  return {
+    frage: vorher.frage,
+    karten_vorher: vorher.karten,
+    punkte_offen_vorher: vorher.punkte_offen,
+    ...danach,
+    urteil_nach_neuladen: nachNeuladen.urteil,
+    frage_wieder_da: nachNeuladen.frage_wieder_da,
+    /* Dieselbe Hand nach dem Neuladen — nicht irgendeine. */
+    hand_bleibt: JSON.stringify(nachNeuladen.karten) === JSON.stringify(vorher.karten),
+  };
 });
 
 await schritt('Jeder Bildschirm hat einen sichtbaren Weg zur Startseite', async () => {

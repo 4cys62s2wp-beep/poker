@@ -30,6 +30,7 @@ export type IconName =
   | 'notes'
   | 'lock'
   | 'check'
+  | 'x'
   | 'crown'
   | 'table'
   | 'info';
@@ -281,6 +282,16 @@ function paths(name: IconName) {
       return (
         <g {...STROKE}>
           <path d="M5 12.6l4.4 4.4L19 7.4" />
+        </g>
+      );
+    /* Das Gegenstück zum Haken. Es gibt ihn, weil Richtig und Falsch sich
+       nicht nur in der Farbe unterscheiden dürfen (DESIGN.md 11): Wer Rot
+       und Grün nicht auseinanderhält, liest hier trotzdem die Form. */
+    case 'x':
+      return (
+        <g {...STROKE}>
+          <path d="M6.6 6.6l10.8 10.8" />
+          <path d="M17.4 6.6L6.6 17.4" />
         </g>
       );
     // Ovaler Pokertisch mit Chips – für den Mehrspieler-Bereich.

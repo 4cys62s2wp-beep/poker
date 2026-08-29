@@ -933,6 +933,15 @@ button.pill {
   letter-spacing: -0.5px;
 }
 
+/* Der zweite Index, auf dem Kopf — wie auf einer echten Karte. */
+.pcard .corner.unten {
+  top: auto;
+  left: auto;
+  right: 5px;
+  bottom: 4px;
+  transform: rotate(180deg);
+}
+
 .pcard .corner .c-suit { font-size: 10px; margin-top: -1px; }
 
 .pcard .center-suit {
@@ -957,11 +966,28 @@ button.pill {
 .pcard.sm .corner { top: 2px; left: 3px; font-size: 10.5px; }
 .pcard.sm .corner .c-suit { font-size: 8px; }
 .pcard.sm .center-suit { font-size: 17px; margin-top: 9px; }
+/* Bei 35 Pixeln Breite wäre der zweite Index ein Fleck, kein Zeichen. */
+.pcard.sm .corner.unten { display: none; }
 
 .pcard.lg { width: 62px; height: 87px; border-radius: 9px; }
 .pcard.lg .corner { top: 5px; left: 7px; font-size: 17px; }
+.pcard.lg .corner.unten { top: auto; left: auto; right: 7px; bottom: 5px; }
 .pcard.lg .corner .c-suit { font-size: 13px; }
 .pcard.lg .center-suit { font-size: 34px; margin-top: 10px; }
+
+/* Die große Karte. Sie ist kein Symbol neben dem Text, sondern das, was man
+   ansieht: In der Breite eines Handys stehen zwei davon nebeneinander und
+   sind aus Armlänge zu erkennen. Seit E-036. */
+.pcard.xl {
+  width: 96px;
+  height: 134px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px var(--lift-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+.pcard.xl .corner { top: 8px; left: 10px; font-size: 27px; }
+.pcard.xl .corner.unten { top: auto; left: auto; right: 10px; bottom: 8px; }
+.pcard.xl .corner .c-suit { font-size: 20px; margin-top: 1px; }
+.pcard.xl .center-suit { font-size: 52px; margin-top: 12px; }
 
 .cards-row {
   display: flex;
@@ -2439,6 +2465,260 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
    ohnehin zu sagen hat, und wird dadurch zugleich ein kürzerer Weg (E-035).
    Keine dekorativen Abbildungen: Sie füllen Fläche, ohne etwas auszusagen. */
 
+/* ═══════════════════════════════════════════════════════════════════════
+   Die Hand des Tages (E-036)
+   ═══════════════════════════════════════════════════════════════════════
+   Das Erste auf der Startseite und das Größte. Alles daran ist darauf
+   ausgelegt, ohne einen einzigen Weg beantwortbar zu sein: die Karten groß
+   genug zum Erkennen, die Frage in einer Zeile, zwei Knöpfe im
+   Daumenbereich. */
+
+.heute {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--akzent-dim);
+  /* Ein eigener Grund, kein Kartenweiß: Diese Fläche ist keine der drei
+     Navigationskarten, sondern der Tisch, auf dem die Karten liegen. Der
+     Verlauf ist derselbe Tischton wie im Live-Bereich, nur ruhiger. */
+  background:
+    radial-gradient(120% 90% at 50% 0%, var(--akzent-dim) 0%, transparent 70%),
+    var(--bg-card);
+  box-shadow: 0 1px 0 var(--veil-2) inset;
+}
+
+.heute-kopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.heute-kopf .marke {
+  font-size: var(--fs-kleingedrucktes);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  color: var(--akzent);
+}
+
+/* Die Woche als sieben Punkte. Eine Zahl („5 Tage in Folge") stellt fest;
+   sieben Punkte, von denen fünf voll sind, laden zum Weitermachen ein —
+   man sieht die Lücke. */
+.heute-woche {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heute-woche .punkt {
+  width: var(--sp-2);
+  height: var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--border-strong);
+}
+
+.heute-woche .punkt.richtig { background: var(--ok); }
+/* Daneben ist trotzdem dabei gewesen: gedämpft, aber nicht leer. Wer eine
+   Woche lang jeden Tag falsch lag, hat eine Woche lang geübt. */
+.heute-woche .punkt.falsch { background: var(--warn); }
+.heute-woche .punkt.offen {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--akzent);
+}
+
+/* Hand und Flop nebeneinander, durch einen Strich getrennt — so wird eine
+   Hand am Tisch gelesen, und so passt sie auf ein kurzes Gerät. */
+.heute-blatt {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-4);
+  margin-top: var(--sp-2);
+}
+
+.heute-blatt .gruppe {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.heute-blatt .gruppe.flop {
+  padding-left: var(--sp-4);
+  border-left: 1px solid var(--border);
+}
+
+.heute-blatt .beschriftung {
+  font-size: var(--fs-kleingedrucktes);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.heute-frage {
+  margin: var(--sp-3) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.heute-frage .lage {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+.heute-frage strong {
+  font-family: var(--font-display);
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+}
+
+.heute-wahl {
+  display: flex;
+  gap: var(--tipp-abstand);
+  margin-top: var(--sp-2);
+}
+
+.heute-knopf {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: calc(var(--tipp-min) + var(--sp-2));
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.heute-knopf:active { background: var(--bg-card-hover); }
+.heute-knopf.ja { border-color: var(--ok); color: var(--ok-lesbar); }
+.heute-knopf.nein { border-color: var(--danger); color: var(--danger-lesbar); }
+
+/* ── Nach der Antwort ────────────────────────────────────────────────── */
+/* Die Auflösung kommt nicht einfach da hin, sie kommt an: ein kurzer
+   Auftritt von unten. Der Grund ist nicht Schmuck — es ist der Unterschied
+   zwischen „der Text hat sich geändert" und „ich habe etwas ausgelöst".
+   Wer „Bewegung reduzieren" gewählt hat, bekommt sie nicht; darum kümmert
+   sich der Block weiter oben. */
+@keyframes heute-auftritt {
+  from { opacity: 0; transform: translateY(var(--sp-3)); }
+  to { opacity: 1; transform: none; }
+}
+
+.heute-aufloesung {
+  margin-top: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  animation: heute-auftritt 220ms ease-out both;
+}
+
+/* Und die Karten bekommen einen Moment: Sie sind der Gegenstand der
+   Aufgabe, und nach der Antwort sind sie der Beweis. */
+@keyframes heute-heben {
+  0% { transform: none; }
+  40% { transform: translateY(calc(var(--sp-1) * -1)); }
+  100% { transform: none; }
+}
+
+.heute.beantwortet .heute-blatt .gruppe:first-child .pcard {
+  animation: heute-heben 420ms ease-out both;
+}
+
+.heute.beantwortet .heute-blatt .gruppe:first-child .pcard:last-child {
+  animation-delay: 70ms;
+}
+
+.heute-aufloesung .urteil {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+}
+
+/* Richtig und Falsch unterscheiden sich in Farbe UND Form — der Haken und
+   das Kreuz daneben. Wer Rot und Grün nicht auseinanderhält, liest die
+   Form (DESIGN.md 11). */
+.heute-aufloesung .urteil.gut { color: var(--ergebnis-gut); }
+.heute-aufloesung .urteil.schlecht { color: var(--ergebnis-schlecht); }
+
+.heute-aufloesung .zahlen {
+  margin: 0;
+  font-size: var(--fs-fliesstext);
+  color: var(--text);
+  font-variant-numeric: var(--ziffern);
+}
+
+.heute-aufloesung .knapp,
+.heute-aufloesung .serie {
+  margin: 0;
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+}
+
+.heute-aufloesung .serie {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  margin-top: var(--sp-1);
+  font-weight: var(--fw-bold);
+  color: var(--akzent);
+}
+
+.heute-aufloesung .serie .morgen {
+  font-weight: var(--fw-medium);
+  color: var(--text-faint);
+}
+
+.heute-warum {
+  margin-top: var(--sp-3);
+  min-height: var(--tipp-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  text-decoration: none;
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Was die Hand des Tages mit den drei Karten macht ─────────────────
+   Solange sie da ist, tragen die drei Karten die Fläche nicht mehr allein.
+   Sie hören deshalb auf, sich in die Höhe zu strecken, und stehen auf
+   ihrem Inhalt: Die Regel aus E-035 („keine Karte, die außen groß und
+   innen leer ist") wird damit nicht gebrochen, sondern erfüllt sich von
+   selbst — es gibt keinen Leerraum mehr zu verteilen.
+
+   Was das kostet: Auf sehr kurzen Geräten passt die Seite nicht mehr auf
+   einen Bildschirm. Das ist ausgerechnet und in Kauf genommen (E-036) —
+   drei Karten mit Inhalt und eine Aufgabe brauchen zusammen rund 670
+   Pixel, ein 667 Pixel hohes Gerät hat nach Kopfzeile und Rändern 567. Am
+   Tisch tritt der Fall nicht ein: Läuft eine Runde, entfällt die Hand des
+   Tages, und die Seite ist wieder die von vorher. */
+@media (max-width: 920px) {
+  .start:has(.heute) .start-einstieg {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+  }
+}
+
 /* Der Kopf ist der Weg auf die Bereichsübersicht. Eigener Link, weil die
    Karte selbst keiner mehr sein kann — sie enthält welche, und ein Link im
    Link ist kein gültiges HTML. */
@@ -2604,6 +2884,20 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   text-decoration: none;
   text-align: center;
 }
+
+/* ── Jeder Bereich hat seine Farbe ───────────────────────────────────
+   Bis E-036 war die ganze Startseite grün, und die drei Karten unterschieden
+   sich nur durch ihre Größe und ihre Überschrift. Farbe ist hier keine
+   Verzierung, sondern die schnellste Art zu sagen, wo man ist: Man findet
+   eine Farbe, bevor man ein Wort gelesen hat.
+
+   Die Töne sind keine neuen — es sind die, die die App für diese Bereiche
+   ohnehin verwendet, und sie sind im Kontrastlauf über beide Modi geprüft. */
+.start-einstieg.klein .titel { color: var(--info-lesbar); }
+.start-einstieg.mittel .titel { color: var(--auszeichnung-lesbar); }
+
+.start-einstieg.klein { border-color: var(--info-dim); }
+.start-einstieg.mittel { border-color: var(--auszeichnung-schwach); }
 
 /* Klein — oben. */
 .start-einstieg.klein .titel { font-size: var(--fs-fliesstext); }

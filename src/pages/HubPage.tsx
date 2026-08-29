@@ -42,8 +42,9 @@
    Größen und Abstände stehen vollständig in `global.css`, Abschnitt
    „Startseite". In dieser Datei steht keine Gestaltungszahl. */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { HeuteKarte } from '../components/HeuteKarte';
 import { Icon } from '../components/Icon';
 import { useAppState } from '../state/AppState';
 import { useLang } from '../i18n';
@@ -53,6 +54,13 @@ import { grobeDauer } from '../lib/session/dauer';
 import { standDerUhr } from '../lib/live/uhr';
 import { ladeAbende, type Abend } from '../lib/session/abende';
 import { ladeLaufende, nochDabei, type LaufendeSession } from '../lib/session/laufend';
+import { handDesTages, tagesschluessel, type TagesHand } from '../lib/heute/hand';
+import {
+  antwortVon, ergaenze, ladeAntworten, serie, speichereAntworten, woche,
+  type TagesAntwort,
+} from '../lib/heute/stand';
+import { ladeB1, ladeB2 } from '../lib/pokermath/laden';
+import { fingerabdruck } from '../lib/potodds/adresse';
 
 /** Die vier Ziele, die aus „Nachschlagen" am häufigsten gesucht werden.
  *
@@ -81,6 +89,45 @@ export function HubPage() {
     setLaufend(ladeLaufende());
     setAbende(ladeAbende());
   }, []);
+
+  /* ── Die Hand des Tages ────────────────────────────────────────────────
+     Die gerechneten Tabellen kommen über das Netz beziehungsweise aus dem
+     Zwischenspeicher des Service Workers. Bis sie da sind, steht an dieser
+     Stelle nichts — kein Platzhalter, der später springt, und vor allem
+     keine erfundene Hand. Bleibt das Laden erfolglos, bleibt die Karte
+     schlicht weg: Die Startseite muss auch ohne sie vollständig sein.
+
+     Läuft gerade eine Runde, entfällt sie ebenfalls. Das ist keine
+     Sparmaßnahme, sondern der Unterschied zwischen zwei Situationen: Am
+     Tisch liegt das Gerät zwischen Chips und Karten, und wer es dann
+     aufnimmt, will die Uhr sehen — nicht eine Übungsaufgabe. Der Bildschirm
+     für den Tisch bleibt dadurch unverändert der von vorher. */
+  const [heute, setHeute] = useState<{ hand: TagesHand; abdruck: string } | null>(null);
+  const [antworten, setAntworten] = useState<TagesAntwort[]>([]);
+  useEffect(() => {
+    let lebt = true;
+    setAntworten(ladeAntworten());
+    Promise.all([ladeB1(), ladeB2()])
+      .then(([b1, b2]) => {
+        if (!lebt) return;
+        setHeute({ hand: handDesTages(b1, b2), abdruck: fingerabdruck(b1, b2) });
+      })
+      .catch(() => { /* Ohne Daten keine Hand des Tages. Mehr passiert nicht. */ });
+    return () => { lebt = false; };
+  }, []);
+
+  const heuteTag = heute?.hand.tag ?? tagesschluessel();
+  const heuteAntwort = antwortVon(antworten, heuteTag);
+
+  const beantworte = useCallback((gewaehlt: 'lohnt' | 'lohnt-nicht') => {
+    if (!heute) return;
+    const richtig = (gewaehlt === 'lohnt') === heute.hand.aufloesung.lohnt;
+    setAntworten((bisher) => {
+      const neu = ergaenze(bisher, { tag: heute.hand.tag, gewaehlt, richtig });
+      speichereAntworten(neu);
+      return neu;
+    });
+  }, [heute]);
 
   /* Nur, was wirklich abgeschlossen wurde — ohne Nenner. Eine Gesamtzahl ist
      eine Zusage über den Inhalt, und die deckt der vorhandene nicht: Sie
@@ -144,7 +191,20 @@ export function HubPage() {
           eine Runde, steht sie unten in ihrer eigenen Karte — dort ist sie
           größer und im Daumenbereich, und zweimal dasselbe auf einem
           Bildschirm ist einmal zu viel (E-035). */}
-      {erstesMal && !laufend && <p className="start-erklaerung">{L.wasDieAppTut}</p>}
+      {erstesMal && !laufend && !heute && <p className="start-erklaerung">{L.wasDieAppTut}</p>}
+
+      {/* Ganz oben und am größten: das Einzige auf dieser Seite, das man
+          tun kann, ohne irgendwohin zu gehen (E-036). */}
+      {heute && !laufend && (
+        <HeuteKarte
+          hand={heute.hand}
+          abdruck={heute.abdruck}
+          antwort={heuteAntwort}
+          woche={woche(antworten, heuteTag)}
+          serie={serie(antworten, heuteTag)}
+          onAntwort={beantworte}
+        />
+      )}
 
       {/* ── Klein, oben: Nachschlagen ─────────────────────────────────── */}
       <div className="start-einstieg klein">

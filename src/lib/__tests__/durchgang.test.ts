@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(27);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(29);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -418,10 +418,6 @@ describe('Die Startseite trägt die Navigation allein', () => {
       + 'die Klasse heißt.').toEqual([]);
   });
 
-  it('passt ohne Scrollen auf den Bildschirm', () => {
-    expect(schritt('Die Startseite füllt den Bildschirm').scrollt).toBe(false);
-  });
-
   it('ordnet die Karten von klein nach groß, von oben nach unten', () => {
     const e = schritt('Die Startseite füllt den Bildschirm');
     expect(e.reihenfolge).toEqual(['klein', 'mittel', 'gross']);
@@ -431,24 +427,7 @@ describe('Die Startseite trägt die Navigation allein', () => {
     expect(m.oben).toBeLessThan(g.oben);
   });
 
-  it('gibt der Live-Session die größte Fläche', () => {
-    /* Sie wird unter Zeitdruck getroffen, oft einhändig, und der Daumen
-       erreicht die untere Bildschirmhälfte — mehr nicht. */
-    const e = schritt('Die Startseite füllt den Bildschirm');
-    const hoehe = (n: string) => (e[n] as { hoehe: number }).hoehe;
-    expect(hoehe('gross')).toBeGreaterThan(hoehe('mittel'));
-    expect(hoehe('mittel')).toBeGreaterThan(hoehe('klein'));
-    /* Deutlich größer, nicht ein bisschen: mindestens das Doppelte der
-       kleinsten Karte. */
-    expect(hoehe('gross')).toBeGreaterThanOrEqual(hoehe('klein') * 2);
-  });
 
-  it('lässt unter der letzten Karte nur den Sicherheitsabstand', () => {
-    /* Genau der Streifen für die Systemgesten aus DESIGN.md — kein Pixel
-       mehr. Alles darüber hinaus ist der Leerraum, um den es hier ging. */
-    const e = schritt('Die Startseite füllt den Bildschirm');
-    expect(e.rest_unten_px).toBe(e.gestenstreifen_px);
-  });
 
   it('hält die Kennzahlen aus dem Daumenbereich heraus', () => {
     /* Streak, Level und XP standen einmal unter den Karten und drückten die
@@ -525,10 +504,132 @@ interface Fuellung {
   ueberlauf_px: number;
 }
 
+/* ── Der Tischzustand ─────────────────────────────────────────────────────
+   Seit E-036 hat die Startseite zwei Gesichter. Läuft eine Runde, entfällt
+   die Hand des Tages: Wer das Gerät zwischen Chips und Karten aufnimmt, will
+   die Uhr sehen, keine Übungsaufgabe. Der Bildschirm ist dann wieder genau
+   der aus E-032/E-035 — und für ihn gelten dessen Höhenregeln unverändert.
+   Sie stehen deshalb hier und nicht mehr beim Alltagszustand: nicht
+   abgeschafft, sondern an die Lage gebunden, für die sie gedacht waren. */
+
+describe('Am Tisch bleibt die Startseite der Bildschirm von vorher', () => {
+  const e = () => schritt('Am Tisch bleibt die Startseite der Bildschirm von vorher');
+
+  it('zeigt keine Tagesaufgabe, solange gespielt wird', () => {
+    expect(e().hand_des_tages_da).toBe(0);
+  });
+
+  it('passt ohne Scrollen auf den Bildschirm', () => {
+    /* Am Tisch ist Scrollen das Schlimmste: Eine Hand hält Chips, die
+       andere sucht. */
+    expect(e().scrollt).toBe(false);
+  });
+
+  it('gibt der Live-Session die größte Fläche', () => {
+    const hoehe = (name: string) => (e()[name] as { hoehe: number }).hoehe;
+    expect(hoehe('gross')).toBeGreaterThan(hoehe('mittel'));
+    /* Deutlich größer, nicht ein bisschen: mindestens das Doppelte der
+       kleinsten Karte (Regel 10.2). */
+    expect(hoehe('gross')).toBeGreaterThanOrEqual(hoehe('klein') * 2);
+  });
+
+  it('lässt unter der letzten Karte nur den Sicherheitsabstand', () => {
+    expect(e().rest_unten_px).toBe(e().gestenstreifen_px);
+  });
+});
+
+/* ── Die Hand des Tages ───────────────────────────────────────────────────
+   Der Grund, die App zu öffnen (E-036). Geprüft wird nicht, dass es sie
+   gibt, sondern dass sie leistet, wozu sie da ist: Sie steht ganz oben, sie
+   ist ohne einen einzigen Weg beantwortbar, und die Antwort bleibt. */
+
+describe('Die Hand des Tages', () => {
+  const geometrie = () => schritt('Die Startseite füllt den Bildschirm').heute as {
+    ist_erstes_kind: boolean; steht_ueber_den_karten: boolean;
+    knoepfe: number; knopf_hoehe: number; knoepfe_ohne_scrollen: boolean;
+    karten_sichtbar: number; kartenbreite_px: number; wochenpunkte: number;
+  } | null;
+  const ablauf = () => schritt('Die Hand des Tages wird auf der Startseite beantwortet');
+
+  it('steht ganz oben, vor den drei Karten', () => {
+    /* Sie ist das Einzige auf dieser Seite, das man tun kann, ohne
+       irgendwohin zu gehen. Was man tun kann, steht vor dem, wohin man
+       gehen kann. */
+    const g = geometrie();
+    expect(g).not.toBeNull();
+    expect(g!.ist_erstes_kind).toBe(true);
+    expect(g!.steht_ueber_den_karten).toBe(true);
+  });
+
+  it('lässt sich beantworten, ohne zu scrollen', () => {
+    /* Eine Aufgabe unterhalb des Bildrands ist keine Aufgabe, sondern eine,
+       die man findet, wenn man ohnehin schon sucht. */
+    const g = geometrie()!;
+    expect(g.knoepfe).toBe(2);
+    expect(g.knoepfe_ohne_scrollen).toBe(true);
+    expect(g.knopf_hoehe).toBeGreaterThanOrEqual(44);
+  });
+
+  it('zeigt die Karten in erkennbarer Größe, nicht als Briefmarke', () => {
+    /* Der Kern von E-036: Poker hat genau einen Gegenstand, den man ansehen
+       will, und der war in dieser App 48 Pixel breit und stand als graue
+       Leiste neben dem Text. Fünf Karten — zwei eigene und der Flop. */
+    const g = geometrie()!;
+    expect(g.karten_sichtbar).toBe(5);
+    expect(g.kartenbreite_px).toBeGreaterThanOrEqual(60);
+  });
+
+  it('zeigt die Woche als sieben Punkte', () => {
+    /* Eine Zahl stellt fest, sieben Punkte laden ein: Man sieht die Lücke. */
+    expect(geometrie()!.wochenpunkte).toBe(7);
+  });
+
+  it('stellt eine Frage und nennt die Karten beim Namen', () => {
+    const a = ablauf();
+    expect(String(a.frage)).toMatch(/\?$/);
+    expect(a.karten_vorher).toHaveLength(5);
+    /* Sprechbar, nicht „10♦": Ein Screenreader liest sonst ein Symbol vor. */
+    for (const name of a.karten_vorher as string[]) {
+      expect(name).toMatch(/\w+ \w+/);
+    }
+  });
+
+  it('antwortet mit einem Urteil und der gerechneten Zahl dahinter', () => {
+    const a = ablauf();
+    expect(String(a.urteil)).not.toBe('');
+    /* Zwei Prozentwerte: was man trifft, und was nötig wäre. Beide kommen
+       aus den gerechneten Tabellen, nicht aus dem Bildschirm. */
+    expect(String(a.zahlen)).toMatch(/%.*%/);
+    expect(a.knoepfe_weg).toBe(0);
+  });
+
+  it('füllt den Punkt für heute', () => {
+    const a = ablauf();
+    expect(a.punkte_offen_vorher).toBe(1);
+    expect(a.punkt_gefuellt).toBeGreaterThanOrEqual(1);
+  });
+
+  it('behält die Antwort über ein Neuladen', () => {
+    /* Sonst wäre die Antwort von heute Morgen mittags verschwunden, und die
+       Frage war nichts wert. */
+    const a = ablauf();
+    expect(a.urteil_nach_neuladen).toBe(a.urteil);
+    expect(a.frage_wieder_da).toBe(0);
+    expect(a.hand_bleibt).toBe(true);
+  });
+
+  it('führt zur ganzen Rechnung derselben Hand, nicht zu irgendeiner', () => {
+    /* „Warum?" muss die Rechnung zu **dieser** Hand zeigen. Eine fremde
+       Aufgabe wäre eine Themaverfehlung. */
+    expect(String(ablauf().warum_ziel)).toMatch(/^#\/lernen\/drill\/.+/);
+  });
+});
+
 describe('Die Karten sind innen gefüllt, nicht nur außen groß', () => {
   const messungen = (schritt('Die Karten sind auf jedem Bezugsgerät innen gefüllt')
     .messungen as Array<{
-      geraet: string; scrollt: boolean; rest_unten_px: number; karten: Fuellung[];
+      geraet: string; scrollt: boolean; rest_unten_px: number;
+      heute_knoepfe_ohne_scrollen: boolean; letzte_karte: string; karten: Fuellung[];
     }>);
 
   it('misst auf allen drei Bezugsgeräten aus Regel 10.1', () => {
@@ -567,40 +668,33 @@ describe('Die Karten sind innen gefüllt, nicht nur außen groß', () => {
     }
   });
 
-  it('scrollt auf keinem der drei Geräte', () => {
-    /* Dieselbe Regel wie im Schritt darüber, hier auf allen drei Geräten:
-       Die Startseite passt, sie wird nicht gescrollt. */
+
+
+
+
+  it('lässt die Hand des Tages auf jedem Gerät ohne Scrollen beantworten', () => {
+    /* Seit E-036 passt die Startseite im Alltagszustand nicht mehr auf jedes
+       Gerät: Drei Karten mit Inhalt und eine Aufgabe brauchen zusammen rund
+       670 Pixel, ein 667 Pixel hohes Gerät hat nach Kopfzeile und Rändern
+       567. Das ist ausgerechnet und in Kauf genommen — aber unter einer
+       Bedingung: Die Aufgabe selbst steht immer oben und ist immer ohne
+       Scrollen zu beantworten. Wonach man scrollen muss, sind die Wege, und
+       Wege darf man suchen.
+
+       Die Regel „kein Scrollen" gilt unverändert dort, wo sie herkam: am
+       Tisch. Sie wird im Schritt „Am Tisch bleibt die Startseite der
+       Bildschirm von vorher" geprüft. */
     for (const m of messungen) {
-      expect(m.scrollt, `Die Startseite scrollt auf ${m.geraet}.`).toBe(false);
+      expect(m.heute_knoepfe_ohne_scrollen, m.geraet).toBe(true);
     }
   });
 
-  it('hält auf jedem Gerät die Reihenfolge klein < mittel < groß', () => {
-    /* Regel 10.2 gilt nicht nur auf dem Gerät des Durchgangs. Sie stand
-       vorübergehend auf dem Kopf: Als die Lernkarte Streak, Level und XP
-       aufnahm, war sie auf dem 375 × 667 großen Gerät 235 Pixel hoch und
-       die Live-Session darunter 209 — die größte Karte war die mittlere.
-       Aufgefallen ist das erst, als diese Messung auf drei Geräten lief. */
+  it('lässt die Live-Session auf jedem Gerät die unterste Karte sein', () => {
+    /* Von Regel 10.2 gilt im Alltagszustand die Lage, nicht die Höhe: Die
+       Höhe gehört dem, was man gerade tut — am Tisch der Live-Session, sonst
+       der Aufgabe. Unten im Daumenbereich bleibt sie in beiden Fällen. */
     for (const m of messungen) {
-      const h = (name: string) => m.karten.find((k) => k.karte === name)!.aussen_px;
-      expect(h('klein'), `${m.geraet}: klein gegen mittel`).toBeLessThan(h('mittel'));
-      expect(h('mittel'), `${m.geraet}: mittel gegen groß`).toBeLessThan(h('gross'));
-    }
-  });
-
-  it('gibt der Live-Session auf jedem Gerät mindestens die doppelte Höhe', () => {
-    /* Deutlich größer, nicht ein bisschen — dieselbe Schwelle wie im Schritt
-       darüber, hier auf allen drei Bezugsgeräten. */
-    for (const m of messungen) {
-      const h = (name: string) => m.karten.find((k) => k.karte === name)!.aussen_px;
-      expect(h('gross'), m.geraet).toBeGreaterThanOrEqual(h('klein') * 2);
-    }
-  });
-
-  it('lässt unter der letzten Karte auf jedem Gerät nur den Gestenstreifen', () => {
-    const streifen = schritt('Die Startseite füllt den Bildschirm').gestenstreifen_px;
-    for (const m of messungen) {
-      expect(m.rest_unten_px, m.geraet).toBe(streifen);
+      expect(m.letzte_karte, m.geraet).toBe('gross');
     }
   });
 

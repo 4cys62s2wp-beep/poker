@@ -8,6 +8,8 @@ import { STR } from '../i18n/pages/learn';
 import { STR as TRAINER_TEXTE } from '../i18n/pages/trainerhub';
 import { TRAINER } from '../lib/trainerliste';
 import { Icon, IconTile, type IconName } from '../components/Icon';
+import { Levelring } from '../components/Levelring';
+import { rangstand } from '../lib/rang/stand';
 import { usePro } from '../lib/pro/ProProvider';
 import { isFreeModule } from '../lib/pro/plan';
 
@@ -125,20 +127,105 @@ export function LearnPage() {
     { to: '/lernen/statistik', icon: 'chart', tone: 'violet', title: L.styleTitle, sub: L.styleSub },
   ];
 
+  const rang = rangstand(data.xp);
+
   return (
     <div>
       <BackLink to="/" label={NAV[lang].start} />
       <div className="page-header">
         <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>
-        <p className="sub">
-          {L.sub}
-        </p>
       </div>
 
+      {/* Der Rang steht oben, nicht im Profil versteckt (E-037). Wer lernt,
+          soll sehen, worauf er hinlernt — und wie weit es noch ist. Der
+          Absatz Fließtext, der hier stand, ist dafür gewichen: Er erklärte
+          das Curriculum, das direkt darunter zu sehen ist. */}
+      <section className="rangstand" aria-label={L.rangMarke}>
+        <Levelring
+          wert={rang.level}
+          anteil={rang.anteil}
+          groesse={64}
+          className={`gross${rang.hoechsterRang ? ' fertig' : ''}`}
+          beschriftung={L.rangRing(rang.level, rang.titel)}
+        />
+        <div className="text">
+          <span className="marke">{L.rangMarke}</span>
+          <strong className="titel">{rang.titel}</strong>
+          <span className="bis">
+            {rang.naechsterTitel === null
+              ? L.rangHoechster
+              : L.rangBis(rang.fehlt, rang.naechsterTitel)}
+          </span>
+        </div>
+      </section>
+
+      {/* Reihenfolge seit E-037: erst der Weg, dann das Üben. Vorher stand
+          der Lernpfad — der Zweck dieses Bildschirms — hinter dreizehn
+          Trainerkarten, 3707 Pixel weit unten. Wer „Lernen" antippt, will
+          wissen, wo er steht, nicht als Erstes eine Werkzeugliste. */}
+      {/* Der Lernpfad ist ein Pfad, kein Kachelraster (E-037): eine
+          Spalte, eine Linie, neun Stufen. Ein Raster zeigt neun
+          gleichwertige Möglichkeiten; ein Pfad zeigt, wo man steht und
+          was als Nächstes kommt — und genau das ist der Unterschied
+          zwischen einem Inhaltsverzeichnis und einem Spiel. */}
+      <div className="section-title">{L.pfadMarke}</div>
+      <ol className="lernpfad">
+        {content.modules.map((m, idx) => {
+          const prog = moduleProgress(data, m.id);
+          const done = Math.round(prog * m.lessons.length);
+          const locked = !unlocked && !isFreeModule(m.id);
+          const fertig = done === m.lessons.length;
+          /* „Hier weiter" bekommt genau eine Stufe: die erste, die noch
+             nicht fertig und nicht gesperrt ist. Zwei Wegweiser sind
+             keiner. */
+          const naechste = !fertig && !locked && content.modules
+            .slice(0, idx)
+            .every((v) => moduleProgress(data, v.id) === 1);
+          const zustand = locked ? 'gesperrt' : fertig ? 'fertig' : naechste ? 'offen' : 'spaeter';
+          return (
+            <li key={m.id} className={`stufe ${zustand}`}>
+              <Link to={`/lernen/${m.id}`} className="stufe-karte">
+                <Levelring
+                  wert={fertig ? <Icon name="check" size={18} /> : idx + 1}
+                  anteil={prog}
+                  groesse={48}
+                  className={fertig ? 'fertig' : 'auszeichnung'}
+                  beschriftung={L.stufeRing(done, m.lessons.length)}
+                />
+                <div className="stufe-text">
+                  <div className="kopf">
+                    <span className="titel">{m.title}</span>
+                    {locked && (
+                      <span className="pill gold" title={L.lockedHint} aria-label={L.lockedHint}>
+                        <Icon name="lock" size={13} />
+                      </span>
+                    )}
+                  </div>
+                  <span className="unter">{m.subtitle}</span>
+                  <div className="marken">
+                    <span className={`pill ${LEVEL_PILL[m.level] ?? ''}`}>
+                      {levelLabel(m.level, lang)}
+                    </span>
+                    <span className="zahl">{L.doneLine(done, m.lessons.length)}</span>
+                  </div>
+                </div>
+                {naechste && <span className="stufe-hinweis">{L.stufeOffen}</span>}
+                {fertig && <span className="stufe-hinweis fertig">{L.stufeFertig}</span>}
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
+
+
+      {/* Das Suchfeld steht unter dem Weg, nicht darüber: Wer sucht, weiß
+          schon, wonach — das ist der seltenere Fall. Es steht außerhalb der
+          Verzweigung darunter, weil ein Feld, das beim dritten Zeichen an
+          eine andere Stelle im Baum wandert, den Fokus verliert. */}
       <input
         className="search-input"
-        style={{ maxWidth: 480, marginBottom: 20 }}
+        style={{ maxWidth: 480, margin: 'var(--sp-5) 0 var(--sp-5)' }}
         placeholder={L.searchPlaceholder}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
@@ -217,48 +304,6 @@ export function LearnPage() {
             <span className="pill gold">{L.newPill}</span>
           </div>
         </Link>
-        <div className="grid cols-2">
-          {content.modules.map((m, idx) => {
-            const prog = moduleProgress(data, m.id);
-            const done = Math.round(prog * m.lessons.length);
-            const locked = !unlocked && !isFreeModule(m.id);
-            const levelPill = (
-              <span className={`pill ${LEVEL_PILL[m.level] ?? ''}`}>{levelLabel(m.level, lang)}</span>
-            );
-            return (
-              <Link key={m.id} to={`/lernen/${m.id}`} className="card clickable">
-                <div className="row between" style={{ marginBottom: 8 }}>
-                  <span className="pill">{L.moduleN(idx + 1)}</span>
-                  {locked ? (
-                    <span className="row" style={{ gap: 6 }}>
-                      <span className="pill gold" title={L.lockedHint} aria-label={L.lockedHint}>
-                        <Icon name="lock" size={14} />
-                      </span>
-                      {levelPill}
-                    </span>
-                  ) : (
-                    levelPill
-                  )}
-                </div>
-                <div className="row" style={{ alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: 30 }}>{m.icon}</span>
-                  <div>
-                    <div style={{ fontWeight: 800, fontSize: 17 }}>{m.title}</div>
-                    <div className="small muted" style={{ marginTop: 3 }}>
-                      {m.subtitle}
-                    </div>
-                  </div>
-                </div>
-                <div className="progressbar" style={{ margin: '14px 0 8px' }}>
-                  <div style={{ width: `${prog * 100}%` }} />
-                </div>
-                <div className="small faint">
-                  {L.doneLine(done, m.lessons.length)}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
         </>
       )}
     </div>

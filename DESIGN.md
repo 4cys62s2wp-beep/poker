@@ -651,6 +651,64 @@ eingebaute Probeleiste ohne diese Klasse lässt beide Lageprüfungen fallen.
 
 ---
 
+## 10a. Fortschritt wird gezeigt, nicht aufgezählt
+
+Seit E-037. Betrifft Lernpfad, Modul und Profil.
+
+### Regel 10a.1 — Der Rang ist ein Ring
+
+Level und Fortschritt zum nächsten Rang stehen als Ring mit der Levelzahl in
+der Mitte. Ein Balken wirkt wie eine Strecke, die man abarbeitet; ein Ring
+schließt sich und fängt wieder an — genau das tut ein Level.
+
+Der Ring steht **oben auf dem Lernpfad**, nicht nur im Profil: Wer lernt,
+soll sehen, worauf er hinlernt.
+
+**Die Level laufen über die fünfzehn Rangnamen hinaus weiter.** `rangstand`
+unterscheidet deshalb „letzter Rangname erreicht" von „letztes Level"; ein
+Bildschirm, der das nicht täte, schriebe „nächster Rang: undefined".
+
+### Regel 10a.2 — Der Lernpfad ist ein Pfad
+
+Eine Spalte, eine Linie, neun Stufen. Kein Kachelraster: Ein Raster zeigt
+neun gleichwertige Möglichkeiten, ein Pfad zeigt, wo man steht. Erledigte
+Stufen färben die Linie hinter sich ein.
+
+**Genau eine Stufe trägt den Wegweiser** — die erste, die weder fertig noch
+gesperrt ist. Zwei Wegweiser sind keiner, und keiner wäre schlimmer.
+
+### Regel 10a.3 — Der Zweck einer Seite steht vor ihrem Werkzeugkasten
+
+Der Lernpfad stand 3707 Pixel weit unten, hinter dreizehn Trainerkarten. Wer
+„Lernen" antippt, will wissen, wo er steht, nicht als Erstes eine
+Werkzeugliste. Das Suchfeld steht unter dem Weg: Wer sucht, weiß schon,
+wonach.
+
+`durchgang.test.ts` misst das am gerenderten Ergebnis — der Pfad muss vor dem
+ersten Trainer liegen und ohne Scrollen sichtbar sein.
+
+### Regel 10a.4 — Ein Nenner ist erlaubt, wenn er etwas Fertiges zählt
+
+E-032 hat „3 von 49 Lektionen" von der Startseite entfernt: Der Nenner war
+eine Zusage über Inhalt, den es noch nicht vollständig gibt.
+
+Im Modul steht „2 von 5 Lektionen", und das ist kein Rückfall. Ein Modul hat
+genau die Lektionen, die es hat.
+
+**Die Trennlinie:** Zählt der Nenner etwas, das fertig ist, oder etwas, das
+noch werden soll?
+
+### Regel 10a.5 — Was etwas einbringt, steht dort, wo man es noch tun kann
+
+Offene Lektionen zeigen „bis 100 XP", erledigte nicht: Hinterher ist es keine
+Auskunft mehr, sondern eine Erinnerung an etwas Erledigtes.
+
+Die Zahl steht an zwei Stellen — in der Anzeige und in der Vergabe
+(`completeLesson`). Ein Test liest die Vergabe aus dem Quelltext und
+vergleicht: Wer die eine ändert und die andere vergisst, sieht es sofort.
+
+---
+
 ## 11. Drei Farbmodi
 
 Hell, Dunkel, Systemvorgabe. Die Systemvorgabe ist keine dritte Farbwelt,

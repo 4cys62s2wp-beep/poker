@@ -13,6 +13,16 @@ export const STR = defineStrings(
     proSub: 'Die Prinzipien von Fedor Holz, Negreanu, Polk & Co. – plus die teuersten Anfängerfehler aus Profi-Sicht.',
     newPill: 'Neu',
     moduleN: (n: number) => `Modul ${n}`,
+
+    /* ── Der Lernpfad als Pfad (E-037) ──────────────────────────────── */
+    rangMarke: 'Dein Rang',
+    rangBis: (fehlt: number, titel: string) => `Noch ${fehlt} XP bis ${titel}`,
+    rangHoechster: 'Höchster Rang erreicht',
+    rangRing: (level: number, titel: string) => `Level ${level}, ${titel}`,
+    pfadMarke: 'Der Weg',
+    stufeOffen: 'Hier weiter',
+    stufeFertig: 'Fertig',
+    stufeRing: (done: number, gesamt: number) => `${done} von ${gesamt} Lektionen`,
     lockedHint: 'Nur mit Pro freigeschaltet',
     doneLine: (done: number, total: number) => `${done} / ${total} Lektionen abgeschlossen`,
 
@@ -47,6 +57,16 @@ export const STR = defineStrings(
     proSub: 'The principles of Fedor Holz, Negreanu, Polk & co. – plus the most expensive beginner mistakes from a pro’s point of view.',
     newPill: 'New',
     moduleN: (n: number) => `Module ${n}`,
+
+    /* ── The learning path as a path (E-037) ────────────────────────── */
+    rangMarke: 'Your rank',
+    rangBis: (fehlt: number, titel: string) => `${fehlt} XP to ${titel}`,
+    rangHoechster: 'Highest rank reached',
+    rangRing: (level: number, titel: string) => `Level ${level}, ${titel}`,
+    pfadMarke: 'The path',
+    stufeOffen: 'Continue here',
+    stufeFertig: 'Done',
+    stufeRing: (done: number, gesamt: number) => `${done} of ${gesamt} lessons`,
     lockedHint: 'Unlocked with Pro',
     doneLine: (done: number, total: number) => `${done} / ${total} lessons completed`,
 

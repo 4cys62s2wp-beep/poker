@@ -2465,6 +2465,362 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
    ohnehin zu sagen hat, und wird dadurch zugleich ein kürzerer Weg (E-035).
    Keine dekorativen Abbildungen: Sie füllen Fläche, ohne etwas auszusagen. */
 
+/* ── Der Rang oben auf dem Lernpfad ───────────────────────────────────
+   Wer lernt, soll sehen, worauf er hinlernt. Stand vorher im Profil, zwei
+   Wege entfernt (E-037). */
+.rangstand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  max-width: 480px;
+  margin-bottom: var(--sp-5);
+  padding: var(--sp-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--auszeichnung-schwach);
+  background:
+    radial-gradient(120% 120% at 0% 0%, var(--auszeichnung-schwach) 0%, transparent 70%),
+    var(--bg-card);
+}
+
+.rangstand .text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.rangstand .marke {
+  font-size: var(--fs-kleingedrucktes);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.rangstand .titel {
+  font-family: var(--font-display);
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  color: var(--auszeichnung-lesbar);
+}
+
+.rangstand .bis {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+/* Im Profil steht eine Zeile mehr: XP, Lektionen, Abzeichen. Sie ersetzt
+   vier gleich große Kästen, die für jemanden am Anfang viermal eine Null
+   zeigten (E-037). */
+.rangstand .dazu {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-faint);
+  font-variant-numeric: var(--ziffern);
+}
+
+.rangstand.gross {
+  max-width: 560px;
+  padding: var(--sp-5);
+  gap: var(--sp-5);
+}
+
+.rangstand.gross .titel { font-size: var(--fs-h2); }
+
+/* ── Der Lernpfad ─────────────────────────────────────────────────────
+   Eine Spalte, eine Linie, neun Stufen. Ein Raster zeigt neun
+   gleichwertige Möglichkeiten; ein Pfad zeigt, wo man steht (E-037). */
+.lernpfad {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 640px;
+}
+
+.lernpfad .stufe {
+  position: relative;
+  padding-bottom: var(--sp-3);
+}
+
+/* Die Linie zwischen den Stufen. Sie geht vom Ring der einen zum Ring der
+   nächsten und macht aus einer Liste einen Weg. Die letzte Stufe bekommt
+   keine — der Weg hört dort auf, und eine Linie ins Leere sieht aus, als
+   fehlte etwas. */
+.lernpfad .stufe::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--sp-4) + var(--sp-6) / 2);
+  top: var(--sp-6);
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+  transform: translateX(-1px);
+}
+
+.lernpfad .stufe:last-child::before { display: none; }
+
+/* Erledigte Stufen färben die Linie hinter sich ein: Der zurückgelegte Weg
+   ist sichtbar, nicht nur der aktuelle Stand. */
+.lernpfad .stufe.fertig::before { background: var(--ok); }
+
+.lernpfad .stufe-karte {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lernpfad .stufe-karte:active { background: var(--bg-card-hover); }
+
+/* Die Stufe, an der es weitergeht, ist die einzige mit Akzentfarbe. Zwei
+   Wegweiser sind keiner. */
+.lernpfad .stufe.offen .stufe-karte {
+  border-color: var(--akzent);
+  background:
+    radial-gradient(120% 140% at 0% 0%, var(--akzent-dim) 0%, transparent 65%),
+    var(--bg-card);
+}
+
+/* Was noch kommt, tritt zurück — aber bleibt lesbar: Gesperrt heißt nicht
+   unsichtbar, sonst weiß niemand, was ihn erwartet. */
+.lernpfad .stufe.spaeter .stufe-karte,
+.lernpfad .stufe.gesperrt .stufe-karte { opacity: 0.72; }
+
+.lernpfad .stufe-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.lernpfad .stufe-text .kopf {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.lernpfad .stufe-text .titel {
+  font-family: var(--font-display);
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+}
+
+.lernpfad .stufe-text .unter {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+}
+
+.lernpfad .stufe-text .marken {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-top: var(--sp-1);
+}
+
+.lernpfad .stufe-text .marken .zahl {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-faint);
+  font-variant-numeric: var(--ziffern);
+}
+
+.lernpfad .stufe-hinweis {
+  align-self: center;
+  flex: 0 0 auto;
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  color: var(--akzent);
+  white-space: nowrap;
+}
+
+.lernpfad .stufe-hinweis.fertig { color: var(--ok); }
+
+/* ── Der Stand in einem Modul ─────────────────────────────────────────
+   Gebaut wie der Rangstand auf dem Lernpfad — dieselbe Art Auskunft,
+   dieselbe Form (E-037). */
+.modulstand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  max-width: 480px;
+  margin-bottom: var(--sp-5);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.modulstand .text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.modulstand .marke {
+  font-size: var(--fs-kleingedrucktes);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.modulstand .titel {
+  font-family: var(--font-display);
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: var(--ziffern);
+}
+
+/* ── Die Lektionen eines Moduls ───────────────────────────────────────
+   Drei Zustände, an der Form unterscheidbar: erledigt (Haken), dran
+   (Akzentfarbe und Wegweiser), später (zurückgenommen). */
+.lektionen {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.lektionen .lektion-karte {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  min-height: var(--tipp-min);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lektionen .lektion-karte:active { background: var(--bg-card-hover); }
+
+.lektionen .lektion.dran .lektion-karte {
+  border-color: var(--akzent);
+  background:
+    radial-gradient(120% 140% at 0% 0%, var(--akzent-dim) 0%, transparent 65%),
+    var(--bg-card);
+}
+
+.lektionen .lektion.spaeter .lektion-karte,
+.lektionen .lektion.gesperrt .lektion-karte { opacity: 0.72; }
+
+.lektionen .nummer {
+  flex: 0 0 auto;
+  width: var(--sp-7);
+  height: var(--sp-7);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-kleingedrucktes);
+  font-variant-numeric: var(--ziffern);
+  color: var(--text-dim);
+}
+
+.lektionen .lektion.fertig .nummer {
+  border-color: var(--ok);
+  color: var(--ok-lesbar);
+  background: var(--ok-dim);
+}
+
+.lektionen .lektion.dran .nummer {
+  border-color: var(--akzent);
+  color: var(--akzent);
+}
+
+.lektionen .text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.lektionen .text .titel {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-fliesstext);
+  line-height: var(--lh-tight);
+}
+
+.lektionen .text .meta {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-faint);
+  font-variant-numeric: var(--ziffern);
+}
+
+.lektionen .hinweis {
+  flex: 0 0 auto;
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.lektionen .hinweis.dran { color: var(--akzent); }
+.lektionen .hinweis.fertig { color: var(--ok-lesbar); }
+.lektionen .hinweis.xp {
+  color: var(--auszeichnung-lesbar);
+  font-variant-numeric: var(--ziffern);
+}
+
+/* ── Der Levelring ────────────────────────────────────────────────────
+   Fortschritt als Bild. Begründung in der Komponente und in E-037. */
+.levelring {
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+}
+
+.levelring svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.levelring circle {
+  fill: none;
+  stroke-width: 8;
+}
+
+.levelring .bahn { stroke: var(--veil-3); }
+
+.levelring .fuellung {
+  stroke: var(--akzent);
+  stroke-linecap: round;
+  /* Der Ring wächst, wenn XP dazukommen — er springt nicht. */
+  transition: stroke-dasharray 600ms ease-out;
+}
+
+.levelring .mitte {
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-fliesstext);
+  color: var(--text);
+  font-variant-numeric: var(--ziffern);
+  line-height: 1;
+}
+
+.levelring.gross .mitte { font-size: var(--fs-ueberschrift); }
+.levelring.auszeichnung .fuellung { stroke: var(--auszeichnung); }
+.levelring.fertig .fuellung { stroke: var(--ok); }
+
 /* ═══════════════════════════════════════════════════════════════════════
    Die Hand des Tages (E-036)
    ═══════════════════════════════════════════════════════════════════════

@@ -9,6 +9,8 @@ import { CloudAccountCard } from '../components/CloudAccountCard';
 import { ShareCard } from '../components/ShareCard';
 import { downloadBlob } from '../lib/download';
 import { Link } from 'react-router-dom';
+import { Levelring } from '../components/Levelring';
+import { rangstand } from '../lib/rang/stand';
 import { Icon, type IconName } from '../components/Icon';
 import { STR as FRIENDS } from '../i18n/pages/friends';
 import { STR as LEGAL } from '../i18n/pages/legal';
@@ -62,6 +64,7 @@ export function ProfilePage() {
   const totalLessons = ALL_MODULES.reduce((s, m) => s + m.lessons.length, 0);
   const doneLessons = Object.keys(data.completedLessons).length;
   const earnedBadges = Object.keys(data.badges).length;
+  const rang = rangstand(data.xp);
 
   const trainerTotals = Object.values(data.trainers).reduce(
     (acc, t) => ({ attempts: acc.attempts + t.attempts, correct: acc.correct + t.correct }),
@@ -80,32 +83,36 @@ export function ProfilePage() {
         </p>
       </div>
 
-      <div className="grid cols-4" style={{ marginBottom: 20 }}>
-        <div className="card">
-          <div className="stat-label">{P.statLevel}</div>
-          <div className="big-stat">{level}</div>
-          <div className="small faint">{levelTitleFor(level, lang)}</div>
+      {/* Der Rang als ein Bild statt als vier Kästen mit Zahlen (E-037).
+          Vorher standen hier Level, XP, Lektionen und Abzeichen als vier
+          gleich große Felder — für jemanden am Anfang viermal eine Null.
+          Der Ring sagt dasselbe, bevor man liest, und die eine Zeile
+          darunter sagt, was als Nächstes kommt. */}
+      <section className="rangstand gross" aria-label={P.rangMarke}>
+        <Levelring
+          wert={rang.level}
+          anteil={rang.anteil}
+          groesse={84}
+          className={`gross${rang.hoechsterRang ? ' fertig' : ''}`}
+          beschriftung={P.rangRing(rang.level, rang.titel)}
+        />
+        <div className="text">
+          <span className="marke">{P.rangMarke}</span>
+          <strong className="titel">{rang.titel}</strong>
+          <span className="bis">
+            {rang.naechsterTitel === null
+              ? P.rangWeiter(rang.fehlt)
+              : P.rangBis(rang.fehlt, rang.naechsterTitel)}
+          </span>
+          <span className="dazu">
+            {P.rangGesamt(data.xp)}
+            {' · '}
+            {P.lessonsDoneOf(doneLessons, totalLessons)}
+            {' · '}
+            {P.rangSammlung(earnedBadges, content.badges.length)}
+          </span>
         </div>
-        <div className="card">
-          <div className="stat-label">{P.statXp}</div>
-          <div className="big-stat">{data.xp}</div>
-          <div className="small faint">{P.nextLevel(nextLevelXp)}</div>
-        </div>
-        <div className="card">
-          <div className="stat-label">{P.statLessons}</div>
-          <div className="big-stat">
-            {doneLessons}<span style={{ fontSize: 15, color: 'var(--text-dim)' }}>/{totalLessons}</span>
-          </div>
-          <div className="small faint">{P.lessonsDone}</div>
-        </div>
-        <div className="card">
-          <div className="stat-label">{P.statBadges}</div>
-          <div className="big-stat">
-            {earnedBadges}<span style={{ fontSize: 15, color: 'var(--text-dim)' }}>/{content.badges.length}</span>
-          </div>
-          <div className="small faint">{P.badgesEarned}</div>
-        </div>
-      </div>
+      </section>
 
       <div className="grid cols-4" style={{ marginBottom: 20 }}>
         <div className="card">

@@ -1523,3 +1523,101 @@ bewusst als Nächstes vorgesehen:
 - Die Bereichsfarben stehen bisher nur auf der Startseite, nicht auf den
   Bildschirmen der Bereiche selbst.
 - Die Fließtext-Absätze am Kopf jedes Bildschirms sind unverändert.
+
+---
+
+## E-037 · 2026-08-30 · Der Lernpfad wird ein Pfad, der Rang wird ein Bild
+
+**Stand:** entschieden und umgesetzt.
+
+**Der Anlass.** E-036 hat die Startseite geändert; die Rückmeldung dazu war
+„schon viel besser". Der Satz danach: die Unterseiten und die Lernlevel
+müssen nach.
+
+### Was der Rundgang durch die Unterseiten zeigt
+
+**Der Lernpfad stand 3707 Pixel weit unten.** Gemessen, nicht geschätzt: Wer
+„Lernen" antippte, bekam zuerst einen Absatz Fließtext, dann ein Suchfeld,
+dann den Pot-Odds-Drill, dann elf Trainerkarten, dann Pro-Insights — und
+danach erst das, wonach der Bildschirm benannt ist. Der Zweck der Seite lag
+hinter ihrem Werkzeugkasten.
+
+**Der Pfad war ein Kachelraster.** Neun gleich große Karten in zwei Spalten.
+Ein Raster zeigt neun gleichwertige Möglichkeiten; ein Pfad zeigt, wo man
+steht. Das ist der Unterschied zwischen einem Inhaltsverzeichnis und einem
+Spiel.
+
+**Das Modul zeigte keinen Stand.** Fünf Lektionen als flache Liste. Kein
+Fortschritt, kein „hier weiter", keine Auskunft darüber, was eine Lektion
+einbringt. Erledigtes war an einem Haken erkennbar — das war alles.
+
+**Das Profil war eine Wand aus Nullen.** Acht gleich große Felder, für einen
+Anfänger achtmal die Ziffer null, darunter „0/49" und „0/22". Das Levelsystem
+mit fünfzehn Rangnamen und einer Kurve stand darin als „Level 1" in einem
+Kasten.
+
+### Die Entscheidung
+
+**Fortschritt wird gezeigt, nicht aufgezählt.**
+
+- **Der Rang bekommt einen Ring** und steht oben auf dem Lernpfad, nicht nur
+  im Profil. Wer lernt, soll sehen, worauf er hinlernt: „Level 3 · Solider
+  Anfänger · noch 260 XP bis Aufsteiger".
+- **Der Lernpfad wird ein Pfad:** eine Spalte, eine Linie, neun Stufen, jede
+  mit ihrem eigenen Fortschrittsring. Erledigte Stufen färben die Linie
+  hinter sich ein — der zurückgelegte Weg ist sichtbar, nicht nur der Stand.
+- **Genau eine Stufe trägt den Wegweiser** „Hier weiter": die erste, die
+  weder fertig noch gesperrt ist. Zwei Wegweiser sind keiner.
+- **Der Weg steht vor den Trainern.** Das Suchfeld steht darunter: Wer
+  sucht, weiß schon, wonach — das ist der seltenere Fall.
+- **Das Modul zeigt seinen Stand** als Ring, markiert die nächste Lektion und
+  sagt bei den offenen, was sie einbringen („bis 100 XP").
+- **Das Profil führt mit dem Rang** statt mit vier Kästen, von denen drei
+  eine Null zeigen.
+
+### Warum ein Ring und kein Balken
+
+Ein Balken hat einen Anfang und ein Ende und wirkt wie eine Strecke, die man
+abarbeitet. Ein Ring schließt sich und fängt wieder an — genau das tut ein
+Level. Und ein Ring hat eine Mitte, in der die Zahl stehen kann, ohne dass
+daneben eine Beschriftung nötig wäre.
+
+### Der Nenner, und warum er hier erlaubt ist
+
+E-032 hat „3 von 49 Lektionen" von der Startseite entfernt: Der Nenner war
+eine Zusage über Inhalt, die der vorhandene nicht deckt.
+
+Im Modul steht jetzt „2 von 5 Lektionen", und das ist kein Rückfall. Ein
+Modul hat genau die Lektionen, die es hat — der Nenner ist dort eine
+Tatsache, keine Ankündigung. Die Trennlinie: **Zählt der Nenner etwas, das
+fertig ist, oder etwas, das noch werden soll?**
+
+### Was die Tests dabei gefunden haben
+
+**Die Level laufen über die Rangnamen hinaus weiter.** `levelForXp` kennt
+keine Obergrenze, die Titelliste hat fünfzehn Einträge. Beim Schreiben des
+Tests fiel auf, dass ein Bildschirm daraus „nächster Rang: undefined" machen
+würde. Die Auskunft unterscheidet jetzt zwischen „letzter Rangname erreicht"
+und „letztes Level" — ein Spielstand soll nicht aufhören zu wachsen, nur
+weil die Namen ausgehen.
+
+**Die XP-Zahl stand an zwei Stellen.** Der Bildschirm zeigt „bis 100 XP",
+vergeben werden sie in `completeLesson`. Ein Test liest die Vergabe aus dem
+Quelltext und vergleicht sie mit der angezeigten Zahl: Wer die eine ändert
+und die andere vergisst, sieht es sofort.
+
+**Zwei eigene Fehler beim Umbauen**, beide vom Typprüfer und vom Auge
+gefangen: Das Suchfeld landete im Zweig „wird gerade nicht gesucht" und wäre
+beim dritten getippten Zeichen verschwunden; und ein Kommentar blieb offen.
+Das Suchfeld steht jetzt außerhalb der Verzweigung — ein Feld, das beim
+Tippen an eine andere Stelle im Baum wandert, verliert den Fokus.
+
+### Was noch nicht getan ist
+
+- Der Drill und die acht Trainer zeigen die Karten weiterhin klein (aus
+  E-036 offen geblieben).
+- Die Fließtext-Absätze am Kopf der übrigen Bildschirme sind unverändert.
+- Ein Abzeichen, das man neu bekommt, meldet sich als Hinweis — aber die
+  Sammlung im Profil feiert es nicht.
+- Die Bereichsfarben stehen auf der Startseite und im Lernpfad, noch nicht
+  überall.

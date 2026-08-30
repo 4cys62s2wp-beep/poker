@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(29);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(31);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -724,6 +724,96 @@ describe('Ohne untere Leiste braucht jeder Bildschirm einen Weg zurück', () => 
     const e = schritt('Jeder Bildschirm hat einen sichtbaren Weg zur Startseite');
     expect(e.hoehe_px as number).toBeGreaterThanOrEqual(44);
     expect(e.breite_px as number).toBeGreaterThanOrEqual(44);
+  });
+});
+
+/* ── Der Lernpfad ────────────────────────────────────────────────────────
+   Seit E-037 ist er ein Pfad und kein Kachelraster. Was ein Pfad leisten
+   muss, ist nicht „schön aussehen", sondern: zeigen, wo man steht. Das
+   heißt genau ein Wegweiser, erledigte Stufen als solche erkennbar, und der
+   Weg an der Stelle, an der man ihn sucht. */
+
+describe('Der Lernpfad zeigt, wo man steht', () => {
+  const e = () => schritt('Der Lernpfad zeigt genau eine Stelle zum Weitermachen');
+
+  it('hat für jedes Modul eine Stufe', () => {
+    expect(e().stufen).toBe(9);
+  });
+
+  it('setzt genau einen Wegweiser', () => {
+    /* Zwei Wegweiser sind keiner. Und keiner wäre schlimmer: Dann steht man
+       vor neun gleichwertigen Möglichkeiten — genau der Zustand, den das
+       Kachelraster vorher erzeugt hat. */
+    expect(e().offen).toBe(1);
+    expect(e().hinweise).toContain('Hier weiter');
+  });
+
+  it('ordnet erledigt, offen und später in dieser Reihenfolge', () => {
+    /* Ein Wegweiser hinter einer noch gesperrten Stufe zeigte ins Nichts.
+       Geprüft wird die Abfolge im Baum, nicht nur die Anzahl. */
+    const folge = e().reihenfolge as string[];
+    const ersteOffen = folge.indexOf('offen');
+    expect(ersteOffen).toBeGreaterThanOrEqual(0);
+    /* Vor dem Wegweiser nur Erledigtes … */
+    for (const z of folge.slice(0, ersteOffen)) expect(z).toBe('fertig');
+    /* … danach nichts Erledigtes mehr. */
+    for (const z of folge.slice(ersteOffen + 1)) expect(z).not.toBe('fertig');
+  });
+
+  it('zeigt eine abgeschlossene Stufe als abgeschlossen', () => {
+    expect(e().fertig).toBeGreaterThanOrEqual(1);
+    expect(e().hinweise).toContain('Fertig');
+  });
+
+  it('stellt den Rang über den Weg', () => {
+    /* Wer lernt, soll sehen, worauf er hinlernt. Der Rang stand vorher im
+       Profil, zwei Wege entfernt. */
+    expect(e().rang_steht_oben).toBe(true);
+    expect(String(e().rang_text)).toMatch(/XP/);
+  });
+
+  it('stellt den Weg vor die Trainer', () => {
+    /* Das war der Befund, der diese Änderung ausgelöst hat: Der Lernpfad —
+       der Zweck dieses Bildschirms — stand hinter dreizehn Trainerkarten,
+       3707 Pixel weit unten. Wer „Lernen" antippt, will wissen, wo er
+       steht, nicht als Erstes eine Werkzeugliste. */
+    expect(e().pfad_vor_den_trainern).toBe(true);
+    expect(e().pfad_oben_px as number).toBeLessThan(844);
+  });
+});
+
+describe('Ein Modul zeigt seinen Fortschritt', () => {
+  const e = () => schritt('Das Modul zeigt Fortschritt und die nächste Lektion');
+
+  it('nennt den Stand mit Gesamtzahl', () => {
+    /* Hier steht ein Nenner, anders als auf der Startseite — und das ist
+       kein Widerspruch zu E-032: Dort war „49 Lektionen" eine Zusage über
+       Inhalt, den es noch nicht vollständig gibt. Ein Modul hat genau die
+       Lektionen, die es hat. */
+    expect(String(e().stand_text)).toMatch(/\d+ von \d+/);
+  });
+
+  it('markiert genau eine Lektion als die nächste', () => {
+    expect(e().dran).toBe(1);
+  });
+
+  it('setzt die nächste Lektion hinter die erledigten', () => {
+    const folge = e().zustaende as string[];
+    const dran = folge.indexOf('dran');
+    for (const z of folge.slice(0, dran)) expect(z).toBe('fertig');
+  });
+
+  it('sagt bei den offenen Lektionen, was sie einbringen', () => {
+    /* Und nur bei den offenen: Hinterher ist es keine Auskunft mehr,
+       sondern eine Erinnerung an etwas Erledigtes. */
+    const hinweise = e().xp_hinweise as string[];
+    expect(hinweise.length).toBeGreaterThan(0);
+    for (const h of hinweise) expect(h).toMatch(/XP/);
+  });
+
+  it('lässt den Ring sprechen, statt ihn nur zu zeigen', () => {
+    /* Ein Ring ist für einen Screenreader ein Bild und sonst nichts. */
+    expect(String(e().ring_beschriftung)).toMatch(/\d+ von \d+/);
   });
 });
 

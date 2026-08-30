@@ -7,6 +7,8 @@ import { ProLock } from '../components/pro/ProLock';
 import { usePro } from '../lib/pro/ProProvider';
 import { isFreeLesson } from '../lib/pro/plan';
 import { Icon } from '../components/Icon';
+import { Levelring } from '../components/Levelring';
+import { LEKTION_XP_HOECHSTENS, lektionsstand } from '../lib/rang/lektionen';
 
 export function ModulePage() {
   const { moduleId } = useParams();
@@ -33,6 +35,8 @@ export function ModulePage() {
   const lockedLessons = module.lessons.filter((l) => !unlocked && !isFreeLesson(module.id, l.id));
   const hasLocked = lockedLessons.length > 0;
 
+  const stand = lektionsstand(module.lessons, data.completedLessons);
+
   return (
     <div>
       <Link to="/lernen" className="pill" style={{ marginBottom: 16, display: 'inline-flex' }}>
@@ -45,50 +49,65 @@ export function ModulePage() {
         <p className="sub">{module.subtitle}</p>
       </div>
 
-      <div className="grid" style={{ maxWidth: 760 }}>
+      {/* Der Stand im Modul, als Ring (E-037). Anders als auf der Startseite
+          steht hier eine Gesamtzahl, und das ist kein Widerspruch zu E-032:
+          Dort war der Nenner eine Zusage über Inhalt, den es noch nicht
+          gibt („49 Lektionen"). Ein Modul hat genau die Lektionen, die es
+          hat — hier ist der Nenner eine Tatsache. */}
+      <section className="modulstand" aria-label={L.fortschrittMarke}>
+        <Levelring
+          wert={stand.fertig ? <Icon name="check" size={20} /> : stand.erledigt}
+          anteil={stand.anteil}
+          groesse={56}
+          className={`gross${stand.fertig ? ' fertig' : ' auszeichnung'}`}
+          beschriftung={L.fortschrittRing(stand.erledigt, stand.gesamt)}
+        />
+        <div className="text">
+          <span className="marke">{L.fortschrittMarke}</span>
+          <strong className="titel">
+            {stand.fertig ? L.modulFertig : L.fortschritt(stand.erledigt, stand.gesamt)}
+          </strong>
+        </div>
+      </section>
+
+      <ol className="lektionen" style={{ maxWidth: 760 }}>
         {module.lessons.map((lesson, i) => {
           const result = data.completedLessons[lesson.id];
           const lessonLocked = !unlocked && !isFreeLesson(module.id, lesson.id);
+          const dran = !result && !lessonLocked && stand.naechsteId === lesson.id;
+          const zustand = result ? 'fertig' : lessonLocked ? 'gesperrt' : dran ? 'dran' : 'spaeter';
           return (
-            <Link key={lesson.id} to={`/lernen/${module.id}/${lesson.id}`} className="card clickable">
-              <div className="row between">
-                <div className="row">
-                  <span
-                    className="pill"
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: '50%',
-                      justifyContent: 'center',
-                      fontSize: 14,
-                      flexShrink: 0,
-                      ...(result
-                        ? { background: 'var(--ok-dim)', color: '#8fd49b', borderColor: 'rgba(88,179,104,0.4)' }
-                        : {}),
-                    }}
-                  >
-                    {result ? '✓' : i + 1}
+            <li key={lesson.id} className={`lektion ${zustand}`}>
+              <Link to={`/lernen/${module.id}/${lesson.id}`} className="lektion-karte">
+                <span className="nummer" aria-hidden="true">
+                  {result ? <Icon name="check" size={16} /> : i + 1}
+                </span>
+                <div className="text">
+                  <span className="titel">{lesson.title}</span>
+                  <span className="meta">
+                    {L.lessonMeta(lesson.duration, lesson.quiz.length)}
+                    {result && L.quizResult(result.quizScore, result.quizTotal)}
                   </span>
-                  <div>
-                    <div style={{ fontWeight: 700 }}>{lesson.title}</div>
-                    <div className="small faint">
-                      {L.lessonMeta(lesson.duration, lesson.quiz.length)}
-                      {result && L.quizResult(result.quizScore, result.quizTotal)}
-                    </div>
-                  </div>
                 </div>
                 {lessonLocked ? (
                   <span className="pill gold" title={P.lockedTitle} aria-label={P.lockedTitle}>
                     <Icon name="lock" size={14} />
                   </span>
+                ) : result ? (
+                  <span className="hinweis fertig">{L.lektionFertig}</span>
+                ) : dran ? (
+                  <span className="hinweis dran">{L.lektionDran}</span>
                 ) : (
-                  <span className="faint">→</span>
+                  /* Was eine Lektion einbringt, steht dort, wo man sie noch
+                     machen kann — hinterher ist es keine Auskunft mehr,
+                     sondern eine Erinnerung an etwas Erledigtes. */
+                  <span className="hinweis xp">{L.xpBis(LEKTION_XP_HOECHSTENS)}</span>
                 )}
-              </div>
-            </Link>
+              </Link>
+            </li>
           );
         })}
-      </div>
+      </ol>
 
       {hasLocked && (
         <div style={{ maxWidth: 760, marginTop: 16 }}>

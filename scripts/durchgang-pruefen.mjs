@@ -758,6 +758,80 @@ await schritt('Jeder Bildschirm hat einen sichtbaren Weg zur Startseite', async 
   };
 });
 
+/* ── Der Lernpfad zeigt, wo man steht ─────────────────────────────────────
+   Seit E-037 ist der Lernpfad ein Pfad und kein Kachelraster. Was das
+   leisten muss, lässt sich nur am gerenderten Ergebnis prüfen: **genau ein**
+   Wegweiser („Hier weiter"), erledigte Stufen als solche erkennbar, und der
+   Weg selbst über den Trainern statt unter ihnen. */
+
+await schritt('Der Lernpfad zeigt genau eine Stelle zum Weitermachen', async () => {
+  /* Ein Zustand mit Fortschritt: Ohne ihn wäre jede Stufe offen und die
+     Regel „genau einer" nicht geprüft, sondern nur nicht verletzt. */
+  await seite.goto(`${GRUND}/#/lernen`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.lernpfad');
+  await seite.evaluate(() => {
+    const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+    const schluessel = `pokermentor-data-${idx.activeId}`;
+    const d = JSON.parse(localStorage.getItem(schluessel));
+    d.xp = 640;
+    for (const id of ['m1-l1', 'm1-l2', 'm1-l3', 'm1-l4', 'm1-l5', 'm2-l1', 'm2-l2']) {
+      d.completedLessons[id] = { completedAt: new Date().toISOString(), quizScore: 5, quizTotal: 5 };
+    }
+    localStorage.setItem(schluessel, JSON.stringify(d));
+  });
+  await seite.reload({ waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.lernpfad');
+  await seite.waitForTimeout(400);
+  return seite.evaluate(() => {
+    const stufen = [...document.querySelectorAll('.lernpfad .stufe')];
+    const pfad = document.querySelector('.lernpfad');
+    const rang = document.querySelector('.rangstand');
+    /* Der erste Trainer auf der Seite. Der Pfad muss davor kommen — vor
+       E-037 stand er 3707 Pixel weiter unten. */
+    const ersterTrainer = document.querySelector('.card.clickable');
+    return {
+      stufen: stufen.length,
+      offen: stufen.filter((x) => x.classList.contains('offen')).length,
+      fertig: stufen.filter((x) => x.classList.contains('fertig')).length,
+      spaeter: stufen.filter((x) => x.classList.contains('spaeter')).length,
+      /* Die Reihenfolge im Baum: erledigt, dann die offene, dann der Rest.
+         Eine offene Stufe hinter einer späteren wäre ein Wegweiser ins
+         Nichts. */
+      reihenfolge: stufen.map((x) => [...x.classList].find((c) => c !== 'stufe')),
+      hinweise: [...document.querySelectorAll('.lernpfad .stufe-hinweis')]
+        .map((x) => x.textContent.trim()),
+      rang_steht_oben: rang && pfad
+        ? rang.getBoundingClientRect().top < pfad.getBoundingClientRect().top : false,
+      rang_text: rang?.innerText.replace(/\n/g, ' · ') ?? null,
+      pfad_vor_den_trainern: pfad && ersterTrainer
+        ? pfad.getBoundingClientRect().top < ersterTrainer.getBoundingClientRect().top : null,
+      /* Wie weit man scrollen müsste, um den Pfad zu sehen. */
+      pfad_oben_px: pfad ? Math.round(pfad.getBoundingClientRect().top + window.scrollY) : null,
+    };
+  });
+});
+
+await schritt('Das Modul zeigt Fortschritt und die nächste Lektion', async () => {
+  await seite.goto(`${GRUND}/#/lernen/m2`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.lektionen');
+  await seite.waitForTimeout(400);
+  return seite.evaluate(() => {
+    const lektionen = [...document.querySelectorAll('.lektionen .lektion')];
+    return {
+      lektionen: lektionen.length,
+      fertig: lektionen.filter((x) => x.classList.contains('fertig')).length,
+      dran: lektionen.filter((x) => x.classList.contains('dran')).length,
+      zustaende: lektionen.map((x) => [...x.classList].find((c) => c !== 'lektion')),
+      stand_text: document.querySelector('.modulstand')?.innerText.replace(/\n/g, ' · ') ?? null,
+      /* Der Ring ist ein Bild — für einen Screenreader muss er sprechen. */
+      ring_beschriftung: document.querySelector('.modulstand .levelring')
+        ?.getAttribute('aria-label') ?? null,
+      xp_hinweise: [...document.querySelectorAll('.lektionen .hinweis.xp')]
+        .map((x) => x.textContent.trim()),
+    };
+  });
+});
+
 /* ── Das private Gerät: der Drill ──────────────────────────────────────────
    Der Auftrag beschreibt zwei Geräterollen. Der Tisch ist gemessen
    (`npm run tisch`); das private Gerät ist der Lernbildschirm, und für ihn

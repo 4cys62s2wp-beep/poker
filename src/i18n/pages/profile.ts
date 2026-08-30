@@ -15,6 +15,16 @@ export const STR = defineStrings(
     statBadges: 'Abzeichen',
     badgesEarned: 'verdient',
 
+    /* ── Der Rang als Bild (E-037) ──────────────────────────────────── */
+    rangMarke: 'Dein Rang',
+    rangRing: (level: number, titel: string) => `Level ${level}, ${titel}`,
+    rangBis: (fehlt: number, titel: string) => `Noch ${fehlt} XP bis ${titel}`,
+    rangWeiter: (fehlt: number) => `Noch ${fehlt} XP bis Level`,
+    rangGesamt: (xp: number) => `${xp} XP insgesamt`,
+    rangSammlung: (verdient: number, gesamt: number) =>
+      `${verdient} von ${gesamt} Abzeichen`,
+    lessonsDoneOf: (done: number, gesamt: number) => `${done} von ${gesamt} Lektionen`,
+
     statTrainerAnswers: 'Trainer-Antworten',
     pctCorrect: (pct: number) => `${pct} % richtig`,
     statHandsPlayed: 'Hände gespielt',
@@ -93,6 +103,16 @@ export const STR = defineStrings(
     lessonsDone: 'completed',
     statBadges: 'Badges',
     badgesEarned: 'earned',
+
+    /* ── Rank as a picture (E-037) ──────────────────────────────────── */
+    rangMarke: 'Your rank',
+    rangRing: (level: number, titel: string) => `Level ${level}, ${titel}`,
+    rangBis: (fehlt: number, titel: string) => `${fehlt} XP to ${titel}`,
+    rangWeiter: (fehlt: number) => `${fehlt} XP to the next level`,
+    rangGesamt: (xp: number) => `${xp} XP in total`,
+    rangSammlung: (verdient: number, gesamt: number) =>
+      `${verdient} of ${gesamt} badges`,
+    lessonsDoneOf: (done: number, gesamt: number) => `${done} of ${gesamt} lessons`,
 
     statTrainerAnswers: 'Trainer Answers',
     pctCorrect: (pct: number) => `${pct}% correct`,

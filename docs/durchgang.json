@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-29T19:18:12.691Z",
+  "geprueft_am": "2026-08-30T16:23:03.838Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 868,
+        "dauer_ms": 864,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -192,7 +192,7 @@
       "name": "Der Abend steht in der Liste",
       "ergebnis": {
         "abende": 1,
-        "erste_karte": "Sa., 29. August 2026 · Ada · gewonnen · 5 Personen · gerade eben",
+        "erste_karte": "So., 30. August 2026 · Ada · gewonnen · 5 Personen · gerade eben",
         "namen_als_knoepfe": 5,
         "namen": [
           "Ada",
@@ -478,16 +478,16 @@
       "ergebnis": {
         "frage": "Lohnt der Call?",
         "karten_vorher": [
-          "Herz Ass",
-          "Herz König",
+          "Kreuz Neun",
+          "Karo Neun",
           "Herz Neun",
-          "Herz Sieben",
+          "Pik Sieben",
           "Kreuz Zwei"
         ],
         "punkte_offen_vorher": 1,
         "urteil": "Richtig",
-        "zahlen": "54,1 % gegen 30,0 % nötig",
-        "warum_ziel": "#/lernen/drill/4-4-5-npxu",
+        "zahlen": "27,8 % gegen 16,7 % nötig",
+        "warum_ziel": "#/lernen/drill/7-0-3-npxu",
         "knoepfe_weg": 0,
         "punkt_gefuellt": 1,
         "urteil_nach_neuladen": "Richtig",
@@ -503,6 +503,57 @@
         "hoehe_px": 44,
         "breite_px": 171,
         "fuehrt_nach": "#/"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Der Lernpfad zeigt genau eine Stelle zum Weitermachen",
+      "ergebnis": {
+        "stufen": 9,
+        "offen": 1,
+        "fertig": 1,
+        "spaeter": 7,
+        "reihenfolge": [
+          "fertig",
+          "offen",
+          "spaeter",
+          "spaeter",
+          "spaeter",
+          "spaeter",
+          "spaeter",
+          "spaeter",
+          "spaeter"
+        ],
+        "hinweise": [
+          "Fertig",
+          "Hier weiter"
+        ],
+        "rang_steht_oben": true,
+        "rang_text": "3 · DEIN RANG · Solider Anfänger · Noch 260 XP bis Aufsteiger",
+        "pfad_vor_den_trainern": true,
+        "pfad_oben_px": 398
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Das Modul zeigt Fortschritt und die nächste Lektion",
+      "ergebnis": {
+        "lektionen": 5,
+        "fertig": 2,
+        "dran": 1,
+        "zustaende": [
+          "fertig",
+          "fertig",
+          "dran",
+          "spaeter",
+          "spaeter"
+        ],
+        "stand_text": "2 · FORTSCHRITT · 2 von 5 Lektionen",
+        "ring_beschriftung": "2 von 5 Lektionen abgeschlossen",
+        "xp_hinweise": [
+          "bis 100 XP",
+          "bis 100 XP"
+        ]
       },
       "uebersprungen": false
     },
@@ -524,7 +575,7 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 38,
+        "dauer_ms": 46,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,

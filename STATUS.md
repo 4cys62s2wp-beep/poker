@@ -44,14 +44,14 @@ Einträge sind erledigt.**
 
 **Der Stand der Prüfungen**
 
-- **1004 JavaScript-Tests grün, null übersprungen.** Typprüfung sauber,
+- **1012 JavaScript-Tests grün, null übersprungen.** Typprüfung sauber,
   `npm run build` baut durch.
 - **336 Python-Tests grün.**
 - Fünf Messläufe ohne Beanstandung: `npm run wege` (Erreichbarkeit, 41 eigene
   Bildschirme, keine Sackgasse), `npm run tisch` (Lesbarkeit am Tisch),
   `npm run durchgang` (ein vollständiger Abend, Farbmodi, beide Zustände der
   Startseite, Hand des Tages, Lernpfad, Modul und Lernbildschirm,
-  31 Schritte), `npm run pruefen` (Kontrast, Tippflächen,
+  32 Schritte), `npm run pruefen` (Kontrast, Tippflächen,
   Abstände über 49 Bildschirme in **beiden** Farbmodi, 98 Messungen, null
   Befunde), `npm run binaer` (Größe und Ladezeit der Matrix).
 

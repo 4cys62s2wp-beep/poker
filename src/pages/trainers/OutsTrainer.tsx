@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { CardsRow } from '../../components/PlayingCard';
 import { RANK_CHARS, makeCard } from '../../lib/poker/cards';
 import { useAppState } from '../../state/AppState';
+import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR, type OutsTemplateKey } from '../../i18n/pages/outstrainer';
 
@@ -157,11 +158,7 @@ export function OutsTrainer() {
         <p className="sub">{L.sub}</p>
       </div>
 
-      <div className="row wrap" style={{ marginBottom: 16 }}>
-        <span className="pill">{L.correctCount(stats?.correct ?? 0)}</span>
-        <span className="pill">{L.totalCount(stats?.attempts ?? 0)}</span>
-        <span className="pill gold">{L.streak(stats?.streak ?? 0)}</span>
-      </div>
+      <Uebungsstand werte={stats} />
 
       <div className="card" style={{ maxWidth: 640 }}>
         <div className="stat-label" style={{ marginBottom: 6 }}>{L.yourHand}</div>

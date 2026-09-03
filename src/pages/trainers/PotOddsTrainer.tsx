@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppState } from '../../state/AppState';
+import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/potoddstrainer';
 
@@ -76,11 +77,7 @@ export function PotOddsTrainer() {
         <p className="sub">{L.sub}</p>
       </div>
 
-      <div className="row wrap" style={{ marginBottom: 16 }}>
-        <span className="pill">{L.correctCount(stats?.correct ?? 0)}</span>
-        <span className="pill">{L.totalCount(stats?.attempts ?? 0)}</span>
-        <span className="pill gold">{L.streak(stats?.streak ?? 0)}</span>
-      </div>
+      <Uebungsstand werte={stats} />
 
       <div className="card" style={{ maxWidth: 640 }}>
         <div className="grid cols-3" style={{ marginBottom: 18, textAlign: 'center' }}>

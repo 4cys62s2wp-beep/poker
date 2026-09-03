@@ -5,6 +5,7 @@ import { CardsRow } from '../../components/PlayingCard';
 import { BB_DEFENSE_VS_BTN, POSITION_NAMES, RFI_CHARTS } from '../../content/ranges';
 import { combosForLabel, expandRangeSpec, handLabel } from '../../lib/poker/ranges';
 import { useAppState } from '../../state/AppState';
+import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/prefloptrainer';
 
@@ -81,11 +82,7 @@ export function PreflopTrainer() {
         <p className="sub">{L.sub}</p>
       </div>
 
-      <div className="row wrap" style={{ marginBottom: 16 }}>
-        <span className="pill">{L.correctCount(stats?.correct ?? 0)}</span>
-        <span className="pill">{L.totalCount(stats?.attempts ?? 0)}</span>
-        <span className="pill gold">{L.streak(stats?.streak ?? 0)}</span>
-      </div>
+      <Uebungsstand werte={stats} />
 
       <div className="card" style={{ maxWidth: 720 }}>
         {scenario.kind === 'rfi' ? (

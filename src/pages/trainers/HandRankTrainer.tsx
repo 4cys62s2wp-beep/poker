@@ -4,6 +4,7 @@ import { CardsRow } from '../../components/PlayingCard';
 import { shuffledDeckWithout } from '../../lib/poker/cards';
 import { categoryOf, evaluateBest } from '../../lib/poker/evaluator';
 import { useAppState } from '../../state/AppState';
+import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/handranktrainer';
 
@@ -74,11 +75,7 @@ export function HandRankTrainer() {
         <p className="sub">{L.sub}</p>
       </div>
 
-      <div className="row wrap" style={{ marginBottom: 16 }}>
-        <span className="pill">{L.correctCount(stats?.correct ?? 0)}</span>
-        <span className="pill">{L.totalCount(stats?.attempts ?? 0)}</span>
-        <span className="pill gold">{L.streak(stats?.streak ?? 0)}</span>
-      </div>
+      <Uebungsstand werte={stats} />
 
       <div className="card" style={{ maxWidth: 640 }}>
         <div className="stat-label" style={{ marginBottom: 6 }}>{L.yourHand}</div>

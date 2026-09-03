@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-08-30T16:23:03.838Z",
+  "geprueft_am": "2026-09-03T20:26:47.185Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 864,
+        "dauer_ms": 889,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -192,7 +192,7 @@
       "name": "Der Abend steht in der Liste",
       "ergebnis": {
         "abende": 1,
-        "erste_karte": "So., 30. August 2026 · Ada · gewonnen · 5 Personen · gerade eben",
+        "erste_karte": "Do., 3. September 2026 · Ada · gewonnen · 5 Personen · gerade eben",
         "namen_als_knoepfe": 5,
         "namen": [
           "Ada",
@@ -478,16 +478,16 @@
       "ergebnis": {
         "frage": "Lohnt der Call?",
         "karten_vorher": [
-          "Kreuz Neun",
-          "Karo Neun",
-          "Herz Neun",
-          "Pik Sieben",
+          "Herz Ass",
+          "Herz Sieben",
+          "Herz König",
+          "Herz Vier",
           "Kreuz Zwei"
         ],
         "punkte_offen_vorher": 1,
         "urteil": "Richtig",
-        "zahlen": "27,8 % gegen 16,7 % nötig",
-        "warum_ziel": "#/lernen/drill/7-0-3-npxu",
+        "zahlen": "35,0 % gegen 20,0 % nötig",
+        "warum_ziel": "#/lernen/drill/0-1-p-npxu",
         "knoepfe_weg": 0,
         "punkt_gefuellt": 1,
         "urteil_nach_neuladen": "Richtig",
@@ -561,26 +561,39 @@
       "name": "Der Drill zeigt eine Aufgabe",
       "ergebnis": {
         "groesste": {
-          "klasse": "drill-zugbild",
-          "px": 27
+          "klasse": "center-suit",
+          "px": 34
         },
         "zweitgroesste": {
-          "klasse": "drill-frage",
-          "px": 19
+          "klasse": "drill-zugbild",
+          "px": 27
         },
         "knoepfe": 2
       },
       "uebersprungen": false
     },
     {
+      "name": "Die Serie im Drill überlebt das Schließen",
+      "ergebnis": {
+        "vorher": "0 | SERIE | – | TREFFER | 0 | BESTE",
+        "nach_zwei": "1 | NEUE BESTSERIE | 50 % | TREFFER | 1 | BESTE",
+        "nach_neuladen": "1 | NEUE BESTSERIE | 50 % | TREFFER | 1 | BESTE",
+        "quote_bleibt": true,
+        "quote_nach_zwei": "50 %",
+        "ohne_versuche_kein_prozent": true,
+        "felder": 3
+      },
+      "uebersprungen": false
+    },
+    {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 46,
+        "dauer_ms": 45,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "16,5 %",
+        "ergebnis_text": "27,8 %",
         "uebergang": "0s",
         "belebung": "none"
       },

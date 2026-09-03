@@ -4,7 +4,7 @@ export const STR = defineStrings(
   {
     back: '← Trainer',
     title: 'Handranking-Trainer',
-    sub: 'Aus deinen zwei Karten und dem Board entsteht deine beste Fünf-Karten-Hand. Welche Kategorie ist es?',
+    sub: 'Beste Fünf-Karten-Hand aus deinen Karten und dem Board',
     correctCount: (n: number) => `✓ ${n} richtig`,
     totalCount: (n: number) => `${n} gesamt`,
     streak: (n: number) => `Serie: ${n}`,
@@ -29,7 +29,7 @@ export const STR = defineStrings(
   {
     back: '← Trainers',
     title: 'Hand Ranking Trainer',
-    sub: 'Your two cards plus the board make your best five-card hand. Which category is it?',
+    sub: 'Best five-card hand from your cards and the board',
     correctCount: (n: number) => `✓ ${n} correct`,
     totalCount: (n: number) => `${n} total`,
     streak: (n: number) => `Streak: ${n}`,

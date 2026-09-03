@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(31);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(32);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -814,6 +814,43 @@ describe('Ein Modul zeigt seinen Fortschritt', () => {
   it('lässt den Ring sprechen, statt ihn nur zu zeigen', () => {
     /* Ein Ring ist für einen Screenreader ein Bild und sonst nichts. */
     expect(String(e().ring_beschriftung)).toMatch(/\d+ von \d+/);
+  });
+});
+
+/* ── Der Übungsstand ─────────────────────────────────────────────────────
+   Seit E-038 führt jeder Trainer Serie, Trefferquote und Bestserie in
+   derselben Leiste — und der Drill, der bisher gar keine führte, auch. */
+
+describe('Der Übungsstand über den Trainern', () => {
+  const e = () => schritt('Die Serie im Drill überlebt das Schließen');
+
+  it('zeigt drei Werte: Serie, Trefferquote, Bestserie', () => {
+    expect(e().felder).toBe(3);
+  });
+
+  it('nennt ohne Versuche keine Quote', () => {
+    /* „0 %" nach null Aufgaben ist keine Auskunft, sondern ein Vorwurf. */
+    expect(e().ohne_versuche_kein_prozent).toBe(true);
+    expect(String(e().vorher)).not.toMatch(/%/);
+  });
+
+  it('zählt eine Antwort sofort mit', () => {
+    expect(String(e().nach_zwei)).toMatch(/%/);
+  });
+
+  it('behält den Stand über ein Neuladen', () => {
+    /* Das ist der Punkt. Der Drill war der einzige Trainer, dessen Ergebnis
+       mit dem Bildschirm verschwand — eine Serie, die man nicht behalten
+       kann, ist keine.
+
+       Dieser Schritt hat beim ersten Lauf einen echten Fehler gefunden: Die
+       Kennung hieß `potodds-drill`, und `sanitizeAppData` wirft beim Laden
+       alles weg, was nicht nur aus Kleinbuchstaben besteht. Die Zahlen
+       standen im Bildschirm, standen im Gerätespeicher — und waren nach dem
+       Neuladen weg, ohne Fehlermeldung. `trainerkennungen.test.ts` ist das
+       Netz, das jede künftige Kennung prüft. */
+    expect(e().quote_bleibt).toBe(true);
+    expect(e().nach_neuladen).toBe(e().nach_zwei);
   });
 });
 

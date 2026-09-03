@@ -4,7 +4,7 @@ export const STR = defineStrings(
   {
     back: '← Trainer',
     title: 'Pot-Odds-Trainer',
-    sub: 'Wie viel Equity brauchst du mindestens, damit dein Call profitabel ist? Formel: Call ÷ (Pot + Bet + Call).',
+    sub: 'Formel: Call ÷ (Pot + Bet + Call)',
     correctCount: (n: number) => `✓ ${n} richtig`,
     totalCount: (n: number) => `${n} gesamt`,
     streak: (n: number) => `Serie: ${n}`,
@@ -26,7 +26,7 @@ export const STR = defineStrings(
   {
     back: '← Trainers',
     title: 'Pot Odds Trainer',
-    sub: 'How much equity do you need at minimum for your call to be profitable? Formula: call ÷ (pot + bet + call).',
+    sub: 'Formula: call ÷ (pot + bet + call)',
     correctCount: (n: number) => `✓ ${n} correct`,
     totalCount: (n: number) => `${n} total`,
     streak: (n: number) => `Streak: ${n}`,

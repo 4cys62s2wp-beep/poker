@@ -1789,9 +1789,17 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   /* Die Zone beginnt oben am Bildschirm; die Zahl steht mittig darin und
      landet damit sicher in der oberen Hälfte. Die Höhe ist in beiden
      Zuständen dieselbe — deshalb rutscht beim Antworten nichts nach oben
-     oder unten, obwohl der Inhalt wechselt. Knapper als ein Drittel, damit
-     unter der Lage noch Platz für die Begründung bleibt. */
-  min-height: 28svh;
+     oder unten, obwohl der Inhalt wechselt.
+
+     Das ist die eine Stelle, an der eine feste Höhe etwas kauft, was sich
+     nicht ableiten lässt: Die Zusage „zwischen Eingabe und Ergebnis bewegt
+     sich nichts". Umgekehrt — Band flexibel, Lage fest — würde die Lage
+     beim Antworten um die Auflösung wachsen und die Knöpfe unter dem
+     Daumen wegschieben. Der Durchgang misst die Zusage nach.
+
+     Seit E-038 kleiner: Über dem Band steht jetzt der Übungsstand, und mit
+     der alten Höhe klaffte darunter eine Lücke. */
+  min-height: 20svh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1891,8 +1899,16 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .drill-karten {
   display: flex;
-  gap: var(--sp-5);
+  align-items: flex-end;
+  gap: var(--sp-4);
   flex-wrap: wrap;
+}
+
+/* Ein Strich zwischen eigener Hand und Flop — so wird eine Hand am Tisch
+   gelesen, und so steht es auch auf der Startseite. */
+.drill-karten .drill-karten-gruppe.flop {
+  padding-left: var(--sp-4);
+  border-left: 1px solid var(--border);
 }
 
 .drill-karten-label,
@@ -2464,6 +2480,73 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
    Karte gestreckt, sehen aus wie ein Versehen — also trägt jede das, was sie
    ohnehin zu sagen hat, und wird dadurch zugleich ein kürzerer Weg (E-035).
    Keine dekorativen Abbildungen: Sie füllen Fläche, ohne etwas auszusagen. */
+
+/* ── Der Übungsstand über jedem Trainer (E-038) ───────────────────────
+   Die Serie ist die Hauptzahl: Sie ist das Einzige, was man beim nächsten
+   Antippen verlieren kann. */
+.uebungsstand {
+  display: flex;
+  align-items: stretch;
+  gap: var(--sp-2);
+  max-width: 480px;
+  margin-bottom: var(--sp-4);
+}
+
+.uebungsstand .wert {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-3) var(--sp-2);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  text-align: center;
+}
+
+.uebungsstand .zahl {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-family: var(--font-display);
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  font-variant-numeric: var(--ziffern);
+  color: var(--text);
+}
+
+.uebungsstand .marke {
+  font-size: var(--fs-kleingedrucktes);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Eine laufende Serie ist die einzige Zahl mit Farbe. Eine Null ist keine
+   Serie und bekommt deshalb auch keine. */
+.uebungsstand .wert.serie.laeuft {
+  border-color: var(--akzent);
+  background:
+    radial-gradient(120% 140% at 50% 0%, var(--akzent-dim) 0%, transparent 70%),
+    var(--bg-card);
+}
+
+.uebungsstand .wert.serie.laeuft .zahl { color: var(--akzent); }
+
+/* Bestmarke erreicht: Das ist der Moment, den man sehen will. */
+.uebungsstand .wert.serie.rekord {
+  border-color: var(--auszeichnung);
+}
+
+.uebungsstand .wert.serie.rekord .zahl,
+.uebungsstand .wert.serie.rekord .marke { color: var(--auszeichnung-lesbar); }
 
 /* ── Der Rang oben auf dem Lernpfad ───────────────────────────────────
    Wer lernt, soll sehen, worauf er hinlernt. Stand vorher im Profil, zwei

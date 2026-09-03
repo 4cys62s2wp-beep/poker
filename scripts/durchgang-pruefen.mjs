@@ -861,6 +861,49 @@ await schritt('Der Drill zeigt eine Aufgabe', async () => {
   });
 });
 
+await schritt('Die Serie im Drill überlebt das Schließen', async () => {
+  /* Der Drill war der einzige Trainer, dessen Ergebnis mit dem Bildschirm
+     verschwand (E-038). Eine Serie, die man nicht behalten kann, ist keine —
+     geprüft wird deshalb nicht, dass die Zahl erscheint, sondern dass sie
+     nach dem Neuladen noch da ist. */
+  await seite.goto(`${GRUND}/#/lernen/drill`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.drill-knopf.ja');
+  await seite.waitForTimeout(400);
+  const vorher = await seite.evaluate(
+    () => document.querySelector('.uebungsstand')?.innerText.replace(/\n/g, ' | ') ?? null,
+  );
+  /* Beide Knöpfe einmal: Einer davon ist richtig, egal welche Aufgabe
+     gezogen wurde — die Versuchszahl steigt in jedem Fall um zwei. */
+  await seite.locator('.drill-knopf.ja').click();
+  await seite.waitForSelector('.drill-knopf.weiter');
+  await seite.locator('.drill-knopf.weiter').click();
+  await seite.waitForSelector('.drill-knopf.nein');
+  await seite.locator('.drill-knopf.nein').click();
+  await seite.waitForTimeout(400);
+  const nachZwei = await seite.evaluate(() => ({
+    text: document.querySelector('.uebungsstand')?.innerText.replace(/\n/g, ' | ') ?? null,
+    werte: [...document.querySelectorAll('.uebungsstand .zahl')].map((x) => x.textContent.trim()),
+  }));
+  await seite.reload({ waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.uebungsstand');
+  await seite.waitForTimeout(400);
+  const nachNeuladen = await seite.evaluate(() => ({
+    text: document.querySelector('.uebungsstand')?.innerText.replace(/\n/g, ' | ') ?? null,
+    werte: [...document.querySelectorAll('.uebungsstand .zahl')].map((x) => x.textContent.trim()),
+  }));
+  return {
+    vorher,
+    nach_zwei: nachZwei.text,
+    nach_neuladen: nachNeuladen.text,
+    /* Die Trefferquote ist die Zahl, die beide Antworten mitzählt. */
+    quote_bleibt: nachZwei.werte[1] === nachNeuladen.werte[1],
+    quote_nach_zwei: nachZwei.werte[1],
+    /* Vorher stand dort ein Strich, weil es noch keine Versuche gab. */
+    ohne_versuche_kein_prozent: /–|-/.test(String(vorher)),
+    felder: nachNeuladen.werte.length,
+  };
+});
+
 await schritt('Zwischen Eingabe und Ergebnis liegt nichts', async () => {
   /* Gemessen wird zweierlei: wie lange es dauert, bis die Auflösung dasteht,
      und ob sich dabei etwas bewegt. Ein Knopf, der beim Antworten wegrutscht,

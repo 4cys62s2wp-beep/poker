@@ -707,6 +707,37 @@ Die Zahl steht an zwei Stellen — in der Anzeige und in der Vergabe
 (`completeLesson`). Ein Test liest die Vergabe aus dem Quelltext und
 vergleicht: Wer die eine ändert und die andere vergisst, sieht es sofort.
 
+### Regel 10a.6 — Jede Übung führt einen Spielstand
+
+Über jedem Trainer steht dieselbe Leiste: **Serie, Trefferquote, Bestserie.**
+
+**Die Serie ist die Hauptzahl.** Sie ist das Einzige, was man beim nächsten
+Antippen verlieren kann, und deshalb das Einzige, was Spannung erzeugt. Sie
+bekommt als Einzige Farbe — und nur, wenn sie läuft: Eine Null ist keine
+Serie.
+
+**Keine Quote ohne Versuche.** „0 %" nach null Aufgaben ist keine Auskunft,
+sondern ein Vorwurf. Dort steht ein Strich.
+
+**Ein Stand, der das Schließen nicht überlebt, ist keiner.** Alle Übungen —
+seit E-038 auch der Pot-Odds-Drill — zählen in denselben gespeicherten
+Zustand.
+
+**Vorsicht bei der Kennung:** `sanitizeAppData` lässt beim Laden nur
+Kennungen aus Kleinbuchstaben durch und wirft den Rest still weg. Das ist
+richtig (ein beschädigter Speicher darf die App nicht verbiegen), aber es ist
+eine Falle. `trainerkennungen.test.ts` schickt jede verwendete Kennung durch
+den Filter und wird laut, wenn eine nicht heil ankommt.
+
+### Regel 10a.7 — Über einer Übung steht die Regel, nicht die Beschreibung
+
+Was die Übung ist, weiß man von der Karte, die man angetippt hat. Was beim
+Antworten gilt, muss dastehen — und mehr nicht.
+
+Aus „Kurzer Stack im Turnier, alle folden zu dir: All-in oder Fold? Trainiere
+die vereinfachten Nash-Ranges für 10bb und 5bb – ohne Antes." wurde
+„Vereinfachte Nash-Ranges für 10 bb und 5 bb · ohne Antes".
+
 ---
 
 ## 11. Drei Farbmodi

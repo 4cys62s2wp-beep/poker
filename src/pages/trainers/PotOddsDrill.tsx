@@ -39,6 +39,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BackLink } from '../../components/ui';
 import { CardsRow } from '../../components/PlayingCard';
+import { Uebungsstand } from '../../components/Uebungsstand';
+import { useAppState } from '../../state/AppState';
 import { Zahl } from '../../components/Herkunft';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/potoddsdrill';
@@ -56,6 +58,16 @@ import {
 } from '../../lib/potodds/aufgabe';
 import { KOPIERT_MS, dekodiere, fingerabdruck, kodiere } from '../../lib/potodds/adresse';
 
+/** Die Kennung, unter der der Drill seine Serie führt.
+ *
+ *  Nur Kleinbuchstaben, kein Bindestrich: `sanitizeAppData` lässt beim Laden
+ *  aus dem Gerätespeicher genau solche Kennungen durch und wirft alles
+ *  andere weg. Der erste Versuch hieß `potodds-drill` — die Serie war im
+ *  Bildschirm zu sehen, stand im Speicher, und war nach dem Neuladen
+ *  verschwunden. Gefunden hat das der Durchgangsschritt „Die Serie im Drill
+ *  überlebt das Schließen"; `trainerkennungen.test.ts` hält es fest. */
+const DRILL_KENNUNG = 'potoddsdrill';
+
 interface Daten {
   b1: B1Outs;
   b2: B2PotOdds;
@@ -70,6 +82,7 @@ export function PotOddsDrill() {
   const { code } = useParams<{ code?: string }>();
   const navigate = useNavigate();
 
+  const { data, recordTrainer } = useAppState();
   const [daten, setDaten] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
   const [adressfehler, setAdressfehler] = useState<Adressfehler | null>(null);
@@ -147,9 +160,14 @@ export function PotOddsDrill() {
     if (antwort !== null || !aufloesung) return;
     /* Der Stoß in der Hand ist am Tisch die einzige Rückmeldung, die
        ankommt — man schaut nicht hin, und laut ist es auch. */
-   
     setAntwort(nutzerMeintLohnt);
     setVerlauf((v) => [...v, nutzerMeintLohnt === aufloesung.lohnt]);
+    /* Seit E-038 zählt der Drill wie die anderen Trainer: Serie, Bestserie,
+       XP und Abzeichen. Er war der einzige, dessen Ergebnis mit dem
+       Schließen des Bildschirms verschwand — eine Serie, die man nicht
+       behalten kann, ist keine. Eigene Kennung, damit sie sich nicht mit
+       dem Pot-Odds-Trainer vermischt: Das sind zwei Übungen. */
+    recordTrainer(DRILL_KENNUNG, nutzerMeintLohnt === aufloesung.lohnt);
   }
 
   /* Der Link ist die Adresse, in der die Aufgabe steht – mehr braucht es
@@ -223,6 +241,7 @@ export function PotOddsDrill() {
     <div>
       <BackLink to="/lernen" label={L.back} />
 
+      <Uebungsstand werte={data.trainers[DRILL_KENNUNG]} />
       <div className="drill">
         {/* ── Obere Hälfte: erst die Frage, dann die Zahl ─────────────── */}
         <div className="drill-oben" aria-live="polite">
@@ -259,14 +278,20 @@ export function PotOddsDrill() {
         {/* ── Die Lage. Bleibt sichtbar, auch nach der Antwort ────────── */}
         <div className="drill-mitte">
           <div className="drill-lage">
+            {/* Groß, nicht als Briefmarke: Die Karten sind der Gegenstand
+                der Aufgabe, nicht ihre Verzierung (E-036, Regel 10.8).
+                Gemessen waren sie hier 28 Pixel breit — die kleinsten in
+                der ganzen App, ausgerechnet auf dem Bildschirm, auf dem
+                man sie ansehen muss. Eigene Hand größer als der Flop: Sie
+                ist die, um die es geht. */}
             <div className="drill-karten">
               <div className="drill-karten-gruppe">
                 <div className="drill-karten-label">{L.handLabel}</div>
-                <CardsRow cards={aufgabe.hand} size="sm" />
+                <CardsRow cards={aufgabe.hand} size="lg" />
               </div>
-              <div className="drill-karten-gruppe">
+              <div className="drill-karten-gruppe flop">
                 <div className="drill-karten-label">{L.flopLabel}</div>
-                <CardsRow cards={aufgabe.flop} size="sm" />
+                <CardsRow cards={aufgabe.flop} size="md" />
               </div>
             </div>
             <div className="drill-betraege">
@@ -350,9 +375,12 @@ export function PotOddsDrill() {
             </button>
           )}
           <div className="drill-fuss">
-            <span className="drill-stand">
-              {verlauf.length ? L.score(treffer, verlauf.length) : null}
-            </span>
+            {/* Der Sitzungsstand stand hier als „3 von 5". Seit E-038 führt
+                der Übungsstand oben Serie, Trefferquote und Bestserie —
+                und der behält sie über das Schließen hinaus. Zweimal
+                dieselbe Auskunft, davon einmal die schlechtere, ist einmal
+                zu viel. */}
+            <span className="drill-stand" />
             <button type="button" className="drill-teilen" onClick={teilen}>
               {kopiert ? L.shareCopied : L.share}
             </button>

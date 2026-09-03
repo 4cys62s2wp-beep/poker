@@ -14,7 +14,7 @@ export const STR = defineStrings(
   {
     back: '← Trainer',
     title: 'Outs-Zähler',
-    sub: 'Outs sind die Karten, die deine Hand verbessern. Zähle genau – und rechne mit der Regel von 2 und 4 in Equity um.',
+    sub: 'Outs sind die Karten, die deine Hand verbessern · Regel von 2 und 4',
     correctCount: (n: number) => `✓ ${n} richtig`,
     totalCount: (n: number) => `${n} gesamt`,
     streak: (n: number) => `Serie: ${n}`,
@@ -50,7 +50,7 @@ export const STR = defineStrings(
   {
     back: '← Trainers',
     title: 'Outs Counter',
-    sub: 'Outs are the cards that improve your hand. Count them precisely – and convert to equity with the rule of 2 and 4.',
+    sub: 'Outs are the cards that improve your hand · rule of 2 and 4',
     correctCount: (n: number) => `✓ ${n} correct`,
     totalCount: (n: number) => `${n} total`,
     streak: (n: number) => `Streak: ${n}`,

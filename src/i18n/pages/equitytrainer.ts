@@ -5,7 +5,7 @@ export const STR = defineStrings(
     back: '← Trainer',
     title: 'Equity-Schätzer',
     sub: (tolerance: number) =>
-      `Schätze die Gewinnwahrscheinlichkeit deiner Hand (beide Hände offen). Innerhalb von ±${tolerance} Prozentpunkten zählt als richtig.`,
+      `Beide Hände offen · richtig ist alles innerhalb von ±${tolerance} Prozentpunkten`,
     correctCount: (n: number) => `✓ ${n} richtig`,
     totalCount: (n: number) => `${n} gesamt`,
     streak: (n: number) => `Serie: ${n}`,
@@ -29,7 +29,7 @@ export const STR = defineStrings(
     back: '← Trainers',
     title: 'Equity Estimator',
     sub: (tolerance: number) =>
-      `Estimate your hand’s win probability (both hands face up). Within ±${tolerance} percentage points counts as correct.`,
+      `Both hands face up · anything within ±${tolerance} percentage points counts`,
     correctCount: (n: number) => `✓ ${n} correct`,
     totalCount: (n: number) => `${n} total`,
     streak: (n: number) => `Streak: ${n}`,

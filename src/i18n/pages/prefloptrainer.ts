@@ -7,7 +7,7 @@ export const STR = defineStrings(
   {
     back: '← Trainer',
     title: 'Preflop-Trainer',
-    sub: '6-max Cash Game, 100bb effektiv. Entscheide nach Chart – nach der Antwort siehst du die komplette Range.',
+    sub: '6-max Cash Game · 100 bb effektiv',
     correctCount: (n: number) => `✓ ${n} richtig`,
     totalCount: (n: number) => `${n} gesamt`,
     streak: (n: number) => `Serie: ${n}`,
@@ -36,7 +36,7 @@ export const STR = defineStrings(
   {
     back: '← Trainers',
     title: 'Preflop Trainer',
-    sub: '6-max cash game, 100bb effective. Decide by the chart – after answering you’ll see the full range.',
+    sub: '6-max cash game · 100 bb effective',
     correctCount: (n: number) => `✓ ${n} correct`,
     totalCount: (n: number) => `${n} total`,
     streak: (n: number) => `Streak: ${n}`,

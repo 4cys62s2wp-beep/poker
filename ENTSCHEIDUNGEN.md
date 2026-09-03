@@ -1621,3 +1621,91 @@ Tippen an eine andere Stelle im Baum wandert, verliert den Fokus.
   Sammlung im Profil feiert es nicht.
 - Die Bereichsfarben stehen auf der Startseite und im Lernpfad, noch nicht
   überall.
+
+---
+
+## E-038 · 2026-09-03 · Der Drill und die Trainer bekommen einen Spielstand
+
+**Stand:** entschieden und umgesetzt.
+
+**Der Anlass.** Nach E-036 (Startseite) und E-037 (Lernpfad) die dritte
+Etappe derselben Sache: „mach den Drill und die Trainer auch noch".
+
+### Was der Rundgang gezeigt hat
+
+**Im Drill waren die Karten 28 Pixel breit.** Die kleinsten in der ganzen
+App — ausgerechnet auf dem Bildschirm, dessen ganze Aufgabe darin besteht,
+eine Hand anzusehen und zu bewerten. Die Bildschirmmitte war leer.
+
+**Der Punktestand war dreimal Grau.** In jedem der sieben Trainer stand
+dieselbe Zeile: „✓ 0 richtig", „0 gesamt", „Serie: 0". Drei Pillen
+nebeneinander, alle gleich wichtig aussehend — und die interessanteste, die
+Serie, sah aus wie die anderen.
+
+**Die Bestserie war unsichtbar.** `bestStreak` wurde seit jeher mitgezählt
+und nirgends gezeigt. Eine Bestmarke, die niemand kennt, ist keine.
+
+**Der Drill führte gar keinen Stand.** Er zählte „3 von 5" für die laufende
+Sitzung, und mit dem Schließen des Bildschirms war das weg.
+
+**Jeder Trainer begann mit einem Absatz.** Zwei bis vier Zeilen Fließtext,
+die erklärten, was die Übung ist — was man von der Karte weiß, die man
+gerade angetippt hat.
+
+### Die Entscheidung
+
+- **Ein gemeinsamer Übungsstand** über jedem Trainer, drei Werte: Serie,
+  Trefferquote, Bestserie. **Die Serie ist die Hauptzahl** — sie ist das
+  Einzige, was man beim nächsten Antippen verlieren kann, und deshalb das
+  Einzige, was Spannung erzeugt. Sie bekommt als Einzige Farbe, und nur
+  wenn sie läuft: Eine Null ist keine Serie.
+- **Die Bestserie wird gezeigt**, und wenn die laufende sie erreicht, sagt
+  die Leiste das („Neue Bestserie").
+- **Keine Quote ohne Versuche.** „0 %" nach null Aufgaben ist keine
+  Auskunft, sondern ein Vorwurf; dort steht ein Strich.
+- **Der Drill zählt wie die anderen** — Serie, Bestserie, XP, Abzeichen —
+  unter eigener Kennung, weil Drill und Pot-Odds-Trainer zwei Übungen sind.
+  Der Sitzungsstand unten entfällt: zweimal dieselbe Auskunft, davon einmal
+  die schlechtere, ist einmal zu viel.
+- **Die Karten im Drill werden groß** (62 statt 28 Pixel), eigene Hand
+  größer als der Flop, mit einem Strich dazwischen — wie auf der Startseite.
+- **Die Absätze über den Trainern werden zu einer Zeile.** Was die Übung
+  ist, weiß man; was gilt, muss dastehen. Aus „Kurzer Stack im Turnier, alle
+  folden zu dir: All-in oder Fold? Trainiere die vereinfachten Nash-Ranges
+  für 10bb und 5bb – ohne Antes." wird „Vereinfachte Nash-Ranges für 10 bb
+  und 5 bb · ohne Antes".
+
+### Der Fehler, den der Durchgang gefunden hat
+
+Der neue Schritt „Die Serie im Drill überlebt das Schließen" schlug beim
+ersten Lauf fehl — und zwar zu Recht.
+
+Die Kennung hieß zuerst `potodds-drill`. `sanitizeAppData` prüft beim Laden
+aus dem Gerätespeicher jede Trainer-Kennung gegen `/^[a-z]+$/` und wirft
+weg, was nicht passt. Der Bindestrich fiel durch. Die Folge: Die Zahlen
+standen im Bildschirm, standen im Gerätespeicher — und waren nach dem
+Neuladen verschwunden, ohne eine einzige Fehlermeldung.
+
+**Warum das Muster trotzdem bleibt.** Ein beschädigter Gerätespeicher darf
+die App nicht verbiegen, und dort still zu verwerfen ist richtig — anders als
+bei den gerechneten Daten, wo laut gescheitert wird (E-007). Die Kennung
+heißt jetzt `potoddsdrill`.
+
+**Was dazukommt, ist das Netz.** `trainerkennungen.test.ts` schickt **jede**
+Kennung, die die App verwendet, durch `sanitizeAppData` und prüft, dass sie
+heil ankommt — mit der Begründung in der Fehlermeldung. Die Gegenprobe steht
+daneben: Offensichtlicher Unsinn wird weiterhin verworfen.
+
+**Die Lehre, schon wieder dieselbe:** Eine stille Prüfung ist eine Falle für
+den Nächsten. Wo still verworfen werden muss, gehört ein Test daneben, der
+laut wird.
+
+### Was noch nicht getan ist
+
+- Die Antwortknöpfe der sieben Trainer liegen weiter in der Bildschirmmitte,
+  nicht im Daumenbereich. Der Drill hat sie unten; die anderen müssten dafür
+  einzeln umgebaut werden.
+- Zwei Trainer scrollen auf einem 844 Pixel hohen Gerät (Handranking wegen
+  sieben Kategorien, Pot-Odds wegen der Formelzeile).
+- Ein neu verdientes Abzeichen meldet sich als Hinweis, die Sammlung im
+  Profil feiert es nicht.

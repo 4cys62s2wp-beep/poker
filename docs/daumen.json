@@ -1,0 +1,901 @@
+{
+  "geprueft_am": "2026-09-04T18:37:48.337Z",
+  "breite": 390,
+  "hoehe": 844,
+  "daumen_ab": 0.5,
+  "bildschirme": 90,
+  "mit_entscheidung": 8,
+  "befunde": [],
+  "messungen": [
+    {
+      "hash": "#/",
+      "scrollt": true,
+      "ueberlauf_px": 73,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen",
+      "scrollt": true,
+      "ueberlauf_px": 2836,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m1/m1-l1",
+      "scrollt": true,
+      "ueberlauf_px": 4768,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/nachschlagen",
+      "scrollt": true,
+      "ueberlauf_px": 378,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/nachschlagen/coach",
+      "scrollt": true,
+      "ueberlauf_px": 179,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/nachschlagen/glossar",
+      "scrollt": true,
+      "ueberlauf_px": 29375,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/nachschlagen/haende",
+      "scrollt": true,
+      "ueberlauf_px": 1166,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/nachschlagen/odds",
+      "scrollt": true,
+      "ueberlauf_px": 1985,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/profil",
+      "scrollt": true,
+      "ueberlauf_px": 4518,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/session",
+      "scrollt": true,
+      "ueberlauf_px": 370,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/session/live/einrichten",
+      "scrollt": true,
+      "ueberlauf_px": 640,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/freunde",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/drill",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 692,
+        "unten_px": 820,
+        "mitte_px": 756,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 3,
+        "klebt": true,
+        "kleinster_knopf_px": 44,
+        "breitenanteil": 1.18
+      }
+    },
+    {
+      "hash": "#/lernen/m1",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m2",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m3",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m4",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m5",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m6",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m7",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m8",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m9",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/pros",
+      "scrollt": true,
+      "ueberlauf_px": 4390,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/statistik",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/tagesquiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/trainer/equity",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 715,
+        "unten_px": 820,
+        "mitte_px": 768,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/trainer/handranking",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 641,
+        "unten_px": 820,
+        "mitte_px": 731,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 4,
+        "klebt": true,
+        "kleinster_knopf_px": 51,
+        "breitenanteil": 1.79
+      }
+    },
+    {
+      "hash": "#/lernen/trainer/outs",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 659,
+        "unten_px": 820,
+        "mitte_px": 740,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 4,
+        "klebt": true,
+        "kleinster_knopf_px": 52,
+        "breitenanteil": 1.79
+      }
+    },
+    {
+      "hash": "#/lernen/trainer/potodds",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 641,
+        "unten_px": 820,
+        "mitte_px": 731,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 4,
+        "klebt": true,
+        "kleinster_knopf_px": 51,
+        "breitenanteil": 1.79
+      }
+    },
+    {
+      "hash": "#/lernen/trainer/preflop",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 715,
+        "unten_px": 820,
+        "mitte_px": 768,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 2,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.9
+      }
+    },
+    {
+      "hash": "#/lernen/trainer/pushfold",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 715,
+        "unten_px": 820,
+        "mitte_px": 768,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 2,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.9
+      }
+    },
+    {
+      "hash": "#/lernen/trainer/szenario",
+      "scrollt": true,
+      "ueberlauf_px": 126,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 644,
+        "unten_px": 844,
+        "mitte_px": 744,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 3,
+        "klebt": true,
+        "kleinster_knopf_px": 51,
+        "breitenanteil": 1.35
+      }
+    },
+    {
+      "hash": "#/lernen/uebungstisch",
+      "scrollt": true,
+      "ueberlauf_px": 201,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/wiederholen",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/nachschlagen/equity",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/nachschlagen/ranges",
+      "scrollt": true,
+      "ueberlauf_px": 255,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/nachschlagen/tells",
+      "scrollt": true,
+      "ueberlauf_px": 5841,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/rechtliches",
+      "scrollt": true,
+      "ueberlauf_px": 1344,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/session/abende",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/session/auszahlung",
+      "scrollt": true,
+      "ueberlauf_px": 241,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/session/bankroll",
+      "scrollt": true,
+      "ueberlauf_px": 287,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/session/chips",
+      "scrollt": true,
+      "ueberlauf_px": 1303,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m1/m1-l2",
+      "scrollt": true,
+      "ueberlauf_px": 5872,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m1/m1-l3",
+      "scrollt": true,
+      "ueberlauf_px": 4721,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m1/m1-l4",
+      "scrollt": true,
+      "ueberlauf_px": 5431,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m1/m1-l5",
+      "scrollt": true,
+      "ueberlauf_px": 5418,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m2/m2-l1",
+      "scrollt": true,
+      "ueberlauf_px": 4171,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m2/m2-l2",
+      "scrollt": true,
+      "ueberlauf_px": 3901,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m2/m2-l3",
+      "scrollt": true,
+      "ueberlauf_px": 5825,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m2/m2-l4",
+      "scrollt": true,
+      "ueberlauf_px": 4169,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m2/m2-l5",
+      "scrollt": true,
+      "ueberlauf_px": 4824,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m3/m3-l1",
+      "scrollt": true,
+      "ueberlauf_px": 4663,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m3/m3-l2",
+      "scrollt": true,
+      "ueberlauf_px": 3848,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m3/m3-l3",
+      "scrollt": true,
+      "ueberlauf_px": 4075,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m3/m3-l4",
+      "scrollt": true,
+      "ueberlauf_px": 4621,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m3/m3-l5",
+      "scrollt": true,
+      "ueberlauf_px": 5169,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m3/m3-l6",
+      "scrollt": true,
+      "ueberlauf_px": 5417,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m4/m4-l1",
+      "scrollt": true,
+      "ueberlauf_px": 5359,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m4/m4-l2",
+      "scrollt": true,
+      "ueberlauf_px": 5224,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m4/m4-l3",
+      "scrollt": true,
+      "ueberlauf_px": 5122,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m4/m4-l4",
+      "scrollt": true,
+      "ueberlauf_px": 5423,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m4/m4-l5",
+      "scrollt": true,
+      "ueberlauf_px": 5579,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m4/m4-l6",
+      "scrollt": true,
+      "ueberlauf_px": 5934,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m5/m5-l1",
+      "scrollt": true,
+      "ueberlauf_px": 5569,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m5/m5-l2",
+      "scrollt": true,
+      "ueberlauf_px": 6274,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m5/m5-l3",
+      "scrollt": true,
+      "ueberlauf_px": 5969,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m5/m5-l4",
+      "scrollt": true,
+      "ueberlauf_px": 5112,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m5/m5-l5",
+      "scrollt": true,
+      "ueberlauf_px": 6277,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m5/m5-l6",
+      "scrollt": true,
+      "ueberlauf_px": 5977,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m6/m6-l1",
+      "scrollt": true,
+      "ueberlauf_px": 5894,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m6/m6-l2",
+      "scrollt": true,
+      "ueberlauf_px": 5820,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m6/m6-l3",
+      "scrollt": true,
+      "ueberlauf_px": 5062,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m6/m6-l4",
+      "scrollt": true,
+      "ueberlauf_px": 6035,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m6/m6-l5",
+      "scrollt": true,
+      "ueberlauf_px": 5068,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m7/m7-l1",
+      "scrollt": true,
+      "ueberlauf_px": 5643,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m7/m7-l2",
+      "scrollt": true,
+      "ueberlauf_px": 6913,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m7/m7-l3",
+      "scrollt": true,
+      "ueberlauf_px": 6325,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m7/m7-l4",
+      "scrollt": true,
+      "ueberlauf_px": 5054,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m7/m7-l5",
+      "scrollt": true,
+      "ueberlauf_px": 7676,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m8/m8-l1",
+      "scrollt": true,
+      "ueberlauf_px": 5572,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m8/m8-l2",
+      "scrollt": true,
+      "ueberlauf_px": 4643,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m8/m8-l3",
+      "scrollt": true,
+      "ueberlauf_px": 5651,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m8/m8-l4",
+      "scrollt": true,
+      "ueberlauf_px": 5626,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m8/m8-l5",
+      "scrollt": true,
+      "ueberlauf_px": 5850,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m8/m8-l6",
+      "scrollt": true,
+      "ueberlauf_px": 6153,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m9/m9-l1",
+      "scrollt": true,
+      "ueberlauf_px": 2600,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m9/m9-l2",
+      "scrollt": true,
+      "ueberlauf_px": 2047,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m9/m9-l3",
+      "scrollt": true,
+      "ueberlauf_px": 1826,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m9/m9-l4",
+      "scrollt": true,
+      "ueberlauf_px": 2167,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/lernen/m9/m9-l5",
+      "scrollt": true,
+      "ueberlauf_px": 2375,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    }
+  ]
+}

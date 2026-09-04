@@ -43,7 +43,17 @@ const TIPP_ABSTAND = 8;
 const ERGEBNIS_AB_PX = 40;
 
 const wege = JSON.parse(readFileSync('docs/wege.json', 'utf8'));
-const bildschirme = wege.wege.filter((w) => w.inhalt).map((w) => w.hash);
+/* ALLE Adressen, nicht nur die Lektionen.
+ *
+ * Bis E-039 stand hier `filter((w) => w.inhalt)` — und `inhalt: true`
+ * bedeutet in `wege.json` „ist eine Lektion", nicht „ist ein Bildschirm".
+ * Der Lauf meldete brav „49 Bildschirme geprüft" und hatte dabei keinen
+ * einzigen Trainer gesehen, keine Startseite, keinen Tisch. Zwei Jahre
+ * Prüfprotokoll über den immer gleichen Seitentyp.
+ *
+ * Die Lehre steht in DESIGN.md 9.1: Eine Prüfung, die eine Zahl meldet,
+ * muss auch sagen, worüber. „49 Bildschirme" klang nach allen. */
+const bildschirme = wege.wege.map((w) => w.hash);
 
 /* Beide Farbmodi, nicht nur der gerade eingestellte. Ein Lauf über den
    dunklen Satz sagt genau nichts über den hellen — und der helle ist der,
@@ -206,7 +216,26 @@ for (const hash of bildschirme) {
         }
       }
 
-      /* ---- Tippflächen -------------------------------------------------- */
+      /* ---- Tippflächen --------------------------------------------------
+         Ein Diagramm ist keine Bedienleiste.
+         --------------------------------
+         Die Starthand-Matrix hat 169 Felder. Bei einer Fingerbreite je Feld
+         wäre sie 668 Pixel breit — auf einem 390 Pixel breiten Gerät also
+         nicht mehr als Ganzes zu sehen, und als Ganzes gesehen zu werden
+         ist ihr einziger Zweck: Man liest die Form, nicht die einzelne
+         Zelle.
+
+         Sie ist deshalb von der Größen- und Abstandsregel ausgenommen —
+         aber nicht bedingungslos. Die Bedingung steht in DESIGN.md 9.2:
+         **Was über ein Diagramm erreichbar ist, muss auch ohne erreichbar
+         sein.** Im Starthand-Explorer leistet das die Auswahl daneben
+         (E-039); wo eine Matrix nur zeigt und nichts auslöst, stellt sich
+         die Frage nicht.
+
+         Die Ausnahme gilt genau für dieses eine Bauteil und ist hier
+         benannt, nicht in einer Liste von Selektoren versteckt. */
+      const imDiagramm = (el) => el.closest('.matrix') !== null;
+
       const flaechen = [];
       for (const el of document.querySelectorAll('button, a[href], input, select, textarea, [role="button"]')) {
         if (!sichtbar(el)) continue;
@@ -217,14 +246,30 @@ for (const hash of bildschirme) {
           && el.parentElement
           && ['P', 'LI', 'SPAN', 'STRONG', 'EM'].includes(el.parentElement.tagName);
         if (imFliesstext) continue;
-        flaechen.push({ el, r });
-        if (r.height < tippMin - 0.5 || r.width < tippMin - 0.5) {
+        if (imDiagramm(el)) continue;
+
+        /* Was man wirklich antippt.
+           ------------------------
+           Ein Kontrollkästchen ist 14 × 22 Pixel groß, und daran ändert kein
+           Stilblatt etwas — der Browser zeichnet es selbst. Bedient wird es
+           trotzdem über die ganze Beschriftung: Ein Klick auf das `<label>`
+           schaltet es. Gemessen wird deshalb die Fläche, die den Klick
+           annimmt, und das ist bei einem eingefassten Bedienelement das
+           Label. Seit E-039.
+
+           Das ist keine Ausnahme, sondern die genauere Messung: Vorher
+           meldete der Lauf ein Ziel als zu klein, das in Wahrheit eine
+           Fingerbreite hoch ist. */
+        const label = el.closest('label');
+        const wirksam = label && label.contains(el) ? label.getBoundingClientRect() : r;
+        flaechen.push({ el, r: wirksam });
+        if (wirksam.height < tippMin - 0.5 || wirksam.width < tippMin - 0.5) {
           gefunden.push({
             art: 'tippflaeche-zu-klein',
             marke: wegMarke(el),
             text: (el.textContent || el.getAttribute('aria-label') || '').trim().slice(0, 40),
-            breite_px: Math.round(r.width),
-            hoehe_px: Math.round(r.height),
+            breite_px: Math.round(wirksam.width),
+            hoehe_px: Math.round(wirksam.height),
           });
         }
       }
@@ -232,7 +277,17 @@ for (const hash of bildschirme) {
       /* ---- Abstand zwischen Bedienflächen -------------------------------
          Zwei Knöpfe, die sich berühren, sind ein Knopf mit zwei Bedeutungen.
          Verschachtelte Flächen (ein Knopf in einer Karte, die selbst ein Link
-         ist) sind ein anderer Fall und werden hier nicht gezählt. */
+         ist) sind ein anderer Fall und werden hier nicht gezählt.
+
+         Seit E-039 mit einer Bedingung: Der Abstand zählt nur, wenn
+         mindestens eine der beiden Flächen unter der Mindestgröße liegt.
+
+         Warum: Der Abstand ist kein Selbstzweck, er ist der Ausgleich für
+         zu kleine Ziele. Zwei Flächen, die beide eine Fingerbreite messen,
+         darf man aneinanderlegen — so ist jede Tastatur gebaut und jeder
+         segmentierte Umschalter. Ohne diese Bedingung meldete der Lauf 2442
+         Befunde, von denen keiner ein Fehlgriff war, und verdeckte damit
+         die, die es waren. */
       for (let i = 0; i < flaechen.length; i += 1) {
         for (let j = i + 1; j < flaechen.length; j += 1) {
           const a = flaechen[i];
@@ -244,7 +299,9 @@ for (const hash of bildschirme) {
              ein eigener Fall, kein Abstandsproblem. */
           if (waagerecht < 0 && senkrecht < 0) continue;
           const abstand = Math.max(waagerecht, senkrecht);
-          if (abstand < tippAbstand - 0.5) {
+          const beideGross = a.r.width >= tippMin - 0.5 && a.r.height >= tippMin - 0.5
+            && b.r.width >= tippMin - 0.5 && b.r.height >= tippMin - 0.5;
+          if (abstand < tippAbstand - 0.5 && !beideGross) {
             gefunden.push({
               art: 'tippflaechen-zu-eng',
               marke: `${wegMarke(a.el)} ↔ ${wegMarke(b.el)}`,

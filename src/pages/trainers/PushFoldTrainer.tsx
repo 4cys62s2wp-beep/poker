@@ -5,6 +5,7 @@ import { CardsRow } from '../../components/PlayingCard';
 import { POSITION_NAMES } from '../../content/ranges';
 import { combosForLabel, expandRangeSpec, handLabel, rangePercent } from '../../lib/poker/ranges';
 import { useAppState } from '../../state/AppState';
+import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/pushfoldtrainer';
@@ -106,23 +107,6 @@ export function PushFoldTrainer() {
           <span className="pill" style={{ fontSize: 14 }}>{spot.label}</span>
         </div>
 
-        <div className="row wrap">
-          <button
-            className={`btn lg${answer ? (correct === 'push' ? ' success' : answer === 'push' ? ' danger' : '') : ''}`}
-            onClick={() => choose('push')}
-            disabled={!!answer}
-          >
-            {L.allInBtn}
-          </button>
-          <button
-            className={`btn lg${answer ? (correct === 'fold' ? ' success' : answer === 'fold' ? ' danger' : '') : ''}`}
-            onClick={() => choose('fold')}
-            disabled={!!answer}
-          >
-            {L.foldBtn}
-          </button>
-        </div>
-
         {answer && (
           <>
             <div className={`feedback-box ${isCorrect ? 'good' : 'bad'}`} style={{ marginTop: 16 }}>
@@ -144,16 +128,32 @@ export function PushFoldTrainer() {
               </div>
               <HandMatrix raise={chart.set} highlight={spot.label} />
             </div>
-
-            <button className="btn primary" style={{ marginTop: 18 }} onClick={next}>
-              {L.nextHand}
-            </button>
           </>
         )}
         <p className="small faint" style={{ marginTop: 16 }}>
           {L.footnote}
         </p>
       </div>
+
+      {/* Antworten und Weitermachen an derselben Stelle, unten im
+          Daumenbereich (E-039). */}
+      <Entscheidung label={L.title}>
+        {!answer ? (
+          <>
+            <button
+              className={`btn lg${answer ? (correct === 'push' ? ' success' : '') : ''}`}
+              onClick={() => choose('push')}
+            >
+              {L.allInBtn}
+            </button>
+            <button className="btn lg" onClick={() => choose('fold')}>
+              {L.foldBtn}
+            </button>
+          </>
+        ) : (
+          <button className="btn primary" onClick={next}>{L.nextHand}</button>
+        )}
+      </Entscheidung>
     </div>
   );
 }

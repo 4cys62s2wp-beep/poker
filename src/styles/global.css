@@ -470,6 +470,25 @@ table.data td {
   background: var(--bg-deep);
 }
 
+/* Wer den Tokensatz wechselt, muss auch die Schriftfarbe neu setzen.
+   ==================================================================
+   `body { color: var(--text) }` wird EINMAL aufgelöst — auf dem body, mit
+   dem Satz, der dort gilt. Ein Bereich, der weiter unten `data-modus`
+   umschaltet, ändert damit die Variable, aber nicht die schon aufgelöste
+   Farbe: Alles darin, was keine eigene Farbe setzt, erbt weiter die alte.
+
+   Die Folge war im hellen Modus der ganze Live-Bereich in dunkler Schrift
+   auf dunklem Grund — gemessen 1,02 zu 1 bei „Abend führen", 1,20 bei den
+   Überschriften. Praktisch unlesbar, und monatelang unbemerkt: Der
+   Kontrastlauf sah nur Lektionsseiten (E-039), und der Durchgangsschritt
+   „Der Live-Bereich bleibt dunkel" prüfte die Fläche, nicht die Schrift.
+
+   Deshalb hängt die Regel am Attribut und nicht an einer Klasse: Sie gilt
+   für jede Stelle, die den Satz wechselt — auch für die nächste. */
+[data-modus] {
+  color: var(--text);
+}
+
 .app-shell {
   display: flex;
   min-height: 100vh;
@@ -833,13 +852,24 @@ h2.section-title::after {
 .btn.danger {
   background: var(--danger-dim);
   border-color: rgba(224, 92, 85, 0.42);
-  color: #f0a49f;
+  /* Token statt Hexwert: `#f0a49f` ist der helle Rotton des dunklen Satzes
+     und stand im hellen Modus auf hellem Grund — 1,62 zu 1. */
+  color: var(--danger-lesbar);
 }
 
 .btn.ghost { background: transparent; border-color: transparent; color: var(--text-dim); }
 .btn.ghost:hover { color: var(--text); background: var(--veil-2); }
 
-.btn.sm { padding: 7px 13px; font-size: 13px; border-radius: 9px; }
+/* Auch der kleine Knopf ist eine Bedienfläche. Die Polsterung bleibt, die
+   Mindestfläche kommt dazu — sonst waren „✕" und „−" 35 bis 39 Pixel
+   breit. */
+.btn.sm {
+  padding: 7px 13px;
+  font-size: 13px;
+  border-radius: 9px;
+  min-height: var(--tipp-min);
+  min-width: var(--tipp-min);
+}
 .btn.lg { padding: 14px 26px; font-size: 15.5px; border-radius: 13px; }
 .btn.block { width: 100%; }
 
@@ -1033,6 +1063,54 @@ button.pill {
    statt die 169 Zellen unter die Lesbarkeitsgrenze zu schrumpfen.
    overflow-x:auto setzt zugleich die automatische Mindestbreite auf 0,
    die min-width der Matrix sprengt also kein Grid-Layout. */
+/* ── Die zweite Auswahl neben der Matrix (E-039) ──────────────────────
+   Richtige Bedienflächen für das, was die Matrix als Diagramm zeigt. */
+.handwahl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+
+.handwahl-titel {
+  font-family: var(--font-display);
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+}
+
+.handwahl-marke {
+  font-size: var(--fs-kleingedrucktes);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.handwahl-reihe {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--tipp-min), 1fr));
+  gap: var(--tipp-abstand);
+}
+
+.handwahl-knopf {
+  min-height: var(--tipp-min);
+  min-width: var(--tipp-min);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.handwahl-knopf.an {
+  border-color: var(--akzent);
+  background: var(--akzent-dim);
+  color: var(--akzent);
+}
+
 .matrix-scroll {
   max-width: 100%;
   overflow-x: auto;
@@ -1058,9 +1136,14 @@ button.pill {
   font-weight: 800;
   line-height: 1;
   border-radius: 4px;
-  background: rgba(9, 13, 11, 0.7);
-  color: var(--text-faint);
-  border: 1px solid rgba(236, 233, 223, 0.045);
+  /* Modusabhängig, nicht fest verdrahtet. Vorher stand hier eine dunkle
+     Fläche mit `--text-faint` darauf — im hellen Modus wird dieser Token
+     dunkel, und das Ergebnis war dunkler Text auf dunklem Grund: 1,21 zu 1.
+     Genau der Fehler aus E-034, an einer zweiten Stelle. Gefunden erst, als
+     der Prüflauf auch Bildschirme außerhalb der Lektionen ansah (E-039). */
+  background: var(--veil-3);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
   /* Zellen sind <button> – Browser-Defaults zuruecksetzen, Optik bleibt gleich. */
   appearance: none;
   -webkit-appearance: none;
@@ -1076,14 +1159,18 @@ button.pill {
 .matrix .cell.interactive:hover { filter: brightness(1.25); }
 .matrix .cell.interactive:active { transform: scale(0.92); }
 
+/* Verlauf und Schrift zusammen gerechnet: Der Kontrast muss am DUNKLEN
+   Ende des Verlaufs halten, nicht am hellen. Vorher 4,47 zu 1 — knapp
+   darunter, und deshalb nie aufgefallen. */
 .matrix .cell.raise {
-  background: linear-gradient(150deg, #d9b45b, #a37f2e);
-  color: #261d06;
+  background: linear-gradient(150deg, #d9b45b, #ac8734);
+  color: #1a1404;
 }
 
 .matrix .cell.call {
-  background: linear-gradient(150deg, #479a63, #2e6f44);
-  color: #08130b;
+  /* Dasselbe für Grün: am dunklen Ende gerechnet. */
+  background: linear-gradient(150deg, #479a63, #3c8956);
+  color: #000;
 }
 
 .matrix .cell.mark {
@@ -1393,7 +1480,10 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .segmented {
   display: inline-flex;
-  background: rgba(9, 13, 11, 0.8);
+  /* Modusabhängig statt fest dunkel: Im hellen Modus stand hier
+     `--text-dim` (dunkel) auf einer dunklen Fläche — 1,36 zu 1. Derselbe
+     Fehler wie bei der Handmatrix und beim Knopf aus E-034. */
+  background: var(--veil-3);
   border: 1px solid var(--border-strong);
   border-radius: 12px;
   padding: 3px;
@@ -1402,6 +1492,11 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .segmented button {
+  /* Mindestgröße wie jede andere Bedienfläche. Vorher 40 × 34 Pixel — das
+     bestand die Tippprüfung nie, fiel aber nie auf, weil der Lauf diese
+     Bildschirme nicht ansah (E-039). */
+  min-height: var(--tipp-min);
+  min-width: var(--tipp-min);
   padding: var(--sp-2) var(--sp-4);
   border: 0;
   border-radius: 9px;
@@ -1415,7 +1510,13 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .segmented button.on {
-  background: linear-gradient(160deg, var(--knopf-auszeichnung-hell), var(--auszeichnung) 55%, var(--knopf-auszeichnung-tief));
+  /* `--knopf-auszeichnung-mitte`, nicht `--auszeichnung`: Der Token für die
+     Auszeichnungsfarbe wird im hellen Modus dunkel (er muss dort als
+     Textfarbe lesbar sein). In einem Knopfverlauf wird daraus dunkler Text
+     auf dunklem Gold — gemessen 2,76 zu 1. Genau der Fund aus E-034, hier
+     beim Aufräumen übersehen und jetzt vom erweiterten Prüflauf gefunden
+     (E-039). */
+  background: linear-gradient(160deg, var(--knopf-auszeichnung-hell), var(--knopf-auszeichnung-mitte) 55%, var(--knopf-auszeichnung-tief));
   color: var(--auf-auszeichnung);
 }
 
@@ -1531,7 +1632,28 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .badge-tile .b-name { font-size: 13px; font-weight: 800; }
 .badge-tile .b-desc { font-size: 11.5px; color: var(--text-faint); line-height: 1.4; }
 
-.slider { width: 100%; accent-color: var(--auszeichnung); }
+.slider {
+  width: 100%;
+  accent-color: var(--auszeichnung);
+  /* Die Bahn ist 16 Pixel hoch, der Griff etwas größer — beides zu wenig,
+     um zuverlässig getroffen zu werden. Die Höhe kommt aus der Regel. */
+  min-height: var(--tipp-min);
+}
+
+/* Ein Kontrollkästchen ist 13 × 18 Pixel groß, egal was man ihm sagt. Was
+   sich vergrößern lässt, ist die Fläche, die auf es zeigt: die Beschriftung
+   daneben. */
+label:has(> input[type="checkbox"]),
+label:has(> input[type="radio"]) {
+  min-height: var(--tipp-min);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  width: var(--sp-5);
+  height: var(--sp-5);
+  accent-color: var(--akzent);
+}
 
 .range-legend {
   display: flex;
@@ -2026,7 +2148,9 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   min-height: var(--drill-bedienung-h);
   /* Oben ausgeblendet, unten deckend: So sieht man, dass darüber Text
      weitergeht, statt ihn blass durch die Leiste schimmern zu sehen. */
-  background: linear-gradient(to bottom, rgba(9, 13, 11, 0), rgba(9, 13, 11, 0.98) 24px);
+  /* Aus dem Seitengrund, nicht fest dunkel: Im hellen Modus stand die
+     Leiste sonst dunkel unter hellem Text — „Teilen" kam auf 2,33 zu 1. */
+  background: linear-gradient(to bottom, transparent, var(--bg) 24px);
 }
 
 @media (max-width: 920px) {
@@ -2100,11 +2224,15 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   justify-content: center;
   /* Fest, nicht relativ: Neben der großen Ergebniszahl würde ein `em`-Maß
      das Zeichen auf Daumengröße aufblasen. */
+  /* Das Zeichen bleibt klein — die Bedienfläche darum herum nicht. Ein
+     26 Pixel großes Ziel trifft niemand zuverlässig; die Polsterung macht
+     daraus eine Fingerbreite, ohne das Bild aufzublasen. */
   width: 26px;
   height: 26px;
-  margin-left: 5px;
+  box-sizing: content-box;
+  padding: calc((var(--tipp-min) - 26px) / 2);
+  margin-left: calc(5px - (var(--tipp-min) - 26px) / 2);
   vertical-align: middle;
-  padding: 0;
   border: 0;
   border-radius: var(--radius-pill);
   background: transparent;
@@ -2378,9 +2506,20 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
      und eine bildschirmhohe Startseite wäre dort eine leere Fläche mit drei
      Karten darin. */
   .main:has(.start),
-  .main:has(.drill) {
+  .main:has(.drill),
+  .main:has(.entscheidung-leiste) {
     display: flex;
     flex-direction: column;
+  }
+
+  /* Die Seite mit Entscheidungsleiste bekommt die Höhe des Hauptbereichs
+     weitergereicht, damit `margin-top: auto` an der Leiste etwas zu
+     verteilen hat. */
+  .main:has(.entscheidung-leiste) > * {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   /* Der Drill sitzt in einem eigenen Rahmen der Seitenkomponente, die
@@ -2481,6 +2620,321 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
    ohnehin zu sagen hat, und wird dadurch zugleich ein kürzerer Weg (E-035).
    Keine dekorativen Abbildungen: Sie füllen Fläche, ohne etwas auszusagen. */
 
+/* Ein Kopf, eine Zeile: Der Tisch soll die Höhe bekommen, nicht die
+   Überschrift. */
+.tisch-kopf {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-3);
+}
+
+.tisch-kopf .btn.sm.ghost { margin-left: auto; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Der Übungstisch als Spielansicht (E-040)
+   ═══════════════════════════════════════════════════════════════════════
+   Drei Bänder übereinander statt Prozentkoordinaten. Vorher hingen die
+   Sitze an `top: y%` und wuchsen nach unten aus sich heraus — der obere
+   Sitz legte sich bei fünf Gegnern über Flop und River. Ein Band kann das
+   nicht: Es hat seine eigene Zeile, und die Zeile daneben auch. */
+.filz {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-3) var(--sp-3);
+  border-radius: 28px;
+  /* Ein Filz mit Rand, wie ein Tisch ihn hat: dunkles Holz außen, Tuch
+     innen, ein feiner Lichtsaum dazwischen. */
+  background:
+    radial-gradient(ellipse at 50% 38%,
+      var(--flaeche-tisch-hell) 0%, var(--flaeche-tisch) 54%, var(--flaeche-tisch-tief) 100%);
+  border: 10px solid #241509;
+  outline: 1.5px solid var(--auszeichnung-a28);
+  outline-offset: -11px;
+  box-shadow:
+    var(--shadow),
+    inset 0 0 70px rgba(0, 0, 0, 0.42),
+    inset 0 2px 18px rgba(255, 255, 255, 0.06);
+  /* Der Tisch nimmt die Höhe, die die Seite übrig lässt (Regel 10.4) —
+     keine hingeschriebenen 380 Pixel mehr. */
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-bottom: var(--sp-4);
+}
+
+/* ── Band 1: die Gegner ──────────────────────────────────────────────── */
+.filz-gegner {
+  display: grid;
+  /* Zeilenabstand größer als der Spaltenabstand: Der Einsatz-Chip hängt
+     unter dem Sitz heraus, und bei zwei Reihen stieße er sonst an die
+     Sitze darunter. */
+  gap: var(--sp-6) var(--sp-2);
+  align-items: start;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+}
+
+/* Bei fünf Gegnern nebeneinander bliebe jedem eine halbe Kartenbreite.
+   Drei oben, zwei darunter — das ist die Anordnung, die ein Sechser-Tisch
+   auf einem Handy verträgt. */
+.filz-gegner[data-anzahl="5"],
+.filz-gegner[data-anzahl="4"] {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.sitz {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  padding: var(--sp-2);
+  border-radius: var(--radius);
+  background: var(--scrim-strong);
+  border: 1px solid var(--border-strong);
+  transition: opacity 0.25s, border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Wer gerade dran ist, bekommt einen Ring — nicht nur eine andere Schrift:
+   Am Tisch sucht man den Blick, nicht den Text. */
+.sitz.dran {
+  border-color: var(--auszeichnung);
+  box-shadow: 0 0 0 2px var(--auszeichnung-a40);
+}
+
+.sitz.weg { opacity: 0.45; }
+
+.sitz-kopf {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.sitz-name {
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sitz-karten { min-height: 49px; display: flex; align-items: center; }
+
+.sitz-weg {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sitz-fuss {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  font-size: var(--fs-kleingedrucktes);
+  font-variant-numeric: var(--ziffern);
+}
+
+.sitz-stapel { font-weight: var(--fw-bold); color: var(--auszeichnung-lesbar); }
+.sitz-lage { color: var(--text-dim); }
+
+/* Der Einsatz liegt vor dem Sitz, wie die Chips vor dem Spieler. */
+.sitz-einsatz {
+  position: absolute;
+  bottom: calc(var(--sp-4) * -1);
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--scrim-strong);
+  border: 1px solid var(--auszeichnung-a40);
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  color: var(--auszeichnung-lesbar);
+  font-variant-numeric: var(--ziffern);
+  white-space: nowrap;
+}
+
+/* ── Band 2: Topf und Board ──────────────────────────────────────────── */
+.filz-mitte {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+
+.topf {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--scrim-strong);
+  border: 1px solid var(--auszeichnung-a30);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-kleingedrucktes);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--auszeichnung-lesbar);
+  font-variant-numeric: var(--ziffern);
+}
+
+/* Wer gewonnen hat — in der Tischmitte, wo man hinsieht. */
+.filz-ergebnis {
+  text-align: center;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-stark);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius);
+  background: var(--scrim-strong);
+  border: 1px solid var(--border-strong);
+  max-width: 100%;
+}
+
+.filz-ergebnis .gewonnen {
+  color: var(--auszeichnung-lesbar);
+  font-size: var(--fs-fliesstext);
+}
+
+.board {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+  justify-content: center;
+}
+
+/* Der leere Platz: An einem echten Tisch sieht man, wie viele Karten noch
+   kommen. Ein Board, das nur zeigt, was schon liegt, verschweigt das. */
+.board-platz {
+  width: 48px;
+  height: 67px;
+  border-radius: 7px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* ── Band 3: der Held ────────────────────────────────────────────────── */
+.filz-du {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius);
+  background: var(--scrim-strong);
+  border: 1px solid var(--border-strong);
+}
+
+.filz-du.dran {
+  border-color: var(--akzent);
+  box-shadow: 0 0 0 2px var(--akzent-dim);
+}
+
+.du-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.du-name {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.du-stapel {
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  color: var(--auszeichnung-lesbar);
+  font-variant-numeric: var(--ziffern);
+}
+
+.du-lage { font-size: var(--fs-kleingedrucktes); color: var(--text-dim); }
+
+/* ── Wer dran ist ────────────────────────────────────────────────────── */
+.filz-zug {
+  text-align: center;
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-stark);
+}
+
+/* Die Erhöhen-Auswahl sitzt direkt über der Entscheidungsleiste. */
+.erhoehen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tipp-abstand);
+  justify-content: center;
+  margin-top: var(--sp-3);
+}
+
+/* ── Die Entscheidungsleiste (E-039) ──────────────────────────────────
+   Auf jedem Übungsbildschirm an derselben Stelle: unten, im Daumenbereich,
+   über dem Gestenstreifen. Sie klebt, weil zwei Übungen länger sind als ein
+   Bildschirm — eine mitscrollende Leiste wäre dort mal erreichbar und mal
+   nicht. */
+.entscheidung-leiste {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  /* `auto` statt eines Abstands: Ist die Seite kürzer als der Bildschirm,
+     schiebt der freie Platz die Leiste nach unten, statt sie im Textfluss
+     enden zu lassen — sonst stünde sie mitten auf der Fläche und darunter
+     wäre Leerraum. Ist die Seite länger, greift `sticky`. Beides ohne eine
+     hingeschriebene Höhe (Regel 10.4). */
+  margin-top: auto;
+  /* Der Streifen läuft bis an die Ränder des Hauptbereichs, damit darunter
+     nichts durchscheint, während Inhalt vorbeiscrollt. */
+  margin-left: calc(var(--sp-4) * -1);
+  margin-right: calc(var(--sp-4) * -1);
+  padding: var(--sp-3) var(--sp-4) calc(var(--sp-3) + var(--gestenstreifen));
+  background: var(--bg-deep);
+  border-top: 1px solid var(--border);
+}
+
+.entscheidung-leiste .entscheidung-innen {
+  display: flex;
+  gap: var(--tipp-abstand);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* Volle Breite statt nebeneinander gedrängt: Ein Knopf, der die Zeile
+   teilt, ist am Rand schlechter zu treffen als einer, der sie füllt. */
+.entscheidung-leiste .entscheidung-innen > * {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: calc(var(--tipp-min) + var(--sp-3));
+}
+
+/* Viele Möglichkeiten (Handranking hat sieben Kategorien) passen nicht in
+   eine Zeile. Dann bricht die Leiste um, statt die Knöpfe unter die
+   Mindestgröße zu drücken. */
+.entscheidung-leiste .entscheidung-innen.viele {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+}
+
+.entscheidung-leiste .entscheidung-innen.viele > * { min-height: var(--tipp-min); }
+
 /* ── Der Übungsstand über jedem Trainer (E-038) ───────────────────────
    Die Serie ist die Hauptzahl: Sie ist das Einzige, was man beim nächsten
    Antippen verlieren kann. */
@@ -2522,7 +2976,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-kleingedrucktes);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-dim);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2576,7 +3030,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-kleingedrucktes);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-dim);
 }
 
 .rangstand .titel {
@@ -2598,7 +3052,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
    zeigten (E-037). */
 .rangstand .dazu {
   font-size: var(--fs-kleingedrucktes);
-  color: var(--text-faint);
+  color: var(--text-dim);
   font-variant-numeric: var(--ziffern);
 }
 
@@ -2713,7 +3167,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .lernpfad .stufe-text .marken .zahl {
   font-size: var(--fs-kleingedrucktes);
-  color: var(--text-faint);
+  color: var(--text-dim);
   font-variant-numeric: var(--ziffern);
 }
 
@@ -2754,7 +3208,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-kleingedrucktes);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-dim);
 }
 
 .modulstand .titel {
@@ -2843,7 +3297,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .lektionen .text .meta {
   font-size: var(--fs-kleingedrucktes);
-  color: var(--text-faint);
+  color: var(--text-dim);
   font-variant-numeric: var(--ziffern);
 }
 
@@ -2996,7 +3450,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-kleingedrucktes);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-dim);
 }
 
 .heute-frage {
@@ -3162,7 +3616,11 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
    Karte selbst keiner mehr sein kann — sie enthält welche, und ein Link im
    Link ist kein gültiges HTML. */
 .start-kopf {
-  display: block;
+  /* Eine Überschrift, die ein Weg ist, ist eine Bedienfläche — und die
+     misst eine Fingerbreite. Gemessen waren es 17 Pixel. */
+  display: flex;
+  align-items: center;
+  min-height: var(--tipp-min);
   color: inherit;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
@@ -3219,7 +3677,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-kleingedrucktes);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-dim);
 }
 
 .start-lektion .name {
@@ -3305,7 +3763,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   font-size: var(--fs-kleingedrucktes);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-dim);
 }
 
 .start-abend .name {
@@ -3317,9 +3775,14 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 /* Der Weg auf die Bereichsübersicht, wenn der Knopf schon woandershin
    führt. Klein und unten: Er ist die Ausweichmöglichkeit, nicht das Ziel. */
 .start-mehr {
+  /* Auch der Ausweichweg ist ein Weg. Gemessen: 18 Pixel hoch. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tipp-min);
   margin-top: var(--sp-2);
   font-size: var(--fs-kleingedrucktes);
-  color: var(--text-faint);
+  color: var(--text-dim);
   text-decoration: none;
   text-align: center;
 }
@@ -3878,6 +4341,9 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .einrichten-knopf {
+  /* Die Höhe stimmte, die Breite nicht: gemessen 10 Pixel. Ein „−" in einer
+     Flexzeile ohne Mindestbreite schrumpft auf seinen Buchstaben. */
+  min-width: var(--tipp-min);
   min-height: calc(var(--tipp-min) + var(--sp-3));
   border-radius: var(--radius);
   border: 1px solid var(--border-strong);

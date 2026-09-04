@@ -4,6 +4,7 @@ import { CardsRow } from '../../components/PlayingCard';
 import { shuffledDeckWithout } from '../../lib/poker/cards';
 import { equityVsHands } from '../../lib/poker/equity';
 import { useAppState } from '../../state/AppState';
+import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/equitytrainer';
@@ -107,23 +108,24 @@ export function EquityTrainer() {
           <span className="big-stat" style={{ minWidth: 86, textAlign: 'right' }}>{L.pct(guess)}</span>
         </div>
 
-        {!revealed ? (
-          <button className="btn primary" style={{ marginTop: 12 }} onClick={reveal}>
-            {L.reveal}
-          </button>
-        ) : (
-          <>
-            <div className={`feedback-box ${good ? 'good' : 'bad'}`} style={{ marginTop: 12 }}>
-              <strong>{good ? L.correctFb : L.wrongFb}</strong>
-              {L.actualPrefix}<strong>{L.pct(equity)}</strong>
-              {L.resultDetail(guess, diff, 100 - equity)}
-            </div>
-            <button className="btn primary" style={{ marginTop: 14 }} onClick={next}>
-              {L.nextMatchup}
-            </button>
-          </>
+        {revealed && (
+          <div className={`feedback-box ${good ? 'good' : 'bad'}`} style={{ marginTop: 12 }}>
+            <strong>{good ? L.correctFb : L.wrongFb}</strong>
+            {L.actualPrefix}<strong>{L.pct(equity)}</strong>
+            {L.resultDetail(guess, diff, 100 - equity)}
+          </div>
         )}
       </div>
+
+      {/* Der Schieber bleibt oben — er gehört zur Aufgabe. Was den Schritt
+          auslöst, steht unten im Daumenbereich (E-039). */}
+      <Entscheidung label={L.title}>
+        {!revealed ? (
+          <button className="btn primary" onClick={reveal}>{L.reveal}</button>
+        ) : (
+          <button className="btn primary" onClick={next}>{L.nextMatchup}</button>
+        )}
+      </Entscheidung>
     </div>
   );
 }

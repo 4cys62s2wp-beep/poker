@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-09-03T20:27:49.821Z",
+  "geprueft_am": "2026-09-04T18:37:06.537Z",
   "breite": 390,
   "grenzwerte": {
     "kontrast_ergebnis": 7,
@@ -12,8 +12,8 @@
     "dunkel",
     "hell"
   ],
-  "bildschirme": 49,
-  "messungen": 98,
+  "bildschirme": 90,
+  "messungen": 180,
   "befunde_gesamt": 0,
   "stellen_gesamt": 0,
   "je_art": [],

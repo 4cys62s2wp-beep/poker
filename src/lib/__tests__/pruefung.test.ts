@@ -80,10 +80,22 @@ describe('Die Prüfung misst das Richtige', () => {
     expect(P.breite).toBeLessThanOrEqual(430);
   });
 
-  it('lässt keinen Bildschirm aus', () => {
-    const erwartet = WEGE.wege.filter((w) => w.inhalt).length;
+  it('lässt keinen Bildschirm aus — wirklich keinen', () => {
+    /* Hier stand `filter((w) => w.inhalt)`, und `inhalt: true` heißt in
+       `wege.json` „ist eine Lektion", nicht „ist ein Bildschirm". Der Lauf
+       meldete brav „49 Bildschirme geprüft" und hatte dabei keinen einzigen
+       Trainer gesehen, keine Startseite, keinen Tisch — und der Test
+       bestätigte ihm die 49. Zwei Stellen, die dieselbe falsche Annahme
+       teilten, prüfen einander nicht.
+
+       Beim Ausweiten auf alle 90 Adressen kamen 3661 Befunde ans Licht,
+       darunter der ganze Live-Bereich mit dunkler Schrift auf dunklem
+       Grund (1,02 zu 1). Siehe E-039. */
     expect(P.bildschirme, 'Nach einem neuen Bildschirm `npm run pruefen` erneut ausführen')
-      .toBe(erwartet);
+      .toBe(WEGE.wege.length);
+    /* Und die Gegenprobe zur alten Annahme: Es gibt mehr Bildschirme als
+       Lektionen. Wer den Filter zurückholt, sieht es hier. */
+    expect(WEGE.wege.length).toBeGreaterThan(WEGE.wege.filter((w) => w.inhalt).length);
   });
 
   it('misst beide Farbmodi, nicht nur den eingestellten', () => {

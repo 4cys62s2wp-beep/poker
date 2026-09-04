@@ -141,7 +141,7 @@ export function BankrollTracker() {
             <div className="card">
               <div className="stat-label">{L.statBestWorst}</div>
               <div style={{ fontWeight: 700, color: 'var(--ok)' }}>{euro(stats.best)}</div>
-              <div style={{ fontWeight: 700, color: 'var(--danger)' }}>{euro(stats.worst)}</div>
+              <div style={{ fontWeight: 700, color: 'var(--danger-lesbar)' }}>{euro(stats.worst)}</div>
             </div>
           </div>
 

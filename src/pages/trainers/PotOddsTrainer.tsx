@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppState } from '../../state/AppState';
+import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/potoddstrainer';
@@ -87,7 +88,7 @@ export function PotOddsTrainer() {
           </div>
           <div>
             <div className="stat-label">{L.betLabel}</div>
-            <div className="big-stat" style={{ color: 'var(--danger)' }}>{bet}</div>
+            <div className="big-stat" style={{ color: 'var(--danger-lesbar)' }}>{bet}</div>
           </div>
           <div>
             <div className="stat-label">{L.callLabel}</div>
@@ -101,19 +102,22 @@ export function PotOddsTrainer() {
           {L.questionAfter}
         </p>
 
-        {problem.options.map((opt, i) => {
-          let cls = 'quiz-option';
-          if (answered) {
-            if (i === problem.correctIndex) cls += ' correct';
-            else if (i === selected) cls += ' wrong';
-            else cls += ' dimmed';
-          }
-          return (
-            <button key={i} className={cls} onClick={() => choose(i)} disabled={answered}>
-              {L.option(opt)}
-            </button>
-          );
-        })}
+        {/* Nach der Antwort stehen die Möglichkeiten hier als Übersicht:
+            Sie sind dann keine Knöpfe mehr, sondern das Ergebnis. Vorher
+            stehen sie unten in der Entscheidungsleiste (E-039). */}
+        {answered && (
+          <div className="wahlbilanz">
+            {problem.options.map((opt, i) => (
+              <div
+                key={i}
+                className={`wahl${i === problem.correctIndex ? ' richtig'
+                  : i === selected ? ' falsch' : ' blass'}`}
+              >
+                {L.option(opt)}
+              </div>
+            ))}
+          </div>
+        )}
 
         {answered && (
           <>
@@ -122,12 +126,21 @@ export function PotOddsTrainer() {
               {L.calc(bet, pot, totalAfterCall)}<strong>{L.requiredPct(problem.required)}</strong>.
               {' '}{L.mnemonic}
             </div>
-            <button className="btn primary" style={{ marginTop: 14 }} onClick={next}>
-              {L.nextProblem}
-            </button>
           </>
         )}
       </div>
+
+      <Entscheidung label={L.title} viele={!answered}>
+        {!answered ? (
+          problem.options.map((opt, i) => (
+            <button key={i} className="quiz-option" onClick={() => choose(i)}>
+              {L.option(opt)}
+            </button>
+          ))
+        ) : (
+          <button className="btn primary" onClick={next}>{L.nextProblem}</button>
+        )}
+      </Entscheidung>
     </div>
   );
 }

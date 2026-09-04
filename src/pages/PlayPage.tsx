@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
 import { BackLink } from '../components/ui';
+import { Entscheidung } from '../components/Entscheidung';
 import { createHandTracker, type HandTracker } from '../lib/poker/stats';
-import { CardsRow } from '../components/PlayingCard';
+import { CardsRow, PlayingCard } from '../components/PlayingCard';
 import { IconTile } from '../components/Icon';
 import { BOT_PROFILES, decideBotAction, positionOf, type BotStyle } from '../lib/poker/ai';
 import { categoryNameIn, evaluateBest } from '../lib/poker/evaluator';
@@ -274,7 +275,8 @@ export function PlayPage() {
                 }
                 setCoachMode(e.target.checked);
               }}
-              style={{ width: 18, height: 18, accentColor: 'var(--auszeichnung)' }}
+              /* Größe kommt aus global.css, nicht von hier: 18 Pixel sind
+                 keine Bedienfläche (E-039). */
             />
             <div>
               <div className="row" style={{ fontWeight: 700 }}>
@@ -343,111 +345,131 @@ export function PlayPage() {
 
   return (
     <div>
-      <div className="row between wrap" style={{ marginBottom: 14 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 750 }}>{L.tableTitle}</h1>
-        <div className="row">
-          <span className="pill">{L.handPill(g.handNumber)}</span>
-          <span className="pill gold">{L.streetLabel[g.street]}</span>
-          <button
-            className="btn sm ghost"
-            onClick={() => {
-              setNumOpponents(null);
-              gameRef.current = null;
-            }}
-          >
-            {L.leaveTable}
-          </button>
-        </div>
+      {/* Ein Kopf, eine Zeile: Der Tisch soll die Höhe bekommen, nicht die
+          Überschrift (E-040). */}
+      <div className="tisch-kopf">
+        <span className="pill">{L.handPill(g.handNumber)}</span>
+        <span className="pill gold">{L.streetLabel[g.street]}</span>
+        <button className="btn sm ghost" onClick={() => { setNumOpponents(null); gameRef.current = null; }}>
+          {L.leaveTable}
+        </button>
       </div>
 
-      <div className="table-felt" style={{ marginBottom: 16, height: 380, position: 'relative' }}>
-        {/* Board & Pot in der Mitte */}
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '42%',
-            transform: 'translate(-50%, -50%)',
-            textAlign: 'center',
-          }}
-        >
-          {g.board.length > 0 ? (
-            <CardsRow cards={g.board} />
-          ) : (
-            <div className="small" style={{ color: 'rgba(255,255,255,0.5)' }}>♠ PokerMentor ♠</div>
-          )}
-          <div className="chip-bet" style={{ marginTop: 10 }}>
-            <span className="chip-dot" /> {L.potLabel}: {pot > 0 ? pot : g.handOver ? g.awards.reduce((s, a) => s + a.amount, 0) : 0}
-          </div>
-        </div>
-
-        {/* Sitze */}
-        {g.players.map((p, i) => {
-          const posLayout = layout[i];
-          const isButton = g.buttonIndex === i;
-          const acting = !g.handOver && g.toActIndex === i;
-          const posName = positionOf(g, i);
-          return (
+      {/* ── Der Filz ──────────────────────────────────────────────────────
+          Drei Bänder übereinander, nicht Prozentkoordinaten (E-040). Vorher
+          hingen die Sitze an `top: y%` und wuchsen nach unten — der obere
+          Sitz legte sich bei fünf Gegnern über Flop und River. Bänder können
+          sich nicht überlappen; das ist der Unterschied zwischen einer
+          Zahl, die man nachstellt, und einer Anordnung, die den Fehler nicht
+          zulässt. */}
+      <div className="filz">
+        <div className="filz-gegner" data-anzahl={g.players.length - 1}>
+          {g.players.map((p, i) => (p.isHero ? null : (
             <div
               key={p.id}
-              style={{
-                position: 'absolute',
-                left: `${posLayout.x}%`,
-                top: `${posLayout.y}%`,
-                transform: 'translate(-50%, 0)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 5,
-              }}
+              className={`sitz${p.folded ? ' weg' : ''}${!g.handOver && g.toActIndex === i ? ' dran' : ''}`}
             >
-              <div className={`seat${p.folded ? ' folded' : ''}${acting ? ' acting' : ''}`}>
-                <div className="name">
-                  {p.name} {isButton && <span className="dealer-btn">D</span>}
-                </div>
-                <div className="stack">{L.chipsAmount(p.stack)}</div>
-                <div className="tag">
-                  {posName}
-                  {!p.isHero && ` · ${L.styleLabel[BOT_STYLES[p.id - 1]]}`}
-                </div>
-                <div style={{ marginTop: 5, display: 'flex', justifyContent: 'center' }}>
-                  {p.isHero || p.revealed ? (
-                    <CardsRow cards={p.cards} size="sm" />
-                  ) : p.folded ? (
-                    <span className="small faint">{L.foldedTag}</span>
-                  ) : (
-                    <CardsRow cards={[undefined, undefined]} size="sm" />
-                  )}
-                </div>
+              <div className="sitz-kopf">
+                <span className="sitz-name">{p.name}</span>
+                {g.buttonIndex === i && (
+                  <span className="dealer-btn" title={L.dealerLang} aria-label={L.dealerLang}>
+                    {L.dealerKurz}
+                  </span>
+                )}
+              </div>
+              <div className="sitz-karten">
+                {p.revealed ? (
+                  <CardsRow cards={p.cards} size="sm" />
+                ) : p.folded ? (
+                  <span className="sitz-weg">{L.foldedTag}</span>
+                ) : (
+                  <CardsRow cards={[undefined, undefined]} size="sm" />
+                )}
+              </div>
+              <div className="sitz-fuss">
+                <span className="sitz-stapel" aria-label={L.stapelVon(p.name, p.stack)}>{p.stack}</span>
+                <span className="sitz-lage">{positionOf(g, i)}</span>
               </div>
               {p.bet > 0 && (
-                <span className="chip-bet">
-                  <span className="chip-dot" /> {p.bet}
+                <span className="sitz-einsatz" aria-label={L.einsatzVon(p.bet)}>
+                  <span className="chip-dot" />{p.bet}
                 </span>
               )}
             </div>
-          );
-        })}
-      </div>
+          )))}
+        </div>
 
-      {/* Gewinner-Anzeige */}
-      {g.handOver && lastAward && (
-        <div className="card" style={{ marginBottom: 14, borderColor: 'rgba(217,180,91,0.4)' }}>
-          {lastAward.map((a, i) => {
-            const p = g.players.find((pl) => pl.id === a.playerId)!;
-            return (
-              <div key={i} style={{ fontWeight: 700 }}>
-                {L.winnerLine(p.isHero, p.name, a.amount, a.handName)}
-              </div>
-            );
-          })}
-          <div className="row wrap" style={{ marginTop: 12 }}>
-            <button className="btn primary" onClick={() => startHand()}>
-              {L.nextHand}
-            </button>
-            {freeLeft && <span className="small faint">{freeLeft}</span>}
+        {/* Die Mitte: Topf und Board. Eigenes Band, das nichts überdeckt. */}
+        <div className="filz-mitte">
+          <span className="topf">
+            <span className="chip-dot" />
+            {L.potLabel} {pot > 0 ? pot : g.handOver ? g.awards.reduce((s2, a2) => s2 + a2.amount, 0) : 0}
+          </span>
+          {/* Fünf Plätze, immer. Die noch nicht ausgeteilten stehen als
+              leere Umrisse da — an einem echten Tisch sieht man auch, wie
+              viele Karten noch kommen. */}
+          {/* Beim Showdown steht hier, wer gewonnen hat — in der Mitte des
+              Tisches, nicht unterhalb des Bildrands. Es ist die Auskunft,
+              auf die man gewartet hat. */}
+          {g.handOver && lastAward && (
+            <div className="filz-ergebnis" role="status">
+              {lastAward.map((a, i) => {
+                const p2 = g.players.find((pl) => pl.id === a.playerId)!;
+                return (
+                  <div key={i} className={p2.isHero ? 'gewonnen' : ''}>
+                    {L.winnerLine(p2.isHero, p2.name, a.amount, a.handName)}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          <div className="board" aria-label={L.boardOffen}>
+            {[0, 1, 2, 3, 4].map((i) => (
+              g.board[i] !== undefined
+                ? <PlayingCard key={i} card={g.board[i]} size="md" />
+                : <span key={i} className="board-platz" aria-hidden="true" />
+            ))}
           </div>
         </div>
+
+        {/* Der Held unten, im Daumenbereich — mit großen Karten. */}
+        <div className={`filz-du${heroTurn ? ' dran' : ''}`}>
+          <div className="du-karten">
+            {/* Die eigene Hand ist das, worum es geht — sie ist die größte
+                Darstellung auf dem Tisch (Regel 10.8). */}
+            <CardsRow cards={g.players[0].cards} size="xl" />
+          </div>
+          <div className="du-text">
+            <span className="du-name">
+              {L.duLabel}
+              {g.buttonIndex === 0 && (
+                <span className="dealer-btn" title={L.dealerLang} aria-label={L.dealerLang}>
+                  {L.dealerKurz}
+                </span>
+              )}
+            </span>
+            <span className="du-stapel">{L.chipsAmount(g.players[0].stack)}</span>
+            <span className="du-lage">{positionOf(g, 0)}</span>
+          </div>
+          {g.players[0].bet > 0 && (
+            <span className="sitz-einsatz" aria-label={L.einsatzVon(g.players[0].bet)}>
+              <span className="chip-dot" />{g.players[0].bet}
+            </span>
+          )}
+        </div>
+
+        {/* Wer gerade dran ist — eine Zeile, damit man nicht raten muss. */}
+        {!g.handOver && (
+          <div className="filz-zug" aria-live="polite">
+            {heroTurn ? L.amZug : L.wartetAuf(g.players[g.toActIndex]?.name ?? '')}
+          </div>
+        )}
+      </div>
+
+      {/* Die Gewinnerzeile steht in der Tischmitte (siehe oben). Hier bleibt
+          nur der Hinweis auf die freien Hände. */}
+      {g.handOver && freeLeft && (
+        <p className="small faint" style={{ marginBottom: 14 }}>{freeLeft}</p>
       )}
 
       {/* Coach-Panel */}
@@ -476,10 +498,22 @@ export function PlayPage() {
         </div>
       )}
 
-      {/* Aktions-Buttons */}
+      {/* ── Die Entscheidung: unten, im Daumenbereich (E-039/E-040) ────
+          Vorher lagen die Knöpfe in einer Karte mitten im Textfluss, und
+          bei offenem Erhöhen-Feld noch weiter unten. Jetzt an derselben
+          Stelle wie in jedem Trainer. */}
       {heroTurn && la && (
-        <div className="card">
-          <div className="row wrap">
+        <>
+          {showRaisePanel && la.canBetOrRaise && (
+            <div className="erhoehen">
+              <button className="btn sm" onClick={() => raiseTo('min')}>{L.minRaise(la.minRaiseTo)}</button>
+              <button className="btn sm" onClick={() => raiseTo(0.5)}>{L.halfPot}</button>
+              <button className="btn sm" onClick={() => raiseTo(0.75)}>{L.threeQuarterPot}</button>
+              <button className="btn sm" onClick={() => raiseTo(1)}>{L.fullPot}</button>
+              <button className="btn sm danger" onClick={() => raiseTo('allin')}>{L.allIn(la.maxRaiseTo)}</button>
+            </div>
+          )}
+          <Entscheidung label={L.tableTitle}>
             {la.canFold && (
               <button className="btn danger lg" onClick={() => heroAct({ type: 'fold' })}>
                 {L.fold}
@@ -495,21 +529,19 @@ export function PlayPage() {
               </button>
             )}
             {la.canBetOrRaise && (
-              <button className="btn primary lg" onClick={() => setShowRaisePanel((s) => !s)}>
+              <button className="btn primary lg" onClick={() => setShowRaisePanel((s2) => !s2)}>
                 {g.currentBet === 0 ? L.bet : L.raise} …
               </button>
             )}
-          </div>
-          {showRaisePanel && la.canBetOrRaise && (
-            <div className="row wrap" style={{ marginTop: 12 }}>
-              <button className="btn sm" onClick={() => raiseTo('min')}>{L.minRaise(la.minRaiseTo)}</button>
-              <button className="btn sm" onClick={() => raiseTo(0.5)}>{L.halfPot}</button>
-              <button className="btn sm" onClick={() => raiseTo(0.75)}>{L.threeQuarterPot}</button>
-              <button className="btn sm" onClick={() => raiseTo(1)}>{L.fullPot}</button>
-              <button className="btn sm danger" onClick={() => raiseTo('allin')}>{L.allIn(la.maxRaiseTo)}</button>
-            </div>
-          )}
-        </div>
+          </Entscheidung>
+        </>
+      )}
+
+      {/* Nach der Hand führt genau ein Knopf weiter — an derselben Stelle. */}
+      {g.handOver && (
+        <Entscheidung label={L.tableTitle}>
+          <button className="btn primary lg" onClick={() => startHand()}>{L.nextHand}</button>
+        </Entscheidung>
       )}
 
       {!heroTurn && !g.handOver && (

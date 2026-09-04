@@ -1709,3 +1709,197 @@ laut wird.
   sieben Kategorien, Pot-Odds wegen der Formelzeile).
 - Ein neu verdientes Abzeichen meldet sich als Hinweis, die Sammlung im
   Profil feiert es nicht.
+
+---
+
+## E-039 · 2026-09-04 · Der Prüflauf sah zwei Jahre lang denselben Seitentyp
+
+**Stand:** entschieden und umgesetzt.
+
+**Der Anlass.** Die Bitte, alles noch einmal durchzusehen und „bis es
+wirklich perfekt läuft" zu optimieren — ausdrücklich auch die Knöpfe.
+
+### Der Befund, der alles andere nach sich zog
+
+`npm run pruefen` meldete seit Monaten „49 Bildschirme in 2 Modi geprüft, 0
+Befunde". Die Zeile, die die Bildschirme auswählt, lautete:
+
+```js
+const bildschirme = wege.wege.filter((w) => w.inhalt).map((w) => w.hash);
+```
+
+`inhalt: true` bedeutet in `wege.json` aber **„ist eine Lektion"**, nicht
+„ist ein Bildschirm". Der Lauf hat also 49 Lektionsseiten geprüft — und
+keinen einzigen Trainer, keine Startseite, keinen Tisch, kein Profil. Der
+Test daneben bestätigte ihm die 49, weil er dieselbe Zeile noch einmal
+schrieb.
+
+**Zwei Stellen, die dieselbe falsche Annahme teilen, prüfen einander nicht.**
+
+Auf alle 90 Adressen ausgeweitet: **3661 Befunde an 97 Stellen.**
+
+### Was darin steckte
+
+**Der ganze Live-Bereich war im hellen Modus praktisch unlesbar.** Gemessen
+1,02 zu 1 bei „Abend führen", 1,20 bei den Überschriften — dunkle Schrift
+auf dunklem Grund.
+
+Die Ursache ist lehrreich: `body { color: var(--text) }` wird **einmal**
+aufgelöst, auf dem body, mit dem Satz, der dort gilt. Der Live-Bereich
+schaltet weiter unten `data-modus="dunkel"` und ändert damit die Variable —
+aber nicht die schon aufgelöste Farbe. Alles darin, was keine eigene Farbe
+setzt, erbt weiter die helle.
+
+Behoben mit einer Regel, die am Attribut hängt statt an einer Klasse, damit
+sie auch für die nächste Stelle gilt, die den Satz wechselt:
+
+```css
+[data-modus] { color: var(--text); }
+```
+
+**Warum es nie auffiel:** Der Kontrastlauf sah nur Lektionen. Und der
+Durchgangsschritt „Der Live-Bereich bleibt dunkel, auch bei heller Wahl"
+prüfte die **Fläche**, nicht die **Schrift**.
+
+**Die Handmatrix hatte denselben Fehler:** eine fest verdrahtete dunkle
+Zellfläche mit `--text-faint` darauf — im hellen Modus 1,21 zu 1. Und die
+aktive Schaltfläche des segmentierten Umschalters nutzte `--auszeichnung` in
+ihrem Verlauf, das im hellen Modus dunkel wird: 2,76 zu 1. Genau der Fund
+aus E-034, beim Aufräumen an zwei Stellen übersehen.
+
+**Dazu:** hart geschriebene Dunkelmodus-Hexwerte in Komponenten (`#d8d5cb`,
+`#eda49f`, `#90d69c`, `#94bdea`, `#bda6e8`), Kennfarben von Personen als
+Schriftfarbe (1,83 bis 2,02), zu kleine Bedienflächen (der „−"-Knopf im
+Einrichten war **10 Pixel breit**), Kartenüberschriften auf der Startseite
+mit 17 Pixeln Höhe.
+
+**Ergebnis nach dem Aufräumen: 90 Bildschirme, 2 Modi, 180 Messungen, null
+Befunde.**
+
+### Der neue Lauf: `npm run daumen`
+
+Die vorhandenen Läufe messen, ob eine Bedienfläche groß genug ist und
+Kontrast hat. Beides kann stimmen, während der Knopf falsch sitzt: **Eine
+44 Pixel große Fläche in der Bildschirmmitte besteht jede dieser Prüfungen
+und ist einhändig trotzdem schlecht zu treffen.**
+
+`npm run daumen` misst, ob das, was man tun soll, dort liegt, wo der Daumen
+ist — auf jedem der 90 Bildschirme.
+
+**Gemessen wird an einer Auszeichnung, nicht an einer Heuristik.** Jeder
+Bildschirm, auf dem man antwortet, trägt seine Knöpfe in einem Element mit
+der Klasse `entscheidung`. Eine Regel, die „irgendwie erkennt", welcher
+Knopf wichtig ist, erkennt beim nächsten Bildschirm etwas anderes.
+
+**Die Leiste klebt.** Zwei Übungen sind länger als ein Bildschirm, und wie
+lang eine Szenario-Aufgabe wird, entscheidet der Zufall. Die erste Fassung
+der Regel lautete „ein Entscheidungsbildschirm scrollt nicht" — sie meldete
+zwei Trainer und beim nächsten Lauf andere Zahlen. **Eine Regel, deren
+Ergebnis vom Zufall abhängt, prüft nichts.** Jetzt gilt: Scrollen ist
+erlaubt, eine mitscrollende Leiste nicht.
+
+### Die Ausnahme für die Handmatrix, und ihr Preis
+
+169 Felder bei einer Fingerbreite je Feld wären 668 Pixel breit — auf einem
+390 Pixel breiten Gerät nicht mehr als Ganzes zu sehen. Als Ganzes gesehen
+zu werden ist aber ihr einziger Zweck.
+
+Sie ist deshalb von der Größen- und Abstandsregel ausgenommen — **unter
+einer Bedingung: Was über ein Diagramm erreichbar ist, muss auch ohne
+erreichbar sein.** Der Starthand-Explorer hat dafür eine zweite Auswahl
+bekommen: zwei Reihen Rangknöpfe und ein Umschalter für Suited/Offsuit, alle
+in Mindestgröße.
+
+Eine Ausnahme ohne Ausgleich wäre ein Freibrief.
+
+### Zwei Verfeinerungen an den Regeln selbst
+
+**Abstand zählt nur bei kleinen Zielen.** Der Abstand ist kein Selbstzweck,
+er ist der Ausgleich für zu kleine Ziele. Zwei Flächen, die beide eine
+Fingerbreite messen, darf man aneinanderlegen — so ist jede Tastatur gebaut.
+Ohne diese Bedingung meldete der Lauf 2442 Befunde, von denen keiner ein
+Fehlgriff war, und verdeckte damit die, die es waren.
+
+**Gemessen wird die Fläche, die den Klick annimmt.** Ein Kontrollkästchen
+ist 14 × 22 Pixel groß, und daran ändert kein Stilblatt etwas — der Browser
+zeichnet es selbst. Bedient wird es über sein `<label>`. Das ist keine
+Ausnahme, sondern die genauere Messung.
+
+### Eine Regression, die der Durchgang sofort meldete
+
+Als die Entscheidungsleiste auch am Pot-Odds-Drill hing, sprang dessen
+Antwortknopf um **24 Pixel** — die Zusage „zwischen Eingabe und Ergebnis
+bewegt sich nichts" war weg.
+
+Behoben, indem Marke und Bauart getrennt wurden: `entscheidung` sagt, **dass**
+hier entschieden wird (daran misst der Lauf); `entscheidung-leiste` ist
+**eine** Bauart davon. Der Drill trägt nur die erste, weil seine Höhenkette
+eine Zusage hält, die keine andere hält.
+
+---
+
+## E-040 · 2026-09-04 · Der Übungstisch wird eine Spielansicht
+
+**Stand:** entschieden und umgesetzt.
+
+**Der Anlass, im Wortlaut:** „Ich hab grad auf den Übungstisch geklickt. Er
+ist total schlecht gemacht. […] Dann, wenn man das spielt, dann ist auf
+einmal der obere Spieler überdeckt dann auf einmal den River oder den Flop."
+
+### Der Fehler war die Anordnung, nicht die Zahl
+
+Die Sitze standen an Prozentkoordinaten:
+
+```js
+6: [{ x: 50, y: 88 }, { x: 8, y: 62 }, { x: 12, y: 12 }, { x: 50, y: 2 }, …]
+```
+
+Jeder Sitz hing an seinem `top: y%` und **wuchs von dort nach unten aus sich
+heraus** — Name, Stapel, Position, zwei Karten. Der oberste Sitz begann bei
+2 % eines 380 Pixel hohen Filzes, also bei 8 Pixeln, und war rund 118 Pixel
+hoch. Das Board lag bei 42 %, also ab 135 Pixeln. Sobald ein Sitz eine Zeile
+mehr trug, lag er darüber.
+
+**Man hätte die Koordinate nachstellen können.** Das wäre eine Zahl gewesen,
+die auf eine andere Zahl abgestimmt ist — und die hält bis zur nächsten
+Änderung (DESIGN.md 10.4).
+
+**Stattdessen: drei Bänder untereinander.** Gegner, Mitte, eigene Hand. Ein
+Band kann das Band daneben nicht überdecken; das ist keine Einstellung,
+sondern eine Eigenschaft der Anordnung.
+
+### Was daraus eine Spielansicht macht
+
+- **Fünf Board-Plätze, immer.** Die noch nicht ausgeteilten stehen als leere
+  Umrisse da — an einem echten Tisch sieht man, wie viele Karten noch
+  kommen. Vorher zeigte das Board nur, was schon lag.
+- **Die eigene Hand ist die größte Darstellung** auf dem Tisch: 96 Pixel
+  gegen 28 bei den verdeckten Karten der Gegner. Sie ist der Gegenstand
+  (Regel 10.8).
+- **Der Filz nimmt die Höhe, die die Seite übrig lässt** — keine
+  hingeschriebenen 380 Pixel mehr.
+- **Wer dran ist, hat einen Ring**, nicht nur eine andere Schrift: Am Tisch
+  sucht man den Blick, nicht den Text.
+- **Der Einsatz liegt vor dem Sitz**, wie die Chips vor dem Spieler.
+- **Beim Showdown steht in der Tischmitte, wer gewonnen hat.** Vorher stand
+  das unterhalb des Bildrands — die Auskunft, auf die man gewartet hat.
+- **Die Aktionsknöpfe liegen in der Entscheidungsleiste** (E-039), unten im
+  Daumenbereich, an derselben Stelle wie in jedem Trainer.
+
+### Bei fünf Gegnern drei oben, zwei darunter
+
+Nebeneinander blieben jedem 78 Pixel — eine halbe Kartenbreite. Zwei Reihen
+sind die Anordnung, die ein Sechser-Tisch auf einem Handy verträgt.
+
+Der Einsatz-Chip hängt unter dem Sitz heraus; deshalb ist der Zeilenabstand
+größer als der Spaltenabstand. Ohne das stieß er an die Sitze darunter — der
+kleine Bruder desselben Fehlers.
+
+### Was der Durchgang jetzt festhält
+
+Nicht die Anordnung, sondern ihre Folge: kein Sitz schneidet das Board, kein
+Sitz die eigene Hand, beide ohne Scrollen sichtbar, fünf Board-Plätze, die
+eigene Hand mehr als doppelt so breit wie eine Gegnerkarte, die Entscheidung
+im Daumenbereich.
+
+**Eine neue Anordnung, die denselben Fehler macht, fällt dort auf.**

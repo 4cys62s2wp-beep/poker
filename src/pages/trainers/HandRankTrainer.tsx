@@ -4,6 +4,7 @@ import { CardsRow } from '../../components/PlayingCard';
 import { shuffledDeckWithout } from '../../lib/poker/cards';
 import { categoryOf, evaluateBest } from '../../lib/poker/evaluator';
 import { useAppState } from '../../state/AppState';
+import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/handranktrainer';
@@ -83,34 +84,29 @@ export function HandRankTrainer() {
         <div className="stat-label" style={{ margin: '16px 0 6px' }}>{L.board}</div>
         <CardsRow cards={scenario.board} />
 
-        <div style={{ marginTop: 20 }}>
-          {options.map((cat) => {
-            let cls = 'quiz-option';
-            if (answered) {
-              if (cat === correctCategory) cls += ' correct';
-              else if (cat === selected) cls += ' wrong';
-              else cls += ' dimmed';
-            }
-            return (
-              <button key={cat} className={cls} onClick={() => choose(cat)} disabled={answered}>
-                {L.categories[cat]}
-              </button>
-            );
-          })}
-        </div>
-
         {answered && (
           <>
             <div className={`feedback-box ${selected === correctCategory ? 'good' : 'bad'}`}>
               <strong>{selected === correctCategory ? L.correctFb : L.wrongFb}</strong>
               {L.bestHandPrefix}<strong>{L.categories[correctCategory]}</strong>.
             </div>
-            <button className="btn primary" style={{ marginTop: 14 }} onClick={next}>
-              {L.nextHand}
-            </button>
           </>
         )}
       </div>
+
+      {/* Sieben Kategorien passen nicht in eine Zeile — die Leiste bricht um
+          (E-039). */}
+      <Entscheidung label={L.title} viele={!answered}>
+        {!answered ? (
+          options.map((cat) => (
+            <button key={cat} className="quiz-option" onClick={() => choose(cat)}>
+              {L.categories[cat]}
+            </button>
+          ))
+        ) : (
+          <button className="btn primary" onClick={next}>{L.nextHand}</button>
+        )}
+      </Entscheidung>
     </div>
   );
 }

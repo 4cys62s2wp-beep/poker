@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { CardsRow } from '../../components/PlayingCard';
 import { RANK_CHARS, makeCard } from '../../lib/poker/cards';
 import { useAppState } from '../../state/AppState';
+import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR, type OutsTemplateKey } from '../../i18n/pages/outstrainer';
@@ -168,21 +169,6 @@ export function OutsTrainer() {
 
         <p style={{ margin: '18px 0 12px', fontWeight: 600 }}>{L.questions[scenario.key]}</p>
 
-        <div className="row wrap">
-          {options.map((v) => {
-            let cls = 'btn lg';
-            if (answered) {
-              if (v === scenario.outs) cls += ' success';
-              else if (v === selected) cls += ' danger';
-            }
-            return (
-              <button key={v} className={cls} onClick={() => choose(v)} disabled={answered}>
-                {L.outsBtn(v)}
-              </button>
-            );
-          })}
-        </div>
-
         {answered && (
           <>
             <div className={`feedback-box ${selected === scenario.outs ? 'good' : 'bad'}`} style={{ marginTop: 16 }}>
@@ -192,12 +178,23 @@ export function OutsTrainer() {
                 {L.equityNote(Math.min(95, scenario.outs * 4))}
               </span>
             </div>
-            <button className="btn primary" style={{ marginTop: 14 }} onClick={next}>
-              {L.nextSituation}
-            </button>
           </>
         )}
       </div>
+
+      {/* Antworten und Weitermachen an derselben Stelle, unten im
+          Daumenbereich (E-039). */}
+      <Entscheidung label={L.title} viele={!answered}>
+        {!answered ? (
+          options.map((v) => (
+            <button key={v} className="btn lg" onClick={() => choose(v)}>
+              {L.outsBtn(v)}
+            </button>
+          ))
+        ) : (
+          <button className="btn primary" onClick={next}>{L.nextSituation}</button>
+        )}
+      </Entscheidung>
     </div>
   );
 }

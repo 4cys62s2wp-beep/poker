@@ -187,7 +187,10 @@ export function ProfilePage() {
                   style={{
                     width: 36, height: 36, borderRadius: '50%', display: 'inline-flex',
                     alignItems: 'center', justifyContent: 'center', fontWeight: 800,
-                    background: `${p.color}26`, color: p.color, border: `1.5px solid ${p.color}55`,
+                    /* Kennfarbe tönt, Textton schreibt — wie auf der
+                       Pro-Seite. Als Schriftfarbe kam sie im hellen Modus
+                       auf 1,83 zu 1. */
+                    background: `${p.color}26`, color: 'var(--text)', border: `1.5px solid ${p.color}55`,
                     flexShrink: 0,
                   }}
                 >

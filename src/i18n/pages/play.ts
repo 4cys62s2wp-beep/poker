@@ -82,6 +82,16 @@ export const STR = defineStrings(
     } as Record<Street, string>,
     leaveTable: 'Tisch verlassen',
     potLabel: 'Pot',
+    /* ── Der Tisch als Spielansicht (E-040) ─────────────────────────── */
+    duLabel: 'Du',
+    amZug: 'Du bist dran',
+    wartetAuf: (name: string) => `${name} ist dran`,
+    boardOffen: 'Noch nicht aufgedeckt',
+    einsatzVon: (n: number) => `Einsatz ${n}`,
+    dealerKurz: 'D',
+    dealerLang: 'Dealer-Knopf',
+    verdeckt: 'Verdeckte Karten',
+    stapelVon: (name: string, n: number) => `${name}: ${n} Chips`,
     chipsAmount: (n: number) => `${n} Chips`,
     foldedTag: 'Fold',
     winnerLine: (isHero: boolean, name: string, amount: number, handName?: string) =>
@@ -169,6 +179,16 @@ export const STR = defineStrings(
     } as Record<Street, string>,
     leaveTable: 'Leave table',
     potLabel: 'Pot',
+    /* ── The table as a game view (E-040) ───────────────────────────── */
+    duLabel: 'You',
+    amZug: 'Your turn',
+    wartetAuf: (name: string) => `${name} to act`,
+    boardOffen: 'Not dealt yet',
+    einsatzVon: (n: number) => `Bet ${n}`,
+    dealerKurz: 'D',
+    dealerLang: 'Dealer button',
+    verdeckt: 'Face-down cards',
+    stapelVon: (name: string, n: number) => `${name}: ${n} chips`,
     chipsAmount: (n: number) => `${n} chips`,
     foldedTag: 'Fold',
     winnerLine: (isHero: boolean, name: string, amount: number, handName?: string) =>

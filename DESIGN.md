@@ -740,6 +740,98 @@ die vereinfachten Nash-Ranges für 10bb und 5bb – ohne Antes." wurde
 
 ---
 
+## 9a. Was man tun soll, liegt dort, wo der Daumen ist
+
+Seit E-039. Gemessen mit `npm run daumen` über **alle** Bildschirme.
+
+### Regel 9a.1 — Jede Entscheidung liegt in der unteren Bildschirmhälfte
+
+Größe und Kontrast einer Bedienfläche sagen nichts über ihre Lage. Eine
+44 Pixel große Fläche in der Bildschirmmitte besteht jede andere Prüfung und
+ist einhändig trotzdem schlecht zu treffen.
+
+Jeder Bildschirm, auf dem man antwortet, trägt seine Knöpfe in einem Element
+mit der Klasse `entscheidung`. **Das ist eine Auszeichnung, keine
+Heuristik:** Wer eine Entscheidungsleiste baut, sagt es. Eine Regel, die
+„irgendwie erkennt", welcher Knopf wichtig ist, erkennt beim nächsten
+Bildschirm etwas anderes.
+
+`entscheidung` sagt, **dass** hier entschieden wird. `entscheidung-leiste`
+ist **eine** Bauart davon — die klebende Leiste. Der Pot-Odds-Drill trägt nur
+die erste: Seine Höhenkette hält die Zusage „zwischen Eingabe und Ergebnis
+bewegt sich nichts", und als beide Klassen an ihm hingen, sprang der
+Antwortknopf um 24 Pixel.
+
+### Regel 9a.2 — Die Leiste klebt, statt mitzuscrollen
+
+Zwei Übungen sind länger als ein Bildschirm, und wie lang eine
+Szenario-Aufgabe wird, entscheidet der Zufall.
+
+Die erste Fassung der Regel lautete „ein Entscheidungsbildschirm scrollt
+nicht". Sie meldete zwei Trainer und beim nächsten Lauf andere Zahlen. **Eine
+Regel, deren Ergebnis vom Zufall abhängt, prüft nichts.** Jetzt gilt:
+Scrollen ist erlaubt, eine mitscrollende Leiste nicht.
+
+### Regel 9a.3 — Abstand ist der Ausgleich für zu kleine Ziele
+
+Der Mindestabstand zwischen zwei Bedienflächen gilt nur, wenn mindestens eine
+davon unter der Mindestgröße liegt. Zwei Flächen, die beide eine Fingerbreite
+messen, darf man aneinanderlegen — so ist jede Tastatur gebaut.
+
+Ohne diese Bedingung meldete der Lauf 2442 Befunde, von denen keiner ein
+Fehlgriff war, und verdeckte damit die, die es waren.
+
+### Regel 9a.4 — Gemessen wird die Fläche, die den Klick annimmt
+
+Ein Kontrollkästchen ist 14 × 22 Pixel groß, und daran ändert kein Stilblatt
+etwas. Bedient wird es über sein `<label>`. Keine Ausnahme, sondern die
+genauere Messung.
+
+---
+
+## 9b. Der Prüflauf muss sagen, worüber er redet
+
+Seit E-039.
+
+`npm run pruefen` meldete monatelang „49 Bildschirme in 2 Modi geprüft, 0
+Befunde". Die Auswahlzeile lautete `filter((w) => w.inhalt)` — und
+`inhalt: true` heißt in `wege.json` **„ist eine Lektion"**, nicht „ist ein
+Bildschirm". Geprüft wurden 49 Lektionsseiten und kein einziger Trainer,
+keine Startseite, kein Tisch.
+
+Der Test daneben bestätigte die 49, weil er dieselbe Zeile noch einmal
+schrieb. **Zwei Stellen, die dieselbe falsche Annahme teilen, prüfen
+einander nicht.**
+
+Auf alle 90 Adressen ausgeweitet kamen 3661 Befunde ans Licht, darunter der
+komplette Live-Bereich im hellen Modus mit 1,02 zu 1.
+
+### Regel 9b.1 — Ein Tokensatzwechsel setzt die Schriftfarbe neu
+
+`body { color: var(--text) }` wird **einmal** aufgelöst. Ein Bereich, der
+weiter unten `data-modus` umschaltet, ändert die Variable, aber nicht die
+schon aufgelöste Farbe.
+
+Deshalb hängt die Regel am Attribut und nicht an einer Klasse — sie gilt für
+jede Stelle, die den Satz wechselt, auch für die nächste:
+
+```css
+[data-modus] { color: var(--text); }
+```
+
+### Regel 9b.2 — Ein Diagramm ist keine Bedienleiste, aber es ersetzt keine
+
+Die Starthand-Matrix hat 169 Felder. Bei einer Fingerbreite je Feld wäre sie
+668 Pixel breit — auf einem 390 Pixel breiten Gerät nicht mehr als Ganzes zu
+sehen, und als Ganzes gesehen zu werden ist ihr einziger Zweck.
+
+Sie ist von der Größen- und Abstandsregel ausgenommen. **Die Bedingung: Was
+über ein Diagramm erreichbar ist, muss auch ohne erreichbar sein.** Der
+Starthand-Explorer hat dafür eine zweite Auswahl mit richtigen
+Bedienflächen. Eine Ausnahme ohne Ausgleich wäre ein Freibrief.
+
+---
+
 ## 11. Drei Farbmodi
 
 Hell, Dunkel, Systemvorgabe. Die Systemvorgabe ist keine dritte Farbwelt,

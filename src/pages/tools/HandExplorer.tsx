@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HandMatrix } from '../../components/HandMatrix';
+import { RANKS_DESC } from '../../lib/poker/ranges';
 import { CardsRow } from '../../components/PlayingCard';
 import { RFI_CHARTS } from '../../content/ranges';
 import { combosForLabel, expandRangeSpec } from '../../lib/poker/ranges';
@@ -43,6 +44,25 @@ export function HandExplorer() {
   const { lang } = useLang();
   const L = STR[lang];
   const [selected, setSelected] = useState<string>('AKs');
+
+  /* Die gewählte Hand als ihre drei Bestandteile — damit die Auswahl
+     daneben weiß, welcher Knopf an ist. Gelesen aus der Bezeichnung, nicht
+     doppelt gehalten: Zwei Quellen für dieselbe Angabe laufen auseinander. */
+  const hoch = selected[0];
+  const tief = selected[1];
+  const art: 's' | 'o' = selected.endsWith('s') ? 's' : 'o';
+
+  /** Aus zwei Rängen und der Art die übliche Bezeichnung bilden.
+   *
+   *  Die höhere Karte steht vorn („AKs", nie „KAs"), und ein Paar trägt
+   *  keinen Zusatz — das ist die Schreibweise, die die ganze App und die
+   *  gerechneten Tabellen verwenden. */
+  function setzeHand(a: string, b: string, wie: 's' | 'o') {
+    const ia = RANKS_DESC.indexOf(a);
+    const ib = RANKS_DESC.indexOf(b);
+    const [oben, unten] = ia <= ib ? [a, b] : [b, a];
+    setSelected(oben === unten ? `${oben}${unten}` : `${oben}${unten}${wie}`);
+  }
   const cache = useRef(new Map<string, HandDetail>());
   const [detail, setDetail] = useState<HandDetail | null>(null);
 
@@ -104,6 +124,71 @@ export function HandExplorer() {
         style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))', gap: 18, maxWidth: 1100, alignItems: 'start' }}
       >
         <div className="card">
+          {/* Die zweite Auswahl (E-039).
+              ---------------------------
+              Die Matrix ist ein Diagramm: 169 Felder, die man als Bild
+              liest. Ihre Zellen sind 28 Pixel groß — als Bedienfläche zu
+              klein, und größer geht nicht, ohne das Bild zu zerstören
+              (44 Pixel je Zelle ergäben 668 Pixel Breite auf einem 390
+              Pixel breiten Gerät).
+
+              Also bleibt die Matrix ein Diagramm, und daneben steht eine
+              Auswahl mit richtigen Bedienflächen. Das ist die Bedingung,
+              unter der die Ausnahme in DESIGN.md gilt: Was man über ein
+              Diagramm erreichen kann, muss man auch ohne erreichen
+              können. */}
+          <div className="handwahl">
+            <span className="handwahl-titel">{L.waehleTitel}</span>
+            <span className="handwahl-marke">{L.ersteKarte}</span>
+            <div className="handwahl-reihe">
+              {[...RANKS_DESC].map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  className={`handwahl-knopf${r === hoch ? ' an' : ''}`}
+                  onClick={() => setzeHand(r, tief, art)}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+            <span className="handwahl-marke">{L.zweiteKarte}</span>
+            <div className="handwahl-reihe">
+              {[...RANKS_DESC].map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  className={`handwahl-knopf${r === tief ? ' an' : ''}`}
+                  onClick={() => setzeHand(hoch, r, art)}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+            <span className="handwahl-marke">{L.artTitel}</span>
+            <div className="segmented">
+              <button
+                type="button"
+                className={art === 's' && hoch !== tief ? 'on' : ''}
+                disabled={hoch === tief}
+                onClick={() => setzeHand(hoch, tief, 's')}
+              >
+                {L.suited}
+              </button>
+              <button
+                type="button"
+                className={art === 'o' && hoch !== tief ? 'on' : ''}
+                disabled={hoch === tief}
+                onClick={() => setzeHand(hoch, tief, 'o')}
+              >
+                {L.offsuit}
+              </button>
+              <button type="button" className={hoch === tief ? 'on' : ''} disabled>
+                {L.paar}
+              </button>
+            </div>
+          </div>
+
           <HandMatrix
             raise={new Set([selected])}
             highlight={selected}

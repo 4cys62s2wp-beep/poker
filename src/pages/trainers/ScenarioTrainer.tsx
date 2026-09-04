@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { CardsRow } from '../../components/PlayingCard';
 import type { Scenario } from '../../content/scenarios';
 import { useAppState } from '../../state/AppState';
+import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/scenariotrainer';
@@ -123,29 +124,21 @@ export function ScenarioTrainer() {
           )}
         </div>
 
-        {optionOrder.map((origIdx) => {
+        {/* Nach der Antwort steht hier die Bewertung jeder Möglichkeit —
+            dann sind es keine Knöpfe mehr, sondern das Ergebnis. Vorher
+            stehen die Möglichkeiten unten in der Entscheidungsleiste
+            (E-039). */}
+        {answered && optionOrder.map((origIdx) => {
           const opt = scenario.options[origIdx];
-          let cls = 'quiz-option';
-          if (answered) {
-            cls += qualityCls[opt.quality];
-            if (origIdx === selected && opt.quality === 'ok') cls += ''; // neutral bleibt neutral
-            if (origIdx !== selected && opt.quality === 'ok') cls += ' dimmed';
-          }
           return (
-            <div key={origIdx}>
-              <button className={cls} onClick={() => choose(origIdx)} disabled={answered}>
-                {opt.label}
-                {answered && (
-                  <span className={`pill ${opt.quality === 'best' ? 'ok' : opt.quality === 'bad' ? 'danger' : ''}`} style={{ marginLeft: 'auto' }}>
-                    {L.qualityLabel[opt.quality]}
-                  </span>
-                )}
-              </button>
-              {answered && (
-                <p className="small muted" style={{ margin: '-4px 4px 14px' }}>
-                  {opt.explanation}
-                </p>
-              )}
+            <div key={origIdx} className={`wahl-zeile${qualityCls[opt.quality]}`}>
+              <div className="kopf">
+                <span className="text">{opt.label}</span>
+                <span className={`pill ${opt.quality === 'best' ? 'ok' : opt.quality === 'bad' ? 'danger' : ''}`}>
+                  {L.qualityLabel[opt.quality]}
+                </span>
+              </div>
+              <p className="small muted">{opt.explanation}</p>
             </div>
           );
         })}
@@ -156,12 +149,25 @@ export function ScenarioTrainer() {
               <span className="label">{L.lessonLabel}</span>
               {scenario.lesson}
             </div>
-            <button className="btn primary" style={{ marginTop: 8 }} onClick={next}>
-              {L.nextScenario}
-            </button>
           </>
         )}
       </div>
+
+      <Entscheidung label={L.title} viele={!answered}>
+        {!answered ? (
+          optionOrder.map((origIdx) => (
+            <button
+              key={origIdx}
+              className="quiz-option"
+              onClick={() => choose(origIdx)}
+            >
+              {scenario.options[origIdx].label}
+            </button>
+          ))
+        ) : (
+          <button className="btn primary" onClick={next}>{L.nextScenario}</button>
+        )}
+      </Entscheidung>
     </div>
   );
 }

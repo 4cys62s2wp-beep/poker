@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(32);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(33);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -851,6 +851,58 @@ describe('Der Übungsstand über den Trainern', () => {
        Netz, das jede künftige Kennung prüft. */
     expect(e().quote_bleibt).toBe(true);
     expect(e().nach_neuladen).toBe(e().nach_zwei);
+  });
+});
+
+/* ── Der Übungstisch ─────────────────────────────────────────────────────
+   Vom Auftraggeber gemeldet: „Der obere Spieler überdeckt auf einmal den
+   River oder den Flop." Ursache war die Anordnung — Sitze an
+   Prozentkoordinaten, die nach unten aus sich herauswachsen und irgendwann
+   in die Mitte reichen. Seit E-040 sind es Bänder.
+
+   Geprüft wird die Folge, nicht die Anordnung: Eine neue Anordnung, die
+   denselben Fehler macht, fällt hier auf. */
+
+describe('Der Übungstisch ist eine Spielansicht', () => {
+  const e = () => schritt('Am Übungstisch überdeckt kein Sitz das Board');
+
+  it('setzt fünf Gegner an den Tisch', () => {
+    expect(e().sitze).toBe(5);
+  });
+
+  it('lässt keinen Sitz das Board überdecken', () => {
+    /* Der gemeldete Fehler, als Zahl. */
+    expect(e().sitz_ueber_board).toBe(0);
+  });
+
+  it('lässt keinen Sitz die eigene Hand überdecken', () => {
+    expect(e().sitz_ueber_du).toBe(0);
+  });
+
+  it('zeigt Board und eigene Hand ohne Scrollen', () => {
+    /* Ein Tisch, für den man scrollen muss, ist kein Tisch. */
+    expect(e().board_ohne_scrollen).toBe(true);
+    expect(e().du_ohne_scrollen).toBe(true);
+  });
+
+  it('zeigt fünf Board-Plätze, auch wenn erst drei liegen', () => {
+    /* An einem echten Tisch sieht man, wie viele Karten noch kommen. */
+    expect(e().board_plaetze).toBe(5);
+  });
+
+  it('macht die eigene Hand zur größten Darstellung auf dem Tisch', () => {
+    /* Regel 10.8: Der Gegenstand ist keine Verzierung — und die eigene Hand
+       ist der Gegenstand. Sie muss deutlich größer sein als die verdeckten
+       Karten der Gegner, nicht nur ein bisschen. */
+    const a = e().eigene_kartenbreite as number;
+    const b = e().groesste_gegnerkarte as number;
+    expect(a).toBeGreaterThanOrEqual(90);
+    expect(a).toBeGreaterThan(b * 2);
+  });
+
+  it('legt die Entscheidung nach unten in den Daumenbereich', () => {
+    expect(e().leiste_im_daumenbereich).toBe(true);
+    expect(e().knoepfe as string[]).not.toHaveLength(0);
   });
 });
 

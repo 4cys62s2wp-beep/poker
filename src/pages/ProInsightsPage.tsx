@@ -39,7 +39,11 @@ export function ProInsightsPage() {
                   width: 46, height: 46, borderRadius: 14, display: 'inline-flex', alignItems: 'center',
                   justifyContent: 'center', fontWeight: 800, fontSize: 17, flexShrink: 0,
                   fontFamily: 'var(--font-display)',
-                  background: `${teaser.color}22`, color: teaser.color, border: `1.5px solid ${teaser.color}55`,
+                  /* Die Farbe der Person tönt die Fläche und zeichnet den
+                     Rand — die Buchstaben stehen im Textton. Als Schriftfarbe
+                     verfehlten diese Farben den Kontrast: im hellen Modus
+                     1,85 zu 1. Eine Kennfarbe ist keine Textfarbe. */
+                  background: `${teaser.color}22`, color: 'var(--text)', border: `1.5px solid ${teaser.color}55`,
                 }}
               >
                 {teaserInitials}
@@ -88,7 +92,8 @@ export function ProInsightsPage() {
                     width: 46, height: 46, borderRadius: 14, display: 'inline-flex', alignItems: 'center',
                     justifyContent: 'center', fontWeight: 800, fontSize: 17, flexShrink: 0,
                     fontFamily: 'var(--font-display)',
-                    background: `${pro.color}22`, color: pro.color, border: `1.5px solid ${pro.color}55`,
+                    /* Siehe oben: Kennfarbe tönt, Textton schreibt. */
+                    background: `${pro.color}22`, color: 'var(--text)', border: `1.5px solid ${pro.color}55`,
                   }}
                 >
                   {initials}
@@ -105,8 +110,11 @@ export function ProInsightsPage() {
                   <p className="small muted" style={{ marginBottom: 14 }}>{pro.knownFor}</p>
                   {pro.principles.map((pr, i) => (
                     <div key={i} style={{ marginBottom: 14 }}>
-                      <div style={{ fontWeight: 800, marginBottom: 3, color: pro.color }}>{pr.title}</div>
-                      <p className="small" style={{ color: '#d8d5cb', lineHeight: 1.6 }}>{pr.text}</p>
+                      {/* Ohne die Kennfarbe als Schrift: gemessen 2,02 zu 1
+                          im hellen Modus. Die Zuordnung zur Person leistet
+                          die getönte Kachel daneben. */}
+                      <div style={{ fontWeight: 800, marginBottom: 3 }}>{pr.title}</div>
+                      <p className="small" style={{ color: 'var(--text-stark)', lineHeight: 1.6 }}>{pr.text}</p>
                     </div>
                   ))}
                 </div>
@@ -124,7 +132,7 @@ export function ProInsightsPage() {
               style={{
                 width: 30, height: 30, borderRadius: '50%', display: 'inline-flex', alignItems: 'center',
                 justifyContent: 'center', fontWeight: 800, fontSize: 13, flexShrink: 0, marginTop: 2,
-                background: 'var(--danger-dim)', color: '#eda49f', border: '1px solid rgba(224,92,85,0.35)',
+                background: 'var(--danger-dim)', color: 'var(--danger-lesbar)', border: '1px solid rgba(224,92,85,0.35)',
               }}
             >
               {i + 1}
@@ -148,7 +156,7 @@ export function ProInsightsPage() {
               </span>
               <span style={{ fontWeight: 800 }}>{e.title}</span>
             </div>
-            <p className="small" style={{ color: '#d8d5cb', lineHeight: 1.6 }}>{e.text}</p>
+            <p className="small" style={{ color: 'var(--text-stark)', lineHeight: 1.6 }}>{e.text}</p>
           </div>
         ))}
       </div>

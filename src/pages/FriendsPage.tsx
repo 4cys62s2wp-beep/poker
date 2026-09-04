@@ -380,7 +380,7 @@ function FriendRow({
             >
               {name}
             </div>
-            <div className="row small" style={{ gap: 6, color: online ? '#90d69c' : 'var(--text-faint)' }}>
+            <div className="row small" style={{ gap: 6, color: online ? 'var(--ok-lesbar)' : 'var(--text-faint)' }}>
               <StatusDot online={online} />
               {online ? strings.onlinePill : strings.offlinePill}
             </div>

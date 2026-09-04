@@ -359,7 +359,10 @@ export function PotOddsDrill() {
         </div>
 
         {/* ── Unteres Drittel: alles Tippbare ─────────────────────────── */}
-        <div className="drill-unten">
+        {/* `entscheidung` ist die Auszeichnung, an der `npm run daumen`
+            misst (E-039). Der Drill hatte seine Knöpfe schon unten — er
+            sagt es jetzt auch. */}
+        <div className="drill-unten entscheidung">
           {!beantwortet ? (
             <div className="drill-knoepfe">
               <button type="button" className="drill-knopf ja" onClick={() => antworte(true)}>

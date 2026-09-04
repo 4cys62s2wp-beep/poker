@@ -51,7 +51,7 @@ export function SessionPage() {
     {
       to: '/session/chips', icon: 'chip',
       title: L.chipsTitle, body: L.chipsBody, when: L.chipsWhen,
-      accent: 'var(--danger)',
+      accent: 'var(--danger-lesbar)',
     },
     {
       to: '/session/auszahlung', icon: 'crown',

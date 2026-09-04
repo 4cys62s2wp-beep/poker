@@ -5,6 +5,7 @@ import { CardsRow } from '../../components/PlayingCard';
 import { BB_DEFENSE_VS_BTN, POSITION_NAMES, RFI_CHARTS } from '../../content/ranges';
 import { combosForLabel, expandRangeSpec, handLabel } from '../../lib/poker/ranges';
 import { useAppState } from '../../state/AppState';
+import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/prefloptrainer';
@@ -104,21 +105,6 @@ export function PreflopTrainer() {
           <span className="pill" style={{ fontSize: 14 }}>{scenario.label}</span>
         </div>
 
-        <div className="row wrap">
-          {scenario.kind === 'rfi' ? (
-            <>
-              <ActionBtn label="Raise" value="raise" answer={answer} correct={correctAnswer} onClick={choose} />
-              <ActionBtn label="Fold" value="fold" answer={answer} correct={correctAnswer} onClick={choose} />
-            </>
-          ) : (
-            <>
-              <ActionBtn label="3-Bet" value="3bet" answer={answer} correct={correctAnswer} onClick={choose} />
-              <ActionBtn label="Call" value="call" answer={answer} correct={correctAnswer} onClick={choose} />
-              <ActionBtn label="Fold" value="fold" answer={answer} correct={correctAnswer} onClick={choose} />
-            </>
-          )}
-        </div>
-
         {answer && (
           <>
             <div className={`feedback-box ${isCorrect ? 'good' : 'bad'}`} style={{ marginTop: 16 }}>
@@ -157,13 +143,30 @@ export function PreflopTrainer() {
                 highlight={scenario.label}
               />
             </div>
-
-            <button className="btn primary" style={{ marginTop: 18 }} onClick={next}>
-              {L.nextHand}
-            </button>
           </>
         )}
       </div>
+
+      {/* Antworten und Weitermachen an derselben Stelle, unten im
+          Daumenbereich (E-039). */}
+      <Entscheidung label={L.title}>
+        {!answer ? (
+          scenario.kind === 'rfi' ? (
+            <>
+              <ActionBtn label="Raise" value="raise" answer={answer} correct={correctAnswer} onClick={choose} />
+              <ActionBtn label="Fold" value="fold" answer={answer} correct={correctAnswer} onClick={choose} />
+            </>
+          ) : (
+            <>
+              <ActionBtn label="3-Bet" value="3bet" answer={answer} correct={correctAnswer} onClick={choose} />
+              <ActionBtn label="Call" value="call" answer={answer} correct={correctAnswer} onClick={choose} />
+              <ActionBtn label="Fold" value="fold" answer={answer} correct={correctAnswer} onClick={choose} />
+            </>
+          )
+        ) : (
+          <button className="btn primary" onClick={next}>{L.nextHand}</button>
+        )}
+      </Entscheidung>
     </div>
   );
 }

@@ -832,6 +832,71 @@ await schritt('Das Modul zeigt Fortschritt und die nächste Lektion', async () =
   });
 });
 
+/* ── Der Übungstisch: nichts überdeckt das Board ───────────────────────────
+   Der Auftraggeber hat es gemeldet und der Rundgang hat es bestätigt: Bei
+   fünf Gegnern legte sich der obere Sitz über Flop und River. Ursache war
+   die Anordnung — Sitze an Prozentkoordinaten, die nach unten aus sich
+   herauswachsen. Seit E-040 sind es Bänder, die sich nicht überlappen
+   können.
+
+   Geprüft wird nicht die Anordnung, sondern die Folge: Kein Sitz schneidet
+   das Board, keiner den eigenen Platz. Eine neue Anordnung, die denselben
+   Fehler macht, fällt hier auf. */
+
+await schritt('Am Übungstisch überdeckt kein Sitz das Board', async () => {
+  await seite.goto(`${GRUND}/#/lernen/uebungstisch`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForTimeout(500);
+  /* Sechs Plätze — der Fall, in dem der Fehler auftrat. */
+  await seite.locator('.card.clickable').filter({ hasText: /6-max/ }).first().click();
+  await seite.waitForSelector('.filz');
+  /* Warten, bis der Held am Zug ist: Dann steht der Tisch vollständig. */
+  for (let i = 0; i < 40; i += 1) {
+    if (await seite.locator('.entscheidung button').count() > 0) break;
+    await seite.waitForTimeout(400);
+  }
+  await seite.waitForTimeout(300);
+  return seite.evaluate(() => {
+    const kasten = (el) => el.getBoundingClientRect();
+    const schneidet = (a, b) => a && b && b.bottom > a.top && b.top < a.bottom
+      && b.right > a.left && b.left < a.right;
+    const sitze = [...document.querySelectorAll('.sitz')].map(kasten);
+    const board = document.querySelector('.board');
+    const du = document.querySelector('.filz-du');
+    const bk = board ? kasten(board) : null;
+    const dk = du ? kasten(du) : null;
+    return {
+      sitze: sitze.length,
+      /* Der gemeldete Fehler. */
+      sitz_ueber_board: sitze.filter((z) => schneidet(bk, z)).length,
+      sitz_ueber_du: sitze.filter((z) => schneidet(dk, z)).length,
+      /* Und das, was man ohne Scrollen sehen muss: die Gemeinschaftskarten
+         und die eigene Hand. */
+      board_ohne_scrollen: bk ? bk.bottom <= window.innerHeight : null,
+      du_ohne_scrollen: dk ? dk.bottom <= window.innerHeight : null,
+      /* Fünf Plätze, auch wenn erst drei liegen — an einem echten Tisch
+         sieht man, wie viele Karten noch kommen. */
+      board_plaetze: document.querySelectorAll('.board .pcard, .board .board-platz').length,
+      /* Die eigene Hand ist die größte Darstellung auf dem Tisch. */
+      eigene_kartenbreite: Math.round(
+        document.querySelector('.du-karten .pcard')?.getBoundingClientRect().width ?? 0,
+      ),
+      groesste_gegnerkarte: Math.round(Math.max(0, ...[...document.querySelectorAll('.sitz .pcard')]
+        .map((k) => k.getBoundingClientRect().width))),
+      /* Die Entscheidung liegt unten und ist ohne Scrollen erreichbar. */
+      leiste_unten_px: Math.round(
+        document.querySelector('.entscheidung')?.getBoundingClientRect().bottom ?? 0,
+      ),
+      leiste_im_daumenbereich: (() => {
+        const e = document.querySelector('.entscheidung');
+        if (!e) return false;
+        const r = kasten(e);
+        return r.top + r.height / 2 >= window.innerHeight / 2;
+      })(),
+      knoepfe: [...document.querySelectorAll('.entscheidung button')].map((b) => b.textContent.trim()),
+    };
+  });
+});
+
 /* ── Das private Gerät: der Drill ──────────────────────────────────────────
    Der Auftrag beschreibt zwei Geräterollen. Der Tisch ist gemessen
    (`npm run tisch`); das private Gerät ist der Lernbildschirm, und für ihn

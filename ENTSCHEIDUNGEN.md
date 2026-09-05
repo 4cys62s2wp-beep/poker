@@ -2190,3 +2190,163 @@ die es nur ein Gefühl gibt und keine Messung, ist keine Verbesserung.
 91 Bildschirme in 2 Modi (182 Messungen), 0 Befunde. 1053 Tests grün,
 Durchgang vollständig (drei neue Schritte), Daumenlauf ohne Befund,
 90 Adressen erreichbar, 0 Sackgassen.
+
+---
+
+## E-043 · 2026-09-05 · Was keine Prüfung ansah: Tastatur, Konsole, Kilobytes
+
+**Stand:** entschieden und umgesetzt.
+
+**Der Anlass, im Wortlaut:** „Schau dir alles Weitere auch noch mal an, wo Du
+noch was findest, was Du noch verbessern oder auch optimieren kannst."
+
+Kein einzelner Bildschirm, also auch keine Suche nach Geschmack. Stattdessen
+die Frage: **Welche Art, diese App zu benutzen, deckt bisher keine Zahl ab?**
+Vier Antworten — und in jeder war etwas kaputt.
+
+### 1. Die Tastatur: 55 von 90 Bildschirmen ohne sichtbaren Fokus
+
+Es gab drei Fokusregeln in der ganzen App — für die Starthand-Matrix, für
+eine ihrer Zellen und für ein Herkunftszeichen. Überall sonst zeigte das
+Weiterspringen mit der Tabulatortaste **nichts** an: Der Browserumriss ist
+`auto 1px` in einem Grau, das auf dunklem Grund unsichtbar ist.
+
+Für jeden, der die App mit der Tastatur bedient, ist das derselbe Verlust wie
+ein unsichtbarer Mauszeiger.
+
+Es gibt jetzt eine Regel für alles: `:focus-visible` mit einem 2,5 Pixel
+breiten Ring in der Fokusfarbe plus einem dunklen Saum, damit er auch auf
+gleichfarbigem Grund zu sehen ist. `:focus-visible` und nicht `:focus` — der
+Ring gehört dem, der tastet; wer tippt, hat den Finger schon dort.
+
+### 2. Fünf Bedienelemente ohne Namen
+
+Für ein Vorlesegerät hießen sie „Schaltfläche" beziehungsweise
+„Eingabefeld": ein Schieberegler im Equity-Trainer, die Lektionssuche, die
+Glossarsuche, das E-Mail- und das Namensfeld im Profil. Vier davon hatten
+einen Platzhalter — der **verschwindet beim ersten Zeichen**, also genau
+dann, wenn man ihn bräuchte.
+
+Zwei hatten sogar eine sichtbare Beschriftung darüber, nur war sie nie mit
+dem Feld verbunden: ein `<div>` statt eines `<label for>`.
+
+### 3. Die Konsole meldete auf jeder Seite dasselbe — seit wann, weiß niemand
+
+```
+Refused to execute inline script because it violates the following
+Content-Security-Policy directive: "script-src 'self' https://apis.google.com"
+```
+
+In `index.html` steht genau ein inline-Skript: das, welches den Farbmodus
+setzt, **bevor** das Stilblatt greift. Sein Kommentar sagt, es sei die
+Vorbeugung gegen das Aufblitzen des falschen Modus, „die sich nicht
+wegdiskutieren lässt". Es lief nie.
+
+**Warum der Durchgang das nicht gefunden hat**, ist die eigentliche Lehre.
+Der Schritt „Nach dem Neuladen steht die Farbe vor dem ersten Zeichnen fest"
+maß bei `domcontentloaded`. Das Programm hängt als `type="module"` im
+Dokument und läuft **vor** diesem Ereignis — gemessen wurde also, was React
+gesetzt hatte, nicht, was das inline-Skript getan hätte. Der Schritt hätte
+auch dann Grün gemeldet, wenn es die Datei gar nicht gäbe.
+
+Zwei Änderungen:
+
+- Gemessen wird bei `commit` — direkt nachdem das Dokument zu laufen
+  beginnt und bevor irgendein Modul an der Reihe war. Vorher: `null`.
+  Nachher: `hell` beziehungsweise `dunkel`.
+- Die Konsole wird mitgelesen. Eine Richtlinie, die etwas still verbietet,
+  meldet sich nur dort — und `konsolenfehler: []` ist jetzt Teil des
+  Ergebnisses.
+
+Erlaubt wird das Skript über seinen **Hash**, nicht über `'unsafe-inline'`:
+genau dieses eine Skript, Zeichen für Zeichen. Gerechnet wird er zur Bauzeit
+aus dem fertigen HTML (`order: 'post'`), damit er zum ausgelieferten Text
+passt und nicht zum Entwurf. Ein von Hand eingetragener Hash wäre beim
+nächsten Komma im Skript falsch — und die Vorbeugung wieder still aus.
+
+### 4. Die Startseite lud 706 kB Firebase, die sie nicht braucht
+
+Gemessen auf gedrosseltem 4G mit vierfach verlangsamter Rechenleistung:
+
+| | vorher | jetzt |
+|---|---|---|
+| Dateien beim Start | 5 | **1** |
+| davon Firebase | 706 kB (≈ 213 kB übertragen) | 0 |
+| erster Start | 2,97 s | 2,94 s |
+| **zweiter Start** | **367 ms** | 367 ms |
+| offline | 408 ms | 408 ms |
+
+Der `CloudProvider` rief beim Einhängen bedingungslos `getCloud()` — auch
+bei jemandem, der sich nie anmeldet und die App nur zum Üben benutzt. 37 %
+der Bytes des ersten Starts für eine Funktion, die die meisten nie anfassen.
+
+Firebase muss aber **sofort** geladen werden, wenn jemand angemeldet ist —
+sonst stünde er beim Öffnen als abgemeldet da. Die Frage war also: Woher
+weiß man das, bevor man Firebase fragt? Aus zwei Spuren, die die App selbst
+hinterlässt: einem verknüpften Profil (`activeProfile.cloudUid`) und einer
+Marke, die beim Anmelden gesetzt und beim Abmelden gelöscht wird. Gehen
+beide verloren, heilt es von selbst: Sobald die Kontokarte im Profil
+erscheint, wird nachgeladen und die Sitzung wiederhergestellt.
+
+**Was ausdrücklich NICHT gemacht wurde.** Der erste Start bleibt bei rund
+drei Sekunden, weil 408 kB Programm über eine gedrosselte Leitung nun einmal
+zwei Sekunden brauchen. Ihn wirklich zu halbieren hieße, die Lektionstexte
+aus dem Startpaket zu lösen — ein Umbau der Inhaltsschicht, an der die
+Lektionssuche, das Tagesquiz und die Wiederholung hängen. Dem steht die
+Zahl gegenüber, die zählt: **Die App, die als Symbol auf dem
+Startbildschirm liegt und einmal am Tag geöffnet wird, startet in 367
+Millisekunden.** Die drei Sekunden zahlt man einmal, bei der Installation.
+
+Ein Umbau mit echtem Risiko für eine Zahl, die den täglichen Gebrauch nicht
+berührt, ist keine Verbesserung. Die Messung steht im Durchgang, damit die
+Entscheidung nachprüfbar bleibt — und damit auffällt, wenn die Startseite
+wieder anfängt, Dinge zu laden, die sie nicht braucht.
+
+### 5. Nebenbei: „150 XP to Küchentisch-Spieler"
+
+Ein Wegwerf-Skript, das die englische Oberfläche nach deutschen Wörtern
+absucht, fand die Rangnamen: eine deutsche Liste, in beiden Sprachen
+angezeigt. Gespeichert wird nur die Zahl — die Namen sind reine Anzeige und
+gehören übersetzt.
+
+Weil ein Wegwerf-Skript beim nächsten Mal nicht mehr da ist, steht die Suche
+jetzt im Bedienbarkeitslauf. Mit einer **benannten Ausnahmeliste**: BZgA,
+check-dein-spiel.de, „Gemeinsame Glücksspielbehörde der Länder",
+Glücksspielstaatsvertrag. Das sind deutsche Eigennamen, die auch im
+englischen Text deutsch bleiben — ein Text, der sie übersetzt, wäre falsch,
+nicht höflich.
+
+### Der neue Lauf: `npm run bedienbar`
+
+90 Bildschirme in zwei **Sprachen** (nicht Farbmodi — die Namen der
+Bedienelemente und die Dokumentsprache hängen an der Sprache). Gemessen
+wird am gerenderten Ergebnis: Namen von Bedienelementen, Überschriften­
+gliederung, doppelte Kennungen, Bilder ohne Alternative, genau ein
+Hauptbereich, die Dokumentsprache, Deutsch in der englischen Oberfläche —
+und der Fokus, indem wirklich Tab gedrückt und danach verglichen wird.
+
+Zwei Dinge, ohne die der Lauf wertlos wäre:
+
+- **Er prüft mehrere Bauformen je Bildschirm, nicht nur die erste.** Der
+  erste Knopf ist auf 55 von 90 Bildschirmen derselbe — der Rückweg. Eine
+  Regel, die nur ihn trifft, sähe grün aus, während alles darunter
+  unsichtbar bliebe.
+- **Er ist gegengeprüft.** Mit abgeschalteter Fokusregel meldet er 66× den
+  Rückweg, 51× den Hauptknopf, 22× den kleinen Link, 9× die Lektionskarte.
+  Ein Lauf, der nie rot werden kann, ist eine Beruhigung, keine Prüfung.
+
+Und ein eigener Fehler auf dem Weg dorthin, der hierher gehört: Der erste
+Lauf meldete 110 Fokusbefunde, obwohl die Regel längst da war. Ursache: Die
+App wechselt den Bildschirm über den Teil hinter dem Doppelkreuz — das
+Dokument wird dabei nicht neu geladen, und der Tastaturfokus überlebt den
+Wechsel. Gemessen wurde ein Element, das noch von der Seite davor den Fokus
+hatte. Seitdem wird vor jeder Messung aufgeräumt.
+
+### Stand nach dem Lauf
+
+- `npm run bedienbar`: 90 Bildschirme in 2 Sprachen (180 Messungen), 446
+  angesprungene Bedienelemente, **0 Befunde**
+- `npm run pruefen`: 91 Bildschirme in 2 Modi (182 Messungen), 0 Befunde
+- `npm run daumen`: 0 Befunde · `npm run wege`: 0 Sackgassen
+- Durchgang vollständig, **1079 Tests grün**
+- Konsole über alle 90 Bildschirme in beiden Sprachen: **0 Fehler**

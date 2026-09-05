@@ -36,14 +36,33 @@ export function isValidAuthDomain(v: unknown): v is string {
  *   ohne Cloud-Konten gebaut wird. Ohne sie bleibt es bei der engsten
  *   Fassung: keine fremden Skripte, keine Rahmen.
  */
-export function buildCsp(authDomain: string | null): string {
+export function buildCsp(
+  authDomain: string | null,
+  /** Hashes der inline-Skripte aus index.html, Form `'sha256-…'`. Die
+   *  Bauzeit rechnet sie aus dem fertigen HTML aus (vite.config.ts). */
+  inlineScriptHashes: readonly string[] = [],
+): string {
   const domain = isValidAuthDomain(authDomain) ? authDomain : null;
 
   /* Firebase lädt für Popup und Weiterleitung ein Hilfsskript von
      apis.google.com und hängt einen Rahmen auf
      https://<projekt>.firebaseapp.com/__/auth/iframe ein. Ohne beide
      Erlaubnisse gibt es keine Google-Anmeldung. */
-  const script = ["'self'", ...(domain ? ['https://apis.google.com'] : [])];
+  /* Das Skript, das den Farbmodus vor dem ersten Zeichnen setzt, steht
+     inline in index.html — es MUSS vor dem Stilblatt laufen, sonst blitzt
+     der falsche Modus auf. `script-src 'self'` verbietet inline-Skripte
+     aber genau so still, wie diese Datei oben beschreibt: Die Konsole
+     meldete auf jeder Seite „Refused to execute inline script", und die
+     Vorbeugung gegen das Aufblitzen lief seitdem gar nicht (E-043).
+
+     Die saubere Antwort ist der Hash, nicht `'unsafe-inline'`: Erlaubt
+     wird genau dieses eine Skript, Zeichen für Zeichen. Ändert es sich,
+     ändert sich der Hash — und die Bauzeit rechnet ihn neu. */
+  const script = [
+    "'self'",
+    ...inlineScriptHashes,
+    ...(domain ? ['https://apis.google.com'] : []),
+  ];
   const frame = domain ? [`https://${domain}`, 'https://apis.google.com'] : ["'none'"];
 
   /* connect-src erlaubt neben 'self' nur die Firebase-Endpunkte (Auth +

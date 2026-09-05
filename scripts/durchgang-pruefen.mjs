@@ -450,22 +450,37 @@ await schritt('Umschalten wirkt sofort und wird gemerkt', async () => {
 });
 
 await schritt('Nach dem Neuladen steht die Farbe vor dem ersten Zeichnen fest', async () => {
-  /* Gemessen wird das Attribut zum frühestmöglichen Zeitpunkt und die
-     Reihenfolge im Dokument: Läuft das Skript vor dem Stilblatt, kann es
-     kein Aufblitzen geben. */
-  const frueh = [];
-  const horcher = async () => {
-    try { frueh.push(await seite.evaluate(() => document.documentElement.getAttribute('data-modus'))); } catch { /* zu früh */ }
-  };
-  seite.on('domcontentloaded', horcher);
+  /* Der blinde Fleck dieses Schritts, gefunden in E-043.
+     ---------------------------------------------------
+     Gemessen wurde bei `domcontentloaded`. Das Programm hängt als
+     `type="module"` im Dokument und läuft damit VOR diesem Ereignis — der
+     Wert war also längst von React gesetzt, und der Schritt hätte auch
+     dann Grün gemeldet, wenn das inline-Skript gar nicht gelaufen wäre.
+
+     Genau das war der Fall: Die Sicherheitsrichtlinie erlaubte kein
+     inline-Skript, die Konsole meldete auf jeder Seite „Refused to execute
+     inline script", und die Vorbeugung gegen das Aufblitzen lief nie.
+
+     Jetzt wird bei `commit` gemessen — direkt nachdem das Dokument zu
+     laufen beginnt und bevor irgendein Modul an der Reihe war. Und die
+     Konsole wird mitgelesen: Eine Richtlinie, die etwas still verbietet,
+     meldet sich nur dort. */
+  const fehler = [];
+  const konsole = (m) => { if (m.type() === 'error') fehler.push(m.text().slice(0, 160)); };
+  seite.on('console', konsole);
   await seite.reload({ waitUntil: 'commit' });
-  await seite.waitForTimeout(700);
-  seite.off('domcontentloaded', horcher);
+  await seite.waitForTimeout(80);
+  const beiCommit = await seite
+    .evaluate(() => document.documentElement.getAttribute('data-modus'))
+    .catch(() => null);
+  await seite.waitForTimeout(900);
+  seite.off('console', konsole);
   const roh = await seite.evaluate(async () => (await (await fetch('./index.html')).text()));
   return {
-    bei_domcontentloaded: frueh[0] ?? null,
+    bei_commit: beiCommit,
     spaeter: await seite.evaluate(() => document.documentElement.getAttribute('data-modus')),
     skript_vor_stilblatt: roh.indexOf('data-modus') < roh.search(/<link[^>]+rel="stylesheet"/),
+    konsolenfehler: fehler,
   };
 });
 
@@ -1104,6 +1119,39 @@ await schritt('Kein Rückweg nennt einen Bereich, den es nicht gibt', async () =
       .map((g) => `${g.hash}: ${g.beschriftung}`),
     ohne_rueckweg: gefunden.filter((g) => !g.beschriftung).map((g) => g.hash),
   };
+});
+
+/* ── Was der erste Start kostet (E-043) ───────────────────────────────────
+   Firebase wiegt gebaut 706 kB. Bis E-043 wurde es bei jedem Start geholt,
+   weil der CloudProvider beim Einhängen bedingungslos `getCloud()` rief —
+   auch bei jemandem, der sich nie anmeldet.
+
+   Geprüft wird die Folge, nicht die Umsetzung: Die Startseite holt genau
+   eine Datei, und das Konto kommt trotzdem an, wenn man es aufruft. */
+
+await schritt('Die Startseite lädt nichts, was sie nicht braucht', async () => {
+  const geholt = [];
+  const horcher = (r) => { if (r.url().endsWith('.js')) geholt.push(r.url().split('/').pop()); };
+  seite.on('request', horcher);
+  try {
+    await seite.goto(`${GRUND}/`, { waitUntil: 'networkidle' });
+    await seite.waitForTimeout(1200);
+    const nachStart = [...geholt];
+
+    await seite.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
+    await seite.waitForTimeout(2800);
+    const nachProfil = geholt.filter((n) => !nachStart.includes(n));
+
+    return {
+      dateien_startseite: nachStart.length,
+      dateien_nach_profil: nachProfil.length,
+      /* Die Kontokarte ist da und sagt nicht „wird geprüft". */
+      kontokarte_da: await seite.locator('.cloud-card, [data-konto]').count() > 0
+        || (await seite.evaluate(() => /Konto|Anmelden|Account|Sign in/i.test(document.body.innerText))),
+    };
+  } finally {
+    seite.off('request', horcher);
+  }
 });
 
 await browser.close();

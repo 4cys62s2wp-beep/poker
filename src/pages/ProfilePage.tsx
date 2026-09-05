@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ALL_MODULES } from '../content';
-import { useAppState, xpThreshold } from '../state/AppState';
+import { levelTitles, useAppState, xpThreshold } from '../state/AppState';
 import { MODI } from '../lib/design/modus';
 import { useFarbmodus } from '../lib/design/FarbmodusProvider';
 import { useLang, levelTitleFor } from '../i18n';
@@ -74,7 +74,7 @@ export function ProfilePage() {
       lang === 'de' ? 'de-DE' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' },
     );
   };
-  const rang = rangstand(data.xp);
+  const rang = rangstand(data.xp, levelTitles(lang));
 
   const trainerTotals = Object.values(data.trainers).reduce(
     (acc, t) => ({ attempts: acc.attempts + t.attempts, correct: acc.correct + t.correct }),
@@ -301,9 +301,15 @@ export function ProfilePage() {
 
       <div className="section-title">{P.settingsSection}</div>
       <div className="card" style={{ maxWidth: 520 }}>
-        <div className="stat-label" style={{ marginBottom: 5 }}>{P.profileNameLabel}</div>
+        {/* Eine sichtbare Beschriftung, die nicht mit dem Feld verbunden ist,
+            gibt es für ein Vorlesegerät nicht — dort hieß das Feld bis E-043
+            nur „Eingabefeld". */}
+        <label className="stat-label" htmlFor="profil-name" style={{ display: 'block', marginBottom: 5 }}>
+          {P.profileNameLabel}
+        </label>
         <div className="row" style={{ marginBottom: 12 }}>
           <input
+            id="profil-name"
             className="text-input"
             value={nameInput}
             onChange={(e) => setNameInput(e.target.value)}
@@ -311,9 +317,12 @@ export function ProfilePage() {
             maxLength={40}
           />
         </div>
-        <div className="stat-label" style={{ marginBottom: 5 }}>{P.emailLabel}</div>
+        <label className="stat-label" htmlFor="profil-email" style={{ display: 'block', marginBottom: 5 }}>
+          {P.emailLabel}
+        </label>
         <div className="row">
           <input
+            id="profil-email"
             className="text-input"
             type="email"
             value={emailInput}

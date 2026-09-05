@@ -93,6 +93,8 @@ export function GlossaryPage() {
 
       <input
         className="search-input"
+        type="search"
+        aria-label={L.searchLabel}
         style={{ maxWidth: 480, marginBottom: 14 }}
         placeholder={L.searchPlaceholder}
         value={query}

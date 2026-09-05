@@ -1,16 +1,9 @@
 {
-  "geprueft_am": "2026-09-05T19:17:48.195Z",
+  "geprueft_am": "2026-09-05T19:14:15.301Z",
   "breite": 390,
-  "grenzwerte": {
-    "kontrast_ergebnis": 7,
-    "kontrast_uebrig": 4.5,
-    "ergebnis_ab_px": 40,
-    "tipp_min_px": 44,
-    "tipp_abstand_px": 8
-  },
-  "modi": [
-    "dunkel",
-    "hell"
+  "sprachen": [
+    "de",
+    "en"
   ],
   "bildschirme_liste": [
     "#/",
@@ -102,11 +95,11 @@
     "#/lernen/m9/m9-l2",
     "#/lernen/m9/m9-l3",
     "#/lernen/m9/m9-l4",
-    "#/lernen/m9/m9-l5",
-    "#/lernen/uebungstisch · Tisch mit sechs Plätzen"
+    "#/lernen/m9/m9-l5"
   ],
-  "bildschirme": 91,
-  "messungen": 182,
+  "bildschirme": 90,
+  "messungen": 180,
+  "fokusziele_geprueft": 446,
   "befunde_gesamt": 0,
   "stellen_gesamt": 0,
   "je_art": [],

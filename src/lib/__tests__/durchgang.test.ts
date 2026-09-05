@@ -334,9 +334,22 @@ describe('Die Farbmodi', () => {
   });
 
   it('steht vor dem ersten Zeichnen fest — kein Aufblitzen', () => {
+    /* Gemessen wird bei `commit`, nicht bei `domcontentloaded`: Das
+       Programm hängt als `type="module"` im Dokument und läuft VOR diesem
+       Ereignis. Der alte Vergleich hätte auch dann Grün gemeldet, wenn das
+       inline-Skript gar nicht gelaufen wäre — und genau das war der Fall
+       (E-043). */
     const e = schritt('Nach dem Neuladen steht die Farbe vor dem ersten Zeichnen fest');
-    expect(e.bei_domcontentloaded).toBe(e.spaeter);
+    expect(e.bei_commit).toBe(e.spaeter);
     expect(e.skript_vor_stilblatt, 'Das Skript muss vor dem Stilblatt stehen').toBe(true);
+  });
+
+  it('wird von der Sicherheitsrichtlinie nicht verboten', () => {
+    /* `script-src 'self'` verbietet inline-Skripte — still, mit einer Zeile
+       in der Konsole, die niemand liest. Erlaubt wird das eine Skript jetzt
+       über seinen Hash, den die Bauzeit aus dem fertigen HTML rechnet. */
+    const e = schritt('Nach dem Neuladen steht die Farbe vor dem ersten Zeichnen fest');
+    expect(e.konsolenfehler).toEqual([]);
   });
 });
 
@@ -1051,5 +1064,27 @@ describe('Jeder Rückweg nennt einen Bereich, den es gibt', () => {
 
   it('lässt keine Unterseite ohne Rückweg', () => {
     expect(e().ohne_rueckweg).toEqual([]);
+  });
+});
+
+/* ── Was der erste Start kostet ──────────────────────────────────────────
+   Firebase wiegt gebaut 706 kB (rund 213 kB übertragen) und wurde bis
+   E-043 bei jedem Start geholt — auch bei jemandem, der sich nie anmeldet
+   und die App nur zum Üben benutzt. Siehe E-043. */
+
+describe('Die Startseite lädt nichts, was sie nicht braucht', () => {
+  const e = () => schritt('Die Startseite lädt nichts, was sie nicht braucht');
+
+  it('holt genau eine Datei', () => {
+    /* Vorher waren es fünf: das Programm und vier Firebase-Teile. */
+    expect(e().dateien_startseite).toBe(1);
+  });
+
+  it('holt das Konto trotzdem, sobald jemand es aufruft', () => {
+    /* Der Preis der Verzögerung darf nicht sein, dass die Funktion fehlt.
+       Auf dem Profil erscheint die Kontokarte, und dafür wird Firebase
+       nachgeladen — vier Dateien, dieselben wie vorher. */
+    expect(e().dateien_nach_profil).toBeGreaterThan(0);
+    expect(e().kontokarte_da).toBe(true);
   });
 });

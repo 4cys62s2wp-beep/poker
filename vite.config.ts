@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { buildCsp, isValidAuthDomain } from './src/lib/csp';
 import { defineConfig, type Plugin } from 'vitest/config';
@@ -20,15 +21,36 @@ function authDomainFromConfig(): string | null {
   }
 }
 
+/* Die Hashes der inline-Skripte aus dem FERTIGEN HTML.
+   ==================================================
+   index.html enthält genau ein inline-Skript: das, welches den Farbmodus
+   setzt, bevor das Stilblatt greift. `script-src 'self'` hat es still
+   blockiert (E-043) — die Konsole meldete es auf jeder Seite, und niemand
+   las die Konsole.
+
+   Erlaubt wird es über seinen Hash und nicht über `'unsafe-inline'`: So
+   ist genau dieses eine Skript erlaubt, Zeichen für Zeichen, und jede
+   Änderung daran fällt sofort auf. Gerechnet wird nach allen anderen
+   Umformungen (`order: 'post'`), damit der Hash zum ausgelieferten Text
+   passt und nicht zum Entwurf. */
+function inlineSkriptHashes(html: string): string[] {
+  return [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)]
+    .map((m) => `'sha256-${createHash('sha256').update(m[1], 'utf8').digest('base64')}'`);
+}
+
 function cspPlugin(): Plugin {
   return {
     name: 'inject-csp',
     apply: 'build',
-    transformIndexHtml(html) {
-      return html.replace(
-        '<meta charset="UTF-8" />',
-        `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${buildCsp(authDomainFromConfig())}" />`,
-      );
+    transformIndexHtml: {
+      order: 'post',
+      handler(html) {
+        const csp = buildCsp(authDomainFromConfig(), inlineSkriptHashes(html));
+        return html.replace(
+          '<meta charset="UTF-8" />',
+          `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${csp}" />`,
+        );
+      },
     },
   };
 }

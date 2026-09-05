@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
 import { BackLink } from '../components/ui';
 import { Link } from 'react-router-dom';
-import { moduleProgress, useAppState } from '../state/AppState';
+import { levelTitles, moduleProgress, useAppState } from '../state/AppState';
 import { useLang, levelLabel } from '../i18n';
 import { STR } from '../i18n/pages/learn';
 import { STR as TRAINER_TEXTE } from '../i18n/pages/trainerhub';
@@ -127,7 +127,7 @@ export function LearnPage() {
     { to: '/lernen/statistik', icon: 'chart', tone: 'violet', title: L.styleTitle, sub: L.styleSub },
   ];
 
-  const rang = rangstand(data.xp);
+  const rang = rangstand(data.xp, levelTitles(lang));
 
   return (
     <div>
@@ -225,6 +225,10 @@ export function LearnPage() {
           eine andere Stelle im Baum wandert, den Fokus verliert. */}
       <input
         className="search-input"
+        type="search"
+        /* Ein Platzhalter ist kein Name: Er verschwindet beim ersten
+           Zeichen, und dann heißt das Feld „Eingabefeld" (E-043). */
+        aria-label={L.searchLabel}
         style={{ maxWidth: 480, margin: 'var(--sp-5) 0 var(--sp-5)' }}
         placeholder={L.searchPlaceholder}
         value={query}

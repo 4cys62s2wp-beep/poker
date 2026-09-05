@@ -2026,6 +2026,38 @@ input[type="radio"] {
 /* Für Hilfstechnik sichtbar, am Bildschirm nicht. Das Suchfeld trägt sein
    Label im Platzhalter – der verschwindet aber beim Tippen, und ein
    Screenreader liest ihn ohnehin nicht als Beschriftung. */
+/* ═══════════════════════════════════════════════════════════════════════
+   Wo bin ich gerade? (E-043)
+   ═══════════════════════════════════════════════════════════════════════
+   Die App hatte drei Fokusregeln — für die Matrix, für eine Zelle und für
+   ein Herkunftszeichen. Alles andere, also 55 von 90 Bildschirmen, zeigte
+   beim Weiterspringen mit der Tabulatortaste nichts an: Der Browserumriss
+   ist `auto 1px` in einem Grau, das auf dunklem Grund unsichtbar ist.
+
+   Für jeden, der die App mit der Tastatur bedient, ist das derselbe Verlust
+   wie ein unsichtbarer Mauszeiger. Gemessen wird es seit E-043 in
+   `npm run bedienbar`, indem wirklich Tab gedrückt und danach verglichen
+   wird, ob sich am Umriss überhaupt etwas ändert.
+
+   `:focus-visible` und nicht `:focus`: Der Ring gehört dem, der tastet.
+   Wer tippt oder klickt, hat den Finger schon dort, wo er hinwollte, und
+   ein Ring um jeden angetippten Knopf wäre nur Lärm. */
+:focus-visible {
+  outline: 2.5px solid var(--focus-ring);
+  outline-offset: 2px;
+  /* Damit der Ring auch auf einer Fläche gleicher Farbe zu sehen ist. */
+  box-shadow: 0 0 0 4.5px var(--scrim-strong);
+}
+
+/* Der Ring folgt der Form: Eine runde Marke bekommt keinen eckigen Rahmen. */
+.pill:focus-visible,
+.btn:focus-visible,
+.chip-link:focus-visible { border-radius: var(--radius-pill); }
+
+/* Wer die Maus benutzt, bekommt ihn nicht — sonst klebt er nach jedem Tipp
+   am zuletzt berührten Knopf. */
+:focus:not(:focus-visible) { outline: none; }
+
 .sr-only {
   position: absolute;
   width: 1px;

@@ -36,7 +36,10 @@ export interface Rangstand {
   hoechsterRang: boolean;
 }
 
-export function rangstand(xp: number): Rangstand {
+/** @param titel Die Rangnamen der aktiven Sprache. Ohne Angabe die
+ *               deutschen — so bleiben Tests und Aufrufe ohne Sprache
+ *               gültig, und die Bildschirme reichen die Liste durch. */
+export function rangstand(xp: number, titel: readonly string[] = LEVEL_TITLES): Rangstand {
   /* Negative oder unsinnige XP kann es nicht geben — aber ein beschädigter
      Gerätespeicher kann alles enthalten, und ein Ring mit negativer Füllung
      sähe aus wie ein Fehler in der App statt wie einer in den Daten. */
@@ -47,12 +50,12 @@ export function rangstand(xp: number): Rangstand {
   const spanne = bis - von;
   return {
     level,
-    titel: LEVEL_TITLES[Math.min(level - 1, LEVEL_TITLES.length - 1)],
-    naechsterTitel: level < LEVEL_TITLES.length ? LEVEL_TITLES[level] : null,
+    titel: titel[Math.min(level - 1, titel.length - 1)],
+    naechsterTitel: level < titel.length ? titel[level] : null,
     von,
     bis,
     anteil: spanne <= 0 ? 1 : Math.max(0, Math.min(1, (sicher - von) / spanne)),
     fehlt: Math.max(0, bis - sicher),
-    hoechsterRang: level >= LEVEL_TITLES.length,
+    hoechsterRang: level >= titel.length,
   };
 }

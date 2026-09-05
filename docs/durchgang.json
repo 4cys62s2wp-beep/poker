@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-09-04T18:38:49.347Z",
+  "geprueft_am": "2026-09-05T15:57:22.032Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 868,
+        "dauer_ms": 895,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -192,7 +192,7 @@
       "name": "Der Abend steht in der Liste",
       "ergebnis": {
         "abende": 1,
-        "erste_karte": "Fr., 4. September 2026 · Ada · gewonnen · 5 Personen · gerade eben",
+        "erste_karte": "Sa., 5. September 2026 · Ada · gewonnen · 5 Personen · gerade eben",
         "namen_als_knoepfe": 5,
         "namen": [
           "Ada",
@@ -486,8 +486,8 @@
         ],
         "punkte_offen_vorher": 1,
         "urteil": "Richtig",
-        "zahlen": "35,0 % gegen 33,3 % nötig",
-        "warum_ziel": "#/lernen/drill/0-5-o-npxu",
+        "zahlen": "35,0 % gegen 16,7 % nötig",
+        "warum_ziel": "#/lernen/drill/0-0-5-npxu",
         "knoepfe_weg": 0,
         "punkt_gefuellt": 1,
         "urteil_nach_neuladen": "Richtig",
@@ -566,8 +566,8 @@
         "board_ohne_scrollen": true,
         "du_ohne_scrollen": true,
         "board_plaetze": 5,
-        "eigene_kartenbreite": 96,
-        "groesste_gegnerkarte": 28,
+        "eigene_kartenbreite": 105,
+        "groesste_gegnerkarte": 31,
         "leiste_unten_px": 844,
         "leiste_im_daumenbereich": true,
         "knoepfe": [
@@ -609,12 +609,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 51,
+        "dauer_ms": 58,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "35,0 %",
+        "ergebnis_text": "54,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },

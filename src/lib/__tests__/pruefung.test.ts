@@ -38,6 +38,7 @@ interface Pruefung {
     tipp_abstand_px: number;
   };
   modi: string[];
+  bildschirme_liste: string[];
   bildschirme: number;
   messungen: number;
   befunde_gesamt: number;
@@ -80,7 +81,7 @@ describe('Die Prüfung misst das Richtige', () => {
     expect(P.breite).toBeLessThanOrEqual(430);
   });
 
-  it('lässt keinen Bildschirm aus — wirklich keinen', () => {
+  it('lässt keine Adresse aus — wirklich keine', () => {
     /* Hier stand `filter((w) => w.inhalt)`, und `inhalt: true` heißt in
        `wege.json` „ist eine Lektion", nicht „ist ein Bildschirm". Der Lauf
        meldete brav „49 Bildschirme geprüft" und hatte dabei keinen einzigen
@@ -90,12 +91,50 @@ describe('Die Prüfung misst das Richtige', () => {
 
        Beim Ausweiten auf alle 90 Adressen kamen 3661 Befunde ans Licht,
        darunter der ganze Live-Bereich mit dunkler Schrift auf dunklem
-       Grund (1,02 zu 1). Siehe E-039. */
-    expect(P.bildschirme, 'Nach einem neuen Bildschirm `npm run pruefen` erneut ausführen')
-      .toBe(WEGE.wege.length);
+       Grund (1,02 zu 1). Siehe E-039.
+
+       Seit E-041 wird nicht mehr die Anzahl verglichen, sondern die Liste:
+       Eine Zahl kann stimmen und trotzdem den falschen Ausschnitt meinen. */
+    const fehlend = WEGE.wege.map((w) => w.hash)
+      .filter((h) => !P.bildschirme_liste.some((b) => b === h || b.startsWith(`${h} ·`)));
+    expect(fehlend, 'Nach einem neuen Bildschirm `npm run pruefen` erneut ausführen')
+      .toEqual([]);
+    expect(P.bildschirme).toBe(P.bildschirme_liste.length);
     /* Und die Gegenprobe zur alten Annahme: Es gibt mehr Bildschirme als
        Lektionen. Wer den Filter zurückholt, sieht es hier. */
     expect(WEGE.wege.length).toBeGreaterThan(WEGE.wege.filter((w) => w.inhalt).length);
+  });
+
+  it('sieht auch, was hinter einem Klick liegt', () => {
+    /* Der Übungstisch hat unter einer Adresse zwei Bildschirme: die Auswahl
+       der Tischgröße und den Tisch, auf dem gespielt wird. Bis E-041 sah der
+       Lauf nur die Auswahl — und meldete trotzdem „90 Bildschirme geprüft".
+       Was das gekostet hat, stand danach im hellen Modus auf dem Filz: die
+       Namen der Gegner in Anthrazit auf Dunkelgrün, unter 2 zu 1. */
+    expect(P.bildschirme_liste).toContain('#/lernen/uebungstisch · Tisch mit sechs Plätzen');
+    expect(P.bildschirme_liste.length).toBeGreaterThan(WEGE.wege.length);
+  });
+
+  it('rechnet Deckkraft mit, nicht nur Farbe', () => {
+    /* `opacity: 0.5` blendet einen ganzen Teilbaum gegen das, was dahinter
+       liegt. Wer nur `color` und `background-color` liest, misst eine
+       Lesbarkeit, die es auf dem Bildschirm nicht gibt: Für den Namen eines
+       ausgestiegenen Gegners meldete die alte Rechnung 8,9 zu 1, gemalt
+       waren es 2,4. Beim Nachrüsten kamen 303 Befunde ans Licht — an sechs
+       Stellen, die alle seit Jahren so aussahen. Siehe E-041. */
+    const SKRIPT = readFileSync('scripts/design-pruefen.mjs', 'utf8');
+    expect(SKRIPT).toMatch(/getComputedStyle\(kette\[i\]\)\.opacity/);
+    /* Und die Folge im Stilblatt: ein Wert für „tritt zurück", gemessen. */
+    const gedimmt = CSS.match(/--gedimmt:\s*([\d.]+)/);
+    expect(gedimmt, '--gedimmt fehlt in global.css').not.toBeNull();
+    expect(Number(gedimmt![1])).toBeGreaterThanOrEqual(0.85);
+    /* Kein zweiter, danebenstehender Wert: Wer eine Fläche zurücktreten
+       lässt, benutzt den Token. Ausgenommen sind Übergänge (`transition`)
+       und Bewegungen (`@keyframes`), die bei 0 anfangen und bei 1 enden. */
+    const ohneBewegung = CSS.replace(/@keyframes[\s\S]*?\n\}/g, '');
+    const streuung = [...ohneBewegung.matchAll(/^\s*opacity:\s*(0?\.\d+)\s*;/gm)]
+      .map((m) => m[1]);
+    expect(streuung).toEqual([]);
   });
 
   it('misst beide Farbmodi, nicht nur den eingestellten', () => {

@@ -122,6 +122,29 @@
   --tipp-abstand: 8px;
   --gestenstreifen: 24px;
 
+  /* ── Zurücktreten ────────────────────────────────────────────────────
+     Wie stark etwas zurücktritt, das noch nicht dran ist: die gesperrte
+     Lektion, die noch nicht verdiente Auszeichnung, der Sitz, der
+     weggeworfen hat.
+
+     Die Zahl ist gemessen, nicht gewählt (E-041). Bis dahin standen an
+     sechs Stellen sechs verschiedene Werte zwischen 0,25 und 0,72 — und
+     keiner war je nachgerechnet worden, weil der Kontrastlauf `opacity`
+     gar nicht kannte. Nachgerechnet ergab 0,72 im hellen Modus 3,78 zu 1
+     für die Beschreibung einer gesperrten Lektion: unter der Grenze.
+
+     Der Durchlauf über 0,6 bis 1,0 zeigt, wo es kippt: Bei 0,85 erreicht
+     der schlechteste Fall (die Marke „Einsteiger" auf dem Lernpfad, hell)
+     4,52 zu 1. 0,88 lässt etwas Luft, damit nicht die nächste kleine
+     Farbänderung stillschweigend darunter rutscht.
+
+     Was daraus folgt, ist ein Entwurfsurteil und steht in DESIGN.md 10.10:
+     Bei 0,88 sieht man den Unterschied kaum noch — also darf Ausgrautsein
+     nicht länger das Kennzeichen sein. Was noch nicht dran ist, sagt es
+     mit einem Schloss, einer Marke, fehlenden Karten. Deckkraft begleitet
+     das nur. */
+  --gedimmt: 0.88;
+
 
   /* ── Ende Designfundament ──────────────────────────────────────────── */
 
@@ -1307,7 +1330,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .quiz-option.correct { background: var(--ok-dim); border-color: rgba(88, 179, 104, 0.55); }
 .quiz-option.wrong { background: var(--danger-dim); border-color: rgba(224, 92, 85, 0.55); }
-.quiz-option.dimmed { opacity: 0.45; }
+.quiz-option.dimmed { opacity: var(--gedimmt); }
 .quiz-option:disabled { cursor: default; }
 
 .feedback-box {
@@ -1369,7 +1392,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   transition: opacity 0.25s, border-color 0.2s, box-shadow 0.2s;
 }
 
-.seat.folded { opacity: 0.42; }
+.seat.folded { opacity: var(--gedimmt); }
 
 .seat.acting {
   border-color: var(--auszeichnung);
@@ -1393,26 +1416,61 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   color: #fff;
 }
 
+/* Ein Jeton, kein Punkt (E-041). Ein Kreis in Gold ist eine Aufzählungsmarke;
+   was ihn zum Chip macht, sind die hellen Kanteneinlagen und der glatte
+   Kern in der Mitte. Beides zeichnet ein Kegelverlauf mit acht Segmenten
+   und ein Kreisverlauf darüber — kein Bild, keine Datei. */
 .chip-dot {
-  width: 11px;
-  height: 11px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 32%, var(--auszeichnung-verlauf-hell), var(--auszeichnung) 68%);
-  border: 1.5px dashed rgba(60, 40, 5, 0.55);
+  background:
+    radial-gradient(circle at 50% 50%,
+      var(--auszeichnung-verlauf-hell) 0 32%, transparent 33%),
+    repeating-conic-gradient(from 22deg,
+      var(--auszeichnung) 0 22.5deg, #f6e8c0 22.5deg 45deg);
+  box-shadow:
+    inset 0 0 0 1px rgba(60, 40, 5, 0.5),
+    0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+/* Der Topf ist Geld, und Geld liegt am Tisch gestapelt. Drei Scheiben
+   übereinander sagen das in fünfzehn Pixeln. */
+.chip-stapel {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 15px;
+}
+
+.chip-stapel i {
+  height: 4px;
+  border-radius: 50% / 100%;
+  background: linear-gradient(180deg, #f6e8c0, var(--auszeichnung));
+  box-shadow: 0 0.5px 0 rgba(60, 40, 5, 0.55);
+}
+
+.chip-stapel i:nth-child(2) {
+  background: linear-gradient(180deg, #efe1b6, #b8933f);
+}
+
+/* Der Dealerknopf: eine Scheibe aus Elfenbein mit eingeprägtem Rand. */
 .dealer-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 19px;
-  height: 19px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: linear-gradient(160deg, #fbf8ef, #ddd8c8);
+  background: radial-gradient(circle at 38% 30%, #fffdf6, #e2dbc7 68%, #c3bca8);
   color: #232018;
   font-size: 10px;
   font-weight: 900;
-  border: 1px solid #8f8a77;
+  border: none;
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.75),
+    inset 0 0 0 2.5px rgba(139, 131, 109, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.45);
   vertical-align: 1px;
 }
 
@@ -1626,7 +1684,15 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   padding: 18px 10px;
 }
 
-.badge-tile .b-ico { font-size: 31px; filter: grayscale(1); opacity: 0.32; transition: filter 0.3s, opacity 0.3s; }
+.badge-tile .b-ico {
+  font-size: 31px;
+  /* Grau statt farbig sagt „noch nicht verdient" deutlich genug; die
+     Deckkraft muss es nicht auch noch sagen — und bei 0,32 sah man nicht
+     mehr, was es überhaupt zu holen gibt. */
+  filter: grayscale(1);
+  opacity: var(--gedimmt);
+  transition: filter 0.3s, opacity 0.3s;
+}
 .badge-tile.earned .b-ico { filter: none; opacity: 1; }
 .badge-tile.earned { border-color: var(--auszeichnung-a30); }
 .badge-tile .b-name { font-size: 13px; font-weight: 800; }
@@ -2633,101 +2699,261 @@ input[type="radio"] {
 .tisch-kopf .btn.sm.ghost { margin-left: auto; }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   Der Übungstisch als Spielansicht (E-040)
+   Der Übungstisch als Spielansicht (E-040), als Ring (E-041)
    ═══════════════════════════════════════════════════════════════════════
-   Drei Bänder übereinander statt Prozentkoordinaten. Vorher hingen die
-   Sitze an `top: y%` und wuchsen nach unten aus sich heraus — der obere
-   Sitz legte sich bei fünf Gegnern über Flop und River. Ein Band kann das
-   nicht: Es hat seine eigene Zeile, und die Zeile daneben auch. */
+   E-040 hat die gemeldete Überdeckung beseitigt, indem es die Sitze
+   untereinanderlegte: drei Bänder, die sich nicht in die Quere kommen
+   können. Der Fehler war weg — aber das Ergebnis sah aus wie eine Liste
+   auf grünem Grund. An einem Tisch sitzen die Plätze *um* die Mitte.
+
+   Der Ring ist ein Raster mit benannten Feldern. Zwei Rasterfelder können
+   sich genauso wenig überlappen wie zwei Bänder: Die Zusage aus E-040 gilt
+   unverändert. Was sich ändert, ist, wo die Felder liegen. */
 .filz {
   display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  gap: var(--sp-3);
-  padding: var(--sp-4) var(--sp-3) var(--sp-3);
-  border-radius: 28px;
-  /* Ein Filz mit Rand, wie ein Tisch ihn hat: dunkles Holz außen, Tuch
-     innen, ein feiner Lichtsaum dazwischen. */
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-3);
+
+  /* Der Ring auf dem schmalen Gerät: drei oben, zwei an den Seiten, Topf
+     dazwischen, Board darunter, der eigene Platz unten. Die Felder mit
+     Namen, damit die Anordnung an einer Stelle steht und nicht in fünf
+     Regeln verteilt. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas:
+    'p2    p3    p4'
+    'p1    topf  p5'
+    'board board board'
+    'lage  lage  lage'
+    'du    du    du';
+  /* Alle Zeilen so hoch wie ihr Inhalt; der Rest wird gleichmäßig verteilt.
+     Dadurch bekommt der Tisch seine Weite von selbst, ohne dass irgendwo
+     eine Zeilenhöhe hingeschrieben wird (Regel 10.4). */
+  align-content: space-evenly;
+
+  /* Der Filz ist eine dunkle Fläche — auch im hellen Modus. Das ist keine
+     zweite Ausnahme von der Farbwahl (die Liste in App.tsx hat weiterhin
+     genau einen Eintrag): Ein Bereich der App folgt der Wahl, ein
+     gezeichneter Gegenstand hat seine eigene Farbe. Grüner Filz mit dunkler
+     Schrift war im hellen Modus praktisch unlesbar — die Namen der Gegner
+     standen in Anthrazit auf Dunkelgrün. Die Regel `[data-modus] { color }`
+     weiter oben ist genau dafür gemacht. */
+
+  /* Rund wie ein Tisch: auf dem Handy eine Rennbahn mit weichen Ecken,
+     weil eine echte Ellipse dort die äußeren Plätze abschneiden würde. */
+  border-radius: 56px;
+
+  /* Die Rail: außen Holz, innen ein Lederwulst, dazwischen ein Lichtsaum.
+     Drei Schichten, weil ein Tisch drei hat — ein einzelner Rahmen sieht aus
+     wie ein Kasten, nicht wie eine Kante, über die man den Arm legt. */
+  border: 13px solid #2b1a0b;
+  /* Von oben beleuchtet: oben heller, unten dunkler. Eine Kante, die auf
+     allen vier Seiten dieselbe Farbe hat, sieht aus wie ein Aufkleber. */
+  border-color: #402a12 #2e1d0c #1b1006 #2e1d0c;
   background:
-    radial-gradient(ellipse at 50% 38%,
+    /* Die Webung des Tuchs: zwei feine Diagonalen, kaum sichtbar. Ohne sie
+       ist der Filz eine Farbfläche; mit ihr ist er Stoff. */
+    repeating-linear-gradient(45deg,
+      rgba(255, 255, 255, 0.014) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(-45deg,
+      rgba(0, 0, 0, 0.02) 0 2px, transparent 2px 4px),
+    /* Das Licht über der Tischmitte. */
+    radial-gradient(ellipse at 50% 40%,
       var(--flaeche-tisch-hell) 0%, var(--flaeche-tisch) 54%, var(--flaeche-tisch-tief) 100%);
-  border: 10px solid #241509;
-  outline: 1.5px solid var(--auszeichnung-a28);
-  outline-offset: -11px;
   box-shadow:
-    var(--shadow),
-    inset 0 0 70px rgba(0, 0, 0, 0.42),
-    inset 0 2px 18px rgba(255, 255, 255, 0.06);
-  /* Der Tisch nimmt die Höhe, die die Seite übrig lässt (Regel 10.4) —
-     keine hingeschriebenen 380 Pixel mehr. */
+    /* Der Lederwulst innen an der Rail. */
+    inset 0 0 0 2px rgba(20, 12, 4, 0.9),
+    inset 0 0 0 3.5px var(--auszeichnung-a28),
+    /* Die Wölbung: oben Licht, unten Schatten, außen dunkler. */
+    inset 0 3px 14px rgba(255, 255, 255, 0.07),
+    inset 0 -8px 26px rgba(0, 0, 0, 0.4),
+    inset 0 0 80px rgba(0, 0, 0, 0.45),
+    /* Der Tisch steht im Raum, er ist nicht aufgeklebt. */
+    0 1px 0 rgba(255, 255, 255, 0.05),
+    0 24px 44px rgba(0, 0, 0, 0.45),
+    var(--shadow);
+  position: relative;
+  isolation: isolate;
+  /* Der Tisch nimmt die Höhe, die die Seite übrig lässt (Regel 10.4). */
   flex: 1 1 auto;
   min-height: 0;
   margin-bottom: var(--sp-4);
 }
 
-/* ── Band 1: die Gegner ──────────────────────────────────────────────── */
-.filz-gegner {
-  display: grid;
-  /* Zeilenabstand größer als der Spaltenabstand: Der Einsatz-Chip hängt
-     unter dem Sitz heraus, und bei zwei Reihen stieße er sonst an die
-     Sitze darunter. */
-  gap: var(--sp-6) var(--sp-2);
-  align-items: start;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+/* Heads-Up: einer gegenüber, sonst nichts. */
+.filz[data-gegner='1'] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'p1' 'topf' 'board' 'lage' 'du';
 }
 
-/* Bei fünf Gegnern nebeneinander bliebe jedem eine halbe Kartenbreite.
-   Drei oben, zwei darunter — das ist die Anordnung, die ein Sechser-Tisch
-   auf einem Handy verträgt. */
-.filz-gegner[data-anzahl="5"],
-.filz-gegner[data-anzahl="4"] {
-  grid-template-columns: repeat(3, 1fr);
+/* Zu dritt: zwei gegenüber, der Topf zwischen ihnen. */
+.filz[data-gegner='2'] {
+  grid-template-areas:
+    'p1    topf  p2'
+    'board board board'
+    'lage  lage  lage'
+    'du    du    du';
 }
 
+/* Auf dem breiten Bildschirm wird aus der Rennbahn eine Ellipse, und die
+   beiden äußeren Plätze rücken an die Seiten — dorthin, wo an einem echten
+   Tisch die Ellipse am breitesten ist. Die leeren Ecken (`.`) halten die
+   oberen Plätze von der Rundung fern. */
+@media (min-width: 860px) {
+  .filz {
+    border-radius: 46% / 26%;
+    /* Am großen Tisch ist auch die Rail breiter — eine 13 Pixel schmale
+       Kante um eine 930 Pixel breite Ellipse sieht aus wie ein Strich. */
+    border-width: 19px;
+    padding: var(--sp-5) var(--sp-6);
+    gap: var(--sp-3);
+  }
+
+  /* Am großen Tisch sind auch die Karten in der Mitte groß. Der Maßstab
+     steht hier statt einer zweiten Kartengröße im Bauteil: Es sind
+     dieselben Karten, nur weiter weg vom Auge. */
+  .filz .board { transform: scale(1.25); }
+  .filz .sitz-schild { max-width: 196px; }
+  .filz .sitz-karten { min-height: 52px; }
+
+  .filz[data-gegner='5'] {
+    grid-template-columns:
+      minmax(0, 0.85fr) minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 0.85fr);
+    grid-template-areas:
+      '.  p2    p3    p4    .'
+      'p1 topf  topf  topf  p5'
+      'p1 board board board p5'
+      '.  lage  lage  lage  .'
+      '.  du    du    du    .';
+  }
+}
+
+/* Die Einsatzlinie: der Bogen, hinter dem die Chips liegen. An einem echten
+   Tisch ist sie aufgenäht, und sie ist der Grund, warum die Mitte als Mitte
+   zu erkennen ist. Rein zeichnerisch — kein eigenes Element im Baum. */
+.filz::before {
+  content: '';
+  position: absolute;
+  inset: 26% 7% 24%;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.07);
+  border-bottom-color: rgba(255, 255, 255, 0.045);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Das Zeichen in der Tischmitte. Kein Schmuck im Sinne von E-035: Ein Tisch
+   ohne Marke in der Mitte sieht aus wie ein Stück Stoff. Es steht hinter
+   allem, ist kaum sichtbar und trägt keine Aussage — genau deshalb darf es
+   klein und still sein. */
+.filz::after {
+  content: '♠';
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  transform: translate(-50%, -50%);
+  font-size: 108px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.032);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ── Ein Platz am Tisch ──────────────────────────────────────────────── */
 .sitz {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--sp-1);
   min-width: 0;
-  padding: var(--sp-2);
-  border-radius: var(--radius);
-  background: var(--scrim-strong);
+  /* Unten bleibt Platz für den Einsatz. Er gehört damit in den Kasten des
+     Sitzes: Er kann nichts überdecken, und die Zeile springt nicht, wenn
+     jemand setzt. */
+  padding-bottom: 22px;
+  transition: opacity 0.25s;
+}
+
+.sitz[data-platz='1'] { grid-area: p1; }
+.sitz[data-platz='2'] { grid-area: p2; }
+.sitz[data-platz='3'] { grid-area: p3; }
+.sitz[data-platz='4'] { grid-area: p4; }
+.sitz[data-platz='5'] { grid-area: p5; }
+
+@media (min-width: 860px) {
+  /* Die seitlichen Plätze stehen über zwei Zeilen — mittig, nicht oben. */
+  .filz[data-gegner='5'] .sitz[data-platz='1'],
+  .filz[data-gegner='5'] .sitz[data-platz='5'] { align-self: center; }
+}
+
+/* Die Karten liegen vor dem Spieler auf dem Schild auf: leicht gefächert,
+   mit Schatten auf dem Tuch. Zwei gerade Rechtecke sehen aus wie zwei
+   Rechtecke; zwei gedrehte sehen aus wie hingelegte Karten. */
+.sitz-karten {
+  display: flex;
+  justify-content: center;
+  min-height: 46px;
+  margin-bottom: -13px;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45));
+}
+
+.sitz-karten .cards-row { gap: 0; }
+.sitz-karten .pcard:first-child { transform: rotate(-5deg); }
+.sitz-karten .pcard:last-child { transform: rotate(5deg); margin-left: -9px; }
+
+/* Das Namensschild. An einem echten Tisch steht es vor dem Spieler und ist
+   das, was man aus zwei Metern noch lesen kann. */
+.sitz-schild {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  width: 100%;
+  max-width: 150px;
+  padding: 3px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(180deg, rgba(20, 27, 22, 0.95), rgba(5, 9, 7, 0.96));
   border: 1px solid var(--border-strong);
-  transition: opacity 0.25s, border-color 0.2s, box-shadow 0.2s;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 3px 8px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 /* Wer gerade dran ist, bekommt einen Ring — nicht nur eine andere Schrift:
    Am Tisch sucht man den Blick, nicht den Text. */
-.sitz.dran {
+.sitz.dran .sitz-schild {
   border-color: var(--auszeichnung);
-  box-shadow: 0 0 0 2px var(--auszeichnung-a40);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 2px var(--auszeichnung-a40),
+    0 0 16px var(--auszeichnung-a28);
 }
 
-.sitz.weg { opacity: 0.45; }
-
-.sitz-kopf {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-1);
-  min-width: 0;
-  max-width: 100%;
-}
+.sitz.weg { opacity: var(--gedimmt); }
 
 .sitz-name {
   font-size: var(--fs-kleingedrucktes);
   font-weight: var(--fw-bold);
+  line-height: 1.25;
   color: var(--text);
+  max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.sitz-karten { min-height: 49px; display: flex; align-items: center; }
-
+/* Die Marke des Ausgestiegenen liegt an der Stelle, an der eben noch die
+   Karten lagen. Sie braucht einen eigenen Grund: Auf dem Filz allein kam
+   sie auf 1,2 zu 1 (E-041) — hellgrau auf Mittelgrün ist keine Schrift,
+   das ist ein Schatten. */
 .sitz-weg {
+  align-self: center;
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: rgba(6, 10, 8, 0.8);
   font-size: var(--fs-kleingedrucktes);
-  color: var(--text-faint);
+  color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -2737,24 +2963,33 @@ input[type="radio"] {
   align-items: baseline;
   gap: var(--sp-2);
   font-size: var(--fs-kleingedrucktes);
+  line-height: 1.2;
   font-variant-numeric: var(--ziffern);
 }
 
 .sitz-stapel { font-weight: var(--fw-bold); color: var(--auszeichnung-lesbar); }
 .sitz-lage { color: var(--text-dim); }
 
+/* Der Dealerknopf liegt auf der Ecke des Schildes, wie er am Tisch neben
+   dem Spieler liegt. */
+.sitz-schild .dealer-btn {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+}
+
 /* Der Einsatz liegt vor dem Sitz, wie die Chips vor dem Spieler. */
 .sitz-einsatz {
   position: absolute;
-  bottom: calc(var(--sp-4) * -1);
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1);
-  padding: 2px var(--sp-2);
+  gap: 5px;
+  padding: 2px var(--sp-2) 2px 4px;
   border-radius: var(--radius-pill);
-  background: var(--scrim-strong);
+  background: rgba(6, 10, 8, 0.85);
   border: 1px solid var(--auszeichnung-a40);
   font-size: var(--fs-kleingedrucktes);
   font-weight: var(--fw-bold);
@@ -2763,14 +2998,12 @@ input[type="radio"] {
   white-space: nowrap;
 }
 
-/* ── Band 2: Topf und Board ──────────────────────────────────────────── */
-.filz-mitte {
+/* ── Topf, Board, Lage ───────────────────────────────────────────────── */
+.filz-topf {
+  grid-area: topf;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--sp-3);
-  min-height: 0;
 }
 
 .topf {
@@ -2779,8 +3012,9 @@ input[type="radio"] {
   gap: var(--sp-2);
   padding: var(--sp-1) var(--sp-3);
   border-radius: var(--radius-pill);
-  background: var(--scrim-strong);
+  background: rgba(6, 10, 8, 0.8);
   border: 1px solid var(--auszeichnung-a30);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   font-weight: var(--fw-bold);
   font-size: var(--fs-kleingedrucktes);
   letter-spacing: 0.06em;
@@ -2789,15 +3023,66 @@ input[type="radio"] {
   font-variant-numeric: var(--ziffern);
 }
 
-/* Wer gewonnen hat — in der Tischmitte, wo man hinsieht. */
-.filz-ergebnis {
+.filz-board {
+  grid-area: board;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+  justify-content: center;
+  /* Die Gemeinschaftskarten liegen auf dem Tuch, nicht darin. */
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.5));
+}
+
+/* Der leere Platz: An einem echten Tisch sieht man, wie viele Karten noch
+   kommen. Ein Board, das nur zeigt, was schon liegt, verschweigt das.
+   Eingelassen statt gestrichelt — eine gestrichelte Linie liest sich als
+   Platzhalter einer Oberfläche, eine Vertiefung als Stelle auf dem Tisch. */
+.board-platz {
+  width: 48px;
+  height: 67px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow:
+    inset 0 3px 7px rgba(0, 0, 0, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Eine Zeile, die immer dasteht und ihren Inhalt tauscht: erst wer dran
+   ist, dann wer gewonnen hat. */
+.filz-lage {
+  grid-area: lage;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
   text-align: center;
+}
+
+.filz-zug {
+  padding: 3px var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: rgba(6, 10, 8, 0.72);
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-stark);
+}
+
+.filz-ergebnis {
   font-weight: var(--fw-bold);
   font-size: var(--fs-kleingedrucktes);
   color: var(--text-stark);
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--radius);
-  background: var(--scrim-strong);
+  background: rgba(6, 10, 8, 0.85);
   border: 1px solid var(--border-strong);
   max-width: 100%;
 }
@@ -2807,75 +3092,56 @@ input[type="radio"] {
   font-size: var(--fs-fliesstext);
 }
 
-.board {
-  display: flex;
-  gap: var(--sp-2);
-  align-items: center;
-  justify-content: center;
-}
-
-/* Der leere Platz: An einem echten Tisch sieht man, wie viele Karten noch
-   kommen. Ein Board, das nur zeigt, was schon liegt, verschweigt das. */
-.board-platz {
-  width: 48px;
-  height: 67px;
-  border-radius: 7px;
-  border: 1.5px dashed rgba(255, 255, 255, 0.14);
-  background: rgba(0, 0, 0, 0.12);
-}
-
-/* ── Band 3: der Held ────────────────────────────────────────────────── */
+/* ── Der eigene Platz ────────────────────────────────────────────────── */
 .filz-du {
+  grid-area: du;
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--radius);
-  background: var(--scrim-strong);
-  border: 1px solid var(--border-strong);
-}
-
-.filz-du.dran {
-  border-color: var(--akzent);
-  box-shadow: 0 0 0 2px var(--akzent-dim);
-}
-
-.du-text {
+  justify-self: center;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 0;
+  align-items: center;
+  /* Der eigene Einsatz liegt oben — Richtung Tischmitte, wie die Chips,
+     die man nach vorne schiebt. */
+  padding-top: 24px;
 }
 
-.du-name {
+.filz-du .sitz-einsatz { top: 0; bottom: auto; }
+
+/* Die eigene Hand ist das, worum es geht — die größte Darstellung auf dem
+   Tisch (Regel 10.8), leicht gefächert wie ein Blatt in der Hand. */
+.du-karten {
   display: flex;
-  align-items: center;
-  gap: var(--sp-2);
+  justify-content: center;
+  /* Nur so weit, dass die Karten auf dem Schild aufliegen — der Index unten
+     rechts ist das Kennzeichen der Karte und bleibt sichtbar. */
+  margin-bottom: -9px;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.55));
+}
+
+.du-karten .cards-row { gap: 0; }
+.du-karten .pcard:first-child { transform: rotate(-4deg); }
+.du-karten .pcard:last-child { transform: rotate(4deg); margin-left: -10px; }
+
+.filz-du .sitz-schild {
+  max-width: none;
+  min-width: 176px;
+  padding: var(--sp-1) var(--sp-4);
+}
+
+.filz-du .sitz-name {
   font-family: var(--font-display);
   font-size: var(--fs-fliesstext);
-  font-weight: var(--fw-bold);
-  color: var(--text);
 }
 
-.du-stapel {
-  font-size: var(--fs-kleingedrucktes);
-  font-weight: var(--fw-bold);
-  color: var(--auszeichnung-lesbar);
-  font-variant-numeric: var(--ziffern);
+.filz-du.dran .sitz-schild {
+  border-color: var(--akzent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 2px var(--akzent-dim),
+    0 0 18px var(--akzent-dim);
 }
 
-.du-lage { font-size: var(--fs-kleingedrucktes); color: var(--text-dim); }
-
-/* ── Wer dran ist ────────────────────────────────────────────────────── */
-.filz-zug {
-  text-align: center;
-  font-size: var(--fs-kleingedrucktes);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-stark);
-}
 
 /* Die Erhöhen-Auswahl sitzt direkt über der Entscheidungsleiste. */
 .erhoehen {
@@ -3128,7 +3394,7 @@ input[type="radio"] {
 /* Was noch kommt, tritt zurück — aber bleibt lesbar: Gesperrt heißt nicht
    unsichtbar, sonst weiß niemand, was ihn erwartet. */
 .lernpfad .stufe.spaeter .stufe-karte,
-.lernpfad .stufe.gesperrt .stufe-karte { opacity: 0.72; }
+.lernpfad .stufe.gesperrt .stufe-karte { opacity: var(--gedimmt); }
 
 .lernpfad .stufe-text {
   display: flex;
@@ -3254,7 +3520,7 @@ input[type="radio"] {
 }
 
 .lektionen .lektion.spaeter .lektion-karte,
-.lektionen .lektion.gesperrt .lektion-karte { opacity: 0.72; }
+.lektionen .lektion.gesperrt .lektion-karte { opacity: var(--gedimmt); }
 
 .lektionen .nummer {
   flex: 0 0 auto;
@@ -4362,8 +4628,15 @@ input[type="radio"] {
   font-weight: var(--fw-bold);
 }
 
+/* Ein Knopf, der in seiner Beschriftung sagt, WARUM er nicht geht, muss
+   lesbar bleiben — sonst steht die Auskunft da, die niemand entziffert
+   (gemessen 1,65 zu 1, E-041). Ausgeschaltet wird deshalb über die Fläche
+   gezeigt, nicht über Deckkraft. */
 .einrichten-knopf:disabled {
-  opacity: 0.45;
+  background: var(--bg-elev);
+  border-color: var(--border-strong);
+  color: var(--text-dim);
+  font-weight: var(--fw-medium);
   cursor: default;
 }
 

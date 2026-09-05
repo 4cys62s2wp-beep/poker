@@ -7,6 +7,7 @@
      deutsche Nutzer laden kein Byte Englisch und umgekehrt nur einmal. */
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { rangname } from '../lib/rang/titel';
 import { durableSet } from '../lib/storage';
 import type { Module, GlossaryEntry } from '../content/types';
 import { ALL_MODULES } from '../content';
@@ -71,22 +72,11 @@ export function levelLabel(level: string, lang: Lang): string {
   return map[level] ?? level;
 }
 
-export const LEVEL_TITLES_I18N: Record<Lang, string[]> = {
-  de: [
-    'Neuling', 'Küchentisch-Spieler', 'Solider Anfänger', 'Aufsteiger', 'Grinder',
-    'Regular', 'Range-Denker', 'Blattleser', 'Tisch-Kapitän', 'Crusher',
-    'Poker-Mentor', 'High Roller', 'Final-Table-Stammgast', 'Elite-Grinder', 'Poker-Legende',
-  ],
-  en: [
-    'Rookie', 'Kitchen-Table Player', 'Solid Beginner', 'Climber', 'Grinder',
-    'Regular', 'Range Thinker', 'Hand Reader', 'Table Captain', 'Crusher',
-    'Poker Mentor', 'High Roller', 'Final-Table Regular', 'Elite Grinder', 'Poker Legend',
-  ],
-};
-
+/* Die Liste selbst steht in `lib/rang/titel.ts` — sie gehört dem Rangsystem,
+   nicht dem Wörterbuch, und stand hier eine Zeit lang ein zweites Mal
+   (E-044). */
 export function levelTitleFor(level: number, lang: Lang): string {
-  const titles = LEVEL_TITLES_I18N[lang];
-  return titles[Math.min(level - 1, titles.length - 1)];
+  return rangname(level, lang);
 }
 
 interface LangValue {

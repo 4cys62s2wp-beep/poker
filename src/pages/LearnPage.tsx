@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
 import { BackLink } from '../components/ui';
 import { Link } from 'react-router-dom';
-import { levelTitles, moduleProgress, useAppState } from '../state/AppState';
+import { moduleProgress, useAppState } from '../state/AppState';
+import { rangnamen } from '../lib/rang/titel';
 import { useLang, levelLabel } from '../i18n';
 import { STR } from '../i18n/pages/learn';
 import { STR as TRAINER_TEXTE } from '../i18n/pages/trainerhub';
@@ -127,7 +128,7 @@ export function LearnPage() {
     { to: '/lernen/statistik', icon: 'chart', tone: 'violet', title: L.styleTitle, sub: L.styleSub },
   ];
 
-  const rang = rangstand(data.xp, levelTitles(lang));
+  const rang = rangstand(data.xp, rangnamen(lang));
 
   return (
     <div>

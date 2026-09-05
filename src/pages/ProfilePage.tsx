@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ALL_MODULES } from '../content';
-import { levelTitles, useAppState, xpThreshold } from '../state/AppState';
+import { useAppState, xpThreshold } from '../state/AppState';
+import { rangnamen } from '../lib/rang/titel';
 import { MODI } from '../lib/design/modus';
 import { useFarbmodus } from '../lib/design/FarbmodusProvider';
 import { useLang, levelTitleFor } from '../i18n';
@@ -74,7 +75,7 @@ export function ProfilePage() {
       lang === 'de' ? 'de-DE' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' },
     );
   };
-  const rang = rangstand(data.xp, levelTitles(lang));
+  const rang = rangstand(data.xp, rangnamen(lang));
 
   const trainerTotals = Object.values(data.trainers).reduce(
     (acc, t) => ({ attempts: acc.attempts + t.attempts, correct: acc.correct + t.correct }),

@@ -13,29 +13,19 @@ export const STR = defineStrings(
     backHome: 'Start',
 
     chipsTitle: 'Chip-Rechner',
-    chipsBody: 'Den Koffer auf die Spieler aufteilen, Werte festlegen, Start-Blinds und Blind-Fahrplan bekommen.',
     chipsWhen: 'Bevor die erste Karte fällt',
 
     payoutTitle: 'Auszahlung',
-    payoutBody: 'Preisgeld auf die vorderen Plätze verteilen – nach einer Struktur, über die vorher niemand streitet.',
     payoutWhen: 'Bevor gespielt wird, nicht danach',
 
 
 
     abendTitle: 'Abend führen',
-    abendBody:
-      'Koffer eintragen, Blinds ausrechnen lassen, Uhr laufen lassen. Das '
-      + 'Gerät liegt in der Mitte und zeigt allen dasselbe.',
     abendWhen: 'Vom ersten bis zum letzten Blatt',
 
     abendeTitle: 'Frühere Abende',
-    abendeBody:
-      'Wer war dabei, wie lange ging es, wer hatte am Ende die Chips. Ein '
-      + 'Tipp auf einen Namen zeigt alle Abende dieser Person.',
-    abendeWhen: 'Am Tag danach',
 
     bankrollTitle: 'Bankroll',
-    bankrollBody: 'Ergebnisse festhalten – Live und Online getrennt, mit Verlauf und Export.',
     bankrollWhen: 'Nach der Session',
 
     /* Der Zeitpunkt im Ablauf als Marke, nicht als Absatz (E-042). */
@@ -62,29 +52,19 @@ export const STR = defineStrings(
     backHome: 'Home',
 
     chipsTitle: 'Chip calculator',
-    chipsBody: 'Split the case across players, set values, get starting blinds and a blind schedule.',
     chipsWhen: 'Before the first card',
 
     payoutTitle: 'Payouts',
-    payoutBody: 'Spread the prize pool over the top places – using a structure nobody argues about afterwards.',
     payoutWhen: 'Before play starts, not after',
 
 
 
     abendTitle: 'Run the evening',
-    abendBody:
-      'Enter the case, let the blinds be worked out, start the clock. The '
-      + 'device lies in the middle and shows everyone the same thing.',
     abendWhen: 'From the first hand to the last',
 
     abendeTitle: 'Earlier evenings',
-    abendeBody:
-      'Who was there, how long it went, who had the chips at the end. A tap '
-      + 'on a name shows every evening that person played.',
-    abendeWhen: 'The day after',
 
     bankrollTitle: 'Bankroll',
-    bankrollBody: 'Log your results – live and online kept apart, with history and export.',
     bankrollWhen: 'After the session',
 
     markeVorher: 'Before',

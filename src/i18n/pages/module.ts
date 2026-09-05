@@ -17,7 +17,6 @@ export const STR = defineStrings(
     lektionDran: 'Hier weiter',
     lektionFertig: 'Abgeschlossen',
     xpBis: (bis: number) => `bis ${bis} XP`,
-    xpBekommen: (xp: number) => `+${xp} XP`,
   },
   {
     notFound: 'Module not found.',
@@ -34,6 +33,5 @@ export const STR = defineStrings(
     lektionDran: 'Continue here',
     lektionFertig: 'Completed',
     xpBis: (bis: number) => `up to ${bis} XP`,
-    xpBekommen: (xp: number) => `+${xp} XP`,
   },
 );

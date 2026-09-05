@@ -177,3 +177,62 @@ describe('Verstreute Zahlenwerte werden nicht mehr', () => {
     expect(jetzt).toBeLessThanOrEqual(fest);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Regeln, die kein Bauteil mehr benutzt
+// ---------------------------------------------------------------------------
+
+describe('Das Stilblatt hat keine toten Regeln', () => {
+  /* Gefunden beim Durchsehen (E-043): `.seat`, `.seat.folded`, `.seat.acting`
+     und `.table-felt` gestalteten den Ein-Geräte-Tisch, den E-030 entfernt
+     hat. Sie standen noch da, wurden mitgeliefert und beim nächsten Umbau
+     mitgepflegt — inklusive einer Änderung in dieser Sitzung, die niemandem
+     etwas gebracht hätte.
+
+     Totes CSS ist nicht nur Ballast: Es ist eine Falle. Wer `.seat` liest,
+     hält den Ein-Geräte-Tisch für vorhanden. */
+
+  /* Klassennamen, die zur Laufzeit zusammengesetzt werden und deshalb im
+     Quelltext nicht wörtlich vorkommen. Kurz und begründet — wer die Liste
+     verlängert, soll den Grund danebenschreiben. */
+  const ZUSAMMENGESETZT = [
+    /* `suit-${suitCls}` in PlayingCard.tsx: eine Klasse je Farbe. */
+    'suit-c', 'suit-d', 'suit-h', 'suit-s',
+  ];
+
+  const quelltext = (() => {
+    const dateien: string[] = [];
+    const sammle = (pfad: string) => {
+      for (const eintrag of readdirSync(pfad)) {
+        const voll = join(pfad, eintrag);
+        if (statSync(voll).isDirectory()) {
+          if (!voll.includes('__tests__')) sammle(voll);
+        } else if (/\.(tsx|ts)$/.test(voll) && !voll.includes('.test.')) {
+          dateien.push(voll);
+        }
+      }
+    };
+    sammle('src');
+    return [...dateien.map((d) => readFileSync(d, 'utf8')), readFileSync('index.html', 'utf8')]
+      .join('\n');
+  })();
+
+  it('benutzt jede Klasse, die es gestaltet', () => {
+    const css = readFileSync('src/styles/global.css', 'utf8');
+    const klassen = new Set<string>();
+    for (const m of css.matchAll(/\.([a-zA-Z][\w-]*)/g)) klassen.add(m[1]);
+    const tot = [...klassen]
+      .filter((k) => !ZUSAMMENGESETZT.includes(k))
+      .filter((k) => !new RegExp(`\\b${k.replace(/-/g, '\\-')}\\b`).test(quelltext));
+    expect(tot.sort(), 'Diese Regeln gestalten nichts mehr').toEqual([]);
+  });
+
+  it('regelt reduzierte Bewegung an genau einer Stelle', () => {
+    /* Es gab zwei Blöcke für dieselbe Sache, und der zweite war der
+       schwächere: ohne `animation-iteration-count`, ohne `scroll-behavior`.
+       Zwei Regeln für dieselbe Sache driften auseinander. */
+    const css = readFileSync('src/styles/global.css', 'utf8');
+    const treffer = css.match(/@media \(prefers-reduced-motion: reduce\)/g) ?? [];
+    expect(treffer.length).toBe(1);
+  });
+});

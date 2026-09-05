@@ -1154,6 +1154,67 @@ await schritt('Die Startseite lädt nichts, was sie nicht braucht', async () => 
   }
 });
 
+/* ── Quer gehalten (E-044) ────────────────────────────────────────────────
+   Ein Gerät, auf dem ein Pokertisch liegt, hält man quer. Gemessen bei
+   844 × 390 lag der Tisch 564 Pixel hoch im Bild: Die Gegner waren
+   vollständig über dem Bildrand, das Board zur Hälfte. Man entschied, ohne
+   zu sehen, gegen wen und worauf.
+
+   Geprüft wird die Folge: Alle Sitze, das Board und die eigenen Karten
+   liegen über der Entscheidungsleiste. */
+
+await schritt('Quer gehalten sieht man den ganzen Tisch', async () => {
+  const quer = await browser.newContext({
+    viewport: { width: 844, height: 390 }, locale: 'de-DE',
+  });
+  await quer.addInitScript(() => {
+    localStorage.setItem('pokermentor-lang-v1', 'de');
+    localStorage.setItem('pokermentor-farbmodus-v1', 'dunkel');
+  });
+  const q = await quer.newPage();
+  try {
+    await q.goto(`${GRUND}/#/lernen/uebungstisch`, { waitUntil: 'domcontentloaded' });
+    await q.waitForTimeout(400);
+    await q.locator('.card.clickable').filter({ hasText: /6-max/ }).first().click();
+    await q.waitForSelector('.filz');
+    for (let i = 0; i < 40; i += 1) {
+      if (await q.locator('.entscheidung button').count() > 0) break;
+      await q.waitForTimeout(300);
+    }
+    await q.waitForTimeout(300);
+    await q.evaluate(() => window.scrollTo(0, 0));
+    await q.waitForTimeout(200);
+    return await q.evaluate(() => {
+      const oben = (el) => Math.round(el.getBoundingClientRect().top);
+      const unten = (el) => Math.round(el.getBoundingClientRect().bottom);
+      const leiste = document.querySelector('.entscheidung');
+      const grenze = leiste ? oben(leiste) : window.innerHeight;
+      const sitze = [...document.querySelectorAll('.sitz')];
+      const board = document.querySelector('.board');
+      const eigene = document.querySelector('.du-karten');
+      const sichtbar = (el) => el && oben(el) >= 0 && unten(el) <= grenze;
+      return {
+        fenster: `${window.innerWidth}x${window.innerHeight}`,
+        filz_hoehe: Math.round(document.querySelector('.filz').getBoundingClientRect().height),
+        sitze: sitze.length,
+        sitze_ueber_der_leiste: sitze.filter(sichtbar).length,
+        board_ueber_der_leiste: sichtbar(board),
+        eigene_karten_ueber_der_leiste: sichtbar(eigene),
+        /* Die eigene Hand bleibt die größte Darstellung (Regel 10.8). */
+        eigene_kartenbreite: Math.round(
+          document.querySelector('.du-karten .pcard')?.getBoundingClientRect().width ?? 0,
+        ),
+        boardkartenbreite: Math.round(
+          document.querySelector('.board .pcard, .board .board-platz')?.getBoundingClientRect().width ?? 0,
+        ),
+        seitlicher_ueberlauf: Math.max(0, document.documentElement.scrollWidth - window.innerWidth),
+      };
+    });
+  } finally {
+    await quer.close();
+  }
+});
+
 await browser.close();
 
 const ergebnis = {

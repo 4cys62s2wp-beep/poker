@@ -37,7 +37,6 @@ export const STR = defineStrings(
     blindsAnfang: 'Blinds am Anfang',
     kurs: (punkte: string, euro: string) => `${punkte} Punkte für ${euro} €`,
     jeSpielerKurz: (n: number, farbe: string) => `${n} × ${farbe}`,
-    uebrigInBank: (n: number) => `${n} bleiben als Wechselgeld liegen`,
     wertJeChip: (w: number) => `je ${w}`,
 
     hinweisMaterial: (max: number) =>
@@ -47,7 +46,6 @@ export const STR = defineStrings(
     hinweisWenigKleine: 'Wenige kleine Chips. Nach ein paar Runden muss gewechselt werden.',
     hinweisSorteLiegt: 'Eine Farbe bleibt im Koffer — fünf Werte sind am Tisch das Äußerste.',
 
-    stufenTitel: 'Blindstufen',
     finaleGut: (bb: number) => `Am Ende bleiben den letzten drei im Schnitt ${bb} Big Blinds — das trägt ein Finale.`,
     finaleZuKurz: (noetig: number) =>
       `Für so viele Startchips ist der Abend zu kurz. Mit dieser Steigung bräuchte es etwa ${Math.round(noetig / 60)} Stunden.`,
@@ -62,7 +60,6 @@ export const STR = defineStrings(
 
     // ── Tisch ───────────────────────────────────────────────────────────
     blinds: 'Blinds',
-    restzeit: 'Restzeit',
     danach: 'Danach',
     letzteStufe: 'Letzte Stufe',
     pause: 'Pause',
@@ -119,7 +116,6 @@ export const STR = defineStrings(
     blindsAnfang: 'Blinds at the start',
     kurs: (punkte: string, euro: string) => `${punkte} points for €${euro}`,
     jeSpielerKurz: (n: number, farbe: string) => `${n} × ${farbe}`,
-    uebrigInBank: (n: number) => `${n} stay in the bank for change`,
     wertJeChip: (w: number) => `${w} each`,
 
     hinweisMaterial: (max: number) =>
@@ -129,7 +125,6 @@ export const STR = defineStrings(
     hinweisWenigKleine: 'Few small chips. After a few rounds you will need to make change.',
     hinweisSorteLiegt: 'One colour stays in the case — five values is the most a table can handle.',
 
-    stufenTitel: 'Blind levels',
     finaleGut: (bb: number) => `At the end the last three average ${bb} big blinds — that carries a final.`,
     finaleZuKurz: (noetig: number) =>
       `The evening is too short for that many starting chips. At this rate it would take about ${Math.round(noetig / 60)} hours.`,
@@ -143,7 +138,6 @@ export const STR = defineStrings(
     losgehtsFehlt: 'Enter the case and the players first',
 
     blinds: 'Blinds',
-    restzeit: 'Time left',
     danach: 'Then',
     letzteStufe: 'Final level',
     pause: 'Pause',

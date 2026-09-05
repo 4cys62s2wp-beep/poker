@@ -18,8 +18,6 @@ export const STR = defineStrings(
     onlyPracticeTable:
       'Gezählt werden nur Hände am Übungstisch. Am Pokerabend-Tisch spielen mehrere Leute auf einem Gerät – dort ließe sich nicht sauber trennen, wer welche Entscheidung getroffen hat.',
 
-    // Aussagekraft
-    confidenceTitle: 'Aussagekraft',
     confidence: {
       none: 'keine Daten',
       weak: 'noch wenig aussagekräftig',
@@ -126,14 +124,7 @@ export const STR = defineStrings(
     handsLabel: 'Hände',
     wonLabel: 'gewonnen',
     chipsLabel: 'Chips',
-    resetTitle: 'Auswertung zurücksetzen',
-    resetBody:
-      'Löscht die Kennzahlen, nicht deinen Lernfortschritt. Sinnvoll, wenn du etwas Neues ausprobierst und sehen willst, wie sich das auswirkt.',
-    resetButton: 'Kennzahlen zurücksetzen',
-    resetConfirm: 'Wirklich alle Kennzahlen löschen? Dein Lernfortschritt bleibt erhalten.',
-    resetDone: 'Kennzahlen zurückgesetzt.',
 
-    navStats: 'Spielstil',
   },
   {
     title: 'Your Playing Style',
@@ -148,7 +139,6 @@ export const STR = defineStrings(
     onlyPracticeTable:
       'Only hands at the practice table are counted. At the poker night table several people share one device – there it would be impossible to tell cleanly who made which decision.',
 
-    confidenceTitle: 'Reliability',
     confidence: {
       none: 'no data',
       weak: 'not yet meaningful',
@@ -250,13 +240,6 @@ export const STR = defineStrings(
     handsLabel: 'hands',
     wonLabel: 'won',
     chipsLabel: 'chips',
-    resetTitle: 'Reset analysis',
-    resetBody:
-      'Clears the metrics, not your learning progress. Useful when you try something new and want to see how it plays out.',
-    resetButton: 'Reset metrics',
-    resetConfirm: 'Really delete all metrics? Your learning progress stays.',
-    resetDone: 'Metrics reset.',
 
-    navStats: 'Style',
   },
 );

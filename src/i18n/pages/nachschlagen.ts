@@ -10,7 +10,7 @@ export const STR = defineStrings(
   {
     eyebrow: 'Nachschlagen',
     title: 'Schnell etwas wissen',
-    sub: 'Kein Kurs, keine Fortschrittsanzeige. Such oder tipp – zwei Schritte bis zur Antwort.',
+    sub: 'Such oder tipp – zwei Schritte bis zur Antwort.',
     backHome: 'Start',
 
     searchLabel: 'Suchen',
@@ -34,11 +34,23 @@ export const STR = defineStrings(
     equityDesc: 'Hand gegen Hand oder gegen eine Range ausrechnen',
     tellsTitle: 'Tells & Reads',
     tellsDesc: 'Worauf man bei Gegnern achtet – und was nichts bedeutet',
+
+    /* Was auf der Kachel steht: nicht die Erklärung des Namens, sondern das,
+       was dahinter liegt. Alle Zahlen kommen aus denselben Daten wie die
+       Seite dahinter (E-042). */
+    coachInhalt: 'Hand rein, Empfehlung mit Begründung raus',
+    glossaryInhalt: (n: number) => `${n} Begriffe von A bis Z`,
+    handsInhalt: (p: number) => `Alle 169 Hände · Button eröffnet ${p} %`,
+    rangesInhalt: (n: number) => `${n} Eröffnungs-Charts, dazu Call und 3-Bet`,
+    oddsInhalt: (fd: number, gs: number) =>
+      `Flushdraw ${fd} %, Gutshot ${gs} % bis zum River`,
+    equityInhalt: 'Hand gegen Hand, Hand gegen Range',
+    tellsInhalt: (n: number) => `${n} Tells, jeder mit Zuverlässigkeit`,
   },
   {
     eyebrow: 'Reference',
     title: 'Look something up',
-    sub: 'No course, no progress bar. Search or tap – two steps to an answer.',
+    sub: 'Search or tap – two steps to an answer.',
     backHome: 'Home',
 
     searchLabel: 'Search',
@@ -62,5 +74,14 @@ export const STR = defineStrings(
     equityDesc: 'Hand versus hand or against a range',
     tellsTitle: 'Tells & reads',
     tellsDesc: 'What to watch for in opponents – and what means nothing',
+
+    coachInhalt: 'Hand in, recommendation with reasoning out',
+    glossaryInhalt: (n: number) => `${n} terms from A to Z`,
+    handsInhalt: (p: number) => `All 169 hands · button opens ${p} %`,
+    rangesInhalt: (n: number) => `${n} opening charts, plus call and 3-bet`,
+    oddsInhalt: (fd: number, gs: number) =>
+      `Flush draw ${fd} %, gutshot ${gs} % by the river`,
+    equityInhalt: 'Hand versus hand, hand versus range',
+    tellsInhalt: (n: number) => `${n} tells, each with a reliability rating`,
   },
 );

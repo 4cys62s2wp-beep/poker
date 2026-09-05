@@ -36,6 +36,7 @@ export const STR = defineStrings(
 
     badgesTitle: 'Abzeichen',
     badgeEarnedPill: '✓ verdient',
+    badgeSeit: (wann: string) => (wann ? `seit ${wann}` : 'verdient'),
 
     accountSection: 'Konto & Synchronisation',
 
@@ -125,6 +126,7 @@ export const STR = defineStrings(
 
     badgesTitle: 'Badges',
     badgeEarnedPill: '✓ earned',
+    badgeSeit: (wann: string) => (wann ? `since ${wann}` : 'earned'),
 
     accountSection: 'Account & Sync',
 

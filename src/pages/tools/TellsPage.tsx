@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import type { TellCategory } from '../../content/tells';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/tellspage';
+import { BackLink } from '../../components/ui';
+import { STR as NAV } from '../../i18n/pages/layout';
 
 function Stars({ n }: { n: number }) {
   const { lang } = useLang();
@@ -24,9 +26,7 @@ export function TellsPage() {
 
   return (
     <div>
-      <Link to="/nachschlagen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        {L.backToTools}
-      </Link>
+      <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
       <div className="page-header">
         <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>

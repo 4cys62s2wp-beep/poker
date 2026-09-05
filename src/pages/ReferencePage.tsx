@@ -6,11 +6,16 @@
    Antwort und ist danach fertig. Deshalb steht hier nirgends „x von y",
    nirgends ein Balken, nirgends eine Streak.
 
-   Warum ein dichtes Raster und keine großen Karten wie unter „Live-Session":
-   Dort sind es vier Einträge, die jeweils erklären müssen, wann man sie
-   braucht. Hier sind es sieben, und ihre Namen sagen es bereits. Sieben große
-   Karten wären Scrollen statt Nachschlagen – und die Vorgabe lautet zwei
-   Schritte bis zum Ziel.
+   Warum Kacheln und keine erklärenden Karten (E-042): Hier stand unter jedem
+   Namen ein Satz, der den Namen erklärte — „Glossar: Jeder Begriff, den am
+   Tisch jemand fallen lässt". Sieben davon untereinander waren sieben
+   Absätze und zweieinhalb Bildschirme; die Vorgabe lautet zwei Schritte bis
+   zum Ziel.
+
+   Jetzt trägt jede Kachel, was hinter ihr liegt: die Zahl der Begriffe, die
+   Form der Eröffnungsrange, die zwei Prozentzahlen, nach denen am häufigsten
+   gefragt wird. Das ist kürzer als der Satz — und es ist eine Auskunft, für
+   die man vorher hätte tippen müssen.
 
    Die Suche ist genau dafür da: Ein Begriff, ein Tipp, angekommen. Sie sucht
    über die Bereiche UND über das Glossar, weil ein Nutzer, der „Squeeze"
@@ -19,21 +24,31 @@
 
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Icon, IconTile, type IconName } from '../components/Icon';
+import type { ReactNode } from 'react';
+import { Icon, type IconName } from '../components/Icon';
+import { Bereichskachel, MiniRaster } from '../components/Bereich';
+import { CardsRow } from '../components/PlayingCard';
 import { PageHeader } from '../components/ui';
+import { RFI_CHARTS } from '../content/ranges';
+import { expandRangeSpec, rangePercent } from '../lib/poker/ranges';
+import {
+  OUTS_FLUSHDRAW, OUTS_GUTSHOT, chanceZweiKarten,
+} from '../lib/poker/outs';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/nachschlagen';
-
-type Tone = 'gold' | 'green' | 'blue' | 'red' | 'violet';
 
 interface Eintrag {
   to: string;
   icon: IconName;
-  tone: Tone;
   title: string;
-  desc: string;
-  /** Zusätzliche Suchwörter, unter denen Nutzer diesen Eintrag erwarten. */
+  /** Was hinter der Kachel liegt — eine Zeile aus echten Daten. */
+  inhalt: ReactNode;
+  /** Der Gegenstand selbst, klein. Nur wo es einen gibt. */
+  vorschau?: ReactNode;
+  /** Wonach in der Suche gefunden wird — auch das, was nicht auf der Kachel steht. */
   keywords: string[];
+  /** Für die Trefferliste: der alte, erklärende Satz. Dort ist er richtig. */
+  desc: string;
 }
 
 export function ReferencePage() {
@@ -42,40 +57,66 @@ export function ReferencePage() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
 
+  /* Die Vorschauen kommen aus denselben Daten wie die Seiten dahinter —
+     eine Kachel, die eine Zahl behauptet, die auf der Zielseite anders
+     lautet, ist schlimmer als eine ohne Zahl. */
+  const btn = useMemo(() => {
+    const chart = RFI_CHARTS.find((c) => c.position === 'BTN') ?? RFI_CHARTS[0];
+    const range = expandRangeSpec(chart.raise);
+    /* `rangePercent` liefert einen Anteil zwischen 0 und 1. */
+    return { range, anteil: Math.round(rangePercent(range) * 100) };
+  }, []);
+  const utg = useMemo(() => {
+    const chart = RFI_CHARTS.find((c) => c.position === 'UTG') ?? RFI_CHARTS[0];
+    return expandRangeSpec(chart.raise);
+  }, []);
+  const flushdraw = Math.round(chanceZweiKarten(OUTS_FLUSHDRAW) * 100);
+  const gutshot = Math.round(chanceZweiKarten(OUTS_GUTSHOT) * 100);
+
   const eintraege: Eintrag[] = [
     {
-      to: '/nachschlagen/coach', icon: 'coach', tone: 'red',
+      to: '/nachschlagen/coach', icon: 'coach',
       title: L.coachTitle, desc: L.coachDesc,
+      inhalt: L.coachInhalt,
+      vorschau: <CardsRow cards={['As', 'Kh']} size="sm" />,
       keywords: ['coach', 'hand', 'empfehlung', 'advice', 'was tun', 'spot'],
     },
     {
-      to: '/nachschlagen/glossar', icon: 'glossary', tone: 'blue',
+      to: '/nachschlagen/glossar', icon: 'glossary',
       title: L.glossaryTitle, desc: L.glossaryDesc,
+      inhalt: L.glossaryInhalt(content.glossary.length),
       keywords: ['glossar', 'glossary', 'begriff', 'term', 'bedeutung', 'wort'],
     },
     {
-      to: '/nachschlagen/haende', icon: 'search', tone: 'green',
+      to: '/nachschlagen/haende', icon: 'search',
       title: L.handsTitle, desc: L.handsDesc,
+      inhalt: L.handsInhalt(btn.anteil),
+      vorschau: <MiniRaster range={btn.range} />,
       keywords: ['starthand', 'starting hand', 'hände', 'hands', 'position', 'ak', 'aa'],
     },
     {
-      to: '/nachschlagen/ranges', icon: 'grid', tone: 'gold',
+      to: '/nachschlagen/ranges', icon: 'grid',
       title: L.rangesTitle, desc: L.rangesDesc,
+      inhalt: L.rangesInhalt(RFI_CHARTS.length),
+      vorschau: <MiniRaster range={utg} />,
       keywords: ['range', 'chart', 'raster', 'open', 'eröffnen', '3bet', '3-bet'],
     },
     {
-      to: '/nachschlagen/odds', icon: 'chart', tone: 'blue',
+      to: '/nachschlagen/odds', icon: 'chart',
       title: L.oddsTitle, desc: L.oddsDesc,
+      inhalt: L.oddsInhalt(flushdraw, gutshot),
       keywords: ['odds', 'outs', 'pot odds', 'wahrscheinlichkeit', 'chance', 'prozent'],
     },
     {
-      to: '/nachschlagen/equity', icon: 'scale', tone: 'violet',
+      to: '/nachschlagen/equity', icon: 'scale',
       title: L.equityTitle, desc: L.equityDesc,
+      inhalt: L.equityInhalt,
       keywords: ['equity', 'rechner', 'calculator', 'gegen', 'versus', 'ausrechnen'],
     },
     {
-      to: '/nachschlagen/tells', icon: 'eye', tone: 'violet',
+      to: '/nachschlagen/tells', icon: 'eye',
       title: L.tellsTitle, desc: L.tellsDesc,
+      inhalt: L.tellsInhalt(content.tells.length),
       keywords: ['tell', 'tells', 'read', 'gegner', 'körpersprache', 'verhalten'],
     },
   ];
@@ -124,7 +165,7 @@ export function ReferencePage() {
         backLabel={L.backHome}
       />
 
-      <form onSubmit={springen} role="search" style={{ marginBottom: 'var(--sp-5)' }}>
+      <form onSubmit={springen} role="search" style={{ marginBottom: 'var(--sp-4)' }}>
         <label htmlFor="nachschlagen-suche" className="sr-only">{L.searchLabel}</label>
         <div style={{ position: 'relative' }}>
           <span
@@ -159,17 +200,14 @@ export function ReferencePage() {
           {treffer.bereiche.length > 0 && (
             <>
               <div className="eyebrow">{L.searchHintTool}</div>
-              <div className="grid cols-2" style={{ marginTop: 'var(--sp-2)' }}>
+              <div className="bereiche nachschlagen" style={{ marginTop: 'var(--sp-2)' }}>
                 {treffer.bereiche.map((e) => (
-                  <Link key={e.to} to={e.to} className="card clickable">
-                    <div className="row" style={{ alignItems: 'flex-start' }}>
-                      <IconTile name={e.icon} tone={e.tone} />
-                      <div>
-                        <div style={{ fontWeight: 'var(--fw-bold)' }}>{e.title}</div>
-                        <div className="small muted" style={{ marginTop: 3 }}>{e.desc}</div>
-                      </div>
-                    </div>
-                  </Link>
+                  <Bereichskachel
+                    key={e.to} to={e.to} icon={e.icon} titel={e.title}
+                    /* In der Trefferliste steht der erklärende Satz: Wer
+                       sucht, will wissen, ob das das Gesuchte ist. */
+                    inhalt={e.desc}
+                  />
                 ))}
               </div>
             </>
@@ -194,19 +232,14 @@ export function ReferencePage() {
         </div>
       )}
 
-      {/* Ohne Suchbegriff: alles, dicht und scannbar. */}
+      {/* Ohne Suchbegriff: alles, dicht und mit Inhalt. */}
       {!treffer && (
-        <div className="grid cols-2">
+        <div className="bereiche nachschlagen">
           {eintraege.map((e) => (
-            <Link key={e.to} to={e.to} className="card clickable">
-              <div className="row" style={{ alignItems: 'flex-start' }}>
-                <IconTile name={e.icon} tone={e.tone} />
-                <div>
-                  <div style={{ fontWeight: 'var(--fw-bold)', fontSize: 'var(--fs-body)' }}>{e.title}</div>
-                  <div className="small muted" style={{ marginTop: 3 }}>{e.desc}</div>
-                </div>
-              </div>
-            </Link>
+            <Bereichskachel
+              key={e.to} to={e.to} icon={e.icon} titel={e.title}
+              inhalt={e.inhalt} vorschau={e.vorschau}
+            />
           ))}
         </div>
       )}

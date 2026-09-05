@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-09-05T15:57:22.032Z",
+  "geprueft_am": "2026-09-05T18:01:22.875Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 895,
+        "dauer_ms": 837,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -597,10 +597,10 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | SERIE | – | TREFFER | 0 | BESTE",
-        "nach_zwei": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
-        "nach_neuladen": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
+        "nach_zwei": "0 | SERIE | 50 % | TREFFER | 1 | BESTE",
+        "nach_neuladen": "0 | SERIE | 50 % | TREFFER | 1 | BESTE",
         "quote_bleibt": true,
-        "quote_nach_zwei": "0 %",
+        "quote_nach_zwei": "50 %",
         "ohne_versuche_kein_prozent": true,
         "felder": 3
       },
@@ -609,14 +609,99 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 58,
+        "dauer_ms": 37,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "54,1 %",
+        "ergebnis_text": "35,0 %",
         "uebergang": "0s",
         "belebung": "none"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Der Nachschlagen-Bereich ist eine Übersicht, keine Strecke",
+      "ergebnis": {
+        "kacheln": 7,
+        "unterkante_px": 804,
+        "fenster": 844,
+        "seitenhoehe": 844,
+        "sichtbar_ohne_scrollen": 7,
+        "mit_inhalt": 7,
+        "mit_vorschau": 3,
+        "inhalte": [
+          "Hand rein, Empfehlung mit Begründung raus",
+          "159 Begriffe von A bis Z",
+          "Alle 169 Hände · Button eröffnet 42 %",
+          "5 Eröffnungs-Charts, dazu Call und 3-Bet",
+          "Flushdraw 35 %, Gutshot 16 % bis zum River",
+          "Hand gegen Hand, Hand gegen Range",
+          "27 Tells, jeder mit Zuverlässigkeit"
+        ],
+        "symbolfarben": 1
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Das Glossar ist ein Wörterbuch, keine Wand",
+      "ergebnis": {
+        "seitenhoehe": 11425,
+        "eintraege": 159,
+        "erste_hoehe": 61,
+        "buchstaben": 22,
+        "aufgeklappt": 0,
+        "nach_tipp": {
+          "erste_hoehe": 141,
+          "aufgeklappt": 1,
+          "angesagt": "true"
+        }
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Kein Rückweg nennt einen Bereich, den es nicht gibt",
+      "ergebnis": {
+        "rueckwege": [
+          {
+            "hash": "#/nachschlagen/glossar",
+            "beschriftung": "Nachschlagen"
+          },
+          {
+            "hash": "#/nachschlagen/haende",
+            "beschriftung": "Nachschlagen"
+          },
+          {
+            "hash": "#/nachschlagen/odds",
+            "beschriftung": "Nachschlagen"
+          },
+          {
+            "hash": "#/nachschlagen/ranges",
+            "beschriftung": "Nachschlagen"
+          },
+          {
+            "hash": "#/nachschlagen/tells",
+            "beschriftung": "Nachschlagen"
+          },
+          {
+            "hash": "#/nachschlagen/equity",
+            "beschriftung": "Nachschlagen"
+          },
+          {
+            "hash": "#/session/bankroll",
+            "beschriftung": "Live-Session"
+          },
+          {
+            "hash": "#/session/chips",
+            "beschriftung": "Live-Session"
+          },
+          {
+            "hash": "#/session/auszahlung",
+            "beschriftung": "Live-Session"
+          }
+        ],
+        "unbekannte_bereiche": [],
+        "ohne_rueckweg": []
       },
       "uebersprungen": false
     }

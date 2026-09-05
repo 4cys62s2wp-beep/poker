@@ -289,6 +289,12 @@
   --bg-deep: #090d0b;
   --bg-elev: #121814;
   --bg-card: #161e19;
+  /* Die Fläche eines Eingabefeldes. Sie stand bis E-042 auf --scrim —
+     einem durchscheinenden Schleier, der für Überlagerungen auf dunklem
+     Grund gedacht ist. Im hellen Modus ergab das 45 % Dunkel auf Creme:
+     Jedes Suchfeld und jedes Textfeld der App war ein grauer Klotz.
+     Ein Feld ist eine eigene Fläche und braucht einen eigenen Wert. */
+  --feld: #0e1310;
   --bg-card-hover: #1b241e;
   --border: rgba(236, 233, 223, 0.075);
   --border-strong: rgba(236, 233, 223, 0.16);
@@ -360,6 +366,7 @@
   --bg-deep: #efece5;
   --bg-elev: #fbfaf6;
   --bg-card: #fdfcf9;
+  --feld: #fffefc;
   --bg-card-hover: #f2efe7;
   --border: rgba(28, 33, 29, 0.12);
   --border-strong: rgba(28, 33, 29, 0.26);
@@ -1598,20 +1605,111 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .stars { color: var(--auszeichnung); letter-spacing: 1.5px; font-size: 12.5px; white-space: nowrap; }
 .stars .off { color: rgba(236, 233, 223, 0.16); }
 
-.glossary-item {
-  padding: 15px 0;
-  border-bottom: 1px solid var(--border);
+/* Das Glossar als Wörterbuch (E-042).
+   =================================
+   Vorher: 159 Begriffe mit vollständiger Definition, alle gleichzeitig
+   ausgeklappt — 30 219 Pixel Seitenhöhe. Jetzt eine Zeile je Begriff mit
+   der ersten Zeile der Erklärung, nach Anfangsbuchstaben gruppiert. */
+.glossar {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
 }
 
-.glossary-item .term { font-weight: 800; font-size: 15.5px; }
-.glossary-item .def { color: var(--text-dim); font-size: 14.5px; margin-top: var(--sp-1); }
+.glossar-gruppe {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Der Buchstabe klebt beim Scrollen oben: Man weiß immer, wo im Alphabet
+   man gerade ist — das ist es, was ein Wörterbuch von einer Liste
+   unterscheidet. */
+.glossar-buchstabe {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 0 0 var(--sp-1);
+  padding: var(--sp-1) 0;
+  background: var(--bg-deep);
+  font-family: var(--font-display);
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  color: var(--auszeichnung-lesbar);
+  letter-spacing: 0.08em;
+}
+
+.glossar-eintrag {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-height: var(--tipp-min);
+  padding: var(--sp-2) 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: none;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.glossar-eintrag:hover .glossar-begriff { color: var(--auszeichnung-lesbar); }
+
+.glossar-kopf {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  width: 100%;
+}
+
+.glossar-begriff {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-fliesstext);
+  color: var(--text);
+  transition: color 0.15s;
+}
+
+.glossar-marke {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+}
+
+/* Zugeklappt eine Zeile, aufgeklappt so viele wie nötig. Der Text bleibt
+   in beiden Fällen im Baum: Für ein Vorlesegerät fehlt nichts, und wer
+   scrollt, liest meistens schon hier die Antwort. */
+.glossar-def {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
+}
+
+.glossar-eintrag.auf .glossar-def {
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+}
+
+.glossar-verwandt {
+  margin-top: var(--sp-1);
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--auszeichnung-lesbar);
+}
 
 .search-input, .text-input, select.text-input {
   width: 100%;
   padding: var(--sp-3) var(--sp-4);
   border-radius: 12px;
   border: 1px solid var(--border-strong);
-  background: var(--scrim);
+  background: var(--feld);
   color: var(--text);
   /* 16px verhindert Auto-Zoom beim Fokussieren auf iOS */
   font-size: 16px;
@@ -1675,28 +1773,108 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   border: 0;
 }
 
-.badge-tile {
+/* Die Abzeichensammlung (E-042).
+   ============================
+   Vorher unterschied ein verdientes Abzeichen sich von einem unverdienten
+   durch einen Rahmen und das Wort „verdient" — dabei ist das Verdienen der
+   ganze Zweck der Sammlung. Ein neues Abzeichen meldete sich beim Erhalten
+   mit einem Hinweis und verschwand danach in einer Kachelwand.
+
+   Jetzt ist es eine Medaille: eine Scheibe mit Ring, bei einem verdienten
+   in der Auszeichnungsfarbe und mit Schimmer, darunter der Tag, an dem es
+   dazukam. Das Datum ist keine Verzierung — es ist das, was eine Sammlung
+   von einer Liste unterscheidet. */
+.abzeichen {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--tipp-abstand);
+}
+
+.abzeichen-stueck {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 6px;
-  padding: 18px 10px;
+  gap: var(--sp-1);
+  padding: var(--sp-4) var(--sp-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
 }
 
-.badge-tile .b-ico {
-  font-size: 31px;
+.abzeichen-medaille {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin-bottom: var(--sp-1);
+  border-radius: 50%;
+  font-size: 26px;
+  line-height: 1;
+  background: var(--scrim);
+  box-shadow: inset 0 0 0 2px var(--border-strong);
   /* Grau statt farbig sagt „noch nicht verdient" deutlich genug; die
      Deckkraft muss es nicht auch noch sagen — und bei 0,32 sah man nicht
-     mehr, was es überhaupt zu holen gibt. */
+     mehr, was es überhaupt zu holen gibt (E-041). */
   filter: grayscale(1);
   opacity: var(--gedimmt);
-  transition: filter 0.3s, opacity 0.3s;
+  transition: filter 0.3s, opacity 0.3s, box-shadow 0.3s;
 }
-.badge-tile.earned .b-ico { filter: none; opacity: 1; }
-.badge-tile.earned { border-color: var(--auszeichnung-a30); }
-.badge-tile .b-name { font-size: 13px; font-weight: 800; }
-.badge-tile .b-desc { font-size: 11.5px; color: var(--text-faint); line-height: 1.4; }
+
+.abzeichen-stueck.verdient {
+  border-color: var(--auszeichnung-a30);
+  background:
+    radial-gradient(120% 140% at 50% 0%, var(--auszeichnung-schwach) 0%, transparent 62%),
+    var(--bg-card);
+}
+
+.abzeichen-stueck.verdient .abzeichen-medaille {
+  filter: none;
+  opacity: 1;
+  background: var(--auszeichnung-schwach);
+  box-shadow:
+    inset 0 0 0 2px var(--auszeichnung),
+    0 0 14px var(--auszeichnung-a28);
+}
+
+.abzeichen-stueck .b-name {
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.abzeichen-stueck .b-desc {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.abzeichen-seit {
+  margin-top: var(--sp-1);
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--auszeichnung-schwach);
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  color: var(--auszeichnung-lesbar);
+  white-space: nowrap;
+}
+
+/* Der Stand neben einer Abschnittsüberschrift: „3 von 22". */
+.section-stand {
+  /* Hinter die Linie, nicht davor: „Abzeichen ——— 3 von 22". Die Linie ist
+     ein `::after` und damit das letzte Kind; `order` schiebt den Stand
+     dahinter. */
+  order: 1;
+  flex: 0 0 auto;
+  font-family: var(--font-body);
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--auszeichnung-lesbar);
+  font-variant-numeric: var(--ziffern);
+}
 
 .slider {
   width: 100%;
@@ -3142,6 +3320,143 @@ input[type="radio"] {
     0 0 18px var(--akzent-dim);
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Die Bereichskachel (E-042)
+   ═══════════════════════════════════════════════════════════════════════
+   Die mittleren Ebenen — Nachschlagen und Live-Session — bestanden aus
+   Karten mit einem Namen und einem Satz, der den Namen erklärte. Sieben
+   davon untereinander sind sieben Absätze, kein Bereich.
+
+   Die Kachel trägt stattdessen, was hinter ihr liegt: eine Zeile aus echten
+   Daten und, wo es einen Gegenstand gibt, den Gegenstand selbst in klein.
+   Dadurch wird sie kürzer als das, was sie ersetzt — sieben Kacheln passen
+   auf einen Bildschirm, und „zwei Schritte bis zur Antwort" stimmt wieder. */
+.bereich {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'kopf   vorschau'
+    'inhalt vorschau';
+  align-items: center;
+  gap: 2px var(--sp-3);
+  /* Eng, aber nicht zu eng: Die Kachel bleibt so hoch wie eine Tippfläche
+     (--tipp-min), und bei sieben Einträgen entscheidet jedes Pixel darüber,
+     ob der Bereich als Ganzes auf ein Handy passt. */
+  padding: var(--sp-2) var(--sp-4);
+  min-height: var(--tipp-min);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.16s, background 0.16s, transform 0.09s;
+}
+
+.bereich:hover { border-color: var(--border-strong); background: var(--bg-elev); }
+.bereich:active { transform: translateY(1px); }
+
+.bereich-kopf {
+  grid-area: kopf;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+/* Die Farbe kommt vom Bereich, nicht vom Eintrag (Regel 10.9). Gesetzt wird
+   sie an der Liste, damit sie an einer Stelle steht. */
+.bereich-symbol { display: flex; color: var(--bereichsfarbe, var(--text-dim)); }
+
+.bereich-titel {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-fliesstext);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Die Einordnung — „bevor die erste Karte fällt" — ist eine Marke, kein
+   Satz: Sie sagt wann, nicht was. */
+.bereich-marke {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--bereichsfarbe-schwach, var(--scrim));
+  color: var(--bereichsfarbe, var(--text-dim));
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.bereich-inhalt {
+  grid-area: inhalt;
+  min-width: 0;
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+/* Die Zahl in der Inhaltszeile ist das, wonach das Auge sucht. */
+.bereich-inhalt b { color: var(--text); font-weight: var(--fw-bold); }
+
+.bereich-vorschau {
+  grid-area: vorschau;
+  display: flex;
+  align-items: center;
+}
+
+/* Das Raster in klein: 169 Felder ohne Beschriftung. Man liest keine
+   einzelne Hand, sondern die Form — und die Form ist die Auskunft. */
+.mini-raster {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 1px;
+  width: 40px;
+  height: 40px;
+  padding: 2px;
+  border-radius: 5px;
+  background: var(--feld);
+  border: 1px solid var(--border);
+}
+
+.mini-raster i {
+  border-radius: 0.5px;
+  background: var(--border-strong);
+}
+
+.mini-raster i.an { background: var(--bereichsfarbe, var(--auszeichnung)); }
+
+/* Zwei Karten als Vorschau: derselbe Gegenstand wie am Tisch, nur klein. */
+.bereich-vorschau .cards-row { gap: 0; }
+.bereich-vorschau .pcard:first-child { transform: rotate(-6deg); }
+.bereich-vorschau .pcard:last-child { transform: rotate(6deg); margin-left: -10px; }
+
+/* Die Liste selbst: eine Spalte, damit die Inhaltszeile Platz hat. Auf
+   breiten Geräten zwei. */
+.bereiche {
+  display: grid;
+  gap: var(--tipp-abstand);
+}
+
+/* Die Bereichsfarbe steht an der Liste, nicht am Eintrag (Regel 10.9):
+   Nachschlagen blau, Live-Session grün. Vorher hatte jeder Eintrag seine
+   eigene — sieben Farben nebeneinander sagen „sieben unverwandte Dinge". */
+.bereiche.nachschlagen {
+  --bereichsfarbe: var(--info-lesbar);
+  --bereichsfarbe-schwach: var(--info-dim);
+}
+
+.bereiche.live {
+  --bereichsfarbe: var(--ok-lesbar);
+  --bereichsfarbe-schwach: var(--ok-dim);
+}
+
+@media (min-width: 760px) {
+  .bereiche { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 /* Die Erhöhen-Auswahl sitzt direkt über der Entscheidungsleiste. */
 .erhoehen {

@@ -1004,6 +1004,108 @@ await schritt('Zwischen Eingabe und Ergebnis liegt nichts', async () => {
   };
 });
 
+/* ── Die mittleren Ebenen (E-042) ─────────────────────────────────────────
+   Nachschlagen und Live-Session bestanden aus Karten mit einem Namen und
+   einem Satz, der den Namen erklärte. Geprüft wird nicht das Aussehen,
+   sondern die Folge: Passt der Bereich auf einen Bildschirm, und steht auf
+   den Kacheln etwas, das man sonst erst durch Antippen erführe? */
+
+await schritt('Der Nachschlagen-Bereich ist eine Übersicht, keine Strecke', async () => {
+  await seite.goto(`${GRUND}/#/nachschlagen`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.bereich');
+  await seite.waitForTimeout(300);
+  return seite.evaluate(() => {
+    const kacheln = [...document.querySelectorAll('.bereich')];
+    const letzte = kacheln[kacheln.length - 1];
+    return {
+      kacheln: kacheln.length,
+      /* „Zwei Schritte bis zur Antwort" setzt voraus, dass man die Auswahl
+         als Auswahl sieht. Auf dem Bezugsgerät (390 × 844) passt sie
+         vollständig; auf dem kleinsten (375 × 667) bleibt eine kurze
+         Wischbewegung — bei sieben Einträgen ist das nicht zu vermeiden,
+         und die Seite ist nicht länger als anderthalb Bildschirme. */
+      unterkante_px: Math.round(letzte.getBoundingClientRect().bottom),
+      fenster: window.innerHeight,
+      seitenhoehe: document.documentElement.scrollHeight,
+      sichtbar_ohne_scrollen: kacheln.filter(
+        (k) => k.getBoundingClientRect().bottom <= window.innerHeight,
+      ).length,
+      /* Jede Kachel trägt eine Inhaltszeile, keine Beschreibung. */
+      mit_inhalt: kacheln.filter((k) => (k.querySelector('.bereich-inhalt')?.textContent ?? '').trim()).length,
+      /* Und mindestens eine zeigt den Gegenstand selbst. */
+      mit_vorschau: kacheln.filter((k) => k.querySelector('.bereich-vorschau')).length,
+      /* Zahlen aus den Daten, nicht aus dem Text. */
+      inhalte: kacheln.map((k) => k.querySelector('.bereich-inhalt')?.textContent.trim() ?? ''),
+      /* Eine Bereichsfarbe für alle, nicht sieben (Regel 10.9). */
+      symbolfarben: [...new Set(kacheln.map(
+        (k) => getComputedStyle(k.querySelector('.bereich-symbol')).color,
+      ))].length,
+    };
+  });
+});
+
+await schritt('Das Glossar ist ein Wörterbuch, keine Wand', async () => {
+  await seite.goto(`${GRUND}/#/nachschlagen/glossar`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.glossar-eintrag');
+  await seite.waitForTimeout(300);
+  const vorher = await seite.evaluate(() => {
+    const erster = document.querySelector('.glossar-eintrag');
+    return {
+      seitenhoehe: document.documentElement.scrollHeight,
+      eintraege: document.querySelectorAll('.glossar-eintrag').length,
+      /* Zugeklappt eine Zeile Erklärung — meistens steht die Antwort damit
+         schon da, ohne dass man tippen muss. */
+      erste_hoehe: Math.round(erster.getBoundingClientRect().height),
+      /* Nach Anfangsbuchstaben gruppiert: Das unterscheidet ein Wörterbuch
+         von einer Liste. */
+      buchstaben: document.querySelectorAll('.glossar-buchstabe').length,
+      aufgeklappt: document.querySelectorAll('.glossar-eintrag.auf').length,
+    };
+  });
+  /* Ein Tipp klappt auf. */
+  await seite.locator('.glossar-eintrag').first().click();
+  await seite.waitForTimeout(200);
+  const nachher = await seite.evaluate(() => {
+    const erster = document.querySelector('.glossar-eintrag');
+    return {
+      erste_hoehe: Math.round(erster.getBoundingClientRect().height),
+      aufgeklappt: document.querySelectorAll('.glossar-eintrag.auf').length,
+      angesagt: erster.getAttribute('aria-expanded'),
+    };
+  });
+  return { ...vorher, nach_tipp: nachher };
+});
+
+await schritt('Kein Rückweg nennt einen Bereich, den es nicht gibt', async () => {
+  /* Fünf Werkzeugseiten schickten mit „← Tools" zurück — einen Bereich, den
+     die App seit dem Umbau auf Lernen / Nachschlagen / Live-Session (E-030)
+     nicht mehr hat. Der Wegelauf sah nur, dass der Link ankommt. */
+  const seitenMitRueckweg = [
+    '#/nachschlagen/glossar', '#/nachschlagen/haende', '#/nachschlagen/odds',
+    '#/nachschlagen/ranges', '#/nachschlagen/tells', '#/nachschlagen/equity',
+    '#/session/bankroll', '#/session/chips', '#/session/auszahlung',
+  ];
+  const bereiche = ['Start', 'Lernen', 'Nachschlagen', 'Live-Session'];
+  const gefunden = [];
+  for (const hash of seitenMitRueckweg) {
+    await seite.goto(`${GRUND}/${hash}`, { waitUntil: 'domcontentloaded' });
+    await seite.waitForTimeout(240);
+    const beschriftung = await seite.evaluate(() => {
+      const el = [...document.querySelectorAll('a')]
+        .find((a) => a.textContent.trim().startsWith('←'));
+      return el ? el.textContent.replace('←', '').trim() : null;
+    });
+    gefunden.push({ hash, beschriftung });
+  }
+  return {
+    rueckwege: gefunden,
+    unbekannte_bereiche: gefunden
+      .filter((g) => g.beschriftung && !bereiche.includes(g.beschriftung))
+      .map((g) => `${g.hash}: ${g.beschriftung}`),
+    ohne_rueckweg: gefunden.filter((g) => !g.beschriftung).map((g) => g.hash),
+  };
+});
+
 await browser.close();
 
 const ergebnis = {

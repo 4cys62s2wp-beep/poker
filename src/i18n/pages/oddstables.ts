@@ -2,7 +2,6 @@ import { defineStrings } from '..';
 
 export const STR = defineStrings(
   {
-    back: '← Tools',
     title: 'Odds-Spickzettel',
     sub: 'Die wichtigsten Zahlen zum Nachschlagen – exakt berechnet, nicht nur Faustregel.',
     fmtPct: (x: number, digits = 1) => (100 * x).toFixed(digits).replace('.', ',') + ' %',
@@ -66,7 +65,6 @@ export const STR = defineStrings(
     ],
   },
   {
-    back: '← Tools',
     title: 'Odds Cheat Sheet',
     sub: 'The key numbers for quick reference – calculated exactly, not just rules of thumb.',
     fmtPct: (x: number, digits = 1) => (100 * x).toFixed(digits) + '%',

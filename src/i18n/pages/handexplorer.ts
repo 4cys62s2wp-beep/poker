@@ -2,7 +2,6 @@ import { defineStrings } from '..';
 
 export const STR = defineStrings(
   {
-    back: '← Tools',
     eyebrow: 'Alle 169 Starthände',
     title: 'Starthand-Explorer',
     sub: 'Wähle eine Hand: Gewinnwahrscheinlichkeit gegen 1, 3 und 5 Gegner, Einordnung und konkrete Empfehlung, wie du sie spielst.',
@@ -51,7 +50,6 @@ export const STR = defineStrings(
     comboOffsuit: ' (offsuit)',
   },
   {
-    back: '← Tools',
     eyebrow: 'All 169 Starting Hands',
     title: 'Starting Hand Explorer',
     sub: 'Tap a hand in the matrix: win probability against 1, 3, and 5 opponents, its category, and concrete advice on how to play it.',

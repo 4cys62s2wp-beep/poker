@@ -125,6 +125,15 @@ const DEFAULT_DATA: AppData = {
 
 const PROFILE_COLORS = ['#d4af5e', '#58b368', '#5590d9', '#9b7fd4', '#e0564f', '#4fb8c9'];
 
+/* Die Rangnamen — auf Deutsch und auf Englisch.
+   ===========================================
+   Gespeichert wird nur die Zahl (das Level); die Namen sind reine Anzeige.
+   Bis E-043 gab es sie trotzdem nur auf Deutsch, und in der englischen
+   Oberfläche stand „150 XP to Küchentisch-Spieler". Gefunden von einem Lauf,
+   der die englische Oberfläche nach deutschen Wörtern absucht.
+
+   Beide Listen müssen gleich lang sein — sonst hätte ein Rang in einer
+   Sprache einen Namen und in der anderen keinen. Ein Test hält das fest. */
 export const LEVEL_TITLES = [
   'Neuling',
   'Küchentisch-Spieler',
@@ -142,6 +151,29 @@ export const LEVEL_TITLES = [
   'Elite-Grinder',
   'Poker-Legende',
 ];
+
+export const LEVEL_TITLES_EN = [
+  'Newcomer',
+  'Kitchen-Table Player',
+  'Solid Beginner',
+  'Riser',
+  'Grinder',
+  'Regular',
+  'Range Thinker',
+  'Hand Reader',
+  'Table Captain',
+  'Crusher',
+  'Poker Mentor',
+  'High Roller',
+  'Final Table Regular',
+  'Elite Grinder',
+  'Poker Legend',
+];
+
+/** Die Rangnamen der aktiven Sprache. */
+export function levelTitles(lang: 'de' | 'en'): readonly string[] {
+  return lang === 'en' ? LEVEL_TITLES_EN : LEVEL_TITLES;
+}
 
 /** Kumulierte XP-Schwelle für ein Level (Level 1 = 0 XP). */
 export function xpThreshold(level: number): number {

@@ -8,6 +8,7 @@ import { sanitizeAppData, useAppState, type AppData } from '../../state/AppState
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/cloud';
 import { describeCloudError, getCloud, type CloudHandle, type CloudUser } from './cloud';
+import { kontoGemerkt, merkeKonto } from './anmeldung';
 
 export type CloudPhase = 'checking' | 'unavailable' | 'ready';
 
@@ -29,6 +30,9 @@ interface CloudValue {
   checkVerification: () => Promise<void>;
   syncNow: () => Promise<void>;
   clearMessages: () => void;
+  /** Firebase nachladen — von jedem Bildschirm, der ein Konto braucht.
+   *  Mehrfach aufrufbar; der zweite Aufruf tut nichts. */
+  aktiviere: () => void;
 }
 
 const Ctx = createContext<CloudValue | null>(null);
@@ -62,8 +66,21 @@ export function CloudProvider({ children }: { children: ReactNode }) {
   const userRef = useRef(user);
   userRef.current = user;
 
+  /* Firebase wird nicht mehr bei jedem Start geladen (E-043).
+     -------------------------------------------------------
+     Es wiegt 706 kB und war damit 37 % der Bytes des ersten Starts — für
+     eine Funktion, die niemand braucht, der die App nur zum Üben benutzt.
+     Geladen wird jetzt, wenn eine der beiden Spuren sagt, dass hier ein
+     Konto im Spiel ist (siehe anmeldung.ts), oder wenn ein Bildschirm es
+     ausdrücklich anfordert. */
+  const [aktiv, setAktiv] = useState(
+    () => kontoGemerkt() || activeProfile.cloudUid != null,
+  );
+  const aktiviere = useCallback(() => setAktiv(true), []);
+
   // Initialisierung + Auth-Listener
   useEffect(() => {
+    if (!aktiv) return undefined;
     let unsub: (() => void) | undefined;
     let unsubRedirectError: (() => void) | undefined;
     let cancelled = false;
@@ -80,6 +97,11 @@ export function CloudProvider({ children }: { children: ReactNode }) {
       unsub = handle.onUser((u) => {
         setUser(u);
         if (!u) syncedUidRef.current = null;
+        /* Die Spur für den nächsten Start: Nur wer ein Konto benutzt, zahlt
+           beim Öffnen für Firebase (E-043). Der Ort ist bewusst dieser —
+           `onUser` erfasst Anmelden, Registrieren, die Rückkehr von Google
+           und das Abmelden in einem Schritt. */
+        merkeKonto(!!u);
       });
       // Rückkehr von der Google-Weiterleitung: Fehler (z. B. E-Mail bereits
       // per Passwort registriert) sind sonst spurlos – onUser feuert dann nicht.
@@ -92,7 +114,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
       unsub?.();
       unsubRedirectError?.();
     };
-  }, []);
+  }, [aktiv]);
 
   // Sprachwechsel im laufenden Betrieb an Firebase weiterreichen.
   useEffect(() => {
@@ -291,6 +313,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
     checkVerification,
     syncNow,
     clearMessages,
+    aktiviere,
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

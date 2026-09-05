@@ -689,6 +689,27 @@ Pixeln, also gut sichtbar. Ein Vorspann, der niemandem etwas verdrängt, ist
 kein Problem — und eine Änderung, für die es nur ein Gefühl gibt und keine
 Messung, ist keine Verbesserung.
 
+### Regel 10.12 — Wer tastet, muss sehen, wo er ist
+
+Jedes Bedienelement zeigt den Tastaturfokus. Eine Regel für alles
+(`:focus-visible`), nicht eine je Bauteil: Bis E-043 gab es drei Regeln in
+der ganzen App, und auf 55 von 90 Bildschirmen war der Fokus unsichtbar —
+derselbe Verlust wie ein unsichtbarer Mauszeiger.
+
+`:focus-visible` und nicht `:focus`: Der Ring gehört dem, der tastet. Wer
+tippt oder klickt, hat den Finger schon dort, wo er hinwollte.
+
+Dazu die Regel darunter: **Ein Bedienelement hat einen Namen, und ein
+Platzhalter ist keiner.** Er verschwindet beim ersten Zeichen — also genau
+dann, wenn man ihn bräuchte. Eine sichtbare Beschriftung zählt nur, wenn sie
+mit dem Feld verbunden ist (`<label for>`), sonst gibt es sie für ein
+Vorlesegerät nicht.
+
+Gemessen in `npm run bedienbar`, über 90 Bildschirme in beiden **Sprachen**,
+mit wirklich gedrückter Tabulatortaste — und gegengeprüft: Mit abgeschalteter
+Fokusregel meldet der Lauf 148 Befunde. Ein Lauf, der nie rot werden kann,
+ist eine Beruhigung, keine Prüfung.
+
 ### Was diese Regeln festhält
 
 `durchgang.test.ts` prüft am gerenderten Ergebnis: kein Scrollen, die

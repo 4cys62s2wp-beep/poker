@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { buildCsp, isValidAuthDomain } from '../csp';
 
 const DOMAIN = 'pokermentor-9ac7f.firebaseapp.com';
@@ -97,5 +98,40 @@ describe('Content-Security-Policy', () => {
       const namen = csp.split('; ').map((d) => d.split(' ')[0]);
       expect(new Set(namen).size).toBe(namen.length);
     }
+  });
+});
+
+describe('Das Skript gegen das Aufblitzen darf laufen', () => {
+  /* `script-src 'self'` verbietet inline-Skripte. In index.html steht genau
+     eines: das, welches den Farbmodus setzt, bevor das Stilblatt greift.
+     Es wurde auf jeder Seite blockiert — die Konsole meldete es, und die
+     Vorbeugung gegen das Aufblitzen lief nie (E-043).
+
+     Erlaubt wird es über seinen Hash, nicht über `'unsafe-inline'`: genau
+     dieses eine Skript, Zeichen für Zeichen. */
+  it('nimmt übergebene Hashes in script-src auf', () => {
+    const csp = buildCsp(DOMAIN, ["'sha256-abc123'"]);
+    const zeile = csp.split(';').find((t) => t.trim().startsWith('script-src'))!;
+    expect(zeile).toContain("'self'");
+    expect(zeile).toContain("'sha256-abc123'");
+  });
+
+  it('erlaubt niemals inline-Skripte pauschal', () => {
+    /* Der bequeme Weg wäre `'unsafe-inline'` — und damit wäre jede
+       eingeschleuste Zeile erlaubt. Geprüft wird gezielt `script-src`:
+       `style-src` trägt es weiterhin, weil React Stile inline setzt, und
+       ein eingeschleustes Stilblatt kann keinen Code ausführen. */
+    const skriptzeile = (csp: string) =>
+      csp.split(';').find((t) => t.trim().startsWith('script-src'))!;
+    expect(skriptzeile(buildCsp(DOMAIN, ["'sha256-abc123'"]))).not.toContain('unsafe-inline');
+    expect(skriptzeile(buildCsp(null))).not.toContain('unsafe-inline');
+  });
+
+  it('rechnet den Hash im Bau aus dem fertigen HTML', () => {
+    /* Ein von Hand eingetragener Hash wäre beim nächsten Komma im Skript
+       falsch — und die Vorbeugung wäre wieder still aus. */
+    const konfig = readFileSync('vite.config.ts', 'utf8');
+    expect(konfig).toContain("createHash('sha256')");
+    expect(konfig).toContain("order: 'post'");
   });
 });

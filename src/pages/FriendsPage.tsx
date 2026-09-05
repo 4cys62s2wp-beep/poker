@@ -18,6 +18,11 @@ import { STR } from '../i18n/pages/friends';
 
 export function FriendsPage() {
   const cloud = useCloud();
+  /* Firebase wird erst hier geladen, nicht beim Start der App:
+     die Freundesliste ist einer der wenigen Orte, an denen ein Konto
+     überhaupt eine Rolle spielt (E-043). */
+  const aktiviere = cloud.aktiviere;
+  useEffect(() => aktiviere(), [aktiviere]);
   const social = useSocial();
   const { lang } = useLang();
   const F = STR[lang];

@@ -102,6 +102,9 @@ export function EquityTrainer() {
             max={100}
             value={guess}
             className="slider"
+            /* Ohne Namen heißt er beim Vorlesen „Schieberegler" — und die
+               sichtbare Beschriftung darüber gehört ihm nicht (E-043). */
+            aria-label={L.guessLabel}
             onChange={(e) => setGuess(parseInt(e.target.value, 10))}
             disabled={revealed}
           />

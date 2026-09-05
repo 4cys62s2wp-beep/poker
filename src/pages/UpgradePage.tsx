@@ -2,7 +2,7 @@
    Ist die Monetarisierung nicht konfiguriert, existiert die Seite nicht –
    dann leitet sie auf die Startseite um. */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { useLang } from '../i18n';
@@ -18,6 +18,11 @@ export function UpgradePage() {
   const G = LEGAL[lang];
   const { config, enabled, pro, trialActive, trialDaysLeft, cancelRoute, startCheckout, manageBilling } = usePro();
   const cloud = useCloud();
+  /* Firebase wird erst hier geladen, nicht beim Start der App:
+     die Upgrade-Seite ist einer der wenigen Orte, an denen ein Konto
+     überhaupt eine Rolle spielt (E-043). */
+  const aktiviere = cloud.aktiviere;
+  useEffect(() => aktiviere(), [aktiviere]);
   const [annual, setAnnual] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');

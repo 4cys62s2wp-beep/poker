@@ -1,13 +1,18 @@
 /* Konto-Karte für die Profilseite: Registrierung, Login, E-Mail-Verifizierung
    und Sync-Status. Ohne Cloud-Konfiguration zeigt sie den Geräte-Modus an. */
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useCloud } from '../lib/cloud/CloudProvider';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/cloud';
 
 export function CloudAccountCard() {
   const cloud = useCloud();
+  /* Firebase wird erst hier geladen, nicht beim Start der App:
+     die Kontokarte ist einer der wenigen Orte, an denen ein Konto
+     überhaupt eine Rolle spielt (E-043). */
+  const aktiviere = cloud.aktiviere;
+  useEffect(() => aktiviere(), [aktiviere]);
   const { lang } = useLang();
   const C = STR[lang];
   const [mode, setMode] = useState<'login' | 'register' | 'reset'>('login');
@@ -147,6 +152,7 @@ export function CloudAccountCard() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder={C.namePlaceholder}
+            aria-label={C.nameLabel}
             autoComplete="name"
             maxLength={40}
             required
@@ -159,6 +165,7 @@ export function CloudAccountCard() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={C.emailPlaceholder}
+            aria-label={C.emailPlaceholder}
           autoComplete="email"
           maxLength={120}
           required
@@ -171,6 +178,7 @@ export function CloudAccountCard() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={mode === 'register' ? C.passwordRegisterPlaceholder : C.passwordPlaceholder}
+            aria-label={mode === 'register' ? C.passwordRegisterPlaceholder : C.passwordPlaceholder}
             autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
             minLength={mode === 'register' ? 8 : undefined}
             maxLength={100}

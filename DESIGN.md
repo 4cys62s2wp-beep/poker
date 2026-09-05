@@ -664,6 +664,31 @@ Bedienelemente vom Kontrast aus — diese Auskunft steht aber nirgends sonst.
 mitrechnet, und dass im Stilblatt kein zweiter Deckkraftwert neben dem Token
 steht (Übergänge und Bewegungen ausgenommen).
 
+### Regel 10.11 — Ein Weg zeigt, wohin er führt
+
+Auf einer Kachel, die irgendwohin führt, steht nicht, was dort ist, sondern
+ein Stück davon: die Zahl der Begriffe, die Bilanz der erfassten Abende, das
+Raster der Eröffnungshände. Der erklärende Satz („Glossar — Jeder Begriff,
+den am Tisch jemand fallen lässt") sagt nichts, was der Name nicht schon
+sagt, und kostet die Höhe, die der Inhalt bräuchte. Seit E-042 ist der
+Nachschlagen-Bereich dadurch **kürzer** geworden und trägt trotzdem mehr.
+
+Zwei Bedingungen, ohne die es nicht gilt:
+
+1. **Die Zahl wird gerechnet, nicht hingeschrieben.** Eine Kachel, die 159
+   behauptet, während dahinter 160 stehen, ist schlimmer als eine ohne Zahl —
+   sie kostet das Vertrauen in alle anderen mit. Der Test prüft, dass die
+   Seite die Daten benutzt und nicht eine Ziffernfolge.
+2. **Die Farbe kommt vom Bereich, nicht vom Eintrag** (Regel 10.9). Sieben
+   Farben nebeneinander sagen „sieben unverwandte Dinge".
+
+Für einen Vorspann gilt das ausdrücklich **nicht**. Gemessen wurde, wo auf
+jedem Bildschirm das Erste beginnt, mit dem man etwas tun kann: Auf dem
+kleinsten Bezugsgerät (375 × 667) liegt es überall zwischen 330 und 447
+Pixeln, also gut sichtbar. Ein Vorspann, der niemandem etwas verdrängt, ist
+kein Problem — und eine Änderung, für die es nur ein Gefühl gibt und keine
+Messung, ist keine Verbesserung.
+
 ### Was diese Regeln festhält
 
 `durchgang.test.ts` prüft am gerenderten Ergebnis: kein Scrollen, die

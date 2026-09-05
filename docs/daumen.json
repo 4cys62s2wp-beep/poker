@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-09-05T15:58:03.918Z",
+  "geprueft_am": "2026-09-05T18:02:04.667Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -36,8 +36,8 @@
     },
     {
       "hash": "#/nachschlagen",
-      "scrollt": true,
-      "ueberlauf_px": 378,
+      "scrollt": false,
+      "ueberlauf_px": 0,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -55,7 +55,7 @@
     {
       "hash": "#/nachschlagen/glossar",
       "scrollt": true,
-      "ueberlauf_px": 29375,
+      "ueberlauf_px": 10581,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -64,7 +64,7 @@
     {
       "hash": "#/nachschlagen/haende",
       "scrollt": true,
-      "ueberlauf_px": 1166,
+      "ueberlauf_px": 1160,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -73,7 +73,7 @@
     {
       "hash": "#/nachschlagen/odds",
       "scrollt": true,
-      "ueberlauf_px": 1985,
+      "ueberlauf_px": 1979,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -82,7 +82,7 @@
     {
       "hash": "#/profil",
       "scrollt": true,
-      "ueberlauf_px": 4518,
+      "ueberlauf_px": 4436,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -90,8 +90,8 @@
     },
     {
       "hash": "#/session",
-      "scrollt": true,
-      "ueberlauf_px": 370,
+      "scrollt": false,
+      "ueberlauf_px": 0,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -282,15 +282,15 @@
     },
     {
       "hash": "#/lernen/trainer/outs",
-      "scrollt": false,
-      "ueberlauf_px": 0,
+      "scrollt": true,
+      "ueberlauf_px": 16,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 659,
-        "unten_px": 820,
-        "mitte_px": 740,
+        "oben_px": 675,
+        "unten_px": 836,
+        "mitte_px": 755,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -359,14 +359,14 @@
     {
       "hash": "#/lernen/trainer/szenario",
       "scrollt": true,
-      "ueberlauf_px": 16,
+      "ueberlauf_px": 19,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 636,
-        "unten_px": 836,
-        "mitte_px": 736,
+        "oben_px": 660,
+        "unten_px": 839,
+        "mitte_px": 750,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 3,
@@ -405,7 +405,7 @@
     {
       "hash": "#/nachschlagen/ranges",
       "scrollt": true,
-      "ueberlauf_px": 255,
+      "ueberlauf_px": 249,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -414,7 +414,7 @@
     {
       "hash": "#/nachschlagen/tells",
       "scrollt": true,
-      "ueberlauf_px": 5841,
+      "ueberlauf_px": 5835,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -450,7 +450,7 @@
     {
       "hash": "#/session/bankroll",
       "scrollt": true,
-      "ueberlauf_px": 287,
+      "ueberlauf_px": 281,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,

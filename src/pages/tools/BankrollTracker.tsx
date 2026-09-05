@@ -4,6 +4,8 @@ import { useAppState, type SessionEntry } from '../../state/AppState';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/bankroll';
 import { downloadBlob } from '../../lib/download';
+import { BackLink } from '../../components/ui';
+import { STR as NAV } from '../../i18n/pages/layout';
 
 function euro(n: number): string {
   return n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
@@ -98,9 +100,7 @@ export function BankrollTracker() {
 
   return (
     <div>
-      <Link to="/session" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        {L.backToTools}
-      </Link>
+      <BackLink to="/session" label={NAV[lang].navSession} />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>

@@ -11,6 +11,7 @@ export const STR = defineStrings(
     searchPlaceholder: 'Begriff suchen …',
     noResults: 'Kein Begriff gefunden.',
     seeAlso: 'Siehe auch:',
+    buchstabe: (b: string) => `Begriffe mit ${b}`,
     categoryLabels: {
       Alle: 'Alle',
       Grundlagen: 'Grundlagen',
@@ -30,6 +31,7 @@ export const STR = defineStrings(
     searchPlaceholder: 'Search terms …',
     noResults: 'No term found.',
     seeAlso: 'See also:',
+    buchstabe: (b: string) => `Terms starting with ${b}`,
     categoryLabels: {
       Alle: 'All',
       Grundlagen: 'Basics',

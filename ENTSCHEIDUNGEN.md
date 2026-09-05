@@ -2056,3 +2056,137 @@ gemessen, wie jeder andere Text.
 
 **91 Bildschirme in 2 Modi (182 Messungen), 0 Befunde** — mit Deckkraft,
 mit einzeln betrachteten Verläufen und mit dem Tisch, auf dem gespielt wird.
+
+---
+
+## E-042 · 2026-09-05 · Die Unterseiten zeigen, was hinter ihnen liegt
+
+**Stand:** entschieden und umgesetzt.
+
+**Der Anlass, im Wortlaut:** „mach die anderen unterseiten auch nochmal so
+schön".
+
+### Dieselbe Lehre, drei Ebenen tiefer
+
+Am Tisch (E-041) hieß sie: Zeig den Gegenstand, nicht seine Beschriftung.
+Auf den mittleren Ebenen — Nachschlagen und Live-Session — stand unter jedem
+Namen ein Satz, der den Namen erklärte:
+
+> **Glossar** — Jeder Begriff, den am Tisch jemand fallen lässt
+
+Sieben davon untereinander sind sieben Absätze, kein Bereich; zweieinhalb
+Bildschirme, auf denen nichts stand, was man nicht schon aus dem Namen wusste.
+
+**Jetzt trägt jede Kachel, was hinter ihr liegt** — und alle Zahlen kommen
+aus denselben Daten wie die Seite dahinter:
+
+| Kachel | vorher | jetzt |
+|---|---|---|
+| Glossar | „Jeder Begriff, den am Tisch jemand fallen lässt" | 159 Begriffe von A bis Z |
+| Starthände | „Welche Hand aus welcher Position spielbar ist" | Alle 169 Hände · Button eröffnet 42 % + das Raster in klein |
+| Odds-Tabellen | „Outs, Pot Odds und Verbesserungschancen zum Ablesen" | Flushdraw 35 %, Gutshot 16 % bis zum River |
+| Tells & Reads | „Worauf man bei Gegnern achtet" | 27 Tells, jeder mit Zuverlässigkeit |
+| Frühere Abende | drei Zeilen Erklärung | 3 Abende · zuletzt 2. Sept. |
+| Bankroll | drei Zeilen Erklärung | 12 Sessions · Bilanz +240 |
+
+Das ist **kürzer** als der Satz, den es ersetzt: Der ganze Bereich passt jetzt
+auf einen Bildschirm (804 von 844 Pixeln), vorher waren es zweieinhalb. Und
+„zwei Schritte bis zur Antwort" stimmt wieder — manche Antworten stehen schon
+im ersten.
+
+**Warum die Zahl gerechnet und nicht hingeschrieben wird:** Eine Kachel, die
+159 behauptet, während dahinter 160 stehen, ist schlimmer als eine ohne Zahl —
+sie kostet das Vertrauen in alle anderen mit. `bereich.test.ts` prüft deshalb,
+dass die Seite `content.glossary.length` benutzt und nicht eine Ziffernfolge.
+Der erste Versuch stand auch prompt falsch da: **„Button eröffnet 0 %"**,
+weil `rangePercent` einen Anteil zwischen 0 und 1 liefert und nicht Prozent.
+Im Bild sofort zu sehen, im Quelltext gar nicht.
+
+### Eine Farbe je Bereich, nicht eine je Eintrag
+
+Die sieben Symbole standen in sieben Farben: rot, blau, grün, gold, blau,
+violett, violett. Sieben Farben nebeneinander sagen „sieben unverwandte
+Dinge" — und der Chip-Rechner stand in Rot da wie eine Fehlermeldung.
+
+Regel 10.9 sagt: Der **Bereich** hat eine Farbe. Nachschlagen blau,
+Live-Session grün. Die Farbe steht jetzt an der Liste (`--bereichsfarbe`),
+nicht am Eintrag; der Durchgang zählt nach, dass es genau eine ist.
+
+### Das Glossar war eine Wand
+
+159 Begriffe mit vollständiger Definition, alle gleichzeitig ausgeklappt:
+**30 219 Pixel** Seitenhöhe bei 844 Pixeln Bildschirm — 36 Bildschirmlängen
+Fließtext für ein Nachschlagewerk.
+
+Jetzt ist es ein Wörterbuch: eine Zeile je Begriff mit der ersten Zeile der
+Erklärung, nach Anfangsbuchstaben gruppiert, der Buchstabe klebt beim
+Scrollen oben. Ein Tipp klappt den Eintrag auf. **11 425 Pixel**, ein Drittel.
+
+Die Vorschauzeile ist der Grund, warum das kein zusätzlicher Weg ist:
+Meistens steht die Antwort schon da. Und der Text bleibt in beiden Zuständen
+im Baum — für ein Vorlesegerät fehlt nichts, beschnitten wird nur optisch.
+
+**Ein einziger Suchtreffer klappt sich von selbst auf.** Das ist keine
+Schwelle, sondern eine Regel: Bei genau einem Treffer gibt es nichts zu
+wählen — und genau dort landet, wer aus der Suche unter „Nachschlagen" mit
+`?q=` herkommt.
+
+### Die Sammlung feiert, was verdient ist
+
+Ein verdientes Abzeichen unterschied sich von einem unverdienten durch einen
+Rahmen und das Wort „verdient" — dabei ist das Verdienen der ganze Zweck. Ein
+neues meldete sich beim Erhalten mit einem Hinweis und verschwand danach in
+einer Kachelwand. (Offen seit E-038, dort benannt.)
+
+Jetzt ist es eine Medaille: eine Scheibe mit Ring in der Auszeichnungsfarbe,
+ein Schimmer, ein warmer Anflug auf der Karte — und darunter der Tag, an dem
+es dazukam. **Das Datum ist keine Verzierung: Es ist das, was eine Sammlung
+von einer Liste unterscheidet.** Über der Sammlung steht der Stand, „3 von 22".
+
+### Fünf Seiten schickten nach „Tools" zurück
+
+Beim Durchsehen gefunden: Equity-Rechner, Starthand-Explorer, Odds-Tabellen,
+Range-Charts, Tells und Bankroll trugen oben „← Tools" — einen Bereich, den
+die App seit dem Umbau auf Lernen / Nachschlagen / Live-Session (E-030) nicht
+mehr hat. Sie benutzten außerdem eine eigene Rückweg-Bauform, während alle
+anderen Seiten `BackLink` verwenden.
+
+Der Wegelauf hat das nie gesehen: Er prüft, ob ein Link **ankommt**, nicht,
+wohin er zu führen **behauptet**. Der Durchgang prüft jetzt beides — die
+Beschriftung jedes Rückwegs muss ein Bereich sein, den es gibt.
+
+### Jedes Eingabefeld war im hellen Modus ein grauer Klotz
+
+`.search-input` und `.text-input` lagen auf `--scrim` — einem
+durchscheinenden Schleier, der für Überlagerungen auf dunklem Grund gedacht
+ist. Im hellen Modus ergab das 45 % Dunkel auf Creme.
+
+Der Kontrastlauf konnte es nicht finden: `--scrim` steht in `farbrollen.ts`
+unter `OHNE_TEXTGRENZE`, also unter „hier steht kein Text". In einem
+Eingabefeld steht aber welcher. Es gibt jetzt `--feld` als eigene **Fläche**,
+und damit prüft der Lauf auch, ob man darin lesen kann.
+
+### Was nicht gemacht wurde, und warum
+
+Der Vorspann jeder Unterseite — vier bis fünf Zeilen Fließtext unter der
+Überschrift — sah nach der nächsten Baustelle aus. Gemessen wurde, wo auf
+jedem Bildschirm das Erste beginnt, mit dem man etwas tun kann, auf dem
+**kleinsten** Bezugsgerät (375 × 667):
+
+```
+447 / 667  #/profil
+404 / 667  #/lernen/pros
+398 / 667  #/lernen
+…
+330 / 667  #/nachschlagen/coach
+```
+
+Kein einziger Bildschirm schiebt seinen Inhalt unter die Falz. Der Vorspann
+kostet nichts, was jemand vermisst — **also bleibt er.** Eine Änderung, für
+die es nur ein Gefühl gibt und keine Messung, ist keine Verbesserung.
+
+### Stand nach dem Lauf
+
+91 Bildschirme in 2 Modi (182 Messungen), 0 Befunde. 1053 Tests grün,
+Durchgang vollständig (drei neue Schritte), Daumenlauf ohne Befund,
+90 Adressen erreichbar, 0 Sackgassen.

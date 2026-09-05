@@ -5,6 +5,8 @@ import { BB_DEFENSE_VS_BTN, RFI_CHARTS } from '../../content/ranges';
 import { expandRangeSpec, rangePercent } from '../../lib/poker/ranges';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/rangeviewer';
+import { BackLink } from '../../components/ui';
+import { STR as NAV } from '../../i18n/pages/layout';
 
 type Tab = 'UTG' | 'HJ' | 'CO' | 'BTN' | 'SB' | 'BBDEF';
 
@@ -41,9 +43,7 @@ export function RangeViewer() {
 
   return (
     <div>
-      <Link to="/nachschlagen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        {L.back}
-      </Link>
+      <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>

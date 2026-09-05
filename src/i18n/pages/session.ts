@@ -38,6 +38,19 @@ export const STR = defineStrings(
     bankrollBody: 'Ergebnisse festhalten – Live und Online getrennt, mit Verlauf und Export.',
     bankrollWhen: 'Nach der Session',
 
+    /* Der Zeitpunkt im Ablauf als Marke, nicht als Absatz (E-042). */
+    markeVorher: 'Vorher',
+    markeAbend: 'Am Abend',
+    markeDanach: 'Danach',
+
+    /* Und der eigene Stand, wo es einen gibt. */
+    laeuftSeit: (dauer: string) => `Läuft seit ${dauer}`,
+    abendeStand: (n: number, wann: string) =>
+      `${n === 1 ? '1 Abend' : `${n} Abende`} · zuletzt ${wann}`,
+    abendeLeer: 'Noch kein Abend erfasst',
+    bankrollStand: (n: number, bilanz: string) =>
+      `${n === 1 ? '1 Session' : `${n} Sessions`} · Bilanz ${bilanz}`,
+
     sessionsLabel: 'Sessions',
     resultLabel: 'Bilanz',
     handsLabel: 'Hände am Tisch',
@@ -73,6 +86,17 @@ export const STR = defineStrings(
     bankrollTitle: 'Bankroll',
     bankrollBody: 'Log your results – live and online kept apart, with history and export.',
     bankrollWhen: 'After the session',
+
+    markeVorher: 'Before',
+    markeAbend: 'During',
+    markeDanach: 'After',
+
+    laeuftSeit: (dauer: string) => `Running for ${dauer}`,
+    abendeStand: (n: number, wann: string) =>
+      `${n === 1 ? '1 night' : `${n} nights`} · last ${wann}`,
+    abendeLeer: 'No night recorded yet',
+    bankrollStand: (n: number, bilanz: string) =>
+      `${n === 1 ? '1 session' : `${n} sessions`} · result ${bilanz}`,
 
     sessionsLabel: 'sessions',
     resultLabel: 'Balance',

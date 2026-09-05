@@ -64,6 +64,16 @@ export function ProfilePage() {
   const totalLessons = ALL_MODULES.reduce((s, m) => s + m.lessons.length, 0);
   const doneLessons = Object.keys(data.completedLessons).length;
   const earnedBadges = Object.keys(data.badges).length;
+
+  /* Der Tag, an dem ein Abzeichen dazukam. Gespeichert ist er als
+     ISO-Zeichenkette; ein Speicher aus einer Sicherung kann Unsinn
+     enthalten, deshalb wird geprüft statt vertraut. */
+  const datum = (iso: string) => {
+    const d = new Date(iso);
+    return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString(
+      lang === 'de' ? 'de-DE' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' },
+    );
+  };
   const rang = rangstand(data.xp);
 
   const trainerTotals = Object.values(data.trainers).reduce(
@@ -141,16 +151,28 @@ export function ProfilePage() {
         </div>
       </div>
 
-      <div className="section-title">{P.badgesTitle}</div>
-      <div className="grid cols-4">
+      {/* Die Sammlung feiert, was verdient ist (E-042).
+          Vorher unterschied ein verdientes Abzeichen sich von einem
+          unverdienten durch einen Rahmen und ein Wort — dabei ist das
+          Verdienen der ganze Zweck. Jetzt trägt es eine Medaille: ein Ring
+          in der Auszeichnungsfarbe, ein Schimmer, und darunter der Tag, an
+          dem es dazukam. Das Datum ist keine Verzierung: Es ist das, was
+          eine Sammlung von einer Liste unterscheidet. */}
+      <div className="section-title">
+        {P.badgesTitle}
+        <span className="section-stand">
+          {P.rangSammlung(earnedBadges, content.badges.length)}
+        </span>
+      </div>
+      <div className="abzeichen">
         {content.badges.map((b) => {
-          const earned = !!data.badges[b.id];
+          const seit = data.badges[b.id];
           return (
-            <div key={b.id} className={`card badge-tile${earned ? ' earned' : ''}`}>
-              <span className="b-ico">{b.icon}</span>
+            <div key={b.id} className={`abzeichen-stueck${seit ? ' verdient' : ''}`}>
+              <span className="abzeichen-medaille" aria-hidden="true">{b.icon}</span>
               <span className="b-name">{b.title}</span>
               <span className="b-desc">{b.description}</span>
-              {earned && <span className="pill ok" style={{ marginTop: 4 }}>{P.badgeEarnedPill}</span>}
+              {seit && <span className="abzeichen-seit">{P.badgeSeit(datum(seit))}</span>}
             </div>
           );
         })}

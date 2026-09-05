@@ -8,6 +8,8 @@ import { combosForLabel, expandRangeSpec } from '../../lib/poker/ranges';
 import { MC_ITERATIONS, runEquityJobs } from '../../lib/poker/equityAsync';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/handexplorer';
+import { BackLink } from '../../components/ui';
+import { STR as NAV } from '../../i18n/pages/layout';
 
 const RFI = RFI_CHARTS.map((c) => ({ position: c.position, set: expandRangeSpec(c.raise) }));
 const PREMIUM = expandRangeSpec(['QQ+', 'AKs', 'AKo']);
@@ -108,9 +110,7 @@ export function HandExplorer() {
 
   return (
     <div>
-      <Link to="/nachschlagen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        {L.back}
-      </Link>
+      <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
       <div className="page-header">
         <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>

@@ -16,6 +16,10 @@
 /** Die Flächen, auf denen Text stehen kann. */
 export const FLAECHEN = [
   '--bg', '--bg-deep', '--bg-elev', '--bg-card', '--bg-card-hover',
+  /* Auch ein Eingabefeld ist eine Fläche, auf der Text steht — und war
+     bis E-042 keine: Es lag auf --scrim, einem Schleier ohne Textgrenze,
+     und damit hat der Kontrastlauf nie geprüft, ob man darin lesen kann. */
+  '--feld',
 ] as const;
 
 /** Text, der die 7-zu-1-Grenze halten muss: die Ergebniszahlen. */

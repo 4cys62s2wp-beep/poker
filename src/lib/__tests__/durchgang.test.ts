@@ -961,3 +961,95 @@ describe('Beenden', () => {
     expect(e.adresse_danach).toBe('#/session/abende');
   });
 });
+
+/* ── Die mittleren Ebenen ────────────────────────────────────────────────
+   Nachschlagen und Live-Session bestanden aus Karten mit einem Namen und
+   einem Satz, der den Namen erklärte — sieben Absätze, zweieinhalb
+   Bildschirme. Das Glossar war 30 219 Pixel hoch. Siehe E-042.
+
+   Geprüft wird die Folge, nicht das Aussehen. */
+
+describe('Der Nachschlagen-Bereich ist eine Übersicht', () => {
+  const e = () => schritt('Der Nachschlagen-Bereich ist eine Übersicht, keine Strecke');
+
+  it('zeigt alle sieben Wege auf dem Bezugsgerät ohne Scrollen', () => {
+    expect(e().kacheln).toBe(7);
+    expect(e().sichtbar_ohne_scrollen).toBe(7);
+    expect(Number(e().unterkante_px)).toBeLessThanOrEqual(Number(e().fenster));
+  });
+
+  it('trägt auf jeder Kachel Inhalt statt einer Beschreibung', () => {
+    expect(e().mit_inhalt).toBe(e().kacheln);
+    /* Sieben Kacheln, sieben Inhaltszeilen. */
+    /* Und mindestens ein paar zeigen den Gegenstand selbst: zwei Karten,
+       das Raster der Eröffnungshände. */
+    expect(e().mit_vorschau).toBeGreaterThanOrEqual(3);
+  });
+
+  it('holt die Zahlen aus den Daten', () => {
+    /* Wer einen Begriff ergänzt, sieht die neue Zahl hier — und wer sie
+       hinschreibt statt zu rechnen, fällt hier auf. */
+    const zeilen = e().inhalte as string[];
+    expect(zeilen.some((z) => /\d+ Begriffe/.test(z))).toBe(true);
+    expect(zeilen.some((z) => /\d+ Tells/.test(z))).toBe(true);
+    /* Der Anteil einer Range in Prozent, nicht als Anteil: „0 %" war der
+       erste Versuch. */
+    const range = zeilen.find((z) => z.includes('Button eröffnet'));
+    expect(range).toBeDefined();
+    expect(range).not.toMatch(/eröffnet 0 %/);
+  });
+
+  it('benutzt eine Bereichsfarbe, nicht sieben', () => {
+    /* Regel 10.9. Vorher hatte jeder Eintrag seine eigene, und der
+       Chip-Rechner stand in Rot da wie eine Fehlermeldung. */
+    expect(e().symbolfarben).toBe(1);
+  });
+});
+
+describe('Das Glossar ist ein Wörterbuch', () => {
+  const e = () => schritt('Das Glossar ist ein Wörterbuch, keine Wand');
+
+  it('zeigt jeden Begriff in einer Zeile statt in einem Absatz', () => {
+    expect(e().eintraege).toBeGreaterThan(100);
+    /* Eine Zeile Begriff plus eine Zeile Erklärung — nicht der ganze
+       Absatz. Die Zahl ist die gemessene Höhe eines zugeklappten
+       Eintrags; sie darf sinken, aber nicht wieder wachsen. */
+    expect(e().erste_hoehe).toBeLessThanOrEqual(70);
+  });
+
+  it('ist keine Wand mehr', () => {
+    /* Vorher: 30 219 Pixel bei 844 Pixeln Bildschirmhöhe — 36
+       Bildschirmlängen Fließtext für ein Nachschlagewerk. */
+    expect(e().seitenhoehe).toBeLessThan(15000);
+  });
+
+  it('gruppiert nach Anfangsbuchstaben', () => {
+    /* Das unterscheidet ein Wörterbuch von einer Liste. */
+    expect(e().buchstaben).toBeGreaterThan(15);
+  });
+
+  it('klappt einen Eintrag auf Tipp auf', () => {
+    const nachTipp = e().nach_tipp as Record<string, unknown>;
+    expect(e().aufgeklappt).toBe(0);
+    expect(nachTipp.aufgeklappt).toBe(1);
+    expect(Number(nachTipp.erste_hoehe)).toBeGreaterThan(Number(e().erste_hoehe));
+    /* Und sagt es auch an, nicht nur optisch. */
+    expect(nachTipp.angesagt).toBe('true');
+  });
+});
+
+describe('Jeder Rückweg nennt einen Bereich, den es gibt', () => {
+  const e = () => schritt('Kein Rückweg nennt einen Bereich, den es nicht gibt');
+
+  it('schickt niemanden nach „Tools" zurück', () => {
+    /* Fünf Werkzeugseiten trugen „← Tools" — einen Bereich, den die App
+       seit dem Umbau auf Lernen / Nachschlagen / Live-Session (E-030) nicht
+       mehr hat. Der Wegelauf sah nur, dass der Link ankommt, nicht, wohin
+       er zu führen behauptet. */
+    expect(e().unbekannte_bereiche).toEqual([]);
+  });
+
+  it('lässt keine Unterseite ohne Rückweg', () => {
+    expect(e().ohne_rueckweg).toEqual([]);
+  });
+});

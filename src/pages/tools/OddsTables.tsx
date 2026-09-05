@@ -1,14 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/oddstables';
-
-/** Equity mit `outs` Outs: eine Karte (River) bzw. Turn + River. */
-function oneCard(outs: number): number {
-  return outs / 46;
-}
-function twoCards(outs: number): number {
-  return 1 - ((47 - outs) / 47) * ((46 - outs) / 46);
-}
+/* Die beiden Formeln stehen in der Bibliothek, nicht hier: Dieselben Zahlen
+   erscheinen als Vorschau auf der Nachschlagen-Seite, und eine zweite
+   Abschrift läuft irgendwann auseinander. */
+import { chanceEineKarte as oneCard, chanceZweiKarten as twoCards } from '../../lib/poker/outs';
+import { BackLink } from '../../components/ui';
+import { STR as NAV } from '../../i18n/pages/layout';
 
 export function OddsTables() {
   const { lang } = useLang();
@@ -17,9 +15,7 @@ export function OddsTables() {
 
   return (
     <div>
-      <Link to="/nachschlagen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        {L.back}
-      </Link>
+      <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>

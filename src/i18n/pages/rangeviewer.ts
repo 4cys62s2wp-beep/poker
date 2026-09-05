@@ -4,7 +4,6 @@ import { defineStrings } from '..';
    selbst bleibt deutsche Daten, die Anzeige läuft über dieses Wörterbuch. */
 export const STR = defineStrings(
   {
-    back: '← Tools',
     title: 'Range-Charts',
     sub: '6-max Cash Game, 100bb effektiv, vereinfacht für die Praxis. Charts sind dein Startpunkt – mit Reads darfst du abweichen.',
     bbdefTitle: 'Big Blind vs. Button-Open (2,5bb)',
@@ -22,7 +21,6 @@ export const STR = defineStrings(
     readingHelp: 'Lesehilfe: Diagonale = Paare, oberhalb = suited (s), unterhalb = offsuit (o).',
   },
   {
-    back: '← Tools',
     title: 'Range Charts',
     sub: '6-max cash game, 100bb effective, simplified for practical play. Charts are your starting point – with reads you may deviate.',
     bbdefTitle: 'Big Blind vs. Button Open (2.5bb)',

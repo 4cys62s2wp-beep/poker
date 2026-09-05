@@ -2,7 +2,6 @@ import { defineStrings } from '..';
 
 export const STR = defineStrings(
   {
-    back: '← Tools',
     title: 'Equity-Rechner',
     subBefore: 'Karten im Format ',
     subStrong: 'Rang + Farbe',
@@ -28,7 +27,6 @@ export const STR = defineStrings(
     mcNote: 'Monte-Carlo-Simulation mit 30.000 Durchläufen (±0,5 Prozentpunkte). Splits zählen anteilig.',
   },
   {
-    back: '← Tools',
     title: 'Equity Calculator',
     subBefore: 'Enter cards as ',
     subStrong: 'rank + suit',

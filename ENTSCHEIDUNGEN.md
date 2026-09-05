@@ -2350,3 +2350,82 @@ hatte. Seitdem wird vor jeder Messung aufgeräumt.
 - `npm run daumen`: 0 Befunde · `npm run wege`: 0 Sackgassen
 - Durchgang vollständig, **1079 Tests grün**
 - Konsole über alle 90 Bildschirme in beiden Sprachen: **0 Fehler**
+
+---
+
+## E-044 · 2026-09-05 · Quer gehalten war der Tisch nicht zu sehen
+
+**Stand:** entschieden und umgesetzt.
+
+Beim Weitersuchen gemessen, was noch keine Prüfung ansieht: die **Ausrichtung
+des Geräts**. Alle Läufe messen hochkant — 390 × 844, 375 × 667, 430 × 932.
+Ein Gerät, auf dem ein Pokertisch liegt, hält man aber quer.
+
+Bei 844 × 390 war der Filz **564 Pixel hoch** in einem 390 Pixel hohen Bild:
+
+- die fünf Gegner vollständig über dem Bildrand,
+- das Board zur Hälfte abgeschnitten,
+- sichtbar waren die eigenen Karten und die Entscheidungsleiste.
+
+Man entschied also, ohne zu sehen, gegen wen und worauf. Und die Anwendung
+legt die Ausrichtung nicht fest (kein `orientation` im Manifest) — das wäre
+auch keine Lösung, weil iOS es ohnehin nicht beachtet.
+
+### Quer hat man Breite und keine Höhe
+
+Also wird aus den drei Reihen eine andere Anordnung — kein zweites Layout,
+sondern dieselben benannten Felder in einer anderen Aufteilung:
+
+```
+hochkant                    quer
+p2  p3  p4                  p1 p2    p3    p4    p5
+p1 topf p5                  du board board board topf
+board board board           du lage  lage  lage  topf
+lage  lage  lage
+du    du    du
+```
+
+Alle Gegner nebeneinander — quer ist Platz für fünf Namensschilder in einer
+Reihe. Und **die eigene Hand steht neben dem Board, nicht darunter**: Das
+ist der Schritt, der die zwei Reihen spart, die vorher gefehlt haben.
+
+Dazu quer: schmalerer Rand, kleinere Abstände, kein Tischzeichen, kleinere
+Karten — und zwar **beide** kleiner. Die eigene Hand bleibt die größte
+Darstellung auf dem Tisch (Regel 10.8): 55 × 77 gegen 40 × 56 auf dem Board.
+Eine Regel, die nur hochkant gilt, ist keine.
+
+### Gemessen
+
+| bei 844 × 390 | vorher | jetzt |
+|---|---|---|
+| Höhe des Filzes | 564 px | **228 px** |
+| Gegner über der Leiste sichtbar | 0 von 5 | **5 von 5** |
+| Board über der Leiste | nein (halb) | **ja** |
+| eigene Karten über der Leiste | nein | **ja** |
+
+Was **nicht** ganz hineinpasst, ist das eigene Namensschild — „Du · 200
+Chips · CO" steht 25 Pixel hinter der Leiste. Dafür müsste die Kopfzeile der
+App quer schmaler werden, und die gehört allen Bildschirmen: Ich hätte einen
+geprüften Zustand gegen einen ungeprüften getauscht, um eine Zeile zu retten,
+die nebenan im Klartext steht.
+
+### Ein Fehler auf dem Weg, der hierher gehört
+
+Die ersten drei Anläufe wirkten nicht: Der Medienblock stand **vor** den
+Regeln, die er überschreiben sollte. Bei gleicher Spezifität gewinnt die
+spätere Regel — `.filz-du { flex-direction: column }` stand weiter unten und
+schlug den Block darüber. Sichtbar wurde es erst, als ich im Browser
+`getComputedStyle` abgefragt habe statt aufs Bild zu schauen: Die Rasterfelder
+waren schon die neuen, die Flussrichtung noch die alte.
+
+**Ein Medienblock gehört hinter das, was er ändert.** Er steht jetzt am Ende
+des Tischabschnitts, der für die Entscheidungsleiste hinter deren Regel.
+
+### Der Durchgang misst jetzt auch quer
+
+Ein neuer Schritt bei 844 × 390: alle fünf Sitze, das Board und die eigenen
+Karten über der Entscheidungsleiste, kein seitlicher Überlauf, die eigene
+Hand breiter als eine Boardkarte, der Filz flacher als 280 Pixel.
+
+**Stand:** 1085 Tests grün, `pruefen` 0 Befunde, `bedienbar` 0 Befunde,
+`daumen` 0 Befunde, Durchgang vollständig.

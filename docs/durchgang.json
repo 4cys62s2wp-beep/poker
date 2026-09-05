@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-09-05T19:37:38.218Z",
+  "geprueft_am": "2026-09-05T19:46:31.539Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 871,
+        "dauer_ms": 874,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -610,12 +610,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 43,
+        "dauer_ms": 50,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "24,1 %",
+        "ergebnis_text": "27,8 %",
         "uebergang": "0s",
         "belebung": "none"
       },
@@ -712,6 +712,21 @@
         "dateien_startseite": 1,
         "dateien_nach_profil": 4,
         "kontokarte_da": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Quer gehalten sieht man den ganzen Tisch",
+      "ergebnis": {
+        "fenster": "844x390",
+        "filz_hoehe": 228,
+        "sitze": 5,
+        "sitze_ueber_der_leiste": 5,
+        "board_ueber_der_leiste": true,
+        "eigene_karten_ueber_der_leiste": true,
+        "eigene_kartenbreite": 60,
+        "boardkartenbreite": 40,
+        "seitlicher_ueberlauf": 0
       },
       "uebersprungen": false
     }

@@ -1088,3 +1088,39 @@ describe('Die Startseite lädt nichts, was sie nicht braucht', () => {
     expect(e().kontokarte_da).toBe(true);
   });
 });
+
+/* ── Quer gehalten ───────────────────────────────────────────────────────
+   Ein Gerät, auf dem ein Pokertisch liegt, hält man quer. Bei 844 × 390 lag
+   der Tisch 564 Pixel hoch im Bild: Die Gegner waren vollständig über dem
+   Bildrand, das Board zur Hälfte. Siehe E-044. */
+
+describe('Quer gehalten sieht man den ganzen Tisch', () => {
+  const e = () => schritt('Quer gehalten sieht man den ganzen Tisch');
+
+  it('zeigt alle fünf Gegner über der Entscheidungsleiste', () => {
+    expect(e().sitze).toBe(5);
+    expect(e().sitze_ueber_der_leiste).toBe(5);
+  });
+
+  it('zeigt Board und eigene Karten über der Entscheidungsleiste', () => {
+    /* Man soll nicht entscheiden müssen, ohne zu sehen, worauf. */
+    expect(e().board_ueber_der_leiste).toBe(true);
+    expect(e().eigene_karten_ueber_der_leiste).toBe(true);
+  });
+
+  it('lässt die eigene Hand auch quer die größte Darstellung sein', () => {
+    /* Regel 10.8 gilt in jeder Ausrichtung. Quer werden beide kleiner —
+       die Rangfolge bleibt. */
+    expect(Number(e().eigene_kartenbreite))
+      .toBeGreaterThan(Number(e().boardkartenbreite));
+  });
+
+  it('läuft nicht seitlich über', () => {
+    expect(e().seitlicher_ueberlauf).toBe(0);
+  });
+
+  it('macht den Tisch quer flacher, nicht nur schmaler', () => {
+    /* Vorher 564 Pixel bei 390 Pixeln Bildhöhe. */
+    expect(Number(e().filz_hoehe)).toBeLessThan(280);
+  });
+});

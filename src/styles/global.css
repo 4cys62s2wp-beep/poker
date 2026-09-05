@@ -3395,6 +3395,94 @@ input[type="radio"] {
   .bereiche { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+/* Quer gehalten: eine Reihe statt drei (E-044).
+   ==========================================
+   Gemessen bei 844 × 390: Der Tisch war 564 Pixel hoch, die Gegner lagen
+   vollständig über dem Bildrand und das Board zur Hälfte. Wer quer hält —
+   und quer hält man ein Gerät, auf dem ein Pokertisch liegt —, sah beim
+   Entscheiden weder seine Gegner noch die Gemeinschaftskarten.
+
+   Quer hat man Breite und keine Höhe. Also wird aus den drei Reihen eine:
+   alle Gegner nebeneinander, darunter Topf, Board und Lage in einer Zeile,
+   darunter der eigene Platz. Fünf Zeilen werden drei.
+
+   Die Bedingung ist die Höhe, nicht die Ausrichtung allein: Ein Tablet quer
+   hat Platz genug für den Ring. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .filz,
+  .filz[data-gegner='1'],
+  .filz[data-gegner='2'],
+  .filz[data-gegner='5'] {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    /* Die eigene Hand steht neben dem Board, nicht darunter: Quer ist die
+       Höhe knapp und die Breite reichlich. So liegen Gegner, Board und
+       eigene Karten gleichzeitig über der Entscheidungsleiste. */
+    grid-template-areas:
+      'p1 p2    p3    p4    p5'
+      'du board board board topf'
+      'du lage  lage  lage  topf';
+    align-content: center;
+    gap: var(--sp-1) var(--sp-2);
+    padding: var(--sp-2) var(--sp-4);
+    border-width: 8px;
+    border-radius: 30px;
+    margin-bottom: var(--sp-2);
+  }
+
+  /* Der eigene Platz steht quer links neben dem Board und behält seinen
+     Aufbau: Karten über dem Schild. */
+  .filz-du {
+    padding-top: 0;
+    justify-content: center;
+  }
+
+  .filz-du .sitz-einsatz { position: static; transform: none; margin-bottom: 2px; }
+  .du-karten { margin-bottom: -7px; }
+  .filz-du .sitz-schild { min-width: 0; padding: 2px var(--sp-2); }
+
+  /* Karten kleiner, aber die Rangfolge bleibt: Die eigene Hand ist die
+     größte Darstellung auf dem Tisch (Regel 10.8). 120 Pixel Höhe sind
+     quer ein Drittel des Bildes — 77 sind es nicht. */
+  .du-karten .pcard.xl {
+    width: 55px;
+    height: 77px;
+    border-radius: 8px;
+  }
+
+  .du-karten .pcard.xl .corner { top: 4px; left: 6px; font-size: 15px; }
+  .du-karten .pcard.xl .corner.unten { top: auto; left: auto; right: 6px; bottom: 4px; }
+  .du-karten .pcard.xl .corner .c-suit { font-size: 11px; }
+  .du-karten .pcard.xl .center-suit { font-size: 29px; margin-top: 8px; }
+
+  /* Und die Gemeinschaftskarten eine Stufe darunter, damit die eigene Hand
+     die größte bleibt. */
+  .filz .board .pcard,
+  .filz .board-platz {
+    width: 40px;
+    height: 56px;
+    border-radius: 6px;
+  }
+
+  .filz .board .pcard .corner { top: 3px; left: 4px; font-size: 12px; }
+  .filz .board .pcard .corner .c-suit { font-size: 9px; }
+  .filz .board .pcard .center-suit { font-size: 20px; margin-top: 6px; }
+
+  .sitz { padding-bottom: 17px; }
+  .sitz-karten { min-height: 36px; margin-bottom: -12px; }
+  .filz::after { display: none; }
+
+  /* Auch die verdeckten Karten der Gegner kleiner. Sie sagen „ist noch
+     dabei" — dafür reicht ihre Form. */
+  .filz .pcard.sm { width: 28px; height: 40px; border-radius: 4px; }
+
+}
+
+/* Quer bleibt auch der Kopf schmal: 128 Pixel Vorspann auf einem 390 Pixel
+   hohen Bild sind ein Drittel davon. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .tisch-kopf { margin-bottom: var(--sp-1); }
+}
+
 /* Die Erhöhen-Auswahl sitzt direkt über der Entscheidungsleiste. */
 .erhoehen {
   display: flex;
@@ -3428,6 +3516,13 @@ input[type="radio"] {
   border-top: 1px solid var(--border);
 }
 
+
+
+/* Quer liegt der Gestenstreifen an der Seite, nicht unten — die Leiste
+   braucht dort keinen Platz dafür freizuhalten (E-044). */
+@media (orientation: landscape) and (max-height: 560px) {
+  .entscheidung-leiste { padding-bottom: var(--sp-3); }
+}
 .entscheidung-leiste .entscheidung-innen {
   display: flex;
   gap: var(--tipp-abstand);

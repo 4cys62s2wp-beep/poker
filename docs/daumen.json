@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-09-05T19:38:20.070Z",
+  "geprueft_am": "2026-09-05T19:49:57.906Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -359,19 +359,19 @@
     {
       "hash": "#/lernen/trainer/szenario",
       "scrollt": true,
-      "ueberlauf_px": 94,
+      "ueberlauf_px": 40,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 623,
+        "oben_px": 644,
         "unten_px": 844,
-        "mitte_px": 734,
+        "mitte_px": 744,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 3,
         "klebt": true,
-        "kleinster_knopf_px": 72,
+        "kleinster_knopf_px": 51,
         "breitenanteil": 1.35
       }
     },

@@ -46,12 +46,6 @@ export const STR = defineStrings(
       'David Solide',
       'Elena Eiskalt',
     ],
-    styleLabel: {
-      tight: 'tight',
-      standard: 'solide',
-      loose: 'loose',
-      aggro: 'aggressiv',
-    } as Record<BotStyle, string>,
     fixLogGrammar: fixDuGrammar,
 
     // Setup-Bildschirm
@@ -90,7 +84,6 @@ export const STR = defineStrings(
     einsatzVon: (n: number) => `Einsatz ${n}`,
     dealerKurz: 'D',
     dealerLang: 'Dealer-Knopf',
-    verdeckt: 'Verdeckte Karten',
     stapelVon: (name: string, n: number) => `${name}: ${n} Chips`,
     chipsAmount: (n: number) => `${n} Chips`,
     foldedTag: 'Fold',
@@ -143,12 +136,6 @@ export const STR = defineStrings(
       'David Solid',
       'Elena Ice-Cold',
     ],
-    styleLabel: {
-      tight: 'tight',
-      standard: 'solid',
-      loose: 'loose',
-      aggro: 'aggressive',
-    } as Record<BotStyle, string>,
     fixLogGrammar: fixYouGrammar,
 
     // Setup screen
@@ -187,7 +174,6 @@ export const STR = defineStrings(
     einsatzVon: (n: number) => `Bet ${n}`,
     dealerKurz: 'D',
     dealerLang: 'Dealer button',
-    verdeckt: 'Face-down cards',
     stapelVon: (name: string, n: number) => `${name}: ${n} chips`,
     chipsAmount: (n: number) => `${n} chips`,
     foldedTag: 'Fold',

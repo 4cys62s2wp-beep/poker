@@ -7,7 +7,6 @@ export const STR = defineStrings(
     sub: (tolerance: number) =>
       `Beide Hände offen · richtig ist alles innerhalb von ±${tolerance} Prozentpunkten`,
     correctCount: (n: number) => `✓ ${n} richtig`,
-    totalCount: (n: number) => `${n} gesamt`,
     streak: (n: number) => `Serie: ${n}`,
     yourHand: 'Deine Hand',
     villain: 'Gegner',
@@ -31,7 +30,6 @@ export const STR = defineStrings(
     sub: (tolerance: number) =>
       `Both hands face up · anything within ±${tolerance} percentage points counts`,
     correctCount: (n: number) => `✓ ${n} correct`,
-    totalCount: (n: number) => `${n} total`,
     streak: (n: number) => `Streak: ${n}`,
     yourHand: 'Your Hand',
     villain: 'Opponent',

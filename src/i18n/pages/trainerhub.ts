@@ -6,13 +6,8 @@ export const STR = defineStrings(
     title: 'Trainer',
     sub: 'Wissen wird erst durch Wiederholung zur Fähigkeit. Jede richtige Antwort bringt 5 XP – und lange Serien bringen Abzeichen.',
     dailyQuiz: 'Tages-Quiz',
-    dailyDone: (score: number, total: number) => `Heute erledigt: ${score}/${total}`,
-    dailyBonus: '+30 XP Bonus',
-    dailyDesc: 'Fünf Fragen quer durch alle Module – jeden Tag neu.',
     attempts: (n: number) => `${n} Aufgaben`,
-    accuracy: (pct: number) => `${pct} % richtig`,
     bestStreak: (n: number) => `Beste Serie: ${n}`,
-    notStarted: 'Noch nicht gestartet',
     trainers: {
       szenario: {
         title: 'Szenario-Trainer',
@@ -49,13 +44,8 @@ export const STR = defineStrings(
     title: 'Trainers',
     sub: 'Knowledge only becomes skill through repetition. Every correct answer earns 5 XP – and long streaks earn badges.',
     dailyQuiz: 'Daily Quiz',
-    dailyDone: (score: number, total: number) => `Done today: ${score}/${total}`,
-    dailyBonus: '+30 XP bonus',
-    dailyDesc: 'Five questions from across all modules – fresh every day.',
     attempts: (n: number) => `${n} drills`,
-    accuracy: (pct: number) => `${pct}% correct`,
     bestStreak: (n: number) => `Best streak: ${n}`,
-    notStarted: 'Not started yet',
     trainers: {
       szenario: {
         title: 'Scenario Trainer',

@@ -32,7 +32,6 @@ export const STR = defineStrings(
     faelleHinweis:
       'Mitgezählt, während gerechnet wurde — nicht hinterher aus einer Formel '
       + 'hergeleitet.',
-    faelleTeil: (name: string) => name.replace(/_/g, ' '),
 
     zweck: 'Wofür dieser Block gerechnet wurde',
 
@@ -74,7 +73,6 @@ export const STR = defineStrings(
     faelleHinweis:
       'Counted while the computation ran — not derived from a formula '
       + 'afterwards.',
-    faelleTeil: (name: string) => name.replace(/_/g, ' '),
 
     zweck: 'What this block was computed for',
 

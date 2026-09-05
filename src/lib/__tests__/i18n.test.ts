@@ -3,6 +3,8 @@
    gleiche Karten. Nur so bleibt der Lernfortschritt sprachunabhängig. */
 
 import { describe, expect, it } from 'vitest';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { DE_BUNDLE } from '../../i18n';
 import { EN_BUNDLE } from '../../content/en';
 
@@ -71,42 +73,60 @@ describe('EN-Inhalte spiegeln DE strukturell', () => {
   });
 });
 
-/* ---------------------------------------------------------------------------
-   Der Lernstand nennt keinen Nenner
-   ---------------------------------------------------------------------------
-   „3 von 49 Lektionen" ist zwei Aussagen in einem Satz: was jemand geschafft
-   hat, und wie viel es insgesamt gibt. Die zweite ist eine Zusage über den
-   Inhalt, und die deckt der vorhandene nicht — sie zählt, was da ist, und
-   verspricht dabei stillschweigend, dass es vollständig ist. Also nur die
-   erste. Siehe ENTSCHEIDUNGEN.md, E-032. */
+/* Der Lernstand auf der Startseite: Regel bleibt, Prüfung entfällt.
+   ==============================================================
+   Hier standen drei Prüfungen über `learnStatus` — den Satz „x Lektionen
+   abgeschlossen" auf der alten Startseite. Die Regel aus E-032 (nennen, was
+   geschafft ist, nie „x von y") gilt weiter und steht dort; den Satz gibt
+   es seit E-035 nicht mehr, die Startseite zeigt den Fortschritt als
+   Balken. Eine Prüfung über eine Zeichenkette, die niemand anzeigt, hält
+   nichts fest — sie hielt hier nur den Eintrag im Wörterbuch am Leben
+   (E-043). */
 
-describe('Der Lernstand auf der Startseite', () => {
-  it('nennt nur, was abgeschlossen wurde', async () => {
-    const { STR } = await import('../../i18n/pages/hub');
-    for (const sprache of ['de', 'en'] as const) {
-      for (const anzahl of [0, 1, 3, 49]) {
-        const satz = STR[sprache].learnStatus(anzahl);
-        expect(satz, `${sprache}/${anzahl}`).toContain(String(anzahl));
-        /* Keine zweite Zahl im Satz — die wäre der Nenner. */
-        const zahlen = satz.match(/\d+/g) ?? [];
-        expect(zahlen, `${sprache}/${anzahl}: "${satz}"`).toHaveLength(1);
+
+/* ── Wörterbucheinträge, die niemand mehr anzeigt (E-043) ────────────────
+   Beim Durchsehen gefunden: 74 Schlüssel — in beiden Sprachen also 148
+   Zeichenketten — die kein Bildschirm mehr benutzte. Reste alter
+   Startseiten, eines alten Trainer-Hubs, einer entfernten
+   Zurücksetzen-Funktion.
+
+   Sie sind nicht nur Ballast. Wer `hub.ts` liest, hält `continueTitle` und
+   `greetingMorning` für Teil der App und richtet die nächste Änderung
+   danach aus. Und eine Übersetzung, die niemand sieht, wird trotzdem
+   gepflegt. */
+
+describe('Das Wörterbuch hat keine toten Einträge', () => {
+  /* Schlüssel, die zur Laufzeit zusammengesetzt werden, kommen im Quelltext
+     als Zeichenkette vor (`L[z.text]` mit `text: 'feldGlossar'`). Der Test
+     zählt beides — Feldzugriff und Zeichenkette. */
+  const quelltext = (() => {
+    const dateien: string[] = [];
+    const sammle = (pfad: string) => {
+      for (const eintrag of readdirSync(pfad)) {
+        const voll = join(pfad, eintrag);
+        if (statSync(voll).isDirectory()) {
+          if (!voll.includes('__tests__')) sammle(voll);
+        } else if (/\.(tsx|ts)$/.test(voll) && !voll.includes('/i18n/pages/')) {
+          dateien.push(voll);
+        }
+      }
+    };
+    sammle('src');
+    return dateien.map((d) => readFileSync(d, 'utf8')).join('\n');
+  })();
+
+  it('benutzt jeden Schlüssel irgendwo', () => {
+    const tot: string[] = [];
+    for (const datei of readdirSync('src/i18n/pages')) {
+      const s = readFileSync(join('src/i18n/pages', datei), 'utf8');
+      const ersterBlock = s.slice(s.indexOf('defineStrings('), s.indexOf('\n  },'));
+      for (const m of ersterBlock.matchAll(/^ {4}([a-zA-Z]\w*)\s*:/gm)) {
+        const k = m[1];
+        const alsFeld = new RegExp(`\\.${k}\\b`).test(quelltext);
+        const alsWort = new RegExp(`['"\`]${k}['"\`]`).test(quelltext);
+        if (!alsFeld && !alsWort) tot.push(`${datei}: ${k}`);
       }
     }
-  });
-
-  it('nimmt nur ein Argument entgegen', async () => {
-    /* Ein zweites wäre die Gesamtzahl — und wer sie übergeben kann, zeigt
-       sie irgendwann wieder an. */
-    const { STR } = await import('../../i18n/pages/hub');
-    expect(STR.de.learnStatus.length).toBe(1);
-    expect(STR.en.learnStatus.length).toBe(1);
-  });
-
-  it('beugt sich der Einzahl', async () => {
-    const { STR } = await import('../../i18n/pages/hub');
-    expect(STR.de.learnStatus(1)).toMatch(/^1 Lektion /);
-    expect(STR.de.learnStatus(2)).toMatch(/^2 Lektionen /);
-    expect(STR.en.learnStatus(1)).toMatch(/^1 lesson /);
-    expect(STR.en.learnStatus(2)).toMatch(/^2 lessons /);
+    expect(tot.sort(), 'Diese Einträge zeigt kein Bildschirm mehr an').toEqual([]);
   });
 });

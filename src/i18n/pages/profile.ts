@@ -7,13 +7,6 @@ export const STR = defineStrings(
     title: 'Profil & Fortschritt',
     sub: 'Dein Fortschritt wird doppelt auf diesem Gerät gesichert – und mit Konto zusätzlich in der Cloud.',
 
-    statLevel: 'Level',
-    statXp: 'XP',
-    nextLevel: (xp: number) => `nächstes Level: ${xp} XP`,
-    statLessons: 'Lektionen',
-    lessonsDone: 'abgeschlossen',
-    statBadges: 'Abzeichen',
-    badgesEarned: 'verdient',
 
     /* ── Der Rang als Bild (E-037) ──────────────────────────────────── */
     rangMarke: 'Dein Rang',
@@ -35,7 +28,6 @@ export const STR = defineStrings(
     sessionsSub: 'im Bankroll-Tracker',
 
     badgesTitle: 'Abzeichen',
-    badgeEarnedPill: '✓ verdient',
     badgeSeit: (wann: string) => (wann ? `seit ${wann}` : 'verdient'),
 
     accountSection: 'Konto & Synchronisation',
@@ -97,13 +89,6 @@ export const STR = defineStrings(
     title: 'Profile & Progress',
     sub: 'Your progress is saved twice on this device – and additionally in the cloud with an account.',
 
-    statLevel: 'Level',
-    statXp: 'XP',
-    nextLevel: (xp: number) => `next level: ${xp} XP`,
-    statLessons: 'Lessons',
-    lessonsDone: 'completed',
-    statBadges: 'Badges',
-    badgesEarned: 'earned',
 
     /* ── Rank as a picture (E-037) ──────────────────────────────────── */
     rangMarke: 'Your rank',
@@ -125,7 +110,6 @@ export const STR = defineStrings(
     sessionsSub: 'in the bankroll tracker',
 
     badgesTitle: 'Badges',
-    badgeEarnedPill: '✓ earned',
     badgeSeit: (wann: string) => (wann ? `since ${wann}` : 'earned'),
 
     accountSection: 'Account & Sync',

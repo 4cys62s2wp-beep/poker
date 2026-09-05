@@ -10,7 +10,6 @@ export const STR = defineStrings(
     annual: 'Jährlich',
     perMonth: 'pro Monat',
     perYear: 'pro Jahr',
-    billedAnnually: (price: string) => `${price} jährlich abgerechnet`,
     // § 312j BGB: Der Bestell-Button MUSS die Zahlungspflicht ausdrücken.
     cta: 'Zahlungspflichtig abonnieren',
     ctaTrial: 'Zahlungspflichtig abonnieren',
@@ -105,7 +104,6 @@ export const STR = defineStrings(
     annual: 'Yearly',
     perMonth: 'per month',
     perYear: 'per year',
-    billedAnnually: (price: string) => `billed ${price} per year`,
     cta: 'Subscribe – payment required',
     ctaTrial: 'Subscribe – payment required',
     ctaBusy: 'One moment …',

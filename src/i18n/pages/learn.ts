@@ -13,7 +13,6 @@ export const STR = defineStrings(
     proTitle: 'Pro-Insights: Von den Besten lernen',
     proSub: 'Die Prinzipien von Fedor Holz, Negreanu, Polk & Co. – plus die teuersten Anfängerfehler aus Profi-Sicht.',
     newPill: 'Neu',
-    moduleN: (n: number) => `Modul ${n}`,
 
     /* ── Der Lernpfad als Pfad (E-037) ──────────────────────────────── */
     rangMarke: 'Dein Rang',
@@ -34,8 +33,6 @@ export const STR = defineStrings(
     drillPill: 'Neu',
 
     practiceGroupTitle: 'Üben und festigen',
-    trainerTitle: 'Trainer',
-    trainerSub: 'Sieben Drills – Preflop, Pot Odds, Outs, Szenarien',
     reviewTitle: 'Wiederholen',
     reviewSub: 'Was du falsch hattest, im richtigen Abstand nochmal',
     reviewDue: (n: number) => `${n} fällig`,
@@ -58,7 +55,6 @@ export const STR = defineStrings(
     proTitle: 'Pro Insights: Learn from the Best',
     proSub: 'The principles of Fedor Holz, Negreanu, Polk & co. – plus the most expensive beginner mistakes from a pro’s point of view.',
     newPill: 'New',
-    moduleN: (n: number) => `Module ${n}`,
 
     /* ── The learning path as a path (E-037) ────────────────────────── */
     rangMarke: 'Your rank',
@@ -78,8 +74,6 @@ export const STR = defineStrings(
     drillPill: 'New',
 
     practiceGroupTitle: 'Practise and cement',
-    trainerTitle: 'Trainers',
-    trainerSub: 'Seven drills – preflop, pot odds, outs, scenarios',
     reviewTitle: 'Review',
     reviewSub: 'What you got wrong, again at the right interval',
     reviewDue: (n: number) => `${n} due`,

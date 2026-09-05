@@ -18,7 +18,6 @@ export const STR = defineStrings(
     searchNothing: (q: string) => `Nichts zu „${q}" gefunden.`,
     searchHintGlossary: 'Im Glossar',
     searchHintTool: 'Bereich',
-    searchClear: 'Suche leeren',
 
     coachTitle: 'Live-Coach',
     coachDesc: 'Deine Hand eingeben, Empfehlung mit Begründung bekommen',
@@ -58,7 +57,6 @@ export const STR = defineStrings(
     searchNothing: (q: string) => `Nothing found for “${q}”.`,
     searchHintGlossary: 'In the glossary',
     searchHintTool: 'Section',
-    searchClear: 'Clear search',
 
     coachTitle: 'Live coach',
     coachDesc: 'Enter your hand, get a recommendation with reasoning',

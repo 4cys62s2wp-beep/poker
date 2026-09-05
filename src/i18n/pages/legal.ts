@@ -55,7 +55,6 @@ export const STR = defineStrings(
     responsible:
       'Poker kann süchtig machen. Spiele nur mit Geld, dessen Verlust du verkraften kannst, setze dir feste Grenzen für Zeit und Einsätze und mach Pausen. Wenn du das Gefühl hast, die Kontrolle zu verlieren, findest du in Deutschland kostenlose und anonyme Hilfe bei der Bundeszentrale für gesundheitliche Aufklärung unter 0800 1 37 27 00 sowie auf check-dein-spiel.de. Diese App richtet sich ausschließlich an Erwachsene.',
 
-    lastUpdated: 'Stand',
 
     // Kündigungsseite (§ 312k BGB)
     cancelNav: 'Verträge hier kündigen',
@@ -132,7 +131,6 @@ export const STR = defineStrings(
     responsible:
       'Poker can be addictive. Only play with money you can afford to lose, set firm limits for time and stakes, and take breaks. If you feel you are losing control, free and anonymous help is available in Germany from the BZgA on 0800 1 37 27 00 and at check-dein-spiel.de; in other countries look for your national helpline. This app is intended for adults only.',
 
-    lastUpdated: 'Last updated',
 
     cancelNav: 'Cancel your contract here',
     cancelTitle: 'Cancel your contract here',

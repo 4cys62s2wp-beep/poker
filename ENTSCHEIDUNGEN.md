@@ -2429,3 +2429,30 @@ Hand breiter als eine Boardkarte, der Filz flacher als 280 Pixel.
 
 **Stand:** 1085 Tests grün, `pruefen` 0 Befunde, `bedienbar` 0 Befunde,
 `daumen` 0 Befunde, Durchgang vollständig.
+
+### Nachtrag: dieselbe Liste an drei Stellen — zwei davon von mir
+
+Beim Suchen nach Exporten ohne Abnehmer fiel `LEVEL_TITLES_I18N` auf: eine
+**übersetzte** Rangnamensliste in `i18n/index.tsx`, benutzt von der
+Kopfzeile über `levelTitleFor`. Sie war schon da, als ich in E-043 die
+englischen Rangnamen „ergänzt" habe — ich hatte sie nicht gesehen und eine
+zweite englische Liste angelegt.
+
+Die beiden wichen bereits voneinander ab: „Rookie" gegen „Newcomer",
+„Climber" gegen „Riser". Der Fehler aus E-043 wäre damit zur Hälfte
+zurückgekommen, sobald jemand die eine Liste pflegt und die andere nicht.
+
+Das ist genau das Problem, vor dem die Kommentare in diesem Projekt an einem
+Dutzend Stellen warnen — und es entsteht nicht durch Nachlässigkeit, sondern
+dadurch, **dass man die andere Stelle nicht kennt**. Ein Kommentar hilft
+dagegen nicht; er steht ja an der Stelle, die man schon gefunden hat.
+
+Die Liste steht jetzt in `lib/rang/titel.ts`: ein Modul, das nichts weiter
+tut, das beide Seiten ohne Kreis importieren können, und das den Sprachtyp
+als `'de' | 'en'` selbst mitbringt, statt ihn aus `i18n` zu holen (sonst
+zöge es die gesamten Lerninhalte hinter sich her). Gültig sind die Namen aus
+`i18n` — sie waren zuerst da.
+
+Ein Test hält fest, dass keine zweite Aufzählung zurückkommt: Weder
+`AppState.tsx` noch `i18n/index.tsx` dürfen das Wort „Küchentisch-Spieler"
+enthalten.

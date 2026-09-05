@@ -53,7 +53,40 @@ const wege = JSON.parse(readFileSync('docs/wege.json', 'utf8'));
  *
  * Die Lehre steht in DESIGN.md 9.1: Eine Prüfung, die eine Zahl meldet,
  * muss auch sagen, worüber. „49 Bildschirme" klang nach allen. */
-const bildschirme = wege.wege.map((w) => w.hash);
+const bildschirme = wege.wege.map((w) => ({ id: w.hash, hash: w.hash }));
+
+/* Und die Bildschirme, die hinter einem Klick liegen.
+ *
+ * `wege.json` kennt Adressen. Der Übungstisch hat unter seiner Adresse aber
+ * zwei Bildschirme: die Auswahl der Tischgröße — und den Tisch selbst, auf
+ * dem gespielt wird. Der Lauf sah bis E-041 nur die Auswahl und meldete
+ * trotzdem „90 Bildschirme geprüft".
+ *
+ * Was das gekostet hat, stand danach im hellen Modus auf dem Filz: Namen
+ * der Gegner in Anthrazit auf Dunkelgrün, gemessen unter 2 zu 1. Dieselbe
+ * Lehre wie in E-039 (DESIGN.md 9.1), nur eine Ebene tiefer: Eine Prüfung,
+ * die eine Zahl meldet, muss auch sagen, worüber — und „alle Adressen" ist
+ * nicht dasselbe wie „alles, was man zu sehen bekommt".
+ *
+ * Die Liste ist absichtlich kurz und namentlich: Jeder Eintrag kostet einen
+ * Klickpfad, der brechen kann. Wer einen hinzufügt, soll ihn begründen. */
+const HINTER_EINEM_KLICK = [
+  {
+    id: '#/lernen/uebungstisch · Tisch mit sechs Plätzen',
+    hash: '#/lernen/uebungstisch',
+    async oeffnen(seite) {
+      await seite.locator('.card.clickable').filter({ hasText: /6-max/ }).first().click();
+      await seite.waitForSelector('.filz');
+      /* Warten, bis der Held am Zug ist: Dann steht der Tisch vollständig,
+         mit Einsätzen, Dealerknopf und einem Sitz, der gerade dran ist. */
+      for (let i = 0; i < 40; i += 1) {
+        if (await seite.locator('.entscheidung button').count() > 0) break;
+        await seite.waitForTimeout(300);
+      }
+      await seite.waitForTimeout(200);
+    },
+  },
+];
 
 /* Beide Farbmodi, nicht nur der gerade eingestellte. Ein Lauf über den
    dunklen Satz sagt genau nichts über den hellen — und der helle ist der,
@@ -73,9 +106,10 @@ await kontext.addInitScript(([m]) => {
 }, [modus]);
 const seite = await kontext.newPage();
 
-for (const hash of bildschirme) {
-  await seite.goto(`${GRUND}/${hash}`, { waitUntil: 'domcontentloaded' });
+for (const bs of [...bildschirme, ...HINTER_EINEM_KLICK]) {
+  await seite.goto(`${GRUND}/${bs.hash}`, { waitUntil: 'domcontentloaded' });
   await seite.waitForTimeout(320);
+  if (bs.oeffnen) await bs.oeffnen(seite);
 
   const messung = await seite.evaluate(
     ([grenzErgebnis, grenzUebrig, tippMin, ergebnisAb, tippAbstand]) => {
@@ -109,6 +143,35 @@ for (const hash of bildschirme) {
         .map((m) => alsZahlen(m[0])).filter(Boolean);
 
       /**
+       * Ein `background-image` in seine Ebenen zerlegen, oberste zuerst.
+       *
+       * Bis E-041 wurden alle Ebenen eines Elements zu einer Liste von
+       * Farbstopps verrührt. Auf dem Filz stehen drei: zwei fast
+       * durchsichtige Gewebemuster und darunter ein deckender Verlauf.
+       * Verrührt ergab das „vielleicht liegt der Text auf einem 1,4 %
+       * weißen Schleier über dem Seitenhintergrund" — und im hellen Modus
+       * war der Seitenhintergrund fast weiß. Gemeldet wurden 1,25 zu 1 für
+       * weiße Schrift, die in Wirklichkeit auf dunkelgrünem Filz steht.
+       *
+       * Ebenen einzeln zu betrachten heißt auch: Eine Ebene, deren Stopps
+       * alle deckend sind, deckt. Unter ihr liegt nichts mehr, was den
+       * Kontrast beeinflussen könnte — die Suche endet dort.
+       */
+      const ebenen = (bild) => {
+        const teile = [];
+        let tiefe = 0;
+        let akt = '';
+        for (const z of bild) {
+          if (z === '(') tiefe += 1;
+          if (z === ')') tiefe -= 1;
+          if (z === ',' && tiefe === 0) { teile.push(akt); akt = ''; continue; }
+          akt += z;
+        }
+        teile.push(akt);
+        return teile.map((t) => t.trim()).filter(Boolean);
+      };
+
+      /**
        * Die möglichen Gründe, auf denen ein Element wirklich liegt.
        *
        * Ein Verlauf hat keine Farbe, sondern viele. Statt ihn für „nicht
@@ -120,37 +183,73 @@ for (const hash of bildschirme) {
        * ein Befund zu wenig kostet Lesbarkeit.
        */
       const gruende = (el) => {
+        /* Deckkraft gehört zum Grund (E-041).
+           ---------------------------------
+           `opacity: 0.5` an einem Element blendet dessen ganzen Teilbaum
+           gegen das, was dahinter liegt — Schrift und eigener Grund
+           gleichermaßen. Wer nur `color` und `background-color` liest,
+           misst eine Lesbarkeit, die es auf dem Bildschirm nicht gibt.
+
+           Aufgefallen ist das am Übungstisch: Ein Gegner, der weggeworfen
+           hat, wird auf halbe Deckkraft gesetzt. Sein Name stand danach bei
+           2,4 zu 1 auf dem Filz — die alte Rechnung meldete 8,9.
+
+           Die Kette wird deshalb erst gesammelt und dann von oben nach
+           unten multipliziert: Was ein Vorfahre malt, wird nur von SEINEN
+           Deckkräften gedämpft, nicht von denen seiner Kinder. */
+        const kette = [];
+        for (let k = el; k; k = k.parentElement) kette.push(k);
+        const deck = new Array(kette.length);
+        let bisher = 1;
+        for (let i = kette.length - 1; i >= 0; i -= 1) {
+          const o = parseFloat(getComputedStyle(kette[i]).opacity);
+          bisher *= Number.isFinite(o) ? o : 1;
+          deck[i] = bisher;
+        }
+
         const schichten = [];          // von oben nach unten
-        let k = el;
-        let basis = null;
-        while (k) {
-          const st = getComputedStyle(k);
+        let unterste = null;           // die deckende Quelle: mögliche Farben
+        let verlauf = false;
+        suche:
+        for (let i = 0; i < kette.length; i += 1) {
+          const st = getComputedStyle(kette[i]);
           if (st.backgroundImage && st.backgroundImage !== 'none') {
-            const s = stopps(st.backgroundImage);
-            if (s.length) schichten.push({ typ: 'bild', stopps: s });
+            for (const lage of ebenen(st.backgroundImage)) {
+              const s = stopps(lage);
+              if (!s.length) continue;
+              verlauf = true;
+              if (deck[i] >= 0.999 && s.every((x) => x.alpha >= 0.999)) {
+                unterste = s.map((x) => x.rgb);
+                break suche;
+              }
+              schichten.push({ typ: 'bild', stopps: s, deckkraft: deck[i] });
+            }
           }
           const f = alsZahlen(st.backgroundColor);
-          if (f && f.alpha >= 0.999) { basis = f.rgb; break; }
-          if (f && f.alpha > 0) schichten.push({ typ: 'farbe', rgb: f.rgb, alpha: f.alpha });
-          k = k.parentElement;
+          if (f && f.alpha * deck[i] >= 0.999) { unterste = [f.rgb]; break; }
+          if (f && f.alpha > 0) {
+            schichten.push({ typ: 'farbe', rgb: f.rgb, alpha: f.alpha * deck[i] });
+          }
         }
-        if (!basis) {
+        if (!unterste) {
           const b = alsZahlen(getComputedStyle(document.body).backgroundColor);
-          basis = b && b.alpha >= 0.999 ? b.rgb : [0, 0, 0];
+          unterste = [b && b.alpha >= 0.999 ? b.rgb : [0, 0, 0]];
         }
 
         /* Von unten nach oben zusammenlegen. Die Zahl der Möglichkeiten wird
            begrenzt, indem nach jeder Schicht nur die hellste und die
            dunkelste behalten wird — die ungünstigste liegt immer unter
            diesen beiden. */
-        let moeglich = [basis];
+        let moeglich = unterste;
         for (const schicht of schichten.reverse()) {
           const naechste = [];
           for (const unten of moeglich) {
             if (schicht.typ === 'farbe') {
               naechste.push(legeAuf(schicht.rgb, schicht.alpha, unten));
             } else {
-              for (const s of schicht.stopps) naechste.push(legeAuf(s.rgb, s.alpha, unten));
+              for (const s of schicht.stopps) {
+                naechste.push(legeAuf(s.rgb, s.alpha * schicht.deckkraft, unten));
+              }
             }
           }
           naechste.sort((a, b) => helligkeit(a) - helligkeit(b));
@@ -158,7 +257,7 @@ for (const hash of bildschirme) {
             ? [naechste[0], naechste[naechste.length - 1]]
             : naechste;
         }
-        return { moeglich, verlauf: schichten.some((s) => s.typ === 'bild') };
+        return { moeglich, verlauf, deckkraft: deck[0] };
       };
 
       const sichtbar = (el) => {
@@ -192,15 +291,33 @@ for (const hash of bildschirme) {
         const st = getComputedStyle(el);
         const vorn = alsZahlen(st.color);
         if (!vorn || vorn.alpha < 0.95) continue;   // halbdurchsichtige Schrift: eigener Fall
-        const { moeglich, verlauf } = gruende(el);
+        const { moeglich, verlauf, deckkraft } = gruende(el);
         const groesse = parseFloat(st.fontSize);
         let schlechtester = null;
         let v = Infinity;
         for (const grund of moeglich) {
-          const w = kontrast(vorn.rgb, grund);
+          /* Die Schrift liegt mit der Deckkraft ihrer Gruppe auf dem Grund;
+             bei voller Deckkraft ist das die Farbe selbst. */
+          const gemalt = deckkraft >= 0.999
+            ? vorn.rgb : legeAuf(vorn.rgb, vorn.alpha * deckkraft, grund);
+          const w = kontrast(gemalt, grund);
           if (w < v) { v = w; schlechtester = grund; }
         }
-        const noetig = groesse >= ergebnisAb ? grenzErgebnis : grenzUebrig;
+        /* Ein Kartensymbol ist keine Ergebniszahl.
+           ------------------------------------
+           Die schärfere Grenze ab 40 Pixeln gilt Ergebniszahlen: der einen
+           großen Zahl, wegen der man den Bildschirm aufgeschlagen hat. Das
+           Symbol in der Mitte einer Spielkarte ist 52 Pixel groß und
+           trotzdem keine: Es wiederholt nur, was in der Ecke schon steht.
+           Rot auf Elfenbein ist die Farbe einer Spielkarte — auf 7 zu 1
+           gedunkelt wäre es keine mehr.
+
+           Die Bedingung, unter der die Ausnahme gilt (DESIGN.md 9.2): Was
+           das Symbol sagt, sagt der Rang in der Ecke auch — und der wird
+           nach der normalen Grenze gemessen, wie jeder andere Text. */
+        const istKartensymbol = el.closest('.pcard') !== null;
+        const noetig = groesse >= ergebnisAb && !istKartensymbol
+          ? grenzErgebnis : grenzUebrig;
         if (v < noetig) {
           gefunden.push({
             art: 'kontrast-zu-gering',
@@ -212,6 +329,7 @@ for (const hash of bildschirme) {
             vordergrund: st.color,
             grund: `rgb(${schlechtester.map((x) => Math.round(x)).join(', ')})`,
             ueber_verlauf: verlauf,
+            deckkraft: Math.round(deckkraft * 100) / 100,
           });
         }
       }
@@ -329,8 +447,8 @@ for (const hash of bildschirme) {
     });
   }
 
-  geprueft.push(`${modus}:${hash}`);
-  for (const b of messung.befunde) befunde.push({ modus, bildschirm: hash, ...b });
+  geprueft.push(`${modus}:${bs.id}`);
+  for (const b of messung.befunde) befunde.push({ modus, bildschirm: bs.id, ...b });
 }
 
 await kontext.close();
@@ -361,6 +479,10 @@ const ergebnis = {
     tipp_abstand_px: TIPP_ABSTAND,
   },
   modi: MODI,
+  /* Nicht nur wie viele, sondern welche. Eine Zahl kann stimmen und trotzdem
+     den falschen Ausschnitt meinen (E-039, DESIGN.md 9.1) — die Liste kann
+     das nicht: Der Test hält jede Adresse aus wege.json dagegen. */
+  bildschirme_liste: [...new Set(geprueft.map((g) => g.slice(g.indexOf(':') + 1)))],
   bildschirme: geprueft.length / MODI.length,
   messungen: geprueft.length,
   befunde_gesamt: befunde.length,

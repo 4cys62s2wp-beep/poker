@@ -1903,3 +1903,156 @@ eigene Hand mehr als doppelt so breit wie eine Gegnerkarte, die Entscheidung
 im Daumenbereich.
 
 **Eine neue Anordnung, die denselben Fehler macht, fällt dort auf.**
+
+---
+
+## E-041 · 2026-09-05 · Der Tisch bekommt einen Ring, die Prüfung bekommt Augen
+
+**Stand:** entschieden und umgesetzt.
+
+**Der Anlass, im Wortlaut:** „mach den übungstisch noch schöner, mehr wie ein
+echter tisch".
+
+### Drei Bänder waren richtig und sahen trotzdem falsch aus
+
+E-040 hat die gemeldete Überdeckung beseitigt, indem es die Sitze
+untereinanderlegte. Der Fehler war weg. Aber das Ergebnis war eine Liste auf
+grünem Grund: fünf breite Kästen in einem 3+2-Raster, darunter das Board,
+darunter ein schwarzer Balken über die volle Breite. Ein Tisch hat die
+Plätze **um** die Mitte.
+
+**Der Ring ist ein Raster mit benannten Feldern.** Zwei Rasterfelder können
+sich genauso wenig überlappen wie zwei Bänder — die Zusage aus E-040 gilt
+unverändert, und der Durchgangsschritt, der sie festhält, blieb Wort für
+Wort stehen. Was sich ändert, ist, wo die Felder liegen:
+
+```
+schmal              breit (ab 860 px)
+p2  p3  p4          .  p2    p3    p4    .
+p1 topf p5          p1 topf  topf  topf  p5
+board board board   p1 board board board p5
+lage  lage  lage    .  lage  lage  lage  .
+du    du    du      .  du    du    du    .
+```
+
+Welcher Platz wo sitzt, entscheidet `data-platz` (der Sitzindex) zusammen
+mit `data-gegner`. Keine Koordinate im Skript, keine Zeilenhöhe: Die Felder
+sind so hoch wie ihr Inhalt, und `align-content: space-evenly` verteilt, was
+übrig bleibt (Regel 10.4).
+
+### Was aus einer Anordnung einen Tisch macht
+
+- **Ein Namensschild statt eines Kastens.** Name oben, Stapel und Lage
+  darunter, auf einer Plakette mit Lichtkante — das, was am echten Tisch vor
+  dem Spieler steht und was man aus zwei Metern noch liest.
+- **Die Karten liegen auf dem Schild auf**, leicht gefächert, mit Schatten
+  auf dem Tuch. Zwei gerade Rechtecke sehen aus wie zwei Rechtecke.
+- **Jetons statt Punkte.** Der Chip ist ein Kegelverlauf mit acht
+  Kanteneinlagen und einem glatten Kern, der Topf ein Stapel aus drei
+  Scheiben, der Dealerknopf eine Elfenbeinscheibe mit eingeprägtem Rand.
+  Alles gezeichnet, keine Datei.
+- **Die Rail ist von oben beleuchtet** (vier Randfarben statt einer) und
+  wirft einen Schatten in den Raum. Am breiten Bildschirm wird aus der
+  Rennbahn eine Ellipse und die Kante breiter — 13 Pixel um eine 930 Pixel
+  breite Ellipse sind ein Strich, keine Kante.
+- **Die leeren Board-Plätze sind Vertiefungen**, keine gestrichelten
+  Umrisse: Eine gestrichelte Linie liest sich als Platzhalter einer
+  Oberfläche, eine Vertiefung als Stelle auf dem Tisch.
+- **Eine Zeile, die ihren Inhalt tauscht**: erst wer dran ist, dann wer
+  gewonnen hat. Sie bleibt im Baum, weil ein `aria-live`-Bereich, der neu
+  entsteht, nichts vorliest — vorher tat sie genau das.
+
+### Der Filz ist eine dunkle Fläche, auch im hellen Modus
+
+Im hellen Modus standen die Namen der Gegner in Anthrazit auf Dunkelgrün.
+Gemessen: **1,79 zu 1.** Praktisch unlesbar.
+
+Das ist **keine zweite Ausnahme von der Farbwahl** — die Liste in `App.tsx`
+hat weiterhin genau einen Eintrag, und die Begründung dort (der Live-Bereich
+liegt bei gedimmtem Licht auf einem Pokertisch) bleibt die einzige. Der
+Unterschied: Ein *Bereich* der App folgt der Wahl; ein *gezeichneter
+Gegenstand* hat seine eigene Farbe. Grüner Filz ist dunkel, in jedem Modus,
+so wie ein roter Kartenrücken rot ist. Die Regel `[data-modus] { color }`
+aus E-039 war genau dafür gemacht.
+
+### Warum das erst jetzt auffiel: die Prüfung hatte zwei blinde Flecken
+
+**Erstens: Sie hatte den Tisch nie gesehen.** E-039 hat den Lauf von 49 auf
+90 Bildschirme ausgeweitet — auf *alle Adressen*. Der Übungstisch hat unter
+seiner Adresse aber **zwei** Bildschirme: die Auswahl der Tischgröße und den
+Tisch, auf dem gespielt wird. Der Lauf sah die Auswahl und meldete „90
+Bildschirme geprüft".
+
+Dieselbe Lehre wie in E-039 (DESIGN.md 9.1), eine Ebene tiefer: *Alle
+Adressen* ist nicht dasselbe wie *alles, was man zu sehen bekommt*. Es gibt
+jetzt eine kurze, namentliche Liste von Bildschirmen hinter einem Klick —
+und der Test vergleicht nicht mehr eine Zahl, sondern die Liste der
+geprüften Bildschirme gegen jede Adresse aus `wege.json`.
+
+**Zweitens: Sie kannte `opacity` nicht.** `opacity: 0.5` blendet einen
+ganzen Teilbaum gegen das, was dahinter liegt — Schrift und eigenen Grund
+gleichermaßen. Wer nur `color` und `background-color` liest, misst eine
+Lesbarkeit, die es auf dem Bildschirm nicht gibt: Für den Namen eines
+ausgestiegenen Gegners meldete die alte Rechnung 8,9 zu 1; gemalt waren es
+2,4.
+
+Nachgerüstet kamen **303 Befunde** ans Licht, keiner davon vom Tisch:
+
+| Stelle | Deckkraft | gemessen |
+|---|---|---|
+| Beschreibung einer gesperrten Lektion (hell) | 0,72 | 3,78 |
+| Nummer einer späteren Lektion (dunkel) | 0,72 | 4,41 |
+| Symbol einer nicht verdienten Auszeichnung (hell) | 0,32 | 1,99 |
+| „Erst Koffer und Spieler eintragen" (Knopf aus) | 0,45 | 1,65 |
+
+An sechs Stellen standen sechs Werte zwischen 0,25 und 0,72, und keiner war
+je nachgerechnet worden.
+
+**Drittens, dabei gefunden: Verläufe wurden verrührt.** Alle Ebenen eines
+`background-image` landeten in einer Liste von Farbstopps. Auf dem Filz
+liegen drei: zwei fast durchsichtige Gewebemuster und darunter ein deckender
+Verlauf. Verrührt ergab das „vielleicht liegt der Text auf einem 1,4 %
+weißen Schleier über dem Seitenhintergrund" — im hellen Modus also fast auf
+Weiß. Gemeldet wurden 1,25 zu 1 für weiße Schrift auf dunkelgrünem Filz.
+Ebenen werden jetzt einzeln betrachtet, und eine Ebene, deren Stopps alle
+deckend sind, **deckt**: Darunter endet die Suche.
+
+### Ein Wert für „tritt zurück", gemessen statt gewählt
+
+`--gedimmt: 0.88`. Der Durchlauf über 0,6 bis 1,0 zeigt, wo es kippt: Bei
+0,85 erreicht der schlechteste Fall (die Marke „Einsteiger" auf dem
+Lernpfad, hell) 4,52 zu 1. 0,88 lässt Luft.
+
+Daraus folgt ein Entwurfsurteil (DESIGN.md 10.10): **Bei 0,88 sieht man den
+Unterschied kaum noch — also darf Ausgrautsein nicht länger das Kennzeichen
+sein.** Es war ohnehin nie eines: Der Lernpfad hat ein Schloss an der
+gesperrten Stufe und die Akzentfarbe an der, die dran ist; die nicht
+verdiente Auszeichnung ist grau statt farbig; der ausgestiegene Sitz hat
+keine Karten mehr, sondern eine Marke. Die Deckkraft hat das nur begleitet —
+und dabei die Lesbarkeit gekostet.
+
+Zwei Stellen kamen mit keiner Deckkraft aus und wurden anders gelöst:
+
+- **Die Marke des Ausgestiegenen und die Zugzeile** liegen direkt auf dem
+  Filz und kamen auf 1,2 zu 1. Sie haben jetzt einen eigenen dunklen Grund —
+  hellgrau auf Mittelgrün ist keine Schrift, das ist ein Schatten.
+- **Ein ausgeschalteter Knopf, der in seiner Beschriftung sagt, warum er
+  nicht geht**, muss lesbar bleiben. Er zeigt das jetzt über die Fläche, nicht
+  über Deckkraft. (Die WCAG nimmt ausgeschaltete Bedienelemente vom
+  Kontrast aus. Diese Auskunft steht aber nirgends sonst.)
+
+### Und eine Ausnahme, die begründet ist
+
+Das Symbol in der Mitte einer Spielkarte ist 52 Pixel groß und fiel damit
+unter die schärfere Grenze für Ergebniszahlen (7 zu 1). Es ist keine: Es
+wiederholt, was in der Ecke schon steht. Rot auf Elfenbein ist die Farbe
+einer Spielkarte — auf 7 zu 1 gedunkelt wäre es keine mehr.
+
+Die Bedingung, unter der die Ausnahme gilt (DESIGN.md 9.2): Was das Symbol
+sagt, sagt der Rang in der Ecke auch — und der wird nach der normalen Grenze
+gemessen, wie jeder andere Text.
+
+### Stand nach dem Lauf
+
+**91 Bildschirme in 2 Modi (182 Messungen), 0 Befunde** — mit Deckkraft,
+mit einzeln betrachteten Verläufen und mit dem Tisch, auf dem gespielt wird.

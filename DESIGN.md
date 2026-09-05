@@ -632,6 +632,38 @@ Farbe, bevor man ein Wort gelesen hat. Die Töne sind keine neuen — es sind
 die, die die App für diese Bereiche ohnehin verwendet, und sie laufen durch
 denselben Kontrastlauf über beide Modi wie alles andere.
 
+### Regel 10.10 — Zurücktreten heißt nicht verblassen
+
+Was noch nicht dran ist, sagt es mit einem Zeichen: einem Schloss an der
+gesperrten Stufe, der Akzentfarbe an der, die dran ist, Grau statt Farbe bei
+der nicht verdienten Auszeichnung, fehlenden Karten am ausgestiegenen Sitz.
+**Nicht damit, dass es schwerer zu lesen ist.**
+
+Der Grund ist gemessen (E-041). An sechs Stellen standen sechs Deckkräfte
+zwischen 0,25 und 0,72, und keine war je nachgerechnet worden — der
+Kontrastlauf kannte `opacity` nicht. Nachgerechnet lag die Beschreibung
+einer gesperrten Lektion im hellen Modus bei 3,78 zu 1, das Symbol einer
+nicht verdienten Auszeichnung bei 1,99.
+
+Es gibt jetzt einen Wert, `--gedimmt`, und er ist gemessen statt gewählt:
+Bei 0,85 erreicht der schlechteste Fall 4,52 zu 1, also steht er auf 0,88.
+**Und daraus folgt die Regel selbst:** Bei 0,88 sieht man den Unterschied
+kaum noch. Deckkraft kann das Kennzeichen also gar nicht sein — sie
+begleitet es nur.
+
+Wo eine Fläche auf einem gezeichneten Gegenstand liegt (Schrift auf Filz),
+reicht auch das nicht: Dort bekommt der Text einen eigenen Grund. Hellgrau
+auf Mittelgrün ist keine Schrift, das ist ein Schatten.
+
+Ein ausgeschalteter Knopf, der in seiner Beschriftung sagt, **warum** er
+nicht geht, ist kein Sonderfall dieser Regel, sondern ihr deutlichster: Er
+zeigt seinen Zustand über die Fläche. Die WCAG nimmt ausgeschaltete
+Bedienelemente vom Kontrast aus — diese Auskunft steht aber nirgends sonst.
+
+`pruefung.test.ts` hält beides fest: dass das Messskript Deckkraft
+mitrechnet, und dass im Stilblatt kein zweiter Deckkraftwert neben dem Token
+steht (Übergänge und Bewegungen ausgenommen).
+
 ### Was diese Regeln festhält
 
 `durchgang.test.ts` prüft am gerenderten Ergebnis: kein Scrollen, die
@@ -974,7 +1006,8 @@ dunklen sagt über ihn genau nichts.
   genau einen Eintrag, und der Test schlägt bei jeder Erweiterung fehl — mit
   der Begründung in der Fehlermeldung, damit sie gelesen wird.
 - `npm run pruefen`: derselbe Kontrast, aber am **gerenderten** Ergebnis und
-  in **beiden** Modi — 49 Bildschirme, 98 Messungen. Siehe Regel 11.6.
+  in **beiden** Modi — 91 Bildschirme, 182 Messungen, mit Deckkraft und
+  einzeln betrachteten Verlaufsebenen. Siehe Regel 11.6.
 - `durchgang.test.ts`: drei Einträge mit vorausgewählter Systemvorgabe, unter
   dem Personensymbol statt auf der Startseite, Umschalten in beide Richtungen
   ohne Neustart, kein Aufblitzen, Live-Bereich dunkel bei heller Wahl.

@@ -29,27 +29,6 @@ const BB = 2;
 /** Spielstile der KI-Sitze; die Anzeigenamen liegen sprachabhängig im Wörterbuch (STR[lang].botNames). */
 const BOT_STYLES: BotStyle[] = ['tight', 'aggro', 'loose', 'standard', 'tight'];
 
-/** Sitzpositionen (Prozent) je Spielerzahl; Hero ist immer Index 0 (unten Mitte). */
-const LAYOUTS: Record<number, Array<{ x: number; y: number }>> = {
-  2: [
-    { x: 50, y: 88 },
-    { x: 50, y: 4 },
-  ],
-  3: [
-    { x: 50, y: 88 },
-    { x: 12, y: 18 },
-    { x: 88, y: 18 },
-  ],
-  6: [
-    { x: 50, y: 88 },
-    { x: 8, y: 62 },
-    { x: 12, y: 12 },
-    { x: 50, y: 2 },
-    { x: 88, y: 12 },
-    { x: 92, y: 62 },
-  ],
-};
-
 export function PlayPage() {
   const { data, recordHand, addHandRecord } = useAppState();
   const { lang } = useLang();
@@ -305,7 +284,6 @@ export function PlayPage() {
 
   if (!g) return null;
 
-  const layout = LAYOUTS[g.players.length] ?? LAYOUTS[6];
   const pot = totalPot(g);
   const lastAward = g.handOver ? g.awards : null;
 
@@ -356,73 +334,71 @@ export function PlayPage() {
       </div>
 
       {/* ── Der Filz ──────────────────────────────────────────────────────
-          Drei Bänder übereinander, nicht Prozentkoordinaten (E-040). Vorher
-          hingen die Sitze an `top: y%` und wuchsen nach unten — der obere
-          Sitz legte sich bei fünf Gegnern über Flop und River. Bänder können
-          sich nicht überlappen; das ist der Unterschied zwischen einer
-          Zahl, die man nachstellt, und einer Anordnung, die den Fehler nicht
-          zulässt. */}
-      <div className="filz">
-        <div className="filz-gegner" data-anzahl={g.players.length - 1}>
-          {g.players.map((p, i) => (p.isHero ? null : (
-            <div
-              key={p.id}
-              className={`sitz${p.folded ? ' weg' : ''}${!g.handOver && g.toActIndex === i ? ' dran' : ''}`}
-            >
-              <div className="sitz-kopf">
-                <span className="sitz-name">{p.name}</span>
-                {g.buttonIndex === i && (
-                  <span className="dealer-btn" title={L.dealerLang} aria-label={L.dealerLang}>
-                    {L.dealerKurz}
-                  </span>
-                )}
-              </div>
-              <div className="sitz-karten">
-                {p.revealed ? (
-                  <CardsRow cards={p.cards} size="sm" />
-                ) : p.folded ? (
-                  <span className="sitz-weg">{L.foldedTag}</span>
-                ) : (
-                  <CardsRow cards={[undefined, undefined]} size="sm" />
-                )}
-              </div>
-              <div className="sitz-fuss">
+          Ein Ring statt drei Bänder (E-041). E-040 hat die Überdeckung
+          beseitigt, indem es die Sitze untereinander legte — richtig, aber
+          das Ergebnis sah aus wie eine Liste auf grünem Grund. Ein Tisch
+          hat die Plätze *um* die Mitte herum.
+
+          Der Ring ist ein Raster mit benannten Feldern. Zwei Rasterfelder
+          können sich nicht überlappen: Die Zusage aus E-040 gilt
+          unverändert, aber die Anordnung ist die eines Tisches. Welcher
+          Platz wo sitzt, entscheidet `data-platz` (der Sitzindex) zusammen
+          mit `data-gegner` — nicht eine Koordinate im Skript. */}
+      <div className="filz" data-modus="dunkel" data-gegner={g.players.length - 1}>
+        {g.players.map((p, i) => (p.isHero ? null : (
+          <div
+            key={p.id}
+            data-platz={i}
+            className={`sitz${p.folded ? ' weg' : ''}${!g.handOver && g.toActIndex === i ? ' dran' : ''}`}
+          >
+            {/* Die Karten liegen auf dem Schild auf, wie am Tisch vor dem
+                Spieler — deshalb stehen sie im Baum davor. */}
+            <div className="sitz-karten">
+              {p.revealed ? (
+                <CardsRow cards={p.cards} size="sm" />
+              ) : p.folded ? (
+                <span className="sitz-weg">{L.foldedTag}</span>
+              ) : (
+                <CardsRow cards={[undefined, undefined]} size="sm" />
+              )}
+            </div>
+            {/* Das Namensschild: Name oben, Stapel und Lage darunter. Am
+                echten Tisch steht es vor dem Spieler und ist das, was man
+                aus zwei Metern noch lesen kann. */}
+            <div className="sitz-schild">
+              <span className="sitz-name">{p.name}</span>
+              <span className="sitz-fuss">
                 <span className="sitz-stapel" aria-label={L.stapelVon(p.name, p.stack)}>{p.stack}</span>
                 <span className="sitz-lage">{positionOf(g, i)}</span>
-              </div>
-              {p.bet > 0 && (
-                <span className="sitz-einsatz" aria-label={L.einsatzVon(p.bet)}>
-                  <span className="chip-dot" />{p.bet}
+              </span>
+              {g.buttonIndex === i && (
+                <span className="dealer-btn" title={L.dealerLang} aria-label={L.dealerLang}>
+                  {L.dealerKurz}
                 </span>
               )}
             </div>
-          )))}
-        </div>
+            {p.bet > 0 && (
+              <span className="sitz-einsatz" aria-label={L.einsatzVon(p.bet)}>
+                <span className="chip-dot" />{p.bet}
+              </span>
+            )}
+          </div>
+        )))}
 
-        {/* Die Mitte: Topf und Board. Eigenes Band, das nichts überdeckt. */}
-        <div className="filz-mitte">
+        {/* Der Topf liegt in der Mitte, hinter der Einsatzlinie. */}
+        <div className="filz-topf">
           <span className="topf">
-            <span className="chip-dot" />
+            {/* Ein Stapel, keine Marke: Ein Topf ist Geld, das jemand
+                gewinnt, und Geld liegt am Tisch gestapelt. */}
+            <span className="chip-stapel" aria-hidden="true"><i /><i /><i /></span>
             {L.potLabel} {pot > 0 ? pot : g.handOver ? g.awards.reduce((s2, a2) => s2 + a2.amount, 0) : 0}
           </span>
-          {/* Fünf Plätze, immer. Die noch nicht ausgeteilten stehen als
-              leere Umrisse da — an einem echten Tisch sieht man auch, wie
-              viele Karten noch kommen. */}
-          {/* Beim Showdown steht hier, wer gewonnen hat — in der Mitte des
-              Tisches, nicht unterhalb des Bildrands. Es ist die Auskunft,
-              auf die man gewartet hat. */}
-          {g.handOver && lastAward && (
-            <div className="filz-ergebnis" role="status">
-              {lastAward.map((a, i) => {
-                const p2 = g.players.find((pl) => pl.id === a.playerId)!;
-                return (
-                  <div key={i} className={p2.isHero ? 'gewonnen' : ''}>
-                    {L.winnerLine(p2.isHero, p2.name, a.amount, a.handName)}
-                  </div>
-                );
-              })}
-            </div>
-          )}
+        </div>
+
+        {/* Fünf Plätze, immer. Die noch nicht ausgeteilten stehen als leere
+            Umrisse da — an einem echten Tisch sieht man auch, wie viele
+            Karten noch kommen. */}
+        <div className="filz-board">
           <div className="board" aria-label={L.boardOffen}>
             {[0, 1, 2, 3, 4].map((i) => (
               g.board[i] !== undefined
@@ -432,38 +408,52 @@ export function PlayPage() {
           </div>
         </div>
 
-        {/* Der Held unten, im Daumenbereich — mit großen Karten. */}
-        <div className={`filz-du${heroTurn ? ' dran' : ''}`}>
-          <div className="du-karten">
-            {/* Die eigene Hand ist das, worum es geht — sie ist die größte
-                Darstellung auf dem Tisch (Regel 10.8). */}
-            <CardsRow cards={g.players[0].cards} size="xl" />
-          </div>
-          <div className="du-text">
-            <span className="du-name">
-              {L.duLabel}
-              {g.buttonIndex === 0 && (
-                <span className="dealer-btn" title={L.dealerLang} aria-label={L.dealerLang}>
-                  {L.dealerKurz}
-                </span>
-              )}
+        {/* Eine Zeile, die immer dasteht und ihren Inhalt tauscht: erst wer
+            dran ist, dann wer gewonnen hat. Sie bleibt im Baum, weil ein
+            `aria-live`-Bereich, der neu entsteht, nichts vorliest. */}
+        <div className="filz-lage" aria-live="polite">
+          {g.handOver && lastAward ? (
+            <div className="filz-ergebnis">
+              {lastAward.map((a, i) => {
+                const p2 = g.players.find((pl) => pl.id === a.playerId)!;
+                return (
+                  <div key={i} className={p2.isHero ? 'gewonnen' : ''}>
+                    {L.winnerLine(p2.isHero, p2.name, a.amount, a.handName)}
+                  </div>
+                );
+              })}
+            </div>
+          ) : !g.handOver ? (
+            <span className="filz-zug">
+              {heroTurn ? L.amZug : L.wartetAuf(g.players[g.toActIndex]?.name ?? '')}
             </span>
-            <span className="du-stapel">{L.chipsAmount(g.players[0].stack)}</span>
-            <span className="du-lage">{positionOf(g, 0)}</span>
-          </div>
+          ) : null}
+        </div>
+
+        {/* Der eigene Platz, unten in der Mitte — mit den größten Karten des
+            Tisches (Regel 10.8) und demselben Schild wie die anderen. */}
+        <div className={`filz-du${heroTurn ? ' dran' : ''}`}>
           {g.players[0].bet > 0 && (
             <span className="sitz-einsatz" aria-label={L.einsatzVon(g.players[0].bet)}>
               <span className="chip-dot" />{g.players[0].bet}
             </span>
           )}
-        </div>
-
-        {/* Wer gerade dran ist — eine Zeile, damit man nicht raten muss. */}
-        {!g.handOver && (
-          <div className="filz-zug" aria-live="polite">
-            {heroTurn ? L.amZug : L.wartetAuf(g.players[g.toActIndex]?.name ?? '')}
+          <div className="du-karten">
+            <CardsRow cards={g.players[0].cards} size="xl" />
           </div>
-        )}
+          <div className="sitz-schild">
+            <span className="sitz-name">{L.duLabel}</span>
+            <span className="sitz-fuss">
+              <span className="sitz-stapel">{L.chipsAmount(g.players[0].stack)}</span>
+              <span className="sitz-lage">{positionOf(g, 0)}</span>
+            </span>
+            {g.buttonIndex === 0 && (
+              <span className="dealer-btn" title={L.dealerLang} aria-label={L.dealerLang}>
+                {L.dealerKurz}
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Die Gewinnerzeile steht in der Tischmitte (siehe oben). Hier bleibt

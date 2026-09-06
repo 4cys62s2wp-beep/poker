@@ -2562,3 +2562,127 @@ Minuten wurden elf Sekunden.
 
 **Stand:** 1105 Tests grün (davon 11 neue für den Coach, 6 für die
 Maschine), Gesamtlauf 13 Sekunden.
+
+## E-046 · 2026-09-06 · Die Tür, durch die fremde Daten hereinkommen
+
+**Stand:** entschieden und umgesetzt.
+
+Weitergesucht — und nach dem Motor (E-045) blieb die Frage: **Welcher Code
+bekommt Eingaben, die nicht aus der App selbst stammen?** Es gibt genau eine
+solche Stelle, `sanitizeAppData` in `state/AppState.tsx`, und sie hat drei
+Schlüssel:
+
+1. **Die Sicherungsdatei.** „Fortschritt exportieren" schreibt eine JSON-Datei,
+   „importieren" liest sie wieder ein. Was dazwischen mit ihr passiert, weiß
+   niemand: Sie liegt auf einer Festplatte, geht durch einen Messenger, wird
+   von Hand editiert.
+2. **Der Gerätespeicher.** Ein abgebrochener Schreibvorgang, ein zweiter Tab,
+   ein Browser-Update — halb geschriebene Daten sind kein theoretischer Fall.
+3. **Die Cloud.** Was von dort zurückkommt, nimmt dieselbe Tür.
+
+Geprüft wurde diese Funktion bisher nur *nebenbei*: `badges.test.ts` benutzt
+sie, um sich eine gültige Grundlage zu bauen, `trainerkennungen.test.ts`
+schickt Trainer-Kennungen hindurch. **Kaputte Eingaben hat ihr niemand
+gegeben** — also genau das, wofür es sie gibt.
+
+### Die Messlatte
+
+Nicht „sie wirft keinen Fehler". Sondern: **Was herauskommt, muss die App
+anzeigen können, ohne dass Unsinn dasteht.** Ein Zustand mit
+`handsPlayed: 9007199254740991` stürzt nirgends ab; er zeigt nur
+„9007199254740991 Hände gespielt", und das ist auf seine Art schlimmer, weil
+es aussieht wie ein Fehler der App.
+
+`src/lib/__tests__/eingang.test.ts` schreibt diese Messlatte als Funktion
+`unbrauchbar(d)` auf: Zähler sind ganz, nicht negativ und anzeigbar groß,
+Datumsfelder sind Daten, Karten sind Plätze im Blatt, und die Ordnung der
+Zähler stimmt. Dreizehn Prüfungen, die diese eine Funktion beschießen.
+
+### Was dabei kaputt war
+
+**Zähler waren keine ganzen Zahlen.** `num()` prüfte auf `typeof number` und
+`isFinite` — mehr nicht. `xp: 12.7` überlebte, `handsPlayed: 3.5` auch. Ein
+halb gespieltes Blatt gibt es nicht; solche Werte entstehen, wenn jemand eine
+Sicherung von Hand bearbeitet oder irgendwo eine Division stehen bleibt.
+
+**Zähler hatten keine Obergrenze.** Nur `xp` war bei zehn Millionen gedeckelt,
+alle anderen nicht. Jetzt gilt dieselbe Grenze überall, und wo ein Feld eine
+natürliche Schranke hat, gilt die: eine Tagesserie zählt höchstens 36 500 Tage
+(hundert Jahre), ein Tagesquiz höchstens 100 Fragen.
+
+**Die Ordnung der Zähler galt nicht.** `{attempts: 3, correct: 22}` kam
+unverändert durch und stünde als „22 richtig von 3 Versuchen" auf der Seite.
+`recordTrainer` zählt aber immer zuerst den Versuch — die Tür hält jetzt
+dieselbe Ordnung ein wie die Buchführung: Versuche ≥ richtig ≥ Serie, beste
+Serie ≥ laufende, gewonnene Hände ≤ gespielte, Quizpunkte ≤ Quizfragen.
+
+**Ein Kartenindex durfte gebrochen sein.** `c >= 0 && c <= 51` ließ 12,5
+durch. `RANKS[12.5 % 13]` ist `undefined` — eine leere Karte auf dem Tisch.
+
+**Datumsfelder waren freie Zeichenketten.** `str(s.date).slice(0, 10)` nahm
+„gestern", „2026-13-45" und „=1+1" an. So etwas wird angezeigt, sortiert und
+exportiert. Jetzt muss ein Datum eines sein, sonst ist es leer — „noch nie"
+ist ein gültiger Zustand, „gestern" ist keiner.
+
+**In der Statistik fehlte dieselbe Grenze.** `sanitizeHandFacts` schnitt
+Nachkommastellen bereits ab (die Bibliothek war mit dieser Sorgfalt
+geschrieben), deckelte aber die Größe nicht: ein Blatt mit 1e308 Chips hätte
+jeden Durchschnitt ins Sinnlose verschoben.
+
+**Nicht** kaputt war der Prototyp-Angriff: `__proto__` aus `JSON.parse`
+scheitert bereits an den Schlüsselfiltern (`/^m\d+-l\d+$/`, `/^[a-z]+$/`,
+`/^[a-z-]{1,40}$/`). Die Gegenprobe steht trotzdem im Test — sie hält den
+Schutz fest, den es schon gibt.
+
+### Gegenprobe
+
+Zwei Wächter versuchsweise entfernt (`tag()` auf `slice(0,10)` zurückgedreht,
+`zaehler()` auf `Math.max(0, num(v))`): drei Prüfungen fallen. Und die
+Gegenrichtung, ohne die eine Tür, die alles abweist, auch keine wäre: echte
+Daten gehen unverändert hindurch, und zweimal hindurchgereicht ändert nichts —
+sonst driftete ein Gerätestand bei jedem Cloud-Abgleich weiter.
+
+---
+
+## E-047 · 2026-09-06 · Der Export war für Excel unlesbar
+
+**Stand:** entschieden und umgesetzt.
+
+Dieselbe Frage einen Schritt weitergedacht: Wenn Daten *hereinkommen*, gehen
+auch welche *hinaus*. Der Bankroll-Tracker schreibt eine CSV-Datei, und die
+landet in einer fremden Anwendung — meistens Excel.
+
+Die Datei ist bewusst deutsch: deutsche Kopfzeile, Semikolon als Trennzeichen,
+BOM voran (so steht es seit jeher in `i18n/pages/bankroll.ts`). Dann muss aber
+auch der Rest deutsch sein — **war er nicht**:
+
+```
+2026-09-01;live;"1/2 NLH";100;180.5;80.50;240;"gut gelaufen"
+```
+
+Im deutschen Gebietsschema liest Excel `180.5` nicht als Betrag, sondern als
+**18. Mai**. Der Buy-in wurde zum Datum, die Summenzeile darunter blieb leer.
+Das ist kein Randfall, sondern der Normalfall: Wer die Datei exportiert, will
+rechnen.
+
+Zwei weitere Löcher in derselben Zeile:
+
+- **`s.date` und `s.type` gingen ungeschützt hinein.** Der Schutz vor
+  Formel-Injection (`'` vor `=`, `+`, `-`, `@`) lag in `csvCell`, und durch
+  `csvCell` liefen nur `game` und `notes`. Ein Datum aus einer importierten
+  Sicherung konnte `=cmd|'/c calc'!A1` heißen (E-046 schließt das jetzt auch
+  von der anderen Seite).
+- **Ein Semikolon oder Zeilenumbruch im Datum** hätte alle folgenden Spalten
+  verschoben.
+
+`src/lib/export/csv.ts` macht daraus eine Bibliothek mit drei Regeln: Text
+kommt in Anführungszeichen, Text mit Formelanfang bekommt ein Hochkomma,
+Zahlen bekommen ein Komma als Dezimaltrennzeichen und keinen Tausenderpunkt.
+Zeilen enden nach RFC 4180 mit CRLF, damit ein Umbruch *innerhalb* einer Notiz
+eindeutig bleibt.
+
+Geprüft wird das nicht am Format, sondern am Ergebnis: `csv.test.ts` enthält
+einen kleinen CSV-**Leser** und liest die geschriebene Datei zurück. Eine
+Notiz „Tilt; früh weg\nnächstes Mal Pause" muss als *eine* Zelle
+zurückkommen — acht Prüfungen, die alle die Frage stellen, was auf der
+anderen Seite ankommt.

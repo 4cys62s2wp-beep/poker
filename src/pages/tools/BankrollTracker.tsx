@@ -4,6 +4,7 @@ import { useAppState, type SessionEntry } from '../../state/AppState';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/bankroll';
 import { downloadBlob } from '../../lib/download';
+import { csvDatei } from '../../lib/export/csv';
 import { BackLink } from '../../components/ui';
 import { STR as NAV } from '../../i18n/pages/layout';
 
@@ -61,20 +62,14 @@ export function BankrollTracker() {
     };
   }, [filteredSessions]);
 
-  /** CSV-Zelle absichern: Anführungszeichen escapen und Formel-Injection
-      (=, +, -, @ am Zellanfang würde Excel/Numbers als Formel ausführen) entschärfen. */
-  function csvCell(value: string | number): string {
-    let s = String(value);
-    if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
-    return `"${s.replace(/"/g, '""')}"`;
-  }
-
   function exportCsv() {
-    const header = 'Datum;Art;Spiel;Buy-in;Cash-out;Gewinn;Minuten;Notizen';
-    const rows = filteredSessions.map((s) =>
-      [s.date, s.type, csvCell(s.game), s.buyIn, s.cashOut, (s.cashOut - s.buyIn).toFixed(2), s.minutes, csvCell(s.notes ?? '')].join(';'),
+    const datei = csvDatei(
+      ['Datum', 'Art', 'Spiel', 'Buy-in', 'Cash-out', 'Gewinn', 'Minuten', 'Notizen'],
+      filteredSessions.map((s) => [
+        s.date, s.type, s.game, s.buyIn, s.cashOut, s.cashOut - s.buyIn, s.minutes, s.notes ?? '',
+      ]),
     );
-    downloadBlob('\uFEFF' + [header, ...rows].join('\n'), 'pokermentor-sessions.csv', 'text/csv;charset=utf-8');
+    downloadBlob(datei, 'pokermentor-sessions.csv', 'text/csv;charset=utf-8');
   }
 
   function submit() {

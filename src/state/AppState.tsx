@@ -208,6 +208,40 @@ function str(v: unknown, fallback = ''): string {
   return typeof v === 'string' ? v.slice(0, 2000) : fallback;
 }
 
+/* Obergrenzen sind nicht dazu da, echte Werte zu beschneiden — kein Mensch
+   spielt zehn Millionen Hände. Sie sind dazu da, dass ein verbogener Wert wie
+   eine Zahl aussieht und nicht wie ein Fehler der App: „9007199254740991
+   Hände gespielt" stürzt nirgends ab, es liest sich nur wie ein Defekt. */
+const ZAEHLER_MAX = 10_000_000;
+
+/** Ein Zähler, wie ihn die Oberfläche zeigen kann: ganz, nicht negativ, endlich. */
+function zaehler(v: unknown, max = ZAEHLER_MAX): number {
+  return Math.min(max, Math.max(0, Math.floor(num(v))));
+}
+
+/* Datumsfelder schreibt die App selbst — als Tag (`todayStr`) oder als
+   Zeitstempel (`toISOString`). Kommt etwas anderes herein, ist es kein
+   „ungefähres" Datum, sondern keines: Es stünde als Zeichenfolge in der
+   Liste, sortierte sich zwischen echte Tage und liefe in den CSV-Export. */
+const DATUM = /^\d{4}-\d{2}-\d{2}([T ][\d:.+\-Z]{1,20})?$/;
+
+/** Ein Tagesdatum: 2026-09-06. Sonst leer. */
+function tag(v: unknown): string {
+  const t = str(v).slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(t) && isFinite(new Date(t).getTime()) ? t : '';
+}
+
+/** Ein Zeitpunkt: derselbe Tag, wahlweise mit Uhrzeit. Sonst leer. */
+function zeitpunkt(v: unknown): string {
+  const t = str(v).slice(0, 40);
+  return DATUM.test(t) && isFinite(new Date(t).getTime()) ? t : '';
+}
+
+/** Ein Geldbetrag. Anders als ein Zähler darf er Cent haben — 12,50 € Buy-in. */
+function betrag(v: unknown, max = 100_000_000): number {
+  return Math.round(Math.min(max, Math.max(0, num(v))) * 100) / 100;
+}
+
 /**
  * Wandelt beliebige (auch manipulierte) Eingaben in ein garantiert
  * schema-konformes AppData um. Grundlage für Import & Cloud-Sync.
@@ -216,9 +250,10 @@ export function sanitizeAppData(input: unknown): AppData {
   const d = (typeof input === 'object' && input !== null ? input : {}) as Record<string, unknown>;
   const out: AppData = structuredClone(DEFAULT_DATA);
 
-  out.xp = Math.max(0, Math.min(10_000_000, num(d.xp)));
-  out.handsPlayed = Math.max(0, num(d.handsPlayed));
-  out.handsWon = Math.max(0, num(d.handsWon));
+  out.xp = zaehler(d.xp);
+  out.handsPlayed = zaehler(d.handsPlayed);
+  /* Mehr gewonnene als gespielte Hände gäbe eine Quote über 100 %. */
+  out.handsWon = Math.min(out.handsPlayed, zaehler(d.handsWon));
   out.name = str(d.name).slice(0, 40);
 
   if (typeof d.completedLessons === 'object' && d.completedLessons !== null) {
@@ -226,9 +261,9 @@ export function sanitizeAppData(input: unknown): AppData {
       if (typeof v === 'object' && v !== null && /^m\d+-l\d+$/.test(k)) {
         const r = v as Record<string, unknown>;
         out.completedLessons[k] = {
-          completedAt: str(r.completedAt),
-          quizScore: Math.max(0, num(r.quizScore)),
-          quizTotal: Math.max(0, num(r.quizTotal)),
+          completedAt: zeitpunkt(r.completedAt),
+          quizScore: Math.min(zaehler(r.quizTotal, 100), zaehler(r.quizScore, 100)),
+          quizTotal: zaehler(r.quizTotal, 100),
         };
       }
     }
@@ -238,11 +273,17 @@ export function sanitizeAppData(input: unknown): AppData {
     for (const [k, v] of Object.entries(d.trainers as Record<string, unknown>)) {
       if (typeof v === 'object' && v !== null && /^[a-z]+$/.test(k)) {
         const t = v as Record<string, unknown>;
+        /* Dieselbe Ordnung, die `recordTrainer` beim Zählen einhält:
+           Versuche >= richtig >= Serie, und die beste Serie ist nie kürzer
+           als die laufende. */
+        const attempts = zaehler(t.attempts);
+        const correct = Math.min(attempts, zaehler(t.correct));
+        const streak = Math.min(correct, zaehler(t.streak));
         out.trainers[k] = {
-          attempts: Math.max(0, num(t.attempts)),
-          correct: Math.max(0, num(t.correct)),
-          streak: Math.max(0, num(t.streak)),
-          bestStreak: Math.max(0, num(t.bestStreak)),
+          attempts,
+          correct,
+          streak,
+          bestStreak: Math.min(correct, Math.max(streak, zaehler(t.bestStreak))),
         };
       }
     }
@@ -257,7 +298,8 @@ export function sanitizeAppData(input: unknown): AppData {
 
   if (typeof d.streak === 'object' && d.streak !== null) {
     const s = d.streak as Record<string, unknown>;
-    out.streak = { lastDay: str(s.lastDay).slice(0, 10), count: Math.max(0, num(s.count)) };
+    /* Eine Tagesserie zählt Tage. 36 500 sind hundert Jahre. */
+    out.streak = { lastDay: tag(s.lastDay), count: zaehler(s.count, 36_500) };
   }
 
   if (Array.isArray(d.sessions)) {
@@ -267,12 +309,12 @@ export function sanitizeAppData(input: unknown): AppData {
       const type = s.type === 'live' ? 'live' : 'online';
       return [{
         id: str(s.id, `s${Math.random()}`).slice(0, 60),
-        date: str(s.date).slice(0, 10),
+        date: tag(s.date),
         type: type as 'live' | 'online',
         game: str(s.game).slice(0, 80),
-        buyIn: Math.max(0, num(s.buyIn)),
-        cashOut: Math.max(0, num(s.cashOut)),
-        minutes: Math.max(0, num(s.minutes)),
+        buyIn: betrag(s.buyIn),
+        cashOut: betrag(s.cashOut),
+        minutes: zaehler(s.minutes, 100_000),
         notes: s.notes === undefined ? undefined : str(s.notes).slice(0, 500),
       }];
     });
@@ -289,10 +331,10 @@ export function sanitizeAppData(input: unknown): AppData {
         key: str(r.key).slice(0, 40),
         moduleId,
         lessonId,
-        questionIndex: Math.max(0, Math.min(50, num(r.questionIndex))),
-        due: str(r.due).slice(0, 10),
-        interval: Math.max(0, Math.min(365, num(r.interval))),
-        streak: Math.max(0, Math.min(10, num(r.streak))),
+        questionIndex: zaehler(r.questionIndex, 50),
+        due: tag(r.due),
+        interval: zaehler(r.interval, 365),
+        streak: zaehler(r.streak, 10),
       }];
     });
   }
@@ -300,28 +342,26 @@ export function sanitizeAppData(input: unknown): AppData {
   if (typeof d.daily === 'object' && d.daily !== null) {
     const day = d.daily as Record<string, unknown>;
     out.daily = {
-      date: str(day.date).slice(0, 10),
-      score: Math.max(0, num(day.score)),
-      total: Math.max(0, num(day.total)),
+      date: tag(day.date),
+      score: Math.min(zaehler(day.total, 100), zaehler(day.score, 100)),
+      total: zaehler(day.total, 100),
     };
   }
 
   if (typeof d.usage === 'object' && d.usage !== null) {
     const u = d.usage as Record<string, unknown>;
-    out.usage.day = str(u.day).slice(0, 10);
+    out.usage.day = tag(u.day);
     if (typeof u.counts === 'object' && u.counts !== null) {
       for (const [k, v] of Object.entries(u.counts as Record<string, unknown>).slice(0, 40)) {
         if (/^[a-z-]{1,40}$/.test(k)) {
-          out.usage.counts[k] = Math.max(0, Math.min(1_000_000, num(v)));
+          out.usage.counts[k] = zaehler(v, 1_000_000);
         }
       }
     }
   }
 
-  if (typeof d.trialStartedAt === 'string') {
-    const t = str(d.trialStartedAt).slice(0, 40);
-    out.trialStartedAt = isFinite(new Date(t).getTime()) ? t : null;
-  }
+  const versuchStart = zeitpunkt(d.trialStartedAt);
+  out.trialStartedAt = versuchStart === '' ? null : versuchStart;
 
   // Die Prüfung liegt bei der Bibliothek, die das Format definiert.
   out.handFacts = sanitizeHandFacts(d.handFacts);
@@ -330,19 +370,24 @@ export function sanitizeAppData(input: unknown): AppData {
     out.hands = (d.hands as unknown[]).slice(0, 30).flatMap((v) => {
       if (typeof v !== 'object' || v === null) return [];
       const h = v as Record<string, unknown>;
-      const cardOk = (c: unknown): c is number => typeof c === 'number' && c >= 0 && c <= 51;
+      /* Eine Karte ist ein Platz im Blatt, kein Messwert: `RANKS[c % 13]`
+         bei c = 12,5 ergibt „undefined" auf dem Tisch. */
+      const cardOk = (c: unknown): c is number =>
+        typeof c === 'number' && Number.isInteger(c) && c >= 0 && c <= 51;
       const heroCards = Array.isArray(h.heroCards) ? (h.heroCards as unknown[]).filter(cardOk) : [];
       const board = Array.isArray(h.board) ? (h.board as unknown[]).filter(cardOk) : [];
       const result = h.result === 'won' || h.result === 'lost' || h.result === 'folded' ? h.result : 'folded';
       return [{
         id: str(h.id, `h${Math.random()}`).slice(0, 60),
-        date: str(h.date),
-        handNumber: Math.max(0, num(h.handNumber)),
+        date: zeitpunkt(h.date),
+        handNumber: zaehler(h.handNumber),
         heroCards,
         board,
         result: result as 'won' | 'lost' | 'folded',
-        amount: num(h.amount),
-        players: Math.max(2, Math.min(9, num(h.players, 2))),
+        /* Chips, keine Währung — und mit Vorzeichen: eine verlorene Hand
+           steht mit einem Minus in der Historie. */
+        amount: Math.max(-ZAEHLER_MAX, Math.min(ZAEHLER_MAX, Math.round(num(h.amount)))),
+        players: Math.max(2, Math.min(9, Math.round(num(h.players, 2)))),
         log: Array.isArray(h.log) ? (h.log as unknown[]).slice(0, 200).map((l) => str(l).slice(0, 300)) : [],
       }];
     });

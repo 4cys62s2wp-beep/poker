@@ -12,7 +12,16 @@
    Die Nenner: Nach dem Flop kennt man fünf Karten (zwei eigene, drei auf dem
    Board), also sind 47 unbekannt; nach dem Turn 46. */
 
-/** Chance, mit `outs` Outs auf der nächsten Karte zu treffen (Turn ODER River). */
+/**
+ * Chance, mit `outs` Outs auf der **einen noch kommenden** Karte zu treffen:
+ * am Turn, wenn nur noch der River aussteht — 46 unbekannte Karten.
+ *
+ * Nicht zu verwechseln mit der Turn-Karte nach dem Flop: Dort sind es 47,
+ * also `outs / 47`. Der Unterschied ist klein (bei 9 Outs 19,6 statt 19,1 %)
+ * und genau deshalb gefährlich — er fällt nicht auf. Die Odds-Tabelle nennt
+ * die Annahme in ihrer Fußnote mit; wer diese Funktion anderswo benutzt,
+ * muss dasselbe tun.
+ */
 export function chanceEineKarte(outs: number): number {
   return outs / 46;
 }

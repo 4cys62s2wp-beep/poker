@@ -3126,3 +3126,88 @@ für diese Daten ist der schnellste Teil der App (6,9 ms statt 237 ms, seit die
 Matrix binär ist). Ihn für ein Nebenerzeugnis umzubauen, wäre ein Risiko am
 Hauptweg für einen Gewinn am Rand. Die Zahlen stehen hier, damit die
 Entscheidung später ohne neue Messung revidierbar ist.
+
+## E-056 · 2026-09-06 · „5,9 % (1 zu 16)" — die App widersprach sich selbst
+
+**Stand:** entschieden und umgesetzt.
+
+Weitergesucht in dem, was diese App eigentlich tut: Sie **unterrichtet
+Zahlen.** Der schlimmste Fehler wäre nicht ein verrutschter Knopf, sondern
+eine falsch gelehrte Zahl, die jemand sich merkt.
+
+Zuerst die Breite gemessen: 518 Prozentangaben im deutschen Lehrtext,
+496 Quizfragen in zwei Sprachen. Geprüft war davon eine Handvoll — die
+Outs-Behauptungen der Form „9 × 4 = 36 %, exakt 35,0 %".
+
+Nachgerechnet wurden dann die Klassen, die sich nachrechnen lassen:
+Verhältnis → nötige Equity, Bet-Größe → nötige Equity, Kombinationen aus
+1326, Bluff-Break-even, Ergänzung auf 100 %. **Alle richtig.** Die
+Pot-Odds-Tabelle stimmt Zeile für Zeile, die Quizfragen sind strukturell in
+Ordnung, die Zahlen auf dem gerenderten Bildschirm decken sich mit den
+gerechneten Daten.
+
+### Bis auf eine Tabelle
+
+Der Odds-Spickzettel schreibt hinter manche Prozentzahl eine Häufigkeit.
+Dafür gibt es zwei Schreibweisen, die sich um genau eins unterscheiden:
+
+- **Kehrwert** („1 von N", englisch „1 in N"): N = 1/p.
+- **Gegenquote** („N : 1"): N = (1−p)/p.
+
+In dieser Tabelle stand beides durcheinander, unter derselben Beschriftung:
+
+| Zeile | Prozent | 1/p | Gegenquote | stand da |
+|---|---|---|---|---|
+| Ein bestimmtes Paar | 0,45 % | **221** | 220 | 221 ✓ |
+| Irgendein Pocket Pair | 5,9 % | **17** | 16 | 16 ✗ |
+| AK | 1,2 % | **83** | 81,9 | 82 ✗ |
+| Set am Flop | 11,8 % | **8,5** | 7,5 | 7,5 ✗ |
+
+Im Deutschen ließ sich „1 zu 16" noch als Gegenquote lesen. Die englische
+Fassung schrieb „1 in 16" — das heißt eindeutig Kehrwert, und dort waren drei
+von vier Zeilen schlicht falsch.
+
+### Das Schlimmere daran
+
+Der **Lehrtext hatte recht**. In Modul 2 steht wörtlich:
+
+> „Die Wahrscheinlichkeit für irgendein Paar liegt bei knapp 6 %, also etwa
+> 1 zu 17. 1 zu 221 gilt für ein bestimmtes Paar wie AA."
+
+Und die Quizfragen in Modul 3 nennen durchgehend Kehrwerte (1 zu 83, 1 zu
+221, 1 zu 17, 1 zu 110). Zwei Tipps von dieser Lektion entfernt zeigte die
+Nachschlagetabelle 1 zu 16. Die App hat sich also **selbst widersprochen** —
+genau der Fehler, gegen den dieses ganze Projekt gebaut ist: Tabellen, die
+einander widersprechen, weil irgendwann jemand eine Zahl abgeschrieben und
+die Annahme weggelassen hat.
+
+Die Tabelle folgt jetzt dem Lehrtext: Kehrwert überall, und im Deutschen
+„1 **von** N" statt „1 zu N", weil „zu" beides heißen kann.
+
+### Die Prüfung, die das festhält
+
+`kehrwert.test.ts` braucht kein Poker-Wissen. Er nimmt die Prozentzahl aus
+derselben Zelle und prüft, ob die Zahl daneben ihr Kehrwert ist — über die
+Tabelle **und** über den gesamten Lehrtext beider Sprachen, 18 Behauptungen.
+Die Toleranz trägt die Rundung der Prozentzahl, aber nicht den Unterschied
+von eins zwischen den beiden Schreibweisen; die Gegenprobe mit dem alten Wert
+16 fällt durch.
+
+### Was dabei sonst geprüft und in Ordnung war
+
+- **496 Quizfragen**: `correctIndex` immer im gültigen Bereich, mindestens
+  zwei Antworten, keine doppelte Option, überall eine Erklärung.
+  `quiz.test.ts` hält das fest — bisher ungeprüft war, ob der Index
+  überhaupt auf eine Option zeigt. Eine Frage mit `correctIndex: 4` bei vier
+  Optionen kann niemand richtig beantworten.
+- **Eine Heuristik habe ich verworfen**: „Steht die Zahl der richtigen
+  Antwort in der Erklärung?" ergab 52 Treffer und **alle 52 waren
+  Fehlalarme** — gute Erklärungen umschreiben („Rund ein Fünftel bis ein
+  Drittel" für „20–30 %") oder nennen die falsche Antwort, um sie zu
+  widerlegen. Eine Prüfung mit 52 Fehlalarmen wird nach dem dritten
+  ignoriert; sie steht deshalb nicht im Testbestand.
+- **Die Annahme hinter „Nächste Karte"** stand ungenau im Quelltext:
+  `chanceEineKarte` rechnet mit 46 unbekannten Karten (der River steht aus),
+  der Kommentar sagte aber „Turn ODER River". Bei 9 Outs sind das 19,6 statt
+  19,1 % — ein Unterschied, der nicht auffällt und genau deshalb gefährlich
+  ist. Kommentar und Fußnote nennen die Annahme jetzt beide präzise.

@@ -52,6 +52,58 @@ jobs:
         run: |
           echo "::notice title=GitHub Pages aktivieren::Einmalig unter Settings → Pages die Source 'GitHub Actions' wählen – danach deployt jeder Push automatisch."
 
+  # Die neun Messläufe messen die gebaute App in einem echten Browser. Sie
+  # laufen in einem eigenen Job, und der Deploy hängt bewusst NICHT daran:
+  # Ein Browserlauf kann aus Gründen scheitern, die mit der App nichts zu tun
+  # haben (Runner langsam, Browser-Download hakt), und dann soll trotzdem
+  # veröffentlicht werden. Ein rotes Kreuz an diesem Job ist der Hinweis
+  # zum Nachsehen — nicht der Schalter, der alles anhält.
+  #
+  # Enthalten sind die Läufe, die Struktur und Geometrie messen. `durchgang`
+  # misst auch Zeiten und bleibt deshalb draußen: Auf einem geteilten Runner
+  # wäre er die Sorte Prüfung, die man nach dem dritten Fehlalarm ignoriert.
+  messungen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Abhängigkeiten installieren
+        run: npm ci
+      - name: Browser holen
+        # Playwright steht nicht in den devDependencies (siehe
+        # scripts/browser.mjs) – hier wird es nur für diesen Job geholt.
+        run: |
+          npm i --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Bauen
+        run: npm run build
+      - name: Vorschau starten
+        run: |
+          nohup npm run preview -- --port 4173 > preview.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf -o /dev/null http://127.0.0.1:4173/ && break
+            sleep 1
+          done
+          # Kommt sie nicht hoch, soll der Job hier scheitern und nicht in
+          # fünf Läufen mit unverständlichen Zeitüberschreitungen.
+          curl -sf -o /dev/null http://127.0.0.1:4173/ || { cat preview.log; exit 1; }
+      - name: Design (Kontrast, Größen, Farbmodi)
+        run: npm run pruefen
+      - name: Bedienbarkeit (Namen, Überschriften, Tastaturfokus)
+        run: npm run bedienbar
+      - name: Erreichbarkeit für den Daumen
+        run: npm run daumen
+      - name: Wege und Sackgassen
+        run: npm run wege
+      - name: Jeder Bildschirm ohne Netz
+        run: npm run ohnenetz
+      - name: Abweichungen zeigen
+        if: failure()
+        run: git --no-pager diff --stat docs/ || true
+
   deploy:
     needs: build
     if: needs.build.outputs.pages_enabled == 'true'

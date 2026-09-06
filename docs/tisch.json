@@ -1,5 +1,5 @@
 {
-  "erzeugt_am": "2026-08-27T07:01:23.624Z",
+  "erzeugt_am": "2026-09-06T16:08:40.532Z",
   "leseabstand": {
     "abstand_mm": 2000,
     "sehwinkel_grad": 0.3,
@@ -33,7 +33,7 @@
           "schriftgroesse_px": 13.2,
           "fett": "400",
           "ziffern": "normal",
-          "oben_px": 232,
+          "oben_px": 238,
           "hoehe_px": 21,
           "breite_px": 55
         },
@@ -43,7 +43,7 @@
           "schriftgroesse_px": 74.1,
           "fett": "800",
           "ziffern": "tabular-nums",
-          "oben_px": 258,
+          "oben_px": 264,
           "hoehe_px": 85,
           "breite_px": 247
         },
@@ -53,7 +53,7 @@
           "schriftgroesse_px": 105.3,
           "fett": "800",
           "ziffern": "tabular-nums",
-          "oben_px": 365,
+          "oben_px": 371,
           "hoehe_px": 95,
           "breite_px": 282
         },
@@ -63,7 +63,7 @@
           "schriftgroesse_px": 13.2,
           "fett": "400",
           "ziffern": "normal",
-          "oben_px": 482,
+          "oben_px": 488,
           "hoehe_px": 21,
           "breite_px": 63
         },
@@ -73,7 +73,7 @@
           "schriftgroesse_px": 58.5,
           "fett": "400",
           "ziffern": "tabular-nums",
-          "oben_px": 507,
+          "oben_px": 513,
           "hoehe_px": 67,
           "breite_px": 227
         },
@@ -115,7 +115,7 @@
           "schriftgroesse_px": 74.1,
           "fett": "800",
           "ziffern": "tabular-nums",
-          "oben_px": 258,
+          "oben_px": 264,
           "hoehe_px": 85,
           "breite_px": 247
         },
@@ -125,7 +125,7 @@
           "schriftgroesse_px": 105.3,
           "fett": "800",
           "ziffern": "tabular-nums",
-          "oben_px": 365,
+          "oben_px": 371,
           "hoehe_px": 95,
           "breite_px": 282
         },
@@ -135,7 +135,7 @@
           "schriftgroesse_px": 58.5,
           "fett": "400",
           "ziffern": "tabular-nums",
-          "oben_px": 507,
+          "oben_px": 513,
           "hoehe_px": 67,
           "breite_px": 227
         }
@@ -186,7 +186,7 @@
           "schriftgroesse_px": 13.2,
           "fett": "400",
           "ziffern": "normal",
-          "oben_px": 82,
+          "oben_px": 88,
           "hoehe_px": 21,
           "breite_px": 55
         },
@@ -196,7 +196,7 @@
           "schriftgroesse_px": 148,
           "fett": "800",
           "ziffern": "tabular-nums",
-          "oben_px": 107,
+          "oben_px": 113,
           "hoehe_px": 170,
           "breite_px": 494
         },
@@ -206,7 +206,7 @@
           "schriftgroesse_px": 220,
           "fett": "800",
           "ziffern": "tabular-nums",
-          "oben_px": 299,
+          "oben_px": 305,
           "hoehe_px": 198,
           "breite_px": 590
         },
@@ -216,7 +216,7 @@
           "schriftgroesse_px": 13.2,
           "fett": "400",
           "ziffern": "normal",
-          "oben_px": 519,
+          "oben_px": 525,
           "hoehe_px": 21,
           "breite_px": 63
         },
@@ -226,7 +226,7 @@
           "schriftgroesse_px": 96,
           "fett": "400",
           "ziffern": "tabular-nums",
-          "oben_px": 544,
+          "oben_px": 550,
           "hoehe_px": 110,
           "breite_px": 375
         },
@@ -268,7 +268,7 @@
           "schriftgroesse_px": 148,
           "fett": "800",
           "ziffern": "tabular-nums",
-          "oben_px": 107,
+          "oben_px": 113,
           "hoehe_px": 170,
           "breite_px": 494
         },
@@ -278,7 +278,7 @@
           "schriftgroesse_px": 220,
           "fett": "800",
           "ziffern": "tabular-nums",
-          "oben_px": 299,
+          "oben_px": 305,
           "hoehe_px": 198,
           "breite_px": 590
         },
@@ -288,7 +288,7 @@
           "schriftgroesse_px": 96,
           "fett": "400",
           "ziffern": "tabular-nums",
-          "oben_px": 544,
+          "oben_px": 550,
           "hoehe_px": 110,
           "breite_px": 375
         }

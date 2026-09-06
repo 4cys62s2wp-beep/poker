@@ -63,6 +63,9 @@ export const STR = defineStrings(
     loading: 'Daten werden geladen …',
     errorTitle: 'Die gerechneten Daten fehlen',
     errorHint: 'Im Projekt neu erzeugen: npm run daten',
+    /* Der Einzeldatei-Build liegt oft allein irgendwo — dort ist
+       „npm run daten“ kein Rat, sondern eine Zumutung. */
+    errorHintSingle: 'Diese Einzeldatei braucht den Ordner „pokermath“ neben sich.',
   },
   {
     back: 'Learn',
@@ -115,5 +118,6 @@ export const STR = defineStrings(
     loading: 'Loading the computed data …',
     errorTitle: 'The computed data is missing',
     errorHint: 'Regenerate it in the project: npm run daten',
+    errorHintSingle: 'This single file needs the “pokermath” folder next to it.',
   },
 );

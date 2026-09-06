@@ -2994,3 +2994,135 @@ wirklich den Offline-Fall ansieht.
 `npm run ohnenetz` schreibt nach `docs/ohnenetz.json`, `ohnenetz.test.ts`
 hält das Ergebnis fest — und prüft zuerst, dass die Messung echt war:
 Service Worker aktiv, nicht über `localhost`, alle 90 Bildschirme dabei.
+
+## E-053 · 2026-09-06 · Dieselbe Rechenzeile stand zweimal da
+
+**Stand:** entschieden und umgesetzt.
+
+Die Equity wird auf zwei Wegen gerechnet: normalerweise in einem Web Worker,
+und wenn der ausfällt — Einzeldatei-Build, alte WebView, CSP, Zeitüberschreitung
+— synchron im Hauptthread. Beide Wege sind gut gebaut: Der Rückfall greift
+still, offene Anfragen werden nachgerechnet, der Hauptthread blockiert nie.
+
+Nur stand die eigentliche Rechnung **zweimal** da, wörtlich derselbe Ausdruck
+in zwei Dateien:
+
+```ts
+jobs.map((j) => equityVsRandomHands(j.hero, j.board, Math.max(1, j.opponents), j.iterations))
+```
+
+Solange beide gleich blieben, fiel das nicht auf. Wer eine davon geändert
+hätte — andere Iterationszahl, andere Behandlung von null Gegnern —, hätte
+**je nach Browser verschiedene Zahlen** bekommen. Und die Zahl ist hier nicht
+Deko: „Call" oder „Fold" hängt daran. Der Fehler wäre auch schwer zu finden
+gewesen, weil der Rückfallweg genau dort greift, wo niemand entwickelt.
+
+Also dieselbe Antwort wie bei den Rangnamen (E-045): eine Stelle,
+`rechneAuftraege` in `equityProtocol.ts` — der Datei, die ohnehin den Vertrag
+zwischen beiden Seiten hält. `equityweg.test.ts` hält fest, dass weder der
+Worker noch der Rückfallweg den Rechenkern noch selbst aufruft.
+
+Im Browser gegengeprüft, weil ein Refactor an einer Worker-Datei genau die
+Sorte Änderung ist, die im Test grün und im Bundle kaputt ist: Live-Coach
+geöffnet, A♠K♥ eingegeben. Die Worker-Datei erscheint in den geladenen
+Ressourcen, es kommt „Empfehlung: Raise", und die Konsole bleibt still.
+
+## E-054 · 2026-09-06 · Die Prüfläufe liefen nur auf einer Maschine
+
+**Stand:** entschieden und umgesetzt.
+
+Beim Eintragen der Messläufe ins README fiel auf, dass die Anleitung, die ich
+gerade schrieb, für niemanden funktioniert hätte. In allen acht
+Browser-Skripten stand:
+
+```js
+import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+```
+
+Ein absoluter Pfad auf eine globale Installation. Playwright steht in keiner
+Abhängigkeitsliste des Projekts. Das heißt: Auf jedem anderen Rechner — dem
+des Entwicklers, dem GitHub-Runner — bricht `npm run pruefen` sofort mit
+`ERR_MODULE_NOT_FOUND` ab.
+
+Damit war die **ganze Prüfapparatur**, auf der die Qualität dieses Projekts
+ruht, in genau einer Umgebung benutzbar. Neun Läufe, 182 Messungen,
+446 geprüfte Fokusziele — und niemand außerhalb dieses Containers hätte je
+einen davon starten können.
+
+`scripts/browser.mjs` sucht Playwright jetzt dort, wo es liegen kann (im
+Projekt, als `playwright-core`, global), und sagt sonst, was zu tun ist:
+
+```
+Playwright nicht gefunden. Die Messläufe brauchen einen echten Browser:
+  npm i -D playwright && npx playwright install chromium
+```
+
+Eine Fehlermeldung, die nur `ERR_MODULE_NOT_FOUND` sagt, hilft niemandem.
+
+**Warum Playwright nicht in die `devDependencies` kommt:** Es zieht einen
+Browser nach sich und würde jedes `npm ci` verlangsamen — auch das im
+Deploy-Job, der es nie braucht. Es ist Werkzeug für gelegentliche Messungen,
+keine Abhängigkeit der App.
+
+### Und weil sie jetzt überall laufen, laufen sie auch in der Action
+
+Bis hierher liefen die Läufe nur, wenn jemand daran dachte. Die
+Lock-Tests in `vitest` fangen zwar strukturelle Abweichungen (eine neue
+Adresse ohne Wegelauf), aber **keine** Stiländerung, die den Kontrast auf
+einem bestehenden Bildschirm kippt — dafür muss der Browser laufen.
+
+Der neue Job `messungen` in `deploy.yml` holt sich den Browser, baut, startet
+die Vorschau und fährt fünf Läufe: Design, Bedienbarkeit, Daumen, Wege, ohne
+Netz. `durchgang` bleibt draußen, weil er auch Zeiten misst — auf einem
+geteilten Runner wäre er die Sorte Prüfung, die man nach dem dritten
+Fehlalarm ignoriert.
+
+**Der Deploy hängt bewusst nicht daran.** Ein Browserlauf kann aus Gründen
+scheitern, die mit der App nichts zu tun haben; dann soll trotzdem
+veröffentlicht werden. Ein rotes Kreuz an diesem Job ist der Hinweis zum
+Nachsehen, nicht der Schalter, der alles anhält.
+
+**Was hier ehrlich gesagt gehört:** Dieser Job ist der einzige Teil dieser
+Sitzung, den ich nicht selbst laufen lassen konnte — eine GitHub-Action
+lässt sich hier nicht ausführen. Geprüft ist, dass die YAML-Datei gültig ist,
+dass der Deploy weiterhin nur an `build` hängt und dass die Schrittfolge
+(bauen, Vorschau mit Warteschleife, fünf Läufe) lokal genau so funktioniert.
+Ungeprüft sind die beiden Zeilen, die den Browser holen. Deshalb hängt nichts
+daran.
+
+## E-055 · 2026-09-06 · Die Einzeldatei gab einen Rat, der nicht half
+
+**Stand:** entschieden und umgesetzt.
+
+`npm run build:single` erzeugt eine HTML-Datei, die man weitergeben kann.
+Geprüft hat sie nie jemand — sie steht im README, aber in keinem Lauf und in
+keinem Test. Also einmal gebaut, über `file://` geöffnet und durchgeklickt.
+
+**Das meiste funktioniert.** Startseite, Lernpfad, Nachschlagen, Übungstisch,
+Pokerabend, sogar der Pot-Odds-Trainer (der rechnet aus der Formel). Die
+Navigation läuft ohne Server, der Verzicht auf den Web Worker greift wie
+vorgesehen (`workerUnavailable = __SINGLE__`).
+
+**Eine Stelle nicht:** Der Drill braucht die gerechneten Daten
+(`pokermath/*.json` und `.bin`, zusammen 246 KB), und `file://` verbietet
+`fetch`. Der Bildschirm sagt das auch sauber — nur der Rat darunter lautete:
+
+> Im Projekt neu erzeugen: `npm run daten`
+
+Für den, der diese eine Datei bekommen hat, ist das kein Rat, sondern eine
+Zumutung. Er hat kein Projekt. Im Einzeldatei-Build steht dort jetzt:
+
+> Diese Einzeldatei braucht den Ordner „pokermath" neben sich.
+
+### Was ich bewusst *nicht* getan habe
+
+Die Daten in die Datei einzubetten, wäre die andere Antwort — dann hielte der
+Name „Alles-in-einer-HTML-Datei" auch für den Drill. Gerechnet: 246 KB Daten,
+davon 204 KB die Binärmatrix; als Base64 rund 330 KB auf eine 2,08-MB-Datei,
+also ein Sechstel mehr.
+
+Dagegen spricht nicht die Größe, sondern der Ort des Eingriffs: Der Ladeweg
+für diese Daten ist der schnellste Teil der App (6,9 ms statt 237 ms, seit die
+Matrix binär ist). Ihn für ein Nebenerzeugnis umzubauen, wäre ein Risiko am
+Hauptweg für einen Gewinn am Rand. Die Zahlen stehen hier, damit die
+Entscheidung später ohne neue Messung revidierbar ist.

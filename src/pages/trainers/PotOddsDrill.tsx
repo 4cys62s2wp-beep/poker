@@ -196,7 +196,9 @@ export function PotOddsDrill() {
         <div className="card" style={{ borderColor: 'var(--danger)' }}>
           <div className="drill-fehler-titel">{L.errorTitle}</div>
           <p className="small" style={{ marginTop: 'var(--sp-2)' }}>{schlimm}</p>
-          <p className="small muted">{L.errorHint}</p>
+          {/* Im Einzeldatei-Build fehlen die Daten immer — dort ist „npm run
+              daten" kein Rat für den, der die Datei bekommen hat. */}
+          <p className="small muted">{__SINGLE__ ? L.errorHintSingle : L.errorHint}</p>
         </div>
       </div>
     );

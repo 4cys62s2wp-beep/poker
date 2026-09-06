@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-09-06T15:50:20.850Z",
+  "geprueft_am": "2026-09-06T16:05:33.789Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 851,
+        "dauer_ms": 869,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -598,10 +598,10 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | SERIE | – | TREFFER | 0 | BESTE",
-        "nach_zwei": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
-        "nach_neuladen": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
+        "nach_zwei": "1 | NEUE BESTSERIE | 50 % | TREFFER | 1 | BESTE",
+        "nach_neuladen": "1 | NEUE BESTSERIE | 50 % | TREFFER | 1 | BESTE",
         "quote_bleibt": true,
-        "quote_nach_zwei": "0 %",
+        "quote_nach_zwei": "50 %",
         "ohne_versuche_kein_prozent": true,
         "felder": 3
       },
@@ -615,7 +615,7 @@
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "54,1 %",
+        "ergebnis_text": "16,5 %",
         "uebergang": "0s",
         "belebung": "none"
       },

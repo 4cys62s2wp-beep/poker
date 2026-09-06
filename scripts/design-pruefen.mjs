@@ -24,7 +24,11 @@
  *   node scripts/design-pruefen.mjs
  */
 import { readFileSync, writeFileSync } from 'node:fs';
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { holeChromium } from './browser.mjs';
+
+/* Playwright liegt nicht im Projekt (siehe browser.mjs) — der Fundort
+   wird zur Laufzeit gesucht, damit dieser Lauf überall startet. */
+const chromium = await holeChromium();
 
 const GRUND = process.env.WEGE_GRUND ?? 'http://127.0.0.1:4173';
 const BREITE = 390;

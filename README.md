@@ -78,7 +78,15 @@ unter 920 Pixel ausgeblendeten Seitenleiste standen. Jeder Lauf schreibt sein
 Ergebnis nach `docs/`, und je ein Test hält es fest — wer etwas ändert, ohne
 den Lauf zu wiederholen, bekommt einen roten Test.
 
-Voraussetzung: `npm run build && npm run preview` (Port 4173).
+Voraussetzung: einmalig Playwright (steht bewusst nicht in den
+`devDependencies` — es zieht einen Browser nach sich und würde jedes
+`npm ci` verlangsamen, obwohl es nur für die Läufe gebraucht wird), dann die
+gebaute App:
+
+```bash
+npm i -D playwright && npx playwright install chromium   # einmalig
+npm run build && npm run preview                          # Port 4173
+```
 
 ```bash
 npm run pruefen    # Design: Kontrast, Größen, Farbmodi (91 Bildschirme × 2 Modi)

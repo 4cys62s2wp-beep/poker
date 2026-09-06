@@ -285,7 +285,7 @@ export function CoachPage() {
             {advice ? (
               <>
                 <div className={`coach-verdict ${ACTION_STYLE[advice.action].cls}`}>
-                  <span style={{ fontSize: 26 }}>{ACTION_STYLE[advice.action].icon}</span>
+                  <span style={{ fontSize: '1.625rem' }}>{ACTION_STYLE[advice.action].icon}</span>
                   <div>
                     <div className="v-action">{advice.headline}</div>
                     <div className="small muted">{L.recommendation} {ACTION_LABEL[advice.action]}</div>
@@ -309,7 +309,7 @@ export function CoachPage() {
               </>
             ) : (
               <div className="coach-verdict">
-                <span style={{ fontSize: 26 }}>⏳</span>
+                <span style={{ fontSize: '1.625rem' }}>⏳</span>
                 <div>
                   <div className="v-action">{L.calculating}</div>
                   <div className="small muted">{L.calculatingNote}</div>

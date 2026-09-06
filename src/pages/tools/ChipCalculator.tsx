@@ -140,7 +140,7 @@ export function ChipCalculator() {
           <div className="stat-label" style={{ marginBottom: 6 }}>{L.playersQuestion}</div>
           <div className="row" style={{ marginBottom: 16 }}>
             <button className="btn sm" onClick={() => setPlayers((p) => Math.max(2, p - 1))} aria-label={L.fewerPlayersAria}>−</button>
-            <span style={{ fontWeight: 800, fontSize: 22, minWidth: 34, textAlign: 'center' }}>{players}</span>
+            <span style={{ fontWeight: 800, fontSize: '1.375rem', minWidth: 34, textAlign: 'center' }}>{players}</span>
             <button className="btn sm" onClick={() => setPlayers((p) => Math.min(10, p + 1))} aria-label={L.morePlayersAria}>+</button>
           </div>
 
@@ -224,12 +224,12 @@ export function ChipCalculator() {
               <div className="grid cols-2" style={{ marginBottom: 14 }}>
                 <div className="card">
                   <div className="stat-label">{L.startStack}</div>
-                  <div className="big-stat" style={{ fontSize: 26 }}>{plan.stackValue.toLocaleString(nf)}</div>
+                  <div className="big-stat" style={{ fontSize: '1.625rem' }}>{plan.stackValue.toLocaleString(nf)}</div>
                   <div className="small faint">{L.stackSub(plan.stackBB)}</div>
                 </div>
                 <div className="card">
                   <div className="stat-label">{L.blindsStart}</div>
-                  <div className="big-stat" style={{ fontSize: 26 }}>
+                  <div className="big-stat" style={{ fontSize: '1.625rem' }}>
                     {plan.smallBlind.toLocaleString(nf)} / {plan.bigBlind.toLocaleString(nf)}
                   </div>
                   <div className="small faint">{L.blindsSub}</div>

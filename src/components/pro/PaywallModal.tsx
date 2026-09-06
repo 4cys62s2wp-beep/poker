@@ -59,7 +59,7 @@ export function PaywallModal() {
         >
           <Icon name={isLimit ? 'sun' : 'lock'} size={23} />
         </span>
-        <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 7 }}>
+        <div style={{ fontWeight: 800, fontSize: '1.125rem', marginBottom: 7 }}>
           {isLimit ? L.limitTitle : L.lockedTitle}
         </div>
         <p className="small muted" style={{ marginBottom: 18 }}>{body}</p>

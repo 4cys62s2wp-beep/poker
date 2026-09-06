@@ -931,8 +931,11 @@ describe('Das private Gerät: der Lernbildschirm', () => {
 
   it('macht die Ergebniszahl um ein Vielfaches größer als den Fließtext', () => {
     /* Die Regel aus Phase 1, hier am gerenderten Ergebnis statt am Token. */
+    /* Die Skala steht seit E-057 in `rem`; die Messläufe messen bei der
+       Wurzelgröße 16, also wird hier damit umgerechnet. */
     const css = readFileSync('src/styles/global.css', 'utf8');
-    const fliesstext = Number(css.match(/--fs-fliesstext:\s*([\d.]+)px/)![1]);
+    const roh = css.match(/--fs-fliesstext:\s*([\d.]+)(px|rem)/)!;
+    const fliesstext = Number(roh[1]) * (roh[2] === 'rem' ? 16 : 1);
     const e = schritt('Zwischen Eingabe und Ergebnis liegt nichts');
     expect(e.ergebnis_px as number).toBeGreaterThanOrEqual(fliesstext * 4);
   });

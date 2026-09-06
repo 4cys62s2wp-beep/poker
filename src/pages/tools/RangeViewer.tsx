@@ -62,7 +62,7 @@ export function RangeViewer() {
 
       <div className="card" style={{ maxWidth: 720 }}>
         <div className="row between wrap" style={{ marginBottom: 6 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 750 }}>{view.title}</h2>
+          <h2 style={{ fontSize: '1.125rem', fontWeight: 750 }}>{view.title}</h2>
           <span className="pill gold">{L.pctOfHands(Math.round(view.pct * 100))}</span>
         </div>
         <p className="small muted" style={{ marginBottom: 16 }}>{view.description}</p>

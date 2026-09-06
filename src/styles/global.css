@@ -89,11 +89,11 @@
      aussehen. */
 
   /** Die eine Zahl, wegen der der Bildschirm existiert. Fett, nie dünn. */
-  --fs-ergebnis: clamp(64px, 20vw, 116px);
-  --fs-ueberschrift: clamp(19px, 2.4vw, 23px);
-  --fs-fliesstext: 15px;
-  --fs-beschriftung: 13.2px;
-  --fs-kleingedrucktes: 11.5px;
+  --fs-ergebnis: clamp(4rem, 20vw, 7.25rem);
+  --fs-ueberschrift: clamp(1.1875rem, 2.4vw, 1.4375rem);
+  --fs-fliesstext: 0.9375rem;
+  --fs-beschriftung: 0.825rem;
+  --fs-kleingedrucktes: 0.71875rem;
 
   /* Ziffern in gleicher Breite. Ohne das springt eine hochzählende Anzeige
      bei jedem Wechsel, weil die 1 schmaler ist als die 8 — am Tisch, wo der
@@ -148,15 +148,15 @@
 
   /* ── Ende Designfundament ──────────────────────────────────────────── */
 
-  --fs-stat: clamp(38px, 9vw, 58px);
-  --fs-h1: clamp(27px, 4.4vw, 38px);
+  --fs-stat: clamp(2.375rem, 9vw, 3.625rem);
+  --fs-h1: clamp(1.6875rem, 4.4vw, 2.375rem);
   /* Altbestand. Wo eine alte Stufe mit einer neuen zusammenfällt, zeigt sie
      dorthin — dann gibt es den Wert genau einmal. --fs-stat, --fs-h1 und
      --fs-h3 haben keine Entsprechung in der Fünferskala und werden abgebaut;
      die Prüfung in `design.test.ts` zählt ihre Verwendungen und lässt die
      Zahl nicht wachsen. */
   --fs-h2: var(--fs-ueberschrift);
-  --fs-h3: 16.5px;
+  --fs-h3: 1.03125rem;
   --fs-body: var(--fs-fliesstext);
   --fs-small: var(--fs-beschriftung);
   --fs-tiny: var(--fs-kleingedrucktes);
@@ -452,7 +452,7 @@ body {
   background-attachment: fixed;
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.6;
   min-height: 100vh;
   min-height: 100dvh; /* mobile Safari: ohne Toolbar-Ueberschuss */
@@ -559,7 +559,7 @@ table.data td {
   gap: 11px;
   padding: var(--sp-1) 10px var(--sp-5);
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 640;
 }
 
@@ -573,7 +573,7 @@ table.data td {
   background: linear-gradient(150deg, var(--flaeche-tisch-verlauf-hell), var(--flaeche-tisch-verlauf-tief));
   border: 1px solid var(--auszeichnung-lesbar-a35);
   color: var(--auszeichnung-lesbar);
-  font-size: 17px;
+  font-size: 1.0625rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), var(--shadow-soft);
 }
 
@@ -586,7 +586,7 @@ table.data td {
 
 .nav-group {
   margin: 14px 10px 6px;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -602,7 +602,7 @@ table.data td {
   border-radius: var(--radius-sm);
   color: var(--text-dim);
   font-weight: 600;
-  font-size: 14.5px;
+  font-size: 0.90625rem;
   transition: background 0.15s, color 0.15s;
 }
 
@@ -628,7 +628,7 @@ table.data td {
 }
 
 .nav-link .ico {
-  font-size: 17px;
+  font-size: 1.0625rem;
   width: 22px;
   text-align: center;
 }
@@ -636,7 +636,7 @@ table.data td {
 .sidebar-footer {
   margin-top: auto;
   padding: 14px 10px var(--sp-1);
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-faint);
 }
 
@@ -675,7 +675,7 @@ table.data td {
     padding-bottom: 0;
     padding-left: calc(clamp(16px, 4vw, 48px) + env(safe-area-inset-left, 0px));
     font-family: var(--font-display);
-    font-size: 19px;
+    font-size: 1.1875rem;
     font-weight: 640;
   }
   .mobile-top .spade {
@@ -688,7 +688,7 @@ table.data td {
     background: linear-gradient(150deg, var(--flaeche-tisch-verlauf-hell), var(--flaeche-tisch-verlauf-tief));
     border: 1px solid var(--auszeichnung-lesbar-a35);
     color: var(--auszeichnung-lesbar);
-    font-size: 15px;
+    font-size: 0.9375rem;
   }
   .mobile-top .grad {
     background: linear-gradient(115deg, var(--auszeichnung-verlauf-hell), var(--auszeichnung) 55%, var(--auszeichnung-verlauf-tief));
@@ -717,7 +717,7 @@ table.data td {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -737,7 +737,7 @@ table.data td {
 }
 
 .page-header h1 {
-  font-size: clamp(27px, 4.4vw, 38px);
+  font-size: clamp(1.6875rem, 4.4vw, 2.375rem);
   line-height: 1.14;
 }
 
@@ -745,7 +745,7 @@ table.data td {
   color: var(--text-dim);
   margin-top: 9px;
   max-width: 660px;
-  font-size: 15.5px;
+  font-size: 0.96875rem;
 }
 
 /* Abschnittsueberschriften. Beide Schreibweisen sind identisch gestylt:
@@ -756,7 +756,7 @@ table.data td {
 .section-title,
 h2.section-title {
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 620;
   letter-spacing: normal;
   text-wrap: wrap;
@@ -776,7 +776,7 @@ h2.section-title::after {
 
 .muted { color: var(--text-dim); }
 .faint { color: var(--text-faint); }
-.small { font-size: 13.5px; }
+.small { font-size: 0.84375rem; }
 
 /* ==========================================================================
    Flächen & Grids
@@ -840,7 +840,7 @@ h2.section-title::after {
   border: 1px solid var(--border-strong);
   background: var(--veil-1);
   color: var(--text);
-  font-size: 14.5px;
+  font-size: 0.90625rem;
   font-weight: 700;
   cursor: pointer;
   transition: background 0.14s, border-color 0.14s, transform 0.09s, opacity 0.14s, filter 0.14s;
@@ -883,12 +883,12 @@ h2.section-title::after {
    breit. */
 .btn.sm {
   padding: 7px 13px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   border-radius: 9px;
   min-height: var(--tipp-min);
   min-width: var(--tipp-min);
 }
-.btn.lg { padding: 14px 26px; font-size: 15.5px; border-radius: 13px; }
+.btn.lg { padding: 14px 26px; font-size: 0.96875rem; border-radius: 13px; }
 .btn.block { width: 100%; }
 
 .pill {
@@ -897,7 +897,7 @@ h2.section-title::after {
   gap: 6px;
   padding: 3.5px 11px;
   border-radius: 999px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 700;
   background: rgba(236, 233, 223, 0.055);
   border: 1px solid var(--border);
@@ -977,7 +977,7 @@ button.pill {
   flex-direction: column;
   align-items: center;
   font-weight: 800;
-  font-size: 13px;
+  font-size: 0.8125rem;
   letter-spacing: -0.5px;
 }
 
@@ -990,10 +990,10 @@ button.pill {
   transform: rotate(180deg);
 }
 
-.pcard .corner .c-suit { font-size: 10px; margin-top: -1px; }
+.pcard .corner .c-suit { font-size: 0.625rem; margin-top: -1px; }
 
 .pcard .center-suit {
-  font-size: 26px;
+  font-size: 1.625rem;
   margin-top: var(--sp-2);
 }
 
@@ -1011,17 +1011,17 @@ button.pill {
 }
 
 .pcard.sm { width: 35px; height: 49px; border-radius: 5px; }
-.pcard.sm .corner { top: 2px; left: 3px; font-size: 10.5px; }
-.pcard.sm .corner .c-suit { font-size: 8px; }
-.pcard.sm .center-suit { font-size: 17px; margin-top: 9px; }
+.pcard.sm .corner { top: 2px; left: 3px; font-size: 0.65625rem; }
+.pcard.sm .corner .c-suit { font-size: 0.5rem; }
+.pcard.sm .center-suit { font-size: 1.0625rem; margin-top: 9px; }
 /* Bei 35 Pixeln Breite wäre der zweite Index ein Fleck, kein Zeichen. */
 .pcard.sm .corner.unten { display: none; }
 
 .pcard.lg { width: 62px; height: 87px; border-radius: 9px; }
-.pcard.lg .corner { top: 5px; left: 7px; font-size: 17px; }
+.pcard.lg .corner { top: 5px; left: 7px; font-size: 1.0625rem; }
 .pcard.lg .corner.unten { top: auto; left: auto; right: 7px; bottom: 5px; }
-.pcard.lg .corner .c-suit { font-size: 13px; }
-.pcard.lg .center-suit { font-size: 34px; margin-top: 10px; }
+.pcard.lg .corner .c-suit { font-size: 0.8125rem; }
+.pcard.lg .center-suit { font-size: 2.125rem; margin-top: 10px; }
 
 /* Die große Karte. Sie ist kein Symbol neben dem Text, sondern das, was man
    ansieht: In der Breite eines Handys stehen zwei davon nebeneinander und
@@ -1032,10 +1032,10 @@ button.pill {
   border-radius: 12px;
   box-shadow: 0 6px 18px var(--lift-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
-.pcard.xl .corner { top: 8px; left: 10px; font-size: 27px; }
+.pcard.xl .corner { top: 8px; left: 10px; font-size: 1.6875rem; }
 .pcard.xl .corner.unten { top: auto; left: auto; right: 10px; bottom: 8px; }
-.pcard.xl .corner .c-suit { font-size: 20px; margin-top: 1px; }
-.pcard.xl .center-suit { font-size: 52px; margin-top: 12px; }
+.pcard.xl .corner .c-suit { font-size: 1.25rem; margin-top: 1px; }
+.pcard.xl .center-suit { font-size: 3.25rem; margin-top: 12px; }
 
 .cards-row {
   display: flex;
@@ -1056,7 +1056,7 @@ button.pill {
   border: 1px solid var(--border-strong);
   background: var(--veil-2);
   color: var(--text);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
   text-align: center;
@@ -1067,7 +1067,7 @@ button.pill {
 .picker-key:hover { background: rgba(236, 233, 223, 0.1); }
 .picker-key:active { transform: scale(0.94); }
 .picker-key:disabled { opacity: 0.25; cursor: default; }
-.picker-key.suit { font-size: 21px; padding: 13px 0; }
+.picker-key.suit { font-size: 1.3125rem; padding: 13px 0; }
 .picker-key.suit.s { color: #ece9df; }
 .picker-key.suit.h { color: #e0564f; }
 .picker-key.suit.d { color: #5590d9; }
@@ -1150,7 +1150,7 @@ button.pill {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(10px, 1.25vw, 11.5px);
+  font-size: clamp(0.625rem, 1.25vw, 0.71875rem);
   font-weight: 800;
   line-height: 1;
   border-radius: 4px;
@@ -1222,7 +1222,7 @@ button.pill {
 .lesson-section { margin-bottom: 34px; }
 
 .lesson-section h2 {
-  font-size: 21.5px;
+  font-size: 1.34375rem;
   margin-bottom: var(--sp-3);
   padding-bottom: var(--sp-2);
   border-bottom: 1px solid var(--border);
@@ -1232,7 +1232,7 @@ button.pill {
   border-radius: 12px;
   padding: 15px 17px;
   margin: var(--sp-4) 0;
-  font-size: 14.5px;
+  font-size: 0.90625rem;
   border: 1px solid;
   position: relative;
 }
@@ -1241,7 +1241,7 @@ button.pill {
 
 .callout .label {
   font-weight: 800;
-  font-size: 11px;
+  font-size: 0.6875rem;
   text-transform: uppercase;
   letter-spacing: 1.4px;
   margin-bottom: 6px;
@@ -1265,12 +1265,12 @@ button.pill {
 table.data {
   border-collapse: collapse;
   width: 100%;
-  font-size: 14px;
+  font-size: 0.875rem;
   min-width: 400px;
 }
 
 /* Kompakte Variante (z. B. Chip-Rechner): passt auch aufs Handy ohne Scrollen */
-.table-wrap.compact table.data { min-width: 0; font-size: 13.5px; }
+.table-wrap.compact table.data { min-width: 0; font-size: 0.84375rem; }
 .table-wrap.compact th, .table-wrap.compact td { padding: 9px 10px; }
 
 table.data th {
@@ -1279,7 +1279,7 @@ table.data th {
   background: rgba(212, 175, 94, 0.08);
   color: var(--auszeichnung-lesbar);
   font-weight: 800;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   letter-spacing: 0.4px;
   text-transform: uppercase;
   white-space: nowrap;
@@ -1308,7 +1308,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   background: var(--bg-elev);
   border: 1px solid var(--border);
   color: var(--text);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-family: inherit;
   font-weight: 550;
   cursor: pointer;
@@ -1332,7 +1332,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   border-radius: 12px;
   padding: 15px 17px;
   margin-top: 6px;
-  font-size: 14.5px;
+  font-size: 0.90625rem;
   border: 1px solid var(--border-strong);
   background: var(--bg-elev);
 }
@@ -1342,14 +1342,14 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .big-stat {
   font-family: var(--font-display);
-  font-size: 31px;
+  font-size: 1.9375rem;
   font-weight: 640;
   letter-spacing: 0;
   line-height: 1.15;
 }
 
 .stat-label {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: var(--text-faint);
   text-transform: uppercase;
   letter-spacing: 1.3px;
@@ -1405,7 +1405,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   border-radius: 50%;
   background: radial-gradient(circle at 38% 30%, #fffdf6, #e2dbc7 68%, #c3bca8);
   color: #232018;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 900;
   border: none;
   box-shadow:
@@ -1418,7 +1418,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .game-log {
   max-height: 215px;
   overflow-y: auto;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-dim);
   display: flex;
   flex-direction: column;
@@ -1448,7 +1448,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .coach-verdict .v-action {
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 640;
   white-space: nowrap;
 }
@@ -1501,7 +1501,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   border-radius: 9px;
   background: transparent;
   color: var(--text-dim);
-  font-size: 13.5px;
+  font-size: 0.84375rem;
   font-weight: 750;
   cursor: pointer;
   transition: background 0.13s, color 0.13s;
@@ -1531,12 +1531,12 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   align-items: flex-start;
 }
 
-.tell-item .t-ico { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
-.tell-item .t-name { font-weight: 800; font-size: 15px; }
-.tell-item .t-read { color: var(--auszeichnung-lesbar); font-size: 13.5px; font-weight: 700; margin-top: 2px; }
-.tell-item .t-desc { color: var(--text-dim); font-size: 14px; margin-top: var(--sp-1); }
+.tell-item .t-ico { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+.tell-item .t-name { font-weight: 800; font-size: 0.9375rem; }
+.tell-item .t-read { color: var(--auszeichnung-lesbar); font-size: 0.84375rem; font-weight: 700; margin-top: 2px; }
+.tell-item .t-desc { color: var(--text-dim); font-size: 0.875rem; margin-top: var(--sp-1); }
 
-.stars { color: var(--auszeichnung); letter-spacing: 1.5px; font-size: 12.5px; white-space: nowrap; }
+.stars { color: var(--auszeichnung); letter-spacing: 1.5px; font-size: 0.78125rem; white-space: nowrap; }
 .stars .off { color: rgba(236, 233, 223, 0.16); }
 
 /* Das Glossar als Wörterbuch (E-042).
@@ -1646,7 +1646,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   background: var(--feld);
   color: var(--text);
   /* 16px verhindert Auto-Zoom beim Fokussieren auf iOS */
-  font-size: 16px;
+  font-size: 1rem;
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -1677,7 +1677,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   border: 1px solid var(--auszeichnung-a45);
   border-radius: 13px;
   padding: var(--sp-3) 18px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   box-shadow: var(--shadow);
   animation: toast-in 0.32s cubic-bezier(0.22, 1, 0.36, 1), toast-out 0.4s ease 3.4s forwards;
@@ -1685,7 +1685,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .toast .t-title { color: var(--auszeichnung-lesbar); }
-.toast .t-sub { color: var(--text-dim); font-weight: 550; font-size: 13px; }
+.toast .t-sub { color: var(--text-dim); font-weight: 550; font-size: 0.8125rem; }
 
 @keyframes toast-in {
   from { transform: translateX(36px); opacity: 0; }
@@ -1743,7 +1743,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   height: 54px;
   margin-bottom: var(--sp-1);
   border-radius: 50%;
-  font-size: 26px;
+  font-size: 1.625rem;
   line-height: 1;
   background: var(--scrim);
   box-shadow: inset 0 0 0 2px var(--border-strong);
@@ -1837,7 +1837,7 @@ input[type="radio"] {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-dim);
   font-weight: 600;
 }
@@ -1868,7 +1868,7 @@ input[type="radio"] {
 .suit-deco {
   color: var(--text-faint);
   letter-spacing: 6px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   text-align: center;
   margin: 26px 0 var(--sp-2);
   user-select: none;
@@ -1876,10 +1876,10 @@ input[type="radio"] {
 
 @media (max-width: 640px) {
   .pcard.sm { width: 28px; height: 40px; border-radius: 4px; }
-  .pcard.sm .corner { font-size: 8.5px; top: 1px; left: 2px; }
-  .pcard.sm .corner .c-suit { font-size: 7px; }
-  .pcard.sm .center-suit { font-size: 13px; margin-top: var(--sp-2); }
-  .coach-verdict .v-action { font-size: 19px; }
+  .pcard.sm .corner { font-size: 0.53125rem; top: 1px; left: 2px; }
+  .pcard.sm .corner .c-suit { font-size: 0.4375rem; }
+  .pcard.sm .center-suit { font-size: 0.8125rem; margin-top: var(--sp-2); }
+  .coach-verdict .v-action { font-size: 1.1875rem; }
 }
 
 /* Die Regel für reduzierte Bewegung steht vollständig im Designfundament
@@ -2966,7 +2966,7 @@ input[type="radio"] {
   left: 50%;
   top: 48%;
   transform: translate(-50%, -50%);
-  font-size: 108px;
+  font-size: 6.75rem;
   line-height: 1;
   color: rgba(255, 255, 255, 0.032);
   pointer-events: none;
@@ -3449,10 +3449,10 @@ input[type="radio"] {
     border-radius: 8px;
   }
 
-  .du-karten .pcard.xl .corner { top: 4px; left: 6px; font-size: 15px; }
+  .du-karten .pcard.xl .corner { top: 4px; left: 6px; font-size: 0.9375rem; }
   .du-karten .pcard.xl .corner.unten { top: auto; left: auto; right: 6px; bottom: 4px; }
-  .du-karten .pcard.xl .corner .c-suit { font-size: 11px; }
-  .du-karten .pcard.xl .center-suit { font-size: 29px; margin-top: 8px; }
+  .du-karten .pcard.xl .corner .c-suit { font-size: 0.6875rem; }
+  .du-karten .pcard.xl .center-suit { font-size: 1.8125rem; margin-top: 8px; }
 
   /* Und die Gemeinschaftskarten eine Stufe darunter, damit die eigene Hand
      die größte bleibt. */
@@ -3463,9 +3463,9 @@ input[type="radio"] {
     border-radius: 6px;
   }
 
-  .filz .board .pcard .corner { top: 3px; left: 4px; font-size: 12px; }
-  .filz .board .pcard .corner .c-suit { font-size: 9px; }
-  .filz .board .pcard .center-suit { font-size: 20px; margin-top: 6px; }
+  .filz .board .pcard .corner { top: 3px; left: 4px; font-size: 0.75rem; }
+  .filz .board .pcard .corner .c-suit { font-size: 0.5625rem; }
+  .filz .board .pcard .center-suit { font-size: 1.25rem; margin-top: 6px; }
 
   .sitz { padding-bottom: 17px; }
   .sitz-karten { min-height: 36px; margin-bottom: -12px; }
@@ -4556,6 +4556,11 @@ input[type="radio"] {
    Größer als --fs-ergebnis: Sie wird aus zwei Metern gelesen, nicht aus
    Armlänge. */
 .tisch-zeit {
+  /* Bleibt in px, anders als der Rest der Skala (E-057): Diese Ziffer
+     hängt an der Bildschirmbreite, nicht am Lesebedürfnis. Wer die
+     Browserschrift vergrößert, braucht den Fließtext größer — eine Zahl,
+     die schon 72 bis 220 Pixel misst, ist nicht das Problem, und sie
+     mitwachsen zu lassen sprengte ihren Platz. */
   font-size: clamp(72px, 27vw, 220px);
   font-weight: var(--fw-bold);
   line-height: 0.9;

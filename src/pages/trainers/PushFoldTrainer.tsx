@@ -104,7 +104,7 @@ export function PushFoldTrainer() {
 
         <div className="row" style={{ marginBottom: 18 }}>
           <CardsRow cards={[spot.cards[0], spot.cards[1]]} size="lg" />
-          <span className="pill" style={{ fontSize: 14 }}>{spot.label}</span>
+          <span className="pill" style={{ fontSize: '0.875rem' }}>{spot.label}</span>
         </div>
 
         {answer && (

@@ -134,7 +134,7 @@ export function EquityCalc() {
                 <div key={i} style={{ marginBottom: 14 }}>
                   <div className="row between" style={{ marginBottom: 6 }}>
                     <CardsRow cards={h} size="sm" />
-                    <span className="big-stat" style={{ fontSize: 22 }}>{L.fmtPct(pct)}</span>
+                    <span className="big-stat" style={{ fontSize: '1.375rem' }}>{L.fmtPct(pct)}</span>
                   </div>
                   <div className="progressbar">
                     <div style={{ width: `${pct}%` }} />

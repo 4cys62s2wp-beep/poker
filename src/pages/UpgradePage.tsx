@@ -140,7 +140,7 @@ export function UpgradePage() {
             )}
 
             <div className="row" style={{ alignItems: 'baseline', gap: 10, marginBottom: 4 }}>
-              <span style={{ fontFamily: 'var(--font-display, inherit)', fontSize: 40, fontWeight: 800, letterSpacing: '-0.5px' }}>
+              <span style={{ fontFamily: 'var(--font-display, inherit)', fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
                 {showAnnual ? config.priceAnnual : config.priceMonthly}
               </span>
               <span className="muted">{showAnnual ? L.perYear : L.perMonth}</span>
@@ -193,7 +193,7 @@ export function UpgradePage() {
                 <Icon name="check" size={17} />
               </span>
               <div>
-                <div style={{ fontWeight: 800, fontSize: 15.5 }}>{b.t}</div>
+                <div style={{ fontWeight: 800, fontSize: '0.96875rem' }}>{b.t}</div>
                 <div className="small muted" style={{ marginTop: 3 }}>{b.d}</div>
               </div>
             </div>

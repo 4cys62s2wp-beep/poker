@@ -3211,3 +3211,72 @@ von eins zwischen den beiden Schreibweisen; die Gegenprobe mit dem alten Wert
   der Kommentar sagte aber „Turn ODER River". Bei 9 Outs sind das 19,6 statt
   19,1 % — ein Unterschied, der nicht auffällt und genau deshalb gefährlich
   ist. Kommentar und Fußnote nennen die Annahme jetzt beide präzise.
+
+## E-057 · 2026-09-06 · Die Schriftgröße des Browsers bewirkte nichts
+
+**Stand:** entschieden und umgesetzt.
+
+Jeder Browser hat sie, und Menschen mit nachlassenden Augen benutzen sie:
+Einstellungen → Darstellung → Schriftgröße. Sie wirkt, indem der Browser die
+**Wurzel-Schriftgröße** ändert — und erreicht damit nur, was in `rem` oder
+`em` bemessen ist.
+
+Diese App hatte **114 Schriftgrößen, alle in Pixeln**: 67 im Stylesheet, 47
+direkt in Komponenten, kein einziges `rem`. Gemessen mit
+`Page.setFontSizes` auf 24 px Standardschrift, Lektion „Outs zählen":
+
+| | vorher | nachher |
+|---|---|---|
+| Wurzel-Schriftgröße | 24 | 24 |
+| Fließtext | **15,5** | 23,3 |
+| Seitenüberschrift | **27** | 40,5 |
+| Kleingedrucktes | **13,5** | 20,3 |
+| Höhe der Lektion | **5507 px** | 10 371 px |
+
+Vorher änderte sich außer der Wurzel **nichts**. Die Einstellung wurde still
+ignoriert — für eine App, in der man minutenlange Lesestrecken vor sich hat,
+kein Randfall. (Der Zoom des Browsers half; er vergrößert aber alles, auch
+das Layout, und ist etwas anderes als „ich lese den Text schlecht".)
+
+### Umgestellt, und der Beweis dafür
+
+114 Angaben mechanisch durch 16 geteilt. Bei der Standard-Wurzelgröße von
+16 px ergibt das exakt dieselben Pixel — und genau das wurde nachgewiesen,
+nicht behauptet: Von jedem der 90 Bildschirme ein Abzug **aller vorkommenden
+Schriftgrößen**, einmal vorher, einmal nachher. Ergebnis: 89 von 90
+Bildschirmen zeichnen dieselben Größen.
+
+Der eine Ausreißer war der Equity-Trainer — dort fehlten zwei Größen. Die
+Erklärung stand nicht im Diff, sondern auf dem Bildschirm: Der Trainer teilt
+zufällige Hände aus, und Kartensymbole sind je nach Kartengröße 10 oder
+13 px groß. Ein zweiter Abzug desselben Bildschirms zeigte die Größen wieder.
+Beinahe hätte ich einen Zufall für einen Fehler gehalten.
+
+### Was dabei fast durchgerutscht wäre
+
+Nach der Umstellung der Token wuchs der Fließtext — die **Seitenüberschrift
+nicht**. Sie stand bei 27 px fest, weil `.page-header h1` ihre Größe nicht
+aus einem Token nimmt, sondern selbst setzt:
+`font-size: clamp(27px, 4.4vw, 38px)`.
+
+Deshalb prüft `schriftgroesse.test.ts` nicht die fünf Stufen, sondern
+**jede** Schriftgröße im Stylesheet und in jedem Bildschirm. Ein Test, der
+nur die Token angesehen hätte, wäre grün gewesen, während jede
+Seitenüberschrift der App weiter festgenagelt war.
+
+### Drei Ausnahmen, benannt
+
+`.tisch-zeit` und zwei weitere Anzeigeziffern bleiben in Pixeln. Sie hängen
+an der Bildschirmbreite, nicht am Lesebedürfnis: Sie messen bereits 58 bis
+220 Pixel und werden aus zwei Metern gelesen. Wer die Browserschrift
+vergrößert, braucht den Fließtext größer — diese Zahl mitwachsen zu lassen
+sprengte nur ihren Platz. Die Ausnahmen stehen namentlich im Test; alles
+andere fällt durch.
+
+### Und am engsten Ort nachgesehen
+
+Der Übungstisch ist das dichteste Layout der App. Bei 24 px Wurzelgröße
+wächst der Filz von 458 auf 498 Pixel, das Board bleibt sichtbar, es gibt
+kein Querscrollen, und die Namensschilder kürzen wie vorgesehen („Bruno
+B…"). Zwei Bildschirmabzüge, hell und am Tisch, zeigen ein Bild, das größer
+ist — nicht ein kaputtes.

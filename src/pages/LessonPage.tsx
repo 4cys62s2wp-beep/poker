@@ -131,7 +131,7 @@ export function LessonPage() {
             ))}
 
             <section className="lesson-section card" style={{ background: 'var(--bg-elev)' }}>
-              <h2 style={{ fontSize: 17 }}>{L.takeaways}</h2>
+              <h2 style={{ fontSize: '1.0625rem' }}>{L.takeaways}</h2>
               <ul className="list-plain">
                 {lesson.takeaways.map((t, i) => (
                   <li key={i} className="takeaway">

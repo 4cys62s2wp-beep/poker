@@ -72,7 +72,7 @@ export function DailyQuizPage() {
           <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
             <Icon name="sun" size={38} />
           </div>
-          <h2 style={{ fontSize: 20, marginBottom: 8 }}>{L.doneTitle}</h2>
+          <h2 style={{ fontSize: '1.25rem', marginBottom: 8 }}>{L.doneTitle}</h2>
           <p className="muted small">
             {L.resultPrefix} <strong>{data.daily?.score} / {data.daily?.total}</strong>{L.resultSuffix}
           </p>
@@ -84,7 +84,7 @@ export function DailyQuizPage() {
           <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
             <Icon name="sun" size={38} />
           </div>
-          <h2 style={{ fontSize: 20, marginBottom: 8 }}>{L.readyTitle}</h2>
+          <h2 style={{ fontSize: '1.25rem', marginBottom: 8 }}>{L.readyTitle}</h2>
           <p className="muted small" style={{ marginBottom: 18 }}>
             {L.readyText(QUESTIONS_PER_DAY)}
           </p>

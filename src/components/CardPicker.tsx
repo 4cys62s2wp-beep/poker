@@ -74,7 +74,7 @@ export function CardPicker({ count, used, onComplete, label }: Props) {
       ) : (
         <div>
           <div className="row between" style={{ marginBottom: 10 }}>
-            <span className="pill gold" style={{ fontSize: 14 }}>
+            <span className="pill gold" style={{ fontSize: '0.875rem' }}>
               {L.whichSuit(RANK_CHARS[pendingRank] === 'T' ? '10' : RANK_CHARS[pendingRank])}
             </span>
             <button className="btn sm ghost" onClick={() => setPendingRank(null)}>

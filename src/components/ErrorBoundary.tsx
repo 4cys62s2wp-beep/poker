@@ -157,8 +157,8 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
           textAlign: 'center',
         }}
       >
-        <div style={{ fontSize: 40 }} aria-hidden="true">♠</div>
-        <h1 style={{ fontSize: 22 }}>{erneut ? t.wiederTitel : t.title}</h1>
+        <div style={{ fontSize: '2.5rem' }} aria-hidden="true">♠</div>
+        <h1 style={{ fontSize: '1.375rem' }}>{erneut ? t.wiederTitel : t.title}</h1>
         <p style={ABSATZ}>{erneut ? t.wiederBody : t.body}</p>
 
         <button className="btn primary" onClick={this.neuLaden}>{t.reload}</button>

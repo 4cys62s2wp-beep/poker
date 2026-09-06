@@ -106,10 +106,10 @@ export function ScenarioTrainer() {
 
       <div className="card" style={{ maxWidth: 720 }}>
         <div className="row between wrap" style={{ marginBottom: 10 }}>
-          <h2 style={{ fontSize: 19 }}>{scenario.title}</h2>
+          <h2 style={{ fontSize: '1.1875rem' }}>{scenario.title}</h2>
           <span className="pill info">{L.street(scenario.street)}</span>
         </div>
-        <p className="muted" style={{ marginBottom: 14, fontSize: 15 }}>{scenario.situation}</p>
+        <p className="muted" style={{ marginBottom: 14, fontSize: '0.9375rem' }}>{scenario.situation}</p>
 
         <div className="row wrap" style={{ marginBottom: 18 }}>
           <div>

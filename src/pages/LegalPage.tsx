@@ -13,7 +13,7 @@ import { usePro } from '../lib/pro/ProProvider';
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="card" style={{ maxWidth: 720, marginBottom: 14 }}>
-      <div style={{ fontWeight: 800, fontSize: 16.5, marginBottom: 8 }}>{title}</div>
+      <div style={{ fontWeight: 800, fontSize: '1.03125rem', marginBottom: 8 }}>{title}</div>
       {children}
     </div>
   );

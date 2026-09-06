@@ -270,7 +270,7 @@ export function FriendsPage() {
           <div className="row wrap">
             <code
               style={{
-                fontSize: 20,
+                fontSize: '1.25rem',
                 fontWeight: 800,
                 letterSpacing: '0.12em',
                 color: 'var(--auszeichnung-lesbar)',
@@ -341,7 +341,7 @@ function Avatar({ name }: { name: string }) {
         alignItems: 'center',
         justifyContent: 'center',
         fontWeight: 800,
-        fontSize: 14,
+        fontSize: '0.875rem',
         flexShrink: 0,
         background: 'var(--auszeichnung-schwach)',
         color: 'var(--auszeichnung-lesbar)',

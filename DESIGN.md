@@ -752,6 +752,31 @@ eines als Inhalt sehen gleich aus. Ein Literal mit Einsetzungen zählt als
 `` `Nichts zu „${begriff}" gefunden.` ``. Genau daran ist die Umstellung
 einmal gescheitert.
 
+### Regel 10.15 — Schrift wächst mit, wenn jemand sie größer stellt
+
+Die Skala steht in `rem`, nicht in Pixeln. Der Grund ist keine Vorliebe:
+Die Browser-Einstellung „Schriftgröße" wirkt über die Wurzel-Schriftgröße und
+erreicht nur, was in `rem` oder `em` bemessen ist. Bis E-057 standen **114
+Schriftgrößen in Pixeln** — 67 im Stylesheet, 47 in Komponenten —, und wer
+die Einstellung benutzte, bekam gemessen: gar nichts. Fließtext blieb bei
+15,5 Pixeln, die Seite blieb exakt gleich hoch.
+
+Das ist nicht dasselbe wie Zoom. Zoom vergrößert alles, auch das Layout;
+diese Einstellung sagt „ich lese den Text schlecht" und meint den Text.
+
+Zwei Sätze dazu:
+
+**Auch Komponentenregeln zählen.** Bei der Umstellung blieb
+`.page-header h1` zurück, weil sie ihre Größe selbst setzt statt ein Token
+zu nehmen — jede Seitenüberschrift der App wäre festgenagelt geblieben,
+während der Test die fünf Stufen für in Ordnung erklärt. `schriftgroesse.test.ts`
+prüft deshalb **jede** Schriftgröße, nicht nur die Skala.
+
+**Anzeigeziffern dürfen bleiben.** Drei Ausnahmen stehen namentlich im Test:
+Zahlen, die an der Bildschirmbreite hängen und schon 58 bis 220 Pixel messen.
+Wer die Schrift vergrößert, braucht den Fließtext größer; diese Zahl
+mitwachsen zu lassen sprengte nur ihren Platz.
+
 ### Was diese Regeln festhält
 
 `durchgang.test.ts` prüft am gerenderten Ergebnis: kein Scrollen, die

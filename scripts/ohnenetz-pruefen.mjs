@@ -21,6 +21,10 @@
    Gegenprobe: Ohne Service Worker lädt kein einziger Bildschirm offline —
    0 von 90 statt 90 von 90.
 
+   Nach E-061 wird zusätzlich die **Absturzseite** gesucht: Eine gut
+   gestaltete Fehlerseite hat reichlich Text und erzeugt keinen
+   `pageerror` — sie käme sonst als „in Ordnung" durch.
+
    Ergebnis nach `docs/ohnenetz.json`; `ohnenetz.test.ts` hält es fest. */
 
 import { holeChromium } from './browser.mjs';
@@ -86,10 +90,15 @@ for (const adresse of adressen) {
     const laeuft = [...document.querySelectorAll('*')]
       .filter((el) => el.children.length === 0 && /^(lädt|lade|wird geladen|rechnet|loading)/i.test((el.textContent ?? '').trim()))
       .map((el) => (el.textContent ?? '').trim().slice(0, 40));
-    return { zeichen: text.length, anfang: text.slice(0, 70).replace(/\n/g, ' '), laeuft };
+    /* Eine gut gestaltete Fehlerseite sieht für eine Messung aus wie eine
+       funktionierende Seite — 150 Zeichen Text, kein `pageerror`, weil
+       React ihn abgefangen hat. Siehe E-061. */
+    const absturz = document.querySelector('main[role="alert"]') !== null;
+    return { zeichen: text.length, anfang: text.slice(0, 70).replace(/\n/g, ' '), laeuft, absturz };
   });
 
-  if (bild.zeichen < 30) befunde.push({ adresse, art: 'leer', text: `${bild.zeichen} Zeichen: „${bild.anfang}"` });
+  if (bild.absturz) befunde.push({ adresse, art: 'Absturzseite', text: bild.anfang });
+  else if (bild.zeichen < 30) befunde.push({ adresse, art: 'leer', text: `${bild.zeichen} Zeichen: „${bild.anfang}"` });
   if (bild.laeuft.length) befunde.push({ adresse, art: 'bleibt am Laden', text: bild.laeuft.slice(0, 2).join(' · ') });
   for (const f of fehler) befunde.push({ adresse, art: 'Fehler', text: f });
 

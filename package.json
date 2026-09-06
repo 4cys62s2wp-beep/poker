@@ -22,7 +22,8 @@
     "binaer": "node scripts/binaer-messen.mjs",
     "daumen": "node scripts/daumen-pruefen.mjs",
     "bedienbar": "node scripts/bedienbar-pruefen.mjs",
-    "ohnenetz": "node scripts/ohnenetz-pruefen.mjs"
+    "ohnenetz": "node scripts/ohnenetz-pruefen.mjs",
+    "speichersperre": "node scripts/speichersperre-pruefen.mjs"
   },
   "dependencies": {
     "@fontsource-variable/fraunces": "^5.3.0",

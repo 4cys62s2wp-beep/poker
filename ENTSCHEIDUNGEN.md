@@ -2686,3 +2686,79 @@ einen kleinen CSV-**Leser** und liest die geschriebene Datei zurück. Eine
 Notiz „Tilt; früh weg\nnächstes Mal Pause" muss als *eine* Zelle
 zurückkommen — acht Prüfungen, die alle die Frage stellen, was auf der
 anderen Seite ankommt.
+
+## E-048 · 2026-09-06 · „1.250" war einskommazweifünf
+
+**Stand:** entschieden und umgesetzt.
+
+Der Export (E-047) führte zur Gegenfrage: Wenn die App Zahlen *hinausschreibt*
+— wie liest sie welche *herein*? Vier Stellen taten das, alle mit derselben
+Zeile:
+
+```ts
+parseFloat(text.replace(',', '.'))
+```
+
+Sie ist auf zwei Arten falsch. Gemessen, nicht vermutet:
+
+| Eingabe     | was herauskam | was gemeint war |
+|-------------|---------------|-----------------|
+| `1.250`     | 1,25          | 1250            |
+| `1.234,56`  | 1,234         | 1234,56         |
+| `1 250`     | 1             | 1250            |
+| `1.000.000` | 1             | 1000000         |
+| `12abc`     | 12            | (keine Zahl)    |
+
+**Sie versteht die deutsche Schreibweise nicht.** „1.250" ist auf Deutsch
+Tausendzweihundertfünfzig. Der Punkt wurde als Dezimalpunkt gelesen — eine
+Verwechslung um den Faktor 1000.
+
+**Und sie nimmt an, was keine Zahl ist.** `parseFloat` liest, so weit es
+kommt, und gibt zurück, was es hat.
+
+Das Entscheidende an beidem: Jeder dieser Werte kam an der Prüfung
+`isFinite(n) && n > 0` vorbei. Es gab **keine Fehlermeldung** — nur einen
+falschen Betrag. Wer 1250 € Cash-out eintrug, sah 1,25 € in seiner Bilanz und
+konnte nur rätseln, warum.
+
+### Wo das stand
+
+- **Bankroll-Tracker** — Buy-in und Cash-out. Eine falsche Bilanz.
+- **Live-Coach** — Pot und Einsatz für die Pot-Odds. Ein falscher Rat, und
+  das ist die eine Sache, für die es diese App gibt.
+- **Pokerabend einrichten** — Euro je Spieler.
+- **Upgrade-Seite** — der Jahrespreis aus der Konfiguration.
+
+### Die Lösung
+
+`src/lib/eingabe/zahl.ts` liefert entweder eine Zahl oder `null` — und nichts
+dazwischen. Stehen beide Trennzeichen da, entscheidet die Reihenfolge und
+nicht die Sprache: das rechte ist das Dezimaltrennzeichen („1.234,56" wie
+„1,234.56"). Steht nur eines da, entscheidet die Sprache — außer die Zahl
+sieht eindeutig gruppiert aus (`1.250` ja, `0.125` nein, `12.50` nein: zwei
+Stellen sind keine Tausendergruppe). Währungszeichen dürfen am Rand stehen,
+nicht in der Mitte: „1 250 €" ist eine Zahl, „12€34" ist keine.
+
+Milde ist dabei Absicht: Wer in der englischen Oberfläche „12,50" tippt, meint
+zwölf fünfzig und keinen Fehler.
+
+### Gegenprobe im Browser
+
+Nicht nur im Test, sondern in der gebauten App, 390 × 844, deutsche Sprache:
+Buy-in „1.250", Cash-out „2.500", 240 Minuten. Ergebnis auf dem Bildschirm:
+
+```
++1.250,00 €      312,50 €/h
+```
+
+Vorher wären das 1,25 € gewesen. Und „abc" als Buy-in bringt jetzt
+„Buy-in: bitte eine Zahl ≥ 0 angeben." statt einer stillen Null.
+
+Dieselbe Sitzung exportiert (E-047):
+
+```
+"Datum";"Art";"Spiel";"Buy-in";"Cash-out";"Gewinn";"Minuten";"Notizen"
+"2026-09-06";"online";"NL2 Cash";1250;2500;1250;240;"Test; mit Semikolon"
+```
+
+Das Semikolon in der Notiz bleibt in seiner Zelle.

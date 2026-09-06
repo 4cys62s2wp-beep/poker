@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { zahlAusEingabe } from '../lib/eingabe/zahl';
 import { STR as NAV } from '../i18n/pages/layout';
 import { BackLink } from '../components/ui';
 import { CardPicker } from '../components/CardPicker';
@@ -97,9 +98,9 @@ export function CoachPage() {
   }, [step, hole, board, position, players, raisedBefore, limpers, equity, equityReady, opponents, lang]);
 
   const facing = useMemo(() => {
-    const pot = parseFloat(potInput.replace(',', '.'));
-    const bet = parseFloat(betInput.replace(',', '.'));
-    if (!isFinite(pot) || !isFinite(bet) || pot <= 0 || bet <= 0 || hole.length < 2) return null;
+    const pot = zahlAusEingabe(potInput, lang);
+    const bet = zahlAusEingabe(betInput, lang);
+    if (pot === null || bet === null || pot <= 0 || bet <= 0 || hole.length < 2) return null;
     if (!equityReady) return null;
     return facingBetVerdict(equity, pot, bet, lang);
   }, [potInput, betInput, equity, equityReady, hole.length, lang]);

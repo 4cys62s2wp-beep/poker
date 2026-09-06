@@ -5,6 +5,7 @@ import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/bankroll';
 import { downloadBlob } from '../../lib/download';
 import { csvDatei } from '../../lib/export/csv';
+import { zahlAusEingabe } from '../../lib/eingabe/zahl';
 import { BackLink } from '../../components/ui';
 import { STR as NAV } from '../../i18n/pages/layout';
 
@@ -74,20 +75,20 @@ export function BankrollTracker() {
 
   function submit() {
     setFormError(null);
-    const buyIn = parseFloat(form.buyIn.replace(',', '.'));
-    const cashOut = parseFloat(form.cashOut.replace(',', '.'));
-    const minutes = parseInt(form.minutes, 10);
+    const buyIn = zahlAusEingabe(form.buyIn, lang);
+    const cashOut = zahlAusEingabe(form.cashOut, lang);
+    const minutes = zahlAusEingabe(form.minutes, lang);
     if (!form.date) return setFormError(L.errDate);
-    if (!isFinite(buyIn) || buyIn < 0) return setFormError(L.errBuyIn);
-    if (!isFinite(cashOut) || cashOut < 0) return setFormError(L.errCashOut);
-    if (!isFinite(minutes) || minutes <= 0) return setFormError(L.errMinutes);
+    if (buyIn === null || buyIn < 0) return setFormError(L.errBuyIn);
+    if (cashOut === null || cashOut < 0) return setFormError(L.errCashOut);
+    if (minutes === null || minutes <= 0) return setFormError(L.errMinutes);
     addSession({
       date: form.date,
       type: form.type,
       game: form.game.trim() || 'Session',
       buyIn,
       cashOut,
-      minutes,
+      minutes: Math.round(minutes),
       notes: form.notes.trim() || undefined,
     });
     setForm((f) => ({ ...f, buyIn: '', cashOut: '', minutes: '', notes: '' }));

@@ -3396,3 +3396,48 @@ Karten. Danach zurückgebaut, neu gebaut, Lauf wiederholt: 0.
 Eine Prüfung, die nie rot werden kann, ist eine Beruhigung und keine Prüfung
 — der Unterschied zwischen 296 und 0 ist der Beleg, dass diese hier wirklich
 hinsieht.
+
+## E-060 · 2026-09-06 · Die Sicherheitsgrenze lief nur auf Zuruf
+
+**Stand:** entschieden und umgesetzt.
+
+Ein letzter Blick auf das, was in dieser ganzen Sitzung **kein einziges Mal
+gelaufen** war: `npm run test:rules`. 29 Prüfungen der Firestore-Regeln —
+die Zugriffsgrenze für Cloud-Konten, Online-Tisch und Freundesliste. Sie
+sind aus `npm test` ausgeschlossen, weil sie Java und den Firestore-Emulator
+brauchen (`vitest.config.ts` nennt den Grund: sonst wären sie bei jedem Lauf
+zwangsläufig rot).
+
+Also ausgeführt. Java 21 ist da, der Emulator startet, und das Ergebnis ist:
+**29 von 29 bestanden.**
+
+Die Abdeckung ist keine Stichprobe, sondern eine Liste dessen, was schiefgehen
+könnte:
+
+- **Handkarten**: Jeder liest nur seine eigenen — ein Mitspieler nicht die des
+  anderen, und *nicht einmal der Gastgeber*.
+- **Lernstand**: nur der eigene, und erst nach bestätigter E-Mail.
+- **Abo-Berechtigung**: lesbar, aber niemals selbst beschreibbar, auch nicht
+  in Teilen; das Ereignis-Gedächtnis der Webhooks ist ganz gesperrt.
+- **Tischzustand**: nur der Gastgeber schreibt fort, die Version lässt sich
+  nicht zurückrollen, niemand trägt sich beim Anlegen als fremder Gastgeber
+  ein.
+- **Freunde**: kein Durchblättern aller Codes, keine Anfrage im fremden
+  Namen, kein Herzschlag in der Zukunft.
+- Und ein „Alles Übrige", das den Rest verweigert.
+
+### Der Befund ist derselbe wie bei E-054
+
+Kein Fehler in den Regeln — sondern darin, **wann** sie geprüft werden. Die
+Action fährt `npx vitest run`, und das schließt genau diese Datei aus. Die
+Grenze, die verhindert, dass jemand fremde Handkarten liest, wurde also nur
+geprüft, wenn ein Mensch daran dachte und Java installiert hatte.
+
+Sie läuft jetzt im Job `messungen` mit — demselben, der die fünf Browserläufe
+fährt und den Deploy bewusst nicht aufhält. Der Runner bringt Java mit; der
+Befehl ist derselbe, der hier eben durchgelaufen ist.
+
+**Ehrlich dazu:** Wie schon in E-054 konnte ich die Action selbst nicht
+ausführen. Geprüft ist, dass die YAML gültig bleibt, dass der Deploy
+weiterhin nur an `build` hängt — und dass der Befehl in einer vergleichbaren
+Linux-Umgebung mit Java 21 sauber durchläuft.

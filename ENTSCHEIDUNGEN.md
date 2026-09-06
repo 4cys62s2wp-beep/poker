@@ -2952,3 +2952,45 @@ dasselbe Feld getippt:
 | Lernen | 15 Nennungen | 15 |
 | Glossar | 5 | 5 |
 | Nachschlagen | 1 | 1 |
+
+## E-052 · 2026-09-06 · Der Offline-Betrieb war ein ungeprüftes Versprechen
+
+**Stand:** entschieden und umgesetzt.
+
+PokerMentor verspricht Offline-Betrieb an drei Stellen: Sie lässt sich
+installieren, die Daten liegen auf dem Gerät, und der Drill soll im Zug
+funktionieren. Geprüft hat das **nichts**. Der Durchgang misst, wie schnell
+die *Startseite* ohne Netz kommt (445 ms, E-039) — ob die anderen 89
+Bildschirme dann noch etwas zeigen, stand nirgends.
+
+Also gemessen: jeden der 90 Bildschirme bei abgeschaltetem Netz öffnen und
+nachsehen, ob etwas dasteht, ob ein Ladepunkt hängen bleibt und ob die Seite
+einen Fehler wirft. Ergebnis: **90 von 90 geladen, 0 Befunde.**
+
+### Zwei Fallen, die ein grünes Ergebnis ohne Bedeutung ergeben
+
+Der erste Lauf meldete ebenfalls „90 von 90, keine Befunde" — und war
+wertlos. Zwei Gründe, beide erst beim Nachsehen aufgefallen:
+
+1. **Auf `localhost` meldet sich der Service Worker gar nicht an.**
+   `main.tsx` schließt das ausdrücklich aus, damit die Entwicklung nicht auf
+   einem alten Stand hängen bleibt. Die Probe lief also ganz ohne Worker —
+   sie hätte nur gemessen, dass die Seite noch im Speicher liegt. Der Lauf
+   geht deshalb über `127.0.0.1` und **bricht ab**, wenn kein Worker aktiv
+   ist. Ein Lauf, der ohne seine Voraussetzung grün wird, ist schlimmer als
+   keiner.
+2. **Ein Hash-Wechsel lädt das Dokument nicht neu.** Die App benutzt
+   `HashRouter`; `#/glossar` anzusteuern rührt das Netz nicht an. Gemessen
+   wurde also 89-mal dieselbe längst geladene Seite. Jeder Bildschirm wird
+   jetzt wirklich neu geladen — so, wie jemand die installierte App öffnet.
+
+### Gegenprobe
+
+Derselbe Lauf mit vorher abgemeldetem Service Worker: **0 von 90**
+Bildschirmen laden, 90 Befunde („net::ERR_INTERNET_DISCONNECTED"). Der
+Unterschied zwischen 90/90 und 0/90 ist der Beweis, dass diese Prüfung
+wirklich den Offline-Fall ansieht.
+
+`npm run ohnenetz` schreibt nach `docs/ohnenetz.json`, `ohnenetz.test.ts`
+hält das Ergebnis fest — und prüft zuerst, dass die Messung echt war:
+Service Worker aktiv, nicht über `localhost`, alle 90 Bildschirme dabei.

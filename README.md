@@ -69,6 +69,29 @@ npm run build:single  # Alles-in-einer-HTML-Datei nach dist-single/
 npm run icons      # App-Icons neu generieren
 ```
 
+### Messläufe
+
+Neun Läufe messen die gebaute App in einem echten Browser statt im
+Quelltext — der Grund steht in `DESIGN.md`: Ein Lauf über den Quelltext hat
+elf Sackgassen nicht gefunden, weil die Links zwar da waren, aber in einer
+unter 920 Pixel ausgeblendeten Seitenleiste standen. Jeder Lauf schreibt sein
+Ergebnis nach `docs/`, und je ein Test hält es fest — wer etwas ändert, ohne
+den Lauf zu wiederholen, bekommt einen roten Test.
+
+Voraussetzung: `npm run build && npm run preview` (Port 4173).
+
+```bash
+npm run pruefen    # Design: Kontrast, Größen, Farbmodi (91 Bildschirme × 2 Modi)
+npm run bedienbar  # Bedienbarkeit: Namen, Überschriften, Tastaturfokus (× 2 Sprachen)
+npm run daumen     # Erreichbarkeit für den Daumen
+npm run wege       # Wege, Tiefe, Sackgassen
+npm run durchgang  # Ein Durchgang durch die App, Schritt für Schritt
+npm run ohnenetz   # Jeder Bildschirm ohne Netz (braucht 127.0.0.1, nicht localhost)
+npm run tisch      # Maße des Übungstisches
+npm run binaer     # Größe und Genauigkeit der Equity-Matrix
+npm run streuung   # Verstreute Zahlenwerte zählen (Ratsche)
+```
+
 ## Deployment (automatisch via GitHub Actions)
 
 Der Workflow `.github/workflows/deploy.yml` testet, baut und veröffentlicht die

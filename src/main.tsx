@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import { App } from './App';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppStateProvider } from './state/AppState';
 import { CloudProvider } from './lib/cloud/CloudProvider';
 import { ProProvider } from './lib/pro/ProProvider';
@@ -16,6 +17,11 @@ import { FarbmodusProvider } from './lib/design/FarbmodusProvider';
 function render() {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
+      {/* Das Auffangnetz hängt ganz außen: Auch ein Fehler in einem der
+          Provider — und `AppStateProvider` ist der, der fremde Daten aus
+          dem Speicher liest — soll einen Bildschirm zeigen und keine
+          weiße Seite. */}
+      <ErrorBoundary>
       <HashRouter>
         <FarbmodusProvider>
         <LanguageProvider>
@@ -31,6 +37,7 @@ function render() {
         </LanguageProvider>
         </FarbmodusProvider>
       </HashRouter>
+      </ErrorBoundary>
     </React.StrictMode>,
   );
 }

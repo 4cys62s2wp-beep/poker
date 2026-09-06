@@ -2762,3 +2762,193 @@ Dieselbe Sitzung exportiert (E-047):
 ```
 
 Das Semikolon in der Notiz bleibt in seiner Zelle.
+
+## E-049 · 2026-09-06 · Das Auffangnetz hing zu tief
+
+**Stand:** entschieden und umgesetzt.
+
+Nach der Eingangstür (E-046) die Anschlussfrage: **Was passiert, wenn hinter
+der Tür trotzdem etwas bricht?** Dafür gibt es den `ErrorBoundary` — den
+einen Bildschirm, den niemand sehen soll und den deshalb auch nie jemand
+angesehen hat. Er steht in keiner der 91 gemessenen Ansichten, weil man ihn
+nur durch einen Absturz erreicht.
+
+Also einmal hingesehen: einen Absturz erzwungen (vorübergehend eine
+werfende Komponente, danach wieder entfernt) und im gebauten Bundle
+gemessen, 390 × 844, hell und dunkel.
+
+### Was gut war
+
+Der Bildschirm ist gestaltet wie die App — Manrope, Goldknopf, 142 × 44
+Pixel, Kontrast 14,6:1 auf der Überschrift und 7,3:1 im Fließtext, in beiden
+Farbmodi. Der Knopf führt zurück auf die Startseite, und die App läuft
+danach.
+
+(Eine erste Messung meldete „Knopfbeschriftung 1,28:1". Das war die
+Messung, nicht der Knopf: `.btn.primary` malt mit einem Verlauf, also ist
+`backgroundColor` durchsichtig. Der Bildschirmabzug zeigte einen goldenen
+Knopf. Wieder ein Fall für die alte Regel — die Zahl ansehen *und* das Bild.)
+
+### Was nicht gut war
+
+**Das Netz hing unter allen sechs Providern.** `<ErrorBoundary>` stand *in*
+`App`, und `App` steht in `main.tsx` unter `FarbmodusProvider`,
+`LanguageProvider`, `AppStateProvider`, `CloudProvider`, `ProProvider` und
+`SocialProvider`. Ausgerechnet `AppStateProvider` ist der Provider, der
+`localStorage` liest, JSON auspackt und `sanitizeAppData` aufruft — der
+einzige, der überhaupt mit fremden Daten zu tun hat. Ein Fehler dort kam beim
+Netz nie an.
+
+Gemessen mit einem Absturz im Provider, zwei gebaute Fassungen, gleicher
+Fehler:
+
+| | `#root` | Text | Knöpfe |
+|---|---|---|---|
+| Netz in `App` (vorher) | **leer** | – | – |
+| Netz in `main.tsx` (nachher) | gefüllt | „Da ist etwas schiefgelaufen" | „App neu laden" |
+
+Das war die weiße Seite, gegen die es diesen Bildschirm gibt. Für eine App,
+deren Daten auf dem Gerät liegen, ist das die schlimmste Fehlerform: kein Weg
+zurück, und der Fortschritt liegt hinter genau der Anwendung, die nicht mehr
+startet.
+
+**Und „neu laden" half nicht immer.** Liegt der Fehler an gespeicherten
+Daten, führt jeder Neustart in denselben Absturz — eine Schleife ohne
+Ausgang. Der Bildschirm zählt jetzt mit: Beim **zweiten** Mal in derselben
+Sitzung heißt er „Das Neuladen hat nicht geholfen" und bietet zwei weitere
+Wege an, in dieser Reihenfolge:
+
+1. **Daten als Datei sichern** — liest den Gerätespeicher direkt aus, nicht
+   über `exportJson()`: Wenn die App abgestürzt ist, ist ihr Zustand
+   womöglich genau das Problem.
+2. **Daten zurücksetzen** — fragt erst nach („Wirklich alles löschen?",
+   daneben „Doch nicht") und löscht dann auch den IndexedDB-Spiegel, der
+   sonst beim nächsten Start genau die Daten zurückholte, die den Absturz
+   ausgelöst haben.
+
+Beim zweiten Punkt steckt die Tücke im Warten. `deleteDatabase` wird
+*blockiert*, solange noch eine Verbindung offen ist — und die App hält eine.
+Wer danach sofort neu lädt, startet ein Wettrennen zwischen dem ausstehenden
+Löschen und `restoreFromMirrorIfNeeded()`, das beim nächsten Start genau die
+Daten zurückholt, die man gerade loswerden wollte. `loescheAllesVonUns()`
+schließt deshalb erst die eigene Verbindung, wartet dann auf das Löschen und
+lädt erst danach neu — mit einer Notbremse nach 1,5 Sekunden, falls ein
+zweiter Tab den Spiegel festhält.
+
+Die erste Gegenprobe hätte das nicht gefunden: Sie stürzte im Provider ab, da
+war noch gar keine Verbindung offen. Also eine zweite, mit einem Absturz an
+einer *Route* — die App läuft dann, der Spiegel ist angelegt und offen.
+Danach trug der Gerätespeicher `pokermentor-data-pmtpyxemg17g` statt
+`pokermentor-data-pmtpyx7ushn98`: ein frisches Profil, die alten Daten weg,
+vom Spiegel nichts zurückgeholt.
+
+Nach einem gelungenen Start wird der Zähler gelöscht — ein Absturz von
+vorgestern ist kein Muster.
+
+**Zwei kleinere Sachen** fielen beim Hinsehen noch auf: Der Bildschirm hatte
+kein `<main>` (die Regel, die für die anderen 90 gilt) und meldete sich
+Bildschirmlesern nicht. Beides steht jetzt da: `<main role="alert">`.
+
+### Gegenprobe
+
+Der ganze Weg im gebauten Bundle durchgespielt: erster Absturz → ein Knopf.
+Neu laden → derselbe Absturz → drei Knöpfe und die andere Überschrift. Die
+Notsicherung enthält `pokermentor-data-p1`. Zurücksetzen fragt nach, „Doch
+nicht" bricht ab, und nach dem Bestätigen ist der alte Schlüssel weg und die
+Startseite da.
+
+Zwischendurch meldete die Probe zwei Befunde, die keine waren: Das
+Playwright-`addInitScript` legt bei *jedem* Laden dieselben Schlüssel wieder
+an — gemessen wurde also das eigene Messskript, das die gerade gelöschten
+Daten sofort neu säte.
+
+## E-050 · 2026-09-06 · Die Oberfläche war typografisch sauber, die Inhalte nicht
+
+**Stand:** entschieden und umgesetzt.
+
+Weitergesucht, diesmal im Text selbst. Alle 10 625 Zeichenketten der App
+ausgelesen — nicht aus dem Quelltext, sondern aus den geladenen Bündeln, also
+genau das, was auf dem Bildschirm steht — und die Anführungszeichen gezählt:
+
+| | Oberfläche | Lerninhalte |
+|---|---|---|
+| „ und " (typografisch) | 16 / 16 | 45 |
+| " (gerade) | **0** | **883** |
+| ’ (Apostroph) | 25 | 249 |
+| ' (gerader Apostroph) | 4 | 553 |
+
+Die Oberfläche war von Anfang an richtig gesetzt. Die **Inhalte** — also das,
+was man minutenlang liest — waren es nicht, und zwar uneinheitlich: In
+derselben Lektion steht einmal „ich habe doch Odds" und ein paar Absätze
+weiter "zur besten Hand". Das ist keine Geschmacksfrage, sondern ein Bruch
+mit dem, was die App sonst überall tut.
+
+### Wie umgestellt wurde
+
+Nicht mit einem Regex über den Quelltext. Ein Anführungszeichen als
+Begrenzer und eines als Inhalt sehen gleich aus, und nur der Parser weiß,
+welches was ist — also lieferte der TypeScript-Parser die Spannen, und
+ersetzt wurde ausschließlich *innerhalb* von Zeichenketten-Literalen. Ob ein
+gerades Anführungszeichen öffnet oder schließt, entscheidet der Zustand
+davor; ein Apostroph ist ein gerades Zeichen nach einem Buchstaben, im Wort
+(„isn't") wie am Wortende („players'", der englische Plural-Genitiv).
+
+### Die Gegenprobe, auf die es ankam
+
+Vor und nach der Umstellung alle 10 625 Zeichenketten ausgelesen und **alle
+Anführungs- und Apostrophformen auf eine reduziert**. Die beiden Abzüge sind
+Zeichen für Zeichen identisch — die Umstellung hat also nichts am Text
+geändert, nur an der Form der Zeichen. Danach: 0 gerade Anführungszeichen,
+0 gerade Apostrophe.
+
+### Was dabei kaputtging
+
+Ein Literal mit Einsetzungen besteht aus mehreren Stücken, und das Zitat lief
+quer darüber:
+
+```
+`Nichts zu „${begriff}" gefunden.`
+```
+
+Kopf und Schwanz sind getrennte Spannen. Im Schwanz stand das schließende
+Zeichen ohne den Zustand „hier ist etwas offen" — und wurde zu einem zweiten
+**öffnenden**: „Nichts zu „Flop„ gefunden."
+
+Gefunden nicht durch den Test, sondern beim Lesen des eigenen Diffs. Die
+bleibende Prüfung (`typografie.test.ts`) betrachtet ein solches Literal
+deshalb als **ein** Stück und prüft, ob jedes Zitat aufgeht: öffnet, schließt,
+und zwar mit dem passenden Gegenstück. Sie prüft sich selbst gegen sieben
+Beispiele, von denen fünf durchfallen müssen.
+
+## E-051 · 2026-09-06 · Die Suche fand „Hold'em" nicht mehr
+
+**Stand:** entschieden und umgesetzt.
+
+Eine Änderung zieht die nächste nach sich: Seit E-050 steht in den Texten
+„Hold’em" mit typografischem Apostroph. Drei Stellen der App suchen in diesen
+Texten — Lernen, Glossar, Nachschlagen — und alle drei taten es so:
+
+```ts
+e.term.toLowerCase().includes(query.trim().toLowerCase())
+```
+
+Wer „Hold'em" mit gerader Taste eintippt, hätte danach **nichts** gefunden,
+obwohl das Wort auf jeder zweiten Seite steht. Und das ist kein Randfall: iOS
+setzt beim Tippen automatisch das typografische Zeichen, ein angestecktes
+Keyboard und die meisten Android-Tastaturen das gerade. Dasselbe Wort, zwei
+Zeichen, je nach Gerät.
+
+`lib/eingabe/suche.ts` bringt beide Formen auf eine. Entscheidend dabei:
+Die Umformung bleibt **zeichenweise** — jedes ersetzte Zeichen wird durch
+genau eines ersetzt. Nur so stimmt die Fundstelle noch mit dem Originaltext
+überein, denn die Lernsuche sucht im aufbereiteten Text und schneidet den
+Auszug aus dem *ursprünglichen* heraus. Ein Test hält diese Länge fest.
+
+Im Browser gegengeprüft, 390 × 844, beide Schreibweisen nacheinander in
+dasselbe Feld getippt:
+
+| | „Hold'em" | „Hold’em" |
+|---|---|---|
+| Lernen | 15 Nennungen | 15 |
+| Glossar | 5 | 5 |
+| Nachschlagen | 1 | 1 |

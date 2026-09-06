@@ -52,7 +52,7 @@ export const STR = defineStrings(
     eyebrow: 'Am Tisch, ohne Risiko',
     title: 'Übungstisch',
     intro:
-      "Spiele No-Limit Hold'em gegen KI-Gegner mit unterschiedlichen Spielstilen – mit Spielgeld und ohne Risiko. Der Coach-Modus zeigt dir live Equity und Pot Odds, damit du ein Gefühl für gute Entscheidungen entwickelst.",
+      "Spiele No-Limit Hold’em gegen KI-Gegner mit unterschiedlichen Spielstilen – mit Spielgeld und ohne Risiko. Der Coach-Modus zeigt dir live Equity und Pot Odds, damit du ein Gefühl für gute Entscheidungen entwickelst.",
     chooseTable: 'Tisch wählen',
     headsUp: 'Heads-Up',
     threeHanded: '3-handed',
@@ -142,7 +142,7 @@ export const STR = defineStrings(
     eyebrow: 'At the table, risk-free',
     title: 'Practice Table',
     intro:
-      "Play No-Limit Hold'em against AI opponents with different playing styles – with play money and no risk. Coach mode shows you live equity and pot odds so you develop a feel for good decisions.",
+      "Play No-Limit Hold’em against AI opponents with different playing styles – with play money and no risk. Coach mode shows you live equity and pot odds so you develop a feel for good decisions.",
     chooseTable: 'Choose a table',
     headsUp: 'Heads-Up',
     threeHanded: '3-handed',

@@ -120,7 +120,7 @@ export const STR = defineStrings(
     betPlaceholder: 'Bet (e.g. 5)',
 
     // Buttons
-    playAnywayFlop: "I'm playing anyway – enter the flop →",
+    playAnywayFlop: "I’m playing anyway – enter the flop →",
     toFlop: 'Next: enter the flop →',
     toTurn: 'Next: Turn →',
     toRiver: 'Next: River →',

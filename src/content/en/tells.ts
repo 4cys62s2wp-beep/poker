@@ -27,15 +27,15 @@ export const TELLS: Tell[] = [
     name: 'A tell is evidence, not proof',
     read: 'Tells shift probabilities',
     reliability: 5,
-    desc: "Use tells to tip close decisions – not to overrule clear math. A strong read turns a borderline fold into a call, but it doesn't turn a clear fold into a hero call.",
+    desc: "Use tells to tip close decisions – not to overrule clear math. A strong read turns a borderline fold into a call, but it doesn’t turn a clear fold into a hero call.",
     category: 'grundregeln',
   },
   {
     icon: '🎭',
     name: 'Acting weak = strong, acting strong = weak',
-    read: "Mike Caro's oldest rule",
+    read: "Mike Caro’s oldest rule",
     reliability: 4,
-    desc: 'Recreational players love to act – but almost always in the same direction: the player who sighs, slumps their shoulders, and bets "reluctantly" usually holds a monster. The one who acts extra bold and intimidating is more often weak. Applies above all to inexperienced players.',
+    desc: 'Recreational players love to act – but almost always in the same direction: the player who sighs, slumps their shoulders, and bets “reluctantly” usually holds a monster. The one who acts extra bold and intimidating is more often weak. Applies above all to inexperienced players.',
     category: 'grundregeln',
   },
   {
@@ -43,7 +43,7 @@ export const TELLS: Tell[] = [
     name: 'Beginner tells are more honest',
     read: 'The less experienced, the more readable',
     reliability: 4,
-    desc: "Skilled players control or fake their behavior. In casual games with recreational players, tells are often genuine – that's exactly where watching pays off most. And: with beginners, bet sizing usually reveals more than any gesture.",
+    desc: "Skilled players control or fake their behavior. In casual games with recreational players, tells are often genuine – that’s exactly where watching pays off most. And: with beginners, bet sizing usually reveals more than any gesture.",
     category: 'grundregeln',
   },
   // ---------- Body language ----------
@@ -52,7 +52,7 @@ export const TELLS: Tell[] = [
     name: 'Shaking hands while betting',
     read: 'Usually genuine strength',
     reliability: 4,
-    desc: "The shaking comes from adrenaline after hitting big – it's nearly impossible to control consciously, which makes it one of the most reliable tells there is. Bluffers rarely shake: they tend to stiffen up instead. Just be careful with generally nervous players (baseline!).",
+    desc: "The shaking comes from adrenaline after hitting big – it’s nearly impossible to control consciously, which makes it one of the most reliable tells there is. Bluffers rarely shake: they tend to stiffen up instead. Just be careful with generally nervous players (baseline!).",
     category: 'koerper',
   },
   {
@@ -60,7 +60,7 @@ export const TELLS: Tell[] = [
     name: 'Sudden stillness',
     read: 'Often a bluff',
     reliability: 3,
-    desc: 'A bluffer doesn\'t want to send any "telltale" signals – so they freeze: shallow breathing, fixed stare, no movement. If someone looks frozen after a big bet even though they are normally animated, that is more often weakness than strength.',
+    desc: 'A bluffer doesn’t want to send any “telltale” signals – so they freeze: shallow breathing, fixed stare, no movement. If someone looks frozen after a big bet even though they are normally animated, that is more often weakness than strength.',
     category: 'koerper',
   },
   {
@@ -68,7 +68,7 @@ export const TELLS: Tell[] = [
     name: 'Glancing at their own chips after the flop',
     read: 'Hit the board, wants to bet',
     reliability: 4,
-    desc: 'The quick, involuntary glance from the board to their own chips is a classic hit reflex: "How much can I bet?" The moment the flop comes, don\'t look at the board – look at your opponents\' eyes.',
+    desc: 'The quick, involuntary glance from the board to their own chips is a classic hit reflex: “How much can I bet?” The moment the flop comes, don’t look at the board – look at your opponents’ eyes.',
     category: 'koerper',
   },
   {
@@ -100,7 +100,7 @@ export const TELLS: Tell[] = [
     name: 'Reaching for chips before your turn',
     read: 'Wants to call or raise – not a bluff target',
     reliability: 4,
-    desc: 'Someone already reaching for their chips while you are still thinking is signaling: "I\'m coming along." With beginners this is usually honest – skip the bluff and value bet thinner. Some experienced players use it in reverse as a fake to stop your bet (check the baseline).',
+    desc: 'Someone already reaching for their chips while you are still thinking is signaling: “I’m coming along.” With beginners this is usually honest – skip the bluff and value bet thinner. Some experienced players use it in reverse as a fake to stop your bet (check the baseline).',
     category: 'koerper',
   },
   // ---------- Bets & chips ----------
@@ -109,7 +109,7 @@ export const TELLS: Tell[] = [
     name: 'Unusually large bet',
     read: 'From beginners: strong – or panic protection',
     reliability: 4,
-    desc: 'Recreational players rarely overbet as a bluff. A sudden giant bet usually means: a very strong hand OR a medium hand that "doesn\'t want to get called" (e.g. top pair on a flush board). Either way: fold your medium hands and continue only with real monsters.',
+    desc: 'Recreational players rarely overbet as a bluff. A sudden giant bet usually means: a very strong hand OR a medium hand that “doesn’t want to get called” (e.g. top pair on a flush board). Either way: fold your medium hands and continue only with real monsters.',
     category: 'einsatz',
   },
   {
@@ -117,7 +117,7 @@ export const TELLS: Tell[] = [
     name: 'Mini bets',
     read: 'Weakness or a draw',
     reliability: 4,
-    desc: 'Tiny bets ("1 into a pot of 10") are almost never strength from casual players – they want to see a card cheaply or just "feel things out". Respond with a proper raise when you hold something – or gladly take the cheap price with your draw.',
+    desc: 'Tiny bets (“1 into a pot of 10”) are almost never strength from casual players – they want to see a card cheaply or just “feel things out”. Respond with a proper raise when you hold something – or gladly take the cheap price with your draw.',
     category: 'einsatz',
   },
   {
@@ -125,15 +125,15 @@ export const TELLS: Tell[] = [
     name: 'Big river raise from a passive player',
     read: 'Almost always the nuts',
     reliability: 5,
-    desc: 'The most reliable read in low-stakes poker: when someone who has done nothing but call all night suddenly raises big on the river, they practically never have a bluff. Fold even hands that feel "too good to throw away" – that feeling is exactly the mistake that costs stacks.',
+    desc: 'The most reliable read in low-stakes poker: when someone who has done nothing but call all night suddenly raises big on the river, they practically never have a bluff. Fold even hands that feel “too good to throw away” – that feeling is exactly the mistake that costs stacks.',
     category: 'einsatz',
   },
   {
     icon: '🎯',
     name: 'Spotting sizing patterns',
-    read: 'The most honest "tell" of all',
+    read: 'The most honest “tell” of all',
     reliability: 5,
-    desc: 'Many players bet in unconscious patterns: big with strong hands, small with draws, half pot with "something". Keep a mental ledger: which hands does someone show down after which bet size? After two or three showdowns you\'ll read their bets like an open book.',
+    desc: 'Many players bet in unconscious patterns: big with strong hands, small with draws, half pot with “something”. Keep a mental ledger: which hands does someone show down after which bet size? After two or three showdowns you’ll read their bets like an open book.',
     category: 'einsatz',
   },
   // ---------- Timing ----------
@@ -150,7 +150,7 @@ export const TELLS: Tell[] = [
     name: 'Long tank, then raise',
     read: 'Usually genuinely strong',
     reliability: 3,
-    desc: 'The long think was rarely "fold or raise" – it was almost always "call or raise": a strong hand working out how to earn the most. Be careful with your bluff catchers.',
+    desc: 'The long think was rarely “fold or raise” – it was almost always “call or raise”: a strong hand working out how to earn the most. Be careful with your bluff catchers.',
     category: 'timing',
   },
   {
@@ -158,7 +158,7 @@ export const TELLS: Tell[] = [
     name: 'Instant check',
     read: 'Weakness',
     reliability: 3,
-    desc: "A check with zero thinking time usually means: no hit, no plan. Take the pot with a bet – especially in position. But remember the players who deliberately snap-check their monsters (trap) once you've seen them do it.",
+    desc: "A check with zero thinking time usually means: no hit, no plan. Take the pot with a bet – especially in position. But remember the players who deliberately snap-check their monsters (trap) once you’ve seen them do it.",
     category: 'timing',
   },
   {
@@ -172,7 +172,7 @@ export const TELLS: Tell[] = [
   // ---------- Table talk ----------
   {
     icon: '🗣️',
-    name: '"How much do you have left?"',
+    name: '“How much do you have left?”',
     read: 'Planning a big bet – usually strong',
     reliability: 4,
     desc: 'Asking about your stack is rarely for show: that player is planning to put you all-in or set up a big value bet. With medium hands, that question is your warning sign.',
@@ -191,16 +191,16 @@ export const TELLS: Tell[] = [
     name: 'Unprompted explanations',
     read: 'Leans weak / bluff',
     reliability: 3,
-    desc: '"I don\'t think you have anything anyway", "I just have to test you" – a player who justifies their bet unprompted is seeking validation and trying to talk you into folding OR calling. There is usually no strong hand behind it; strong hands stay quiet and let you guess.',
+    desc: '“I don’t think you have anything anyway”, “I just have to test you” – a player who justifies their bet unprompted is seeking validation and trying to talk you into folding OR calling. There is usually no strong hand behind it; strong hands stay quiet and let you guess.',
     category: 'reden',
   },
   // ---------- Home game patterns ----------
   {
     icon: '🍺',
-    name: '"Somebody always calls"',
+    name: '“Somebody always calls”',
     read: 'Bluff less, value bet thinner',
     reliability: 5,
-    desc: 'The most important law of loose games: multiway pots and calling stations make bluffs unprofitable. Your winning plan: play more hands for value, and go ahead and bet three streets even with top pair medium kicker – you\'ll get paid anyway.',
+    desc: 'The most important law of loose games: multiway pots and calling stations make bluffs unprofitable. Your winning plan: play more hands for value, and go ahead and bet three streets even with top pair medium kicker – you’ll get paid anyway.',
     category: 'homegame',
   },
   {
@@ -208,15 +208,15 @@ export const TELLS: Tell[] = [
     name: 'Limper chains',
     read: 'Raise BIG with your strong hands',
     reliability: 4,
-    desc: "When four people limp in for 1 bb, a 3 bb raise accomplishes nothing – everybody calls. Raise your strong hands significantly bigger (5–7 bb): you'll still get called, but now by worse hands in a pot you dominate.",
+    desc: "When four people limp in for 1 bb, a 3 bb raise accomplishes nothing – everybody calls. Raise your strong hands significantly bigger (5–7 bb): you’ll still get called, but now by worse hands in a pot you dominate.",
     category: 'homegame',
   },
   {
     icon: '🧲',
     name: 'Pairs never get folded',
-    read: "Overcard bluffs don't work",
+    read: "Overcard bluffs don’t work",
     reliability: 4,
-    desc: 'Recreational players holding any pair often take it all the way to the river. So: don\'t tell "stories" with barrel bluffs – they won\'t be understood. Instead, win the pots where you actually hold something, and do it relentlessly.',
+    desc: 'Recreational players holding any pair often take it all the way to the river. So: don’t tell “stories” with barrel bluffs – they won’t be understood. Instead, win the pots where you actually hold something, and do it relentlessly.',
     category: 'homegame',
   },
   {
@@ -224,7 +224,7 @@ export const TELLS: Tell[] = [
     name: 'Mood & alcohol change the game',
     read: 'Play gets looser later in the night',
     reliability: 3,
-    desc: 'After the third beer and a few lost pots, many players get much looser and more aggressive ("Now more than ever!"). Adjust: tighten your calling standards further, size up your value bets – and keep track of who is tilting right now.',
+    desc: 'After the third beer and a few lost pots, many players get much looser and more aggressive (“Now more than ever!”). Adjust: tighten your calling standards further, size up your value bets – and keep track of who is tilting right now.',
     category: 'homegame',
   },
   {
@@ -232,7 +232,7 @@ export const TELLS: Tell[] = [
     name: 'Your own tells: one routine for everything',
     read: 'Same timing, same motion, same posture',
     reliability: 5,
-    desc: "The simplest protection: do everything the same way, every time. Don't look at your cards until it's your turn. Wait three seconds before EVERY action. Put chips in with the same motion every time. If you show no deviations, you can't be read – no matter how observant the table is.",
+    desc: "The simplest protection: do everything the same way, every time. Don’t look at your cards until it’s your turn. Wait three seconds before EVERY action. Put chips in with the same motion every time. If you show no deviations, you can’t be read – no matter how observant the table is.",
     category: 'homegame',
   },
 ];

@@ -18,7 +18,7 @@ export const SCENARIOS: Scenario[] = [
         label: 'Fold',
         quality: 'best',
         explanation:
-          'KTo from early position is a classic money-loser: when you get called, you are often dominated by a better K (KQ, AK) or a better T. "Pretty" offsuit hands like this belong in the muck up front.',
+          'KTo from early position is a classic money-loser: when you get called, you are often dominated by a better K (KQ, AK) or a better T. “Pretty” offsuit hands like this belong in the muck up front.',
       },
       {
         label: 'Raise to 2.5bb',
@@ -53,7 +53,7 @@ export const SCENARIOS: Scenario[] = [
         label: '3-bet to 8bb',
         quality: 'bad',
         explanation:
-          "A 3-bet with 66 against an early-position opening range builds a bloated pot with a hand that is almost never ahead when big money goes in. Against 4-bets you have to fold; against calls you're playing a guessing game.",
+          "A 3-bet with 66 against an early-position opening range builds a bloated pot with a hand that is almost never ahead when big money goes in. Against 4-bets you have to fold; against calls you’re playing a guessing game.",
       },
       {
         label: 'Fold',
@@ -76,7 +76,7 @@ export const SCENARIOS: Scenario[] = [
         label: 'Raise to 3bb',
         quality: 'best',
         explanation:
-          'With aces you want to build the pot while you are certain to be ahead. At call-happy tables you will almost always get paid – the limp "trap" is unnecessary and dangerous.',
+          'With aces you want to build the pot while you are certain to be ahead. At call-happy tables you will almost always get paid – the limp “trap” is unnecessary and dangerous.',
       },
       {
         label: 'Limp and hope for a raise',
@@ -111,10 +111,10 @@ export const SCENARIOS: Scenario[] = [
         label: 'Just call',
         quality: 'ok',
         explanation:
-          "Occasionally defensible as a trap against very aggressive players, but you let the blinds in cheaply and the pot stays small when you win. As a default, you're leaving money on the table.",
+          "Occasionally defensible as a trap against very aggressive players, but you let the blinds in cheaply and the pot stays small when you win. As a default, you’re leaving money on the table.",
       },
       {
-        label: 'Fold – "he must have aces"',
+        label: 'Fold – “he must have aces”',
         quality: 'bad',
         explanation:
           'Folding KK preflop is a legendary mistake. The probability that someone holds AA right now is tiny – against a normal opening range you are a massive favorite.',
@@ -175,7 +175,7 @@ export const SCENARIOS: Scenario[] = [
         label: 'Iso-raise to 6bb',
         quality: 'bad',
         explanation:
-          "Against limpers you raise to isolate with strong hands – QJo is not one. In call-happy games the limpers won't fold anyway: you're just building a big pot with a mediocre hand.",
+          "Against limpers you raise to isolate with strong hands – QJo is not one. In call-happy games the limpers won’t fold anyway: you’re just building a big pot with a mediocre hand.",
       },
     ],
     lesson: 'In multiway pots, nut potential and kickers are what count – dominated broadways get expensive.',
@@ -234,7 +234,7 @@ export const SCENARIOS: Scenario[] = [
         label: 'Fold',
         quality: 'ok',
         explanation:
-          "Sounds cowardly, but against the most extreme nits it's debatable: if his range really is only KK/AA, you are far behind almost every time. A disciplined exploit – just don't do it too often.",
+          "Sounds cowardly, but against the most extreme nits it’s debatable: if his range really is only KK/AA, you are far behind almost every time. A disciplined exploit – just don’t do it too often.",
       },
     ],
     lesson: 'Reads change standard strategy: against ultra-tight 4-bet ranges, even AK loses massive value.',
@@ -295,7 +295,7 @@ export const SCENARIOS: Scenario[] = [
         label: 'Raise all-in',
         quality: 'bad',
         explanation:
-          'You isolate yourself against exactly the hands that beat you. No worse hand calls – the classic "I don\'t want to know" move that costs stacks.',
+          'You isolate yourself against exactly the hands that beat you. No worse hand calls – the classic “I don’t want to know” move that costs stacks.',
       },
     ],
     lesson: 'An overpair is not a monster: on coordinated boards against multiple opponents, let it go with discipline.',
@@ -343,7 +343,7 @@ export const SCENARIOS: Scenario[] = [
         label: 'Raise to about 12bb',
         quality: 'best',
         explanation:
-          "He often has an ace that will pay you off – and right now his range contains the most top-pair hands it ever will. Raise for value while he's in love with his A-x; on later cards it gets harder to get the stacks in.",
+          "He often has an ace that will pay you off – and right now his range contains the most top-pair hands it ever will. Raise for value while he’s in love with his A-x; on later cards it gets harder to get the stacks in.",
       },
       {
         label: 'Just call (slowplay)',
@@ -381,7 +381,7 @@ export const SCENARIOS: Scenario[] = [
           'Too passive for this spot: boards exactly like this are where the c-bet is most profitable. Checking is defensible against very sticky opponents, but it gives up fold equity.',
       },
       {
-        label: 'Pot-size bet as a "real" bluff',
+        label: 'Pot-size bet as a “real” bluff',
         quality: 'bad',
         explanation:
           'Too expensive for the job: his weak hands fold to 1/3 pot as well. The big bet risks three times as much for the same result – terrible value for money.',
@@ -404,16 +404,16 @@ export const SCENARIOS: Scenario[] = [
           'Bottom pair with a mini kicker against a bet and a call in a four-way pot: you are almost certainly behind, have five outs at most, and no implied odds to speak of. The simple, disciplined fold saves real money.',
       },
       {
-        label: 'Call – "maybe a 4 will come"',
+        label: 'Call – “maybe a 4 will come”',
         quality: 'bad',
         explanation:
-          'Two outs to trips (the 4) plus weak five-outs do not justify a call against genuine action. It is exactly these "hope calls" that add up to a big loss by the end of the night.',
+          'Two outs to trips (the 4) plus weak five-outs do not justify a call against genuine action. It is exactly these “hope calls” that add up to a big loss by the end of the night.',
       },
       {
         label: 'Raise as a bluff',
         quality: 'bad',
         explanation:
-          'You don\'t bluff with bottom pair against two players in a multiway pot – somebody always has a queen. The most expensive option with the worst chance of success.',
+          'You don’t bluff with bottom pair against two players in a multiway pot – somebody always has a queen. The most expensive option with the worst chance of success.',
       },
     ],
     lesson: 'Weak pairs multiway are fold candidates – good players lose the least with them.',
@@ -447,7 +447,7 @@ export const SCENARIOS: Scenario[] = [
           'A 2/3-pot turn bet signals genuine strength – your fold equity is low, and when you get called you are a clear underdog. Semi-bluffs need a realistic chance that the opponent folds.',
       },
     ],
-    lesson: 'On the turn, your draw odds are cut in half – good players recalculate instead of feeling "committed".',
+    lesson: 'On the turn, your draw odds are cut in half – good players recalculate instead of feeling “committed”.',
   },
   {
     id: 'turn-2',
@@ -492,7 +492,7 @@ export const SCENARIOS: Scenario[] = [
         label: 'Bet about 2/3 pot',
         quality: 'best',
         explanation:
-          'With the best hand you want to feed the pot – and on this board there are plenty of hands (sets, two pair, flush draws, smaller straight draws) that will pay a solid bet. Don\'t go too small: every street counts.',
+          'With the best hand you want to feed the pot – and on this board there are plenty of hands (sets, two pair, flush draws, smaller straight draws) that will pay a solid bet. Don’t go too small: every street counts.',
       },
       {
         label: 'Check back as a trap',
@@ -501,7 +501,7 @@ export const SCENARIOS: Scenario[] = [
           'Against hyper-aggressive opponents who will surely bet the river, the trap can work. But usually you give up an entire value street and hand flush draws a free card that kills your action.',
       },
       {
-        label: 'Mini bet (1bb) "to bait him in"',
+        label: 'Mini bet (1bb) “to bait him in”',
         quality: 'bad',
         explanation:
           'The mini bet wins almost nothing and gives every draw perfect odds to outdraw you on the river or get away cheap. If you bet, bet an amount that actually grows the pot.',
@@ -525,7 +525,7 @@ export const SCENARIOS: Scenario[] = [
           'Your overpair is now nothing more than a bluff catcher: flushes, straights, and sets beat you, but the small bet can also come from draws and weaker hands. At the price of 1/4 pot you call – but not a chip more.',
       },
       {
-        label: 'Raise "for protection"',
+        label: 'Raise “for protection”',
         quality: 'bad',
         explanation:
           'Protection from what? Made flushes are not folding, and draws pay you at most once. You are inflating the pot with a one-pair hand on a board that destroys your range.',
@@ -553,10 +553,10 @@ export const SCENARIOS: Scenario[] = [
         label: 'Fold',
         quality: 'best',
         explanation:
-          'The big river raise from a recreational player is the most reliable information in low-stakes poker: practically always two pair or better. "But he could be bluffing" is the most expensive excuse in poker history.',
+          'The big river raise from a recreational player is the most reliable information in low-stakes poker: practically always two pair or better. “But he could be bluffing” is the most expensive excuse in poker history.',
       },
       {
-        label: 'Call – "I have to see it"',
+        label: 'Call – “I have to see it”',
         quality: 'bad',
         explanation:
           'Curiosity costs real money here: for the call to be right, he would have to be bluffing more than one time in four – passive recreational players almost never bluff in this spot.',
@@ -582,10 +582,10 @@ export const SCENARIOS: Scenario[] = [
         label: 'Value bet about 1/2 pot',
         quality: 'best',
         explanation:
-          'Top pair top kicker against someone who pays off with Q-x, 8-x, and pocket pairs: this bet wins real money on average. Exactly these "thin" value bets are what separate winners from break-even players.',
+          'Top pair top kicker against someone who pays off with Q-x, 8-x, and pocket pairs: this bet wins real money on average. Exactly these “thin” value bets are what separate winners from break-even players.',
       },
       {
-        label: 'Check back – "better safe than sorry"',
+        label: 'Check back – “better safe than sorry”',
         quality: 'ok',
         explanation:
           'You usually win the showdown anyway, but you give up the third value street. Against calling stations, caution on the river is almost always money lost.',
@@ -612,7 +612,7 @@ export const SCENARIOS: Scenario[] = [
         label: 'Check – take the showdown',
         quality: 'best',
         explanation:
-          'Ace-high beats all of your opponent\'s missed draws – and those are exactly what he often checks here. Your "nothing" has real showdown value: bluffing with hands like this turns winning spots into losing ones.',
+          'Ace-high beats all of your opponent’s missed draws – and those are exactly what he often checks here. Your “nothing” has real showdown value: bluffing with hands like this turns winning spots into losing ones.',
       },
       {
         label: 'Small bluff bet (1/3 pot)',
@@ -676,10 +676,10 @@ export const SCENARIOS: Scenario[] = [
           'In pure chips you are ahead of his any-two range – but this is not about chips, it is about money (ICM): if you lose, you miss the guaranteed payout while two short stacks are practically blinding out. The fold costs little; the call risks everything.',
       },
       {
-        label: 'Call – "I’m ahead after all"',
+        label: 'Call – “I’m ahead after all”',
         quality: 'ok',
         explanation:
-          'AQo has good equity against his wide range, and doubling up would make you chip leader. But on the bubble, with short stacks dying, you pay a high "risk premium" – a close spot, usually too thin.',
+          'AQo has good equity against his wide range, and doubling up would make you chip leader. But on the bubble, with short stacks dying, you pay a high “risk premium” – a close spot, usually too thin.',
       },
       {
         label: 'Snap-call without thinking',

@@ -9,7 +9,7 @@ export const PRO_PROFILES: ProProfile[] = [
   {
     id: 'holz',
     name: 'Fedor Holz',
-    tagline: "Germany's most successful poker pro",
+    tagline: "Germany’s most successful poker pro",
     knownFor:
       'Over $30 million in live tournament winnings, WSOP bracelet winner, legendary 2016 high-roller run. Founder of the poker school Pokercode and the mindset app Primed Mind.',
     color: '#d4af5e',
@@ -17,17 +17,17 @@ export const PRO_PROFILES: ProProfile[] = [
       {
         title: 'Mindset is half the battle',
         text:
-          'Holz describes his success as the interplay of technical preparation and mental clarity under pressure – and deliberately puts mindset first in his courses. His honest number on it: around 80% of his tournament days were losing days. If you can\'t handle that emotionally, you can never access your technical knowledge.',
+          'Holz describes his success as the interplay of technical preparation and mental clarity under pressure – and deliberately puts mindset first in his courses. His honest number on it: around 80% of his tournament days were losing days. If you can’t handle that emotionally, you can never access your technical knowledge.',
       },
       {
         title: 'Categorize opponents immediately',
         text:
-          'With every new opponent, Holz tries to quickly place them in one of six categories (from the extremely tight "nit" to the aggressor) – not to pigeonhole them, but to understand HOW that player thinks and derive the right counter-strategy from it.',
+          'With every new opponent, Holz tries to quickly place them in one of six categories (from the extremely tight “nit” to the aggressor) – not to pigeonhole them, but to understand HOW that player thinks and derive the right counter-strategy from it.',
       },
       {
         title: 'The most valuable tell: bet sizing & chip handling',
         text:
-          'By his own account, almost nothing has made him as much money as observing bet sizes and the way chips are put in: bluffs tend to come out slightly smaller than expected, value bets slightly larger. Neatly stacked bets point to tight, passive players; tossed-in, "casual" chips often to weaker hands.',
+          'By his own account, almost nothing has made him as much money as observing bet sizes and the way chips are put in: bluffs tend to come out slightly smaller than expected, value bets slightly larger. Neatly stacked bets point to tight, passive players; tossed-in, “casual” chips often to weaker hands.',
       },
       {
         title: 'Reflection and environment',
@@ -52,12 +52,12 @@ export const PRO_PROFILES: ProProfile[] = [
       {
         title: 'Never put someone on exactly one hand',
         text:
-          'The biggest beginner mistake in hand reading: pinning the opponent on exactly one hand ("He definitely has AK"). In reality, every opponent plays many different hands the same way – always think in ranges, never in single hands.',
+          'The biggest beginner mistake in hand reading: pinning the opponent on exactly one hand (“He definitely has AK”). In reality, every opponent plays many different hands the same way – always think in ranges, never in single hands.',
       },
       {
         title: 'Stop being so sticky',
         text:
-          'Amateurs can\'t let go of top pair – especially in multiway pots, check-calling with top pair and a weak kicker becomes a subscription to losing. A good hand is not a reason to pay off every bet.',
+          'Amateurs can’t let go of top pair – especially in multiway pots, check-calling with top pair and a weak kicker becomes a subscription to losing. A good hand is not a reason to pay off every bet.',
       },
       {
         title: 'Bet sizes with a purpose',
@@ -67,19 +67,19 @@ export const PRO_PROFILES: ProProfile[] = [
       {
         title: 'Never play with a cluttered head',
         text:
-          "Anyone sitting at the table with an argument, money worries, or frustration on their mind plays measurably worse. Little's advice: remove emotional thinking from your game as early as possible – if necessary by resolutely getting up.",
+          "Anyone sitting at the table with an argument, money worries, or frustration on their mind plays measurably worse. Little’s advice: remove emotional thinking from your game as early as possible – if necessary by resolutely getting up.",
       },
       {
-        title: "Don't carve a strategy in stone",
+        title: "Don’t carve a strategy in stone",
         text:
-          'Most amateurs develop a comfort strategy once and keep it forever – with lines like "I ALWAYS call with top pair". Winners adapt: to opponents, stack depths, and how the game unfolds.',
+          'Most amateurs develop a comfort strategy once and keep it forever – with lines like “I ALWAYS call with top pair”. Winners adapt: to opponents, stack depths, and how the game unfolds.',
       },
     ],
   },
   {
     id: 'polk',
     name: 'Doug Polk',
-    tagline: "Three WSOP bracelets, for years the world's best heads-up player",
+    tagline: "Three WSOP bracelets, for years the world’s best heads-up player",
     knownFor:
       'Won the famous 2021 heads-up duel against Daniel Negreanu by $1.2 million. Founder of Upswing Poker.',
     color: '#e0564f',
@@ -87,17 +87,17 @@ export const PRO_PROFILES: ProProfile[] = [
       {
         title: 'Controlled aggression',
         text:
-          "Polk's core principle: apply maximum pressure with good hands – not just premium hands – but without leaving yourself vulnerable to counter-aggression. Aggression is a tool with a dosage, not a permanent state.",
+          "Polk’s core principle: apply maximum pressure with good hands – not just premium hands – but without leaving yourself vulnerable to counter-aggression. Aggression is a tool with a dosage, not a permanent state.",
       },
       {
-        title: "Don't bluff calling stations",
+        title: "Don’t bluff calling stations",
         text:
-          'Against weak players, Polk explicitly advises against bluffing much: your "story" is invisible to them – they look at their two cards and call. Profit against these opponents comes from value, not creativity.',
+          'Against weak players, Polk explicitly advises against bluffing much: your “story” is invisible to them – they look at their two cards and call. Profit against these opponents comes from value, not creativity.',
       },
       {
         title: 'Precision beats wild aggression',
         text:
-          'Playing loose-aggressive only maximizes your win rate if the aggression is precise. Indiscriminate bluffs "spill" money – every aggressive action needs a reason: fold equity, equity, or blockers.',
+          'Playing loose-aggressive only maximizes your win rate if the aggression is precise. Indiscriminate bluffs “spill” money – every aggressive action needs a reason: fold equity, equity, or blockers.',
       },
     ],
   },
@@ -106,13 +106,13 @@ export const PRO_PROFILES: ProProfile[] = [
     name: 'Daniel Negreanu',
     tagline: 'Seven WSOP bracelets, two-time WSOP Player of the Year',
     knownFor:
-      'One of the most famous poker players in the world, inventor of the "small ball" style, MasterClass instructor. Over $50 million in live tournament winnings.',
+      'One of the most famous poker players in the world, inventor of the “small ball” style, MasterClass instructor. Over $50 million in live tournament winnings.',
     color: '#58b368',
     principles: [
       {
         title: 'Small ball: lots of small pots',
         text:
-          "Negreanu's trademark: play more hands, keep the pots small and controllable, and get your edge from better postflop decisions. In lots of small pots, bluffing is allowed – but when a giant pot develops by the river, he almost always holds a strong hand.",
+          "Negreanu’s trademark: play more hands, keep the pots small and controllable, and get your edge from better postflop decisions. In lots of small pots, bluffing is allowed – but when a giant pot develops by the river, he almost always holds a strong hand.",
       },
       {
         title: 'Postflop skill beats chart knowledge',
@@ -136,18 +136,18 @@ export const PRO_PROFILES: ProProfile[] = [
     name: 'Phil Galfond',
     tagline: 'Three WSOP bracelets, high-stakes online legend',
     knownFor:
-      'As "OMGClayAiken" one of the most successful online high-stakes players of all time, founder of the training site Run It Once, winner of the "Galfond Challenge".',
+      'As “OMGClayAiken” one of the most successful online high-stakes players of all time, founder of the training site Run It Once, winner of the “Galfond Challenge”.',
     color: '#9b7fd4',
     principles: [
       {
-        title: 'Ask "why?" about everything',
+        title: 'Ask “why?” about everything',
         text:
-          "Galfond's most important learning question: Why do I check or bet here? Why does my opponent do what he does? Why do the charts look the way they do? If you understand the \"why\", you don't need memorization – and you can find the right answers even in situations no chart covers.",
+          "Galfond’s most important learning question: Why do I check or bet here? Why does my opponent do what he does? Why do the charts look the way they do? If you understand the “why”, you don’t need memorization – and you can find the right answers even in situations no chart covers.",
       },
       {
         title: 'Self-knowledge is the best opponent read',
         text:
-          'According to Galfond, the biggest edge comes from understanding your opponent\'s behavior better than he does himself. The way there: know your own fears and moments of discomfort at the table – because those exact same feelings drive your opponents too.',
+          'According to Galfond, the biggest edge comes from understanding your opponent’s behavior better than he does himself. The way there: know your own fears and moments of discomfort at the table – because those exact same feelings drive your opponents too.',
       },
       {
         title: 'Review your own hands honestly',
@@ -157,7 +157,7 @@ export const PRO_PROFILES: ProProfile[] = [
       {
         title: 'Be able to explain your intuition',
         text:
-          'Galfond only trusts intuition when he can translate it into a clear line of reasoning: which pieces of information lead to which conclusion? "It felt right" is not a justification – it is the beginning of an analysis.',
+          'Galfond only trusts intuition when he can translate it into a clear line of reasoning: which pieces of information lead to which conclusion? “It felt right” is not a justification – it is the beginning of an analysis.',
       },
     ],
   },
@@ -166,7 +166,7 @@ export const PRO_PROFILES: ProProfile[] = [
     name: 'Zachary Elwood',
     tagline: 'The leading expert on poker tells',
     knownFor:
-      'Author of the standard works "Reading Poker Tells", "Verbal Poker Tells", and "Exploiting Poker Tells" – the most recommended tell literature among pros.',
+      'Author of the standard works “Reading Poker Tells”, “Verbal Poker Tells”, and “Exploiting Poker Tells” – the most recommended tell literature among pros.',
     color: '#4fb8c9',
     principles: [
       {
@@ -177,12 +177,12 @@ export const PRO_PROFILES: ProProfile[] = [
       {
         title: 'Context decides everything',
         text:
-          'The same gesture – staring, sighing, looking away – can mean strength in one situation and weakness in the next. If you don\'t understand the situation, even a "correct" tell will lead you to the wrong decision.',
+          'The same gesture – staring, sighing, looking away – can mean strength in one situation and weakness in the next. If you don’t understand the situation, even a “correct” tell will lead you to the wrong decision.',
       },
       {
         title: 'System over gut feeling',
         text:
-          "Elwood's approach is a mental filing system: sort behavior by situation (before the bet, after the bet, while waiting), observe the baseline, note deviations. Reading tells is a craft, not magic.",
+          "Elwood’s approach is a mental filing system: sort behavior by situation (before the bet, after the bet, while waiting), observe the baseline, note deviations. Reading tells is a craft, not magic.",
       },
     ],
   },
@@ -204,7 +204,7 @@ export const BEGINNER_MISTAKES: MistakeEntry[] = [
   {
     title: 'Giving up the big blind too often',
     text:
-      'Modern analyses show that recreational players fold their big blind far too often, quietly giving away blind after blind. With the discount of the blind already posted, you can defend considerably wider than what "feels" right.',
+      'Modern analyses show that recreational players fold their big blind far too often, quietly giving away blind after blind. With the discount of the blind already posted, you can defend considerably wider than what “feels” right.',
     source: 'Upswing Poker, GTO analyses',
   },
   {
@@ -216,13 +216,13 @@ export const BEGINNER_MISTAKES: MistakeEntry[] = [
   {
     title: 'Reading one hand instead of a range',
     text:
-      '"He definitely has aces" is not a read, it is guessing. Opponents play many hands identically – if you only see one possibility, you make systematically wrong decisions.',
+      '“He definitely has aces” is not a read, it is guessing. Opponents play many hands identically – if you only see one possibility, you make systematically wrong decisions.',
     source: 'Jonathan Little',
   },
   {
     title: 'Being unable to fold top pair',
     text:
-      'Top pair feels like a winning ticket – but against big aggression, especially multiway, it is often clearly beaten. Being "sticky" is one of the most expensive character traits at the poker table.',
+      'Top pair feels like a winning ticket – but against big aggression, especially multiway, it is often clearly beaten. Being “sticky” is one of the most expensive character traits at the poker table.',
     source: 'Jonathan Little',
   },
   {
@@ -234,7 +234,7 @@ export const BEGINNER_MISTAKES: MistakeEntry[] = [
   {
     title: 'Playing on while emotional',
     text:
-      'Wanting to "win it back quickly" after a bad beat is how every nightmare session begins. Pros treat emotional clarity as a prerequisite for playing – not as a nice-to-have.',
+      'Wanting to “win it back quickly” after a bad beat is how every nightmare session begins. Pros treat emotional clarity as a prerequisite for playing – not as a nice-to-have.',
     source: 'Jonathan Little, Fedor Holz',
   },
 ];
@@ -246,7 +246,7 @@ export const EDGE_SPOTS: EdgeEntry[] = [
       'At low limits, people call too much. The consequence: value bet thinner and more often, and cut the big bluffs. The edge is not in spectacular moves – it is in getting paid consistently with your good hands.',
   },
   {
-    title: "Attack other players' leaks deliberately",
+    title: "Attack other players’ leaks deliberately",
     text:
       "Isolate limpers, steal from over-folding blinds, value bet calling stations, respect big bets from nits: every typical opponent mistake has a direct countermeasure – and low-stakes tables are made of exactly these mistakes.",
   },
@@ -263,9 +263,9 @@ export const EDGE_SPOTS: EdgeEntry[] = [
   {
     title: 'Discipline in the big moments',
     text:
-      "A single disciplined fold against a passive player's sudden river raise saves more than ten clever bluffs bring in. Pros don't win because they risk more – they win because they cut out the expensive mistakes.",
+      "A single disciplined fold against a passive player’s sudden river raise saves more than ten clever bluffs bring in. Pros don’t win because they risk more – they win because they cut out the expensive mistakes.",
   },
 ];
 
 export const PRO_SOURCE_NOTE =
-  'All principles are paraphrased summaries of publicly documented statements from interviews, courses, and books by the pros named (incl. PokerNews, Card Player, GipsyTeam, MasterClass, Upswing Poker, Pokercode, "Reading Poker Tells"). No verbatim quotes, no invented statements. PokerMentor is not affiliated with any of the people named: no partnership, no sponsorship, no endorsement by them.';
+  'All principles are paraphrased summaries of publicly documented statements from interviews, courses, and books by the pros named (incl. PokerNews, Card Player, GipsyTeam, MasterClass, Upswing Poker, Pokercode, “Reading Poker Tells”). No verbatim quotes, no invented statements. PokerMentor is not affiliated with any of the people named: no partnership, no sponsorship, no endorsement by them.';

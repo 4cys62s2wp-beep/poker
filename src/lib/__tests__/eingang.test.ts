@@ -37,11 +37,7 @@ function unbrauchbar(d: AppData): string | null {
     /* `daily` ist von Haus aus `null`, solange heute noch kein Quiz lief —
        das ist kein kaputter Zustand, sondern der Normalfall am Morgen. */
     ...(d.daily ? ([['daily.score', d.daily.score], ['daily.total', d.daily.total]] as Array<[string, number]>) : []),
-    ...d.sessions.flatMap((s): Array<[string, number]> => [
-      [`Sitzung ${s.id}.buyIn`, s.buyIn],
-      [`Sitzung ${s.id}.cashOut`, s.cashOut],
-      [`Sitzung ${s.id}.minutes`, s.minutes],
-    ]),
+    ...d.sessions.map((s): [string, number] => [`Sitzung ${s.id}.minutes`, s.minutes]),
     ...Object.entries(d.trainers).flatMap(([k, t]): Array<[string, number]> =>
       Object.entries(t).map(([n, v]) => [`Trainer ${k}.${n}`, v] as [string, number])),
   ];
@@ -49,6 +45,19 @@ function unbrauchbar(d: AppData): string | null {
     if (!Number.isFinite(wert)) return `${name} ist keine Zahl (${wert})`;
     if (wert < 0) return `${name} ist negativ (${wert})`;
     if (!Number.isInteger(wert)) return `${name} hat Nachkommastellen (${wert})`;
+    if (wert > 100_000_000) return `${name} ist unanzeigbar groß (${wert})`;
+  }
+
+  /* Geld ist kein Zähler: 12,50 € Buy-in sind richtig, 12,4999 € nicht —
+     mehr als zwei Nachkommastellen kann keine Währung anzeigen. */
+  const betraege: Array<[string, number]> = d.sessions.flatMap((s) => [
+    [`Sitzung ${s.id}.buyIn`, s.buyIn] as [string, number],
+    [`Sitzung ${s.id}.cashOut`, s.cashOut] as [string, number],
+  ]);
+  for (const [name, wert] of betraege) {
+    if (!Number.isFinite(wert)) return `${name} ist keine Zahl (${wert})`;
+    if (wert < 0) return `${name} ist negativ (${wert})`;
+    if (Math.round(wert * 100) !== wert * 100) return `${name} hat mehr als Cent (${wert})`;
     if (wert > 100_000_000) return `${name} ist unanzeigbar groß (${wert})`;
   }
   const datum = /^\d{4}-\d{2}-\d{2}([T ][\d:.+\-Z]{1,20})?$/;
@@ -128,6 +137,23 @@ describe('Kaputte Eingaben ergeben einen brauchbaren Zustand', () => {
       trainers: { outs: { attempts: 10.5, correct: 3.3, streak: 0.9, bestStreak: 1.1 } },
     });
     expect(unbrauchbar(d)).toBeNull();
+  });
+
+  it('lässt Cent-Beträge zu, aber nichts darunter', () => {
+    /* Ein Buy-in von 12,50 € ist richtig; 12,4999 € kann keine Währung
+       anzeigen. Zähler dagegen bleiben ganz. */
+    const d = sanitizeAppData({
+      sessions: [
+        { id: 's1', buyIn: 12.5, cashOut: 180.75, minutes: 240 },
+        { id: 's2', buyIn: 12.4999, cashOut: 0.005, minutes: 90.7 },
+      ],
+    });
+    expect(unbrauchbar(d)).toBeNull();
+    expect(d.sessions[0].buyIn).toBe(12.5);
+    expect(d.sessions[0].cashOut).toBe(180.75);
+    expect(d.sessions[1].buyIn).toBe(12.5);
+    expect(d.sessions[1].cashOut).toBe(0.01);
+    expect(d.sessions[1].minutes).toBe(90);
   });
 
   it('nimmt nur Karten an, die es im Blatt gibt', () => {

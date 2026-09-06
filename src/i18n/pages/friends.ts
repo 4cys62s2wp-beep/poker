@@ -135,7 +135,7 @@ export const STR = defineStrings(
     emptyStep3: 'Once the request is accepted, you can see each other.',
 
     addTitle: 'Add a friend',
-    addLabel: "Your friend's code",
+    addLabel: "Your friend’s code",
     addPlaceholder: 'e.g. 7K2M-4XQ9',
     addButton: 'Send request',
     addHint: 'Eight characters, case does not matter. The dash is optional.',

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { suchbar } from '../lib/eingabe/suche';
 import { STR as NAV } from '../i18n/pages/layout';
 import { BackLink } from '../components/ui';
 import { useSearchParams } from 'react-router-dom';
@@ -56,11 +57,11 @@ export function GlossaryPage() {
 
   const glossary = content.glossary;
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = suchbar(query.trim());
     return glossary.filter((e) => {
       if (category !== 'Alle' && e.category !== category) return false;
       if (!q) return true;
-      return e.term.toLowerCase().includes(q) || e.definition.toLowerCase().includes(q);
+      return suchbar(e.term).includes(q) || suchbar(e.definition).includes(q);
     });
   }, [glossary, query, category]);
 

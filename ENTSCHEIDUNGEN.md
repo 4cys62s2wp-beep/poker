@@ -3280,3 +3280,74 @@ wächst der Filz von 458 auf 498 Pixel, das Board bleibt sichtbar, es gibt
 kein Querscrollen, und die Namensschilder kürzen wie vorgesehen („Bruno
 B…"). Zwei Bildschirmabzüge, hell und am Tisch, zeigen ein Bild, das größer
 ist — nicht ein kaputtes.
+
+## E-058 · 2026-09-06 · Der Dialog verdeckte die Knöpfe, die man bediente
+
+**Stand:** entschieden und umgesetzt.
+
+`npm run bedienbar` prüft, ob der Tastaturfokus **sichtbar** ist. Was es nicht
+prüft: ob man mit der Tastatur allein etwas **zu Ende bringt**. Genau da fällt
+ein modaler Dialog auseinander, und diese App hat vier davon.
+
+Drei Eigenschaften machen einen Dialog bedienbar:
+
+1. Der Fokus wandert beim Öffnen hinein.
+2. Escape schließt.
+3. Tab bleibt drin.
+
+Gemessen am Live-Tisch, mit wirklich gedrückten Tasten, Dialog „Abend
+beenden?":
+
+| | vorher | nachher |
+|---|---|---|
+| Fokus nach dem Öffnen im Dialog | **nein**, blieb auf „Beenden" dahinter | ja |
+| Escape schließt | **nein** | ja |
+| Tab-Schritte außerhalb (von 8) | **4** | 0 |
+
+„Außerhalb" hieß: auf den Knöpfen **„Weiter", „Stände" und „Beenden"** —
+denen, die der Dialog gerade verdeckt. Wer am Pokerabend eine Tastatur
+benutzt, konnte also die Blindstufe weiterschalten oder den Abend beenden,
+während ihn eine Rückfrage danach fragte, ob er das wirklich will. Und
+abbrechen konnte er nicht.
+
+### Drei Stände nebeneinander
+
+Der Grund war nicht Nachlässigkeit an einer Stelle, sondern **drei
+Abschriften**:
+
+- `Onboarding`: vollständig — Startfokus, Fokusfalle, `aria-hidden` auf dem
+  Rest, und bewusst kein Escape (eine Sprache muss gewählt werden).
+- `Herkunft` und `PaywallModal`: Startfokus und Escape, aber keine Falle.
+- Die beiden Dialoge am Live-Tisch: nichts davon.
+
+Also dieselbe Antwort wie bei den Rangnamen (E-045) und dem Equity-Weg
+(E-053): eine Stelle. `lib/dialog/tastatur.ts` kann die drei Eigenschaften,
+gibt den Fokus beim Schließen an den Auslöser zurück, und lässt zwei Dinge
+bewusst zu:
+
+- **`schliessen` weglassen** heißt „kein Escape" — die eine begründete
+  Ausnahme, die Sprachwahl beim ersten Start. `dialog.test.ts` erlaubt genau
+  diese eine Datei und keine zweite.
+- **`zuerst`** setzt den Startfokus woanders hin als auf das erste Element.
+  Die Paywall braucht das: Dort steht der Kaufknopf zuerst, der Fokus gehört
+  aber auf „später". Ein Dialog, der ungefragt erscheint, drängt niemanden
+  mit dem Cursor zur Kasse.
+
+### Zwei Fallen beim Bauen
+
+**Die Taste hängt am Dokument, nicht am Dialog.** `onKeyDown` auf dem
+Dialog-Element greift nur, wenn der Fokus schon drin ist — und genau das war
+am Live-Tisch nicht der Fall. Ein Escape-Handler dort hätte nichts geändert.
+
+**`schliessen` darf nicht in den Abhängigkeiten stehen.** Es ist meist eine
+Pfeilfunktion aus dem Rendern und bei jedem Durchlauf eine andere; der Effekt
+liefe ständig neu an und holte den Fokus jedes Mal zurück auf den ersten
+Knopf — mitten im Tippen. Sie liegt deshalb in einer Ref.
+
+### Gegenprobe
+
+Im gebauten Stand, drei Dialoge nacheinander: Startfokus drin, 0 von 8
+Tab-Schritten außerhalb, Escape schließt. Und der umgebaute
+Willkommensdialog, an dem vorher nichts kaputt war, verhält sich unverändert:
+Fokus gefangen, Escape schließt **nicht**, Enter wählt die Sprache und die
+App startet.

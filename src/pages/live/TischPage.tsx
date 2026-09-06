@@ -28,6 +28,7 @@
    In dieser Datei steht keine Gestaltungszahl. */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDialogTastatur } from '../../lib/dialog/tastatur';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/live';
@@ -49,6 +50,14 @@ export function TischPage() {
   const [jetzt, setJetzt] = useState(Date.now());
   const [frage, setFrage] = useState(false);
   const [staende, setStaende] = useState(false);
+
+  /* Beide Dialoge liegen über dem Tisch. Ohne diese drei Eigenschaften —
+     Startfokus, Escape, Fokusfalle — bediente die Tastatur die Knöpfe
+     dahinter, die man gar nicht sieht (E-058). */
+  const frageRef = useRef<HTMLDivElement>(null);
+  const staendeRef = useRef<HTMLDivElement>(null);
+  useDialogTastatur(frageRef, { aktiv: frage, schliessen: () => setFrage(false) });
+  useDialogTastatur(staendeRef, { aktiv: staende, schliessen: () => setStaende(false) });
   const gewarnt = useRef<number | null>(null);
   const letzteStufe = useRef<number | null>(null);
 
@@ -172,7 +181,7 @@ export function TischPage() {
       </div>
 
       {staende && (
-        <div className="tisch-frage" role="dialog" aria-modal="true" aria-label={L.staendeTitel}>
+        <div ref={staendeRef} className="tisch-frage" role="dialog" aria-modal="true" aria-label={L.staendeTitel}>
           <div className="tisch-frage-blatt staende">
             <strong>{L.staendeTitel}</strong>
             <span className="hinweis">{L.staendeSub}</span>
@@ -225,7 +234,7 @@ export function TischPage() {
       )}
 
       {frage && (
-        <div className="tisch-frage" role="dialog" aria-modal="true" aria-label={L.verlassenFrage}>
+        <div ref={frageRef} className="tisch-frage" role="dialog" aria-modal="true" aria-label={L.verlassenFrage}>
           <div className="tisch-frage-blatt">
             <strong>{L.verlassenFrage}</strong>
             <span className="hinweis">{L.verlassenSub}</span>

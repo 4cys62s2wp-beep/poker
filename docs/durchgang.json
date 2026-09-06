@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-09-05T19:57:21.109Z",
+  "geprueft_am": "2026-09-06T15:50:20.850Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 868,
+        "dauer_ms": 851,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -192,7 +192,7 @@
       "name": "Der Abend steht in der Liste",
       "ergebnis": {
         "abende": 1,
-        "erste_karte": "Sa., 5. September 2026 · Ada · gewonnen · 5 Personen · gerade eben",
+        "erste_karte": "So., 6. September 2026 · Ada · gewonnen · 5 Personen · gerade eben",
         "namen_als_knoepfe": 5,
         "namen": [
           "Ada",
@@ -340,7 +340,7 @@
         "rest_unten_px": -119,
         "gestenstreifen_px": 24,
         "stand_oben_px": 681,
-        "lernen_text": "So funktioniert Texas Hold'em",
+        "lernen_text": "So funktioniert Texas Hold’em",
         "fuellung": [
           {
             "karte": "klein",
@@ -479,19 +479,19 @@
       "ergebnis": {
         "frage": "Lohnt der Call?",
         "karten_vorher": [
-          "Herz Ass",
+          "Kreuz Neun",
+          "Karo Acht",
           "Herz Sieben",
-          "Herz König",
-          "Herz Vier",
+          "Pik Fünf",
           "Kreuz Zwei"
         ],
         "punkte_offen_vorher": 1,
-        "urteil": "Richtig",
-        "zahlen": "35,0 % gegen 16,7 % nötig",
-        "warum_ziel": "#/lernen/drill/0-0-5-npxu",
+        "urteil": "Daneben",
+        "zahlen": "16,5 % gegen 25,0 % nötig",
+        "warum_ziel": "#/lernen/drill/2-2-18-npxu",
         "knoepfe_weg": 0,
         "punkt_gefuellt": 1,
-        "urteil_nach_neuladen": "Richtig",
+        "urteil_nach_neuladen": "Daneben",
         "frage_wieder_da": 0,
         "hand_bleibt": true
       },
@@ -573,7 +573,7 @@
         "leiste_im_daumenbereich": true,
         "knoepfe": [
           "Fold",
-          "Call 7",
+          "Call 2",
           "Raise …"
         ]
       },
@@ -598,10 +598,10 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | SERIE | – | TREFFER | 0 | BESTE",
-        "nach_zwei": "0 | SERIE | 50 % | TREFFER | 1 | BESTE",
-        "nach_neuladen": "0 | SERIE | 50 % | TREFFER | 1 | BESTE",
+        "nach_zwei": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
+        "nach_neuladen": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
         "quote_bleibt": true,
-        "quote_nach_zwei": "50 %",
+        "quote_nach_zwei": "0 %",
         "ohne_versuche_kein_prozent": true,
         "felder": 3
       },
@@ -610,12 +610,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 48,
+        "dauer_ms": 45,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "24,1 %",
+        "ergebnis_text": "54,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },

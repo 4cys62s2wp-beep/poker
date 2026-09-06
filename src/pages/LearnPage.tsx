@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { suchbar } from '../lib/eingabe/suche';
 import { STR as NAV } from '../i18n/pages/layout';
 import { BackLink } from '../components/ui';
 import { Link } from 'react-router-dom';
@@ -30,7 +31,7 @@ interface SearchHit {
 }
 
 function makeSnippet(text: string, query: string): string {
-  const idx = text.toLowerCase().indexOf(query);
+  const idx = suchbar(text).indexOf(query);
   if (idx < 0) return '';
   const start = Math.max(0, idx - 40);
   const end = Math.min(text.length, idx + query.length + 60);
@@ -48,23 +49,23 @@ export function LearnPage() {
   const [query, setQuery] = useState('');
 
   const hits = useMemo<SearchHit[]>(() => {
-    const q = query.trim().toLowerCase();
+    const q = suchbar(query.trim());
     if (q.length < 3) return [];
     const results: SearchHit[] = [];
     for (const m of content.modules) {
       for (const l of m.lessons) {
         let snippet = '';
-        if (l.title.toLowerCase().includes(q)) {
+        if (suchbar(l.title).includes(q)) {
           snippet = l.intro;
-        } else if (l.intro.toLowerCase().includes(q)) {
+        } else if (suchbar(l.intro).includes(q)) {
           snippet = makeSnippet(l.intro, q);
         } else {
           for (const sec of l.sections) {
-            if (sec.heading.toLowerCase().includes(q)) {
+            if (suchbar(sec.heading).includes(q)) {
               snippet = L.sectionSnippet(sec.heading);
               break;
             }
-            if (sec.body.toLowerCase().includes(q)) {
+            if (suchbar(sec.body).includes(q)) {
               snippet = makeSnippet(sec.body.replace(/\*\*/g, ''), q);
               break;
             }

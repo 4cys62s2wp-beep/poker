@@ -2562,3 +2562,393 @@ Minuten wurden elf Sekunden.
 
 **Stand:** 1105 Tests grün (davon 11 neue für den Coach, 6 für die
 Maschine), Gesamtlauf 13 Sekunden.
+
+## E-046 · 2026-09-06 · Die Tür, durch die fremde Daten hereinkommen
+
+**Stand:** entschieden und umgesetzt.
+
+Weitergesucht — und nach dem Motor (E-045) blieb die Frage: **Welcher Code
+bekommt Eingaben, die nicht aus der App selbst stammen?** Es gibt genau eine
+solche Stelle, `sanitizeAppData` in `state/AppState.tsx`, und sie hat drei
+Schlüssel:
+
+1. **Die Sicherungsdatei.** „Fortschritt exportieren" schreibt eine JSON-Datei,
+   „importieren" liest sie wieder ein. Was dazwischen mit ihr passiert, weiß
+   niemand: Sie liegt auf einer Festplatte, geht durch einen Messenger, wird
+   von Hand editiert.
+2. **Der Gerätespeicher.** Ein abgebrochener Schreibvorgang, ein zweiter Tab,
+   ein Browser-Update — halb geschriebene Daten sind kein theoretischer Fall.
+3. **Die Cloud.** Was von dort zurückkommt, nimmt dieselbe Tür.
+
+Geprüft wurde diese Funktion bisher nur *nebenbei*: `badges.test.ts` benutzt
+sie, um sich eine gültige Grundlage zu bauen, `trainerkennungen.test.ts`
+schickt Trainer-Kennungen hindurch. **Kaputte Eingaben hat ihr niemand
+gegeben** — also genau das, wofür es sie gibt.
+
+### Die Messlatte
+
+Nicht „sie wirft keinen Fehler". Sondern: **Was herauskommt, muss die App
+anzeigen können, ohne dass Unsinn dasteht.** Ein Zustand mit
+`handsPlayed: 9007199254740991` stürzt nirgends ab; er zeigt nur
+„9007199254740991 Hände gespielt", und das ist auf seine Art schlimmer, weil
+es aussieht wie ein Fehler der App.
+
+`src/lib/__tests__/eingang.test.ts` schreibt diese Messlatte als Funktion
+`unbrauchbar(d)` auf: Zähler sind ganz, nicht negativ und anzeigbar groß,
+Datumsfelder sind Daten, Karten sind Plätze im Blatt, und die Ordnung der
+Zähler stimmt. Dreizehn Prüfungen, die diese eine Funktion beschießen.
+
+### Was dabei kaputt war
+
+**Zähler waren keine ganzen Zahlen.** `num()` prüfte auf `typeof number` und
+`isFinite` — mehr nicht. `xp: 12.7` überlebte, `handsPlayed: 3.5` auch. Ein
+halb gespieltes Blatt gibt es nicht; solche Werte entstehen, wenn jemand eine
+Sicherung von Hand bearbeitet oder irgendwo eine Division stehen bleibt.
+
+**Zähler hatten keine Obergrenze.** Nur `xp` war bei zehn Millionen gedeckelt,
+alle anderen nicht. Jetzt gilt dieselbe Grenze überall, und wo ein Feld eine
+natürliche Schranke hat, gilt die: eine Tagesserie zählt höchstens 36 500 Tage
+(hundert Jahre), ein Tagesquiz höchstens 100 Fragen.
+
+**Die Ordnung der Zähler galt nicht.** `{attempts: 3, correct: 22}` kam
+unverändert durch und stünde als „22 richtig von 3 Versuchen" auf der Seite.
+`recordTrainer` zählt aber immer zuerst den Versuch — die Tür hält jetzt
+dieselbe Ordnung ein wie die Buchführung: Versuche ≥ richtig ≥ Serie, beste
+Serie ≥ laufende, gewonnene Hände ≤ gespielte, Quizpunkte ≤ Quizfragen.
+
+**Ein Kartenindex durfte gebrochen sein.** `c >= 0 && c <= 51` ließ 12,5
+durch. `RANKS[12.5 % 13]` ist `undefined` — eine leere Karte auf dem Tisch.
+
+**Datumsfelder waren freie Zeichenketten.** `str(s.date).slice(0, 10)` nahm
+„gestern", „2026-13-45" und „=1+1" an. So etwas wird angezeigt, sortiert und
+exportiert. Jetzt muss ein Datum eines sein, sonst ist es leer — „noch nie"
+ist ein gültiger Zustand, „gestern" ist keiner.
+
+**In der Statistik fehlte dieselbe Grenze.** `sanitizeHandFacts` schnitt
+Nachkommastellen bereits ab (die Bibliothek war mit dieser Sorgfalt
+geschrieben), deckelte aber die Größe nicht: ein Blatt mit 1e308 Chips hätte
+jeden Durchschnitt ins Sinnlose verschoben.
+
+**Nicht** kaputt war der Prototyp-Angriff: `__proto__` aus `JSON.parse`
+scheitert bereits an den Schlüsselfiltern (`/^m\d+-l\d+$/`, `/^[a-z]+$/`,
+`/^[a-z-]{1,40}$/`). Die Gegenprobe steht trotzdem im Test — sie hält den
+Schutz fest, den es schon gibt.
+
+### Gegenprobe
+
+Zwei Wächter versuchsweise entfernt (`tag()` auf `slice(0,10)` zurückgedreht,
+`zaehler()` auf `Math.max(0, num(v))`): drei Prüfungen fallen. Und die
+Gegenrichtung, ohne die eine Tür, die alles abweist, auch keine wäre: echte
+Daten gehen unverändert hindurch, und zweimal hindurchgereicht ändert nichts —
+sonst driftete ein Gerätestand bei jedem Cloud-Abgleich weiter.
+
+---
+
+## E-047 · 2026-09-06 · Der Export war für Excel unlesbar
+
+**Stand:** entschieden und umgesetzt.
+
+Dieselbe Frage einen Schritt weitergedacht: Wenn Daten *hereinkommen*, gehen
+auch welche *hinaus*. Der Bankroll-Tracker schreibt eine CSV-Datei, und die
+landet in einer fremden Anwendung — meistens Excel.
+
+Die Datei ist bewusst deutsch: deutsche Kopfzeile, Semikolon als Trennzeichen,
+BOM voran (so steht es seit jeher in `i18n/pages/bankroll.ts`). Dann muss aber
+auch der Rest deutsch sein — **war er nicht**:
+
+```
+2026-09-01;live;"1/2 NLH";100;180.5;80.50;240;"gut gelaufen"
+```
+
+Im deutschen Gebietsschema liest Excel `180.5` nicht als Betrag, sondern als
+**18. Mai**. Der Buy-in wurde zum Datum, die Summenzeile darunter blieb leer.
+Das ist kein Randfall, sondern der Normalfall: Wer die Datei exportiert, will
+rechnen.
+
+Zwei weitere Löcher in derselben Zeile:
+
+- **`s.date` und `s.type` gingen ungeschützt hinein.** Der Schutz vor
+  Formel-Injection (`'` vor `=`, `+`, `-`, `@`) lag in `csvCell`, und durch
+  `csvCell` liefen nur `game` und `notes`. Ein Datum aus einer importierten
+  Sicherung konnte `=cmd|'/c calc'!A1` heißen (E-046 schließt das jetzt auch
+  von der anderen Seite).
+- **Ein Semikolon oder Zeilenumbruch im Datum** hätte alle folgenden Spalten
+  verschoben.
+
+`src/lib/export/csv.ts` macht daraus eine Bibliothek mit drei Regeln: Text
+kommt in Anführungszeichen, Text mit Formelanfang bekommt ein Hochkomma,
+Zahlen bekommen ein Komma als Dezimaltrennzeichen und keinen Tausenderpunkt.
+Zeilen enden nach RFC 4180 mit CRLF, damit ein Umbruch *innerhalb* einer Notiz
+eindeutig bleibt.
+
+Geprüft wird das nicht am Format, sondern am Ergebnis: `csv.test.ts` enthält
+einen kleinen CSV-**Leser** und liest die geschriebene Datei zurück. Eine
+Notiz „Tilt; früh weg\nnächstes Mal Pause" muss als *eine* Zelle
+zurückkommen — acht Prüfungen, die alle die Frage stellen, was auf der
+anderen Seite ankommt.
+
+## E-048 · 2026-09-06 · „1.250" war einskommazweifünf
+
+**Stand:** entschieden und umgesetzt.
+
+Der Export (E-047) führte zur Gegenfrage: Wenn die App Zahlen *hinausschreibt*
+— wie liest sie welche *herein*? Vier Stellen taten das, alle mit derselben
+Zeile:
+
+```ts
+parseFloat(text.replace(',', '.'))
+```
+
+Sie ist auf zwei Arten falsch. Gemessen, nicht vermutet:
+
+| Eingabe     | was herauskam | was gemeint war |
+|-------------|---------------|-----------------|
+| `1.250`     | 1,25          | 1250            |
+| `1.234,56`  | 1,234         | 1234,56         |
+| `1 250`     | 1             | 1250            |
+| `1.000.000` | 1             | 1000000         |
+| `12abc`     | 12            | (keine Zahl)    |
+
+**Sie versteht die deutsche Schreibweise nicht.** „1.250" ist auf Deutsch
+Tausendzweihundertfünfzig. Der Punkt wurde als Dezimalpunkt gelesen — eine
+Verwechslung um den Faktor 1000.
+
+**Und sie nimmt an, was keine Zahl ist.** `parseFloat` liest, so weit es
+kommt, und gibt zurück, was es hat.
+
+Das Entscheidende an beidem: Jeder dieser Werte kam an der Prüfung
+`isFinite(n) && n > 0` vorbei. Es gab **keine Fehlermeldung** — nur einen
+falschen Betrag. Wer 1250 € Cash-out eintrug, sah 1,25 € in seiner Bilanz und
+konnte nur rätseln, warum.
+
+### Wo das stand
+
+- **Bankroll-Tracker** — Buy-in und Cash-out. Eine falsche Bilanz.
+- **Live-Coach** — Pot und Einsatz für die Pot-Odds. Ein falscher Rat, und
+  das ist die eine Sache, für die es diese App gibt.
+- **Pokerabend einrichten** — Euro je Spieler.
+- **Upgrade-Seite** — der Jahrespreis aus der Konfiguration.
+
+### Die Lösung
+
+`src/lib/eingabe/zahl.ts` liefert entweder eine Zahl oder `null` — und nichts
+dazwischen. Stehen beide Trennzeichen da, entscheidet die Reihenfolge und
+nicht die Sprache: das rechte ist das Dezimaltrennzeichen („1.234,56" wie
+„1,234.56"). Steht nur eines da, entscheidet die Sprache — außer die Zahl
+sieht eindeutig gruppiert aus (`1.250` ja, `0.125` nein, `12.50` nein: zwei
+Stellen sind keine Tausendergruppe). Währungszeichen dürfen am Rand stehen,
+nicht in der Mitte: „1 250 €" ist eine Zahl, „12€34" ist keine.
+
+Milde ist dabei Absicht: Wer in der englischen Oberfläche „12,50" tippt, meint
+zwölf fünfzig und keinen Fehler.
+
+### Gegenprobe im Browser
+
+Nicht nur im Test, sondern in der gebauten App, 390 × 844, deutsche Sprache:
+Buy-in „1.250", Cash-out „2.500", 240 Minuten. Ergebnis auf dem Bildschirm:
+
+```
++1.250,00 €      312,50 €/h
+```
+
+Vorher wären das 1,25 € gewesen. Und „abc" als Buy-in bringt jetzt
+„Buy-in: bitte eine Zahl ≥ 0 angeben." statt einer stillen Null.
+
+Dieselbe Sitzung exportiert (E-047):
+
+```
+"Datum";"Art";"Spiel";"Buy-in";"Cash-out";"Gewinn";"Minuten";"Notizen"
+"2026-09-06";"online";"NL2 Cash";1250;2500;1250;240;"Test; mit Semikolon"
+```
+
+Das Semikolon in der Notiz bleibt in seiner Zelle.
+
+## E-049 · 2026-09-06 · Das Auffangnetz hing zu tief
+
+**Stand:** entschieden und umgesetzt.
+
+Nach der Eingangstür (E-046) die Anschlussfrage: **Was passiert, wenn hinter
+der Tür trotzdem etwas bricht?** Dafür gibt es den `ErrorBoundary` — den
+einen Bildschirm, den niemand sehen soll und den deshalb auch nie jemand
+angesehen hat. Er steht in keiner der 91 gemessenen Ansichten, weil man ihn
+nur durch einen Absturz erreicht.
+
+Also einmal hingesehen: einen Absturz erzwungen (vorübergehend eine
+werfende Komponente, danach wieder entfernt) und im gebauten Bundle
+gemessen, 390 × 844, hell und dunkel.
+
+### Was gut war
+
+Der Bildschirm ist gestaltet wie die App — Manrope, Goldknopf, 142 × 44
+Pixel, Kontrast 14,6:1 auf der Überschrift und 7,3:1 im Fließtext, in beiden
+Farbmodi. Der Knopf führt zurück auf die Startseite, und die App läuft
+danach.
+
+(Eine erste Messung meldete „Knopfbeschriftung 1,28:1". Das war die
+Messung, nicht der Knopf: `.btn.primary` malt mit einem Verlauf, also ist
+`backgroundColor` durchsichtig. Der Bildschirmabzug zeigte einen goldenen
+Knopf. Wieder ein Fall für die alte Regel — die Zahl ansehen *und* das Bild.)
+
+### Was nicht gut war
+
+**Das Netz hing unter allen sechs Providern.** `<ErrorBoundary>` stand *in*
+`App`, und `App` steht in `main.tsx` unter `FarbmodusProvider`,
+`LanguageProvider`, `AppStateProvider`, `CloudProvider`, `ProProvider` und
+`SocialProvider`. Ausgerechnet `AppStateProvider` ist der Provider, der
+`localStorage` liest, JSON auspackt und `sanitizeAppData` aufruft — der
+einzige, der überhaupt mit fremden Daten zu tun hat. Ein Fehler dort kam beim
+Netz nie an.
+
+Gemessen mit einem Absturz im Provider, zwei gebaute Fassungen, gleicher
+Fehler:
+
+| | `#root` | Text | Knöpfe |
+|---|---|---|---|
+| Netz in `App` (vorher) | **leer** | – | – |
+| Netz in `main.tsx` (nachher) | gefüllt | „Da ist etwas schiefgelaufen" | „App neu laden" |
+
+Das war die weiße Seite, gegen die es diesen Bildschirm gibt. Für eine App,
+deren Daten auf dem Gerät liegen, ist das die schlimmste Fehlerform: kein Weg
+zurück, und der Fortschritt liegt hinter genau der Anwendung, die nicht mehr
+startet.
+
+**Und „neu laden" half nicht immer.** Liegt der Fehler an gespeicherten
+Daten, führt jeder Neustart in denselben Absturz — eine Schleife ohne
+Ausgang. Der Bildschirm zählt jetzt mit: Beim **zweiten** Mal in derselben
+Sitzung heißt er „Das Neuladen hat nicht geholfen" und bietet zwei weitere
+Wege an, in dieser Reihenfolge:
+
+1. **Daten als Datei sichern** — liest den Gerätespeicher direkt aus, nicht
+   über `exportJson()`: Wenn die App abgestürzt ist, ist ihr Zustand
+   womöglich genau das Problem.
+2. **Daten zurücksetzen** — fragt erst nach („Wirklich alles löschen?",
+   daneben „Doch nicht") und löscht dann auch den IndexedDB-Spiegel, der
+   sonst beim nächsten Start genau die Daten zurückholte, die den Absturz
+   ausgelöst haben.
+
+Beim zweiten Punkt steckt die Tücke im Warten. `deleteDatabase` wird
+*blockiert*, solange noch eine Verbindung offen ist — und die App hält eine.
+Wer danach sofort neu lädt, startet ein Wettrennen zwischen dem ausstehenden
+Löschen und `restoreFromMirrorIfNeeded()`, das beim nächsten Start genau die
+Daten zurückholt, die man gerade loswerden wollte. `loescheAllesVonUns()`
+schließt deshalb erst die eigene Verbindung, wartet dann auf das Löschen und
+lädt erst danach neu — mit einer Notbremse nach 1,5 Sekunden, falls ein
+zweiter Tab den Spiegel festhält.
+
+Die erste Gegenprobe hätte das nicht gefunden: Sie stürzte im Provider ab, da
+war noch gar keine Verbindung offen. Also eine zweite, mit einem Absturz an
+einer *Route* — die App läuft dann, der Spiegel ist angelegt und offen.
+Danach trug der Gerätespeicher `pokermentor-data-pmtpyxemg17g` statt
+`pokermentor-data-pmtpyx7ushn98`: ein frisches Profil, die alten Daten weg,
+vom Spiegel nichts zurückgeholt.
+
+Nach einem gelungenen Start wird der Zähler gelöscht — ein Absturz von
+vorgestern ist kein Muster.
+
+**Zwei kleinere Sachen** fielen beim Hinsehen noch auf: Der Bildschirm hatte
+kein `<main>` (die Regel, die für die anderen 90 gilt) und meldete sich
+Bildschirmlesern nicht. Beides steht jetzt da: `<main role="alert">`.
+
+### Gegenprobe
+
+Der ganze Weg im gebauten Bundle durchgespielt: erster Absturz → ein Knopf.
+Neu laden → derselbe Absturz → drei Knöpfe und die andere Überschrift. Die
+Notsicherung enthält `pokermentor-data-p1`. Zurücksetzen fragt nach, „Doch
+nicht" bricht ab, und nach dem Bestätigen ist der alte Schlüssel weg und die
+Startseite da.
+
+Zwischendurch meldete die Probe zwei Befunde, die keine waren: Das
+Playwright-`addInitScript` legt bei *jedem* Laden dieselben Schlüssel wieder
+an — gemessen wurde also das eigene Messskript, das die gerade gelöschten
+Daten sofort neu säte.
+
+## E-050 · 2026-09-06 · Die Oberfläche war typografisch sauber, die Inhalte nicht
+
+**Stand:** entschieden und umgesetzt.
+
+Weitergesucht, diesmal im Text selbst. Alle 10 625 Zeichenketten der App
+ausgelesen — nicht aus dem Quelltext, sondern aus den geladenen Bündeln, also
+genau das, was auf dem Bildschirm steht — und die Anführungszeichen gezählt:
+
+| | Oberfläche | Lerninhalte |
+|---|---|---|
+| „ und " (typografisch) | 16 / 16 | 45 |
+| " (gerade) | **0** | **883** |
+| ’ (Apostroph) | 25 | 249 |
+| ' (gerader Apostroph) | 4 | 553 |
+
+Die Oberfläche war von Anfang an richtig gesetzt. Die **Inhalte** — also das,
+was man minutenlang liest — waren es nicht, und zwar uneinheitlich: In
+derselben Lektion steht einmal „ich habe doch Odds" und ein paar Absätze
+weiter "zur besten Hand". Das ist keine Geschmacksfrage, sondern ein Bruch
+mit dem, was die App sonst überall tut.
+
+### Wie umgestellt wurde
+
+Nicht mit einem Regex über den Quelltext. Ein Anführungszeichen als
+Begrenzer und eines als Inhalt sehen gleich aus, und nur der Parser weiß,
+welches was ist — also lieferte der TypeScript-Parser die Spannen, und
+ersetzt wurde ausschließlich *innerhalb* von Zeichenketten-Literalen. Ob ein
+gerades Anführungszeichen öffnet oder schließt, entscheidet der Zustand
+davor; ein Apostroph ist ein gerades Zeichen nach einem Buchstaben, im Wort
+(„isn't") wie am Wortende („players'", der englische Plural-Genitiv).
+
+### Die Gegenprobe, auf die es ankam
+
+Vor und nach der Umstellung alle 10 625 Zeichenketten ausgelesen und **alle
+Anführungs- und Apostrophformen auf eine reduziert**. Die beiden Abzüge sind
+Zeichen für Zeichen identisch — die Umstellung hat also nichts am Text
+geändert, nur an der Form der Zeichen. Danach: 0 gerade Anführungszeichen,
+0 gerade Apostrophe.
+
+### Was dabei kaputtging
+
+Ein Literal mit Einsetzungen besteht aus mehreren Stücken, und das Zitat lief
+quer darüber:
+
+```
+`Nichts zu „${begriff}" gefunden.`
+```
+
+Kopf und Schwanz sind getrennte Spannen. Im Schwanz stand das schließende
+Zeichen ohne den Zustand „hier ist etwas offen" — und wurde zu einem zweiten
+**öffnenden**: „Nichts zu „Flop„ gefunden."
+
+Gefunden nicht durch den Test, sondern beim Lesen des eigenen Diffs. Die
+bleibende Prüfung (`typografie.test.ts`) betrachtet ein solches Literal
+deshalb als **ein** Stück und prüft, ob jedes Zitat aufgeht: öffnet, schließt,
+und zwar mit dem passenden Gegenstück. Sie prüft sich selbst gegen sieben
+Beispiele, von denen fünf durchfallen müssen.
+
+## E-051 · 2026-09-06 · Die Suche fand „Hold'em" nicht mehr
+
+**Stand:** entschieden und umgesetzt.
+
+Eine Änderung zieht die nächste nach sich: Seit E-050 steht in den Texten
+„Hold’em" mit typografischem Apostroph. Drei Stellen der App suchen in diesen
+Texten — Lernen, Glossar, Nachschlagen — und alle drei taten es so:
+
+```ts
+e.term.toLowerCase().includes(query.trim().toLowerCase())
+```
+
+Wer „Hold'em" mit gerader Taste eintippt, hätte danach **nichts** gefunden,
+obwohl das Wort auf jeder zweiten Seite steht. Und das ist kein Randfall: iOS
+setzt beim Tippen automatisch das typografische Zeichen, ein angestecktes
+Keyboard und die meisten Android-Tastaturen das gerade. Dasselbe Wort, zwei
+Zeichen, je nach Gerät.
+
+`lib/eingabe/suche.ts` bringt beide Formen auf eine. Entscheidend dabei:
+Die Umformung bleibt **zeichenweise** — jedes ersetzte Zeichen wird durch
+genau eines ersetzt. Nur so stimmt die Fundstelle noch mit dem Originaltext
+überein, denn die Lernsuche sucht im aufbereiteten Text und schneidet den
+Auszug aus dem *ursprünglichen* heraus. Ein Test hält diese Länge fest.
+
+Im Browser gegengeprüft, 390 × 844, beide Schreibweisen nacheinander in
+dasselbe Feld getippt:
+
+| | „Hold'em" | „Hold’em" |
+|---|---|---|
+| Lernen | 15 Nennungen | 15 |
+| Glossar | 5 | 5 |
+| Nachschlagen | 1 | 1 |

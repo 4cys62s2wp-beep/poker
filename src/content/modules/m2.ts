@@ -17,7 +17,7 @@ const m2: Module = {
         {
           heading: 'Die 169 Starthände',
           body:
-            'In Texas Hold\'em gibt es genau **169 verschiedene Starthände**, wenn man nur nach Rang und der Frage suited/offsuit unterscheidet: 13 Paare (AA bis 22), 78 suited Hände (beide Karten in derselben Farbe) und 78 offsuit Hände.\n\nHinter jeder dieser Hand-Klassen stecken unterschiedlich viele konkrete Kartenkombinationen, sogenannte **Combos**. Ein Paar wie AA kann auf 6 Arten ausgeteilt werden, eine suited Hand wie AKs auf 4 Arten, eine offsuit Hand wie AKo auf 12 Arten. In Summe ergibt das 1326 mögliche Combos.\n\nWarum ist das wichtig? Weil du dadurch ein Gefühl für Häufigkeiten bekommst: Offsuit-Hände machen den Löwenanteil aller ausgeteilten Hände aus, suited Hände nur rund 24 %. Und ein bestimmtes Paar bekommst du nur in etwa einer von 221 Händen – AA ist also wirklich selten. Irgendein Paar hältst du in rund 6 % der Fälle, also etwa einmal pro 17 Hände.\n\nDieses Combo-Denken ist die Grundlage für alles, was später kommt: Ranges lesen, Blocker verstehen, Wahrscheinlichkeiten abschätzen.',
+            'In Texas Hold’em gibt es genau **169 verschiedene Starthände**, wenn man nur nach Rang und der Frage suited/offsuit unterscheidet: 13 Paare (AA bis 22), 78 suited Hände (beide Karten in derselben Farbe) und 78 offsuit Hände.\n\nHinter jeder dieser Hand-Klassen stecken unterschiedlich viele konkrete Kartenkombinationen, sogenannte **Combos**. Ein Paar wie AA kann auf 6 Arten ausgeteilt werden, eine suited Hand wie AKs auf 4 Arten, eine offsuit Hand wie AKo auf 12 Arten. In Summe ergibt das 1326 mögliche Combos.\n\nWarum ist das wichtig? Weil du dadurch ein Gefühl für Häufigkeiten bekommst: Offsuit-Hände machen den Löwenanteil aller ausgeteilten Hände aus, suited Hände nur rund 24 %. Und ein bestimmtes Paar bekommst du nur in etwa einer von 221 Händen – AA ist also wirklich selten. Irgendein Paar hältst du in rund 6 % der Fälle, also etwa einmal pro 17 Hände.\n\nDieses Combo-Denken ist die Grundlage für alles, was später kommt: Ranges lesen, Blocker verstehen, Wahrscheinlichkeiten abschätzen.',
           table: {
             headers: ['Typ', 'Hand-Klassen', 'Combos pro Hand', 'Combos gesamt'],
             rows: [
@@ -79,7 +79,7 @@ const m2: Module = {
           ],
           correctIndex: 2,
           explanation:
-            'Farben haben in Hold\'em kein Ranking und die Paar-Wahrscheinlichkeit ist identisch. AKs gewinnt zusätzliche Equity (ca. 2 Prozentpunkte) und viele spielbare Situationen durch Flushdraws.',
+            'Farben haben in Hold’em kein Ranking und die Paar-Wahrscheinlichkeit ist identisch. AKs gewinnt zusätzliche Equity (ca. 2 Prozentpunkte) und viele spielbare Situationen durch Flushdraws.',
         },
         {
           question: 'Zu welcher Kategorie gehört 7♦ 6♦ und was ist ihre Hauptstärke?',
@@ -399,7 +399,7 @@ const m2: Module = {
         {
           heading: 'Nicht überverteidigen: Equity ist nicht gleich Gewinn',
           body:
-            'Die Pot-Odds-Rechnung von oben hat einen Haken: Sie unterstellt, dass du deine Equity vollständig **realisierst** – also so oft gewinnst, wie es deine rohe Gewinnwahrscheinlichkeit verspricht. Out of position gelingt das nicht.\n\nOhne Position gibst du auf jeder Street zuerst Information preis, kannst schlechter bluffen, wirst öfter von Bets aus guten Draws gedrängt und gewinnst mit Marginalhänden kleinere Pötte. Eine Hand wie J4o mag gegen die Button-Range 35 % rohe Equity haben – realisieren wirst du davon out of position nur einen Teil, und die Hand wird zum Verlustgeschäft, obwohl die Pot Odds sie scheinbar rechtfertigen.\n\nDaraus folgen drei praktische Regeln:\n\n- **Suited schlägt offsuit deutlich:** Suited Hände realisieren ihre Equity besser, weil sie öfter starke, klar spielbare Draws treffen. Verteidige suited großzügig, offsuit-Schrott diszipliniert folden.\n- **Verbundenheit zählt:** 76s ist ein klarer Defend, 72s nicht.\n- **Gegen größere Opens tighter werden:** Gegen 3bb+ und gegen frühe Positionen schrumpft deine Defend-Range erheblich.\n\nÜberverteidigen aus Prinzip („ich habe doch Odds") ist einer der teuersten Leaks im Big Blind. Die Odds sind ein notwendiges, aber kein hinreichendes Argument.',
+            'Die Pot-Odds-Rechnung von oben hat einen Haken: Sie unterstellt, dass du deine Equity vollständig **realisierst** – also so oft gewinnst, wie es deine rohe Gewinnwahrscheinlichkeit verspricht. Out of position gelingt das nicht.\n\nOhne Position gibst du auf jeder Street zuerst Information preis, kannst schlechter bluffen, wirst öfter von Bets aus guten Draws gedrängt und gewinnst mit Marginalhänden kleinere Pötte. Eine Hand wie J4o mag gegen die Button-Range 35 % rohe Equity haben – realisieren wirst du davon out of position nur einen Teil, und die Hand wird zum Verlustgeschäft, obwohl die Pot Odds sie scheinbar rechtfertigen.\n\nDaraus folgen drei praktische Regeln:\n\n- **Suited schlägt offsuit deutlich:** Suited Hände realisieren ihre Equity besser, weil sie öfter starke, klar spielbare Draws treffen. Verteidige suited großzügig, offsuit-Schrott diszipliniert folden.\n- **Verbundenheit zählt:** 76s ist ein klarer Defend, 72s nicht.\n- **Gegen größere Opens tighter werden:** Gegen 3bb+ und gegen frühe Positionen schrumpft deine Defend-Range erheblich.\n\nÜberverteidigen aus Prinzip („ich habe doch Odds“) ist einer der teuersten Leaks im Big Blind. Die Odds sind ein notwendiges, aber kein hinreichendes Argument.',
         },
       ],
       takeaways: [
@@ -459,7 +459,7 @@ const m2: Module = {
             'J3o ist unverbunden, offsuit und trifft fast nur dominierte Paare – solche Hände realisieren out of position viel zu wenig Equity. 86s, 55 und K9s sind dagegen Standard-Defends.',
         },
         {
-          question: 'Was übersieht die Aussage „Ich habe Pot Odds, also muss ich callen" im Big Blind?',
+          question: 'Was übersieht die Aussage „Ich habe Pot Odds, also muss ich callen“ im Big Blind?',
           options: [
             'Dass der Pot durch Rake kleiner wird',
             'Dass rohe Equity out of position nur teilweise realisiert wird',
@@ -502,7 +502,7 @@ const m2: Module = {
           heading: 'Praktische Anpassungen für Multiway-Pötte',
           body:
             'Aus der verschobenen Wertelandschaft folgen konkrete Regeln für dein Spiel, sobald ein Pot multiway wird:\n\n- **Bluffe deutlich seltener:** Ein Bluff muss jeden einzelnen Gegner zum Folden bringen. Bei drei Gegnern, die je 50 % folden, klappt das nur in 12,5 % der Fälle. Auch die klassische C-Bet ohne Treffer verliert multiway massiv an Wert.\n- **Value-Bette stärker, aber ehrlicher:** Deine Value-Range wird enger – Top Pair mit schwachem Kicker ist multiway selten eine Value-Bet. Wenn du aber bettest, wirst du öfter ausbezahlt, weil bei mehreren Gegnern öfter jemand etwas hält.\n- **Respektiere Aggression:** Ein Raise in einem Multiway-Pot repräsentiert fast immer eine sehr starke Range. Gegen mehrere Gegner blufft kaum jemand – glaube der Story öfter als heads-up.\n- **Preflop vorbeugen:** Die beste Multiway-Anpassung passiert vor dem Flop – mit ausreichend großen Iso-Raises und Squeezes verhinderst du unübersichtliche Familienpötte, bevor sie entstehen.\n\nUnd ein Wort zur Selbstkontrolle: Multiway-Pötte mit vielen Limpern und Callern fühlen sich nach Action und leichtem Geld an. Bleib bei deinen Kriterien – Nut-Potenzial, Position, klarer Plan – statt mit jeder hübschen Hand mitzugehen. Diszipliniertes Passen ist auch hier die häufigste richtige Antwort.',
-          tip: 'Frag dich in jedem Multiway-Pot vor dem Einstieg: Welche Hand will ich am Ende zeigen? Wenn die realistische Antwort „ein Paar mit gutem Kicker" lautet, ist Vorsicht angebracht.',
+          tip: 'Frag dich in jedem Multiway-Pot vor dem Einstieg: Welche Hand will ich am Ende zeigen? Wenn die realistische Antwort „ein Paar mit gutem Kicker“ lautet, ist Vorsicht angebracht.',
         },
       ],
       takeaways: [

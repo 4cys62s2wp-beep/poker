@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { horcheAufBedienung } from './lib/design/haptik';
-import { ErrorBoundary } from './components/ErrorBoundary';
+import { merkeGelungenenStart } from './components/ErrorBoundary';
 import { Onboarding } from './components/Onboarding';
 import { PaywallModal } from './components/pro/PaywallModal';
 import { UpgradePage } from './pages/UpgradePage';
@@ -102,8 +102,12 @@ export function App() {
      nächsten neuen Knopf, und niemandem fiele es auf. */
   useEffect(() => horcheAufBedienung(document), []);
 
+  /* Die App ist gestartet — ein früherer Absturz war also kein Muster.
+     Der Fehlerbildschirm bietet den Notausgang erst beim zweiten Mal an. */
+  useEffect(merkeGelungenenStart, []);
+
   return (
-    <ErrorBoundary>
+    <>
       {!istGeteilteAufgabe(ort.pathname) && <Onboarding />}
       <PaywallModal />
       {/* Der dunkle Satz gilt für alles darunter — er hängt am Attribut,
@@ -229,7 +233,7 @@ export function App() {
         </Route>
       </Routes>
       </div>
-    </ErrorBoundary>
+    </>
   );
 }
 

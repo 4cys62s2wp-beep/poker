@@ -15,7 +15,7 @@ export const STR = defineStrings(
 
     searchLabel: 'Suchen',
     searchPlaceholder: 'Begriff, Hand oder Thema …',
-    searchNothing: (q: string) => `Nichts zu „${q}" gefunden.`,
+    searchNothing: (q: string) => `Nichts zu „${q}“ gefunden.`,
     searchHintGlossary: 'Im Glossar',
     searchHintTool: 'Bereich',
 

@@ -3,6 +3,7 @@
    dann leitet sie auf die Startseite um. */
 
 import { useEffect, useState } from 'react';
+import { zahlAusEingabe } from '../lib/eingabe/zahl';
 import { Link, Navigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { useLang } from '../i18n';
@@ -32,8 +33,8 @@ export function UpgradePage() {
   const hasAnnual = config.hasAnnual;
   /** Monatsäquivalent des Jahrespreises – reine Zusatzangabe neben dem Endpreis. */
   const monthlyEquivalent = (() => {
-    const n = parseFloat(config.priceAnnual.replace(/[^\d,.]/g, '').replace(',', '.'));
-    if (!isFinite(n) || n <= 0) return '';
+    const n = zahlAusEingabe(config.priceAnnual.replace(/[^\d,.]/g, ''));
+    if (n === null || n <= 0) return '';
     const per = n / 12;
     const currency = config.priceAnnual.replace(/[\d\s,.]/g, '') || '€';
     return lang === 'de'

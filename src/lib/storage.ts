@@ -168,3 +168,73 @@ export function durableDelete(key: string): void {
   }
   mirrorDelete(key);
 }
+
+/**
+ * Alles, was diese App auf dem Gerät abgelegt hat — für die Notsicherung
+ * im Fehlerbildschirm. Die geht bewusst nicht über `exportJson()`: Wenn die
+ * App abgestürzt ist, ist ihr Zustand womöglich genau das Problem.
+ */
+export function alleGespeichertenDaten(): Record<string, string> {
+  const alles: Record<string, string> = {};
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(KEY_PREFIX)) alles[k] = localStorage.getItem(k) ?? '';
+    }
+  } catch {
+    // Speicher gesperrt – dann gibt es eben nichts zu sichern.
+  }
+  return alles;
+}
+
+/**
+ * Der letzte Ausweg: alles löschen, was diese App gespeichert hat —
+ * einschließlich des Spiegels, der sonst beim nächsten Start genau die
+ * Daten zurückholte, die den Absturz ausgelöst haben.
+ *
+ * Das Warten am Ende ist der entscheidende Teil: `deleteDatabase` wird
+ * *blockiert*, solange noch eine Verbindung offen ist. Wer danach sofort neu
+ * lädt, startet ein Wettrennen zwischen dem ausstehenden Löschen und
+ * `restoreFromMirrorIfNeeded()` — und verliert es womöglich.
+ */
+export async function loescheAllesVonUns(): Promise<void> {
+  try {
+    const schluessel: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(KEY_PREFIX)) schluessel.push(k);
+    }
+    for (const k of schluessel) localStorage.removeItem(k);
+  } catch {
+    // ignorieren
+  }
+
+  // Erst die eigene Verbindung schließen, sonst blockiert sie das Löschen.
+  try {
+    const db = dbPromise ? await dbPromise.catch(() => null) : null;
+    db?.close();
+  } catch {
+    // ignorieren
+  }
+  dbPromise = null;
+
+  await new Promise<void>((fertig) => {
+    let erledigt = false;
+    const ende = () => {
+      if (erledigt) return;
+      erledigt = true;
+      fertig();
+    };
+    /* Hält ein anderer Tab den Spiegel offen, kommt `onblocked` statt
+       `onsuccess`. Dann warten wir kurz weiter — aber nicht ewig: lieber
+       neu laden als hängen bleiben. */
+    window.setTimeout(ende, 1500);
+    try {
+      const req = indexedDB.deleteDatabase(DB_NAME);
+      req.onsuccess = ende;
+      req.onerror = ende;
+    } catch {
+      ende();
+    }
+  });
+}

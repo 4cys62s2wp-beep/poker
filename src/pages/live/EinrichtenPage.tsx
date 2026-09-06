@@ -12,6 +12,7 @@
    Zahl, ist entweder eine Eingabe des Nutzers oder ein Rechenergebnis. */
 
 import { useMemo, useState } from 'react';
+import { zahlAusEingabe } from '../../lib/eingabe/zahl';
 import { useNavigate } from 'react-router-dom';
 import { BackLink } from '../../components/ui';
 import { useLang } from '../../i18n';
@@ -50,9 +51,9 @@ export function EinrichtenPage() {
     return verteile({
       sorten,
       spieler,
-      euroJeSpieler: euro.trim() === '' ? undefined : Number(euro.replace(',', '.')),
+      euroJeSpieler: zahlAusEingabe(euro, lang) ?? undefined,
     });
-  }, [sorten, spieler, euro]);
+  }, [sorten, spieler, euro, lang]);
 
   const struktur = useMemo(() => {
     if (!plan) return null;

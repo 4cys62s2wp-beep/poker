@@ -710,6 +710,48 @@ mit wirklich gedrückter Tabulatortaste — und gegengeprüft: Mit abgeschaltete
 Fokusregel meldet der Lauf 148 Befunde. Ein Lauf, der nie rot werden kann,
 ist eine Beruhigung, keine Prüfung.
 
+### Regel 10.13 — Auch der Fehlerfall ist ein Bildschirm
+
+Der Auffangbildschirm ist der einzige, den man nicht aufrufen kann: Man
+erreicht ihn nur durch einen Absturz. Genau deshalb stand er in keiner der 91
+Messungen — und genau deshalb muss er dieselben Regeln erfüllen wie die
+anderen: ein `<main>`, ein Weg weiter, Kontrast, 44 Pixel Tippfläche. Er
+meldet sich zusätzlich als `role="alert"`, weil er ungefragt erscheint.
+
+Zwei Sätze, die aus E-049 folgen und über das Aussehen hinausgehen:
+
+**Das Auffangnetz hängt ganz außen.** Ein Netz unterhalb der Provider fängt
+nicht den Provider, der die gespeicherten Daten liest — und das ist der,
+der es am ehesten nötig hat. Gemessen: derselbe Fehler, einmal mit dem Netz
+in `App` (`#root` leer, weiße Seite) und einmal mit dem Netz in `main.tsx`
+(Bildschirm mit Knopf).
+
+**Der zweite Versuch braucht mehr als der erste.** „Neu laden" hilft nicht,
+wenn der Fehler in den gespeicherten Daten liegt — dann führt jeder Neustart
+in denselben Absturz. Beim zweiten Mal in derselben Sitzung bietet der
+Bildschirm deshalb an, die Daten zu sichern und danach zurückzusetzen; in
+dieser Reihenfolge, mit Rückfrage, und einschließlich des IndexedDB-Spiegels.
+
+### Regel 10.14 — Der Text ist auch Gestaltung
+
+Anführungszeichen gehören zur Schrift wie Abstände zum Raster. Deutsch
+öffnet unten und schließt oben („so"), Englisch beidseits oben ("so"), und
+ein Apostroph ist ein ’ und kein Fußzoll.
+
+Der Bruch lag nicht in der Oberfläche, sondern in den **Inhalten**: Die
+Oberfläche hatte 16 öffnende und 16 schließende deutsche Anführungszeichen
+und kein einziges gerades — die Lektionen, also das, was man minutenlang
+liest, hatten 883 gerade Anführungszeichen und 557 gerade Apostrophe. In
+derselben Lektion stand einmal „ich habe doch Odds" und ein paar Absätze
+weiter "zur besten Hand".
+
+`typografie.test.ts` liest die Texte über den TypeScript-Parser aus, nicht
+mit einem Regex über den Quelltext — ein Anführungszeichen als Begrenzer und
+eines als Inhalt sehen gleich aus. Ein Literal mit Einsetzungen zählt als
+**ein** Text, denn ein Zitat darf über die Grenze hinweg offen bleiben:
+`` `Nichts zu „${begriff}" gefunden.` ``. Genau daran ist die Umstellung
+einmal gescheitert.
+
 ### Was diese Regeln festhält
 
 `durchgang.test.ts` prüft am gerenderten Ergebnis: kein Scrollen, die

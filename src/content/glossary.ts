@@ -239,7 +239,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Community Cards',
     definition:
-      'Die für alle sichtbaren Gemeinschaftskarten in der Tischmitte, in Hold\'em maximal fünf. Sie stehen jedem Spieler zur Bildung seiner besten Fünf-Karten-Hand zur Verfügung.',
+      'Die für alle sichtbaren Gemeinschaftskarten in der Tischmitte, in Hold’em maximal fünf. Sie stehen jedem Spieler zur Bildung seiner besten Fünf-Karten-Hand zur Verfügung.',
     category: 'Grundlagen',
     related: ['Board', 'Flop', 'Hole Cards'],
   },
@@ -477,9 +477,9 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Hole Cards',
     definition:
-      'Die verdeckten Startkarten eines Spielers, in Texas Hold\'em genau zwei. Nur ihr Besitzer darf sie sehen und mit ihnen zusammen mit dem Board die beste Fünf-Karten-Hand bilden.',
+      'Die verdeckten Startkarten eines Spielers, in Texas Hold’em genau zwei. Nur ihr Besitzer darf sie sehen und mit ihnen zusammen mit dem Board die beste Fünf-Karten-Hand bilden.',
     category: 'Grundlagen',
-    related: ['Community Cards', 'Texas Hold\'em'],
+    related: ['Community Cards', 'Texas Hold’em'],
   },
   {
     term: 'HUD',
@@ -841,7 +841,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Set',
     definition:
-      'Ein Drilling aus einem Pocket Pair und einer passenden Boardkarte. Sets sind stark versteckt und gehören zu den profitabelsten Händen im No-Limit Hold\'em.',
+      'Ein Drilling aus einem Pocket Pair und einer passenden Boardkarte. Sets sind stark versteckt und gehören zu den profitabelsten Händen im No-Limit Hold’em.',
     category: 'Grundlagen',
     related: ['Trips', 'Set Mining', 'Pocket Pair'],
   },
@@ -1000,9 +1000,9 @@ const glossary: GlossaryEntry[] = [
     related: ['Table Image', 'Snap Call'],
   },
   {
-    term: 'Texas Hold\'em',
+    term: 'Texas Hold’em',
     definition:
-      'Die weltweit populärste Pokervariante: zwei verdeckte Hole Cards, bis zu fünf Gemeinschaftskarten und vier Setzrunden. Gespielt wird meist ohne Einsatzobergrenze als No-Limit Hold\'em.',
+      'Die weltweit populärste Pokervariante: zwei verdeckte Hole Cards, bis zu fünf Gemeinschaftskarten und vier Setzrunden. Gespielt wird meist ohne Einsatzobergrenze als No-Limit Hold’em.',
     category: 'Grundlagen',
     related: ['Hole Cards', 'Community Cards'],
   },

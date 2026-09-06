@@ -99,7 +99,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Bluff',
     definition:
-      'A bet made with a weak hand that aims to make better hands fold. Its success depends on fold equity, a credible story, and the opponent\'s range.',
+      'A bet made with a weak hand that aims to make better hands fold. Its success depends on fold equity, a credible story, and the opponent’s range.',
     category: 'Strategie',
     related: ['Semi-Bluff', 'Fold Equity', 'Air'],
   },
@@ -127,7 +127,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Bounty',
     definition:
-      'A prize on players\' heads in special tournament formats: whoever eliminates an opponent immediately collects a reward. Bounties change correct strategy, because calls against short stacks gain extra value.',
+      'A prize on players’ heads in special tournament formats: whoever eliminates an opponent immediately collects a reward. Bounties change correct strategy, because calls against short stacks gain extra value.',
     category: 'Turnier',
     related: ['Buy-in', 'MTT'],
   },
@@ -162,7 +162,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'C-Bet',
     definition:
-      'Short for continuation bet: the bet the preflop aggressor makes on the flop, continuing the initiative. C-bets work especially well on dry boards that hit your own range better than your opponent\'s.',
+      'Short for continuation bet: the bet the preflop aggressor makes on the flop, continuing the initiative. C-bets work especially well on dry boards that hit your own range better than your opponent’s.',
     category: 'Aktionen',
     related: ['Open Raise', 'Double Barrel', 'Dry Board'],
   },
@@ -204,7 +204,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Chip Leader',
     definition:
-      'The player with the biggest stack in a tournament or at a table. Chip leaders can threaten their opponents\' stacks and apply enormous pressure, especially on the bubble.',
+      'The player with the biggest stack in a tournament or at a table. Chip leaders can threaten their opponents’ stacks and apply enormous pressure, especially on the bubble.',
     category: 'Turnier',
     related: ['Stack', 'Bubble'],
   },
@@ -239,7 +239,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Community Cards',
     definition:
-      'The shared cards visible to everyone in the middle of the table, at most five in Hold\'em. Every player can use them to build their best five-card hand.',
+      'The shared cards visible to everyone in the middle of the table, at most five in Hold’em. Every player can use them to build their best five-card hand.',
     category: 'Grundlagen',
     related: ['Board', 'Flop', 'Hole Cards'],
   },
@@ -281,7 +281,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Donk Bet',
     definition:
-      'A bet made out of position into the preflop aggressor before they can make their c-bet. Long dismissed as a beginner\'s mistake, the donk bet is now a legitimate play on certain board textures.',
+      'A bet made out of position into the preflop aggressor before they can make their c-bet. Long dismissed as a beginner’s mistake, the donk bet is now a legitimate play on certain board textures.',
     category: 'Aktionen',
     related: ['C-Bet', 'Position'],
   },
@@ -477,9 +477,9 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Hole Cards',
     definition:
-      'A player\'s face-down starting cards, exactly two in Texas Hold\'em. Only their owner may see them and combine them with the board to form the best five-card hand.',
+      'A player’s face-down starting cards, exactly two in Texas Hold’em. Only their owner may see them and combine them with the board to form the best five-card hand.',
     category: 'Grundlagen',
-    related: ['Community Cards', 'Texas Hold\'em'],
+    related: ['Community Cards', 'Texas Hold’em'],
   },
   {
     term: 'HUD',
@@ -673,7 +673,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Position',
     definition:
-      'The seating order relative to the button, which determines who acts last in the betting rounds. Being in position lets you see your opponents\' actions first, allowing you to realize considerably more equity.',
+      'The seating order relative to the button, which determines who acts last in the betting rounds. Being in position lets you see your opponents’ actions first, allowing you to realize considerably more equity.',
     category: 'Strategie',
     related: ['Button', 'Cutoff', 'Under the Gun'],
   },
@@ -736,7 +736,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Rake',
     definition:
-      'The fee the operator keeps from the pot or from the tournament buy-in. Rake lowers every player\'s win rate; rakeback programs return part of it.',
+      'The fee the operator keeps from the pot or from the tournament buy-in. Rake lowers every player’s win rate; rakeback programs return part of it.',
     category: 'Grundlagen',
     related: ['Buy-in', 'Win Rate'],
   },
@@ -841,7 +841,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Set',
     definition:
-      'Three of a kind made from a pocket pair and a matching board card. Sets are well disguised and among the most profitable hands in No-Limit Hold\'em.',
+      'Three of a kind made from a pocket pair and a matching board card. Sets are well disguised and among the most profitable hands in No-Limit Hold’em.',
     category: 'Grundlagen',
     related: ['Trips', 'Set Mining', 'Pocket Pair'],
   },
@@ -897,7 +897,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Snap Call',
     definition:
-      'An instant call without a moment\'s thought, usually with a very strong hand or in a clear-cut situation. In live play, the speed of an action can itself be a tell.',
+      'An instant call without a moment’s thought, usually with a very strong hand or in a clear-cut situation. In live play, the speed of an action can itself be a tell.',
     category: 'Slang',
     related: ['Tell', 'Hero Call'],
   },
@@ -925,7 +925,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Stack',
     definition:
-      'All of a player\'s chips at the table. Stack size, measured in big blinds, is a major factor in determining correct strategy.',
+      'All of a player’s chips at the table. Stack size, measured in big blinds, is a major factor in determining correct strategy.',
     category: 'Grundlagen',
     related: ['Effective Stack', 'Short Stack', 'Deep Stack'],
   },
@@ -953,14 +953,14 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'String Bet',
     definition:
-      'An illegal bet made in several installments without announcing it first. In live poker, only the first motion counts; the rule prevents players from reading opponents\' reactions between the partial amounts.',
+      'An illegal bet made in several installments without announcing it first. In live poker, only the first motion counts; the rule prevents players from reading opponents’ reactions between the partial amounts.',
     category: 'Live',
     related: ['Angle Shooting', 'Tell'],
   },
   {
     term: 'Suckout',
     definition:
-      'Winning a hand as a clear underdog thanks to a lucky late card. From the loser\'s point of view, the same event is a bad beat.',
+      'Winning a hand as a clear underdog thanks to a lucky late card. From the loser’s point of view, the same event is a bad beat.',
     category: 'Slang',
     related: ['Bad Beat', 'River Rat', 'Runner-Runner'],
   },
@@ -1000,9 +1000,9 @@ const glossary: GlossaryEntry[] = [
     related: ['Table Image', 'Snap Call'],
   },
   {
-    term: 'Texas Hold\'em',
+    term: 'Texas Hold’em',
     definition:
-      'The world\'s most popular poker variant: two face-down hole cards, up to five community cards, and four betting rounds. It is usually played with no cap on bets, as No-Limit Hold\'em.',
+      'The world’s most popular poker variant: two face-down hole cards, up to five community cards, and four betting rounds. It is usually played with no cap on bets, as No-Limit Hold’em.',
     category: 'Grundlagen',
     related: ['Hole Cards', 'Community Cards'],
   },
@@ -1044,7 +1044,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Turn',
     definition:
-      'The fourth community card, followed by the third betting round. Bet sizes grow considerably on the turn, and both players\' ranges narrow substantially.',
+      'The fourth community card, followed by the third betting round. Bet sizes grow considerably on the turn, and both players’ ranges narrow substantially.',
     category: 'Grundlagen',
     related: ['Flop', 'River', 'Double Barrel'],
   },
@@ -1065,7 +1065,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Value Bet',
     definition:
-      'A bet made with what is probably the best hand, intended to get paid off by worse hands. The art lies in choosing a size that extracts the maximum from your opponent\'s range.',
+      'A bet made with what is probably the best hand, intended to get paid off by worse hands. The art lies in choosing a size that extracts the maximum from your opponent’s range.',
     category: 'Aktionen',
     related: ['Bluff', 'Bet Sizing', 'Showdown Value'],
   },

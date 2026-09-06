@@ -5,8 +5,8 @@ import type { BadgeDef } from '../badges';
 export const BADGES: BadgeDef[] = [
   { id: 'first-lesson', icon: '📖', title: 'First Steps', description: 'Completed your first lesson' },
   { id: 'quiz-perfect', icon: '💯', title: 'Flawless', description: 'Passed a quiz without a single mistake' },
-  { id: 'module-basics', icon: '🎓', title: 'Basic Training', description: 'Completed the "Fundamentals" module' },
-  { id: 'module-math', icon: '🧮', title: 'Math Whiz', description: 'Completed the "Poker Math" module' },
+  { id: 'module-basics', icon: '🎓', title: 'Basic Training', description: 'Completed the “Fundamentals” module' },
+  { id: 'module-math', icon: '🧮', title: 'Math Whiz', description: 'Completed the “Poker Math” module' },
   { id: 'five-lessons', icon: '📚', title: 'Curious Mind', description: 'Completed 5 lessons' },
   { id: 'twenty-lessons', icon: '🏫', title: 'Regular Student', description: 'Completed 20 lessons' },
   { id: 'all-modules', icon: '👑', title: 'Graduate', description: 'Completed all modules' },

@@ -444,7 +444,10 @@ function bool(v: unknown): boolean {
 }
 
 function int(v: unknown): number {
-  return typeof v === 'number' && Number.isFinite(v) ? Math.trunc(v) : 0;
+  /* Die Grenze hält eine verbogene Sicherung aus der Statistik heraus: ein
+     Blatt mit 1e308 Chips verschöbe jeden Durchschnitt ins Sinnlose. */
+  if (typeof v !== 'number' || !Number.isFinite(v)) return 0;
+  return Math.max(-10_000_000, Math.min(10_000_000, Math.trunc(v)));
 }
 
 function streetMap(v: unknown): Record<AnyStreet, boolean> {

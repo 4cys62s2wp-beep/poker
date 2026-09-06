@@ -3,7 +3,7 @@ import type { Module } from '../types';
 const m9: Module = {
   id: 'm9',
   title: 'Poker-Varianten',
-  subtitle: 'PLO, Short Deck, Stud & Co. – die Welt jenseits von Hold\'em',
+  subtitle: 'PLO, Short Deck, Stud & Co. – die Welt jenseits von Hold’em',
   icon: '🌍',
   level: 'Fortgeschritten',
   lessons: [
@@ -12,7 +12,7 @@ const m9: Module = {
       title: 'Pot-Limit Omaha (PLO)',
       duration: 10,
       intro:
-        'Omaha ist nach Hold\'em die zweitgrößte Poker-Variante der Welt – und der Ort, an dem Hold\'em-Spieler die teuersten Umgewöhnungsfehler machen. Diese Lektion erklärt die Regeln und die wichtigsten Strategie-Unterschiede.',
+        'Omaha ist nach Hold’em die zweitgrößte Poker-Variante der Welt – und der Ort, an dem Hold’em-Spieler die teuersten Umgewöhnungsfehler machen. Diese Lektion erklärt die Regeln und die wichtigsten Strategie-Unterschiede.',
       sections: [
         {
           heading: 'Die Regeln: vier Karten, genau zwei zählen',
@@ -24,20 +24,20 @@ const m9: Module = {
         {
           heading: 'Equities laufen eng zusammen',
           body:
-            'Mit vier Karten hat jeder Spieler sechs Zwei-Karten-Kombinationen – dadurch liegen die Gewinnchancen vor dem Flop viel enger beieinander als in Hold\'em. Selbst das beste Startblatt (A-A-K-K double-suited) ist gegen eine ordentliche Hand selten deutlich besser als 60:40.\n\nDie Konsequenzen: Preflop-Aggression hat weniger Wert als in Hold\'em, dominierte Situationen entstehen erst nach dem Flop, und die Varianz ist spürbar höher. PLO wird deshalb oft „Action-Spiel“ genannt – aber die guten Spieler gewinnen nicht durch Action, sondern durch bessere Entscheidungen auf Turn und River.',
+            'Mit vier Karten hat jeder Spieler sechs Zwei-Karten-Kombinationen – dadurch liegen die Gewinnchancen vor dem Flop viel enger beieinander als in Hold’em. Selbst das beste Startblatt (A-A-K-K double-suited) ist gegen eine ordentliche Hand selten deutlich besser als 60:40.\n\nDie Konsequenzen: Preflop-Aggression hat weniger Wert als in Hold’em, dominierte Situationen entstehen erst nach dem Flop, und die Varianz ist spürbar höher. PLO wird deshalb oft „Action-Spiel“ genannt – aber die guten Spieler gewinnen nicht durch Action, sondern durch bessere Entscheidungen auf Turn und River.',
           tip:
-            'Bankroll-Faustregel: Für PLO brauchst du wegen der höheren Varianz deutlich mehr Puffer als für Hold\'em – eher 50–100 Buy-ins statt 25–50.',
+            'Bankroll-Faustregel: Für PLO brauchst du wegen der höheren Varianz deutlich mehr Puffer als für Hold’em – eher 50–100 Buy-ins statt 25–50.',
         },
         {
           heading: 'Nuts oder nichts',
           body:
-            'Der wichtigste Strategie-Unterschied: In PLO gewinnen am Showdown viel öfter die **Nuts** oder Near-Nuts. Wenn drei Spieler den Flop sehen, hält beim großen All-in selten jemand weniger als ein Set, den Nut-Flush oder die Nut-Straße.\n\nDaraus folgen die klassischen PLO-Grundsätze:\n\n- Spiele Starthände, die **zusammenarbeiten** (vier Karten, die Straßen, Flushs und Sets gleichzeitig ermöglichen), z. B. J-T-9-8 double-suited.\n- Non-Nut-Draws sind gefährlich: Der kleine Flush verliert in PLO ständig gegen den größeren.\n- Ein Overpair ohne Verbesserungspotenzial ist fast nie eine Hand für große Pötte.\n\nHold\'em-Spieler überschätzen in PLO vor allem: nackte Asse, Top Pair und kleine Flushs. Das sind die drei teuersten Umgewöhnungsfehler.',
+            'Der wichtigste Strategie-Unterschied: In PLO gewinnen am Showdown viel öfter die **Nuts** oder Near-Nuts. Wenn drei Spieler den Flop sehen, hält beim großen All-in selten jemand weniger als ein Set, den Nut-Flush oder die Nut-Straße.\n\nDaraus folgen die klassischen PLO-Grundsätze:\n\n- Spiele Starthände, die **zusammenarbeiten** (vier Karten, die Straßen, Flushs und Sets gleichzeitig ermöglichen), z. B. J-T-9-8 double-suited.\n- Non-Nut-Draws sind gefährlich: Der kleine Flush verliert in PLO ständig gegen den größeren.\n- Ein Overpair ohne Verbesserungspotenzial ist fast nie eine Hand für große Pötte.\n\nHold’em-Spieler überschätzen in PLO vor allem: nackte Asse, Top Pair und kleine Flushs. Das sind die drei teuersten Umgewöhnungsfehler.',
           cards: ['Jh', 'Th', '9s', '8s'],
         },
         {
           heading: 'Warum PLO boomt',
           body:
-            'PLO wächst seit Jahren, weil es beides bietet: mehr Action für Freizeitspieler (jeder trifft öfter) und mehr Komplexität für ambitionierte Spieler (mehr Kombinationen, mehr schwierige Entscheidungen).\n\nWer solide Hold\'em-Grundlagen hat – Pot Odds, Position, Range-Denken –, bringt das Fundament mit. Aber PLO bestraft Auto-Pilot: Handwerte verschieben sich, Blocker werden noch wichtiger (vier eigene Karten blocken viel mehr), und Position ist wegen der vielen knappen Entscheidungen noch wertvoller als in Hold\'em.',
+            'PLO wächst seit Jahren, weil es beides bietet: mehr Action für Freizeitspieler (jeder trifft öfter) und mehr Komplexität für ambitionierte Spieler (mehr Kombinationen, mehr schwierige Entscheidungen).\n\nWer solide Hold’em-Grundlagen hat – Pot Odds, Position, Range-Denken –, bringt das Fundament mit. Aber PLO bestraft Auto-Pilot: Handwerte verschieben sich, Blocker werden noch wichtiger (vier eigene Karten blocken viel mehr), und Position ist wegen der vielen knappen Entscheidungen noch wertvoller als in Hold’em.',
         },
       ],
       takeaways: [
@@ -58,10 +58,10 @@ const m9: Module = {
           ],
           correctIndex: 3,
           explanation:
-            'In Omaha musst du genau zwei Handkarten verwenden. T♠ + 9♥ kombiniert mit K♠ Q♠ J♠ vom Board ergibt K-Q-J-T-9 – eine Königs-hohe Straße. Royal Flush oder Broadway sind unmöglich: Dafür müsstest du nur eine einzige Handkarte (T♠) nutzen, und genau das ist verboten. Diese Regel übersehen Hold\'em-Umsteiger am häufigsten.',
+            'In Omaha musst du genau zwei Handkarten verwenden. T♠ + 9♥ kombiniert mit K♠ Q♠ J♠ vom Board ergibt K-Q-J-T-9 – eine Königs-hohe Straße. Royal Flush oder Broadway sind unmöglich: Dafür müsstest du nur eine einzige Handkarte (T♠) nutzen, und genau das ist verboten. Diese Regel übersehen Hold’em-Umsteiger am häufigsten.',
         },
         {
-          question: 'Warum ist Preflop-Aggression in PLO weniger wertvoll als in Hold\'em?',
+          question: 'Warum ist Preflop-Aggression in PLO weniger wertvoll als in Hold’em?',
           options: [
             'Weil man in PLO nicht raisen darf',
             'Weil die Equities der Starthände viel enger beieinander liegen',
@@ -70,10 +70,10 @@ const m9: Module = {
           ],
           correctIndex: 1,
           explanation:
-            'Selbst Top-Hände sind selten klar besser als 60:40 – der Vorsprung, den du mit einem Raise ausbauen willst, ist einfach kleiner als in Hold\'em.',
+            'Selbst Top-Hände sind selten klar besser als 60:40 – der Vorsprung, den du mit einem Raise ausbauen willst, ist einfach kleiner als in Hold’em.',
         },
         {
-          question: 'Welche Hand ist die klassische Hold\'em-Spieler-Falle in PLO?',
+          question: 'Welche Hand ist die klassische Hold’em-Spieler-Falle in PLO?',
           options: [
             'Der Nut-Flush',
             'Ein Set auf trockenem Board',
@@ -112,10 +112,10 @@ const m9: Module = {
     },
     {
       id: 'm9-l2',
-      title: 'Short Deck (6+ Hold\'em)',
+      title: 'Short Deck (6+ Hold’em)',
       duration: 8,
       intro:
-        'Short Deck ist die Lieblings-Variante der High Roller: Hold\'em mit 36 Karten, veränderten Handrankings und deutlich mehr Action. Wer die Unterschiede nicht kennt, zahlt teuer.',
+        'Short Deck ist die Lieblings-Variante der High Roller: Hold’em mit 36 Karten, veränderten Handrankings und deutlich mehr Action. Wer die Unterschiede nicht kennt, zahlt teuer.',
       sections: [
         {
           heading: 'Das Spiel mit 36 Karten',
@@ -138,7 +138,7 @@ const m9: Module = {
         {
           heading: 'Strategie: Alles rückt zusammen',
           body:
-            'Mit 36 Karten triffst du alles öfter: Straßen-Draws kommen häufiger an (ein offener Straßendraw trifft bis zum River fast die Hälfte der Zeit), Paare und gepaarte Boards sind allgegenwärtig, und die Equities laufen ähnlich eng wie in PLO.\n\nDie wichtigsten Anpassungen:\n\n- **Suited und connected** gewinnt an Wert – A-K-suited und Verbindungshände wie J-T-9 spielen sich hervorragend.\n- **Einzelne Paare verlieren an Wert**: Bei so vielen möglichen Straßen und Full Houses ist Top Pair schneller geschlagen als in Hold\'em.\n- **Flush-Draws sind Gold**, weil der Flush jetzt sogar Full Houses schlägt – aber sie kommen seltener an (nur noch 5 statt 9 Outs... genauer: 5 Karten deiner Farbe bleiben übrig).\n\nShort Deck belohnt Spieler, die neu rechnen, statt Hold\'em-Instinkte zu recyceln.',
+            'Mit 36 Karten triffst du alles öfter: Straßen-Draws kommen häufiger an (ein offener Straßendraw trifft bis zum River fast die Hälfte der Zeit), Paare und gepaarte Boards sind allgegenwärtig, und die Equities laufen ähnlich eng wie in PLO.\n\nDie wichtigsten Anpassungen:\n\n- **Suited und connected** gewinnt an Wert – A-K-suited und Verbindungshände wie J-T-9 spielen sich hervorragend.\n- **Einzelne Paare verlieren an Wert**: Bei so vielen möglichen Straßen und Full Houses ist Top Pair schneller geschlagen als in Hold’em.\n- **Flush-Draws sind Gold**, weil der Flush jetzt sogar Full Houses schlägt – aber sie kommen seltener an (nur noch 5 statt 9 Outs... genauer: 5 Karten deiner Farbe bleiben übrig).\n\nShort Deck belohnt Spieler, die neu rechnen, statt Hold’em-Instinkte zu recyceln.',
           tip:
             'Die Regel von 2 und 4 gilt in Short Deck NICHT mehr – mit 36 Karten ist jedes Out ungefähr 3 % pro Karte wert. Ein Flush-Draw mit 5 Outs bringt bis zum River nur noch rund 30 %.',
         },
@@ -154,7 +154,7 @@ const m9: Module = {
           question: 'Welche Karten fehlen im Short-Deck-Spiel?',
           options: ['Alle Bildkarten', 'Die Zweier bis Fünfer', 'Die Sechser bis Neuner', 'Die Asse'],
           correctIndex: 1,
-          explanation: 'Es bleiben 36 Karten von der Sechs bis zum Ass übrig – daher der Name „6+ Hold\'em“.',
+          explanation: 'Es bleiben 36 Karten von der Sechs bis zum Ass übrig – daher der Name „6+ Hold’em“.',
         },
         {
           question: 'Warum schlägt der Flush in Short Deck üblicherweise das Full House?',
@@ -188,7 +188,7 @@ const m9: Module = {
       title: 'Seven Card Stud & Razz',
       duration: 8,
       intro:
-        'Vor dem Hold\'em-Boom war Seven Card Stud DAS Pokerspiel. Wer es lernt, trainiert Fähigkeiten, die in jeder Variante Gold wert sind: Aufmerksamkeit, Gedächtnis und Geduld.',
+        'Vor dem Hold’em-Boom war Seven Card Stud DAS Pokerspiel. Wer es lernt, trainiert Fähigkeiten, die in jeder Variante Gold wert sind: Aufmerksamkeit, Gedächtnis und Geduld.',
       sections: [
         {
           heading: 'So funktioniert Stud',
@@ -198,9 +198,9 @@ const m9: Module = {
         {
           heading: 'Die Kernfähigkeit: tote Karten lesen',
           body:
-            'Weil viele Karten offen liegen, ist Stud ein Spiel des Beobachtens: Welche Karten sind schon sichtbar – und damit für deine Draws **tot**?\n\nEin Beispiel: Du hältst vier Pik zur Flush-Chance. In Hold\'em rechnest du stumpf mit 9 Outs. In Stud zählst du zuerst, wie viele Pik bereits bei den Gegnern offen liegen – sind es drei, hast du nur noch sechs echte Outs. Gute Stud-Spieler merken sich JEDE gefoldete offene Karte.\n\nDie zweite Kernregel: Starthände brauchen entweder ein großes Paar, drei zusammenhängende hohe Karten oder drei zur gleichen Farbe – und die Stärke deiner Hand hängt immer davon ab, wie „lebendig“ deine Outs noch sind.',
+            'Weil viele Karten offen liegen, ist Stud ein Spiel des Beobachtens: Welche Karten sind schon sichtbar – und damit für deine Draws **tot**?\n\nEin Beispiel: Du hältst vier Pik zur Flush-Chance. In Hold’em rechnest du stumpf mit 9 Outs. In Stud zählst du zuerst, wie viele Pik bereits bei den Gegnern offen liegen – sind es drei, hast du nur noch sechs echte Outs. Gute Stud-Spieler merken sich JEDE gefoldete offene Karte.\n\nDie zweite Kernregel: Starthände brauchen entweder ein großes Paar, drei zusammenhängende hohe Karten oder drei zur gleichen Farbe – und die Stärke deiner Hand hängt immer davon ab, wie „lebendig“ deine Outs noch sind.',
           tip:
-            'Genau dieses Beobachtungstraining macht Stud so wertvoll für Hold\'em-Spieler: Wer gelernt hat, tote Karten zu verfolgen, nimmt automatisch auch am Hold\'em-Tisch mehr wahr.',
+            'Genau dieses Beobachtungstraining macht Stud so wertvoll für Hold’em-Spieler: Wer gelernt hat, tote Karten zu verfolgen, nimmt automatisch auch am Hold’em-Tisch mehr wahr.',
         },
         {
           heading: 'Razz: Stud auf links gedreht',
@@ -259,7 +259,7 @@ const m9: Module = {
         {
           heading: 'HORSE & 8-Game: der Zehnkampf des Pokers',
           body:
-            'Bei Mixed Games rotiert die Variante nach festem Schema. Die bekanntesten Formate:\n\n- **HORSE**: Hold\'em, Omaha Hi/Lo, Razz, Stud, Stud Eight-or-better (Hi/Lo) – klassisch Fixed Limit.\n- **8-Game**: die fünf HORSE-Spiele plus 2-7 Triple Draw, No-Limit Hold\'em und Pot-Limit Omaha.\n\nDie prestigeträchtigsten Mixed-Titel (etwa das 50.000-Dollar-Poker-Players-Championship der WSOP) gelten in der Szene als wahre Weltmeisterschaften – weil man dort keinen einzigen Spielfehler in fremden Varianten verstecken kann.\n\nFür dein Lernen heißt das: Jede zusätzliche Variante zwingt dich, Poker-PRINZIPIEN statt auswendig gelernter Spielzüge zu verstehen – Equity, Position, Pot Odds und Gegner-Lesen funktionieren überall, nur die Vorzeichen ändern sich.',
+            'Bei Mixed Games rotiert die Variante nach festem Schema. Die bekanntesten Formate:\n\n- **HORSE**: Hold’em, Omaha Hi/Lo, Razz, Stud, Stud Eight-or-better (Hi/Lo) – klassisch Fixed Limit.\n- **8-Game**: die fünf HORSE-Spiele plus 2-7 Triple Draw, No-Limit Hold’em und Pot-Limit Omaha.\n\nDie prestigeträchtigsten Mixed-Titel (etwa das 50.000-Dollar-Poker-Players-Championship der WSOP) gelten in der Szene als wahre Weltmeisterschaften – weil man dort keinen einzigen Spielfehler in fremden Varianten verstecken kann.\n\nFür dein Lernen heißt das: Jede zusätzliche Variante zwingt dich, Poker-PRINZIPIEN statt auswendig gelernter Spielzüge zu verstehen – Equity, Position, Pot Odds und Gegner-Lesen funktionieren überall, nur die Vorzeichen ändern sich.',
         },
         {
           heading: 'Split-Pot-Spiele: zwei Gewinner pro Hand',
@@ -270,7 +270,7 @@ const m9: Module = {
         {
           heading: 'Homegame-Klassiker: Bomb Pots, Stand-up & Co.',
           body:
-            'Private Runden lieben Formate, die Action garantieren:\n\n- **Bomb Pot**: Alle zahlen vor der Hand einen festen Betrag, Preflop wird übersprungen, es geht direkt mit großem Pot zum Flop – oft als Double-Board-Variante mit zwei Flops.\n- **Stand-up Game**: Wer zuerst eine Hand gewinnt, darf sich „setzen“ – der letzte Stehende zahlt eine Strafe.\n- **Dealer\'s Choice**: Wer den Button hat, wählt die Variante der Runde – die Homegame-Version von Mixed Games.\n\nStrategisch gilt bei allen Action-Formaten dasselbe: Große Pötte ohne Preflop-Information bedeuten **Nut-orientiertes Spiel**. In einem Bomb Pot mit sieben Spielern ist Top Pair fast wertlos – gespielt werden Draws zu den Nuts und fertige Monster.',
+            'Private Runden lieben Formate, die Action garantieren:\n\n- **Bomb Pot**: Alle zahlen vor der Hand einen festen Betrag, Preflop wird übersprungen, es geht direkt mit großem Pot zum Flop – oft als Double-Board-Variante mit zwei Flops.\n- **Stand-up Game**: Wer zuerst eine Hand gewinnt, darf sich „setzen“ – der letzte Stehende zahlt eine Strafe.\n- **Dealer’s Choice**: Wer den Button hat, wählt die Variante der Runde – die Homegame-Version von Mixed Games.\n\nStrategisch gilt bei allen Action-Formaten dasselbe: Große Pötte ohne Preflop-Information bedeuten **Nut-orientiertes Spiel**. In einem Bomb Pot mit sieben Spielern ist Top Pair fast wertlos – gespielt werden Draws zu den Nuts und fertige Monster.',
         },
       ],
       takeaways: [
@@ -284,7 +284,7 @@ const m9: Module = {
           question: 'Wofür steht das „R“ in HORSE?',
           options: ['River', 'Razz', 'Rush', 'Rebuy'],
           correctIndex: 1,
-          explanation: 'HORSE = Hold\'em, Omaha Hi/Lo, Razz, Stud, Stud Eight-or-better.',
+          explanation: 'HORSE = Hold’em, Omaha Hi/Lo, Razz, Stud, Stud Eight-or-better.',
         },
         {
           question: 'Was bedeutet „Scoopen“ in einem Hi/Lo-Spiel?',
@@ -324,16 +324,16 @@ const m9: Module = {
       title: 'Welche Variante passt zu dir?',
       duration: 7,
       intro:
-        'Zum Abschluss: eine ehrliche Entscheidungshilfe. Welche Variante lohnt sich wann – und wie überträgst du dein Hold\'em-Wissen, ohne teure Umgewöhnungsfehler zu machen?',
+        'Zum Abschluss: eine ehrliche Entscheidungshilfe. Welche Variante lohnt sich wann – und wie überträgst du dein Hold’em-Wissen, ohne teure Umgewöhnungsfehler zu machen?',
       sections: [
         {
           heading: 'Die Landkarte im Überblick',
           body:
-            'Es gibt keine „beste“ Variante – nur die beste für dein Ziel:\n\n- **No-Limit Hold\'em** bleibt die Basis: größte Spielerauswahl, meiste Lernressourcen, das strategische Fundament für alles andere. Dein Hauptspiel, bis die Grundlagen sitzen.\n- **Pot-Limit Omaha** für alle, die mehr Action und mehr Komplexität wollen – und die Bankroll für höhere Varianz haben.\n- **Short Deck**, wenn du gern neu rechnest und flache Equities magst.\n- **Stud/Razz/Mixed** für Geduldige, die die kompletteste Poker-Ausbildung wollen.\n\nDer bewährte Lernpfad: Hold\'em-Fundament (diese App!) → gelegentlich PLO zum Reinschnuppern → Mixed Games, wenn dich Poker als Ganzes packt.',
+            'Es gibt keine „beste“ Variante – nur die beste für dein Ziel:\n\n- **No-Limit Hold’em** bleibt die Basis: größte Spielerauswahl, meiste Lernressourcen, das strategische Fundament für alles andere. Dein Hauptspiel, bis die Grundlagen sitzen.\n- **Pot-Limit Omaha** für alle, die mehr Action und mehr Komplexität wollen – und die Bankroll für höhere Varianz haben.\n- **Short Deck**, wenn du gern neu rechnest und flache Equities magst.\n- **Stud/Razz/Mixed** für Geduldige, die die kompletteste Poker-Ausbildung wollen.\n\nDer bewährte Lernpfad: Hold’em-Fundament (diese App!) → gelegentlich PLO zum Reinschnuppern → Mixed Games, wenn dich Poker als Ganzes packt.',
           table: {
             headers: ['Variante', 'Action', 'Varianz', 'Lernkurve', 'Für wen?'],
             rows: [
-              ['NL Hold\'em', 'mittel', 'mittel', 'moderat', 'Fundament für alle'],
+              ['NL Hold’em', 'mittel', 'mittel', 'moderat', 'Fundament für alle'],
               ['PLO', 'hoch', 'hoch', 'steil', 'Action-Fans mit Bankroll-Puffer'],
               ['Short Deck', 'sehr hoch', 'hoch', 'moderat', 'Rechner & Gambler'],
               ['Stud/Razz', 'niedrig', 'niedrig', 'lang', 'Geduldige Beobachter'],
@@ -344,25 +344,25 @@ const m9: Module = {
         {
           heading: 'Skills, die überall gelten – und welche nicht',
           body:
-            'Diese Fähigkeiten aus deinem Hold\'em-Training übertragen sich auf JEDE Variante:\n\n- Pot Odds, Equity und EV-Denken\n- Position und Initiative\n- Range-Denken statt Einzelhand-Raten\n- Tilt-Kontrolle und Bankroll-Disziplin\n- Gegner beobachten und einordnen\n\nNICHT übertragbar sind dagegen konkrete Handwerte und Faustregeln: Was in Hold\'em ein Monster ist, ist in PLO Durchschnitt; die Regel von 2 und 4 stirbt in Short Deck; Top Pair ist in Bomb Pots Deko. Der häufigste Fehler beim Varianten-Wechsel ist es, alte Handbewertungen mitzunehmen – die Prinzipien reisen mit, die Zahlen musst du neu lernen.',
+            'Diese Fähigkeiten aus deinem Hold’em-Training übertragen sich auf JEDE Variante:\n\n- Pot Odds, Equity und EV-Denken\n- Position und Initiative\n- Range-Denken statt Einzelhand-Raten\n- Tilt-Kontrolle und Bankroll-Disziplin\n- Gegner beobachten und einordnen\n\nNICHT übertragbar sind dagegen konkrete Handwerte und Faustregeln: Was in Hold’em ein Monster ist, ist in PLO Durchschnitt; die Regel von 2 und 4 stirbt in Short Deck; Top Pair ist in Bomb Pots Deko. Der häufigste Fehler beim Varianten-Wechsel ist es, alte Handbewertungen mitzunehmen – die Prinzipien reisen mit, die Zahlen musst du neu lernen.',
           tip:
-            'Wechsle die Variante immer ein bis zwei Limits TIEFER als dein Hold\'em-Stammlimit – das Lehrgeld ist so deutlich günstiger.',
+            'Wechsle die Variante immer ein bis zwei Limits TIEFER als dein Hold’em-Stammlimit – das Lehrgeld ist so deutlich günstiger.',
         },
         {
           heading: 'Bankroll-Anpassung nach Varianz',
           body:
-            'Je enger die Equities und je größer die Pötte, desto mehr Puffer braucht deine Bankroll:\n\n- NL Hold\'em Cash: 25–50 Buy-ins (dein bekannter Richtwert)\n- PLO Cash: 50–100 Buy-ins\n- Short Deck: eher noch konservativer – die Ante-Struktur zwingt zu viel Action\n- Fixed-Limit-Spiele (Stud & Co.): deutlich mildere Schwankungen, hier reichen 300–400 Big Bets\n\nDie Regel dahinter ist immer dieselbe: Varianz bestimmt den Puffer. Wer diese Anpassung ignoriert, verwechselt am Ende einen normalen PLO-Downswing mit „Ich kann das Spiel nicht“ – oder ist schlicht broke, bevor der Skill greifen konnte.',
+            'Je enger die Equities und je größer die Pötte, desto mehr Puffer braucht deine Bankroll:\n\n- NL Hold’em Cash: 25–50 Buy-ins (dein bekannter Richtwert)\n- PLO Cash: 50–100 Buy-ins\n- Short Deck: eher noch konservativer – die Ante-Struktur zwingt zu viel Action\n- Fixed-Limit-Spiele (Stud & Co.): deutlich mildere Schwankungen, hier reichen 300–400 Big Bets\n\nDie Regel dahinter ist immer dieselbe: Varianz bestimmt den Puffer. Wer diese Anpassung ignoriert, verwechselt am Ende einen normalen PLO-Downswing mit „Ich kann das Spiel nicht“ – oder ist schlicht broke, bevor der Skill greifen konnte.',
         },
       ],
       takeaways: [
-        'NL Hold\'em ist und bleibt das Fundament – Varianten kommen danach.',
+        'NL Hold’em ist und bleibt das Fundament – Varianten kommen danach.',
         'Prinzipien (Odds, Position, Ranges, Disziplin) reisen mit – konkrete Handwerte nicht.',
         'Beim Varianten-Wechsel: ein bis zwei Limits tiefer einsteigen.',
-        'Bankroll an die Varianz anpassen: PLO braucht ~doppelt so viel Puffer wie Hold\'em.',
+        'Bankroll an die Varianz anpassen: PLO braucht ~doppelt so viel Puffer wie Hold’em.',
       ],
       quiz: [
         {
-          question: 'Welche Fähigkeit überträgt sich NICHT direkt von Hold\'em auf andere Varianten?',
+          question: 'Welche Fähigkeit überträgt sich NICHT direkt von Hold’em auf andere Varianten?',
           options: [
             'Pot-Odds-Rechnung',
             'Positionsbewusstsein',
@@ -374,7 +374,7 @@ const m9: Module = {
             'Prinzipien reisen mit, absolute Handwerte nicht: Top Pair ist in PLO oder Bomb Pots oft nahezu wertlos. Die Zahlen jeder Variante musst du neu lernen.',
         },
         {
-          question: 'Wie viel Bankroll-Puffer empfiehlt sich für PLO-Cash im Vergleich zu Hold\'em?',
+          question: 'Wie viel Bankroll-Puffer empfiehlt sich für PLO-Cash im Vergleich zu Hold’em?',
           options: [
             'Halb so viel – PLO ist einfacher',
             'Gleich viel',
@@ -389,13 +389,13 @@ const m9: Module = {
           question: 'Was ist der empfohlene Lernpfad für Einsteiger?',
           options: [
             'Sofort alle Varianten parallel lernen',
-            'Hold\'em-Fundament zuerst, dann Varianten erkunden',
+            'Hold’em-Fundament zuerst, dann Varianten erkunden',
             'Mit Razz anfangen',
             'Nur Short Deck spielen',
           ],
           correctIndex: 1,
           explanation:
-            'Hold\'em bietet die meisten Ressourcen und Gegner und baut das strategische Fundament, auf dem jede weitere Variante aufsetzt.',
+            'Hold’em bietet die meisten Ressourcen und Gegner und baut das strategische Fundament, auf dem jede weitere Variante aufsetzt.',
         },
         {
           question: 'Warum solltest du eine neue Variante auf niedrigeren Limits starten?',
@@ -407,7 +407,7 @@ const m9: Module = {
           ],
           correctIndex: 2,
           explanation:
-            'Selbst starke Hold\'em-Spieler zahlen in neuen Varianten anfangs Lehrgeld. Wer tiefer einsteigt, kauft dieselbe Lernerfahrung zum Bruchteil des Preises.',
+            'Selbst starke Hold’em-Spieler zahlen in neuen Varianten anfangs Lehrgeld. Wer tiefer einsteigt, kauft dieselbe Lernerfahrung zum Bruchteil des Preises.',
         },
       ],
     },

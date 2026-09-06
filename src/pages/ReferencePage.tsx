@@ -23,6 +23,7 @@
    eigene Seite. */
 
 import { useMemo, useState } from 'react';
+import { suchbar } from '../lib/eingabe/suche';
 import { Link, useNavigate } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { Icon, type IconName } from '../components/Icon';
@@ -121,7 +122,7 @@ export function ReferencePage() {
     },
   ];
 
-  const q = query.trim().toLowerCase();
+  const q = suchbar(query.trim());
 
   /* Zwei Trefferarten, bewusst getrennt dargestellt: Bereiche zuerst (ein Tipp
      ist man am Ziel), Glossarbegriffe darunter (zwei Tipps, aber mit dem Wort
@@ -131,13 +132,13 @@ export function ReferencePage() {
 
     const bereiche = eintraege.filter(
       (e) =>
-        e.title.toLowerCase().includes(q) ||
-        e.desc.toLowerCase().includes(q) ||
+        suchbar(e.title).includes(q) ||
+        suchbar(e.desc).includes(q) ||
         e.keywords.some((k) => k.includes(q)),
     );
 
     const begriffe = content.glossary
-      .filter((g) => g.term.toLowerCase().includes(q))
+      .filter((g) => suchbar(g.term).includes(q))
       .slice(0, 6);
 
     return { bereiche, begriffe };

@@ -24,6 +24,7 @@
    in Ruhe — und kommt von unten, wo der Daumen ist. */
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useDialogTastatur } from '../lib/dialog/tastatur';
 import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
 import { useLang } from '../i18n';
@@ -99,19 +100,18 @@ function Blatt({
 }) {
   const { lang } = useLang();
   const T = STR[lang];
+  const dialogRef = useRef<HTMLDivElement>(null);
   const schliessenRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    schliessenRef.current?.focus();
-    const beiTaste = (e: KeyboardEvent) => { if (e.key === 'Escape') schliessen(); };
-    document.addEventListener('keydown', beiTaste);
-    return () => document.removeEventListener('keydown', beiTaste);
-  }, [schliessen]);
+  /* Startfokus, Escape und Fokusfalle an einer Stelle (E-058). Der Fokus
+     gehört auf „Schließen": Der Dialog erklärt eine Zahl, er verlangt
+     nichts. */
+  useDialogTastatur(dialogRef, { schliessen, zuerst: schliessenRef });
 
   const mehrere = quelle.quellen.length > 1;
 
   return createPortal(
-    <div className="herkunft-grund" role="dialog" aria-modal="true" aria-label={T.titel} onClick={schliessen}>
+    <div ref={dialogRef} className="herkunft-grund" role="dialog" aria-modal="true" aria-label={T.titel} onClick={schliessen}>
       <div className="herkunft-blatt" onClick={(e) => e.stopPropagation()}>
         <div className="herkunft-kopf">
           <div>

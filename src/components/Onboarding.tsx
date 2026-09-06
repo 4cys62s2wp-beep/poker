@@ -1,7 +1,8 @@
 /* Erster Start: Sprache wählen, Name eintragen, loslegen.
    Erscheint nur, solange noch keine Sprache gespeichert ist. */
 
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useDialogTastatur } from '../lib/dialog/tastatur';
 import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
 import { useAppState } from '../state/AppState';
@@ -36,7 +37,6 @@ const TEXT: Record<Lang, {
 };
 
 /** Fokussierbare Elemente im Dialog (in DOM-Reihenfolge). */
-const FOCUSABLE = 'button:not([disabled]), input:not([disabled]), select, textarea, a[href], [tabindex]:not([tabindex="-1"])';
 
 export function Onboarding() {
   const { lang, setLang, firstRun, finishOnboarding } = useLang();
@@ -61,33 +61,15 @@ export function Onboarding() {
     };
   }, [firstRun]);
 
-  // Startfokus: erster Button des Sprachschritts. Im Namensschritt übernimmt
-  // das Eingabefeld (autoFocus) den Fokus beim Einhängen.
-  useEffect(() => {
-    if (!firstRun || step !== 'lang') return;
-    dialogRef.current?.querySelector<HTMLElement>(FOCUSABLE)?.focus();
-  }, [firstRun, step]);
+  /* Startfokus, Fokusfalle — aber **kein** Escape: Eine Sprache muss gewählt
+     werden, sonst steht die App in der falschen da. Das ist die eine
+     begründete Ausnahme von der Regel aus E-058.
+     Im Namensschritt übernimmt das Eingabefeld (autoFocus) den Fokus. */
+  useDialogTastatur(dialogRef, { aktiv: firstRun, startfokus: step === 'lang' });
 
   if (!firstRun) return null;
   const T = TEXT[lang];
 
-  /** Fokusfalle: Tab und Shift+Tab laufen im Kreis durch den Dialog.
-      Kein Escape-to-close – eine Sprache muss gewählt werden. */
-  function trapFocus(e: KeyboardEvent<HTMLDivElement>) {
-    if (e.key !== 'Tab') return;
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    const items = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE));
-    if (items.length === 0) return;
-    const first = items[0];
-    const last = items[items.length - 1];
-    const active = document.activeElement;
-    const inside = dialog.contains(active);
-    if (e.shiftKey ? active === first || !inside : active === last || !inside) {
-      e.preventDefault();
-      (e.shiftKey ? last : first).focus();
-    }
-  }
 
   function chooseLang(l: Lang) {
     setLang(l);
@@ -111,7 +93,6 @@ export function Onboarding() {
   return createPortal(
     <div
       ref={dialogRef}
-      onKeyDown={trapFocus}
       role="dialog"
       aria-modal="true"
       aria-label={T.welcome}

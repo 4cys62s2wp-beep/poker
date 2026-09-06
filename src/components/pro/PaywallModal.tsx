@@ -3,6 +3,7 @@
    Upgrade zum bequemeren Weg – nicht zum einzigen. */
 
 import { useEffect, useRef } from 'react';
+import { useDialogTastatur } from '../../lib/dialog/tastatur';
 import { Link } from 'react-router-dom';
 import { Icon } from '../Icon';
 import { useLang } from '../../i18n';
@@ -13,18 +14,13 @@ export function PaywallModal() {
   const { paywallReason, closePaywall, enabled } = usePro();
   const { lang } = useLang();
   const L = STR[lang];
-  const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const spaeterRef = useRef<HTMLButtonElement>(null);
   const open = enabled && paywallReason !== null;
 
-  useEffect(() => {
-    if (!open) return;
-    closeRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closePaywall();
-    };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [open, closePaywall]);
+  /* Startfokus, Escape und Fokusfalle an einer Stelle (E-058). Vorher fehlte
+     hier die Falle: Tab lief aus dem Dialog heraus auf die Seite dahinter. */
+  useDialogTastatur(dialogRef, { aktiv: open, schliessen: closePaywall, zuerst: spaeterRef });
 
   if (!open) return null;
 
@@ -37,6 +33,7 @@ export function PaywallModal() {
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label={isLimit ? L.limitTitle : L.lockedTitle}
@@ -67,7 +64,7 @@ export function PaywallModal() {
           <Link to="/pro" className="btn primary" style={{ justifyContent: 'center' }} onClick={closePaywall}>
             {L.unlock}
           </Link>
-          <button ref={closeRef} className="btn ghost sm" onClick={closePaywall}>
+          <button ref={spaeterRef} className="btn ghost sm" onClick={closePaywall}>
             {L.later}
           </button>
         </div>

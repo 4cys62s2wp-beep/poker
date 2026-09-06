@@ -777,6 +777,28 @@ Zahlen, die an der Bildschirmbreite hängen und schon 58 bis 220 Pixel messen.
 Wer die Schrift vergrößert, braucht den Fließtext größer; diese Zahl
 mitwachsen zu lassen sprengte nur ihren Platz.
 
+### Regel 10.16 — Ein Dialog, der die Maus braucht, ist keiner
+
+Drei Eigenschaften, sonst ist ein modaler Dialog eine Falle: Der Fokus wandert
+beim Öffnen hinein, Escape schließt, und Tab bleibt drin. Beim Schließen geht
+der Fokus dorthin zurück, wo er herkam.
+
+Der dritte Punkt ist der, den man vergisst, und der schlimmste. Am Live-Tisch
+landeten vor E-058 **vier von acht Tab-Schritten außerhalb** des Dialogs — auf
+den Knöpfen „Weiter", „Stände" und „Beenden", die er gerade verdeckte. Wer mit
+der Tastatur bediente, konnte die Blindstufe weiterschalten, während ihn eine
+Rückfrage danach fragte, ob er den Abend wirklich beenden will.
+
+Die drei Eigenschaften stehen an einer Stelle (`lib/dialog/tastatur.ts`), weil
+sie vorher an dreien standen und dort drei verschiedene Stände hatten.
+`dialog.test.ts` lässt keine vierte Abschrift zu.
+
+Zwei Ausnahmen sind vorgesehen und müssen benannt werden: **kein Escape**, wo
+eine Entscheidung erzwungen ist (die Sprachwahl beim ersten Start — genau eine
+Datei), und ein **anderer Startfokus** als das erste Element, wo das erste
+Element etwas verlangt (die Paywall setzt ihn auf „später", nicht auf den
+Kaufknopf).
+
 ### Was diese Regeln festhält
 
 `durchgang.test.ts` prüft am gerenderten Ergebnis: kein Scrollen, die

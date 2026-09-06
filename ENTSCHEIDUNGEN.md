@@ -2456,3 +2456,109 @@ zöge es die gesamten Lerninhalte hinter sich her). Gültig sind die Namen aus
 Ein Test hält fest, dass keine zweite Aufzählung zurückkommt: Weder
 `AppState.tsx` noch `i18n/index.tsx` dürfen das Wort „Küchentisch-Spieler"
 enthalten.
+
+---
+
+## E-045 · 2026-09-06 · Der Motor hatte keine Prüfung
+
+**Stand:** entschieden und umgesetzt.
+
+Weitergesucht, diesmal nicht im Bild, sondern in der Testabdeckung. Fünfzig
+Testdateien, 1094 Prüfungen — und **zwei der drei wichtigsten Dateien der
+App hatten keine eigene**:
+
+- `poker/engine.ts` (517 Zeilen): teilt aus, nimmt Einsätze an, baut Side
+  Pots, zahlt aus. Berührt wurde er nur nebenbei von `stats.test.ts`, das
+  Spielstil-Kennzahlen prüft und dafür ein paar Hände durchspielt.
+- `poker/coach.ts` (632 Zeilen): beantwortet die Frage, für die es diese App
+  gibt — „was mache ich hier?" — im Live-Coach, am Übungstisch und in der
+  Hand des Tages.
+
+Das ist die gefährlichste Art von Lücke. Ein Fehler in der Maschine fällt
+nicht auf, er **verschiebt Chips**: Wer verliert, hat ja auch verloren. Und
+ein Coach, der auf einem seltenen Board gar nichts sagt, sieht aus wie eine
+hängende App.
+
+### Eigenschaften statt Beispiele
+
+Ein Beispieltest prüft den Fall, an den jemand gedacht hat. Die Fehler mit
+Side Pots sitzen aber genau dort, wo niemand hingedacht hat: drei Spieler
+All-in mit verschiedenen Stapeln, einer davon schon vor dem Flop.
+
+Also **4000 zufällige Hände zu sechst, 800 mit sehr ungleichen Stapeln, 800
+heads-up** — und nach *jedem einzelnen Zug* nachgerechnet:
+
+- Die Summe aus allen Stapeln und allen Einsätzen ist unverändert. Es
+  entstehen keine Chips und es verschwinden keine.
+- Niemand hat einen negativen Stapel, niemand Bruchteile von Chips.
+- Wer All-in ist, hat nichts mehr.
+- Keine Karte ist doppelt vergeben, das Board passt zur Straße.
+- Wer am Zug ist, kann auch ziehen — nicht gefoldet, nicht All-in.
+- Ein Call kostet nie mehr, als der Stapel hergibt; `minRaiseTo` liegt nie
+  über `maxRaiseTo` und erhöht den Einsatz wirklich.
+- Nach der Hand liegt alles wieder bei den Spielern, der Pot ist leer, und
+  niemand, der gefoldet hat, kassiert.
+
+Dazu drei Läufe, die die Ränder absuchen: 500 Hände gegen die **echte KI**
+des Übungstischs (spielt sie je einen Zug, den die Maschine ablehnt, bleibt
+der Tisch mitten in der Hand stehen — für den Spielenden sähe das aus, als
+hinge die App), und ein Lauf, der **jeden als legal gemeldeten Zug** einmal
+auf einer Kopie ausführt: Was der Tisch als Knopf anbietet, muss die
+Maschine auch annehmen.
+
+**Ergebnis: kein einziger Verstoß.** Der Motor ist sauber. Das ist ein
+Befund, kein Nicht-Befund — vorher wusste es niemand.
+
+### Zwei Verträge, die dabei sichtbar wurden
+
+1. **`allIn` bleibt nach dem Handende stehen.** Beim Auszahlen werden
+   `bet` und `committed` geleert und die Stapel gefüllt, die Marke aber
+   nicht zurückgesetzt; das erledigt `createHand` für die nächste Hand. Die
+   Zusage lautet also „wer All-in **ist**, hat nichts mehr" und nicht „wer
+   die Marke trägt, hat nie wieder etwas". Kein Fehler — aber eine Falle für
+   den Nächsten, deshalb steht sie jetzt im Test.
+
+2. **Zu wenig wird abgelehnt, zu viel gedeckelt.** Eine Erhöhung unter dem
+   Mindestbetrag wirft; eine über dem Stapel wird auf All-in gedeckelt. Die
+   Asymmetrie ist richtig: Zu wenig stillschweigend anzuheben spielte einen
+   anderen Zug als den gewollten, während „mehr als alles" nur All-in meinen
+   kann. Nachgerechnet wird die Folge — nach dem Deckeln ist die Summe
+   unverändert, aus einer zu großen Zahl entstehen keine Chips.
+
+### Was der Coach zusagt — und was nicht
+
+**Nicht** die Güte des Rats. Ob „Call" hier besser ist als „Raise", ist eine
+Frage der Strategie; wer das im Test prüfen wollte, müsste die Antwort ein
+zweites Mal hinschreiben, und dann prüft der Test die Abschrift.
+
+**Sondern:** Er antwortet immer, vollständig (Handlung, Überschrift,
+mindestens eine Begründung — „Fold" ohne Grund ist kein Unterricht, sondern
+ein Befehl) und in der Sprache, in der gefragt wurde.
+
+Preflop wird nicht gestichprobt, sondern durchgezählt: **16 224 Fragen** —
+alle 169 Hände × 4 Positionen × 4 Tischgrößen × mit und ohne Erhöhung × drei
+Limper-Zahlen × zwei Sprachen. Postflop 4000 zufällige Situationen, Hand und
+Board aus einem gemischten Deck gezogen und durch dieselbe Auswertung
+geschickt wie in der App.
+
+Dazu drei Aussagen, die unabhängig von jeder Pokerschule gelten: Asse wirft
+man nicht weg. 7-2 offsuit eröffnet man nicht unter der Pistole. Und mit
+nichts in der Hand, ohne Draw und mit 2 % Equity setzt man nicht.
+
+**Ergebnis: kein Verstoß.** Ein Fehler war meiner: Ich hatte verlangt, dass
+sich die Überschrift zwischen den Sprachen unterscheidet — „Fold" heißt auf
+Englisch aber auch „Fold". Verglichen wird jetzt der ganze Rat.
+
+### Und ein Test, der zu langsam war, um zu prüfen
+
+Der erste Entwurf rief `expect` für jedes Feld nach jedem Zug: über fünf
+Millionen Aufrufe, jeder mit einer aus einer Vorlage gebauten
+Fehlermeldung. Er lief zwei Minuten und wurde abgebrochen — und ein Test,
+der nicht durchläuft, prüft nichts.
+
+Die Prüfung gibt jetzt den ersten Verstoß als Satz zurück und sonst `null`;
+`expect` wird nur gerufen, wenn wirklich etwas gefunden wurde. Aus zwei
+Minuten wurden elf Sekunden.
+
+**Stand:** 1105 Tests grün (davon 11 neue für den Coach, 6 für die
+Maschine), Gesamtlauf 13 Sekunden.

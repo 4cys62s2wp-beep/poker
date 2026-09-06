@@ -23,7 +23,11 @@
 
    Ergebnis nach `docs/ohnenetz.json`; `ohnenetz.test.ts` hält es fest. */
 
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { holeChromium } from './browser.mjs';
+
+/* Playwright liegt nicht im Projekt (siehe browser.mjs) — der Fundort
+   wird zur Laufzeit gesucht, damit dieser Lauf überall startet. */
+const chromium = await holeChromium();
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const GRUND = 'http://127.0.0.1:4173';

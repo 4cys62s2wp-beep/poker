@@ -7,7 +7,7 @@
 // die UI vorher ihren Ladezustand zeichnen kann (gleiches Muster wie im
 // Equity-Rechner).
 
-import { equityVsRandomHands } from './equity';
+import { rechneAuftraege } from './equityProtocol';
 import type { EquityJob, EquityRequest, EquityResponse } from './equityProtocol';
 
 export type { EquityJob } from './equityProtocol';
@@ -40,9 +40,8 @@ let workerUnavailable = __SINGLE__;
 let nextId = 1;
 const pending = new Map<number, Pending>();
 
-function computeSync(jobs: EquityJob[]): number[] {
-  return jobs.map((j) => equityVsRandomHands(j.hero, j.board, Math.max(1, j.opponents), j.iterations));
-}
+/* Derselbe Rechenweg wie im Worker — buchstäblich, siehe `rechneAuftraege`. */
+const computeSync = rechneAuftraege;
 
 /** Alle offenen Anfragen synchron nachrechnen (Worker ist gestorben). */
 function drainToSync() {

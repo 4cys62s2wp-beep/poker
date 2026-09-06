@@ -3351,3 +3351,48 @@ Tab-Schritten außerhalb, Escape schließt. Und der umgebaute
 Willkommensdialog, an dem vorher nichts kaputt war, verhält sich unverändert:
 Fokus gefangen, Escape schließt **nicht**, Enter wählt die Sprache und die
 App startet.
+
+## E-059 · 2026-09-06 · Was der Tisch einem sagt, der ihn nicht sieht
+
+**Stand:** entschieden und umgesetzt.
+
+Der Übungstisch ist das Herzstück der App und rein visuell: Karten, Chips,
+Sitze. `npm run bedienbar` prüft die **Namen von Bedienelementen** — eine
+Spielkarte ist keines. Also nachgesehen, was ein Vorlesegerät am Tisch
+überhaupt vorfindet.
+
+**Erfreulich viel.** Jede Karte ist ein `<div role="img">` mit `aria-label`
+(„Pik Sechs", „Herz König"), verdeckte Karten heißen „Noch nicht
+aufgedeckt", der Topf trägt „Pot 2", und der Live-Bereich meldet den Ausgang
+(„Du gewinnst 2 Chips"). Im Bauteil steht sogar, warum es so gemacht ist:
+`role="img"` auf einem `div`, weil die meisten Vorlesegeräte das `aria-label`
+auf einem rollenlosen Element ignorieren. Das war jemandem wichtig.
+
+**Ein Zwischenfall beim Messen, der hierher gehört:** Playwrights
+`accessibility.snapshot()` zeigte die eigene Hand als Folge einzelner Zeichen
+— „A", „♠", „♠" — und sah nach einem klaren Befund aus. Die Abfrage über die
+**Rolle** (`getByRole('img', { name: 'Pik Sechs' })`) fand die Karten dann
+aber sauber. Der Schnappschuss ist eine Annäherung, nicht der Baum selbst.
+Beinahe hätte ich ein Werkzeug für einen Fehler gehalten und etwas
+„repariert", das in Ordnung war.
+
+### Der eigentliche Befund
+
+Nicht die Auszeichnung war das Problem, sondern dass **nichts sie festhielt**.
+`bedienbar` kannte zwölf Prüfarten, und keine davon sah `role="img"` an. Eine
+neue Kartenvariante ohne Label — oder ein Umbau, der es verliert — wäre
+niemandem aufgefallen, außer dem, der die App nicht sehen kann.
+
+Die dreizehnte Art heißt `bildrolle-ohne-namen`: Jedes sichtbare Element mit
+Bildrolle braucht einen Namen, es sei denn, es ist ausdrücklich
+`aria-hidden`.
+
+### Gegenprobe
+
+Im Kartenbauteil das `aria-label` entfernt, neu gebaut, Lauf wiederholt:
+**296 Befunde an 57 Stellen**, in beiden Sprachen, auf jedem Bildschirm mit
+Karten. Danach zurückgebaut, neu gebaut, Lauf wiederholt: 0.
+
+Eine Prüfung, die nie rot werden kann, ist eine Beruhigung und keine Prüfung
+— der Unterschied zwischen 296 und 0 ist der Beleg, dass diese hier wirklich
+hinsieht.

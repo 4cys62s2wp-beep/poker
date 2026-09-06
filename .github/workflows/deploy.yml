@@ -100,6 +100,13 @@ jobs:
         run: npm run wege
       - name: Jeder Bildschirm ohne Netz
         run: npm run ohnenetz
+      - name: Sicherheitsregeln gegen den Emulator
+        # Diese 29 Prüfungen sind aus `npm test` ausgeschlossen, weil sie
+        # Java und den Firestore-Emulator brauchen — und liefen deshalb nur,
+        # wenn jemand daran dachte. Sie sind die Zugriffsgrenze der Cloud:
+        # unter anderem, dass niemand fremde Handkarten liest, nicht einmal
+        # der Gastgeber. Der Runner bringt Java mit.
+        run: npm run test:rules
       - name: Abweichungen zeigen
         if: failure()
         run: git --no-pager diff --stat docs/ || true

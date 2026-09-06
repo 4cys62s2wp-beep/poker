@@ -50,7 +50,7 @@ export function QuizRunner({ questions, onFinish, onAnswer, onWrong }: Props) {
     const pct = Math.round((100 * score) / questions.length);
     return (
       <div className="card" style={{ textAlign: 'center' }} role="status" aria-live="polite">
-        <div style={{ fontSize: 40 }}>{pct === 100 ? '🏆' : pct >= 60 ? '🎉' : '📚'}</div>
+        <div style={{ fontSize: '2.5rem' }}>{pct === 100 ? '🏆' : pct >= 60 ? '🎉' : '📚'}</div>
         <div className="big-stat">
           {score} / {questions.length}
         </div>
@@ -70,7 +70,7 @@ export function QuizRunner({ questions, onFinish, onAnswer, onWrong }: Props) {
       <div className="progressbar" style={{ marginBottom: 18 }}>
         <div style={{ width: `${(100 * index) / questions.length}%` }} />
       </div>
-      <h3 style={{ marginBottom: 16, fontSize: 17, lineHeight: 1.45 }}>{q.question}</h3>
+      <h3 style={{ marginBottom: 16, fontSize: '1.0625rem', lineHeight: 1.45 }}>{q.question}</h3>
       {q.options.map((opt, i) => {
         let cls = 'quiz-option';
         if (answered) {

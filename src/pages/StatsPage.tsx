@@ -330,7 +330,7 @@ function MetricCard({
       <div className="row" style={{ alignItems: 'baseline', gap: 'var(--sp-2)' }}>
         <span
           style={{
-            fontSize: 30, fontWeight: 'var(--fw-light)', color,
+            fontSize: '1.875rem', fontWeight: 'var(--fw-light)', color,
             fontVariantNumeric: 'tabular-nums', lineHeight: 1,
           }}
         >

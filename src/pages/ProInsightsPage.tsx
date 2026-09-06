@@ -37,7 +37,7 @@ export function ProInsightsPage() {
               <span
                 style={{
                   width: 46, height: 46, borderRadius: 14, display: 'inline-flex', alignItems: 'center',
-                  justifyContent: 'center', fontWeight: 800, fontSize: 17, flexShrink: 0,
+                  justifyContent: 'center', fontWeight: 800, fontSize: '1.0625rem', flexShrink: 0,
                   fontFamily: 'var(--font-display)',
                   /* Die Farbe der Person tönt die Fläche und zeichnet den
                      Rand — die Buchstaben stehen im Textton. Als Schriftfarbe
@@ -49,7 +49,7 @@ export function ProInsightsPage() {
                 {teaserInitials}
               </span>
               <span style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ display: 'block', fontWeight: 800, fontSize: 17 }}>{teaser.name}</span>
+                <span style={{ display: 'block', fontWeight: 800, fontSize: '1.0625rem' }}>{teaser.name}</span>
                 <span className="small muted" style={{ display: 'block' }}>{teaser.tagline}</span>
               </span>
             </div>
@@ -90,7 +90,7 @@ export function ProInsightsPage() {
                 <span
                   style={{
                     width: 46, height: 46, borderRadius: 14, display: 'inline-flex', alignItems: 'center',
-                    justifyContent: 'center', fontWeight: 800, fontSize: 17, flexShrink: 0,
+                    justifyContent: 'center', fontWeight: 800, fontSize: '1.0625rem', flexShrink: 0,
                     fontFamily: 'var(--font-display)',
                     /* Siehe oben: Kennfarbe tönt, Textton schreibt. */
                     background: `${pro.color}22`, color: 'var(--text)', border: `1.5px solid ${pro.color}55`,
@@ -99,10 +99,10 @@ export function ProInsightsPage() {
                   {initials}
                 </span>
                 <span style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ display: 'block', fontWeight: 800, fontSize: 17 }}>{pro.name}</span>
+                  <span style={{ display: 'block', fontWeight: 800, fontSize: '1.0625rem' }}>{pro.name}</span>
                   <span className="small muted" style={{ display: 'block' }}>{pro.tagline}</span>
                 </span>
-                <span className="faint" style={{ fontSize: 18 }}>{open ? '▾' : '▸'}</span>
+                <span className="faint" style={{ fontSize: '1.125rem' }}>{open ? '▾' : '▸'}</span>
               </button>
 
               {open && (
@@ -131,7 +131,7 @@ export function ProInsightsPage() {
             <span
               style={{
                 width: 30, height: 30, borderRadius: '50%', display: 'inline-flex', alignItems: 'center',
-                justifyContent: 'center', fontWeight: 800, fontSize: 13, flexShrink: 0, marginTop: 2,
+                justifyContent: 'center', fontWeight: 800, fontSize: '0.8125rem', flexShrink: 0, marginTop: 2,
                 background: 'var(--danger-dim)', color: 'var(--danger-lesbar)', border: '1px solid rgba(224,92,85,0.35)',
               }}
             >

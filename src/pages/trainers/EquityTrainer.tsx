@@ -76,7 +76,7 @@ export function EquityTrainer() {
             <div className="stat-label" style={{ marginBottom: 6 }}>{L.yourHand}</div>
             <CardsRow cards={scenario.heroCards} size="lg" />
           </div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-faint)' }}>{L.vs}</div>
+          <div style={{ fontSize: '1.375rem', fontWeight: 800, color: 'var(--text-faint)' }}>{L.vs}</div>
           <div>
             <div className="stat-label" style={{ marginBottom: 6 }}>{L.villain}</div>
             <CardsRow cards={scenario.villainCards} size="lg" />

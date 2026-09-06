@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-09-06T16:12:18.088Z",
+  "geprueft_am": "2026-09-06T19:35:30.853Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -73,7 +73,7 @@
     {
       "hash": "#/nachschlagen/odds",
       "scrollt": true,
-      "ueberlauf_px": 1979,
+      "ueberlauf_px": 2022,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -331,10 +331,10 @@
         "mitte_px": 768,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
-        "knoepfe": 3,
+        "knoepfe": 2,
         "klebt": true,
         "kleinster_knopf_px": 56,
-        "breitenanteil": 0.88
+        "breitenanteil": 0.9
       }
     },
     {
@@ -359,19 +359,19 @@
     {
       "hash": "#/lernen/trainer/szenario",
       "scrollt": true,
-      "ueberlauf_px": 126,
+      "ueberlauf_px": 94,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 644,
+        "oben_px": 623,
         "unten_px": 844,
-        "mitte_px": 744,
+        "mitte_px": 734,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 3,
         "klebt": true,
-        "kleinster_knopf_px": 51,
+        "kleinster_knopf_px": 72,
         "breitenanteil": 1.35
       }
     },

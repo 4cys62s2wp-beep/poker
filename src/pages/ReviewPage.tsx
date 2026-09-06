@@ -99,7 +99,7 @@ export function ReviewPage() {
           </div>
           {data.reviews.length === 0 ? (
             <>
-              <h2 style={{ fontSize: 20, marginBottom: 8 }}>{L.emptyTitle}</h2>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: 8 }}>{L.emptyTitle}</h2>
               <p className="muted small" style={{ maxWidth: 420, margin: '0 auto 16px' }}>
                 {L.emptyText}
               </p>
@@ -109,7 +109,7 @@ export function ReviewPage() {
             </>
           ) : (
             <>
-              <h2 style={{ fontSize: 20, marginBottom: 8 }}>{L.allDoneTitle}</h2>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: 8 }}>{L.allDoneTitle}</h2>
               <p className="muted small">
                 {L.allDoneText}
                 {nextDue && <> {L.nextDueBefore} <strong>{nextDue}</strong>.</>}
@@ -130,7 +130,7 @@ export function ReviewPage() {
                 {L.streakPill(current.item.streak)}
               </span>
             </div>
-            <h3 style={{ marginBottom: 16, fontSize: 17, lineHeight: 1.45 }}>{current.question.question}</h3>
+            <h3 style={{ marginBottom: 16, fontSize: '1.0625rem', lineHeight: 1.45 }}>{current.question.question}</h3>
             {current.question.options.map((opt, i) => {
               let cls = 'quiz-option';
               if (answered) {

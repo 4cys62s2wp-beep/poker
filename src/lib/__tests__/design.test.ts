@@ -83,10 +83,19 @@ describe('Die Fünferskala', () => {
     for (const s of STUFEN) expect(wert(s)).toBeTruthy();
   });
 
-  /** Kleinster Wert einer Angabe: aus `clamp(a, b, c)` das a, sonst die Zahl. */
-  function kleinste(px: string): number {
-    const zahlen = [...px.matchAll(/([\d.]+)px/g)].map((m) => Number(m[1]));
-    if (zahlen.length === 0) throw new Error(`Keine Pixelangabe in "${px}"`);
+  /**
+   * Kleinster Wert einer Angabe, in Pixeln bei Standardschrift: aus
+   * `clamp(a, b, c)` das a, sonst die Zahl.
+   *
+   * Die Skala steht seit E-057 in `rem`, damit die Browser-Einstellung
+   * „Schriftgröße" überhaupt etwas bewirkt. Für den Vergleich der Stufen
+   * untereinander ist die Einheit gleichgültig — gerechnet wird mit der
+   * Wurzelgröße 16, dem Standard, bei dem alle Messläufe messen.
+   */
+  function kleinste(angabe: string): number {
+    const zahlen = [...angabe.matchAll(/([\d.]+)(px|rem)/g)]
+      .map((m) => Number(m[1]) * (m[2] === 'rem' ? 16 : 1));
+    if (zahlen.length === 0) throw new Error(`Keine Größenangabe in "${angabe}"`);
     return Math.min(...zahlen);
   }
 

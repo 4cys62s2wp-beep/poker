@@ -3689,3 +3689,54 @@ Job `messungen` neben den anderen und hält den Deploy nicht auf.
 Gegenprobe: ein 1200 px breites Element und eine 120-px-Leiste in die Seite
 gesetzt → 356 px Überlauf und 2 verdeckte Bedienelemente. Beide Regeln
 schlagen an.
+
+---
+
+## E-064 · 2026-09-07 · Drei Verdachtsmomente, einer davon berechtigt
+
+**Stand:** geprüft; eine Zeile geändert.
+
+Nach E-062 lag die Frage nahe, wo sonst noch etwas still schiefgehen kann.
+Drei Stellen geprüft, jede gemessen statt beurteilt.
+
+### Kaputte Sicherungsdatei — in Ordnung
+
+Vier Dateien eingespielt und gelesen, was auf dem Schirm steht:
+
+| Datei | Antwort |
+|---|---|
+| kein JSON | „Das war keine gültige PokerMentor-Backup-Datei." |
+| leere Datei | dieselbe |
+| JSON ohne `xp` | dieselbe |
+| gültige Sicherung | „Backup erfolgreich eingespielt …" |
+
+Kein stiller Fall. **Bis auf einen:** Wenn schon das *Lesen* der Datei
+scheitert — sie verschwindet zwischen Auswahl und Zugriff, die Berechtigung
+fehlt —, feuert `onload` nie, und es passierte **gar nichts**. Kein Haken,
+kein Fehler, keine Erklärung. Eine Zeile (`reader.onerror`) schließt das.
+„Nichts passiert" ist die schlechteste aller Antworten.
+
+### Sehr lange Namen — in Ordnung
+
+Ein Spielername mit 264 Zeichen ohne Leerzeichen (der schlimmste Fall für
+den Umbruch), eingesetzt in einen laufenden Abend:
+
+| Bildschirm | Überlauf | Elemente über den Rand |
+|---|---|---|
+| `#/session/live` | 0 px | 0 |
+| Stände-Dialog | 0 px | 0 |
+| `#/session/auszahlung` | 0 px | 0 |
+| `#/session/abende` | 0 px | 0 |
+
+Der Name wird auf eine 30-px-Zeile gekürzt, das Layout hält. Die
+Eingabefelder haben zwar kein `maxLength` — aber der Schaden, gegen den es
+schützen soll, tritt nicht ein, und zehn Spieler mit solchen Namen kosten
+2,6 KB. Also nichts geändert: Eine Grenze ohne Not ist auch nur eine Grenze.
+
+### Bewegung reduzieren — in Ordnung
+
+`@media (prefers-reduced-motion: reduce)` setzt Animations- und
+Übergangsdauer per `!important` auf dem Universalselektor herab; im Quelltext
+gibt es weder `element.animate()` noch `requestAnimationFrame`-Schleifen noch
+`scrollIntoView({ behavior: 'smooth' })`. Die beiden `window.scrollTo(0, 0)`
+springen ohne Animation. Es gibt also keine Bewegung an der Regel vorbei.

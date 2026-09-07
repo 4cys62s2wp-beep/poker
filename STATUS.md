@@ -6,18 +6,34 @@ Datei** und weiß, wo es steht. Ganz unten steht die Vorgeschichte des
 Projekts, unverändert übernommen.
 
 - **Arbeitsbereich:** `/home/user/poker-trainer` (git worktree)
-- **Branch:** `feature/pot-odds-trainer`, abgezweigt von `feature/poker-math`
-- **Hauptverzeichnis:** `/home/user/poker` auf `feature/poker-math`. Dort
-  läuft der B4-Rechenlauf; die Generator-Arbeit findet dort statt und wird
-  hierher gemergt.
-- **Letzte Aktualisierung:** 2026-08-27, nach dem Nachtlauf
-- **Stand in einem Satz:** Alles aus dem Auftrag ist gebaut, geprüft und
-  zusammengeführt — auch der B4-Rechenlauf ist durch. Offen ist nur eine
-  Entscheidung des Auftraggebers (W-003).
+- **Branch:** `feature/pot-odds-trainer`; veröffentlicht wird aus
+  `/home/user/poker-merge` auf `claude/poker-learning-app-concept-ml0xm6`.
+- **Letzte Aktualisierung:** 2026-09-07
+- **Stand in einem Satz:** Die App ist fertig, gemessen und veröffentlicht;
+  die Arbeit seit dem Nachtlauf besteht aus Qualitätsdurchgängen, deren
+  Ergebnisse als E-032 bis E-065 in `ENTSCHEIDUNGEN.md` stehen.
 
-> **Zuerst lesen:** `NACHTLAUF.log` — eine Zeile je Ereignis, in zeitlicher
-> Reihenfolge. Der Abschnitt direkt darunter fasst denselben Stand in Prosa
-> zusammen.
+> **Zuerst lesen:** `ENTSCHEIDUNGEN.md` von hinten. Jeder Eintrag nennt die
+> Messung, auf der er beruht, und die Gegenprobe, mit der sie geprüft wurde.
+
+### Wo es heute steht
+
+| | |
+|---|---|
+| `npm test` | alle grün, null übersprungen |
+| `npm run test:rules` | 29 Regelprüfungen gegen den echten Emulator |
+| Messläufe im Browser | elf, jeder mit Ergebnis in `docs/` und einem Test, der es festhält |
+| `npx tsc --noEmit`, `npm run build` | sauber |
+
+Hier steht bewusst keine Testzahl mehr. Sie veraltet mit jedem Commit, und
+eine veraltete Zahl ist schlechter als keine — genau daran ist dieser
+Abschnitt schon einmal gescheitert (E-065). Die Zahl der Messläufe und der
+Regelprüfungen rechnet `readme.test.ts` dagegen aus der Quelle nach.
+
+**Was noch offen ist,** steht weiter unten unter „Was als Nächstes zu tun
+ist": die Herkunftsanzeige über den Drill hinaus und die Anzeige der
+Befunde. Beides ist Ausbau, kein Mangel. Dazu die eine Entscheidung, die ein
+Mensch treffen muss (B-007).
 
 ---
 
@@ -42,7 +58,9 @@ Einträge sind erledigt.**
 | W-003 | Beide Tische entfernt, mit Vorbehalt in den Backlog | E-030 |
 | extra | Equity-Matrix als Binärdatei: 5005 KB → 203 KB, 99 ms → 8 ms | E-031, `docs/binaerformat.json` |
 
-**Der Stand der Prüfungen**
+**Der Stand der Prüfungen — am 27.08.2026.** (Die heutigen Zahlen stehen
+oben; hier bleibt der Stand von damals stehen, weil der Abschnitt den
+Nachtlauf dokumentiert.)
 
 - **1030 JavaScript-Tests grün, null übersprungen.** Typprüfung sauber,
   `npm run build` baut durch.
@@ -72,28 +90,11 @@ Einträge sind erledigt.**
 
 ## Was gerade läuft
 
-**Der B4-Rechenlauf** (Preflop-Equity, alle 14 365 Handpaare, exakt).
-
-```bash
-tail -3 tools/poker-math/output/b4_lauf.log      # Fortschritt und Restzeit
-cat tools/poker-math/output/b4.pid               # Prozessnummer
-kill "$(cat tools/poker-math/output/b4.pid)"     # sauber anhalten
-```
-
-Er sichert sich selbst alle 250 Handpaare nach
-`output/b4_teil/matchups.jsonl`. Anhalten und neu starten kostet höchstens
-ein paar Minuten Rechnung — der Lauf setzt an der ersten fehlenden Einheit
-an. Nach dem letzten Handpaar baut er die Ausgabedatei selbst zusammen und
-prüft die ganze Matrix auf Stimmigkeit; eine Abweichung bricht ab.
-
-Ist er fertig, fehlt nur noch:
-
-```bash
-npm run daten     # nimmt b4_preflop_equity.json mit in public/pokermath/
-```
-
-Dafür braucht der Konverter noch einen `appB4`-Block — er ist der einzige,
-den es noch nicht gibt.
+Nichts. Der B4-Rechenlauf (Preflop-Equity, alle 14 365 Handpaare, exakt) ist
+durchgelaufen; das Ergebnis liegt als Binärdatei in
+`public/pokermath/b4_preflop_equity.bin` und wird von der App gelesen (E-031).
+Der Abschnitt stand hier monatelang im Präsens und beschrieb einen Prozess,
+den es nicht mehr gab.
 
 ---
 

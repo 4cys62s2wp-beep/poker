@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-09-06T19:53:18.982Z",
+  "geprueft_am": "2026-09-07T03:57:16.989Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -282,15 +282,15 @@
     },
     {
       "hash": "#/lernen/trainer/outs",
-      "scrollt": false,
-      "ueberlauf_px": 0,
+      "scrollt": true,
+      "ueberlauf_px": 16,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 659,
-        "unten_px": 820,
-        "mitte_px": 740,
+        "oben_px": 675,
+        "unten_px": 836,
+        "mitte_px": 755,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -331,10 +331,10 @@
         "mitte_px": 768,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
-        "knoepfe": 3,
+        "knoepfe": 2,
         "klebt": true,
         "kleinster_knopf_px": 56,
-        "breitenanteil": 0.88
+        "breitenanteil": 0.9
       }
     },
     {
@@ -359,19 +359,19 @@
     {
       "hash": "#/lernen/trainer/szenario",
       "scrollt": true,
-      "ueberlauf_px": 22,
+      "ueberlauf_px": 40,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 621,
-        "unten_px": 842,
-        "mitte_px": 732,
+        "oben_px": 644,
+        "unten_px": 844,
+        "mitte_px": 744,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 3,
         "klebt": true,
-        "kleinster_knopf_px": 72,
+        "kleinster_knopf_px": 51,
         "breitenanteil": 1.35
       }
     },

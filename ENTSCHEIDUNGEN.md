@@ -3642,15 +3642,39 @@ Millisekunden vor.
 Der zweite Teil hängt am selben Lauf wie E-061, weil es dieselbe Frage aus
 zwei Richtungen ist: Was tut die App, wenn das Gerät ihre Daten nicht nimmt.
 
+### Was diese Lösung nicht kann
+
+Die Marke wird über denselben Weg geschrieben wie der Spiegel selbst —
+fire-and-forget in IndexedDB. Zwei Grenzen folgen daraus, und beide sollen
+hier stehen, statt später jemanden zu überraschen:
+
+1. **Wer sofort nach dem gescheiterten Speichern den Tab schließt**, hat die
+   Marke vielleicht nicht mehr auf der Platte. Dann bleibt es beim alten
+   Stand — aber der Hinweis war da, und die Nutzerin weiß es.
+2. **Fällt IndexedDB selbst aus**, während `localStorage` wieder schreibt,
+   kann eine stehengebliebene Marke beim nächsten Start einen älteren
+   Spiegelstand über einen neueren `localStorage`-Stand schreiben. Das
+   verlangt einen Ausfall genau zwischen zwei Schreibvorgängen; wäre der
+   Spiegel unzuverlässig, wäre er ohnehin als Sicherung wertlos.
+
+Sauber lösen ließe sich beides nur mit einer Version je Schlüssel — einem
+Zähler, der bei jedem Schreiben steigt und beim Wiederherstellen verglichen
+wird. Das ist mehr Maschinerie, als der Fall wert ist: Der bisherige Zustand
+verlor Daten **immer**, wenn der Speicher voll war; dieser verliert sie in
+einem Fall, der zwei gleichzeitige Ausfälle braucht.
+
 ---
 
 ## E-063 · 2026-09-07 · Zehn Läufe, eine Haltung des Geräts
 
 **Stand:** entschieden und umgesetzt.
 
-Beim Nachzählen der Messungen fiel eine Lücke auf, die keine der zehn
-Prüfungen schließt: Alle messen **hochkant**, 390 × 844. Quer ist dasselbe
-Gerät 844 × 390 — ein Fünftel der Höhe.
+Beim Nachzählen der Messungen fiel eine Lücke auf: Bis auf **einen einzigen
+Schritt** messen alle zehn Prüfungen **hochkant**, 390 × 844. Der eine
+Schritt ist „Quer gehalten sieht man den ganzen Tisch" im Durchgang (E-044) —
+er prüft den Übungstisch, und nur ihn. Für die anderen 89 Bildschirme gab es
+quer keine Messung. Quer ist dasselbe Gerät 844 × 390 — ein Fünftel der
+Höhe.
 
 Das ist keine Randlage. Wer am Tisch die Blindstufen laufen lässt, stellt das
 Gerät hin. Wer am Übungstisch spielt, dreht es. Und niedrige Höhe bricht
@@ -3682,8 +3706,8 @@ zahlen sich hier aus.
 ### Warum daraus trotzdem ein Lauf wurde
 
 Ein sauberes Ergebnis ist ein Grund, es festzuhalten, kein Grund, es
-wegzuwerfen. Ein Umbau am Layout kann diese Lage jederzeit brechen, und keine
-andere Prüfung würde es sehen — sie schauen alle hochkant. Der Lauf hängt im
+wegzuwerfen. Ein Umbau am Layout kann diese Lage jederzeit brechen, und außer
+am Übungstisch würde es keine andere Prüfung sehen. Der Lauf hängt im
 Job `messungen` neben den anderen und hält den Deploy nicht auf.
 
 Gegenprobe: ein 1200 px breites Element und eine 120-px-Leiste in die Seite
@@ -3740,3 +3764,107 @@ schützen soll, tritt nicht ein, und zehn Spieler mit solchen Namen kosten
 gibt es weder `element.animate()` noch `requestAnimationFrame`-Schleifen noch
 `scrollIntoView({ behavior: 'smooth' })`. Die beiden `window.scrollTo(0, 0)`
 springen ohne Animation. Es gibt also keine Bewegung an der Regel vorbei.
+
+---
+
+## E-065 · 2026-09-07 · Beim Nachlesen von vorne: zwei falsche Zahlen im README
+
+**Stand:** entschieden und umgesetzt.
+
+Der Durchgang von vorne durch die eigenen Dokumente — nicht durch den Code —
+förderte drei Stellen zutage, an denen die Dokumentation etwas behauptete,
+was nicht mehr stimmte:
+
+| Stelle | Stand dort | Wirklich |
+|---|---|---|
+| README, Messläufe | „Neun Läufe" | **elf** |
+| README, Sicherheit | „26 Tests" gegen den Emulator | **29** |
+| DESIGN.md, Wege | „Stand 2026-08-27T08:03:15Z" | gemessen am 2026-09-06 |
+
+Keine davon war je gelogen. Alle drei haben einmal gestimmt und sind
+liegengeblieben, während die Sache weiterwuchs. Genau so veraltet
+Dokumentation: nicht durch Nachlässigkeit im Moment, sondern durch
+Wachstum danach.
+
+### Warum das mehr als ein Tippfehler ist
+
+Dieses Projekt begründet fast jede Entscheidung mit einer gemessenen Zahl.
+Wenn die Zahlen in der Dokumentation nicht nachgerechnet werden, ist die
+Begründung nur noch ein Stil. Eine Zahl ist eine Behauptung wie jede andere —
+wer sie nicht prüfen lässt, hat sie aufgeschrieben, nicht belegt.
+
+### Was jetzt nachgerechnet wird
+
+`readme.test.ts` und ein Zusatz in `wege.test.ts` rechnen vier Behauptungen
+aus ihrer Quelle nach:
+
+- **Wie viele Messläufe es gibt** — gezählt in `package.json`, verglichen mit
+  dem Zahlwort im README. Die Zahlwörter bleiben ausgeschrieben („Elf Läufe"
+  liest sich besser als „11 Läufe"); der Test kennt sie deshalb bis zwanzig.
+- **Dass jeder Lauf auch einzeln im README steht** — ein Lauf, den niemand
+  findet, wird von niemandem ausgeführt.
+- **Wie viele Regelprüfungen es gibt** — gezählt in `rules.test.ts`.
+- **Welche Version unter dem Profil steht** — verglichen mit `package.json`,
+  und zwar in beiden Sprachen. Das ist die einzige Stelle, an der die App
+  der Nutzerin sagt, welchen Stand sie vor sich hat.
+
+Dazu die Zahlen aus `docs/wege.json`, die in DESIGN.md ein zweites Mal im
+Fließtext stehen: 41 Bildschirme, Tiefe 2, null Sackgassen.
+
+Das doppelte Messdatum ist ersatzlos weg. Es stand an zwei Stellen und war
+an einer davon falsch — eine Zahl gehört an eine Stelle.
+
+### Gegenproben
+
+Alle sechs Regeln einzeln rot gesehen: „Neun" statt „Elf", „26" statt „29",
+eine Zeile aus der Laufliste entfernt, `package.json` auf 2.3.0 gesetzt,
+„42 eigene Bildschirme" statt 41.
+
+---
+
+## E-066 · 2026-09-07 · Ein deutscher Satz, den keine Strukturprüfung sieht
+
+**Stand:** geprüft; nichts gefunden, Regel trotzdem eingezogen.
+
+`i18n.test.ts` vergleicht die beiden Sprachdateien: gleiche Module, gleiche
+Lektionen, gleiche Quizstruktur, gleiche Glossarbegriffe in derselben
+Reihenfolge — und dass **jeder** Schlüssel irgendwo benutzt wird. Das ist
+gründlich, und es hat eine blinde Stelle, die aus dem Vergleich selbst folgt:
+
+> Ein Satz, der gar nicht erst in einer Sprachdatei steht, kommt in keinem
+> Vergleich vor.
+
+Fest in eine Komponente geschriebener deutscher Text bleibt in der
+englischen Fassung stehen, und keine Strukturprüfung merkt es je.
+
+### Gesucht — und nichts gefunden
+
+Über den TypeScript-Parser gelesen (ein Regex wäre hier wertlos: Das Projekt
+ist durchgehend deutsch kommentiert, und jeder zweite Kommentar wäre ein
+Treffer). Geprüft an den beiden Stellen, an denen so etwas sichtbar wird:
+Text zwischen den Tags und die vier Attribute, die die Nutzerin liest —
+`aria-label`, `placeholder`, `title`, `alt`.
+
+**Null Funde.** Die Zweisprachigkeit ist sauber durchgezogen.
+
+Fest eingebauter Text ohne deutsche Merkmale gibt es dagegen sechzehnmal, und
+jedes Mal zu Recht: der Name „PokerMentor"; die Pokerbegriffe „Call",
+„Fold", „BB vs. BTN", „Pro", die in beiden Sprachen gleich heißen; die beiden
+Sprachnamen im Willkommensdialog, die absichtlich in ihrer eigenen Sprache
+stehen; und ein Dateiname im Einrichtungshinweis. Eine Regel „gar kein
+fester Text" hätte für diese sechzehn eine Ausnahmeliste gebraucht — und
+Ausnahmelisten verrotten. Die Regel sucht deshalb nach **deutschen**
+Merkmalen: Umlaute, ß und ein paar Wörter, die es nur auf Deutsch gibt.
+
+### Warum die Regel bleibt, obwohl nichts zu finden war
+
+Weil der Fehler beim nächsten Mal genauso unsichtbar wäre. Ein Entwickler,
+der schnell ein `title="Zurück zur Übersicht"` einträgt, tut nichts
+Auffälliges — er sieht die englische Fassung ja nicht. Die Regel kostet nichts
+(kein Browser, 1,3 Sekunden) und schlägt genau in dem Moment an, in dem
+niemand hinsieht.
+
+Gegenprobe: `title="Zurück zur Übersicht"` in `Layout.tsx` eingetragen →
+`src/components/Layout.tsx:202 [title] Zurück zur Übersicht`. Ein zweiter
+Test zählt die gefundenen Textknoten, damit die Regel nicht eines Tages grün
+ist, weil der Parser nichts mehr sieht.

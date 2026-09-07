@@ -36,7 +36,7 @@ Trainings-App als Website und installierbare PWA. **Komplett zweisprachig
   Anleitung in [FIREBASE_SETUP.md](FIREBASE_SETUP.md)
 - **🔒 Sicherheit:** Content-Security-Policy, validierte Datenimporte
   (Backups/Cloud), 0 bekannte Abhängigkeits-Schwachstellen (`npm audit`);
-  die Firestore-Regeln sind mit 26 Tests gegen den echten Emulator abgesichert
+  die Firestore-Regeln sind mit 29 Tests gegen den echten Emulator abgesichert
   (`npm run test:rules`) – inklusive Nachweis, dass niemand fremde Handkarten liest
 - **🌍 Zwei Sprachen:** komplette App und alle Lerninhalte auf Deutsch und
   Englisch; englische Inhalte werden nur geladen, wenn Englisch aktiv ist
@@ -71,7 +71,7 @@ npm run icons      # App-Icons neu generieren
 
 ### Messläufe
 
-Neun Läufe messen die gebaute App in einem echten Browser statt im
+Elf Läufe messen die gebaute App in einem echten Browser statt im
 Quelltext — der Grund steht in `DESIGN.md`: Ein Lauf über den Quelltext hat
 elf Sackgassen nicht gefunden, weil die Links zwar da waren, aber in einer
 unter 920 Pixel ausgeblendeten Seitenleiste standen. Jeder Lauf schreibt sein

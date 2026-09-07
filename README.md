@@ -69,6 +69,15 @@ npm run build:single  # Alles-in-einer-HTML-Datei nach dist-single/
 npm run icons      # App-Icons neu generieren
 ```
 
+Die Zahlen der App (Outs, Pot-Odds, Kombinatorik, Preflop-Equity) stammen aus
+`tools/poker-math`. Die Python-Tests dort prüfen den Generator; sie laufen in
+der Action mit und lokal so (eine Zahl steht hier bewusst nicht — sie wäre
+das nächste, was veraltet, siehe E-065):
+
+```bash
+cd tools/poker-math && pip install -r requirements.txt && python -m pytest -q
+```
+
 ### Messläufe
 
 Elf Läufe messen die gebaute App in einem echten Browser statt im

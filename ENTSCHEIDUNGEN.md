@@ -3935,3 +3935,76 @@ Die Zahlen sind hier festgehalten und nicht in einem Lauf: Eine gedrosselte
 Zeitmessung auf einem geteilten CI-Rechner schwankt zu stark, um sie
 festzunageln. Was sich festnageln lässt, ist längst festgenagelt — dass die
 Startseite keine Dateien holt, die sie nicht braucht, prüft der Durchgang.
+
+---
+
+## E-068 · 2026-09-07 · Der Job, der 63 Läufe lang nie gelaufen ist
+
+**Stand:** entschieden und umgesetzt. **Der unangenehmste Eintrag hier.**
+
+Beim Nachsehen, ob die Veröffentlichung durchläuft, stand über jedem der 63
+Läufe dieses Zweigs ein rotes Kreuz. Aufgeschlüsselt:
+
+| Job | Ergebnis |
+|---|---|
+| `build` (Typprüfung, Tests, Bauen) | **grün** |
+| `deploy` (GitHub Pages) | **grün** — die App ist veröffentlicht |
+| `messungen` (sieben Browserläufe + Regeltests) | **rot, bei Schritt 7 von 15** |
+
+Der Schritt heißt „Vorschau starten". Danach ist alles übersprungen:
+`pruefen`, `bedienbar`, `daumen`, `wege`, `ohnenetz`, `speichersperre`,
+`quer`, `test:rules`. **Nichts davon ist je in der Action gelaufen.**
+
+### Der Fehler
+
+```
+> vite preview --port 4173
+  ➜  Local:   http://localhost:4173/
+##[error]Process completed with exit code 1.
+```
+
+Der Server startet und meldet sich. Der `curl` daneben fragt
+`http://127.0.0.1:4173/` und bekommt dreißig Sekunden lang nichts.
+
+Ohne `--host` lauscht die Vorschau auf `localhost`. Auf dem GitHub-Runner
+löst dieser Name **zuerst nach `::1`** auf — der Server hört dann nur auf
+IPv6, während die Läufe IPv4 ansprechen. Auf dieser Maschine hier gibt es gar
+kein IPv6, `localhost` ist immer 127.0.0.1, und deshalb lief hier alles.
+
+Behoben mit `--host 0.0.0.0`: Der Server hört auf allen Schnittstellen.
+Beide Namen müssen funktionieren — `ohnenetz` braucht ausdrücklich
+`127.0.0.1` (auf `localhost` meldet sich kein Service Worker an, E-052), die
+übrigen sieben rufen `localhost`. Die Bereitschaftsprüfung fragt jetzt beide
+Namen ab und sagt im Fehlerfall, welcher fehlte.
+
+### Was das über die Arbeitsweise sagt
+
+E-054 und E-060 haben beide damit geschlossen, dass eine Prüfung „nur lief,
+wenn ein Mensch daran dachte" — und beide haben die Lösung in denselben Job
+gehängt. E-061 sagte „der Lauf hängt im Job `messungen` neben den fünf
+anderen". Alle drei Sätze waren wahr und alle drei waren wertlos: Der Job
+scheiterte vor dem ersten Lauf.
+
+Der Fehler war also nicht die Zeile YAML. Der Fehler war, **die Action nie
+aufgerufen zu haben**. Ich habe in E-054 und E-060 sogar aufgeschrieben, dass
+ich sie nicht ausführen kann — und daraus nicht den einen Schluss gezogen,
+der nahelag: dann sieh wenigstens nach, was sie tut.
+
+Das ist dieselbe Lehre wie in E-061, eine Ebene höher. Dort war eine Messung
+grün, ohne etwas zu messen. Hier war eine Prüfung eingerichtet, ohne je zu
+laufen. In beiden Fällen sah der Zustand von außen aus wie Erfolg.
+
+**Die Regel, die daraus folgt:** Eine Prüfung gilt erst als eingerichtet,
+wenn man sie **einmal grün gesehen hat, dort, wo sie laufen soll**. Nicht
+wenn sie geschrieben ist, nicht wenn sie lokal läuft, nicht wenn die YAML
+gültig ist.
+
+### Was geprüft wurde
+
+- Die Fehlerursache ist am Protokoll des Laufs abgelesen, nicht vermutet.
+- Dass ein nur auf IPv6 gebundener Server unter 127.0.0.1 nicht erreichbar
+  ist, ist hier nachgestellt.
+- Dass `--host 0.0.0.0` beide Namen bedient, ist hier gemessen: `127.0.0.1`
+  und `localhost` antworten beide.
+- Was **nicht** hier zu prüfen war: dass es auf dem Runner reicht. Das steht
+  im nächsten Lauf — und diesmal wird nachgesehen.

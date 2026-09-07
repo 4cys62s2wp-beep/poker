@@ -82,14 +82,24 @@ jobs:
         run: npm run build
       - name: Vorschau starten
         run: |
-          nohup npm run preview -- --port 4173 > preview.log 2>&1 &
+          # `--host 0.0.0.0` ist hier keine Kosmetik: Ohne Angabe lauscht die
+          # Vorschau auf `localhost`, und das löst auf dem Runner zuerst nach
+          # ::1 auf — der Server hört dann nur auf IPv6, während die Läufe
+          # 127.0.0.1 ansprechen. Genau daran ist dieser Job 63 Läufe lang
+          # gescheitert, ohne dass jemand hinsah (E-068). Beide Namen müssen
+          # gehen: `ohnenetz` braucht 127.0.0.1 (auf `localhost` meldet sich
+          # kein Service Worker an), die übrigen Läufe rufen `localhost`.
+          nohup npm run preview -- --port 4173 --host 0.0.0.0 > preview.log 2>&1 &
           for i in $(seq 1 30); do
             curl -sf -o /dev/null http://127.0.0.1:4173/ && break
             sleep 1
           done
           # Kommt sie nicht hoch, soll der Job hier scheitern und nicht in
-          # fünf Läufen mit unverständlichen Zeitüberschreitungen.
-          curl -sf -o /dev/null http://127.0.0.1:4173/ || { cat preview.log; exit 1; }
+          # sieben Läufen mit unverständlichen Zeitüberschreitungen.
+          for name in 127.0.0.1 localhost; do
+            curl -sf -o /dev/null "http://$name:4173/" \
+              || { echo "Vorschau unter $name nicht erreichbar"; cat preview.log; exit 1; }
+          done
       - name: Design (Kontrast, Größen, Farbmodi)
         run: npm run pruefen
       - name: Bedienbarkeit (Namen, Überschriften, Tastaturfokus)

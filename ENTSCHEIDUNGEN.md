@@ -3819,3 +3819,52 @@ an einer davon falsch — eine Zahl gehört an eine Stelle.
 Alle sechs Regeln einzeln rot gesehen: „Neun" statt „Elf", „26" statt „29",
 eine Zeile aus der Laufliste entfernt, `package.json` auf 2.3.0 gesetzt,
 „42 eigene Bildschirme" statt 41.
+
+---
+
+## E-066 · 2026-09-07 · Ein deutscher Satz, den keine Strukturprüfung sieht
+
+**Stand:** geprüft; nichts gefunden, Regel trotzdem eingezogen.
+
+`i18n.test.ts` vergleicht die beiden Sprachdateien: gleiche Module, gleiche
+Lektionen, gleiche Quizstruktur, gleiche Glossarbegriffe in derselben
+Reihenfolge — und dass **jeder** Schlüssel irgendwo benutzt wird. Das ist
+gründlich, und es hat eine blinde Stelle, die aus dem Vergleich selbst folgt:
+
+> Ein Satz, der gar nicht erst in einer Sprachdatei steht, kommt in keinem
+> Vergleich vor.
+
+Fest in eine Komponente geschriebener deutscher Text bleibt in der
+englischen Fassung stehen, und keine Strukturprüfung merkt es je.
+
+### Gesucht — und nichts gefunden
+
+Über den TypeScript-Parser gelesen (ein Regex wäre hier wertlos: Das Projekt
+ist durchgehend deutsch kommentiert, und jeder zweite Kommentar wäre ein
+Treffer). Geprüft an den beiden Stellen, an denen so etwas sichtbar wird:
+Text zwischen den Tags und die vier Attribute, die die Nutzerin liest —
+`aria-label`, `placeholder`, `title`, `alt`.
+
+**Null Funde.** Die Zweisprachigkeit ist sauber durchgezogen.
+
+Fest eingebauter Text ohne deutsche Merkmale gibt es dagegen sechzehnmal, und
+jedes Mal zu Recht: der Name „PokerMentor"; die Pokerbegriffe „Call",
+„Fold", „BB vs. BTN", „Pro", die in beiden Sprachen gleich heißen; die beiden
+Sprachnamen im Willkommensdialog, die absichtlich in ihrer eigenen Sprache
+stehen; und ein Dateiname im Einrichtungshinweis. Eine Regel „gar kein
+fester Text" hätte für diese sechzehn eine Ausnahmeliste gebraucht — und
+Ausnahmelisten verrotten. Die Regel sucht deshalb nach **deutschen**
+Merkmalen: Umlaute, ß und ein paar Wörter, die es nur auf Deutsch gibt.
+
+### Warum die Regel bleibt, obwohl nichts zu finden war
+
+Weil der Fehler beim nächsten Mal genauso unsichtbar wäre. Ein Entwickler,
+der schnell ein `title="Zurück zur Übersicht"` einträgt, tut nichts
+Auffälliges — er sieht die englische Fassung ja nicht. Die Regel kostet nichts
+(kein Browser, 1,3 Sekunden) und schlägt genau in dem Moment an, in dem
+niemand hinsieht.
+
+Gegenprobe: `title="Zurück zur Übersicht"` in `Layout.tsx` eingetragen →
+`src/components/Layout.tsx:202 [title] Zurück zur Übersicht`. Ein zweiter
+Test zählt die gefundenen Textknoten, damit die Regel nicht eines Tages grün
+ist, weil der Parser nichts mehr sieht.

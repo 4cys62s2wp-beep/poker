@@ -249,6 +249,7 @@ const bericht = {
   geprueft_am: new Date().toISOString(),
   grund: GRUND,
   breite: BREITE,
+  browser: browser.version(),
   service_worker_aktiv: swAktiv,
   kern_dateien_im_speicher: kern.gebraucht,
   gebaute_dateien: gebaut.length,

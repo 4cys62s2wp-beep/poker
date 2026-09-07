@@ -20,6 +20,7 @@ import { describe, expect, it } from 'vitest';
 
 const README = readFileSync('README.md', 'utf8');
 const STATUS = readFileSync('STATUS.md', 'utf8');
+const FIREBASE = readFileSync('FIREBASE_SETUP.md', 'utf8');
 const PROFILTEXTE = readFileSync('src/i18n/pages/profile.ts', 'utf8');
 const PAKET = JSON.parse(readFileSync('package.json', 'utf8')) as {
   scripts: Record<string, string>;
@@ -61,6 +62,17 @@ describe('README', () => {
     expect(anzahl).toBeGreaterThan(0);
     expect(README, `rules.test.ts hat ${anzahl} Prüfungen.`)
       .toContain(`mit ${anzahl} Tests gegen den echten Emulator`);
+  });
+});
+
+describe('FIREBASE_SETUP.md', () => {
+  /* Dieselbe Zahl steht ein zweites Mal in der Einrichtungsanleitung — und
+     stand dort noch auf 26, als das README längst 29 sagte. Eine Zahl an zwei
+     Stellen braucht an beiden dieselbe Prüfung. */
+  it('nennt die richtige Zahl der Regelprüfungen', () => {
+    const anzahl = (REGELN.match(/^\s*it\(/gm) ?? []).length;
+    expect(FIREBASE, `rules.test.ts hat ${anzahl} Prüfungen.`)
+      .toContain(`Regeln mit ${anzahl} Tests`);
   });
 });
 

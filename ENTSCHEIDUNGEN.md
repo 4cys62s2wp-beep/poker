@@ -4008,3 +4008,48 @@ gültig ist.
   und `localhost` antworten beide.
 - Was **nicht** hier zu prüfen war: dass es auf dem Runner reicht. Das steht
   im nächsten Lauf — und diesmal wird nachgesehen.
+
+---
+
+## E-069 · 2026-09-07 · Die dritte Prüfung, die nur auf Zuruf lief
+
+**Stand:** entschieden und umgesetzt.
+
+E-054 (Regeltests), E-060 (dieselben, wieder), E-068 (der ganze Messjob) —
+und beim Durchsehen der Werkzeuge fiel die nächste auf: die **336
+Python-Tests** unter `tools/poker-math`.
+
+Sie prüfen den Generator, der die Zahlen dieser App erzeugt hat: Outs,
+Pot-Odds, Kombinatorik, die Preflop-Equity-Matrix. Die App liest nur das
+Ergebnis — `pokermath.test.ts` prüft die ausgelieferten Dateien, aber nicht,
+wie sie entstanden sind.
+
+Hier ausgeführt, nachdem der Behälter neu gestartet war: **15 rot.** Alle
+fünfzehn mit `ModuleNotFoundError: No module named 'eval7'` — die
+Abhängigkeiten aus `requirements.txt` fehlten schlicht. Nach `pip install -r
+requirements.txt`: **336 grün, 1 übersprungen.**
+
+Kein Fehler im Code also. Aber ein Hinweis auf dasselbe Muster: Eine Prüfung,
+die eine eigene Einrichtung braucht, läuft irgendwann nicht mehr — und
+niemand merkt es, weil sie nicht rot wird, sondern gar nicht erst startet.
+
+Genau das ist auch die Zahl in `STATUS.md`: „336 Python-Tests grün" stand
+dort seit dem 27. August, ohne dass jemand nachrechnete. Sie stimmt — das war
+Glück, nicht Verfahren.
+
+Die Tests hängen jetzt im Job `messungen`, mit `actions/setup-python` und
+`pip install -r requirements.txt` davor. Eine Regel in `readme.test.ts` hält
+fest, dass der Schritt dort steht.
+
+### Warum nicht einfach löschen?
+
+Der Generator ist fertige Arbeit; die Matrix ist gerechnet und liegt als
+Binärdatei in der App. Man könnte argumentieren, dass ein archiviertes
+Werkzeug keine Prüfung braucht.
+
+Dagegen steht, was diese App über sich behauptet: Jede gezeigte Zahl ist
+gerechnet und nachvollziehbar. Die Nachvollziehbarkeit **ist** dieser
+Generator. Ohne seine Tests ist die Behauptung nur noch eine Erinnerung
+daran, dass sie einmal geprüft war.
+
+Kosten: knapp eine Minute im ohnehin nicht blockierenden Job.

@@ -127,6 +127,20 @@ jobs:
         # unter anderem, dass niemand fremde Handkarten liest, nicht einmal
         # der Gastgeber. Der Runner bringt Java mit.
         run: npm run test:rules
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Rechenwerkzeuge prüfen
+        # Die 336 Tests unter `tools/poker-math` prüfen den Generator, der die
+        # Zahlen der App erzeugt hat — Outs, Pot-Odds, Kombinatorik, die
+        # Preflop-Matrix. Die App liest nur das Ergebnis; ohne diese Tests
+        # prüft niemand mehr, wie es zustande kam. Sie liefen zuletzt nur,
+        # wenn ein Mensch daran dachte (dieselbe Lage wie E-054 und E-060).
+        run: |
+          cd tools/poker-math
+          pip install -q -r requirements.txt
+          python -m pytest -q
       - name: Abweichungen zeigen
         if: failure()
         run: git --no-pager diff --stat docs/ || true

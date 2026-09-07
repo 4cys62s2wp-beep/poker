@@ -65,6 +65,18 @@ describe('README', () => {
   });
 });
 
+describe('Die Rechenwerkzeuge', () => {
+  /* `tools/poker-math` erzeugt die Zahlen, die die App zeigt. Die App liest
+     nur das Ergebnis; ohne diese Tests prüft niemand mehr, wie es zustande
+     kam. Sie liefen zuletzt nur, wenn ein Mensch daran dachte — bis E-069.
+     Diese Regel hält fest, dass sie in der Action stehen. */
+  it('laufen in der Action mit', () => {
+    const workflow = readFileSync('.github/workflows/deploy.yml', 'utf8');
+    expect(workflow).toContain('cd tools/poker-math');
+    expect(workflow).toContain('python -m pytest -q');
+  });
+});
+
 describe('FIREBASE_SETUP.md', () => {
   /* Dieselbe Zahl steht ein zweites Mal in der Einrichtungsanleitung — und
      stand dort noch auf 26, als das README längst 29 sagte. Eine Zahl an zwei

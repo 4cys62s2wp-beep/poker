@@ -101,33 +101,43 @@ jobs:
               || { echo "Vorschau unter $name nicht erreichbar"; cat preview.log; exit 1; }
           done
       - name: Design (Kontrast, Größen, Farbmodi)
+        if: '!cancelled()'
         run: npm run pruefen
       - name: Bedienbarkeit (Namen, Überschriften, Tastaturfokus)
+        if: '!cancelled()'
         run: npm run bedienbar
       - name: Erreichbarkeit für den Daumen
+        if: '!cancelled()'
         run: npm run daumen
       - name: Wege und Sackgassen
+        if: '!cancelled()'
         run: npm run wege
       - name: Jeder Bildschirm ohne Netz
+        if: '!cancelled()'
         run: npm run ohnenetz
       - name: Jeder Bildschirm ohne Gerätespeicher
+        if: '!cancelled()'
         # Privates Fenster, gesperrte Website-Daten: Dann wirft schon der
         # Lesezugriff auf `localStorage`. Der Quelltext ist dagegen
         # abgesichert (`speichersperre.test.ts`) — dieser Lauf prüft, was
         # der Quelltext nicht zeigen kann: die Fremdbibliotheken.
         run: npm run speichersperre
       - name: Maße des Übungstisches
+        if: '!cancelled()'
         run: npm run tisch
       - name: Ein Durchgang durch die App
+        if: '!cancelled()'
         # 38 Schritte vom ersten Start bis zum abgerechneten Abend. Der
         # gründlichste Lauf des Projekts — und der einzige, dessen Ergebnis
         # bis E-070 nur so frisch war wie der letzte Aufruf von Hand.
         run: npm run durchgang
       - name: Das Handy quer
+        if: '!cancelled()'
         # Alle anderen Läufe messen hochkant. Quer bleibt ein Fünftel der
         # Höhe — und niedrige Höhe bricht Layouts anders als schmale Breite.
         run: npm run quer
       - name: Java 21 einrichten
+        if: '!cancelled()'
         # firebase-tools verlangt seit 15.x mindestens Java 21; der Runner
         # bringt von Haus aus eine ältere Fassung mit, und der Emulator
         # bricht mit „no longer supports Java version before 21" ab. In
@@ -138,6 +148,7 @@ jobs:
           distribution: temurin
           java-version: '21'
       - name: Sicherheitsregeln gegen den Emulator
+        if: '!cancelled()'
         # Diese 29 Prüfungen sind aus `npm test` ausgeschlossen, weil sie
         # Java und den Firestore-Emulator brauchen — und liefen deshalb nur,
         # wenn jemand daran dachte. Sie sind die Zugriffsgrenze der Cloud:
@@ -145,10 +156,12 @@ jobs:
         # der Gastgeber. Der Runner bringt Java mit.
         run: npm run test:rules
       - name: Python einrichten
+        if: '!cancelled()'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Rechenwerkzeuge prüfen
+        if: '!cancelled()'
         # Die 336 Tests unter `tools/poker-math` prüfen den Generator, der die
         # Zahlen der App erzeugt hat — Outs, Pot-Odds, Kombinatorik, die
         # Preflop-Matrix. Die App liest nur das Ergebnis; ohne diese Tests

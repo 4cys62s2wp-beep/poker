@@ -158,12 +158,27 @@ jobs:
           cd tools/poker-math
           pip install -q -r requirements.txt
           python -m pytest -q
+      - name: Befunde zusammenfassen
+        if: failure()
+        # Ganz am Ende und kurz: Beim ersten wirklich gelaufenen Job stand
+        # hier „docs/ohnenetz.json | 461 +++…", und was die 461 Zeilen
+        # sagten, war nirgends zu lesen — der volle Diff wiederum ist so
+        # lang, dass die Meldung des Laufs oben herausfällt.
+        run: |
+          node -e '
+            const { readdirSync, readFileSync } = require("node:fs");
+            for (const d of readdirSync("docs").filter((f) => f.endsWith(".json"))) {
+              let j; try { j = JSON.parse(readFileSync("docs/" + d, "utf8")); } catch { continue; }
+              const n = j.befunde_gesamt ?? (Array.isArray(j.befunde) ? j.befunde.length : null);
+              if (n === null || n === 0) continue;
+              console.log(`\n=== ${d}: ${n} Befunde ===`);
+              console.log("Arten:", JSON.stringify(j.je_art ?? {}));
+              for (const b of (j.befunde ?? []).slice(0, 8)) console.log("  ", JSON.stringify(b));
+            }
+          ' || true
       - name: Abweichungen zeigen
         if: failure()
-        # Vollständig, nicht nur die Statistik: Beim ersten wirklich
-        # gelaufenen Job stand hier „docs/ohnenetz.json | 461 +++…" — und
-        # was die 461 Zeilen sagten, war nirgends zu lesen.
-        run: git --no-pager diff docs/ || true
+        run: git --no-pager diff --stat docs/ || true
 
   deploy:
     needs: build

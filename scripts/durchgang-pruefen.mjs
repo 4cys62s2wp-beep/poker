@@ -1236,3 +1236,13 @@ for (const s of schritte) {
 }
 if (seitenfehler.length) console.log(`\nFehler im Browser: ${seitenfehler.join(' | ')}`);
 console.log(fehler ? `\nABGEBROCHEN: ${fehler}` : '\nDurchgang vollständig.');
+
+/* Ein Lauf, der Befunde meldet und trotzdem mit 0 endet, lässt den Schritt in
+   der Action grün aussehen (E-071). Abbruch, ein gescheiterter Schritt oder
+   ein Fehler im Browser sind Befunde. */
+const gescheitert = schritte.filter((s) => s.fehler).length;
+if (fehler || gescheitert > 0 || seitenfehler.length > 0) {
+  console.error(`\n${gescheitert} gescheiterte Schritte, ${seitenfehler.length} Browserfehler`
+    + ` — siehe docs/durchgang.json`);
+  process.exitCode = 1;
+}

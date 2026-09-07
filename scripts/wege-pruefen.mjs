@@ -169,3 +169,11 @@ console.log(`Im Quelltext angemeldet, aber nicht erreichbar: ${unerreichbar.leng
 for (const p of unerreichbar) console.log(`   ${p}`);
 
 await browser.close();
+
+/* Ein Lauf, der Befunde meldet und trotzdem mit 0 endet, lässt den Schritt in
+   der Action grün aussehen — und genau das ist passiert (E-071). Wer misst,
+   muss auch scheitern können. */
+if (sackgassen.length + zuTief.length + unerreichbar.length > 0) {
+  console.error(`\nSackgassen/zu tief/unerreichbar: ${sackgassen.length}/${zuTief.length}/${unerreichbar.length} — siehe docs/wege.json`);
+  process.exitCode = 1;
+}

@@ -509,3 +509,11 @@ for (const s of stellen.slice(0, 10)) {
       : s.art === 'tippflaechen-zu-eng' ? ` (${b.abstand_px} px)` : '';
   console.log(`  ${String(s.bildschirme.length).padStart(3)}×  [${s.modus}] ${s.marke}${zusatz}`);
 }
+
+/* Ein Lauf, der Befunde meldet und trotzdem mit 0 endet, lässt den Schritt in
+   der Action grün aussehen — und genau das ist passiert (E-071). Wer misst,
+   muss auch scheitern können. */
+if (befunde.length > 0) {
+  console.error(`\n${befunde.length} Befunde — siehe docs/pruefung.json`);
+  process.exitCode = 1;
+}

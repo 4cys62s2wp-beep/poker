@@ -202,3 +202,18 @@ for (const m of messungen) {
   for (const a of m.angaben) console.log(`    ${a.schriftgroesse_px.toString().padStart(6)} px  ${a.text}`);
 }
 console.log(`\nNötig für zwei Meter Leseabstand: ${ergebnis.leseabstand.noetige_schriftgroesse_px} px`);
+
+/* Ein Lauf, der Befunde meldet und trotzdem mit 0 endet, lässt den Schritt in
+   der Action grün aussehen (E-071). Am Tisch sind es zwei: seitlicher Überlauf
+   und eine zu kleine größte Angabe für zwei Meter Leseabstand. */
+const noetig = ergebnis.leseabstand.noetige_schriftgroesse_px;
+const maengel = [];
+for (const m of messungen) {
+  if (m.seitlicher_ueberlauf_px > 1) maengel.push(`${m.geraet}: ${m.seitlicher_ueberlauf_px} px seitlicher Überlauf`);
+  const groesste = Math.max(...m.angaben.map((a) => a.schriftgroesse_px));
+  if (groesste < noetig) maengel.push(`${m.geraet}: größte Angabe ${groesste} px, nötig ${noetig} px`);
+}
+if (maengel.length) {
+  console.error(`\n${maengel.length} Befunde:\n  ${maengel.join('\n  ')}`);
+  process.exitCode = 1;
+}

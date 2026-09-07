@@ -19,6 +19,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const README = readFileSync('README.md', 'utf8');
+const STATUS = readFileSync('STATUS.md', 'utf8');
 const PROFILTEXTE = readFileSync('src/i18n/pages/profile.ts', 'utf8');
 const PAKET = JSON.parse(readFileSync('package.json', 'utf8')) as {
   scripts: Record<string, string>;
@@ -60,6 +61,30 @@ describe('README', () => {
     expect(anzahl).toBeGreaterThan(0);
     expect(README, `rules.test.ts hat ${anzahl} Prüfungen.`)
       .toContain(`mit ${anzahl} Tests gegen den echten Emulator`);
+  });
+});
+
+describe('STATUS.md', () => {
+  /* Die Übergabedatei sagt von sich, eine frische Sitzung könne **nur** sie
+     lesen und wisse Bescheid. Dieser Anspruch steht und fällt damit, dass
+     ihre Zahlen stimmen — im Sommer standen dort sechs Messläufe, während es
+     elf waren, und ein Rechenlauf im Präsens, den es nicht mehr gab. */
+  it('nennt so viele Messläufe, wie es gibt', () => {
+    const anzahl = messlaeufe().length;
+    expect(STATUS, `Es gibt ${anzahl} Messläufe.`)
+      .toContain(`| Messläufe im Browser | ${ZAHLWORT[anzahl].toLowerCase()},`);
+  });
+
+  it('nennt die richtige Zahl der Regelprüfungen', () => {
+    const anzahl = (REGELN.match(/^\s*it\(/gm) ?? []).length;
+    expect(STATUS).toContain(`${anzahl} Regelprüfungen`);
+  });
+
+  it('nennt keine Testzahl, die niemand nachrechnet', () => {
+    /* Eine Gesamtzahl grüner Tests veraltet mit jedem Commit. Sie gehört in
+       die Ausgabe von `npm test`, nicht in ein Dokument. */
+    const kopf = STATUS.slice(0, STATUS.indexOf('<!-- NACHTLAUF-ANFANG -->'));
+    expect(kopf).not.toMatch(/\d{3,} (JavaScript-)?Tests/);
   });
 });
 

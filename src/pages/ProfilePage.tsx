@@ -59,6 +59,11 @@ export function ProfilePage() {
       const ok = importJson(String(reader.result ?? ''));
       setImportStatus(ok ? 'ok' : 'error');
     };
+    /* Ohne diese Zeile passiert bei einer unlesbaren Datei gar nichts: kein
+       Haken, kein Fehler, keine Erklärung. Eine Datei, die zwischen Auswahl
+       und Lesen verschwindet oder für die die Berechtigung fehlt, ist selten
+       — aber „nichts passiert" ist die schlechteste aller Antworten. */
+    reader.onerror = () => setImportStatus('error');
     reader.readAsText(file);
   }
 

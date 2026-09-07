@@ -96,6 +96,7 @@ npm run wege           # Wege, Tiefe, Sackgassen
 npm run durchgang      # Ein Durchgang durch die App, Schritt für Schritt
 npm run ohnenetz       # Jeder Bildschirm ohne Netz (braucht 127.0.0.1, nicht localhost)
 npm run speichersperre # Jeder Bildschirm bei gesperrtem localStorage (privates Fenster)
+npm run quer           # Jeder Bildschirm quer (844 × 390)
 npm run tisch          # Maße des Übungstisches
 npm run binaer         # Größe und Genauigkeit der Equity-Matrix
 npm run streuung       # Verstreute Zahlenwerte zählen (Ratsche)

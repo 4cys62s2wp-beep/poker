@@ -90,3 +90,24 @@ describe('Die Wegeliste passt zu den angemeldeten Adressen', () => {
     expect(W.absichtlich_unverlinkt.length).toBeLessThanOrEqual(3);
   });
 });
+
+/* DESIGN.md nennt dieselben Zahlen noch einmal im Fließtext — 41 Bildschirme,
+   Tiefe 2, null Sackgassen. Das ist eine Abschrift, und Abschriften veralten:
+   Direkt darüber stand ein Messdatum, das ein Vierteljahr alt war. Also wird
+   die Abschrift gegen die Quelle geprüft. */
+describe('DESIGN.md gibt die gemessenen Wege richtig wieder', () => {
+  const TEXT = readFileSync('DESIGN.md', 'utf8');
+
+  it('nennt die gemessene Zahl eigener Bildschirme', () => {
+    expect(TEXT).toContain(`**${W.bildschirme} eigene Bildschirme**`);
+  });
+
+  it('nennt die gemessene größte Tiefe', () => {
+    expect(TEXT).toContain(`größte Tiefe **${W.groesste_tiefe}**`);
+  });
+
+  it('behauptet nur dann null Sackgassen, wenn es null sind', () => {
+    if (TEXT.includes('**null Sackgassen**')) expect(W.sackgassen).toEqual([]);
+    if (TEXT.includes('**null unerreichbare Adressen**')) expect(W.unerreichbar).toEqual([]);
+  });
+});

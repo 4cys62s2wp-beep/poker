@@ -3740,3 +3740,58 @@ schützen soll, tritt nicht ein, und zehn Spieler mit solchen Namen kosten
 gibt es weder `element.animate()` noch `requestAnimationFrame`-Schleifen noch
 `scrollIntoView({ behavior: 'smooth' })`. Die beiden `window.scrollTo(0, 0)`
 springen ohne Animation. Es gibt also keine Bewegung an der Regel vorbei.
+
+---
+
+## E-065 · 2026-09-07 · Beim Nachlesen von vorne: zwei falsche Zahlen im README
+
+**Stand:** entschieden und umgesetzt.
+
+Der Durchgang von vorne durch die eigenen Dokumente — nicht durch den Code —
+förderte drei Stellen zutage, an denen die Dokumentation etwas behauptete,
+was nicht mehr stimmte:
+
+| Stelle | Stand dort | Wirklich |
+|---|---|---|
+| README, Messläufe | „Neun Läufe" | **elf** |
+| README, Sicherheit | „26 Tests" gegen den Emulator | **29** |
+| DESIGN.md, Wege | „Stand 2026-08-27T08:03:15Z" | gemessen am 2026-09-06 |
+
+Keine davon war je gelogen. Alle drei haben einmal gestimmt und sind
+liegengeblieben, während die Sache weiterwuchs. Genau so veraltet
+Dokumentation: nicht durch Nachlässigkeit im Moment, sondern durch
+Wachstum danach.
+
+### Warum das mehr als ein Tippfehler ist
+
+Dieses Projekt begründet fast jede Entscheidung mit einer gemessenen Zahl.
+Wenn die Zahlen in der Dokumentation nicht nachgerechnet werden, ist die
+Begründung nur noch ein Stil. Eine Zahl ist eine Behauptung wie jede andere —
+wer sie nicht prüfen lässt, hat sie aufgeschrieben, nicht belegt.
+
+### Was jetzt nachgerechnet wird
+
+`readme.test.ts` und ein Zusatz in `wege.test.ts` rechnen vier Behauptungen
+aus ihrer Quelle nach:
+
+- **Wie viele Messläufe es gibt** — gezählt in `package.json`, verglichen mit
+  dem Zahlwort im README. Die Zahlwörter bleiben ausgeschrieben („Elf Läufe"
+  liest sich besser als „11 Läufe"); der Test kennt sie deshalb bis zwanzig.
+- **Dass jeder Lauf auch einzeln im README steht** — ein Lauf, den niemand
+  findet, wird von niemandem ausgeführt.
+- **Wie viele Regelprüfungen es gibt** — gezählt in `rules.test.ts`.
+- **Welche Version unter dem Profil steht** — verglichen mit `package.json`,
+  und zwar in beiden Sprachen. Das ist die einzige Stelle, an der die App
+  der Nutzerin sagt, welchen Stand sie vor sich hat.
+
+Dazu die Zahlen aus `docs/wege.json`, die in DESIGN.md ein zweites Mal im
+Fließtext stehen: 41 Bildschirme, Tiefe 2, null Sackgassen.
+
+Das doppelte Messdatum ist ersatzlos weg. Es stand an zwei Stellen und war
+an einer davon falsch — eine Zahl gehört an eine Stelle.
+
+### Gegenproben
+
+Alle sechs Regeln einzeln rot gesehen: „Neun" statt „Elf", „26" statt „29",
+eine Zeile aus der Laufliste entfernt, `package.json` auf 2.3.0 gesetzt,
+„42 eigene Bildschirme" statt 41.

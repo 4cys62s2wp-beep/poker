@@ -232,7 +232,9 @@ geprüft.
 ## 7. Wege und Tiefen
 
 Gemessen am **gerenderten** Ergebnis bei 390 Pixel Breite mit
-`npm run wege`. Ergebnis in `docs/wege.json`, Stand 2026-08-27T08:03:15Z.
+`npm run wege`. Ergebnis in `docs/wege.json` — dort steht auch, wann zuletzt
+gemessen wurde. (Hier stand das Datum einmal doppelt und war ein Vierteljahr
+alt; eine Zahl gehört an eine Stelle.)
 
 **41 eigene Bildschirme**, größte Tiefe **2**, **null Sackgassen**, **null unerreichbare Adressen**.
 

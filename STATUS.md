@@ -31,8 +31,14 @@ eine veraltete Zahl ist schlechter als keine — genau daran ist dieser
 Abschnitt schon einmal gescheitert (E-065). Die Zahl der Messläufe und der
 Regelprüfungen rechnet `readme.test.ts` dagegen aus der Quelle nach.
 
-**Was noch offen ist,** steht weiter unten unter „Was als Nächstes zu tun
-ist": die Herkunftsanzeige über den Drill hinaus und die Anzeige der
+**Der wichtigste offene Punkt** steht im `BACKLOG.md`: Unter aktuellem
+Chromium bleibt beim Offline-Versuch jeder Bildschirm leer, unter dem hier
+verfügbaren Chromium 141 nicht. Der Schritt „Jeder Bildschirm ohne Netz"
+bleibt deshalb in der Action rot — absichtlich (E-071). Alle übrigen zwölf
+Prüfungen laufen dort grün durch.
+
+**Was sonst noch offen ist,** steht weiter unten unter „Was als Nächstes zu
+tun ist": die Herkunftsanzeige über den Drill hinaus und die Anzeige der
 Befunde. Beides ist Ausbau, kein Mangel. Dazu die eine Entscheidung, die ein
 Mensch treffen muss (B-007).
 

@@ -3868,3 +3868,70 @@ Gegenprobe: `title="Zurück zur Übersicht"` in `Layout.tsx` eingetragen →
 `src/components/Layout.tsx:202 [title] Zurück zur Übersicht`. Ein zweiter
 Test zählt die gefundenen Textknoten, damit die Regel nicht eines Tages grün
 ist, weil der Parser nichts mehr sieht.
+
+---
+
+## E-067 · 2026-09-07 · 800 Millisekunden gegen das Offline-Versprechen
+
+**Stand:** entschieden — **nicht** umgesetzt, mit Zahlen.
+
+Beim Nachrechnen des Auslieferungspakets fiel auf: Die deutschen Lerninhalte
+(556 KB Quelltext, neun Module) liegen fest im Startpaket. Die **englischen**
+werden nachgeladen (`import('../content/en')`), die deutschen nicht. Wer die
+Startseite öffnet, lädt neun Module Fließtext mit, die er dort nicht braucht.
+
+Also gemessen, wie viel das kostet: gedrosselt auf reguläres 4G (1,6 Mbit/s,
+150 ms Latenz), fünf frische Kontexte je Fassung, Median.
+
+| | Bis zur ersten Darstellung | Übertragen |
+|---|---|---|
+| Wie ausgeliefert | **2520 ms** | **496 KB** |
+| Ohne die Lerninhalte im Startpaket | **1708 ms** | **331 KB** |
+| Unterschied | **812 ms** | **165 KB** |
+
+Die zweite Zeile ist eine Obergrenze: Dafür wurden die neun Module durch
+leere Platzhalter ersetzt — mehr als diese 812 ms kann eine Aufteilung nicht
+einbringen.
+
+### Warum es trotzdem nicht gemacht wird
+
+**Erstens gilt der Gewinn nur beim allerersten Aufruf.** Danach liefert der
+Service Worker die Dateien aus dem Zwischenspeicher (cache-first für Assets);
+der Unterschied ist dann exakt null.
+
+**Zweitens steht dem das Kernversprechen gegenüber.** Diese App soll im Zug
+funktionieren — `ohnenetz` weist das für alle 90 Bildschirme nach. Der
+Zwischenspeicher füllt sich beim ersten Abruf, nicht beim Installieren: Nur
+die Hülle und die gerechneten Zahlen stehen in der Vorablade-Liste des
+Service Workers. Ein nachgeladenes Inhaltspaket wäre also erst nach dem
+ersten Lektionsbesuch offline verfügbar. Wer die App installiert und im Zug
+zum ersten Mal eine Lektion öffnet, stünde vor einem Ladefehler — und
+`ohnenetz` würde für alle Lektionsbildschirme rot.
+
+**Drittens hilft die naheliegende Reparatur nicht.** Nimmt man das Paket in
+die Vorablade-Liste auf, lädt der erste Aufruf wieder alles — dieselben
+496 KB, nur in anderer Reihenfolge. Der Erstaufruf würde früher *etwas*
+zeigen und dabei im Hintergrund weiterladen. Dafür bräuchte die Vorablade-
+Liste die gehashten Dateinamen aus dem Build, also eine erzeugte
+Datei-Liste im Service Worker — heute steht dort eine kurze Liste von Hand
+plus ein von `npm run daten` erzeugter Datenblock.
+
+**Viertens ist die Sprache nicht symmetrisch.** Dass Englisch nachgeladen
+wird, ist richtig: Es ist die Zweitsprache, und wer sie wählt, tut das
+bewusst und online. Deutsch ist die Vorgabe. Die Vorgabe hinter einen
+Netzabruf zu legen, ist etwas anderes, als eine Wahlmöglichkeit
+nachzuladen — deshalb hat der englische Pfad drei Wiederholversuche, einen
+Fehlerzustand und ein Wiederaufgreifen bei `online`. Diese Maschinerie
+bräuchte der deutsche Pfad genauso.
+
+### Was stattdessen gilt
+
+812 ms einmalig gegen ein Versprechen, das die App an jedem Bildschirm
+einlöst — das ist kein guter Tausch. Sollte sich der Inhalt vervielfachen
+(mehr Module, Bilder), ändert sich die Rechnung; dann ist der Weg eine
+erzeugte Vorablade-Liste plus Nachladen, nicht Nachladen allein.
+
+Die Zahlen sind hier festgehalten und nicht in einem Lauf: Eine gedrosselte
+Zeitmessung auf einem geteilten CI-Rechner schwankt zu stark, um sie
+festzunageln. Was sich festnageln lässt, ist längst festgenagelt — dass die
+Startseite keine Dateien holt, die sie nicht braucht, prüft der Durchgang.

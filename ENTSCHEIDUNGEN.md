@@ -3535,3 +3535,109 @@ muss auch fragen „ist es der *richtige* Inhalt?".
 Rückwirkend angewandt: `ohnenetz` (E-052) sucht die Absturzseite jetzt
 ebenfalls und wurde neu gemessen — weiterhin 90 von 90, null Befunde. Die
 Lücke war dort nie aufgegangen, aber sie war offen.
+
+---
+
+## E-062 · 2026-09-07 · Gespeichert sah es aus
+
+**Stand:** entschieden und umgesetzt.
+
+Die Frage nach E-061 lag nahe: Der Speicher kann nicht nur **gesperrt** sein,
+er kann auch **voll** sein. Dann wirft `localStorage.setItem` einen
+`QuotaExceededError`, und alles andere funktioniert weiter.
+
+`durableSet` hatte dafür längst eine Zeile:
+
+```ts
+try { localStorage.setItem(key, value); }
+catch { /* localStorage voll/gesperrt – Spiegel versucht es trotzdem */ }
+mirrorSet(key, value);
+```
+
+Gemessen, was daraus wird — Namen im Profil ändern, Speicher voll, speichern:
+
+| | |
+|---|---|
+| Feld zeigt | „Zweiter Name" |
+| In `localStorage` steht | „Erster Name" |
+| Hinweis an die Nutzerin | keiner |
+| Fehler in der Konsole | keiner |
+| **Nach dem Neustart** | **„Erster Name"** |
+
+Die Eingabe war weg. Ohne ein Wort.
+
+### Warum der vorhandene Spiegel nicht half
+
+Der IndexedDB-Spiegel hatte „Zweiter Name" bekommen — `mirrorSet` läuft ja
+unabhängig. Nur holt ihn niemand: `restoreFromMirrorIfNeeded()` stellt nur
+wieder her, wenn in `localStorage` **kein** Fortschrittsschlüssel liegt. Hier
+lag einer. Ein alter.
+
+Das Sicherheitsnetz war für den Fall gebaut, dass `localStorage` **geleert**
+wird. Für den Fall, dass es **veraltet**, war es blind — und das ist der
+häufigere.
+
+### Wer führt
+
+Bisher implizit: `localStorage`, weil es zuerst geschrieben wird. Ab jetzt
+explizit, und mit einer Ausnahme:
+
+> Normalerweise führt `localStorage`. Lehnt es einen Schreibvorgang ab, führt
+> von diesem Moment an der Spiegel.
+
+Festgehalten wird das mit einer Marke — im Spiegel, nicht in `localStorage`:
+Dort war ja gerade kein Platz. Sie trägt bewusst nicht das Präfix der App,
+damit sie beim Wiederherstellen nicht selbst als Datensatz zurückgeschrieben
+wird. Beim nächsten Start sieht `restoreFromMirrorIfNeeded()` die Marke und
+schreibt den Spiegel zurück — diesmal **überschreibend**, nicht ergänzend.
+Gelingt auch das nicht (immer noch kein Platz), bleibt die Marke stehen und
+der nächste Start versucht es wieder.
+
+Die Marke wird nur bei einem **Wechsel** geschrieben, nicht bei jedem
+Speichern: Ein voller Speicher lässt jede Änderung scheitern, und ein
+IndexedDB-Schreibvorgang je Tastendruck wäre Lärm mit Kosten.
+
+### Und gesagt wird es auch
+
+`durableSet` gibt jetzt zurück, ob `localStorage` den Wert genommen hat. Beim
+Wechsel von „nimmt" zu „nimmt nicht" erscheint ein Hinweis:
+
+> **Nicht auf dem Gerät gespeichert**
+> Der Speicher ist voll. Beim nächsten Start holt die App diesen Stand aus
+> ihrer Sicherung — schaffe trotzdem Platz.
+
+Beides zusammen, nicht eines davon. Ein Hinweis ohne Rettung wäre eine
+Entschuldigung; eine Rettung ohne Hinweis ließe die Nutzerin im Glauben, alles
+sei in Ordnung, während sie in Wahrheit auf einem Gerät arbeitet, das nichts
+mehr annimmt. Steht als Regel 10.17 in `DESIGN.md`.
+
+### Was das kostet
+
+`restoreFromMirrorIfNeeded()` muss die Marke lesen, bevor es die alte
+Abkürzung nehmen darf — der Spiegel wird also bei **jedem** Start geöffnet,
+nicht nur wenn `localStorage` leer aussieht. Und das hält den ersten Anblick
+auf, denn die Funktion läuft vor `render()`.
+
+Gemessen statt geschätzt, zwölf Neustarts je Fassung, Median des First
+Contentful Paint:
+
+| | |
+|---|---|
+| Ohne die Änderung | **48 ms** |
+| Mit der Änderung | **48 ms** |
+
+Der Unterschied liegt unter dem Rauschen. Die Datenbank ist zu diesem
+Zeitpunkt ohnehin gleich zu öffnen — die Änderung zieht das nur ein paar
+Millisekunden vor.
+
+### Gegenproben
+
+- **Rückgabewert** (`storage.test.ts`, ohne Browser): Ein Ersatzspeicher, der
+  auf Kommando wirft. `return gelungen` durch `return true` ersetzt → rot.
+- **Ganzer Weg** (`npm run speichersperre`, zweiter Teil): Beide Dateien auf
+  den Stand davor zurückgesetzt, neu gebaut, gemessen → „kein Hinweis, dass
+  nicht gespeichert werden konnte". Mit der Änderung: Hinweis kommt, und nach
+  dem Neustart steht „Zweiter Name".
+
+Der zweite Teil hängt am selben Lauf wie E-061, weil es dieselbe Frage aus
+zwei Richtungen ist: Was tut die App, wenn das Gerät ihre Daten nicht nimmt.

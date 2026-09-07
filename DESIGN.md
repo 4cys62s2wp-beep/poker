@@ -799,6 +799,30 @@ Datei), und ein **anderer Startfokus** als das erste Element, wo das erste
 Element etwas verlangt (die Paywall setzt ihn auf „später", nicht auf den
 Kaufknopf).
 
+### Regel 10.17 — Was nicht gespeichert werden konnte, muss gesagt werden
+
+Eine Eingabe steht auf dem Schirm. Das ist die Zusage, dass sie angekommen
+ist. Wenn der Speicher sie ablehnt — voll, gesperrt —, dann ist der Bildschirm
+in diesem Moment eine Unwahrheit, und die Nutzerin erfährt sie erst beim
+nächsten Start, wenn ihr Abend fehlt.
+
+Bis E-062 war genau das der Fall: `durableSet` fing den `QuotaExceededError`
+ab und sagte niemandem etwas. Gemessen mit vollem Speicher: Feld zeigt
+„Zweiter Name", Speicher enthält „Erster Name", nach dem Neustart steht dort
+„Erster Name". Kein Hinweis, keine Fehlermeldung, nichts in der Konsole.
+
+Zwei Dinge folgen daraus, und beide sind nötig:
+
+1. **Sagen.** Ein Hinweis in dem Augenblick, in dem es passiert — einmal beim
+   Wechsel des Zustands, nicht bei jedem Tastendruck.
+2. **Retten.** Der Hinweis allein wäre eine Entschuldigung. Der Spiegel in
+   IndexedDB hat den neueren Stand ohnehin bekommen; seit E-062 merkt sich
+   die App, dass er führt, und holt ihn beim nächsten Start zurück.
+
+Der Hinweis darf deshalb sagen, dass nichts verloren ist — weil nichts
+verloren ist. Ein Hinweis, der beruhigt, ohne dass die Rettung dahintersteht,
+wäre schlimmer als keiner.
+
 ### Was diese Regeln festhält
 
 `durchgang.test.ts` prüft am gerenderten Ergebnis: kein Scrollen, die

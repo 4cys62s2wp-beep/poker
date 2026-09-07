@@ -150,6 +150,7 @@ interface Sperre {
   sperre_wirkt: boolean;
   bildschirme: number;
   geladen: number;
+  voller_speicher: { hinweis: string; stand_nach_neustart: string; erwartet: string } | null;
   befunde_gesamt: number;
   je_art: Record<string, number>;
   befunde: Befund[];
@@ -178,5 +179,18 @@ describe('Messung mit gesperrtem Speicher', () => {
   it('zeigt nirgends die Absturzseite statt des Bildschirms', () => {
     expect(S.befunde.slice(0, 10), `${S.befunde_gesamt} Befunde`).toEqual([]);
     expect(S.befunde_gesamt).toBe(0);
+  });
+});
+
+describe('voller Speicher', () => {
+  it('sagt der Nutzerin, dass nicht gespeichert werden konnte', () => {
+    // Schweigen wäre hier eine Unwahrheit: Die Eingabe steht auf dem Schirm.
+    expect(S.voller_speicher).not.toBeNull();
+    expect(S.voller_speicher?.hinweis ?? '').toMatch(/gespeichert|saved/i);
+  });
+
+  it('rettet den neueren Stand über den Neustart', () => {
+    // Der Kern von E-062: Der Spiegel führt, sobald localStorage ablehnt.
+    expect(S.voller_speicher?.stand_nach_neustart).toBe(S.voller_speicher?.erwartet);
   });
 });

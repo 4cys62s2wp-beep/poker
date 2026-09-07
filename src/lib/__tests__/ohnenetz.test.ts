@@ -18,6 +18,7 @@ import { describe, expect, it } from 'vitest';
 interface Befund { adresse: string; art: string; text: string }
 interface OhneNetz {
   geprueft_am: string;
+  browser: string;
   grund: string;
   breite: number;
   service_worker_aktiv: boolean;
@@ -55,6 +56,15 @@ describe('Ohne Netz', () => {
   it('lässt keinen Bildschirm leer oder ewig am Laden', () => {
     expect(O.befunde.slice(0, 10), `${O.befunde_gesamt} Befunde`).toEqual([]);
     expect(O.befunde_gesamt).toBe(0);
+  });
+
+  it('nennt den Browser, mit dem gemessen wurde', () => {
+    /* Ohne diese Angabe ist ein abweichendes Ergebnis ein Rätsel: Hier lief
+       Chromium 141, auf dem CI-Runner die jeweils neueste Fassung — und beide
+       verhalten sich beim Offline-Betrieb unterschiedlich (E-071, offener
+       Punkt im Backlog). Eine Messung, die ihren Browser nicht nennt, ist
+       nicht nachvollziehbar. */
+    expect(O.browser).toMatch(/^\d+\./);
   });
 
   it('hat jede gebaute Datei im Zwischenspeicher', () => {

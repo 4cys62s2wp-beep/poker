@@ -4190,6 +4190,27 @@ Der Kopf des Laufs sagt beides jetzt in dieser Deutlichkeit. Eine Prüfung,
 die mehr behauptet, als sie zeigt, ist schlimmer als keine — das ist die
 Lehre aus E-061, hier zum zweiten Mal.
 
+### Was offen bleibt — und rot bleiben soll
+
+Mit dem berichtigten Lauf meldet der CI-Runner **90 Befunde: jeder Bildschirm
+null Zeichen.** Hier sind es null Befunde. Gleicher Quelltext, gleicher Build
+— anderer Browser: hier Chromium 141, auf dem Runner die jeweils neueste
+Fassung, weil dort `npm i playwright` ohne Versionsangabe läuft.
+
+Dieselbe Richtung zeigt der Versuch mit abgeschaltetem Server: auch hier
+leere Bildschirme. Zwei Verfahren, ein Befund — es spricht mehr dafür, dass
+der Offline-Betrieb unter aktuellen Browsern **nicht** hält, als dagegen.
+
+Die Versuchung wäre jetzt, den Browser in der Action festzunageln, bis es
+wieder grün ist. Das wäre genau der Fehler, den diese ganze Reihe aufdeckt.
+Der Lauf bleibt also rot, und der Punkt steht als offener Eintrag im
+`BACKLOG.md` — mit allem, was gemessen ist, und mit dem, was fehlt: ein
+Chromium in der Fassung des Runners auf einer Maschine, auf der man ihn
+beobachten kann.
+
+Damit ein abweichendes Ergebnis künftig kein Rätsel ist, steht die
+Browserfassung jetzt in jedem Bericht.
+
 ### Und der Java-Fehler nebenbei
 
 `npm run test:rules` scheiterte auf dem Runner mit „firebase-tools no longer

@@ -3642,15 +3642,39 @@ Millisekunden vor.
 Der zweite Teil hängt am selben Lauf wie E-061, weil es dieselbe Frage aus
 zwei Richtungen ist: Was tut die App, wenn das Gerät ihre Daten nicht nimmt.
 
+### Was diese Lösung nicht kann
+
+Die Marke wird über denselben Weg geschrieben wie der Spiegel selbst —
+fire-and-forget in IndexedDB. Zwei Grenzen folgen daraus, und beide sollen
+hier stehen, statt später jemanden zu überraschen:
+
+1. **Wer sofort nach dem gescheiterten Speichern den Tab schließt**, hat die
+   Marke vielleicht nicht mehr auf der Platte. Dann bleibt es beim alten
+   Stand — aber der Hinweis war da, und die Nutzerin weiß es.
+2. **Fällt IndexedDB selbst aus**, während `localStorage` wieder schreibt,
+   kann eine stehengebliebene Marke beim nächsten Start einen älteren
+   Spiegelstand über einen neueren `localStorage`-Stand schreiben. Das
+   verlangt einen Ausfall genau zwischen zwei Schreibvorgängen; wäre der
+   Spiegel unzuverlässig, wäre er ohnehin als Sicherung wertlos.
+
+Sauber lösen ließe sich beides nur mit einer Version je Schlüssel — einem
+Zähler, der bei jedem Schreiben steigt und beim Wiederherstellen verglichen
+wird. Das ist mehr Maschinerie, als der Fall wert ist: Der bisherige Zustand
+verlor Daten **immer**, wenn der Speicher voll war; dieser verliert sie in
+einem Fall, der zwei gleichzeitige Ausfälle braucht.
+
 ---
 
 ## E-063 · 2026-09-07 · Zehn Läufe, eine Haltung des Geräts
 
 **Stand:** entschieden und umgesetzt.
 
-Beim Nachzählen der Messungen fiel eine Lücke auf, die keine der zehn
-Prüfungen schließt: Alle messen **hochkant**, 390 × 844. Quer ist dasselbe
-Gerät 844 × 390 — ein Fünftel der Höhe.
+Beim Nachzählen der Messungen fiel eine Lücke auf: Bis auf **einen einzigen
+Schritt** messen alle zehn Prüfungen **hochkant**, 390 × 844. Der eine
+Schritt ist „Quer gehalten sieht man den ganzen Tisch" im Durchgang (E-044) —
+er prüft den Übungstisch, und nur ihn. Für die anderen 89 Bildschirme gab es
+quer keine Messung. Quer ist dasselbe Gerät 844 × 390 — ein Fünftel der
+Höhe.
 
 Das ist keine Randlage. Wer am Tisch die Blindstufen laufen lässt, stellt das
 Gerät hin. Wer am Übungstisch spielt, dreht es. Und niedrige Höhe bricht
@@ -3682,8 +3706,8 @@ zahlen sich hier aus.
 ### Warum daraus trotzdem ein Lauf wurde
 
 Ein sauberes Ergebnis ist ein Grund, es festzuhalten, kein Grund, es
-wegzuwerfen. Ein Umbau am Layout kann diese Lage jederzeit brechen, und keine
-andere Prüfung würde es sehen — sie schauen alle hochkant. Der Lauf hängt im
+wegzuwerfen. Ein Umbau am Layout kann diese Lage jederzeit brechen, und außer
+am Übungstisch würde es keine andere Prüfung sehen. Der Lauf hängt im
 Job `messungen` neben den anderen und hält den Deploy nicht auf.
 
 Gegenprobe: ein 1200 px breites Element und eine 120-px-Leiste in die Seite

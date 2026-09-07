@@ -1,15 +1,15 @@
 /* Die gebauten Dateien in den Service Worker eintragen.
    ====================================================
 
-   Der Worker legte Skript und Stilblatt bislang erst beim **zweiten** Besuch
-   ab: Beim ersten übernimmt er die Seite zwar (`clients.claim()`), aber da
-   sind sie längst geladen. Wer die App öffnete und dann offline ging, ohne
-   sie ein zweites Mal zu starten, stand vor einer leeren Seite.
+   Der Worker legte bislang nur ab, was jemand tatsächlich abgerufen hatte:
+   nach zwei Besuchen zwölf Dateien. Nicht dabei die englischen Lerninhalte —
+   die liegen in einem eigenen Paket, das erst beim Umschalten geladen wird —
+   und die Schriftschnitte, die auf der Startseite nicht vorkommen. Wer
+   offline auf Englisch umschaltete, bekam keine Lektionen.
 
-   Gesehen hat das keine Messung — der HTTP-Zwischenspeicher des Browsers
-   sprang ein und lieferte die Dateien, obwohl der Worker sie nicht hatte.
-   Erst als `npm run ohnenetz` nachsah, *was* im Zwischenspeicher liegt statt
-   nur *ob es lädt*, kam es heraus (E-071).
+   Gesehen hat das keine Messung: `npm run ohnenetz` fragte nur, *ob* ein
+   Bildschirm lädt, nicht *woher*. Erst als der Lauf nachsah, was im
+   Zwischenspeicher liegt, kam es heraus (E-071).
 
    Die Namen tragen einen Streuwert, den erst der Build kennt. Dieser Schritt
    trägt sie nach `dist/sw.js` ein — dieselbe Bauart wie der Datenblock, den

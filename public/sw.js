@@ -19,12 +19,12 @@ const DATEN_DATEIEN = ['./pokermath/b1_outs.json', './pokermath/b2_potodds.json'
 
 /* ── Von `npm run build` gesetzt – nicht von Hand ändern ─────────────────
    Die gebauten Dateien tragen einen Namen mit Streuwert, den erst der Build
-   kennt. Ohne diese Liste legte der Worker sie erst beim **zweiten** Besuch
-   ab: Beim ersten übernimmt er die Seite zwar noch (`clients.claim()`), aber
-   Skript und Stilblatt sind zu diesem Zeitpunkt längst geladen. Wer die App
-   öffnete und dann offline ging, ohne sie ein zweites Mal zu starten, stand
-   vor einer leeren Seite — und keine Messung sah es, weil der
-   HTTP-Zwischenspeicher des Browsers einsprang (E-071). */
+   kennt. Ohne diese Liste legte der Worker nur ab, was jemand **tatsächlich
+   abgerufen** hatte: nach zwei Besuchen zwölf Dateien — Hülle, Daten,
+   Skript, Stilblatt und zwei Schriftschnitte. Die englischen Lerninhalte
+   liegen in einem eigenen Paket und wurden nie geholt; wer offline auf
+   Englisch umschaltete, bekam keine Lektionen. Dasselbe galt für die
+   Schriftschnitte, die auf der Startseite nicht vorkommen (E-071). */
 const GEBAUTE_DATEIEN = [];
 const BAU_STAND = 'entwicklung';
 /* ── Ende des erzeugten Bereichs ──────────────────────────────────────── */

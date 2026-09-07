@@ -17,14 +17,32 @@ const DATEN_STAND = '2026-08-26T22-59-59-00-00';
 const DATEN_DATEIEN = ['./pokermath/b1_outs.json', './pokermath/b2_potodds.json', './pokermath/b3_kombinatorik.json', './pokermath/b4_preflop_equity.json', './pokermath/b4_preflop_equity.bin'];
 /* ── Ende des erzeugten Bereichs ──────────────────────────────────────── */
 
-/* Die Zahl davor bei jeder Strukturänderung erhöhen (siehe Kopf der Datei). */
-const CACHE = `pokermentor-v8-${DATEN_STAND}`;
-const CORE = ['./', './index.html', './manifest.webmanifest', ...DATEN_DATEIEN];
+/* ── Von `npm run build` gesetzt – nicht von Hand ändern ─────────────────
+   Die gebauten Dateien tragen einen Namen mit Streuwert, den erst der Build
+   kennt. Ohne diese Liste legte der Worker sie erst beim **zweiten** Besuch
+   ab: Beim ersten übernimmt er die Seite zwar noch (`clients.claim()`), aber
+   Skript und Stilblatt sind zu diesem Zeitpunkt längst geladen. Wer die App
+   öffnete und dann offline ging, ohne sie ein zweites Mal zu starten, stand
+   vor einer leeren Seite — und keine Messung sah es, weil der
+   HTTP-Zwischenspeicher des Browsers einsprang (E-071). */
+const GEBAUTE_DATEIEN = [];
+const BAU_STAND = 'entwicklung';
+/* ── Ende des erzeugten Bereichs ──────────────────────────────────────── */
+
+/* Die Zahl davor bei jeder Strukturänderung erhöhen (siehe Kopf der Datei).
+   Der Baustand gehört in den Namen: Ein neuer Build bringt neue Dateinamen,
+   und der alte Zwischenspeicher wird beim Aktivieren gelöscht. */
+const CACHE = `pokermentor-v9-${DATEN_STAND}-${BAU_STAND}`;
+const CORE = ['./', './index.html', './manifest.webmanifest', ...DATEN_DATEIEN, ...GEBAUTE_DATEIEN];
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(CORE)).catch(() => {}),
+    caches.open(CACHE).then((cache) =>
+      /* Einzeln statt `addAll`: Das scheitert vollständig, sobald eine
+         einzige Datei nicht kommt — und dann läge gar nichts bereit. */
+      Promise.allSettled(CORE.map((pfad) => cache.add(pfad))),
+    ).catch(() => {}),
   );
 });
 

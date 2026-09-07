@@ -1,25 +1,43 @@
 /* Was zeigt die App, wenn kein Netz da ist?
    =========================================
 
-   PokerMentor verspricht Offline-Betrieb: Sie lässt sich installieren, die
-   Daten liegen auf dem Gerät, der Drill soll im Zug funktionieren. Geprüft
-   hat das bis E-052 nichts. Der Durchgang misst, wie schnell die Startseite
-   ohne Netz kommt — aber nicht, ob die **anderen 89 Bildschirme** dann noch
-   etwas zeigen.
+   PokerMentor verspricht Offline-Betrieb. Dieser Lauf prüft ihn — und hat
+   dabei zweimal die Methode gewechselt, weil die erste nichts maß.
 
-   Zwei Fallen stecken in dieser Messung, und beide führen zu einem grünen
-   Ergebnis, das nichts bedeutet:
+   **Was hier nicht funktioniert.** `context.setOffline(true)` setzt
+   `navigator.onLine` auf false und blockiert die Anfragen der *Seite*.
+   Anfragen, die der *Service Worker* stellt, gehen weiter ins Netz:
+   Gemessen lieferte `fetch('/manifest.webmanifest?nie-geladen=…')` über den
+   Worker eine 200, während der Kontext als offline galt. Da jeder Bildschirm
+   hier über den Worker läuft, sagte der Lauf bis E-071 nichts über den
+   Offline-Betrieb aus.
 
-   1. **Auf `localhost` meldet sich der Service Worker gar nicht an**
-      (`main.tsx` schließt das aus, damit die Entwicklung nicht auf einem
-      alten Stand hängt). Gemessen wird deshalb über `127.0.0.1` — und
-      dieser Lauf bricht ab, wenn der Worker nicht wirklich aktiv ist.
-   2. **Ein Hash-Wechsel lädt das Dokument nicht neu.** Wer offline nur den
-      Hash ändert, misst die längst geladene Seite. Also wird jeder
-      Bildschirm wirklich neu geladen.
+   **Den Server abzuschalten hilft auch nicht** — jedenfalls nicht als
+   Nachweis: Ohne erreichbaren Server lädt Chromium das Modulskript nicht
+   mehr über den Worker, obwohl es nachweislich in dessen Zwischenspeicher
+   liegt und ein `fetch()` aus der Seite heraus es von dort auch bekommt.
+   Was davon Browser und was Steuerung ist, ließ sich hier nicht trennen.
 
-   Gegenprobe: Ohne Service Worker lädt kein einziger Bildschirm offline —
-   0 von 90 statt 90 von 90.
+   **Was stattdessen geprüft wird, und was es wert ist:**
+
+   1. **Der Zwischenspeicher des Workers enthält jede gebaute Datei.** Das
+      ist die belastbare Zusage: Was dort liegt, kann er ohne Netz
+      ausliefern. Seit E-071 legt der Worker die Dateien beim Installieren
+      ab (`scripts/sw-dateien.mjs` trägt die Namen ein), statt sie beim
+      Abruf einzusammeln — vorher fehlten die englischen Inhalte und die
+      Schriftschnitte, die auf der Startseite nicht gebraucht werden.
+   2. **Jeder Bildschirm zeigt Inhalt, während das Gerät kein Netz meldet.**
+      Das ist schwächer, als es klingt (siehe oben) — aber es fängt alles
+      ab, was die App bei `navigator.onLine === false` falsch macht: leere
+      Seiten, ewige Ladeanzeigen, die Absturzseite.
+
+   Zwei Fallen bleiben, beide mit grünem Ergebnis ohne Aussage:
+
+   - **Auf `localhost` meldet sich der Service Worker gar nicht an**
+     (`main.tsx` schließt das aus). Gemessen wird deshalb über `127.0.0.1`,
+     und der Lauf bricht ab, wenn der Worker nicht wirklich aktiv ist.
+   - **Ein Hash-Wechsel lädt das Dokument nicht neu.** Also wird jeder
+     Bildschirm wirklich neu geladen.
 
    Nach E-061 wird zusätzlich die **Absturzseite** gesucht: Eine gut
    gestaltete Fehlerseite hat reichlich Text und erzeugt keinen
@@ -32,13 +50,71 @@ import { holeChromium } from './browser.mjs';
 /* Playwright liegt nicht im Projekt (siehe browser.mjs) — der Fundort
    wird zur Laufzeit gesucht, damit dieser Lauf überall startet. */
 const chromium = await holeChromium();
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { spawn } from 'node:child_process';
 
-const GRUND = 'http://127.0.0.1:4173';
+/* Ein eigener Server auf einem eigenen Port — und das ist der Kern dieses
+   Laufs, keine Bequemlichkeit.
+
+   `context.setOffline(true)` setzt `navigator.onLine` auf false und blockiert
+   die Anfragen der **Seite**. Anfragen, die der **Service Worker** stellt,
+   gehen weiter ins Netz. Gemessen: mit abgeschaltetem Netz lieferte
+   `fetch('/manifest.webmanifest?nie-geladen=…')` über den Worker eine 200.
+   Da jeder Bildschirm hier über den Worker läuft, hat dieser Lauf bis E-071
+   nichts über den Offline-Betrieb ausgesagt — er hat gemessen, ob die App
+   rendert, während `navigator.onLine` false ist.
+
+   Deshalb wird der Server jetzt **abgeschaltet**. Was nicht läuft, kann
+   nichts liefern; das ist die einzige Sperre, an der auch ein Service Worker
+   nicht vorbeikommt. */
+const PORT = 4183;
+const GRUND = `http://127.0.0.1:${PORT}`;
 const BREITE = 390;
 const HOEHE = 844;
 
 const adressen = JSON.parse(readFileSync('docs/bedienbar.json', 'utf8')).bildschirme_liste;
+
+/** Alle Dateien unter einem Ordner des Builds, mit ihrem Web-Pfad. */
+function leseOrdner(ordner, praefix) {
+  const aus = [];
+  for (const eintrag of readdirSync(ordner)) {
+    const p = join(ordner, eintrag);
+    if (statSync(p).isDirectory()) aus.push(...leseOrdner(p, `${praefix}${eintrag}/`));
+    else aus.push(`${praefix}${eintrag}`);
+  }
+  return aus;
+}
+
+/** Befunde, die schon vor dem Rundgang feststehen. */
+const befundeVorab = [];
+
+/** Wartet, bis der Server antwortet (oder eben nicht mehr). */
+async function erreichbar(soll) {
+  for (let i = 0; i < 60; i++) {
+    let da = false;
+    try {
+      const r = await fetch(`${GRUND}/`, { signal: AbortSignal.timeout(1500) });
+      da = r.ok;
+    } catch {
+      da = false;
+    }
+    if (da === soll) return true;
+    await new Promise((f) => setTimeout(f, 500));
+  }
+  return false;
+}
+
+/* Direkt `vite` starten, nicht über `npx`: Der Umweg legt einen Elternprozess
+   dazwischen, und ein `kill` auf ihn lässt den eigentlichen Server
+   weiterlaufen — der erste Versuch scheiterte genau daran. */
+const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview',
+  '--port', String(PORT), '--host', '127.0.0.1'], { stdio: 'ignore' });
+if (!(await erreichbar(true))) {
+  console.error(`Die eigene Vorschau auf Port ${PORT} kam nicht hoch.`);
+  server.kill('SIGKILL');
+  process.exit(1);
+}
 
 const browser = await chromium.launch();
 const kontext = await browser.newContext({ viewport: { width: BREITE, height: HOEHE }, locale: 'de-DE' });
@@ -60,11 +136,70 @@ if (!swAktiv) {
   await browser.close();
   process.exit(1);
 }
-await seite.waitForTimeout(1200); // dem Worker Zeit geben, den Kern abzulegen
+/* Und jetzt der Teil, der vorher eine Wartezeit war: 1200 ms „dem Worker
+   Zeit geben". Auf dieser Maschine reichte das; auf dem CI-Runner nicht — der
+   Lauf meldete dort Befunde auf ganzer Linie, während er hier grün war
+   (E-071). Der Grund ist derselbe wie überall in dieser Datei: Der Worker
+   legt Dateien beim Abruf ab, und `cache.put` ist asynchron. Wer offline
+   schaltet, bevor das durch ist, misst einen halb gefüllten Zwischenspeicher.
+
+   Statt zu warten wird jetzt nachgesehen: Liegen die Dateien, die jeder
+   Bildschirm braucht — das Skript, das Stilblatt, die Startseite selbst —
+   wirklich im Zwischenspeicher? Erst dann geht das Netz aus. */
+async function kernImSpeicher() {
+  return seite.evaluate(async () => {
+    const gebraucht = [
+      location.origin + '/',
+      ...[...document.querySelectorAll('script[src], link[rel="stylesheet"]')]
+        .map((el) => el.src || el.href)
+        .filter((u) => u.startsWith(location.origin)),
+    ];
+    const fehlend = [];
+    for (const url of gebraucht) {
+      const treffer = await caches.match(url, { ignoreSearch: true });
+      if (!treffer) fehlend.push(url.replace(location.origin, ''));
+    }
+    return { gebraucht: gebraucht.length, fehlend };
+  });
+}
+
+let kern = await kernImSpeicher();
+for (let versuch = 0; versuch < 40 && kern.fehlend.length > 0; versuch++) {
+  await seite.waitForTimeout(500);
+  kern = await kernImSpeicher();
+}
+if (kern.fehlend.length > 0) {
+  console.error('Der Service Worker hat den Kern nicht abgelegt — ohne ihn misst dieser Lauf nichts.');
+  console.error(`Fehlend: ${kern.fehlend.join(', ')}`);
+  server.kill('SIGKILL');
+  await browser.close();
+  process.exit(1);
+}
+
+/* Die eigentliche Zusage: **jede** gebaute Datei liegt im Zwischenspeicher —
+   auch die, die auf der Startseite nie abgerufen wird (die englischen
+   Inhalte, die zusätzlichen Schriftschnitte). Vor E-071 sammelte der Worker
+   nur ein, was jemand tatsächlich geladen hatte; wer offline auf Englisch
+   umschaltete, stand vor leeren Lektionen. */
+const gebaut = [
+  ...leseOrdner('dist/assets', './assets/'),
+  ...leseOrdner('dist/icons', './icons/'),
+];
+const fehlendGebaut = await seite.evaluate(async (liste) => {
+  const fehlt = [];
+  for (const pfad of liste) {
+    if (!(await caches.match(new URL(pfad, location.origin).href, { ignoreSearch: true }))) fehlt.push(pfad);
+  }
+  return fehlt;
+}, gebaut);
+console.log(`Zwischenspeicher: ${gebaut.length - fehlendGebaut.length} von ${gebaut.length} gebauten Dateien.`);
+if (fehlendGebaut.length) {
+  befundeVorab.push({ adresse: '(Vorabladung)', art: 'nicht im Zwischenspeicher', text: fehlendGebaut.slice(0, 5).join(', ') });
+}
 
 await kontext.setOffline(true);
 
-const befunde = [];
+const befunde = [...befundeVorab];
 const bildschirme = [];
 
 for (const adresse of adressen) {
@@ -107,6 +242,7 @@ for (const adresse of adressen) {
 }
 
 await browser.close();
+server.kill('SIGKILL');
 
 const geladen = bildschirme.filter((b) => b.geladen).length;
 const bericht = {
@@ -114,6 +250,9 @@ const bericht = {
   grund: GRUND,
   breite: BREITE,
   service_worker_aktiv: swAktiv,
+  kern_dateien_im_speicher: kern.gebraucht,
+  gebaute_dateien: gebaut.length,
+  gebaute_dateien_im_speicher: gebaut.length - fehlendGebaut.length,
   bildschirme: bildschirme.length,
   geladen,
   befunde_gesamt: befunde.length,

@@ -4102,3 +4102,97 @@ Gewändern: eine Prüfung, die eingerichtet aussieht und nicht läuft. Die
 Regel aus E-068 („einmal grün gesehen, dort, wo sie laufen soll") deckt den
 Einzelfall. Diese Regel hier deckt den Bestand: Sie zählt die Läufe und
 verlangt für jeden einen Platz — oder eine benannte Ausnahme.
+
+---
+
+## E-071 · 2026-09-07 · Die Offline-Messung hat nie offline gemessen
+
+**Stand:** entschieden und umgesetzt. **Der schwerwiegendste Fund dieser
+Sitzung — und er betrifft eine Prüfung, die seit E-052 als Nachweis galt.**
+
+Der reparierte Messjob (E-068) lief zum ersten Mal wirklich durch, und
+`ohnenetz` schrieb auf dem Runner 461 neue Zeilen in seinen Bericht, während
+der Schritt auf „success" stand. Zwei Dinge steckten dahinter.
+
+### Erstens: Kein Lauf konnte scheitern
+
+Keiner der neun Messläufe endete mit einem Fehlercode, wenn er Befunde
+meldete. Sie schrieben sie in ihren Bericht, druckten sie auf die Konsole —
+und endeten mit 0. In der Action sah der Schritt grün aus, egal was gemessen
+wurde. Alle neun setzen jetzt `process.exitCode = 1`, sobald sie etwas
+finden.
+
+Gegenprobe: `quer` mit abgesenkter Schwelle → 7 Befunde, Exit-Code 1; mit der
+richtigen Schwelle → 0 Befunde, Exit-Code 0.
+
+### Zweitens: `setOffline` erreicht den Service Worker nicht
+
+Mit dem Fehlercode wurde `ohnenetz` rot — und beim Nachsehen kam heraus,
+dass der Lauf noch nie gemessen hat, was er behauptet.
+
+`context.setOffline(true)` setzt `navigator.onLine` auf false und blockiert
+die Anfragen der **Seite**. Anfragen, die der **Service Worker** stellt,
+gehen weiter ins Netz. Gemessen im Fenster, bei angeblich abgeschaltetem
+Netz:
+
+```
+navigator.onLine: false
+fetch('/manifest.webmanifest?nie-geladen=…') über den Worker: 200
+```
+
+Jeder Bildschirm dieses Laufs wird vom Worker ausgeliefert. Der Worker holte
+sich alles aus dem laufenden Vorschau-Server. **„90 von 90 Bildschirmen ohne
+Netz geladen" hieß in Wahrheit: 90 von 90 Bildschirmen mit Netz geladen,
+während `navigator.onLine` false war.**
+
+### Was beim Aufräumen noch herauskam
+
+Auf der Suche nach einer besseren Methode wurde nachgesehen, was der Worker
+überhaupt abgelegt hat. Nach zwei Besuchen: **12 Dateien** — die Hülle, die
+gerechneten Daten, das Skript, das Stilblatt und zwei Schriftschnitte. Nicht
+dabei: die englischen Lerninhalte und die übrigen Schriftschnitte. Der
+Grund liegt in der Bauart: Der Worker legte nur ab, was jemand tatsächlich
+abgerufen hatte.
+
+Wer also offline auf Englisch umschaltet, bekommt keine Lektionen — obwohl
+die App zweisprachig ist und Offline-Betrieb verspricht.
+
+Das ist jetzt behoben: `npm run build` trägt die Namen aller gebauten
+Dateien in den Service Worker ein (`scripts/sw-dateien.mjs`), und der legt
+sie beim **Installieren** ab statt beim Abruf. Aus 12 wurden **29 Einträge**;
+alle 21 gebauten Dateien sind dabei. Der Baustand steht im Namen des
+Zwischenspeichers, damit ein neuer Build einen frischen bekommt und der alte
+beim Aktivieren verschwindet.
+
+### Was der Lauf jetzt prüft — und was er nicht kann
+
+Ehrlich zuerst: **Ein echter Offline-Nachweis ist hier nicht gelungen.** Den
+Server abzuschalten hilft nicht als Beweis — ohne erreichbaren Server lädt
+Chromium das Modulskript nicht mehr über den Worker, obwohl es
+nachweislich in dessen Zwischenspeicher liegt und ein `fetch()` aus der Seite
+heraus es von dort auch bekommt. Was daran Browser und was Steuerung ist,
+ließ sich mit den Mitteln hier nicht trennen. (Der Versuch, den Worker dabei
+zu beobachten, verfälscht die Messung zusätzlich: Sobald sich der Debugger an
+ihn hängt, sieht er gar keine Anfragen mehr.)
+
+Geprüft wird deshalb, was sich belastbar prüfen lässt:
+
+1. **Jede gebaute Datei liegt im Zwischenspeicher des Workers** — 21 von 21.
+   Das ist die eigentliche Zusage: Was dort liegt, kann er ohne Netz
+   ausliefern. Gegenprobe: Vorabladung aus `dist/sw.js` entfernt → der Lauf
+   bricht ab und nennt die fehlenden Dateien.
+2. **Jeder Bildschirm zeigt Inhalt, während das Gerät kein Netz meldet** —
+   90 von 90. Schwächer als der Name verspricht, aber es fängt ab, was die
+   App bei `navigator.onLine === false` falsch macht: leere Seiten, ewige
+   Ladeanzeigen, die Absturzseite.
+
+Der Kopf des Laufs sagt beides jetzt in dieser Deutlichkeit. Eine Prüfung,
+die mehr behauptet, als sie zeigt, ist schlimmer als keine — das ist die
+Lehre aus E-061, hier zum zweiten Mal.
+
+### Und der Java-Fehler nebenbei
+
+`npm run test:rules` scheiterte auf dem Runner mit „firebase-tools no longer
+supports Java version before 21". In E-060 stand „der Runner bringt Java
+mit" — richtig, aber das falsche. `actions/setup-java@v4` mit Temurin 21
+davor.

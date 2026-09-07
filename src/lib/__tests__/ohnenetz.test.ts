@@ -21,6 +21,9 @@ interface OhneNetz {
   grund: string;
   breite: number;
   service_worker_aktiv: boolean;
+  kern_dateien_im_speicher: number;
+  gebaute_dateien: number;
+  gebaute_dateien_im_speicher: number;
   bildschirme: number;
   geladen: number;
   befunde_gesamt: number;
@@ -52,6 +55,15 @@ describe('Ohne Netz', () => {
   it('lässt keinen Bildschirm leer oder ewig am Laden', () => {
     expect(O.befunde.slice(0, 10), `${O.befunde_gesamt} Befunde`).toEqual([]);
     expect(O.befunde_gesamt).toBe(0);
+  });
+
+  it('hat jede gebaute Datei im Zwischenspeicher', () => {
+    /* Das ist die belastbare Zusage dieses Laufs: Was im Zwischenspeicher des
+       Workers liegt, kann er ohne Netz ausliefern. Vor E-071 sammelte er nur
+       ein, was jemand tatsächlich abgerufen hatte — die englischen Inhalte
+       und die zusätzlichen Schriftschnitte fehlten. */
+    expect(O.gebaute_dateien).toBeGreaterThanOrEqual(10);
+    expect(O.gebaute_dateien_im_speicher).toBe(O.gebaute_dateien);
   });
 
   it('ist bei schmaler Gerätebreite gemessen', () => {

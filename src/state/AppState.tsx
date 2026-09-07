@@ -516,11 +516,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     requestPersistentStorage();
   }, []);
 
-  // Fortschritt bei jeder Änderung doppelt sichern
-  useEffect(() => {
-    durableSet(dataKey(activeIdRef.current), JSON.stringify(data));
-  }, [data]);
-
   useEffect(() => {
     saveProfilesIndex(index);
   }, [index]);
@@ -539,6 +534,29 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   langRef.current = lang;
   const badgeDefsRef = useRef(langContent.badges);
   badgeDefsRef.current = langContent.badges;
+
+  /* Solange der Speicher voll ist, scheitert **jede** Änderung. Ein Hinweis
+     je Tastendruck wäre Lärm — gemeldet wird der Wechsel, nicht der Zustand. */
+  const speicherWarVoll = useRef(false);
+
+  // Fortschritt bei jeder Änderung doppelt sichern
+  useEffect(() => {
+    const gelungen = durableSet(dataKey(activeIdRef.current), JSON.stringify(data));
+    if (!gelungen === speicherWarVoll.current) return;
+    speicherWarVoll.current = !gelungen;
+    if (!gelungen) {
+      /* Ohne diesen Hinweis sähe die Nutzerin ihre Eingabe auf dem Schirm und
+         beim nächsten Start den alten Stand. Verloren ist nichts — der
+         Spiegel führt jetzt (siehe `storage.ts`) —, aber Schweigen wäre hier
+         eine Unwahrheit. */
+      pushToast(
+        langRef.current === 'de' ? 'Nicht auf dem Gerät gespeichert' : 'Not saved on this device',
+        langRef.current === 'de'
+          ? 'Der Speicher ist voll. Beim nächsten Start holt die App diesen Stand aus ihrer Sicherung — schaffe trotzdem Platz.'
+          : 'Storage is full. The app will restore this state from its mirror on the next start — please free up space anyway.',
+      );
+    }
+  }, [data, pushToast]);
 
   /** Stand, gegen den die nächsten Toasts verglichen werden (nur Meldungen, keine Daten). */
   const notifyBaseRef = useRef<{ level: number; badges: Record<string, string> } | null>(null);

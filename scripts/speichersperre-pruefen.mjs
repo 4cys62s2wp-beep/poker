@@ -28,6 +28,9 @@
    Gegenprobe: Ein `try` aus `leseModus()` entfernt → alle geprüften
    Bildschirme melden die Absturzseite.
 
+   Ein zweiter Teil misst den anderen Fall: Der Speicher ist nicht gesperrt,
+   sondern **voll**. Dort ging bis E-062 eine Eingabe still verloren.
+
    Ergebnis nach `docs/speichersperre.json`; `speichersperre.test.ts` hält
    es fest. */
 
@@ -133,6 +136,68 @@ for (const adresse of adressen) {
   seite.off('console', beiKonsole);
 }
 
+/* Zweiter Teil: Der Speicher ist nicht gesperrt, sondern **voll**.
+   `localStorage.setItem` wirft, alles andere geht weiter. Bis E-062 hat die
+   App das verschluckt: Die Eingabe stand auf dem Schirm, im Speicher stand
+   der alte Stand, und nach dem nächsten Start war sie weg.
+
+   Geprüft wird beides — dass die Nutzerin es erfährt, und dass der neuere
+   Stand den Neustart übersteht. */
+const vollKontext = await browser.newContext({ viewport: { width: BREITE, height: HOEHE }, locale: 'de-DE' });
+await vollKontext.addInitScript(() => {
+  localStorage.setItem('pokermentor-lang-v1', 'de');
+  const echt = Storage.prototype.setItem;
+  Storage.prototype.setItem = function (k, v) {
+    if (window.__speicherVoll === true && String(k).startsWith('pokermentor-')) {
+      throw new DOMException('Quota exceeded', 'QuotaExceededError');
+    }
+    return echt.call(this, k, v);
+  };
+});
+
+const vollSeite = await vollKontext.newPage();
+vollSeite.setDefaultTimeout(15000);
+const NAME_ALT = 'Erster Name';
+const NAME_NEU = 'Zweiter Name';
+let vollBefund = null;
+let vollErgebnis = null;
+try {
+  await vollSeite.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
+  await vollSeite.waitForTimeout(1800);
+  const feld = vollSeite.locator('input[placeholder="z. B. Lorenz"]').first();
+  const speichern = vollSeite.locator('button', { hasText: 'Speichern' }).first();
+
+  await feld.fill(NAME_ALT);
+  await speichern.click();
+  await vollSeite.waitForTimeout(900);
+
+  await vollSeite.evaluate(() => { window.__speicherVoll = true; });
+  await feld.fill(NAME_NEU);
+  await speichern.click();
+  await vollSeite.waitForTimeout(1400);
+
+  /* Der Hinweis steht in der Live-Region, nicht im Fließtext: `innerText`
+     des Body liefert ihn nicht zurück. Deshalb gezielt die Meldung selbst. */
+  const hinweis = await vollSeite.evaluate(() =>
+    [...document.querySelectorAll('.toast')].map((t) => t.innerText.replace(/\s+/g, ' ').trim()).join(' | '));
+
+  await vollSeite.evaluate(() => { window.__speicherVoll = false; });
+  await vollSeite.reload({ waitUntil: 'domcontentloaded' });
+  await vollSeite.waitForTimeout(2200);
+  const nachNeustart = await vollSeite.evaluate(() => {
+    let k = null;
+    for (let i = 0; i < localStorage.length; i++) { const x = localStorage.key(i); if (x?.startsWith('pokermentor-data-')) k = x; }
+    return JSON.parse(localStorage.getItem(k) ?? '{}').name ?? '';
+  });
+
+  vollErgebnis = { hinweis, stand_nach_neustart: nachNeustart, erwartet: NAME_NEU };
+  if (!/gespeichert|saved/i.test(hinweis)) vollBefund = 'kein Hinweis, dass nicht gespeichert werden konnte';
+  else if (nachNeustart !== NAME_NEU) vollBefund = `nach dem Neustart steht „${nachNeustart}" statt „${NAME_NEU}"`;
+} catch (e) {
+  vollBefund = `Messung abgebrochen: ${String(e).split('\n')[0].slice(0, 120)}`;
+}
+if (vollBefund) befunde.push({ adresse: '#/profil', art: 'voller Speicher', text: vollBefund });
+
 await browser.close();
 
 const geladen = bildschirme.filter((b) => b.geladen).length;
@@ -144,6 +209,7 @@ const bericht = {
   sperre_wirkt: sperreWirkt,
   bildschirme: bildschirme.length,
   geladen,
+  voller_speicher: vollErgebnis,
   befunde_gesamt: befunde.length,
   je_art: befunde.reduce((a, b) => ({ ...a, [b.art]: (a[b.art] ?? 0) + 1 }), {}),
   befunde: befunde.slice(0, 100),
@@ -151,5 +217,6 @@ const bericht = {
 writeFileSync('docs/speichersperre.json', `${JSON.stringify(bericht, null, 2)}\n`);
 
 console.log(`${geladen} von ${bildschirme.length} Bildschirmen ohne Gerätespeicher geladen.`);
+console.log(`Voller Speicher: ${vollBefund ?? 'Hinweis kommt, Stand übersteht den Neustart'}`);
 console.log(`Befunde: ${befunde.length}`);
 for (const b of befunde.slice(0, 12)) console.log(`  ${b.adresse} — ${b.art}: ${b.text}`);

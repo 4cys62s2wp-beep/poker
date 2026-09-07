@@ -6,6 +6,13 @@
 //    automatisch wiederhergestellt.
 // 3. navigator.storage.persist() bittet den Browser, den Speicher als
 //    dauerhaft zu markieren (schützt vor automatischer Räumung).
+//
+// Wer führt, wenn beide etwas anderes sagen? Normalerweise localStorage — es
+// wird zuerst geschrieben. Lehnt es einen Schreibvorgang aber ab (voll,
+// gesperrt), dann steht dort ab diesem Moment der ältere Stand, und der
+// Spiegel führt. Genau dafür gibt es die Marke `VORRANG`: Sie liegt im
+// Spiegel, überlebt den Neustart und sorgt dafür, dass der ältere Stand den
+// neueren nicht überschreibt (E-062).
 
 const DB_NAME = 'pokermentor';
 const STORE = 'kv';
@@ -92,11 +99,57 @@ function mirrorGetAll(): Promise<Record<string, string>> {
 }
 
 /**
+ * Wenn `localStorage` einen Schreibvorgang ablehnt — voll, gesperrt —, ist der
+ * Spiegel ab diesem Moment der **neuere** Stand. Diese Marke hält das fest.
+ *
+ * Sie liegt im Spiegel, nicht in `localStorage`: Dort war ja gerade kein Platz.
+ * Und sie trägt bewusst **nicht** das Präfix der App, damit sie beim
+ * Wiederherstellen nicht selbst als Datensatz zurückgeschrieben wird.
+ */
+const VORRANG = '__spiegel-fuehrt';
+
+/** Was zuletzt galt — damit die Marke nur bei einem Wechsel geschrieben wird. */
+let spiegelFuehrt = false;
+
+function merkeVorrang(gelungen: boolean): void {
+  if (gelungen === !spiegelFuehrt) return;
+  spiegelFuehrt = !gelungen;
+  if (spiegelFuehrt) mirrorSet(VORRANG, new Date().toISOString());
+  else mirrorDelete(VORRANG);
+}
+
+/**
  * Beim App-Start aufrufen: Ist localStorage leer (z. B. nach Speicherräumung),
  * aber der Spiegel enthält Daten, werden sie wiederhergestellt.
  * Gibt true zurück, wenn etwas wiederhergestellt wurde.
  */
 export async function restoreFromMirrorIfNeeded(): Promise<boolean> {
+  const mirrored = await mirrorGetAll();
+  const keys = Object.keys(mirrored).filter((k) => k.startsWith(KEY_PREFIX));
+
+  /* Der Spiegel führt: Beim letzten Mal hat `localStorage` einen Schreibvorgang
+     abgelehnt. Dann steht dort ein *älterer* Stand — und der ältere darf den
+     neueren nicht überleben. Hier wird deshalb überschrieben, nicht ergänzt. */
+  if (mirrored[VORRANG] !== undefined) {
+    let zurueck = false;
+    try {
+      for (const k of keys) {
+        if (localStorage.getItem(k) !== mirrored[k]) {
+          localStorage.setItem(k, mirrored[k]);
+          if (isProgressKey(k)) zurueck = true;
+        }
+      }
+    } catch {
+      /* Immer noch kein Platz. Die Marke bleibt stehen, der Spiegel bleibt der
+         wahre Stand, und der nächste Start versucht es wieder. */
+      spiegelFuehrt = true;
+      return false;
+    }
+    mirrorDelete(VORRANG);
+    spiegelFuehrt = false;
+    return zurueck;
+  }
+
   try {
     // Entscheidend ist allein, ob der LERNFORTSCHRITT noch da ist. Nebensachen
     // wie die Sprachwahl oder ein gespeichertes Chip-Setup dürfen die
@@ -110,10 +163,8 @@ export async function restoreFromMirrorIfNeeded(): Promise<boolean> {
   } catch {
     return false;
   }
-  const mirrored = await mirrorGetAll();
   // Nur fehlende Schlüssel zurückschreiben; vorhandene (z. B. eine gerade
   // getroffene Sprachwahl) bleiben unangetastet.
-  const keys = Object.keys(mirrored).filter((k) => k.startsWith(KEY_PREFIX));
   if (keys.length === 0) return false;
   let restored = false;
   try {
@@ -149,14 +200,25 @@ export function requestPersistentStorage(): void {
   }
 }
 
-/** Schreibt in localStorage UND in den Spiegel. */
-export function durableSet(key: string, value: string): void {
+/**
+ * Schreibt in localStorage UND in den Spiegel.
+ *
+ * Gibt zurück, ob `localStorage` den Wert genommen hat. `false` heißt: Der
+ * Speicher ist voll oder gesperrt, im Spiegel steht ab jetzt der neuere Stand
+ * — und die Nutzerin sollte das erfahren, statt es beim nächsten Start zu
+ * bemerken.
+ */
+export function durableSet(key: string, value: string): boolean {
+  let gelungen = true;
   try {
     localStorage.setItem(key, value);
   } catch {
     // localStorage voll/gesperrt – Spiegel versucht es trotzdem
+    gelungen = false;
   }
   mirrorSet(key, value);
+  merkeVorrang(gelungen);
+  return gelungen;
 }
 
 /** Löscht aus localStorage UND dem Spiegel. */

@@ -3868,3 +3868,143 @@ Gegenprobe: `title="Zurück zur Übersicht"` in `Layout.tsx` eingetragen →
 `src/components/Layout.tsx:202 [title] Zurück zur Übersicht`. Ein zweiter
 Test zählt die gefundenen Textknoten, damit die Regel nicht eines Tages grün
 ist, weil der Parser nichts mehr sieht.
+
+---
+
+## E-067 · 2026-09-07 · 800 Millisekunden gegen das Offline-Versprechen
+
+**Stand:** entschieden — **nicht** umgesetzt, mit Zahlen.
+
+Beim Nachrechnen des Auslieferungspakets fiel auf: Die deutschen Lerninhalte
+(556 KB Quelltext, neun Module) liegen fest im Startpaket. Die **englischen**
+werden nachgeladen (`import('../content/en')`), die deutschen nicht. Wer die
+Startseite öffnet, lädt neun Module Fließtext mit, die er dort nicht braucht.
+
+Also gemessen, wie viel das kostet: gedrosselt auf reguläres 4G (1,6 Mbit/s,
+150 ms Latenz), fünf frische Kontexte je Fassung, Median.
+
+| | Bis zur ersten Darstellung | Übertragen |
+|---|---|---|
+| Wie ausgeliefert | **2520 ms** | **496 KB** |
+| Ohne die Lerninhalte im Startpaket | **1708 ms** | **331 KB** |
+| Unterschied | **812 ms** | **165 KB** |
+
+Die zweite Zeile ist eine Obergrenze: Dafür wurden die neun Module durch
+leere Platzhalter ersetzt — mehr als diese 812 ms kann eine Aufteilung nicht
+einbringen.
+
+### Warum es trotzdem nicht gemacht wird
+
+**Erstens gilt der Gewinn nur beim allerersten Aufruf.** Danach liefert der
+Service Worker die Dateien aus dem Zwischenspeicher (cache-first für Assets);
+der Unterschied ist dann exakt null.
+
+**Zweitens steht dem das Kernversprechen gegenüber.** Diese App soll im Zug
+funktionieren — `ohnenetz` weist das für alle 90 Bildschirme nach. Der
+Zwischenspeicher füllt sich beim ersten Abruf, nicht beim Installieren: Nur
+die Hülle und die gerechneten Zahlen stehen in der Vorablade-Liste des
+Service Workers. Ein nachgeladenes Inhaltspaket wäre also erst nach dem
+ersten Lektionsbesuch offline verfügbar. Wer die App installiert und im Zug
+zum ersten Mal eine Lektion öffnet, stünde vor einem Ladefehler — und
+`ohnenetz` würde für alle Lektionsbildschirme rot.
+
+**Drittens hilft die naheliegende Reparatur nicht.** Nimmt man das Paket in
+die Vorablade-Liste auf, lädt der erste Aufruf wieder alles — dieselben
+496 KB, nur in anderer Reihenfolge. Der Erstaufruf würde früher *etwas*
+zeigen und dabei im Hintergrund weiterladen. Dafür bräuchte die Vorablade-
+Liste die gehashten Dateinamen aus dem Build, also eine erzeugte
+Datei-Liste im Service Worker — heute steht dort eine kurze Liste von Hand
+plus ein von `npm run daten` erzeugter Datenblock.
+
+**Viertens ist die Sprache nicht symmetrisch.** Dass Englisch nachgeladen
+wird, ist richtig: Es ist die Zweitsprache, und wer sie wählt, tut das
+bewusst und online. Deutsch ist die Vorgabe. Die Vorgabe hinter einen
+Netzabruf zu legen, ist etwas anderes, als eine Wahlmöglichkeit
+nachzuladen — deshalb hat der englische Pfad drei Wiederholversuche, einen
+Fehlerzustand und ein Wiederaufgreifen bei `online`. Diese Maschinerie
+bräuchte der deutsche Pfad genauso.
+
+### Was stattdessen gilt
+
+812 ms einmalig gegen ein Versprechen, das die App an jedem Bildschirm
+einlöst — das ist kein guter Tausch. Sollte sich der Inhalt vervielfachen
+(mehr Module, Bilder), ändert sich die Rechnung; dann ist der Weg eine
+erzeugte Vorablade-Liste plus Nachladen, nicht Nachladen allein.
+
+Die Zahlen sind hier festgehalten und nicht in einem Lauf: Eine gedrosselte
+Zeitmessung auf einem geteilten CI-Rechner schwankt zu stark, um sie
+festzunageln. Was sich festnageln lässt, ist längst festgenagelt — dass die
+Startseite keine Dateien holt, die sie nicht braucht, prüft der Durchgang.
+
+---
+
+## E-068 · 2026-09-07 · Der Job, der 63 Läufe lang nie gelaufen ist
+
+**Stand:** entschieden und umgesetzt. **Der unangenehmste Eintrag hier.**
+
+Beim Nachsehen, ob die Veröffentlichung durchläuft, stand über jedem der 63
+Läufe dieses Zweigs ein rotes Kreuz. Aufgeschlüsselt:
+
+| Job | Ergebnis |
+|---|---|
+| `build` (Typprüfung, Tests, Bauen) | **grün** |
+| `deploy` (GitHub Pages) | **grün** — die App ist veröffentlicht |
+| `messungen` (sieben Browserläufe + Regeltests) | **rot, bei Schritt 7 von 15** |
+
+Der Schritt heißt „Vorschau starten". Danach ist alles übersprungen:
+`pruefen`, `bedienbar`, `daumen`, `wege`, `ohnenetz`, `speichersperre`,
+`quer`, `test:rules`. **Nichts davon ist je in der Action gelaufen.**
+
+### Der Fehler
+
+```
+> vite preview --port 4173
+  ➜  Local:   http://localhost:4173/
+##[error]Process completed with exit code 1.
+```
+
+Der Server startet und meldet sich. Der `curl` daneben fragt
+`http://127.0.0.1:4173/` und bekommt dreißig Sekunden lang nichts.
+
+Ohne `--host` lauscht die Vorschau auf `localhost`. Auf dem GitHub-Runner
+löst dieser Name **zuerst nach `::1`** auf — der Server hört dann nur auf
+IPv6, während die Läufe IPv4 ansprechen. Auf dieser Maschine hier gibt es gar
+kein IPv6, `localhost` ist immer 127.0.0.1, und deshalb lief hier alles.
+
+Behoben mit `--host 0.0.0.0`: Der Server hört auf allen Schnittstellen.
+Beide Namen müssen funktionieren — `ohnenetz` braucht ausdrücklich
+`127.0.0.1` (auf `localhost` meldet sich kein Service Worker an, E-052), die
+übrigen sieben rufen `localhost`. Die Bereitschaftsprüfung fragt jetzt beide
+Namen ab und sagt im Fehlerfall, welcher fehlte.
+
+### Was das über die Arbeitsweise sagt
+
+E-054 und E-060 haben beide damit geschlossen, dass eine Prüfung „nur lief,
+wenn ein Mensch daran dachte" — und beide haben die Lösung in denselben Job
+gehängt. E-061 sagte „der Lauf hängt im Job `messungen` neben den fünf
+anderen". Alle drei Sätze waren wahr und alle drei waren wertlos: Der Job
+scheiterte vor dem ersten Lauf.
+
+Der Fehler war also nicht die Zeile YAML. Der Fehler war, **die Action nie
+aufgerufen zu haben**. Ich habe in E-054 und E-060 sogar aufgeschrieben, dass
+ich sie nicht ausführen kann — und daraus nicht den einen Schluss gezogen,
+der nahelag: dann sieh wenigstens nach, was sie tut.
+
+Das ist dieselbe Lehre wie in E-061, eine Ebene höher. Dort war eine Messung
+grün, ohne etwas zu messen. Hier war eine Prüfung eingerichtet, ohne je zu
+laufen. In beiden Fällen sah der Zustand von außen aus wie Erfolg.
+
+**Die Regel, die daraus folgt:** Eine Prüfung gilt erst als eingerichtet,
+wenn man sie **einmal grün gesehen hat, dort, wo sie laufen soll**. Nicht
+wenn sie geschrieben ist, nicht wenn sie lokal läuft, nicht wenn die YAML
+gültig ist.
+
+### Was geprüft wurde
+
+- Die Fehlerursache ist am Protokoll des Laufs abgelesen, nicht vermutet.
+- Dass ein nur auf IPv6 gebundener Server unter 127.0.0.1 nicht erreichbar
+  ist, ist hier nachgestellt.
+- Dass `--host 0.0.0.0` beide Namen bedient, ist hier gemessen: `127.0.0.1`
+  und `localhost` antworten beide.
+- Was **nicht** hier zu prüfen war: dass es auf dem Runner reicht. Das steht
+  im nächsten Lauf — und diesmal wird nachgesehen.

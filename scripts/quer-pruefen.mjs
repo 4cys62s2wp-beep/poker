@@ -115,3 +115,11 @@ console.log(`${messungen.length} Bildschirme quer (${BREITE}×${HOEHE}) geprüft
 console.log(`Höchster Überlauf: ${bericht.hoechster_ueberlauf} px · höchste feste Leiste: ${bericht.hoechste_leiste} px`);
 console.log(`Befunde: ${befunde.length}`);
 for (const b of befunde.slice(0, 12)) console.log(`  ${b.adresse} — ${b.art}: ${b.text}`);
+
+/* Ein Lauf, der Befunde meldet und trotzdem mit 0 endet, lässt den Schritt in
+   der Action grün aussehen — und genau das ist passiert (E-071). Wer misst,
+   muss auch scheitern können. */
+if (befunde.length > 0) {
+  console.error(`\n${befunde.length} Befunde — siehe docs/quer.json`);
+  process.exitCode = 1;
+}

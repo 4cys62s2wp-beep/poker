@@ -22,6 +22,7 @@ Projekts, unverändert übernommen.
 |---|---|
 | `npm test` | alle grün, null übersprungen |
 | `npm run test:rules` | 29 Regelprüfungen gegen den echten Emulator |
+| `tools/poker-math` | Python-Tests des Generators, laufen in der Action mit (E-069) |
 | Messläufe im Browser | elf, jeder mit Ergebnis in `docs/` und einem Test, der es festhält |
 | `npx tsc --noEmit`, `npm run build` | sauber |
 

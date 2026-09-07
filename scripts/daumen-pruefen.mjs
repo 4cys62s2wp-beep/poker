@@ -177,3 +177,11 @@ writeFileSync('docs/daumen.json', `${JSON.stringify(ausgabe, null, 2)}\n`);
 console.log(`${messungen.length} Bildschirme, davon ${mitLeiste.length} mit Entscheidungsleiste.`);
 console.log(`Befunde: ${befunde.length}`);
 for (const b of befunde) console.log(`  ${b.hash}: ${b.art} (${b.wert}${b.grenze ? ` / Grenze ${b.grenze}` : ''})`);
+
+/* Ein Lauf, der Befunde meldet und trotzdem mit 0 endet, lässt den Schritt in
+   der Action grün aussehen — und genau das ist passiert (E-071). Wer misst,
+   muss auch scheitern können. */
+if (befunde.length > 0) {
+  console.error(`\n${befunde.length} Befunde — siehe docs/daumen.json`);
+  process.exitCode = 1;
+}

@@ -116,10 +116,27 @@ jobs:
         # abgesichert (`speichersperre.test.ts`) — dieser Lauf prüft, was
         # der Quelltext nicht zeigen kann: die Fremdbibliotheken.
         run: npm run speichersperre
+      - name: Maße des Übungstisches
+        run: npm run tisch
+      - name: Ein Durchgang durch die App
+        # 38 Schritte vom ersten Start bis zum abgerechneten Abend. Der
+        # gründlichste Lauf des Projekts — und der einzige, dessen Ergebnis
+        # bis E-070 nur so frisch war wie der letzte Aufruf von Hand.
+        run: npm run durchgang
       - name: Das Handy quer
         # Alle anderen Läufe messen hochkant. Quer bleibt ein Fünftel der
         # Höhe — und niedrige Höhe bricht Layouts anders als schmale Breite.
         run: npm run quer
+      - name: Java 21 einrichten
+        # firebase-tools verlangt seit 15.x mindestens Java 21; der Runner
+        # bringt von Haus aus eine ältere Fassung mit, und der Emulator
+        # bricht mit „no longer supports Java version before 21" ab. In
+        # E-060 stand „der Runner bringt Java mit" — richtig, aber das
+        # falsche (E-071).
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
       - name: Sicherheitsregeln gegen den Emulator
         # Diese 29 Prüfungen sind aus `npm test` ausgeschlossen, weil sie
         # Java und den Firestore-Emulator brauchen — und liefen deshalb nur,
@@ -127,9 +144,26 @@ jobs:
         # unter anderem, dass niemand fremde Handkarten liest, nicht einmal
         # der Gastgeber. Der Runner bringt Java mit.
         run: npm run test:rules
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Rechenwerkzeuge prüfen
+        # Die 336 Tests unter `tools/poker-math` prüfen den Generator, der die
+        # Zahlen der App erzeugt hat — Outs, Pot-Odds, Kombinatorik, die
+        # Preflop-Matrix. Die App liest nur das Ergebnis; ohne diese Tests
+        # prüft niemand mehr, wie es zustande kam. Sie liefen zuletzt nur,
+        # wenn ein Mensch daran dachte (dieselbe Lage wie E-054 und E-060).
+        run: |
+          cd tools/poker-math
+          pip install -q -r requirements.txt
+          python -m pytest -q
       - name: Abweichungen zeigen
         if: failure()
-        run: git --no-pager diff --stat docs/ || true
+        # Vollständig, nicht nur die Statistik: Beim ersten wirklich
+        # gelaufenen Job stand hier „docs/ohnenetz.json | 461 +++…" — und
+        # was die 461 Zeilen sagten, war nirgends zu lesen.
+        run: git --no-pager diff docs/ || true
 
   deploy:
     needs: build

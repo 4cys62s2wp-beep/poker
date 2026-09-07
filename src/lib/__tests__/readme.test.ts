@@ -20,6 +20,7 @@ import { describe, expect, it } from 'vitest';
 
 const README = readFileSync('README.md', 'utf8');
 const STATUS = readFileSync('STATUS.md', 'utf8');
+const FIREBASE = readFileSync('FIREBASE_SETUP.md', 'utf8');
 const PROFILTEXTE = readFileSync('src/i18n/pages/profile.ts', 'utf8');
 const PAKET = JSON.parse(readFileSync('package.json', 'utf8')) as {
   scripts: Record<string, string>;
@@ -61,6 +62,50 @@ describe('README', () => {
     expect(anzahl).toBeGreaterThan(0);
     expect(README, `rules.test.ts hat ${anzahl} Prüfungen.`)
       .toContain(`mit ${anzahl} Tests gegen den echten Emulator`);
+  });
+});
+
+describe('Die Messläufe in der Action', () => {
+  /* Ein Lauf, dessen Ergebnis eine Datei in `docs/` festhält, prüft nur so
+     viel, wie er zuletzt gelaufen ist: Der Test liest die Datei, nicht die
+     App. Wird der Lauf nie wiederholt, hält er einen Stand fest, den es
+     vielleicht nicht mehr gibt. Deshalb müssen alle Läufe, die einen
+     gemessenen Bericht schreiben, in der Action stehen (E-070).
+
+     `binaer` und `streuung` sind bewusst nicht dabei: `binaer` misst
+     Ladezeiten, die auf einem geteilten Rechner schwanken, und `streuung`
+     rechnet die Ratsche ohnehin bei jedem `npm test` neu aus dem Quelltext. */
+  const AUSGENOMMEN = new Set(['binaer', 'streuung']);
+
+  it('führt jeden berichtenden Lauf aus', () => {
+    const workflow = readFileSync('.github/workflows/deploy.yml', 'utf8');
+    const fehlend = messlaeufe()
+      .filter((name) => !AUSGENOMMEN.has(name))
+      .filter((name) => !workflow.includes(`npm run ${name}`));
+    expect(fehlend, 'diese Läufe stehen in keinem Job').toEqual([]);
+  });
+});
+
+describe('Die Rechenwerkzeuge', () => {
+  /* `tools/poker-math` erzeugt die Zahlen, die die App zeigt. Die App liest
+     nur das Ergebnis; ohne diese Tests prüft niemand mehr, wie es zustande
+     kam. Sie liefen zuletzt nur, wenn ein Mensch daran dachte — bis E-069.
+     Diese Regel hält fest, dass sie in der Action stehen. */
+  it('laufen in der Action mit', () => {
+    const workflow = readFileSync('.github/workflows/deploy.yml', 'utf8');
+    expect(workflow).toContain('cd tools/poker-math');
+    expect(workflow).toContain('python -m pytest -q');
+  });
+});
+
+describe('FIREBASE_SETUP.md', () => {
+  /* Dieselbe Zahl steht ein zweites Mal in der Einrichtungsanleitung — und
+     stand dort noch auf 26, als das README längst 29 sagte. Eine Zahl an zwei
+     Stellen braucht an beiden dieselbe Prüfung. */
+  it('nennt die richtige Zahl der Regelprüfungen', () => {
+    const anzahl = (REGELN.match(/^\s*it\(/gm) ?? []).length;
+    expect(FIREBASE, `rules.test.ts hat ${anzahl} Prüfungen.`)
+      .toContain(`Regeln mit ${anzahl} Tests`);
   });
 });
 

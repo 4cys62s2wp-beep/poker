@@ -1,10 +1,12 @@
 {
-  "geprueft_am": "2026-09-07T05:09:30.956Z",
+  "geprueft_am": "2026-09-07T19:07:00.405Z",
   "grund": "http://127.0.0.1:4183",
   "breite": 390,
   "browser": "141.0.7390.37",
   "service_worker_aktiv": true,
   "kern_dateien_im_speicher": 3,
+  "server_abgeschaltet": true,
+  "frische_anfrage_scheitert": true,
   "gebaute_dateien": 21,
   "gebaute_dateien_im_speicher": 21,
   "bildschirme": 90,

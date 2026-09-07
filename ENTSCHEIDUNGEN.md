@@ -4190,7 +4190,13 @@ Der Kopf des Laufs sagt beides jetzt in dieser Deutlichkeit. Eine Prüfung,
 die mehr behauptet, als sie zeigt, ist schlimmer als keine — das ist die
 Lehre aus E-061, hier zum zweiten Mal.
 
-### Was offen bleibt — und rot bleiben soll
+### Was daraus wurde
+
+Der Abschnitt hieß hier zunächst „Was offen bleibt — und rot bleiben soll".
+Er ist eingelöst: **E-072 hat die Ursache gefunden und behoben.** Der Text
+darunter beschreibt den Stand, mit dem dieser Eintrag geschrieben wurde.
+
+### Der damalige Stand
 
 Mit dem berichtigten Lauf meldet der CI-Runner **90 Befunde: jeder Bildschirm
 null Zeichen.** Hier sind es null Befunde. Gleicher Quelltext, gleicher Build
@@ -4217,3 +4223,108 @@ Browserfassung jetzt in jedem Bericht.
 supports Java version before 21". In E-060 stand „der Runner bringt Java
 mit" — richtig, aber das falsche. `actions/setup-java@v4` mit Temurin 21
 davor.
+
+---
+
+## E-072 · 2026-09-07 · Ein Kopfzeilen-Detail, und die App war nie offline
+
+**Stand:** entschieden und umgesetzt. **Der offene Punkt aus E-071 ist
+gelöst — und es war kein Messfehler, sondern ein echter Fehler.**
+
+Der Runner-Browser ließ sich hier nicht beschaffen (`cdn.playwright.dev` ist
+gesperrt). Also musste die Reproduktion ohne ihn gelingen — und sie gelang:
+Wird der Vorschau-Server **wirklich abgeschaltet**, zeigt auch Chromium 141
+dasselbe Bild wie der Runner. Kein Browserunterschied. Ein Fehler.
+
+### Wie er sichtbar wurde
+
+Der Worker schrieb selbst mit, was er sieht — in einen eigenen
+Zwischenspeicher, ohne Debugger. (Der Debugger schied aus: Sobald er sich an
+den Worker hängt, sieht dieser gar keine Anfragen mehr — auch das erst
+gemessen, dann geglaubt.)
+
+```
+Zwischenspeicher: 21 von 21 gebauten Dateien.   ← alles da
+SIEHT   script cors  index-….js
+TREFFER NEIN         index-….js                 ← und trotzdem nicht gefunden
+NETZFEHLER           index-….js  Failed to fetch
+```
+
+Die Datei liegt im Zwischenspeicher. Der Worker sucht sie. Er findet sie
+nicht.
+
+### Warum
+
+```
+$ curl -sI …/assets/index-….js
+Vary: Origin
+```
+
+Drei Dinge, die einzeln richtig sind und zusammen den Fehler ergeben:
+
+1. Der Server schickt **`Vary: Origin`** — Vite ebenso wie GitHub Pages.
+2. Vite baut das Skript als `<script type="module" **crossorigin** …>` ein.
+   Die Seite fordert es damit **mit** `Origin`-Kopf an.
+3. Abgelegt hat der Worker es beim Installieren mit **seiner eigenen**
+   Anfrage — die hat keinen `Origin`.
+
+`caches.match(req)` beachtet `Vary`. Es vergleicht den `Origin`-Kopf, findet
+einen Unterschied und meldet: nichts da. Der Worker geht ins Netz. Ist eins
+da, merkt es niemand.
+
+**Das ist genau die Bedingung, die eine Messung mit `setOffline` nie
+erwischt** — dort ist immer ein Netz da, der Worker holt sich alles vom
+Vorschau-Server, und alles sieht gut aus. Der Runner mit strengerem
+Offline-Verhalten hat den Fehler nicht erzeugt, sondern nur endlich gezeigt.
+
+### Die Behebung
+
+```diff
+-    caches.match(req).then(
++    caches.match(req, { ignoreVary: true }).then(
+```
+
+Dazu dieselbe Angabe beim Rückfall auf `./index.html`. Die Dateinamen tragen
+einen Streuwert; die Adresse allein ist ein eindeutiger Schlüssel. Genau
+dafür gibt es `ignoreVary`.
+
+### Der Nachweis
+
+Gemessen mit **abgeschaltetem Server** — kein `setOffline`, keine Emulation,
+kein Netz:
+
+| | |
+|---|---|
+| Nach **einem** Aufruf im Zwischenspeicher | 29 Einträge |
+| Server danach erreichbar | nein (geprüft) |
+| Frische Anfrage aus der Seite | scheitert (geprüft) |
+| Startseite | **503 Zeichen** |
+| Lektion `m1-l1` | **6750 Zeichen** |
+| Odds-Spickzettel | **1940 Zeichen** |
+| Abend einrichten | **645 Zeichen** |
+| Alle 90 Bildschirme | **90 von 90, null Befunde** |
+
+Gegenprobe: `ignoreVary` entfernt → 90 Befunde, Exit-Code 1. Ein Wort
+Unterschied.
+
+### Was bleibt
+
+- `npm run ohnenetz` startet seinen **eigenen** Server, wärmt den Worker auf,
+  prüft die Vorabladung und **schaltet den Server ab**. `setOffline` kommt
+  darin nicht mehr vor. Der Bericht hält fest, dass abgeschaltet wurde und
+  dass eine frische Anfrage danach scheitert — sonst wäre er wieder wertlos.
+- `serviceworker.test.ts` verlangt `ignoreVary: true` bei **jedem** Zugriff
+  auf den Zwischenspeicher. Ein neuer, der es vergisst, ist derselbe Fehler
+  noch einmal — und wäre wieder unsichtbar, solange ein Netz da ist.
+- Der Backlog-Eintrag ist weg, und das README verspricht den Offline-Betrieb
+  wieder — diesmal mit dem Nachweis daneben.
+
+### Die Lehre, zum dritten Mal
+
+E-061: Eine Messung fand die Absturzseite hübsch genug, um sie für die App zu
+halten. E-071: Eine Messung schaltete das Netz ab und ließ den Worker
+weiterfunken. Hier: Eine Messung ließ ein Netz da, wo keines sein sollte.
+
+Dreimal dasselbe Muster. **Eine Prüfung, die den Zustand nur nachstellt,
+prüft den Zustand nicht.** Wo es geht, muss die Bedingung echt sein — der
+Server aus, nicht ein Schalter umgelegt.

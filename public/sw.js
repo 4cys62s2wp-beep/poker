@@ -75,14 +75,26 @@ self.addEventListener('fetch', (event) => {
           }
           return res;
         })
-        .catch(() => caches.match('./index.html')),
+        .catch(() => caches.match('./index.html', { ignoreVary: true })),
     );
     return;
   }
 
-  // Cache-first für Assets (gehashte Dateinamen)
+  /* Cache-first für Assets (gehashte Dateinamen).
+
+     `ignoreVary` ist hier kein Feinschliff, sondern der Kern: Der Server
+     schickt `Vary: Origin` (Vite ebenso wie GitHub Pages), und die Seite
+     fordert Skript und Stilblatt als `<script type="module" crossorigin>`
+     an — also **mit** `Origin`-Kopf. Abgelegt hat der Worker sie beim
+     Installieren mit seiner eigenen Anfrage, die **keinen** hat. Ohne
+     `ignoreVary` vergleicht `caches.match` die Köpfe, findet nichts und
+     geht ins Netz — und ohne Netz bleibt der Bildschirm leer. Genau das
+     war der Fehler, den keine Messung sah (E-072).
+
+     Der Dateiname trägt einen Streuwert; die Adresse allein ist damit ein
+     eindeutiger Schlüssel. Genau dafür gibt es `ignoreVary`. */
   event.respondWith(
-    caches.match(req).then(
+    caches.match(req, { ignoreVary: true }).then(
       (cached) =>
         cached ||
         fetch(req).then((res) => {

@@ -49,10 +49,11 @@ Trainings-App als Website und installierbare PWA. **Komplett zweisprachig
   mit Anfragen und Online-Anzeige – siehe [MULTIPLAYER_SETUP.md](MULTIPLAYER_SETUP.md)
 - **🎰 Chip-Rechner:** Pokerkoffer eingeben → faire Verteilung, Startstack,
   Blinds und Turnier-Fahrplan für den Pokerabend
-- **📲 PWA:** aufs Handy installierbar; der Service Worker legt jede gebaute
-  Datei ab, sodass die App ohne Netz laufen soll — unter aktuellem Chromium ist
-  das derzeit **nicht bestätigt**, siehe den offenen Punkt in `BACKLOG.md`.
-  Ohne Konto bleiben alle Daten auf dem Gerät, mit Konto kommt die
+- **📲 PWA:** aufs Handy installierbar und **offline-fähig** — nachgewiesen mit
+  abgeschaltetem Server, nicht mit einer Netzemulation: Nach einem einzigen
+  Aufruf liegen alle gebauten Dateien im Service Worker, und alle 90
+  Bildschirme laden ohne jede Verbindung (`npm run ohnenetz`). Ohne Konto
+  bleiben alle Daten auf dem Gerät, mit Konto kommt die
   Cloud-Synchronisation dazu
 - **💳 Pro-Abo (optional):** komplette Paywall-Infrastruktur mit 7-Tage-Testphase,
   Rechtsseiten und Kündigungsseite nach § 312k BGB – standardmäßig **aus**, siehe

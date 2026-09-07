@@ -100,6 +100,12 @@ jobs:
         run: npm run wege
       - name: Jeder Bildschirm ohne Netz
         run: npm run ohnenetz
+      - name: Jeder Bildschirm ohne Gerätespeicher
+        # Privates Fenster, gesperrte Website-Daten: Dann wirft schon der
+        # Lesezugriff auf `localStorage`. Der Quelltext ist dagegen
+        # abgesichert (`speichersperre.test.ts`) — dieser Lauf prüft, was
+        # der Quelltext nicht zeigen kann: die Fremdbibliotheken.
+        run: npm run speichersperre
       - name: Sicherheitsregeln gegen den Emulator
         # Diese 29 Prüfungen sind aus `npm test` ausgeschlossen, weil sie
         # Java und den Firestore-Emulator brauchen — und liefen deshalb nur,

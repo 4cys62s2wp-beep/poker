@@ -89,15 +89,16 @@ npm run build && npm run preview                          # Port 4173
 ```
 
 ```bash
-npm run pruefen    # Design: Kontrast, Größen, Farbmodi (91 Bildschirme × 2 Modi)
-npm run bedienbar  # Bedienbarkeit: Namen, Überschriften, Tastaturfokus (× 2 Sprachen)
-npm run daumen     # Erreichbarkeit für den Daumen
-npm run wege       # Wege, Tiefe, Sackgassen
-npm run durchgang  # Ein Durchgang durch die App, Schritt für Schritt
-npm run ohnenetz   # Jeder Bildschirm ohne Netz (braucht 127.0.0.1, nicht localhost)
-npm run tisch      # Maße des Übungstisches
-npm run binaer     # Größe und Genauigkeit der Equity-Matrix
-npm run streuung   # Verstreute Zahlenwerte zählen (Ratsche)
+npm run pruefen        # Design: Kontrast, Größen, Farbmodi (91 Bildschirme × 2 Modi)
+npm run bedienbar      # Bedienbarkeit: Namen, Überschriften, Tastaturfokus (× 2 Sprachen)
+npm run daumen         # Erreichbarkeit für den Daumen
+npm run wege           # Wege, Tiefe, Sackgassen
+npm run durchgang      # Ein Durchgang durch die App, Schritt für Schritt
+npm run ohnenetz       # Jeder Bildschirm ohne Netz (braucht 127.0.0.1, nicht localhost)
+npm run speichersperre # Jeder Bildschirm bei gesperrtem localStorage (privates Fenster)
+npm run tisch          # Maße des Übungstisches
+npm run binaer         # Größe und Genauigkeit der Equity-Matrix
+npm run streuung       # Verstreute Zahlenwerte zählen (Ratsche)
 ```
 
 ## Deployment (automatisch via GitHub Actions)

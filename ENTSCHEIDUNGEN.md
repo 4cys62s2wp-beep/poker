@@ -3441,3 +3441,97 @@ Befehl ist derselbe, der hier eben durchgelaufen ist.
 ausführen. Geprüft ist, dass die YAML gültig bleibt, dass der Deploy
 weiterhin nur an `build` hängt — und dass der Befehl in einer vergleichbaren
 Linux-Umgebung mit Java 21 sauber durchläuft.
+
+---
+
+## E-061 · 2026-09-06 · Die Messung, die alles für in Ordnung hielt
+
+**Stand:** entschieden und umgesetzt.
+
+Die Frage: Was zeigt PokerMentor im privaten Fenster, bei gesperrten
+Website-Daten, unter einer Unternehmensrichtlinie? Dort ist `localStorage`
+kein Feld, das leer ist — dort **wirft** schon der Lesezugriff.
+
+Die erste Messung sagte: 90 von 90 Bildschirmen in Ordnung, null Befunde.
+
+Das war falsch. Und zwar so falsch, wie eine Messung nur sein kann.
+
+### Der Gegenversuch
+
+Zur Regel geworden ist es nach E-052: Eine Prüfung, die noch nie rot war,
+ist keine Prüfung. Also ein `try` aus `leseModus()` entfernt — der
+Farbmodus wird beim Start jedes Bildschirms gelesen —, neu gebaut, gemessen.
+
+Ergebnis: **wieder null Befunde.** Bei einer App, die in Wahrheit auf jedem
+einzelnen Bildschirm abstürzte.
+
+Zwei Annahmen waren schuld, beide plausibel und beide falsch:
+
+1. **„Ein Absturz erzeugt einen `pageerror`."** Tut er nicht. React fängt
+   ihn ab, `componentDidCatch` greift, die Fehlergrenze rendert. Im Fenster
+   kommt nur eine `console.error` an — auf die niemand hörte.
+2. **„Eine kaputte Seite ist leer."** Ist sie nicht. Die Absturzseite ist
+   seit E-046 eine ordentliche Seite: Überschrift, Erklärung, Schaltflächen.
+   150 Zeichen. Die Schwelle stand bei 30.
+
+Die Messung suchte also nach einem leeren Bildschirm und fand eine gut
+gestaltete Fehlermeldung — und hielt sie für die App. Je besser die
+Absturzseite, desto blinder die Prüfung. Das ist die unangenehme Pointe:
+E-046 hat die Prüfung von E-061 sabotiert, und beide waren gut gemeint.
+
+### Was jetzt geprüft wird
+
+**Erstens im Quelltext** (`speichersperre.test.ts`, läuft bei jedem `npm
+test`, braucht keinen Browser): Jeder Zugriff auf `localStorage` oder
+`sessionStorage` muss in einem `try` mit `catch` liegen — und zwar in
+*derselben* Funktion. Ein `try` weiter außen fängt nichts mehr, sobald ein
+Rückruf oder ein `await` dazwischensteht, also endet die Suche an jeder
+Funktionsgrenze.
+
+Gelesen wird über den TypeScript-Parser, nicht per Regex: Nur der Parser
+weiß, ob ein `localStorage` ein Zugriff oder ein Wort in einem Kommentar
+ist. Ein zweiter Test zählt die gefundenen Zugriffe (mindestens 20) — sonst
+wäre die Regel eines Tages grün, weil der Parser nichts mehr erkennt.
+
+Gegenprobe: dasselbe `try` entfernt →
+`src/lib/design/modus.ts:43 — localStorage`. Mit Datei und Zeile.
+
+**Zweitens im Browser** (`npm run speichersperre`): Der Quelltext ist nur
+die Hälfte. Firebase, der Router und die Browser-Laufzeit fassen den
+Speicher selbst an — ein Versionssprung kann das ändern, ohne dass sich im
+Projekt eine Zeile rührt. Der Lauf sperrt beide Web-Speicher vor jedem
+Skript, lädt alle 90 Bildschirme und **lädt sie erneut** (beim ersten Start
+ist der Speicher ohnehin leer; erst der Neuaufbau zeigt, ob die App ohne ihr
+Gedächtnis wieder hochkommt).
+
+Er sucht jetzt nach `main[role="alert"]` — der Absturzseite selbst — und
+hört auf `console.error` mit. Und er prüft im Fenster nach, ob die Sperre
+überhaupt greift; tut sie es nicht, bricht er ab, statt grün zu melden. Das
+ist dieselbe Vorsichtsmaßnahme wie `service_worker_aktiv` in E-052, aus
+demselben Grund.
+
+Gegenprobe mit dem entfernten `try`: 6 von 6 geprüften Bildschirmen melden
+„Absturzseite" plus „SecurityError: Zugriff verweigert".
+
+### Das Ergebnis
+
+Mit der berichtigten Messung und dem wiederhergestellten `try`: **90 von 90
+Bildschirmen, null Befunde.** Die App kommt im privaten Fenster hoch, zeigt
+Inhalte, und die zehn abgesicherten Zugriffe im Startpfad tun genau das,
+wofür sie geschrieben wurden.
+
+Diesmal heißt das auch etwas.
+
+Festgehalten in `docs/speichersperre.json`; der Lauf hängt im Job
+`messungen` neben den fünf anderen.
+
+### Was bleibt
+
+Kein Fund in der App — aber ein Fund über das Prüfen selbst, und der wiegt
+schwerer: **Eine Fehlerseite, die gut aussieht, sieht für eine Messung aus
+wie eine funktionierende Seite.** Jede Prüfung, die „ist da Inhalt?" fragt,
+muss auch fragen „ist es der *richtige* Inhalt?".
+
+Rückwirkend angewandt: `ohnenetz` (E-052) sucht die Absturzseite jetzt
+ebenfalls und wurde neu gemessen — weiterhin 90 von 90, null Befunde. Die
+Lücke war dort nie aufgegangen, aber sie war offen.

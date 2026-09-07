@@ -116,6 +116,13 @@ jobs:
         # abgesichert (`speichersperre.test.ts`) — dieser Lauf prüft, was
         # der Quelltext nicht zeigen kann: die Fremdbibliotheken.
         run: npm run speichersperre
+      - name: Maße des Übungstisches
+        run: npm run tisch
+      - name: Ein Durchgang durch die App
+        # 38 Schritte vom ersten Start bis zum abgerechneten Abend. Der
+        # gründlichste Lauf des Projekts — und der einzige, dessen Ergebnis
+        # bis E-070 nur so frisch war wie der letzte Aufruf von Hand.
+        run: npm run durchgang
       - name: Das Handy quer
         # Alle anderen Läufe messen hochkant. Quer bleibt ein Fünftel der
         # Höhe — und niedrige Höhe bricht Layouts anders als schmale Breite.

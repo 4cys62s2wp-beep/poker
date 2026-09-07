@@ -65,6 +65,27 @@ describe('README', () => {
   });
 });
 
+describe('Die Messläufe in der Action', () => {
+  /* Ein Lauf, dessen Ergebnis eine Datei in `docs/` festhält, prüft nur so
+     viel, wie er zuletzt gelaufen ist: Der Test liest die Datei, nicht die
+     App. Wird der Lauf nie wiederholt, hält er einen Stand fest, den es
+     vielleicht nicht mehr gibt. Deshalb müssen alle Läufe, die einen
+     gemessenen Bericht schreiben, in der Action stehen (E-070).
+
+     `binaer` und `streuung` sind bewusst nicht dabei: `binaer` misst
+     Ladezeiten, die auf einem geteilten Rechner schwanken, und `streuung`
+     rechnet die Ratsche ohnehin bei jedem `npm test` neu aus dem Quelltext. */
+  const AUSGENOMMEN = new Set(['binaer', 'streuung']);
+
+  it('führt jeden berichtenden Lauf aus', () => {
+    const workflow = readFileSync('.github/workflows/deploy.yml', 'utf8');
+    const fehlend = messlaeufe()
+      .filter((name) => !AUSGENOMMEN.has(name))
+      .filter((name) => !workflow.includes(`npm run ${name}`));
+    expect(fehlend, 'diese Läufe stehen in keinem Job').toEqual([]);
+  });
+});
+
 describe('Die Rechenwerkzeuge', () => {
   /* `tools/poker-math` erzeugt die Zahlen, die die App zeigt. Die App liest
      nur das Ergebnis; ohne diese Tests prüft niemand mehr, wie es zustande

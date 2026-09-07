@@ -4053,3 +4053,52 @@ Generator. Ohne seine Tests ist die Behauptung nur noch eine Erinnerung
 daran, dass sie einmal geprüft war.
 
 Kosten: knapp eine Minute im ohnehin nicht blockierenden Job.
+
+---
+
+## E-070 · 2026-09-07 · Ein Bericht ist nur so frisch wie sein letzter Lauf
+
+**Stand:** entschieden und umgesetzt.
+
+E-068 hat den Messjob repariert. Beim Nachzählen, was dort eigentlich läuft,
+zeigte sich die nächste Stufe desselben Problems.
+
+Elf Läufe schreiben einen Bericht nach `docs/`, und je ein Test hält ihn
+fest. Nur: **Der Test liest die Datei, nicht die App.** Wird der Lauf nie
+wiederholt, prüft der Test einen Stand, den es vielleicht nicht mehr gibt —
+und bleibt dabei grün.
+
+Von den elf standen acht in der Action. Drei nicht:
+
+| Lauf | Was er misst | Stand |
+|---|---|---|
+| `durchgang` | 38 Schritte vom ersten Start bis zum abgerechneten Abend | **fehlte** |
+| `tisch` | Lesbarkeit des Übungstisches auf drei Geräten | **fehlte** |
+| `binaer` | Ladezeit der Equity-Matrix | bewusst draußen |
+
+`durchgang` ist der gründlichste Lauf des Projekts — und ausgerechnet sein
+Bericht war nur so frisch wie der letzte Aufruf von Hand. Beide hängen jetzt
+im Job.
+
+**`binaer` bleibt draußen, mit Grund:** Er misst Ladezeiten (105 ms gegen
+5 ms), und Zeiten auf einem geteilten Rechner schwanken. Ein Lauf, der
+gelegentlich grundlos rot wird, kostet mehr Aufmerksamkeit, als er einbringt
+— und Aufmerksamkeit ist genau die Währung, in der E-068 bezahlt wurde. Was
+an ihm nicht schwankt (Dateigröße, Genauigkeit der Matrix), prüft
+`b4binaer.test.ts` bei jedem `npm test`.
+
+**`streuung` braucht keinen Platz:** Die Ratsche wird bei jedem `npm test`
+neu aus dem Quelltext gerechnet, nicht aus einer Datei gelesen.
+
+Eine Regel in `readme.test.ts` hält das jetzt fest: Jeder Lauf, der einen
+Bericht schreibt, steht in der Action — außer den beiden benannten Ausnahmen.
+Gegenprobe: `npm run durchgang` aus der YAML entfernt → der Test nennt
+`durchgang` beim Namen.
+
+### Die Reihe, die hier endet
+
+E-054, E-060, E-068, E-069, E-070 sind fünfmal derselbe Fehler in fünf
+Gewändern: eine Prüfung, die eingerichtet aussieht und nicht läuft. Die
+Regel aus E-068 („einmal grün gesehen, dort, wo sie laufen soll") deckt den
+Einzelfall. Diese Regel hier deckt den Bestand: Sie zählt die Läufe und
+verlangt für jeden einen Platz — oder eine benannte Ausnahme.

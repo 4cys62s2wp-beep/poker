@@ -3641,3 +3641,51 @@ Millisekunden vor.
 
 Der zweite Teil hängt am selben Lauf wie E-061, weil es dieselbe Frage aus
 zwei Richtungen ist: Was tut die App, wenn das Gerät ihre Daten nicht nimmt.
+
+---
+
+## E-063 · 2026-09-07 · Zehn Läufe, eine Haltung des Geräts
+
+**Stand:** entschieden und umgesetzt.
+
+Beim Nachzählen der Messungen fiel eine Lücke auf, die keine der zehn
+Prüfungen schließt: Alle messen **hochkant**, 390 × 844. Quer ist dasselbe
+Gerät 844 × 390 — ein Fünftel der Höhe.
+
+Das ist keine Randlage. Wer am Tisch die Blindstufen laufen lässt, stellt das
+Gerät hin. Wer am Übungstisch spielt, dreht es. Und niedrige Höhe bricht
+Layouts auf andere Weise als schmale Breite: Was hochkant knapp über dem Rand
+liegt, verschwindet quer unter der festen Leiste — und ist dann nicht mehr
+erreichbar, nicht bloß hässlich.
+
+`npm run quer` misst drei Dinge auf allen 90 Bildschirmen:
+
+1. **Waagerechtes Überlaufen** — eine Breite, die hochkant nie auffällt.
+2. **Bedienelemente, die ganz unter einer festen Leiste liegen** und nicht zu
+   ihr gehören.
+3. **Eine feste Leiste über 40 % der Höhe**, die vom Inhalt zu wenig übrig
+   lässt.
+
+### Das Ergebnis
+
+| | |
+|---|---|
+| Höchster waagerechter Überlauf | **0 px** |
+| Höchste feste Leiste | **86 px** von 390 (22 %) |
+| Verdeckte Bedienelemente | **0** |
+| Befunde insgesamt | **0** |
+
+Nichts zu reparieren. Das Layout hält quer, obwohl es nie daraufhin gebaut
+wurde — die durchgehend relativen Maße und der Verzicht auf feste Höhen
+zahlen sich hier aus.
+
+### Warum daraus trotzdem ein Lauf wurde
+
+Ein sauberes Ergebnis ist ein Grund, es festzuhalten, kein Grund, es
+wegzuwerfen. Ein Umbau am Layout kann diese Lage jederzeit brechen, und keine
+andere Prüfung würde es sehen — sie schauen alle hochkant. Der Lauf hängt im
+Job `messungen` neben den anderen und hält den Deploy nicht auf.
+
+Gegenprobe: ein 1200 px breites Element und eine 120-px-Leiste in die Seite
+gesetzt → 356 px Überlauf und 2 verdeckte Bedienelemente. Beide Regeln
+schlagen an.

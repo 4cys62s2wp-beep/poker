@@ -2,34 +2,38 @@
    =========================================
 
    PokerMentor verspricht Offline-Betrieb. Dieser Lauf prüft ihn — und hat
-   dabei zweimal die Methode gewechselt, weil die erste nichts maß.
+   dabei zweimal die Methode gewechselt, weil die ersten beiden nichts maßen.
 
-   **Was hier nicht funktioniert.** `context.setOffline(true)` setzt
-   `navigator.onLine` auf false und blockiert die Anfragen der *Seite*.
-   Anfragen, die der *Service Worker* stellt, gehen weiter ins Netz:
-   Gemessen lieferte `fetch('/manifest.webmanifest?nie-geladen=…')` über den
-   Worker eine 200, während der Kontext als offline galt. Da jeder Bildschirm
-   hier über den Worker läuft, sagte der Lauf bis E-071 nichts über den
-   Offline-Betrieb aus.
+   **Warum `setOffline` hier nicht taugt.** `context.setOffline(true)` setzt
+   `navigator.onLine` auf false und blockiert die Anfragen der Seite. Zwei
+   Dinge tut es nicht, und beide sind für diesen Lauf tödlich:
 
-   **Den Server abzuschalten hilft auch nicht** — jedenfalls nicht als
-   Nachweis: Ohne erreichbaren Server lädt Chromium das Modulskript nicht
-   mehr über den Worker, obwohl es nachweislich in dessen Zwischenspeicher
-   liegt und ein `fetch()` aus der Seite heraus es von dort auch bekommt.
-   Was davon Browser und was Steuerung ist, ließ sich hier nicht trennen.
+   1. Anfragen, die der **Service Worker** stellt, gehen weiter ins Netz.
+      Gemessen: `fetch('/manifest.webmanifest?nie-geladen=…')` über den
+      Worker lieferte eine 200, während der Kontext als offline galt.
+   2. **`caches.match()` im Worker findet nichts mehr.** Der Worker
+      protokollierte sich selbst mit (ohne Debugger, der die Messung
+      verfälscht hätte):
 
-   **Was stattdessen geprüft wird, und was es wert ist:**
+          ohne setOffline:  TREFFER ja basic 200   index-….js
+          mit  setOffline:  TREFFER nein           index-….js
 
-   1. **Der Zwischenspeicher des Workers enthält jede gebaute Datei.** Das
-      ist die belastbare Zusage: Was dort liegt, kann er ohne Netz
-      ausliefern. Seit E-071 legt der Worker die Dateien beim Installieren
-      ab (`scripts/sw-dateien.mjs` trägt die Namen ein), statt sie beim
-      Abruf einzusammeln — vorher fehlten die englischen Inhalte und die
-      Schriftschnitte, die auf der Startseite nicht gebraucht werden.
-   2. **Jeder Bildschirm zeigt Inhalt, während das Gerät kein Netz meldet.**
-      Das ist schwächer, als es klingt (siehe oben) — aber es fängt alles
-      ab, was die App bei `navigator.onLine === false` falsch macht: leere
-      Seiten, ewige Ladeanzeigen, die Absturzseite.
+      Der Worker lief also bei jeder Anfrage ins Netz. Solange der
+      Vorschau-Server lief, fiel das nicht auf — er bekam alles und die
+      Messung meldete „90 von 90 ohne Netz geladen". In Wahrheit: 90 von 90
+      **mit** Netz, während `navigator.onLine` false war. Auf einem Runner
+      mit neuerem Chromium, wo `setOffline` strenger greift, kippte
+      derselbe Lauf auf 90 leere Bildschirme.
+
+   **Was jetzt gemessen wird.** Der Lauf startet seinen **eigenen**
+   Vorschau-Server, wärmt den Service Worker auf, prüft, dass jede gebaute
+   Datei in dessen Zwischenspeicher liegt — und **schaltet den Server dann
+   ab**. Was nicht läuft, kann nichts liefern; das ist die einzige Sperre,
+   an der auch ein Service Worker nicht vorbeikommt, und sie braucht keine
+   Emulation, die man nachher erklären muss.
+
+   Gegenprobe im Fenster: Eine Anfrage, die in keinem Zwischenspeicher
+   liegen kann, muss danach scheitern.
 
    Zwei Fallen bleiben, beide mit grünem Ergebnis ohne Aussage:
 
@@ -197,7 +201,35 @@ if (fehlendGebaut.length) {
   befundeVorab.push({ adresse: '(Vorabladung)', art: 'nicht im Zwischenspeicher', text: fehlendGebaut.slice(0, 5).join(', ') });
 }
 
-await kontext.setOffline(true);
+/* Jetzt den Server abschalten — und nachsehen, dass er wirklich weg ist.
+   Kein `setOffline`: Es würde dem Worker seinen eigenen Zwischenspeicher
+   verstecken (siehe Kopf) und damit genau das kaputtmachen, was hier
+   geprüft werden soll. */
+server.kill('SIGTERM');
+if (!(await erreichbar(false))) {
+  console.error('Die Vorschau lief weiter — dieser Lauf würde nichts messen.');
+  server.kill('SIGKILL');
+  await browser.close();
+  process.exit(1);
+}
+
+/* Gegenprobe im Fenster: Eine Anfrage, die in keinem Zwischenspeicher liegen
+   kann, muss jetzt scheitern. Gelingt sie, ist noch ein Weg ins Netz offen
+   und alles Folgende wäre wertlos. */
+const nochNetz = await seite.evaluate(async () => {
+  try {
+    await fetch(`/manifest.webmanifest?nie-geladen=${Date.now()}`, { cache: 'no-store' });
+    return true;
+  } catch {
+    return false;
+  }
+});
+if (nochNetz) {
+  console.error('Trotz abgeschaltetem Server kam eine frische Anfrage durch — der Lauf misst nichts.');
+  await browser.close();
+  process.exit(1);
+}
+console.log('Server abgeschaltet, frische Anfragen scheitern.');
 
 const befunde = [...befundeVorab];
 const bildschirme = [];
@@ -252,6 +284,8 @@ const bericht = {
   browser: browser.version(),
   service_worker_aktiv: swAktiv,
   kern_dateien_im_speicher: kern.gebraucht,
+  server_abgeschaltet: true,
+  frische_anfrage_scheitert: !nochNetz,
   gebaute_dateien: gebaut.length,
   gebaute_dateien_im_speicher: gebaut.length - fehlendGebaut.length,
   bildschirme: bildschirme.length,

@@ -22,6 +22,8 @@ interface OhneNetz {
   grund: string;
   breite: number;
   service_worker_aktiv: boolean;
+  server_abgeschaltet: boolean;
+  frische_anfrage_scheitert: boolean;
   kern_dateien_im_speicher: number;
   gebaute_dateien: number;
   gebaute_dateien_im_speicher: number;
@@ -36,6 +38,15 @@ const O: OhneNetz = JSON.parse(readFileSync('docs/ohnenetz.json', 'utf8'));
 const BEDIENBAR = JSON.parse(readFileSync('docs/bedienbar.json', 'utf8')) as { bildschirme_liste: string[] };
 
 describe('Ohne Netz', () => {
+  it('hat den Server wirklich abgeschaltet', () => {
+    /* Das ist der Kern der Messung seit E-072. `setOffline` taugt nicht: Es
+       lässt die Anfragen des Workers durch und versteckt ihm zugleich seinen
+       eigenen Zwischenspeicher. Was nicht läuft, kann nichts liefern — das
+       ist die einzige Sperre ohne Nebenwirkung. */
+    expect(O.server_abgeschaltet).toBe(true);
+    expect(O.frische_anfrage_scheitert).toBe(true);
+  });
+
   it('wurde mit einem laufenden Service Worker gemessen', () => {
     /* Auf `localhost` meldet sich der Worker nicht an (`main.tsx`). Eine
        Messung ohne ihn ist grün, weil ein Hash-Wechsel nichts nachlädt —

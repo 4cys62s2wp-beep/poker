@@ -4328,3 +4328,35 @@ weiterfunken. Hier: Eine Messung ließ ein Netz da, wo keines sein sollte.
 Dreimal dasselbe Muster. **Eine Prüfung, die den Zustand nur nachstellt,
 prüft den Zustand nicht.** Wo es geht, muss die Bedingung echt sein — der
 Server aus, nicht ein Schalter umgelegt.
+
+---
+
+## E-073 · 2026-10-03 · „Abend einrichten" überschrieb den laufenden Abend
+
+**Stand:** entschieden und umgesetzt. Erster Punkt aus `FAHRPLAN.md` (7.1),
+vorgezogen, weil er Daten vernichtete.
+
+Läuft ein Abend und jemand tippt auf der Live-Session-Seite „Abend führen",
+landete er in einem leeren Einrichtungsformular. Ein Klick auf „Abend
+starten" schrieb die neue Runde dann über die alte — ohne Rückfrage und ohne
+Spur in den früheren Abenden. Nachgestellt mit fünf Spielern und einem
+Rebuy: Danach war `pokermentor-session-abende-v1` leer.
+
+Drei Änderungen, von außen nach innen:
+
+1. **Die Kachel führt zur Uhr.** Läuft ein Abend, heißt sie „Zum laufenden
+   Abend" und zeigt auf `#/session/live`, nicht ins Formular.
+2. **Die Einrichtungsseite sagt, dass einer läuft** — ganz oben, mit dem Weg
+   zurück zur Uhr und dem Satz, dass ein neuer Abend den alten ablegt.
+3. **Das Netz darunter:** `sichereLaufendenAbend()` legt einen laufenden
+   Abend in den früheren Abenden ab, bevor ein neuer beginnt. Gelesen wird
+   dabei frisch, nicht aus dem Zustand beim Öffnen — ein zweiter Tab könnte
+   inzwischen etwas gestartet haben.
+
+Gegenprobe im Browser: die Sicherungszeile entfernt → 0 frühere Abende, der
+alte ist weg. Mit ihr: gesichert, Lorenz' Rebuy (6000 statt 3000) erhalten.
+
+Nebenbei: Der Hinweis lautete im Versuch „seit 5848 Stunden 28 Minuten".
+`grobeDauer` zählt ab einem Tag jetzt Tage und kennt den Fall — „seit
+243 Tagen", aber „3 Tage gespielt". Bei Minuten und Stunden sind beide Formen
+gleich, bei Tagen nicht.

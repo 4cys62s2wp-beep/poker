@@ -180,6 +180,22 @@ export function ergaenze(abende: Abend[], neu: Abend): Abend[] {
     .slice(0, HOECHSTZAHL);
 }
 
+/** Vor einem neuen Abend: Ein noch laufender wird zuerst abgelegt.
+ *
+ *  „Abend einrichten" schrieb früher die neue Runde einfach über die alte —
+ *  ein laufender Abend mit fünf Spielern und einem Rebuy war danach weg, ohne
+ *  Rückfrage und ohne Spur in den früheren Abenden. Diese Funktion ist das
+ *  Schutznetz darunter: Was läuft, landet in der Liste, bevor etwas Neues
+ *  beginnt. Dass niemand versehentlich dorthin gerät, regelt die Seite
+ *  selbst; das hier gilt auch dann, wenn sie es nicht tut. */
+export function sichereLaufendenAbend(
+  abende: Abend[],
+  laufend: LaufendeSession | null,
+  jetzt: number,
+): Abend[] {
+  return laufend ? ergaenze(abende, archiviere(laufend, jetzt)) : abende;
+}
+
 /** Alle Abende, an denen dieser Name mitgespielt hat.
  *
  *  Verglichen wird ohne Rücksicht auf Groß- und Kleinschreibung und

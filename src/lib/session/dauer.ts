@@ -21,12 +21,23 @@ export function alsUhr(ms: number): string {
  *
  *  Grob mit Absicht: Auf der Startseite interessiert „seit einer guten
  *  Stunde", nicht „seit 1:07:42". Genau wird es erst dort, wo es zählt. */
-export function grobeDauer(ms: number, sprache: 'de' | 'en'): string {
+export function grobeDauer(ms: number, sprache: 'de' | 'en', fall: 'nominativ' | 'dativ' = 'nominativ'): string {
   const minuten = Math.floor(ms / 60000);
   const de = sprache === 'de';
   if (minuten < 2) return de ? 'gerade eben' : 'just now';
   if (minuten < 60) return de ? `${minuten} Minuten` : `${minuten} minutes`;
   const stunden = Math.floor(minuten / 60);
+  /* Ab einem Tag zählen nur noch Tage. „5848 Stunden" stand einmal da, für
+     einen Abend, der seit Februar nicht beendet worden war.
+
+     Nur hier braucht das Deutsche den Fall: „seit 3 Tagen", aber „3 Tage
+     gespielt". Bei Minuten und Stunden sind beide Formen gleich. */
+  if (stunden >= 24) {
+    const tage = Math.floor(stunden / 24);
+    if (!de) return tage === 1 ? '1 day' : `${tage} days`;
+    if (tage === 1) return '1 Tag';
+    return fall === 'dativ' ? `${tage} Tagen` : `${tage} Tage`;
+  }
   const rest = minuten % 60;
   const stundenText = stunden === 1
     ? (de ? '1 Stunde' : '1 hour')

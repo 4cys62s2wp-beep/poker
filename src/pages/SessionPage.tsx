@@ -63,10 +63,12 @@ export function SessionPage() {
        Läuft gerade einer, steht das hier: Es ist die einzige Auskunft auf
        dieser Seite, die keine Minute alt sein darf. */
     {
-      to: '/session/live/einrichten', icon: 'table',
-      title: L.abendTitle, marke: L.markeAbend,
+      /* Läuft einer, führt die Kachel zur Uhr — nicht in ein leeres Formular,
+         aus dem heraus man ihn früher versehentlich überschrieb (E-073). */
+      to: laufend ? '/session/live' : '/session/live/einrichten', icon: 'table',
+      title: laufend ? L.abendWeiter : L.abendTitle, marke: L.markeAbend,
       inhalt: laufend
-        ? L.laeuftSeit(grobeDauer(Date.now() - laufend.begonnen, lang))
+        ? L.laeuftSeit(grobeDauer(Date.now() - laufend.begonnen, lang, 'dativ'))
         : L.abendWhen,
     },
     /* Danach das, was von den Abenden bleibt. Es steht direkt hinter dem

@@ -11,7 +11,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   HOECHSTZAHL, SCHLUESSEL_ABENDE, abendeVon, archiviere, ergaenze, ladeAbende,
-  platziere, speichereAbende, spielerUebersicht, type Abend,
+  platziere, sichereLaufendenAbend, speichereAbende, spielerUebersicht, type Abend,
 } from '../session/abende';
 import type { LaufendeSession, Spieler } from '../session/laufend';
 
@@ -225,5 +225,47 @@ describe('Frühere Abende über einen Namen finden — ohne Suchfeld', () => {
       START + MINUTE,
     )];
     expect(spielerUebersicht(mitLeer).map((s) => s.name)).toEqual(['A']);
+  });
+});
+
+/* Ein laufender Abend darf nie überschrieben werden.
+   =================================================
+
+   „Abend einrichten" schrieb die neue Runde früher einfach über die alte:
+   Ein laufender Abend mit fünf Spielern und einem Rebuy war weg, ohne
+   Rückfrage und ohne Spur in den früheren Abenden. Die Seite zeigt jetzt
+   oben, dass noch einer läuft; diese Funktion ist das Netz darunter. */
+describe('sichereLaufendenAbend', () => {
+  const laufend = {
+    begonnen: 1_770_000_000_000,
+    spieler: [
+      { name: 'Lorenz', eingekauft: 6000, stand: 9000 },
+      { name: 'Mira', eingekauft: 3000, stand: null },
+    ],
+    startchips: 3000,
+    stufen: [[25, 50], [50, 100]] as Array<[number, number]>,
+    stufendauer_s: 1200,
+    stufe: 1,
+    verbraucht_ms: 1_800_000,
+    laeuft_seit: null,
+  };
+
+  it('legt einen laufenden Abend ab, bevor ein neuer beginnt', () => {
+    const danach = sichereLaufendenAbend([], laufend, 1_770_003_600_000);
+    expect(danach).toHaveLength(1);
+    expect(danach[0].id).toBe(String(laufend.begonnen));
+    // Der Rebuy (6000 statt 3000) bleibt erhalten.
+    expect(danach[0].spieler.find((s) => s.name === 'Lorenz')?.eingekauft).toBe(6000);
+  });
+
+  it('lässt die Liste unverändert, wenn nichts läuft', () => {
+    const vorher = sichereLaufendenAbend([], laufend, 1_770_003_600_000);
+    expect(sichereLaufendenAbend(vorher, null, 1_770_009_000_000)).toBe(vorher);
+  });
+
+  it('legt denselben Abend nicht doppelt ab', () => {
+    const einmal = sichereLaufendenAbend([], laufend, 1_770_003_600_000);
+    const zweimal = sichereLaufendenAbend(einmal, laufend, 1_770_003_700_000);
+    expect(zweimal).toHaveLength(1);
   });
 });

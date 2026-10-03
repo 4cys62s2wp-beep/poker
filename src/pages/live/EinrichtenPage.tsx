@@ -13,13 +13,15 @@
 
 import { useMemo, useState } from 'react';
 import { zahlAusEingabe } from '../../lib/eingabe/zahl';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BackLink } from '../../components/ui';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/live';
 import { VOREINSTELLUNG, baueStruktur, type Tempo } from '../../lib/live/blinds';
 import { verteile, type Sorte } from '../../lib/live/verteilung';
-import { speichereLaufende } from '../../lib/session/laufend';
+import { ladeLaufende, speichereLaufende } from '../../lib/session/laufend';
+import { ladeAbende, sichereLaufendenAbend, speichereAbende } from '../../lib/session/abende';
+import { grobeDauer } from '../../lib/session/dauer';
 
 /** Ein üblicher Koffer als Vorschlag — man ändert ihn schneller, als man ihn
  *  von null einträgt. */
@@ -43,6 +45,9 @@ export function EinrichtenPage() {
   const [dauer, setDauer] = useState(DAUERN[2]);
   const [tempo, setTempo] = useState<Tempo>('normal');
   const [gleich, setGleich] = useState(false);
+  /* Einmal beim Öffnen gelesen: Läuft schon ein Abend, steht das hier oben —
+     und ein Neustart legt ihn ab, statt ihn zu überschreiben. */
+  const [laufend] = useState(ladeLaufende);
 
   const spieler = namen.filter((n) => n.trim() !== '').length;
 
@@ -71,9 +76,13 @@ export function EinrichtenPage() {
 
   function starte() {
     if (!bereit || !plan || !struktur) return;
-   
+    const jetzt = Date.now();
+    /* Erst ablegen, was noch läuft — dann den neuen Abend beginnen. Gelesen
+       wird hier frisch, nicht aus dem Zustand beim Öffnen: Ein zweiter Tab
+       könnte inzwischen einen Abend gestartet haben. */
+    speichereAbende(sichereLaufendenAbend(ladeAbende(), ladeLaufende(), jetzt));
     speichereLaufende({
-      begonnen: Date.now(),
+      begonnen: jetzt,
       spieler: namen
         .map((n) => n.trim())
         .filter((n) => n !== '')
@@ -83,7 +92,7 @@ export function EinrichtenPage() {
       stufendauer_s: struktur.stufendauer_s,
       stufe: 0,
       verbraucht_ms: 0,
-      laeuft_seit: Date.now(),
+      laeuft_seit: jetzt,
     });
     navigate('/session/live');
   }
@@ -95,6 +104,16 @@ export function EinrichtenPage() {
         <h1>{L.einrichtenTitel}</h1>
         <p className="sub">{L.einrichtenSub}</p>
       </div>
+
+      {laufend && (
+        <section className="einrichten-laeuft" role="status">
+          <p className="einrichten-laeuft-titel">
+            {L.laeuftNoch(grobeDauer(Date.now() - laufend.begonnen, lang, 'dativ'))}
+          </p>
+          <p className="hinweis">{L.laeuftNochSub}</p>
+          <Link to="/session/live" className="btn primary">{L.zurUhr}</Link>
+        </section>
+      )}
 
       <div className="einrichten">
         {/* ── Koffer ───────────────────────────────────────────────────── */}

@@ -7,6 +7,9 @@ export const STR = defineStrings(
     // ── Einrichten ──────────────────────────────────────────────────────
     einrichtenTitel: 'Abend einrichten',
     einrichtenSub: 'Was liegt auf dem Tisch, und wie lange soll es gehen?',
+    laeuftNoch: (dauer: string) => `Es läuft noch ein Abend — seit ${dauer}.`,
+    laeuftNochSub: 'Ein neuer Abend legt ihn in den früheren Abenden ab. Verloren geht nichts.',
+    zurUhr: 'Zur laufenden Uhr',
     zurueck: 'Live-Session',
 
     kofferTitel: 'Was liegt im Koffer?',
@@ -87,6 +90,9 @@ export const STR = defineStrings(
   {
     einrichtenTitel: 'Set up the evening',
     einrichtenSub: 'What is on the table, and how long should it run?',
+    laeuftNoch: (dauer: string) => `An evening is still running — for ${dauer}.`,
+    laeuftNochSub: 'Starting a new one files it under past evenings. Nothing is lost.',
+    zurUhr: 'Back to the clock',
     zurueck: 'Live session',
 
     kofferTitel: 'What is in the case?',

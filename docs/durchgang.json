@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-09-07T04:28:36.979Z",
+  "geprueft_am": "2026-10-03T19:11:53.832Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -134,8 +134,8 @@
     {
       "name": "Pause hält an",
       "ergebnis": {
-        "vorher": "19:55",
-        "nachher": "19:55",
+        "vorher": "19:54",
+        "nachher": "19:54",
         "steht_still": true,
         "marke_sichtbar": true
       },
@@ -144,8 +144,8 @@
     {
       "name": "Weiter läuft an derselben Stelle an",
       "ergebnis": {
-        "vorher": "19:55",
-        "gleich_danach": "19:55",
+        "vorher": "19:54",
+        "gleich_danach": "19:54",
         "spaeter": "19:53",
         "kein_sprung": true,
         "laeuft_wieder": true
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 841,
+        "dauer_ms": 908,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -192,7 +192,7 @@
       "name": "Der Abend steht in der Liste",
       "ergebnis": {
         "abende": 1,
-        "erste_karte": "Mo., 7. September 2026 · Ada · gewonnen · 5 Personen · gerade eben",
+        "erste_karte": "Sa., 3. Oktober 2026 · Ada · gewonnen · 5 Personen · gerade eben",
         "namen_als_knoepfe": 5,
         "namen": [
           "Ada",
@@ -479,16 +479,16 @@
       "ergebnis": {
         "frage": "Lohnt der Call?",
         "karten_vorher": [
-          "Kreuz Neun",
-          "Karo Acht",
-          "Herz Sieben",
-          "Pik Fünf",
+          "Kreuz Ass",
+          "Karo König",
+          "Herz Neun",
+          "Pik Sieben",
           "Kreuz Zwei"
         ],
         "punkte_offen_vorher": 1,
         "urteil": "Daneben",
-        "zahlen": "16,5 % gegen 33,3 % nötig",
-        "warum_ziel": "#/lernen/drill/2-5-2f-npxu",
+        "zahlen": "24,1 % gegen 28,6 % nötig",
+        "warum_ziel": "#/lernen/drill/3-3-b-npxu",
         "knoepfe_weg": 0,
         "punkt_gefuellt": 1,
         "urteil_nach_neuladen": "Daneben",
@@ -598,10 +598,10 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | SERIE | – | TREFFER | 0 | BESTE",
-        "nach_zwei": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
-        "nach_neuladen": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
+        "nach_zwei": "2 | NEUE BESTSERIE | 100 % | TREFFER | 2 | BESTE",
+        "nach_neuladen": "2 | NEUE BESTSERIE | 100 % | TREFFER | 2 | BESTE",
         "quote_bleibt": true,
-        "quote_nach_zwei": "0 %",
+        "quote_nach_zwei": "100 %",
         "ohne_versuche_kein_prozent": true,
         "felder": 3
       },
@@ -610,12 +610,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 49,
+        "dauer_ms": 67,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "27,8 %",
+        "ergebnis_text": "24,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },

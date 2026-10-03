@@ -300,7 +300,7 @@ export function HubPage() {
             {/* Ein Abend hat keinen Namen — die App hat nie einen erfragt.
                 Was ihn benennt, ist sein Beginn; er ist auch anderswo seine
                 Kennung. */}
-            <span className="titel">{L.laeuftSeit(grobeDauer(Date.now() - laufend.begonnen, lang))}</span>
+            <span className="titel">{L.laeuftSeit(grobeDauer(Date.now() - laufend.begonnen, lang, 'dativ'))}</span>
             <span className="unter">
               {L.laeuftMit(nochDabei(laufend).length, uhr.blinds[0], uhr.blinds[1])}
             </span>

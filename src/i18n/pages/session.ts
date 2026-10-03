@@ -21,6 +21,7 @@ export const STR = defineStrings(
 
 
     abendTitle: 'Abend führen',
+    abendWeiter: 'Zum laufenden Abend',
     abendWhen: 'Vom ersten bis zum letzten Blatt',
 
     abendeTitle: 'Frühere Abende',
@@ -60,6 +61,7 @@ export const STR = defineStrings(
 
 
     abendTitle: 'Run the evening',
+    abendWeiter: 'Back to the evening',
     abendWhen: 'From the first hand to the last',
 
     abendeTitle: 'Earlier evenings',

@@ -61,7 +61,7 @@ import {
   type TagesAntwort,
 } from '../lib/heute/stand';
 import { aktuelleSerie, serieGefaehrdet } from '../lib/serie';
-import { useZiel } from '../lib/ziel';
+import { useErfahrung, useZiel } from '../lib/ziel';
 import { offenePunkte, tagesziel } from '../lib/tagesplan';
 import { FRAGEN_PRO_TAG, quizPool } from '../lib/tagesquiz';
 import { ladeB1, ladeB2 } from '../lib/pokermath/laden';
@@ -92,6 +92,7 @@ export function HubPage() {
   /* Wer Pokerabende leiten will, bekommt den Lernteil nicht erklärt
      (lib/ziel.ts). Die Reihenfolge der Startseite ändert das nicht. */
   const abendZiel = useZiel() === 'abend';
+  const erfahren = useErfahrung();
   const [abende, setAbende] = useState<Abend[]>([]);
   useEffect(() => {
     setLaufend(ladeLaufende());
@@ -295,6 +296,15 @@ export function HubPage() {
             >
               {erstesMal ? L.anfangen : L.weiterlernen}
             </Link>
+            {/* Wer „Ich spiele schon“ gewählt hat, bekommt für die ersten Module den
+                Modultest angeboten — dort, wo sonst „So funktioniert Texas
+                Hold’em“ stünde (E-097). Angeboten, nicht erzwungen. */}
+            {erfahren && !laufend && ['m1', 'm2', 'm3'].includes(naechste.modul.id)
+              && naechste.modul.lessons[0].id === naechste.lektion.id && (
+              <Link to={`/lernen/${naechste.modul.id}`} className="start-mehr">
+                {L.testAngebot(naechste.modul.title)}
+              </Link>
+            )}
           </>
         ) : (
           <>

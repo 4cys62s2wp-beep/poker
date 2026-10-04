@@ -782,9 +782,11 @@ describe('Der Willkommensdialog (FAHRPLAN 4.4)', () => {
     expect(t).toMatch(/Echtgeld/);
   });
 
-  it('fragt nach dem Ziel, freiwillig und mit zwei gleichwertigen Wegen', () => {
+  it('fragt nach dem Ziel, freiwillig und mit gleichwertigen Wegen', () => {
+    /* „Ich spiele schon“ ist seit E-097 dabei: kein drittes Ziel, sondern der
+       Hinweis, dass die Startseite den Modultest anbieten soll. */
     expect(w().ziel_frage).toMatch(/Was hast du vor/i);
-    expect(w().ziel_knoepfe).toEqual(['Poker lernen', 'Pokerabende leiten', 'Zurück', 'Überspringen']);
+    expect(w().ziel_knoepfe).toEqual(['Poker lernen', 'Ich spiele schon', 'Pokerabende leiten', 'Zurück', 'Überspringen']);
   });
 
   it('passt auch auf ein 667 Pixel hohes Gerät', () => {
@@ -1825,5 +1827,110 @@ describe('Nachschlagen, Desktop und Feinschliff (E-096)', () => {
 
   it('nennt im Ergebnistext kein Geld', () => {
     expect(String(quiz().text)).not.toMatch(/[€$£]|Euro|Gewinn/);
+  });
+});
+
+describe('Lernstand je Thema (E-097)', () => {
+  const l = () => schritt('Lernstand: je Thema eine Stufe, das schwächste mit zwei Wegen');
+
+  it('sagt ohne Antworten einen Satz statt sieben Nullzeilen', () => {
+    const e = l().leer as Record<string, unknown>;
+    expect(e.zeilen).toBe(0);
+    expect(String(e.text)).toMatch(/Ab zehn Antworten/);
+    expect(e.weg).toBe('#/lernen');
+  });
+
+  it('zeigt je Thema, in dem geübt wurde, eine Zeile mit Stufe und Wort', () => {
+    const z = (l().mit as { zeilen: Array<Record<string, unknown>> }).zeilen;
+    expect(z.map((x) => x.thema)).toEqual(['Preflop-Ranges', 'Outs', 'Pot Odds', 'Equity']);
+    const stufe = Object.fromEntries(z.map((x) => [x.thema, x.stufe]));
+    expect(stufe['Outs']).toBe('sicher');
+    expect(stufe['Preflop-Ranges']).toBe('noch offen');
+    expect(stufe['Pot Odds']).toBe('wackelt');
+    expect(stufe['Equity']).toBe('noch zu wenig Daten');
+  });
+
+  it('nennt die Bilanz der letzten Antworten, bei wenigen den Fortschritt zur Einstufung', () => {
+    const z = (l().mit as { zeilen: Array<Record<string, unknown>> }).zeilen;
+    const nach = Object.fromEntries(z.map((x) => [x.thema, x.bilanz]));
+    expect(nach['Outs']).toBe('18 von 20 richtig');
+    expect(nach['Equity']).toBe('6 von 10 Antworten');
+  });
+
+  it('gibt nur dem schwächsten Thema zwei Wege: üben und nachlesen', () => {
+    const z = (l().mit as { zeilen: Array<{ thema: string; wege: Array<{ text: string; ziel: string }> }> }).zeilen;
+    const mitWegen = z.filter((x) => x.wege.length > 0);
+    expect(mitWegen.map((x) => x.thema)).toEqual(['Preflop-Ranges']);
+    expect(mitWegen[0].wege).toEqual([
+      { text: 'Jetzt üben', ziel: '#/lernen/trainer/preflop' },
+      { text: 'Nachlesen', ziel: '#/lernen/m2/m2-l1' },
+    ]);
+  });
+
+  it('füllt beim Üben das Fenster der letzten Antworten', () => {
+    const e = l().nach_einer_antwort as Record<string, unknown>;
+    expect(e.attempts).toBe(1);
+    expect(e.letzte_laenge).toBe(1);
+  });
+});
+
+describe('Modultest: „Kenne ich schon“ (E-097)', () => {
+  const bestehen = () => schritt('Modultest: „Ich spiele schon“ bietet ihn an, Bestehen füllt das Modul');
+  const scheitern = () => schritt('Modultest: Scheitern lässt das Modul offen und füllt die Wiederholung');
+
+  it('nennt im Willkommensdialog „Ich spiele schon“ neben den beiden Zielen', () => {
+    expect((bestehen().ziele as string[]).slice(0, 3)).toEqual(['Poker lernen', 'Ich spiele schon', 'Pokerabende leiten']);
+  });
+
+  it('bietet danach auf der Startseite den Test für das erste Modul an', () => {
+    expect(bestehen().angebot).toEqual(['Kenne ich schon: Modultest „Grundlagen“']);
+    expect((bestehen().seite as Record<string, unknown>).adresse).toBe('#/lernen/m1');
+  });
+
+  it('erklärt vorab, was der Test kostet und bringt', () => {
+    expect(String((bestehen().seite as Record<string, unknown>).angebot_text))
+      .toMatch(/8 Fragen aus dem ganzen Modul\. Bei 7 richtigen zählt es als geschafft — ohne XP/);
+  });
+
+  it('zieht acht Fragen und sagt am Ende „Bestanden“ mit dem Stand', () => {
+    const e = bestehen().ergebnis as Record<string, unknown>;
+    expect(e.fragen).toBe(8);
+    expect(e.urteil).toBe('Bestanden');
+    expect(e.stand).toBe('8 / 8');
+    expect(e.knoepfe).toEqual(['Weiter mit Preflop-Strategie', 'Test wiederholen']);
+  });
+
+  it('trägt alle Lektionen des Moduls als „per Test“ ein, ohne XP und ohne „Erste Schritte“', () => {
+    const g = bestehen().gespeichert as Record<string, unknown>;
+    expect(g.lektionen).toEqual(['m1-l1', 'm1-l2', 'm1-l3', 'm1-l4', 'm1-l5']);
+    expect(g.alle_per_test).toBe(true);
+    expect(g.xp).toBe(0);
+    expect(g.abzeichen).toEqual(['module-basics']);
+  });
+
+  it('nennt es auf der Modulseite „Per Test bestanden“ statt „Quiz: 0/0“', () => {
+    const m = bestehen().modul as Record<string, unknown>;
+    expect(m.hinweise).toEqual(Array(5).fill('Per Test bestanden'));
+    expect(m.meta_mit_quiz).toBe(false);
+    expect(m.angebot_noch_da).toBe(0);
+  });
+
+  it('springt auf der Startseite zur nächsten Lektion und bietet dort das nächste Modul an', () => {
+    const s = bestehen().start as Record<string, unknown>;
+    expect(s.naechste).toBe('Starthände verstehen');
+    expect(s.naechstes_angebot).toEqual(['Kenne ich schon: Modultest „Preflop-Strategie“']);
+  });
+
+  it('lässt nach einem Fehlschlag das Modul offen und legt falsche Fragen in die Wiederholung', () => {
+    expect((scheitern().ergebnis as Record<string, unknown>).urteil).toBe('Knapp daneben');
+    expect((scheitern().ergebnis as Record<string, unknown>).knoepfe).toEqual(['Modul durchgehen', 'Test wiederholen']);
+    const g = scheitern().gespeichert as Record<string, unknown>;
+    expect(g.lektionen).toBe(0);
+    expect(g.xp).toBe(0);
+    expect(Number(g.wiederholung)).toBeGreaterThan(0);
+  });
+
+  it('beginnt „Test wiederholen“ bei Frage 1 mit frischer Auswahl', () => {
+    expect(scheitern().wiederholt_bei).toBe('1/8');
   });
 });

@@ -7,6 +7,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { RANGNAMEN } from '../lib/rang/titel';
 import { ALL_MODULES } from '../content';
 import { BADGES } from '../content/badges';
+import { lesbareLetzte, merkeAntwort } from '../lib/lernstand';
 import type { IconName } from '../components/Icon';
 import { durableDelete, durableSet, requestPersistentStorage } from '../lib/storage';
 import { setzeAppMarke } from '../lib/appmarke';
@@ -25,6 +26,10 @@ export interface LessonResult {
   completedAt: string;
   quizScore: number;
   quizTotal: number;
+  /** Per Modultest bestanden statt durchgearbeitet (E-097): zählt als erledigt,
+   *  bringt aber keine XP und zählt nicht für die Abzeichen „Erste Schritte“,
+   *  „Wissbegierig“ und „Stammschüler“, die für gelesene Lektionen stehen. */
+  perTest?: boolean;
 }
 
 /** Eine Lektion, deren Quiz nicht bestanden wurde (siehe `lib/lernen/quiz.ts`):
@@ -41,6 +46,9 @@ export interface TrainerStats {
   correct: number;
   streak: number;
   bestStreak: number;
+  /** Die letzten 20 Antworten, die älteste zuerst, „1“ richtig und „0“ falsch
+   *  (`lib/lernstand.ts`). Fehlt bei Ständen aus der Zeit davor. */
+  letzte?: string;
 }
 
 export interface SessionEntry {
@@ -178,6 +186,9 @@ interface AppStateValue {
   dueReviewCount: number;
   profiles: ProfileMeta[];
   activeProfile: ProfileMeta;
+  /** Ein Modul per Test als bestanden eintragen: jede noch offene Lektion zählt
+   *  als erledigt — ohne XP und ohne die Abzeichen der gelesenen Lektionen. */
+  completeModuleByTest: (lessonIds: string[]) => void;
   /** Das Quiz einer Lektion verbuchen. Nur ab der Bestehensgrenze gilt die
       Lektion als abgeschlossen; darunter ist sie „versucht". */
   completeLesson: (lessonId: string, quizScore: number, quizTotal: number) => void;
@@ -294,6 +305,7 @@ export function sanitizeAppData(input: unknown): AppData {
           completedAt: zeitpunkt(r.completedAt),
           quizScore: Math.min(zaehler(r.quizTotal, 100), zaehler(r.quizScore, 100)),
           quizTotal: zaehler(r.quizTotal, 100),
+          ...(r.perTest === true ? { perTest: true } : {}),
         };
       }
     }
@@ -330,11 +342,13 @@ export function sanitizeAppData(input: unknown): AppData {
         const attempts = zaehler(t.attempts);
         const correct = Math.min(attempts, zaehler(t.correct));
         const streak = Math.min(correct, zaehler(t.streak));
+        const letzte = lesbareLetzte(t.letzte);
         out.trainers[k] = {
           attempts,
           correct,
           streak,
           bestStreak: Math.min(correct, Math.max(streak, zaehler(t.bestStreak))),
+          ...(letzte ? { letzte } : {}),
         };
       }
     }
@@ -698,6 +712,25 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     [mutate],
   );
 
+  const completeModuleByTest = useCallback(
+    (lessonIds: string[]) => {
+      /* Die Abzeichen dieses Tests zeigt der Ergebnisbildschirm; ein Toast
+         darüber wäre dieselbe Nachricht ein zweites Mal. */
+      stilleAbzeichen.current = true;
+      mutate((d) => {
+        const jetzt = new Date().toISOString();
+        for (const id of lessonIds) {
+          if (!d.completedLessons[id]) {
+            d.completedLessons[id] = { completedAt: jetzt, quizScore: 0, quizTotal: 0, perTest: true };
+          }
+          delete d.lessonAttempts[id];
+        }
+        touchStreak(d);
+      });
+    },
+    [mutate],
+  );
+
   const recordLessonProgress = useCallback(
     (lessonId: string, section: number) => {
       mutate((d) => {
@@ -724,6 +757,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         } else {
           t.streak = 0;
         }
+        t.letzte = merkeAntwort(t.letzte, correct);
         d.trainers[trainerId] = t;
         if (t.streak >= 10) award(d, 'trainer-streak-10');
         touchStreak(d);
@@ -1046,6 +1080,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       profiles: index.profiles,
       activeProfile,
       completeLesson,
+      completeModuleByTest,
       recordLessonProgress,
       recordTrainer,
       recordDailyHand,
@@ -1070,7 +1105,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       consumeFeature,
       startTrial,
     }),
-    [data, toasts, level, dueReviewCount, index.profiles, activeProfile, completeLesson, recordLessonProgress, recordTrainer, recordDailyHand, recordHand,
+    [data, toasts, level, dueReviewCount, index.profiles, activeProfile, completeLesson, completeModuleByTest, recordLessonProgress, recordTrainer, recordDailyHand, recordHand,
      addSession, deleteSession, setName, resetAll, addReviewItem, answerReview, completeDailyQuiz, addHandRecord,
      exportJson, importJson, createProfile, switchProfile, deleteProfile, updateProfile, replaceData, linkCloudProfile,
      todayUsage, consumeFeature, startTrial],
@@ -1107,7 +1142,9 @@ function touchStreak(d: AppData) {
 /** Abzeichen, die sich direkt aus dem Datenstand ergeben. Reine Funktion –
     wird sowohl aus mutate() als auch im Test verwendet. */
 export function applyAutoBadges(d: AppData) {
-  const doneCount = Object.keys(d.completedLessons).length;
+  /* Nur gelesene Lektionen zählen für die Abzeichen der Lektionszahl; ein per
+     Test bestandenes Modul füllt den Pfad, nicht diese Sammlung (E-097). */
+  const doneCount = Object.values(d.completedLessons).filter((r) => !r.perTest).length;
   if (doneCount >= 1) award(d, 'first-lesson');
   if (doneCount >= 5) award(d, 'five-lessons');
   if (doneCount >= 20) award(d, 'twenty-lessons');

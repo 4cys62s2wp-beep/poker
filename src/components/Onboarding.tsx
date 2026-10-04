@@ -11,12 +11,12 @@ import { useAppState } from '../state/AppState';
 import { useLang, type Lang } from '../i18n';
 import { cloudKonfiguriert } from '../lib/cloud/cloud';
 import { kontoAnbieten, loadLegalConfig } from '../lib/legal';
-import { speichereZiel, type Ziel } from '../lib/ziel';
+import { speichereErfahrung, speichereZiel, type Ziel } from '../lib/ziel';
 
 const TEXT: Record<Lang, {
   welcome: string; tagline: string; pickLang: string; nameLabel: string;
   namePlaceholder: string; next: string; skip: string; back: string; langNote: string;
-  haveAccount: string; goalLabel: string; goalLearn: string; goalNight: string; goalNote: string;
+  haveAccount: string; goalLabel: string; goalLearn: string; goalPlays: string; goalNight: string; goalNote: string;
 }> = {
   de: {
     welcome: 'Willkommen bei PokerMentor',
@@ -31,8 +31,9 @@ const TEXT: Record<Lang, {
     haveAccount: 'Ich habe schon ein Konto',
     goalLabel: 'Was hast du vor?',
     goalLearn: 'Poker lernen',
+    goalPlays: 'Ich spiele schon',
     goalNight: 'Pokerabende leiten',
-    goalNote: 'Beides steht dir offen. Das hier ändert nur, was die Startseite dir erklärt.',
+    goalNote: 'Alles steht dir offen. Das hier ändert nur, was die Startseite dir erklärt und anbietet.',
   },
   en: {
     welcome: 'Welcome to PokerMentor',
@@ -47,8 +48,9 @@ const TEXT: Record<Lang, {
     haveAccount: 'I already have an account',
     goalLabel: 'What are you here for?',
     goalLearn: 'Learn poker',
+    goalPlays: 'I already play',
     goalNight: 'Run poker nights',
-    goalNote: 'Both stay open to you. This only changes what the start page explains.',
+    goalNote: 'Everything stays open to you. This only changes what the start page explains and offers.',
   },
 };
 
@@ -120,8 +122,9 @@ export function Onboarding() {
     setStep('ziel');
   }
 
-  function waehleZiel(z: Ziel | null) {
+  function waehleZiel(z: Ziel | null, erfahren = false) {
     if (z) speichereZiel(z);
+    if (erfahren) speichereErfahrung();
     finishOnboarding();
   }
 
@@ -206,6 +209,12 @@ export function Onboarding() {
                 onClick={() => waehleZiel('lernen')} autoFocus
               >
                 {T.goalLearn}
+              </button>
+              <button
+                className="btn" style={{ justifyContent: 'center', fontSize: 'var(--fs-fliesstext)' }}
+                onClick={() => waehleZiel('lernen', true)}
+              >
+                {T.goalPlays}
               </button>
               <button
                 className="btn" style={{ justifyContent: 'center', fontSize: 'var(--fs-fliesstext)' }}

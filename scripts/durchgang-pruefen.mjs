@@ -2350,6 +2350,172 @@ await schritt('Tages-Quiz: das Ergebnis lässt sich teilen', async () => {
   return { knoepfe: knoepfe.map((t) => t.trim()), text, bestaetigung: nach };
 });
 
+/* ── Lernstand je Thema (E-097) ───────────────────────────────────────────
+   Das Profil zeigte eine Summe über alle Trainer. Gemessen wird: ohne Antworten
+   ein Satz statt sieben Nullzeilen, mit Antworten eine Zeile je Thema in drei
+   Stufen, das schwächste mit zwei Wegen, und der Ringpuffer füllt sich beim
+   Üben wirklich. */
+
+await schritt('Lernstand: je Thema eine Stufe, das schwächste mit zwei Wegen', async () => {
+  const k = await neuerKontext(390, 844);
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.lernstand');
+  const leer = await p.evaluate(() => ({
+    zeilen: document.querySelectorAll('.lernstand-zeile').length,
+    text: document.querySelector('.lernstand .card p')?.textContent?.trim(),
+    weg: document.querySelector('.lernstand .card a')?.getAttribute('href'),
+  }));
+  await p.evaluate(() => {
+    const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+    const key = `pokermentor-data-${idx.activeId}`;
+    const d = JSON.parse(localStorage.getItem(key));
+    const f = (n, r) => '1'.repeat(r) + '0'.repeat(n - r);
+    d.trainers = {
+      outs: { attempts: 40, correct: 30, streak: 2, bestStreak: 6, letzte: f(20, 18) },
+      preflop: { attempts: 30, correct: 14, streak: 0, bestStreak: 3, letzte: f(20, 9) },
+      equity: { attempts: 6, correct: 4, streak: 1, bestStreak: 3, letzte: f(6, 4) },
+      potodds: { attempts: 12, correct: 8, streak: 1, bestStreak: 4, letzte: f(12, 8) },
+    };
+    localStorage.setItem(key, JSON.stringify(d));
+  });
+  await p.reload({ waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.lernstand-zeile');
+  const mit = await p.evaluate(() => ({
+    zeilen: [...document.querySelectorAll('.lernstand-zeile')].map((z) => ({
+      thema: z.querySelector('.thema').textContent.trim(),
+      stufe: z.querySelector('.stufe-marke').textContent.trim(),
+      bilanz: z.querySelector('.bilanz').textContent.trim(),
+      wege: [...z.querySelectorAll('.lernstand-wege a')].map((a) => ({ text: a.textContent.trim(), ziel: a.getAttribute('href') })),
+    })),
+  }));
+  /* Üben schreibt in den Ringpuffer. */
+  await p.goto(`${GRUND}/#/lernen/trainer/handranking`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.quiz-option');
+  await p.locator('.quiz-option').first().click();
+  await p.waitForTimeout(300);
+  const gespeichert = await p.evaluate(() => {
+    const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+    return JSON.parse(localStorage.getItem(`pokermentor-data-${idx.activeId}`)).trainers.handranking;
+  });
+  await k.close();
+  return { leer, mit, nach_einer_antwort: { attempts: gespeichert.attempts, letzte_laenge: gespeichert.letzte?.length ?? 0 } };
+});
+
+/* ── Modultest: „Kenne ich schon“ (E-097) ────────────────────────────────
+   Erfahrene sahen 0 von 49 Lektionen, den Rang „Neuling“ und Grundlagenfragen im
+   Tages-Quiz. Gemessen wird der Weg: „Ich spiele schon“ im Willkommensdialog, das
+   Angebot auf der Startseite, der Test mit lauter richtigen Antworten (aus den
+   Inhaltsdateien gelesen) und danach die Folgen — Modul erledigt, keine XP, kein
+   Abzeichen „Erste Schritte“ — und der Weg des Scheiterns. */
+
+const M1 = (await import('../src/content/modules/m1.ts')).default;
+const M2 = (await import('../src/content/modules/m2.ts')).default;
+
+async function beantworteTest(p, modul, richtig) {
+  const gefragt = [];
+  for (let i = 0; i < 12; i += 1) {
+    if (await p.locator('.quiz-ergebnis').count() > 0) break;
+    await p.waitForSelector('.quiz-option');
+    const frage = (await p.locator('.quiz-frage').innerText()).trim();
+    const q = modul.lessons.flatMap((l) => l.quiz).find((x) => x.question === frage);
+    gefragt.push(frage);
+    if (richtig && q) {
+      const ziel = q.options[q.correctIndex];
+      await p.evaluate((t) => {
+        const b = [...document.querySelectorAll('.quiz-option')].find((x) => x.textContent.replace(/^[A-D]/, '').trim() === t);
+        b.click();
+      }, ziel);
+    } else {
+      await p.locator('.quiz-option').first().click();
+    }
+    await p.locator('.quiz-weiter:not(:disabled)').click();
+    await p.waitForTimeout(100);
+  }
+  await p.waitForSelector('.quiz-ergebnis');
+  return gefragt.length;
+}
+
+await schritt('Modultest: „Ich spiele schon“ bietet ihn an, Bestehen füllt das Modul', async () => {
+  const { k, p } = await frischerStart({ mitAnbieter: false });
+  const dialog = p.locator('[role="dialog"]');
+  await dialog.getByRole('button', { name: 'Deutsch' }).click();
+  await dialog.getByRole('button', { name: 'Weiter' }).click();
+  const ziele = (await dialog.locator('button.btn').allInnerTexts()).map((t) => t.trim());
+  await dialog.getByRole('button', { name: 'Ich spiele schon' }).click();
+  await p.waitForSelector('.start-lektion');
+  await p.waitForTimeout(400);
+  const angebot = await p.locator('.start-mehr', { hasText: 'Kenne ich schon' }).allInnerTexts();
+  await p.locator('.start-mehr', { hasText: 'Kenne ich schon' }).click();
+  await p.waitForSelector('.modultest-angebot');
+  const seite = {
+    adresse: new URL(p.url()).hash,
+    angebot_text: (await p.locator('.modultest-angebot p').innerText()).trim(),
+  };
+  await p.getByRole('button', { name: 'Kenne ich schon – Modultest' }).click();
+  await p.waitForSelector('.quiz-option');
+  const fragen = await beantworteTest(p, M1, true);
+  const ergebnis = {
+    fragen,
+    urteil: (await p.locator('.quiz-ergebnis .urteil').innerText()).trim(),
+    stand: (await p.locator('.quiz-ergebnis .big-stat').innerText()).trim(),
+    knoepfe: (await p.locator('.quiz-ergebnis .entscheidung a, .quiz-ergebnis .entscheidung button').allInnerTexts()).map((t) => t.trim()),
+  };
+  const gespeichert = await p.evaluate(() => {
+    const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+    const d = JSON.parse(localStorage.getItem(`pokermentor-data-${idx.activeId}`));
+    return {
+      lektionen: Object.keys(d.completedLessons),
+      alle_per_test: Object.values(d.completedLessons).every((r) => r.perTest === true),
+      xp: d.xp,
+      abzeichen: Object.keys(d.badges),
+    };
+  });
+  /* Nach dem Test: das Modul gilt als erledigt, die Startseite bietet das nächste an.
+     Der Test hat keine eigene Adresse; wer auf der Modulseite bleibt, sieht sein
+     Ergebnis — zum Nachsehen geht es über die Startseite wieder hinein. */
+  await p.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await p.goto(`${GRUND}/#/lernen/m1`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.lektion');
+  const modul = await p.evaluate(() => ({
+    angebot_noch_da: document.querySelectorAll('.modultest-angebot').length,
+    hinweise: [...document.querySelectorAll('.lektion .hinweis')].map((e) => e.textContent.trim()),
+    meta_mit_quiz: [...document.querySelectorAll('.lektion .meta')].some((e) => /Quiz: 0\/0/.test(e.textContent)),
+  }));
+  await p.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.start-lektion');
+  const start = {
+    naechste: (await p.locator('.start-lektion .name').innerText()).trim(),
+    naechstes_angebot: await p.locator('.start-mehr', { hasText: 'Kenne ich schon' }).allInnerTexts(),
+  };
+  await k.close();
+  return { ziele, angebot, seite, ergebnis, gespeichert, modul, start };
+});
+
+await schritt('Modultest: Scheitern lässt das Modul offen und füllt die Wiederholung', async () => {
+  const k = await neuerKontext(390, 844);
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/lernen/m2`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.modultest-angebot');
+  await p.getByRole('button', { name: 'Kenne ich schon – Modultest' }).click();
+  await p.waitForSelector('.quiz-option');
+  await beantworteTest(p, M2, false);
+  const ergebnis = {
+    urteil: (await p.locator('.quiz-ergebnis .urteil').innerText()).trim(),
+    knoepfe: (await p.locator('.quiz-ergebnis .entscheidung a, .quiz-ergebnis .entscheidung button').allInnerTexts()).map((t) => t.trim()),
+  };
+  const gespeichert = await p.evaluate(() => {
+    const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+    const d = JSON.parse(localStorage.getItem(`pokermentor-data-${idx.activeId}`));
+    return { lektionen: Object.keys(d.completedLessons).length, wiederholung: d.reviews.length, xp: d.xp };
+  });
+  await p.getByRole('button', { name: 'Test wiederholen' }).click();
+  await p.waitForSelector('.quiz-option');
+  const neu = (await p.locator('.quiz-zaehler').innerText()).trim();
+  await k.close();
+  return { ergebnis, gespeichert, wiederholt_bei: neu };
+});
+
 /* ── Auszahlung und Bankroll (E-094) ──────────────────────────────────────
    Beide Seiten rechnen mit Geld. Gemessen wird, was früher falsch war:
    Ein Feld, das beim Tippen den Wert verändert, und eine Liste, die hinter

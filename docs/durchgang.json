@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T15:59:56.843Z",
+  "geprueft_am": "2026-10-04T16:38:52.255Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -44,7 +44,7 @@
         "letzte_stufe": "15 / 30",
         "zeitplan_mit_uhrzeit": true,
         "finale_satz": "Am Ende bleiben den letzten drei im Schnitt 21 Big Blinds — das trägt ein Finale.",
-        "plan_ende": "Ende gegen 18:58"
+        "plan_ende": "Ende gegen 19:37"
       },
       "uebersprungen": false
     },
@@ -179,7 +179,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 897,
+        "dauer_ms": 894,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -542,6 +542,7 @@
         "ziel_frage": "WAS HAST DU VOR?",
         "ziel_knoepfe": [
           "Poker lernen",
+          "Ich spiele schon",
           "Pokerabende leiten",
           "Zurück",
           "Überspringen"
@@ -668,7 +669,7 @@
           "bestScore": 1,
           "total": 5,
           "tries": 1,
-          "lastAt": "2026-10-04T15:58:54.518Z"
+          "lastAt": "2026-10-04T16:37:46.092Z"
         },
         "abzeichen_nach_fehlschlag": [],
         "wiederholung_nach_fehlschlag": 4,
@@ -817,10 +818,10 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | Serie | – | Treffer | 0 | Beste",
-        "nach_zwei": "0 | Serie | 50 % | Treffer | 1 | Beste",
-        "nach_neuladen": "0 | Serie | 50 % | Treffer | 1 | Beste",
+        "nach_zwei": "2 | Rekord! | 100 % | Treffer | 2 | Beste",
+        "nach_neuladen": "2 | Rekord! | 100 % | Treffer | 2 | Beste",
         "quote_bleibt": true,
-        "quote_nach_zwei": "50 %",
+        "quote_nach_zwei": "100 %",
         "ohne_versuche_kein_prozent": true,
         "felder": 3
       },
@@ -829,12 +830,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 45,
+        "dauer_ms": 32,
         "knopf_bewegt_px": 0,
         "oben": 749,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "54,1 %",
+        "ergebnis_text": "8,4 %",
         "uebergang": "0s",
         "belebung": "none"
       },
@@ -1102,14 +1103,14 @@
               "status": "Anna überlegt …",
               "gesperrte_knoepfe": 3,
               "urteil": [
-                "Gut"
+                "Fehler"
               ]
             }
           }
         },
         "fold": {
           "status_nach_fold": "Du hast gefoldet",
-          "dauer_ms": 253
+          "dauer_ms": 87
         }
       },
       "uebersprungen": false
@@ -1118,7 +1119,7 @@
       "name": "Profil: Identität und Fortschritt, Einstellungen hinter dem Zahnrad",
       "ergebnis": {
         "leer": {
-          "hoehe": 1445,
+          "hoehe": 1668,
           "avatar": "P",
           "name": "Profil 1",
           "medaillen_verdient": 0,
@@ -1301,8 +1302,8 @@
         "ergebnis": {
           "balken": 2,
           "prozent": [
-            "27,2 %",
-            "72,8 %"
+            "26,6 %",
+            "73,4 %"
           ]
         },
         "hand3_aus_text": 2,
@@ -1346,6 +1347,137 @@
         ],
         "text": "PokerMentor Tages-Quiz, 4. Okt. 2026: 1 von 5 richtig\nhttp://127.0.0.1:4173/",
         "bestaetigung": "In die Zwischenablage kopiert"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Lernstand: je Thema eine Stufe, das schwächste mit zwei Wegen",
+      "ergebnis": {
+        "leer": {
+          "zeilen": 0,
+          "text": "Löse ein paar Aufgaben in den Trainern. Ab zehn Antworten je Thema steht hier, wo du sicher bist und was wackelt.",
+          "weg": "#/lernen"
+        },
+        "mit": {
+          "zeilen": [
+            {
+              "thema": "Preflop-Ranges",
+              "stufe": "noch offen",
+              "bilanz": "9 von 20 richtig",
+              "wege": [
+                {
+                  "text": "Jetzt üben",
+                  "ziel": "#/lernen/trainer/preflop"
+                },
+                {
+                  "text": "Nachlesen",
+                  "ziel": "#/lernen/m2/m2-l1"
+                }
+              ]
+            },
+            {
+              "thema": "Outs",
+              "stufe": "sicher",
+              "bilanz": "18 von 20 richtig",
+              "wege": []
+            },
+            {
+              "thema": "Pot Odds",
+              "stufe": "wackelt",
+              "bilanz": "8 von 12 richtig",
+              "wege": []
+            },
+            {
+              "thema": "Equity",
+              "stufe": "noch zu wenig Daten",
+              "bilanz": "6 von 10 Antworten",
+              "wege": []
+            }
+          ]
+        },
+        "nach_einer_antwort": {
+          "attempts": 1,
+          "letzte_laenge": 1
+        }
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Modultest: „Ich spiele schon“ bietet ihn an, Bestehen füllt das Modul",
+      "ergebnis": {
+        "ziele": [
+          "Poker lernen",
+          "Ich spiele schon",
+          "Pokerabende leiten",
+          "Zurück",
+          "Überspringen"
+        ],
+        "angebot": [
+          "Kenne ich schon: Modultest „Grundlagen“"
+        ],
+        "seite": {
+          "adresse": "#/lernen/m1",
+          "angebot_text": "8 Fragen aus dem ganzen Modul. Bei 7 richtigen zählt es als geschafft — ohne XP, falsche Fragen kommen in die Wiederholung."
+        },
+        "ergebnis": {
+          "fragen": 8,
+          "urteil": "Bestanden",
+          "stand": "8 / 8",
+          "knoepfe": [
+            "Weiter mit Preflop-Strategie",
+            "Test wiederholen"
+          ]
+        },
+        "gespeichert": {
+          "lektionen": [
+            "m1-l1",
+            "m1-l2",
+            "m1-l3",
+            "m1-l4",
+            "m1-l5"
+          ],
+          "alle_per_test": true,
+          "xp": 0,
+          "abzeichen": [
+            "module-basics"
+          ]
+        },
+        "modul": {
+          "angebot_noch_da": 0,
+          "hinweise": [
+            "Per Test bestanden",
+            "Per Test bestanden",
+            "Per Test bestanden",
+            "Per Test bestanden",
+            "Per Test bestanden"
+          ],
+          "meta_mit_quiz": false
+        },
+        "start": {
+          "naechste": "Starthände verstehen",
+          "naechstes_angebot": [
+            "Kenne ich schon: Modultest „Preflop-Strategie“"
+          ]
+        }
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Modultest: Scheitern lässt das Modul offen und füllt die Wiederholung",
+      "ergebnis": {
+        "ergebnis": {
+          "urteil": "Knapp daneben",
+          "knoepfe": [
+            "Modul durchgehen",
+            "Test wiederholen"
+          ]
+        },
+        "gespeichert": {
+          "lektionen": 0,
+          "wiederholung": 6,
+          "xp": 0
+        },
+        "wiederholt_bei": "1/8"
       },
       "uebersprungen": false
     },

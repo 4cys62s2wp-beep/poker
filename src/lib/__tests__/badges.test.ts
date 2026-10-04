@@ -4,6 +4,9 @@
 import { describe, expect, it } from 'vitest';
 import { applyAutoBadges, sanitizeAppData, xpThreshold, type AppData, type TrainerStats } from '../../state/AppState';
 import { BADGES } from '../../content/badges';
+import { ALL_MODULES } from '../../content';
+
+const ALL_LESSON_IDS = ALL_MODULES.flatMap((m) => m.lessons.map((l) => l.id));
 
 function trainer(correct: number): TrainerStats {
   return { attempts: correct, correct, streak: 0, bestStreak: 0 };
@@ -55,5 +58,41 @@ describe('applyAutoBadges', () => {
     applyAutoBadges(d);
     const known = new Set(BADGES.map((b) => b.id));
     for (const id of Object.keys(d.badges)) expect(known.has(id)).toBe(true);
+  });
+});
+
+describe('Module, die per Test bestanden wurden (E-097)', () => {
+  const perTest = (ids: string[]) => Object.fromEntries(
+    ids.map((id) => [id, { completedAt: '2026-10-01T10:00:00.000Z', quizScore: 0, quizTotal: 0, perTest: true }]),
+  );
+
+  it('zählen nicht für „Erste Schritte“, „Wissbegierig“ und „Stammschüler“', () => {
+    const ids = ALL_LESSON_IDS.slice(0, 22);
+    const d = dataWith({ completedLessons: perTest(ids) });
+    applyAutoBadges(d);
+    expect(d.badges['first-lesson']).toBeUndefined();
+    expect(d.badges['five-lessons']).toBeUndefined();
+    expect(d.badges['twenty-lessons']).toBeUndefined();
+  });
+
+  it('lassen aber das Abzeichen des Moduls zu, das sie abschließen', () => {
+    const d = dataWith({ completedLessons: perTest(ALL_LESSON_IDS.filter((id) => id.startsWith('m1-'))) });
+    applyAutoBadges(d);
+    expect(d.badges['module-basics']).toBeTruthy();
+  });
+
+  it('zählen zusammen mit gelesenen Lektionen nur mit den gelesenen', () => {
+    const gelesen = { 'm2-l1': { completedAt: '2026-10-01T10:00:00.000Z', quizScore: 5, quizTotal: 5 } };
+    const d = dataWith({ completedLessons: { ...perTest(['m1-l1', 'm1-l2', 'm1-l3', 'm1-l4']), ...gelesen } });
+    applyAutoBadges(d);
+    expect(d.badges['first-lesson']).toBeTruthy();
+    expect(d.badges['five-lessons']).toBeUndefined();
+  });
+
+  it('übersteht das Laden mit ihrer Kennzeichnung', () => {
+    const d = sanitizeAppData({ completedLessons: perTest(['m1-l1']) });
+    expect(d.completedLessons['m1-l1'].perTest).toBe(true);
+    const ohne = sanitizeAppData({ completedLessons: { 'm1-l1': { completedAt: 'x', quizScore: 3, quizTotal: 5 } } });
+    expect('perTest' in ohne.completedLessons['m1-l1']).toBe(false);
   });
 });

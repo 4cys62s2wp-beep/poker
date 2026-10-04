@@ -45,3 +45,31 @@ export function speichereZiel(z: Ziel): void {
 export function useZiel(): Ziel | null {
   return useSyncExternalStore(abonniere, ladeZiel, () => null);
 }
+
+/* Wer schon spielt (E-097).
+   -------------------------
+   Im Willkommensdialog gibt es neben „Poker lernen“ und „Pokerabende leiten“
+   ein „Ich spiele schon“. Es ist kein drittes Ziel — gelernt wird weiter —,
+   sondern ein Hinweis: Die Startseite bietet dann für die ersten Module den
+   Modultest an („Kenne ich schon“), statt jeden mit „So funktioniert Texas
+   Hold’em“ zu beginnen. Angeboten, nicht erzwungen. */
+
+export const ERFAHRUNG_SCHLUESSEL = 'pokermentor-erfahrung-v1';
+
+export function ladeErfahrung(): boolean {
+  try {
+    return localStorage.getItem(ERFAHRUNG_SCHLUESSEL) === 'ja';
+  } catch {
+    return false;
+  }
+}
+
+export function speichereErfahrung(): void {
+  durableSet(ERFAHRUNG_SCHLUESSEL, 'ja');
+  hoerer.forEach((f) => f());
+}
+
+/** Ob jemand angegeben hat, schon zu spielen — und es zieht nach. */
+export function useErfahrung(): boolean {
+  return useSyncExternalStore(abonniere, ladeErfahrung, () => false);
+}

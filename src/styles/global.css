@@ -6796,3 +6796,40 @@ input[type="radio"] {
   .drill-unten::after { display: none; }
   .drill-aufloesung { order: 3; margin-top: var(--sp-5); padding-bottom: 0; }
 }
+
+/* ── Dein Lernstand (E-097) ───────────────────────────────────────────── */
+.lernstand-text { margin: 0 0 var(--sp-3); }
+.lernstand-liste { display: grid; gap: var(--sp-3); }
+.lernstand-zeile {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--sp-1) var(--sp-3);
+  align-items: center;
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--border);
+}
+.lernstand-zeile:last-child { padding-bottom: 0; border-bottom: 0; }
+.lernstand-zeile .thema { font-weight: var(--fw-bold); }
+.lernstand-zeile .bilanz { grid-column: 1; }
+.lernstand-wege { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-2); }
+/* Drei Stufen, jede mit Zeichen und Wort — die Farbe unterstützt, sie sagt es
+   nicht allein (Regel 11.4). */
+.stufe-marke {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+.stufe-marke.sicher { color: var(--ergebnis-gut); border-color: var(--ergebnis-gut); }
+.stufe-marke.wackelt { color: var(--auszeichnung-lesbar); border-color: var(--auszeichnung-lesbar); }
+.stufe-marke.offen { color: var(--ergebnis-schlecht); border-color: var(--ergebnis-schlecht); }
+.stufe-marke.zuWenig { color: var(--text-dim); }
+
+/* ── Modultest (E-097) ────────────────────────────────────────────────── */
+.modultest-angebot { display: grid; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.modultest-angebot p { margin: 0; }

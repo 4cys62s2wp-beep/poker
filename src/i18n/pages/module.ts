@@ -16,7 +16,25 @@ export const STR = defineStrings(
     lektionDran: 'Hier weiter',
     lektionFertig: 'Abgeschlossen',
     lektionVersucht: 'Noch einmal',
+    perTest: 'Per Test bestanden',
     xpBis: (bis: number) => `bis ${bis} XP`,
+
+    /* ── Modultest: „Kenne ich schon“ (E-097) ──────────────────────── */
+    testKnopf: 'Kenne ich schon – Modultest',
+    testTitel: 'Modultest',
+    testSub: (n: number, grenze: number) =>
+      `${n} Fragen aus dem ganzen Modul. Bei ${grenze} richtigen zählt es als geschafft — ohne XP, falsche Fragen kommen in die Wiederholung.`,
+    testBestanden: 'Bestanden',
+    testKnapp: 'Knapp daneben',
+    testBestandenText: 'Das Modul zählt als geschafft. XP und Abzeichen für gelesene Lektionen gibt es dafür nicht.',
+    testKnappText: (falsch: number) =>
+      falsch === 1
+        ? 'Eine Frage kommt in die Wiederholung. Geh das Modul in Ruhe durch — oder versuch den Test noch einmal.'
+        : `${falsch} Fragen kommen in die Wiederholung. Geh das Modul in Ruhe durch — oder versuch den Test noch einmal.`,
+    testWeiter: (modul: string) => `Weiter mit ${modul}`,
+    testZumPfad: 'Zum Lernpfad',
+    testNochmal: 'Test wiederholen',
+    testDurchgehen: 'Modul durchgehen',
   },
   {
     notFound: 'Module not found.',
@@ -32,6 +50,24 @@ export const STR = defineStrings(
     lektionDran: 'Continue here',
     lektionFertig: 'Completed',
     lektionVersucht: 'Try again',
+    perTest: 'Passed by test',
     xpBis: (bis: number) => `up to ${bis} XP`,
+
+    /* ── Module test: “I know this already” (E-097) ─────────────────── */
+    testKnopf: 'I know this – module test',
+    testTitel: 'Module test',
+    testSub: (n: number, grenze: number) =>
+      `${n} questions from across the module. With ${grenze} correct it counts as done — no XP, and wrong questions go into your review.`,
+    testBestanden: 'Passed',
+    testKnapp: 'Just missed',
+    testBestandenText: 'The module counts as done. There is no XP and no badge for lessons you read.',
+    testKnappText: (falsch: number) =>
+      falsch === 1
+        ? 'One question goes into your review. Work through the module at your own pace — or try the test again.'
+        : `${falsch} questions go into your review. Work through the module at your own pace — or try the test again.`,
+    testWeiter: (modul: string) => `Continue with ${modul}`,
+    testZumPfad: 'To the learning path',
+    testNochmal: 'Repeat the test',
+    testDurchgehen: 'Work through the module',
   },
 );

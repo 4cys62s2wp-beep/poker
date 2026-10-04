@@ -7,6 +7,7 @@ import { STR } from '../i18n/pages/profile';
 import { Link } from 'react-router-dom';
 import { Levelring } from '../components/Levelring';
 import { Medaille } from '../components/Medaille';
+import { Lernstand } from '../components/Lernstand';
 import { rangstand } from '../lib/rang/stand';
 import { Icon, type IconName } from '../components/Icon';
 import { STR as FRIENDS } from '../i18n/pages/friends';
@@ -152,6 +153,8 @@ export function ProfilePage() {
           )}
         </div>
       </div>
+
+      <Lernstand />
 
       {/* Die Sammlung feiert, was verdient ist (E-042) — und zeigt, was zählt
           (E-095): die zuletzt verdienten (höchstens sechs), die nächsten drei und

@@ -1056,8 +1056,10 @@ Regel 10.15 sorgt dafür, dass die Schrift mitwächst; ob das Layout das trägt,
 
 Beleg: Eigener Lauf eigen/luecken/k1.mjs: eigen/luecken/zoom_start.png (Chips überlappen, „Du“ angeschnitten), eigen/luecken/zoom_session.png („Abend f…“, „Frühere A…“, „Chip-Rech…“), eigen/luecken/zoom_preflop.png (Situationskarte unter der Leiste, „TREFF…“); gemessen scrollWidth 396 bei innerWidth 390 auf allen drei Seiten. DESIGN.md Regel 10.15 (Z. 757ff.) prüft nur die Schriftgrößen (schriftgroesse.test.ts), nicht das Layout.
 
-### [ ] Lernstand je Thema: Stärken, Schwächen und der nächste Übungsschritt  
+### [x] Lernstand je Thema: Stärken, Schwächen und der nächste Übungsschritt  
 *Wirkung 4 · gehört zu Paket 8*
+
+**Stand:** Umgesetzt: `recordTrainer` merkt die letzten 20 Antworten je Trainer, `lib/lernstand.ts` rechnet sieben Themen in drei Stufen (ab zehn Antworten), das Profil zeigt „Dein Lernstand“ und gibt dem schwächsten Thema „Jetzt üben“ und „Nachlesen“. Nicht in der Startseite (keine rechte Spalte). Siehe E-097.
 
 Erstklassige Lern-Apps zeigen, wie gut man ein Thema beherrscht, und schlagen das Schwächste zum Üben vor. Die Daten dafür liegen bereits vor: AppData führt trainers[trainerId] mit attempts, correct und bestStreak (AppState.tsx:629–645), completedLessons mit Quizergebnis je Lektion und reviews mit falsch beantworteten Fragen. Das Profil zeigt davon nur die Summe „Trainer-Antworten 0“ mit Prozentsatz (ProfilePage.tsx:85, 135–139). Die Spielstil-Seite wertet nur Übungstisch-Hände aus. Der Fahrplan ergänzt „Jetzt üben“ nur für Spielstil-Schwachstellen (6.10) und sortiert das Profil um (8.1/8.4), eine Übersicht nach Thema fehlt aber ganz. Lösung: Ein Block „Dein Lernstand“ im Profil, auf dem Desktop auch in der rechten Spalte der Startseite (2.4). Je Thema eine Zeile (Pot Odds, Outs, Handstärke, Preflop-Ranges, Push/Fold, Equity) mit Trefferquote der letzten 20 Antworten, Zahl der Antworten und einer Einstufung in drei Stufen („sicher“ / „wackelt“ / „noch offen“, ab mindestens 10 Antworten, darunter „noch zu wenig Daten“). Die schwächste Zeile bekommt „Jetzt üben“ in den Trainer und „Nachlesen“ in die Lektion (über die Zuordnung aus 5.7). Dafür speichert recordTrainer zusätzlich ein Ringpuffer-Feld letzte: boolean[20]. Keine Ranglisten, kein Vergleich mit anderen.
 
@@ -1070,8 +1072,10 @@ Die häufigste und teuerste Preflop-Entscheidung von Anfängern ist die Antwort 
 
 Beleg: mobil-dunkel/nachschlagen_ranges.png und mobil-hell/nachschlagen_ranges.png (Segmente nur UTG/HJ/CO/BTN/SB/„BB vs. BTN“, Legende nur Raise/Fold), mobil-dunkel/nachschlagen_coach.png (Umschalter „Jemand hat erhöht“), zustaende/trainer-preflop.png; Code: src/content/ranges.ts:24/70, src/lib/poker/coach.ts:424–468, CONCEPT.md:54/104.
 
-### [ ] Einstieg für Spieler mit Vorkenntnissen: Modultest statt Pflichtlektüre  
+### [x] Einstieg für Spieler mit Vorkenntnissen: Modultest statt Pflichtlektüre  
 *Wirkung 3 · gehört zu Paket 5*
+
+**Stand:** Umgesetzt: „Kenne ich schon – Modultest“ auf der Modulseite (8 Fragen, 7 richtig, „per Test bestanden“ ohne XP und ohne Abzeichen der gelesenen Lektionen), „Ich spiele schon“ im Willkommensdialog, Angebot für m1–m3 auf der Startseite. Siehe E-097.
 
 Ein großer Teil der Zielgruppe kann schon spielen, gerade wer über die Live-Session kommt. Der Lernpfad schickt trotzdem jeden mit „Hier weiter“ zu „So funktioniert Texas Hold’em“ (Startseite „ERSTE LEKTION“) und zählt erledigte Module nur über gelesene Lektionen. Ein Modul als bekannt zu markieren oder einen Einstufungstest zu machen ist nirgends vorgesehen; die Suche nach überspringen/Einstufung findet nur den Knopf „Überspringen“ im Namensschritt (Onboarding.tsx:22). Punkt 4.4 fragt zwar das Ziel ab („Poker lernen / Pokerabende leiten“), ändert aber den Einstiegspunkt nicht. Erfahrene Nutzer sehen deshalb 0 von 49 Lektionen, Rang „Neuling“ und Grundlagen-Fragen im Tages-Quiz. Lösung: Auf jeder Modulseite der Knopf „Kenne ich schon – Modultest“. Er zieht 8 Fragen aus den vorhandenen Lektionsquizzen des Moduls (Mischung aus 5.3). Wer mindestens 7 schafft, bekommt das Modul als „per Test bestanden“ (eigener Zustand in completedLessons, ohne XP-Regen und ohne Abzeichen „Erste Schritte“). Falsche Fragen kommen in die Wiederholung, und „Hier weiter“ springt zum nächsten offenen Modul. Im Onboarding (4.4) wird bei „Ich spiele schon“ derselbe Test für m1–m3 als Angebot gezeigt, nicht erzwungen.
 

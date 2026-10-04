@@ -5463,3 +5463,43 @@ kopiert“). Nur Zahlen und Tage, kein Geld (`lib/teilen.ts`, getestet).
 - **Teilbilder** (Canvas 1080 × 1350) fürs Tages-Quiz: „erst, wenn sich das Teilen von Text bewährt“ (9.5).
 - **Die Zellen der Matrix am Handy bleiben bei 22 Pixel:** Die Matrix ist ein Diagramm (die Tippprüfung nimmt sie aus, wie
   schon vorher), ihr Zweck ist das Bild als Ganzes; die Auskunft kommt über den Tipp, den man auch ungenau setzen darf.
+
+## E-097 · 2026-10-04 · Lernstand je Thema und Modultest: wissen, wo man steht, und Vorwissen zählen lassen
+
+**Stand:** entschieden und umgesetzt (zwei Lücken aus FAHRPLAN „Lücken aus der Vollständigkeitskritik“).
+
+**Dein Lernstand (Profil).** Das Profil zeigte von allem Geübten eine Summe („Trainer-Antworten 212, 74 % richtig“), aus der
+sich nichts tun lässt. Die Daten lagen schon da — Versuche und richtige Antworten je Trainer —, nur nicht die Frage, wie es
+*zuletzt* lief: Eine Quote seit dem ersten Tag sagt nicht, ob man ein Thema inzwischen kann. Deshalb merkt sich `recordTrainer`
+**die letzten 20 Antworten je Trainer** (`letzte`, eine Zeichenfolge aus 0 und 1, die älteste zuerst — kleiner im Gerätespeicher
+und im Backup als eine Liste von Wahrheitswerten; ein kaputter Wert fällt beim Laden weg). `lib/lernstand.ts` rechnet daraus **je
+Thema** (Handstärke, Preflop-Ranges, Outs, Pot Odds — Trainer und Drill zusammen —, Equity, Push/Fold, Entscheidungen im Spot)
+**drei Stufen mit Wort**: *sicher* ab 80 %, *wackelt* ab 55 %, *noch offen* darunter, jeweils **ab zehn Antworten** im Fenster;
+davor „noch zu wenig Daten (4 von 10 Antworten)“. Die Stufe trägt Zeichen und Wort, nicht nur Farbe. Es erscheinen **nur Themen
+mit mindestens einer Antwort** — sieben Zeilen „noch zu wenig Daten“ wären die Wand aus Nullen, die das Profil gerade verloren
+hat; ohne Antworten steht ein Satz mit Weg zu den Übungen. Das **schwächste eingestufte Thema** (niedrigste Quote, nicht
+„sicher“) bekommt **„Jetzt üben“** (der Trainer) und **„Nachlesen“** (die erste Lektion, die zu dieser Übung führt — aus derselben
+Zuordnung wie überall, `lernen/uebung.ts`); wer überall sicher ist, bekommt keinen Vorschlag erfunden. Ein Stand aus der Zeit
+vor dem Fenster zählt als „zu wenig Daten“, bis neue Antworten kommen — eine Quote aus Altdaten zu erfinden wäre falsch. Keine
+Ranglisten, kein Vergleich.
+
+**Modultest: „Kenne ich schon“.** Erfahrene sahen 0 von 49 Lektionen, den Rang „Neuling“ und Grundlagenfragen im Tages-Quiz.
+Jetzt steht auf jeder Modulseite (wo das ganze Modul offen ist — sonst ließen sich gesperrte Lektionen als erledigt eintragen)
+**„Kenne ich schon – Modultest“**: **acht Fragen** quer durch alle Lektionen des Moduls (reihum je eine, bevor eine zweimal
+vorkommt; `ziehTestFragen`), **sieben richtig** bestehen (bei kleineren Modulen derselbe Anteil, aufgerundet). Er läuft im
+Fokusmodus **an Ort und Stelle, ohne eigene Adresse** — eine Adresse hätte den Test auf Tiefe drei gelegt. Bestanden: Jede noch
+offene Lektion zählt als **„per Test bestanden“** (`perTest`), **ohne XP** und **ohne die Abzeichen der gelesenen Lektionen**
+(„Erste Schritte“, „Wissbegierig“, „Stammschüler“) — das Abzeichen des Moduls (z. B. „Grundausbildung“) bleibt möglich, es
+steht für das Modul. Falsche Fragen kommen in die Wiederholung, auch beim Scheitern; „Test wiederholen“ zieht frisch. Die
+Modulseite schreibt „Per Test bestanden“ statt „Quiz: 0/0“; die Startseite springt zur nächsten offenen Lektion.
+**„Ich spiele schon“** steht im Willkommensdialog neben „Poker lernen“ und „Pokerabende leiten“: kein drittes Ziel (gelernt wird
+weiter), sondern ein Hinweis — die Startseite bietet dann für die Module 1 bis 3 den Test an („Kenne ich schon: Modultest
+„Grundlagen““), statt jeden mit „So funktioniert Texas Hold’em“ zu beginnen. Angeboten, nicht erzwungen.
+
+**Nicht umgesetzt, mit Grund:**
+- **Der Lernstand auch in der rechten Spalte der Startseite am Desktop** (Fahrplan: „auf dem Desktop auch“): Die Startseite hat
+  keine rechte Spalte (E-035); sie wäre eine zweite Stelle für dieselbe Auskunft.
+- **Themen ohne Antworten ausgegraut zeigen** („Was es noch gibt“): Der Lernpfad und die Trainerkacheln sagen es schon.
+- **Ein Test, der Lektionen einzeln überspringt:** Er gilt für ganze Module; wer nur eine Lektion überspringen will, macht ihr
+  Quiz (5.1).
+- **Der Test für Module mit gesperrten Lektionen (Gratis):** Er fehlt dort mit Absicht, siehe oben.

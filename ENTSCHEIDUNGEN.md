@@ -5558,3 +5558,62 @@ Schloss, weil die ausgelieferte Konfiguration `enabled: false` hat — deshalb b
 - **Pro-Insights als Suchtreffer:** Die Seite ist nicht Teil der Suche (sie ist ein Lesetext, kein Werkzeug); das Schloss steht
   dort, wo sie auftaucht.
 - **`addReviewItem` für Gratisnutzer abstellen:** Entfällt — Wiederholen ist gratis, es soll sammeln.
+
+## E-099 · 2026-10-04 · Pro-Start: erst laden, dann umleiten; Rückkehr aus dem Kauf; Zahlen aus den Regeln
+
+**Stand:** entschieden und umgesetzt (Lücke „Pro-Start ab Oktober 2026“; sie ergänzt E-098).
+
+**Der Fehler beim Kauf.** `UpgradePage` leitete mit `if (!enabled) return <Navigate to="/" />` um, solange `monetization.json`
+noch lud. `enabled` ist beim ersten Rendern immer falsch — also landete **jeder direkte Aufruf von `#/pro` auf der Startseite**, und
+das ist genau die Adresse, auf die Stripe nach Kauf *und* Abbruch zurückschickt. Wer bezahlte, sah die Startseite, ohne ein Wort.
+Gemessen mit eingeschalteter Konfiguration: Adresse nach dem Laden `#/`.
+
+**Erst laden.** `usePro()` kennt jetzt `bereit` (die Konfiguration ist angekommen). Davor zeigen `UpgradePage` und `CancelPage` den
+Kopf und einen Platzhalter („Einen Moment …“, das Wort für das Warten auf einen Server, E-096) in der Höhe des Preisblocks; erst
+danach entscheidet `enabled` über Seite oder Umleitung. Die Kündigungsseite zeigte vorher einen Augenblick „nicht verfügbar“ und
+dann das Formular — ein Aufblitzen von Falschem auf einer Seite, die § 312k BGB ohne Hürde verlangt.
+
+**Rückkehr aus dem Kauf, ohne neue Adresse.** Die Rücksprünge heißen `#/pro?kauf=ok` und `#/pro?kauf=abbruch`. Eine eigene Seite
+`/pro/danke` hätte keinen Weg dorthin außer dem Rücksprung (der Wegelauf meldet so etwas als nicht erreichbar) und läge auf Tiefe
+zwei; ein Parameter hält die Seite, wo sie ist. `lib/pro/kauf.ts` entscheidet rein: **abbruch** → „Nichts gebucht. Es wurde nichts
+berechnet.“, der Kaufknopf bleibt; **ok, Berechtigung fehlt noch** → „Zahlung wird bestätigt …“ in einer Statusmeldung
+(`role="status"`), **ohne Kaufknopf** (wer ihn jetzt noch einmal drückt, zahlt zweimal); **ok und Pro da** → die Überschrift wird „Pro
+ist aktiv“, darunter „Gilt auf allen Geräten mit deinem Konto“ und „Weiter lernen“. Die Berechtigung schreibt der Webhook, sie kommt
+über die Beobachtung an und schaltet `pro` von selbst — die Seite fragt nicht nach. Nach 45 Sekunden ohne sie sagt die Seite, dass es
+länger dauert, dass die Zahlung nicht verloren geht und an wen man schreibt.
+
+**Die Zahlen kommen aus den Regeln.** `lib/pro/vergleich.ts` rechnet Modul-, Trainer- und Limitzahlen aus `plan.ts`, den Inhalten
+und der Trainerliste; Tabelle und Nutzenzeilen setzen sie nur ein. Das fand zwei Fehler, die niemand gesehen hatte: „Trainer 5 von 7 /
+Alle 7“ (es sind **8**: sieben in der Liste plus der Pot-Odds-Drill; gratis sind 6) und „über 30 zusätzliche Lektionen“ (es sind
+**23**); außerdem stand „Psychologie“ in der Liste der Pro-Module — Modul 6 ist aus Spielerschutzgründen dauerhaft frei (E-098).
+Die Texte vor dem Bestell-Knopf (§ 312j BGB) nennen nur noch, was Pro tatsächlich öffnet: ohne „Synchronisation auf allen Geräten“
+(nie Pro, E-098), mit Trainern und dem Tisch ohne Tageslimit. Auch die Limits in den Hinweisen („3 Gratis-Coach-Hände“) sind jetzt
+Funktionen der Regel statt Zahlen im Satz.
+
+**Der Ton (E-010).** Gestrichen: „… dem Spieler, gegen den am Tisch keiner gern sitzt“, „genau die Situationen, die Geld kosten“ (die
+App zeigt Spielgeld und will mit Glücksspiel nichts gemein haben) und das Coach-Overlay als Pro-Nutzen (der Coach am Tisch ist
+gratis, E-098, und bewertet nach der Aktion). Der Untertitel sagt, was Pro tut: es geht in die Tiefe.
+
+**Auf Bausteinen statt Inline-Stilen.** Die Seite hat Klassen (`pro-karte`, `pro-preis`, `pro-vergleich` …) statt 32
+Inline-Stile; der Wechsel Monatlich/Jährlich ist ein `segmented` mit `role="radiogroup"`, der Hinweis am Tageslimit ein `Blatt`
+(E-098). Die Fragen aufklappbar mit 44 Pixel hoher Kopfzeile — gemessen waren sie 26 Pixel hoch, weil `/pro` bei ausgeschalteter
+Monetarisierung nie in einen Messlauf kam.
+
+**Ruhiger Hinweis vor dem Ende der Testphase.** Drei Tage und einen Tag vorher, **je einmal**, auf der Startseite: „Deine Pro-Testphase
+endet in 3 Tagen“ bzw. „… endet morgen“, dazu, was danach gratis bleibt, ein Weg zu Pro und „Verstanden“. Kein Zähler, der
+mitläuft, keine Farbe, kein „Letzte Chance“. Wer den engen Hinweis gesehen hat, bekommt den weiten nicht nachträglich
+(`faelligerHinweis`); gemerkt wird die Stufe im Gerätespeicher, ohne ihn erscheint der Hinweis noch einmal — harmlos.
+
+**Wie es geprüft wird.** `pro-start.test.ts` (Zahlen, Kaufstand, Hinweisstufen, Reihenfolge „erst `bereit`, dann `Navigate`“, die
+Rücksprung-Parameter) und `npm run sperren`, jetzt mit 71 Prüfungen im Browser: Aufruf von `#/pro` bei verzögerter Konfiguration
+(Platzhalter, kein Sprung), Preis, Kaufknopf mit Zahlungspflicht, „6 von 8“, „4 von 9“, keine gestrichenen Versprechen, Tippflächen,
+Rücksprung `ok` (Statusmeldung, kein zweiter Knopf) und `abbruch`, die Kündigung mit langsamem Netz (nie „nicht verfügbar“), die
+ausgeschaltete Monetarisierung (heutiger Zustand), die Hinweise bei 3, 1, 6 und 30 Tagen samt „Verstanden“ über einen Neustart.
+
+**Nicht umgesetzt, mit Grund:**
+- **„Pro ist aktiv“ im Browser gemessen:** Die Berechtigung kommt aus Firestore; ohne Emulator im Messlauf ließe sie sich nur
+  vortäuschen. Die Entscheidung ist rein und getestet (`kaufStand`); gemessen sind Warten und Abbruch.
+- **Eine Adressprüfung für `success_url` in der Cloud Function:** Sie nimmt die Adresse unbesehen. Ein angemeldeter Nutzer kann sich so
+  nur selbst irgendwohin schicken lassen; die Funktion ist noch nicht ausgeliefert (E-001), die Prüfung gehört zu ihrem Deploy.
+- **Der Hinweis auch im Profil oder in der Kopfzeile:** Die Kopfzeile trägt schon „Pro-Test: n Tage“; ein zweiter Ort für denselben
+  Satz wäre der Lärm, den der Hinweis vermeiden will.

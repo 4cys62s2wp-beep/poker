@@ -8,6 +8,7 @@ import { Blatt } from '../Blatt';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/pro';
 import { usePro } from '../../lib/pro/ProProvider';
+import { FEATURE_RULES } from '../../lib/pro/plan';
 
 export function PaywallModal() {
   const { paywallReason, closePaywall, enabled } = usePro();
@@ -16,8 +17,8 @@ export function PaywallModal() {
   if (!enabled || paywallReason === null) return null;
 
   const body =
-    paywallReason === 'coach' ? L.limitCoach
-    : paywallReason === 'play' ? L.limitPlay
+    paywallReason === 'coach' ? L.limitCoach(FEATURE_RULES.coach.freeDailyLimit ?? 0)
+    : paywallReason === 'play' ? L.limitPlay(FEATURE_RULES['play-hands'].freeDailyLimit ?? 0)
     : L.lockedGeneric;
   const istLimit = paywallReason === 'coach' || paywallReason === 'play';
 

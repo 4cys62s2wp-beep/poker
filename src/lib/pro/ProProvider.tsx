@@ -30,6 +30,10 @@ interface ProValue {
   config: MonetizationConfig;
   /** Monetarisierung aktiv (sonst ist die App komplett gratis). */
   enabled: boolean;
+  /** Die Konfiguration ist geladen. Davor ist `enabled` immer `false` — wer
+      daraus „es gibt kein Pro“ liest, schickt jeden direkten Aufruf von
+      `#/pro` auf die Startseite (E-099). */
+  bereit: boolean;
   /** Aktives, bezahltes Abo. */
   pro: boolean;
   /**
@@ -86,13 +90,16 @@ export function ProProvider({ children }: { children: ReactNode }) {
   const { data, todayUsage, consumeFeature, startTrial: startTrialState } = useAppState();
   const cloud = useCloud();
   const [config, setConfig] = useState<MonetizationConfig>(MONETIZATION_OFF);
+  const [bereit, setBereit] = useState(false);
   const [entitlement, setEntitlement] = useState<Entitlement | null>(null);
   const [paywallReason, setPaywallReason] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
     loadMonetizationConfig().then((c) => {
-      if (alive) setConfig(c);
+      if (!alive) return;
+      setConfig(c);
+      setBereit(true);
     });
     return () => {
       alive = false;
@@ -188,8 +195,8 @@ export function ProProvider({ children }: { children: ReactNode }) {
           p.createCheckout({
             userId: cloud.user?.uid ?? '',
             plan,
-            successUrl: `${window.location.origin}${window.location.pathname}#/pro`,
-            cancelUrl: `${window.location.origin}${window.location.pathname}#/pro`,
+            successUrl: `${window.location.origin}${window.location.pathname}#/pro?kauf=ok`,
+            cancelUrl: `${window.location.origin}${window.location.pathname}#/pro?kauf=abbruch`,
             locale: langRefForCheckout(),
           }),
         { kind: 'error', reason: 'unavailable' },
@@ -238,6 +245,7 @@ export function ProProvider({ children }: { children: ReactNode }) {
     () => ({
       config,
       enabled: config.enabled,
+      bereit,
       pro,
       fullAccess,
       entitlement,
@@ -255,7 +263,7 @@ export function ProProvider({ children }: { children: ReactNode }) {
       closePaywall,
       paywallReason,
     }),
-    [config, pro, fullAccess, entitlement, trialActive, daysLeft, effectiveTrialStart,
+    [config, bereit, pro, fullAccess, entitlement, trialActive, daysLeft, effectiveTrialStart,
      startTrialState, access, gesperrt, consume, startCheckout, manageBilling, openPaywall,
      closePaywall, paywallReason],
   );

@@ -10,12 +10,14 @@
 import { useState, type FormEvent } from 'react';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/legal';
+import { STR as PRO } from '../i18n/pages/pro';
 import { usePro } from '../lib/pro/ProProvider';
 
 export function CancelPage() {
   const { lang } = useLang();
   const L = STR[lang];
-  const { config, enabled } = usePro();
+  const P = PRO[lang];
+  const { config, enabled, bereit } = usePro();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [kind, setKind] = useState<'ordinary' | 'extraordinary'>('ordinary');
@@ -61,7 +63,14 @@ export function CancelPage() {
         <p className="sub">{L.cancelSub}</p>
       </div>
 
-      {!enabled ? (
+      {!bereit ? (
+        /* Erst wenn die Konfiguration geladen ist, steht fest, ob es ein Abo
+           zu kündigen gibt. Davor „nicht verfügbar“ zu zeigen und dann das
+           Formular, ist ein Aufblitzen von Falschem (E-099). */
+        <div className="card pro-laedt" role="status">
+          <span className="muted">{P.laedtSeite}</span>
+        </div>
+      ) : !enabled ? (
         <div className="card">
           <p className="small muted">{L.cancelUnavailable}</p>
         </div>

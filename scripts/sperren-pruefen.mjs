@@ -39,17 +39,21 @@ const pruefe = (name, ok, text = '') => {
   if (!ok) befunde.push({ pruefung: name, text });
 };
 
-/** Ein Fenster mit eingeschalteter Monetarisierung. `tage` = Alter der Testphase. */
-async function fenster(tage) {
+/** Ein Fenster mit eingeschalteter Monetarisierung. `tage` = Alter der Testphase,
+ *  `verzoegerung` = so lange antwortet die Konfigurationsdatei nicht (ein langsames Netz). */
+async function fenster(tage, verzoegerung = 0) {
   const kontext = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' });
-  await kontext.route('**/monetization.json', (r) =>
-    r.fulfill({
+  await kontext.route('**/monetization.json', async (r) => {
+    if (verzoegerung > 0) await new Promise((fertig) => setTimeout(fertig, verzoegerung));
+    await r.fulfill({
       contentType: 'application/json',
       body: JSON.stringify({
-        enabled: true, functionsBaseUrl: 'https://funktionen.example.org', hasAnnual: false,
-        priceMonthly: '4,99 €', priceAnnual: '',
+        enabled: true, functionsBaseUrl: 'https://funktionen.example.org', hasAnnual: true,
+        priceMonthly: '4,99 €', priceAnnual: '39,99 €', annualNote: '2 Monate geschenkt',
+        supportEmail: 'hilfe@example.org',
       }),
-    }));
+    });
+  });
   await kontext.addInitScript((alter) => {
     try {
       localStorage.setItem('pokermentor-lang-v1', 'de');
@@ -191,6 +195,156 @@ const hatSchloss = (seite, href) =>
   }
 
   await kontext.close();
+}
+
+/* ---------- Pro-Start: Aufruf von /pro, Rückkehr aus dem Kauf, Kündigung (E-099) ---------- */
+{
+  const { kontext, seite } = await fenster(30, 1200);
+  /* Direkter Aufruf, langsames Netz: Die Konfiguration kommt erst nach 1,2 s.
+     Früher stand hier nach dem ersten Rendern die Startseite. */
+  await seite.goto(`${GRUND}/#/pro`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForTimeout(400);
+  {
+    const m = await seite.evaluate(() => ({
+      hash: location.hash,
+      platzhalter: !!document.querySelector('main .pro-laedt'),
+      h1: document.querySelector('main h1')?.textContent ?? '',
+    }));
+    pruefe('/pro beim Laden: bleibt auf /pro', m.hash === '#/pro', m.hash);
+    pruefe('/pro beim Laden: Kopf und Platzhalter', m.platzhalter && m.h1.length > 3, JSON.stringify(m));
+  }
+  await seite.waitForTimeout(1800);
+  {
+    const m = await seite.evaluate(() => {
+      const main = document.querySelector('main')?.innerText ?? '';
+      return {
+        hash: location.hash,
+        preis: /39,99 €/.test(main),
+        tabelle: main,
+        kauf: [...document.querySelectorAll('main button')].some((b) => /Zahlungspflichtig abonnieren/.test(b.textContent ?? '')),
+        breit: document.documentElement.scrollWidth - window.innerWidth,
+        klein: [...document.querySelectorAll('main a, main button, main summary')]
+          .filter((e) => e.getClientRects().length > 0)
+          .map((e) => ({ r: e.getBoundingClientRect(), t: (e.textContent ?? '').trim().slice(0, 24) }))
+          .filter(({ r }) => r.height < 44 || r.width < 44)
+          .map(({ r, t }) => `${t} ${Math.round(r.width)}×${Math.round(r.height)}`),
+      };
+    });
+    pruefe('/pro nach dem Laden: bleibt auf /pro', m.hash === '#/pro', m.hash);
+    pruefe('/pro: Preis und Kaufknopf mit Zahlungspflicht', m.preis && m.kauf, JSON.stringify({ preis: m.preis, kauf: m.kauf }));
+    pruefe('/pro: Tabelle sagt „6 von 8“ und „Alle 8“ bei den Trainern', /6 von 8/.test(m.tabelle) && /Alle 8/.test(m.tabelle), '');
+    pruefe('/pro: Tabelle sagt „4 von 9“ und „Alle 9“ bei den Modulen', /4 von 9/.test(m.tabelle) && /Alle 9/.test(m.tabelle), '');
+    pruefe('/pro: keine Versprechen gegen E-098/E-010', !/Synchronisation|Geld kosten|keiner gern|Overlay|Sync auf/i.test(m.tabelle), '');
+    pruefe('/pro: kein waagerechtes Scrollen', m.breit <= 0, `${m.breit} px`);
+    pruefe('/pro: alle Bedienflächen mindestens 44 × 44', m.klein.length === 0, m.klein.join('; '));
+    await seite.screenshot({ path: `${process.env.SPERREN_BILDER ?? '/tmp'}/pro-seite.png`, fullPage: true }).catch(() => {});
+  }
+
+  /* Rückkehr: bezahlt, Berechtigung noch nicht da. */
+  await seite.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await seite.evaluate(() => { location.hash = '/pro?kauf=ok'; });
+  await seite.waitForTimeout(2200);
+  {
+    const m = await seite.evaluate(() => {
+      const main = document.querySelector('main')?.innerText ?? '';
+      return {
+        hash: location.hash,
+        wartet: /Zahlung wird bestätigt/.test(main),
+        kaufknopf: [...document.querySelectorAll('main button')].some((b) => /Zahlungspflichtig/.test(b.textContent ?? '')),
+        status: !!document.querySelector('main [role="status"]'),
+      };
+    });
+    pruefe('Rückkehr ?kauf=ok: bleibt auf /pro', m.hash.startsWith('#/pro'), m.hash);
+    pruefe('Rückkehr ?kauf=ok: „Zahlung wird bestätigt …“ in einer Statusmeldung', m.wartet && m.status, JSON.stringify(m));
+    pruefe('Rückkehr ?kauf=ok: kein zweiter Kaufknopf', !m.kaufknopf, 'der Knopf steht noch da');
+    await seite.screenshot({ path: `${process.env.SPERREN_BILDER ?? '/tmp'}/pro-wartet.png`, fullPage: false }).catch(() => {});
+  }
+
+  /* Rückkehr: abgebrochen. */
+  await seite.evaluate(() => { location.hash = '/pro?kauf=abbruch'; });
+  await seite.waitForTimeout(700);
+  {
+    const m = await seite.evaluate(() => {
+      const main = document.querySelector('main')?.innerText ?? '';
+      return {
+        nichts: /Nichts gebucht/.test(main),
+        kaufknopf: [...document.querySelectorAll('main button')].some((b) => /Zahlungspflichtig/.test(b.textContent ?? '')),
+      };
+    });
+    pruefe('Rückkehr ?kauf=abbruch: „Nichts gebucht“ und der Kaufknopf bleibt', m.nichts && m.kaufknopf, JSON.stringify(m));
+  }
+  await kontext.close();
+}
+
+{
+  /* Die Kündigung, langsames Netz: Nie „nicht verfügbar“, auch nicht für einen Augenblick. */
+  const { kontext, seite } = await fenster(30, 1200);
+  await seite.goto(`${GRUND}/#/kuendigen`, { waitUntil: 'domcontentloaded' });
+  const gesehen = [];
+  for (let i = 0; i < 20; i++) {
+    gesehen.push(await seite.evaluate(() => ({
+      text: document.querySelector('main')?.innerText ?? '',
+      formular: !!document.querySelector('#c-name'),
+    })));
+    await seite.waitForTimeout(100);
+  }
+  await seite.waitForTimeout(1200);
+  const spaeter = await seite.evaluate(() => !!document.querySelector('#c-name'));
+  pruefe('Kündigung beim Laden: nie „nicht verfügbar“', !gesehen.some((g) => /nicht verfügbar|noch nicht|nicht eingerichtet|Kein Abo/i.test(g.text.replace(/Hier kündigst.*/s, ''))), gesehen[0].text.slice(0, 120));
+  pruefe('Kündigung beim Laden: erst Platzhalter, dann Formular', !gesehen[0].formular && spaeter, JSON.stringify({ anfang: gesehen[0].formular, spaeter }));
+  await kontext.close();
+}
+
+{
+  /* Ohne Monetarisierung (heutiger Zustand) gibt es die Seite nicht — aber erst nach dem Laden. */
+  const kontext = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' });
+  const seite = await kontext.newPage();
+  seite.setDefaultTimeout(15000);
+  await seite.goto(`${GRUND}/#/pro`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForTimeout(1500);
+  pruefe('Monetarisierung aus: /pro führt auf die Startseite', (await seite.evaluate(() => location.hash)) === '#/', await seite.evaluate(() => location.hash));
+  await seite.goto(`${GRUND}/#/kuendigen`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForTimeout(1500);
+  pruefe('Monetarisierung aus: Kündigung sagt, dass es kein Abo gibt', !(await seite.evaluate(() => !!document.querySelector('#c-name'))), '');
+  await kontext.close();
+}
+
+{
+  /* Der ruhige Hinweis: drei Tage und einen Tag vor Ende, je einmal, wegklickbar. */
+  const hinweis = async (tage) => {
+    const { kontext, seite } = await fenster(tage);
+    await seite.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+    await seite.waitForTimeout(1600);
+    const text = await seite.evaluate(() => document.querySelector('main .testende-hinweis')?.textContent?.replace(/\s+/g, ' ').trim() ?? null);
+    return { kontext, seite, text };
+  };
+  {
+    const a = await hinweis(4); // 7 − 4 = 3 Tage übrig
+    pruefe('Testende: 3 Tage vorher steht der Hinweis', !!a.text && /endet in 3 Tagen/.test(a.text) && /Danach bleiben gratis: 4 Module, 6 Trainer/.test(a.text), a.text ?? 'kein Hinweis');
+    await a.seite.locator('main .testende-hinweis button').click();
+    await a.seite.waitForTimeout(300);
+    const weg = (await a.seite.locator('main .testende-hinweis').count()) === 0;
+    await a.seite.reload({ waitUntil: 'domcontentloaded' });
+    await a.seite.waitForTimeout(1600);
+    const bleibtWeg = (await a.seite.locator('main .testende-hinweis').count()) === 0;
+    pruefe('Testende: „Verstanden“ blendet ihn aus, auch nach dem Neuladen', weg && bleibtWeg, JSON.stringify({ weg, bleibtWeg }));
+    await a.kontext.close();
+  }
+  {
+    const b = await hinweis(6); // 1 Tag übrig
+    pruefe('Testende: 1 Tag vorher „endet morgen“', !!b.text && /endet morgen/.test(b.text), b.text ?? 'kein Hinweis');
+    await b.kontext.close();
+  }
+  {
+    const c = await hinweis(1); // 6 Tage übrig
+    pruefe('Testende: mitten in der Testphase kein Hinweis', c.text === null, c.text ?? '');
+    await c.kontext.close();
+  }
+  {
+    const d = await hinweis(30); // abgelaufen
+    pruefe('Testende: nach dem Ende kein Hinweis', d.text === null, d.text ?? '');
+    await d.kontext.close();
+  }
 }
 
 /* ---------- Testphase läuft: nirgends ein Schloss ---------- */

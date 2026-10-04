@@ -6887,3 +6887,42 @@ input[type="radio"] {
 .insight-text { display: grid; min-width: 0; flex: 1; }
 .insight-name { font-weight: var(--fw-bold); font-size: var(--fs-fliesstext); }
 .kachel-marken { display: inline-flex; flex-wrap: wrap; gap: var(--sp-2); }
+
+/* ---- Pro-Seite (E-099): Klassen statt Inline-Stilen ---- */
+.pro-laedt { min-height: 22rem; display: grid; place-items: center; }
+.pro-karte { margin-bottom: var(--sp-5); }
+.pro-karte.gruen { border-color: color-mix(in srgb, var(--ok) 32%, transparent); }
+.pro-karte.gold { border-color: var(--auszeichnung-a30); }
+.pro-karte-titel { font-weight: var(--fw-bold); margin-bottom: var(--sp-1); }
+.pro-karte-zeile { margin-bottom: var(--sp-3); }
+.pro-wahl { display: flex; margin-bottom: var(--sp-4); }
+.pro-wahl button { flex: 1; }
+.pro-preis { align-items: baseline; flex-wrap: wrap; gap: var(--sp-3); margin-bottom: var(--sp-1); }
+.pro-preis .betrag { font-family: var(--font-display); font-size: 2.5rem; font-weight: var(--fw-bold); }
+.pro-bestellung {
+  margin: var(--sp-4) 0 var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-sm);
+  background: var(--veil-1);
+  border: 1px solid var(--border);
+}
+.pro-bestellung .stat-label { margin-bottom: var(--sp-1); }
+.pro-bestellung p { margin: 0; }
+.pro-fehler { margin-top: var(--sp-3); }
+.pro-klein { margin-top: var(--sp-3); text-align: center; }
+.pro-nutzen { display: flex; align-items: flex-start; gap: var(--sp-3); padding: var(--sp-4); }
+.pro-nutzen .haken { margin-top: 2px; color: var(--auszeichnung-lesbar); }
+.pro-nutzen .titel { font-weight: var(--fw-bold); font-size: var(--fs-fliesstext); margin-bottom: var(--sp-1); }
+.pro-vergleich { width: 100%; }
+table.data.pro-vergleich th, table.data.pro-vergleich td { text-align: right; }
+table.data.pro-vergleich th:first-child, table.data.pro-vergleich td:first-child { text-align: left; }
+.pro-vergleich td.frei { color: var(--text-dim); }
+.pro-vergleich td.pro { font-weight: var(--fw-bold); color: var(--auszeichnung-lesbar); }
+.pro-frage { margin-bottom: var(--sp-3); padding: 0 var(--sp-4); }
+.pro-frage summary { display: flex; align-items: center; min-height: var(--tipp-min); font-weight: 700; cursor: pointer; }
+.pro-frage p { margin: 0 0 var(--sp-3); }
+.pro-fuss { margin-top: var(--sp-5); }
+.pro-fuss a { display: inline-flex; align-items: center; min-height: var(--tipp-min); }
+.testende-hinweis { margin-bottom: var(--sp-4); }
+.testende-hinweis .titel { font-weight: var(--fw-bold); margin-bottom: var(--sp-1); }
+.testende-hinweis p { margin: 0 0 var(--sp-3); }

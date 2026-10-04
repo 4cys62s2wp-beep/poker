@@ -45,6 +45,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HeuteKarte } from '../components/HeuteKarte';
+import { TestendeHinweis } from '../components/pro/TestendeHinweis';
 import { Icon } from '../components/Icon';
 import { useAppState } from '../state/AppState';
 import { useLang } from '../i18n';
@@ -225,6 +226,8 @@ export function HubPage() {
 
   return (
     <div className="start">
+      <TestendeHinweis />
+
       {/* Beim allerersten Öffnen ein Satz, der sagt, was die App tut. Läuft
           eine Runde, steht sie unten in ihrer eigenen Karte — dort ist sie
           größer und im Daumenbereich, und zweimal dasselbe auf einem

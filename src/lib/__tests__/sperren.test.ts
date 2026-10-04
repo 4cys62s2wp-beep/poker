@@ -132,6 +132,6 @@ describe('Der Messlauf im Browser (npm run sperren)', () => {
   });
 
   it('hat viel geprüft (sonst bliebe er grün, weil er nichts tat)', () => {
-    expect(lauf.pruefungen).toBeGreaterThanOrEqual(45);
+    expect(lauf.pruefungen).toBeGreaterThanOrEqual(65);
   });
 });

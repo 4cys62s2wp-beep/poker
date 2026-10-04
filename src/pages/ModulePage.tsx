@@ -73,6 +73,10 @@ export function ModulePage() {
         {module.lessons.map((lesson, i) => {
           const result = data.completedLessons[lesson.id];
           const lessonLocked = !unlocked && !isFreeLesson(module.id, lesson.id);
+          /* Versucht, aber nicht bestanden: noch nicht abgeschlossen, und die
+             Zeile sagt, wo man steht, statt „Abgeschlossen · Quiz 0/5" zu
+             behaupten (E-091). */
+          const versucht = !result ? data.lessonAttempts[lesson.id] : undefined;
           const dran = !result && !lessonLocked && stand.naechsteId === lesson.id;
           const zustand = result ? 'fertig' : lessonLocked ? 'gesperrt' : dran ? 'dran' : 'spaeter';
           return (
@@ -86,6 +90,7 @@ export function ModulePage() {
                   <span className="meta">
                     {L.lessonMeta(lesson.duration, lesson.quiz.length)}
                     {result && L.quizResult(result.quizScore, result.quizTotal)}
+                    {versucht && L.quizResult(versucht.bestScore, versucht.total)}
                   </span>
                 </div>
                 {lessonLocked ? (
@@ -94,6 +99,8 @@ export function ModulePage() {
                   </span>
                 ) : result ? (
                   <span className="hinweis fertig">{L.lektionFertig}</span>
+                ) : versucht ? (
+                  <span className="hinweis dran">{L.lektionVersucht}</span>
                 ) : dran ? (
                   <span className="hinweis dran">{L.lektionDran}</span>
                 ) : (

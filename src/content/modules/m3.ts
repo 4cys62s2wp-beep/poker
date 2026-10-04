@@ -17,14 +17,14 @@ const m3: Module = {
         {
           heading: 'Was sind Outs?',
           body:
-            'Ein **Out** ist eine noch nicht sichtbare Karte, die deine Hand zur (mutmaßlich) besten Hand verbessert. Entscheidend ist die Perspektive: Du kennst nur deine zwei Holecards und die Boardkarten. Nach dem Flop sind das 5 von 52 Karten – es bleiben **47 unbekannte Karten**, nach dem Turn noch **46**. Dass einige davon in den Händen der Gegner oder im Muck liegen, spielt für die Rechnung keine Rolle: Aus deiner Sicht ist jede unbekannte Karte gleich wahrscheinlich die nächste Board-Karte.\n\nDas Zählen selbst ist einfache Inventur. Beispiel: Du hältst A♥ Q♥ und der Flop kommt K♥ 7♥ 2♠. Für den Flush brauchst du ein weiteres Herz. Es gibt 13 Herzkarten, zwei hältst du selbst, zwei liegen auf dem Board – bleiben **9 Outs** zum Nut Flush.\n\nWichtig ist die Einschränkung „zur besten Hand“. Eine Karte, die dich verbessert, aber trotzdem verlieren lässt, ist kein echtes Out. Deshalb zählst du zuerst brutto und prüfst danach kritisch, welche Outs wirklich sauber sind – dazu gleich mehr.',
+            'Ein Out ist eine noch nicht sichtbare Karte, die deine Hand zur (mutmaßlich) besten Hand verbessert. Entscheidend ist die Perspektive: Du kennst nur deine zwei Holecards und die Boardkarten. Nach dem Flop sind das 5 von 52 Karten – es bleiben 47 unbekannte Karten, nach dem Turn noch 46. Dass einige davon in den Händen der Gegner oder im Muck liegen, spielt für die Rechnung keine Rolle: Aus deiner Sicht ist jede unbekannte Karte gleich wahrscheinlich die nächste Board-Karte.\n\nDas Zählen selbst ist einfache Inventur. Beispiel: Du hältst A♥ Q♥ und der Flop kommt K♥ 7♥ 2♠. Für den Flush brauchst du ein weiteres Herz. Es gibt 13 Herzkarten, zwei hältst du selbst, zwei liegen auf dem Board – bleiben 9 Outs zum Nut Flush.\n\nWichtig ist die Einschränkung „zur besten Hand“. Eine Karte, die dich verbessert, aber trotzdem verlieren lässt, ist kein echtes Out. Deshalb zählst du zuerst brutto und prüfst danach kritisch, welche Outs wirklich sauber sind – dazu gleich mehr.',
           cards: ['Ah', 'Qh'],
           tip: 'Zähle Outs immer konkret über die Kartenfarben und Ränge, nicht aus dem Gefühl. „Ich brauche ein Herz“ wird zu „13 minus 2 minus 2 gleich 9“. Diese Disziplin verhindert die häufigsten Zählfehler.',
         },
         {
           heading: 'Standard-Draws im Überblick',
           body:
-            'Die häufigsten Draw-Situationen wiederholen sich ständig – ihre Out-Zahlen solltest du auswendig kennen, damit am Tisch keine Rechenzeit verloren geht.\n\nDie wichtigsten Werte: Ein **Flushdraw** hat 9 Outs. Ein **OESD** (Open-Ended Straight Draw, beidseitig offener Straßendraw) hat 8 Outs – zwei Ränge mit je vier Karten. Ein **Gutshot** (Straßendraw mit Lücke in der Mitte) hat nur 4 Outs. Zwei Overcards wie A♦ K♣ auf Q-8-4 haben 6 Outs auf Top Pair – allerdings sind das notorisch unsichere Outs. Ein Pocket Pair hat 2 Outs auf das Set, zwei Paar haben 4 Outs zum Full House, und ein geflopptes Set hat am Turn 7 Outs, um sich zu Full House oder Quads zu verbessern (6 Karten paaren das Board, 1 Karte bringt Quads).\n\nBei kombinierten Draws addierst du die Outs, ziehst aber **Überschneidungen** ab: Flushdraw plus OESD sind nicht 17, sondern 15 Outs, weil zwei der Straight-Karten gleichzeitig den Flush bringen und nicht doppelt zählen dürfen.',
+            'Die häufigsten Draw-Situationen wiederholen sich ständig – ihre Out-Zahlen solltest du auswendig kennen, damit am Tisch keine Rechenzeit verloren geht.\n\nDie wichtigsten Werte: Ein **Flushdraw** hat 9 Outs. Ein **OESD** (Open-Ended Straight Draw, beidseitig offener Straßendraw) hat 8 Outs – zwei Ränge mit je vier Karten. Ein **Gutshot** (Straßendraw mit Lücke in der Mitte) hat nur 4 Outs. Zwei Overcards wie A♦ K♣ auf Q-8-4 haben 6 Outs auf Top Pair – allerdings sind das notorisch unsichere Outs. Ein Pocket Pair hat 2 Outs auf das Set, zwei Paar haben 4 Outs zum Full House, und ein geflopptes Set hat am Turn 7 Outs, um sich zu Full House oder Quads zu verbessern (6 Karten paaren das Board, 1 Karte bringt Quads).\n\nBei kombinierten Draws addierst du die Outs, ziehst aber Überschneidungen ab: Flushdraw plus OESD sind nicht 17, sondern 15 Outs, weil zwei der Straight-Karten gleichzeitig den Flush bringen und nicht doppelt zählen dürfen.',
           table: {
             headers: ['Draw', 'Outs', 'Beispiel'],
             rows: [
@@ -44,7 +44,7 @@ const m3: Module = {
         {
           heading: 'Kombinierte Draws: Monster erkennen',
           body:
-            'Kombinierte Draws gehören zu den stärksten Händen, die du am Flop halten kannst – oft sind sie sogar Favorit gegen ein fertiges Top Pair.\n\nRechne das Beispiel J♥ T♥ auf 9♥ 8♥ 2♣ durch: Für die Straight helfen dir alle vier Queens und alle vier Sevens (8 Outs). Für den Flush helfen neun Herzkarten. Q♥ und 7♥ sind aber in beiden Listen enthalten und zählen nur einmal: 8 + 9 − 2 = **15 Outs**. Ein solcher Draw hat gegen ein Top Pair rund 54 % Equity über zwei Karten – du bist mit der „Nichts-Hand“ tatsächlich vorne.\n\nGenauso funktioniert Flushdraw plus Gutshot: 9 + 4 − 1 = **12 Outs**. Und Flushdraw plus zwei Overcards (etwa A♥ K♥ auf Q♥ 8♥ 3♦) bringt es auf 9 + 6 = 15 Outs, wobei die Overcard-Outs unsicherer sind als die Flush-Outs.\n\nDie strategische Konsequenz: Solche Hände spielst du selten passiv. Mit so viel Equity plus Fold Equity (der Chance, dass der Gegner foldet) sind Raises und Semi-Bluffs meist die profitabelste Linie.',
+            'Kombinierte Draws gehören zu den stärksten Händen, die du am Flop halten kannst – oft sind sie sogar Favorit gegen ein fertiges Top Pair.\n\nRechne das Beispiel J♥ T♥ auf 9♥ 8♥ 2♣ durch: Für die Straight helfen dir alle vier Queens und alle vier Sevens (8 Outs). Für den Flush helfen neun Herzkarten. Q♥ und 7♥ sind aber in beiden Listen enthalten und zählen nur einmal: 8 + 9 − 2 = 15 Outs. Ein solcher Draw hat gegen ein Top Pair rund 54 % Equity über zwei Karten – du bist mit der „Nichts-Hand“ tatsächlich vorne.\n\nGenauso funktioniert Flushdraw plus Gutshot: 9 + 4 − 1 = 12 Outs. Und Flushdraw plus zwei Overcards (etwa A♥ K♥ auf Q♥ 8♥ 3♦) bringt es auf 9 + 6 = 15 Outs, wobei die Overcard-Outs unsicherer sind als die Flush-Outs.\n\nDie strategische Konsequenz: Solche Hände spielst du selten passiv. Mit so viel Equity plus Fold Equity (der Chance, dass der Gegner foldet) sind Raises und Semi-Bluffs meist die profitabelste Linie.',
           cards: ['Jh', 'Th'],
           example:
             'J♥ T♥ auf 9♥ 8♥ 2♣ gegen A♠ 9♦ (Top Pair): Dein Combo-Draw gewinnt in gut der Hälfte der Fälle – obwohl du im Moment nur Jack-high hältst.',
@@ -52,7 +52,7 @@ const m3: Module = {
         {
           heading: 'Outs discounten: sauber statt schmutzig',
           body:
-            'Nicht jedes Out ist ein echtes Out. **Verschmutzte Outs** (tainted outs) verbessern deine Hand, geben dem Gegner aber gleichzeitig eine noch bessere. Wer brutto rechnet, überschätzt seine Equity systematisch.\n\nDie drei häufigsten Fälle:\n\n- **Draw gegen Draw**: Du hältst J♣ T♦ auf 9♥ 8♥ 2♣ (OESD, 8 Outs). Hat der Gegner plausibel einen Flushdraw, machen Q♥ und 7♥ zwar deine Straight, aber seinen Flush. Rechne mit 6 sauberen Outs.\n- **Overcards gegen starke Ranges**: Mit A♦ K♣ auf Q-8-4 zählst du 6 Outs auf Top Pair. Gegen ein Set oder zwei Paar sind diese Outs praktisch wertlos, gegen KQ hilft dir nur das Ass. Je stärker die gegnerische Range, desto härter musst du discounten – oft auf 3 oder weniger.\n- **Dominierte Draws**: Mit 8♥ 7♥ auf einem Herz-Board können deine 9 Flush-Outs gegen einen höheren Flushdraw sogar in die Katastrophe führen.\n\nEine brauchbare Faustregel: Ziehe in unklaren Situationen ein bis zwei Outs ab. Perfekte Präzision gibt es hier nicht – aber der Unterschied zwischen 8 brutto und 6 netto entscheidet regelmäßig zwischen Call und Fold.',
+            'Nicht jedes Out ist ein echtes Out. Verschmutzte Outs (tainted outs) verbessern deine Hand, geben dem Gegner aber gleichzeitig eine noch bessere. Wer brutto rechnet, überschätzt seine Equity systematisch.\n\nDie drei häufigsten Fälle:\n\n- **Draw gegen Draw**: Du hältst J♣ T♦ auf 9♥ 8♥ 2♣ (OESD, 8 Outs). Hat der Gegner plausibel einen Flushdraw, machen Q♥ und 7♥ zwar deine Straight, aber seinen Flush. Rechne mit 6 sauberen Outs.\n- **Overcards gegen starke Ranges**: Mit A♦ K♣ auf Q-8-4 zählst du 6 Outs auf Top Pair. Gegen ein Set oder zwei Paar sind diese Outs praktisch wertlos, gegen KQ hilft dir nur das Ass. Je stärker die gegnerische Range, desto härter musst du discounten – oft auf 3 oder weniger.\n- **Dominierte Draws**: Mit 8♥ 7♥ auf einem Herz-Board können deine 9 Flush-Outs gegen einen höheren Flushdraw sogar in die Katastrophe führen.\n\nEine brauchbare Faustregel: Ziehe in unklaren Situationen ein bis zwei Outs ab. Perfekte Präzision gibt es hier nicht – aber der Unterschied zwischen 8 brutto und 6 netto entscheidet regelmäßig zwischen Call und Fold.',
           tip: 'Frage dich bei jedem Out: „Wenn diese Karte kommt und der Gegner nicht foldet – gewinne ich dann wirklich meistens?“ Wenn die ehrliche Antwort „unklar“ lautet, discounte.',
         },
       ],
@@ -65,9 +65,17 @@ const m3: Module = {
       ],
       quiz: [
         {
-          question: 'Du hältst A♥ Q♥, der Flop kommt K♥ 7♥ 2♠. Wie viele Outs hast du auf den Flush?',
+          question: 'Du hältst die gezeigte Hand, der Flop liegt oben. Wie viele Outs hast du auf den Flush?',
           options: ['7', '9', '11', '13'],
           correctIndex: 1,
+          cards: ['Ah', 'Qh'],
+          board: ['Kh', '7h', '2s'],
+          optionFeedback: [
+            'Zu wenig: Von 13 Herzen sind vier gesehen – zwei in deiner Hand, zwei am Flop –, es bleiben 9.',
+            '',
+            'Zu viel: Es zählen nur Herzen, die du noch nicht gesehen hast.',
+            'Das sind alle Herzen im Deck – die vier sichtbaren zählen nicht als Outs.',
+          ],
           explanation:
             'Es gibt 13 Herzkarten. Zwei hältst du, zwei liegen auf dem Board – bleiben 9 Outs.',
         },
@@ -92,9 +100,17 @@ const m3: Module = {
         },
         {
           question:
-            'Du hast J♣ T♦ auf 9♥ 8♥ 2♣ und vermutest beim Gegner stark einen Flushdraw. Mit wie vielen sauberen Outs solltest du rechnen?',
+            'Du hältst die gezeigte Hand und vermutest beim Gegner stark einen Flushdraw. Mit wie vielen sauberen Outs solltest du rechnen?',
           options: ['8', '6', '4', '10'],
           correctIndex: 1,
+          cards: ['Jc', 'Td'],
+          board: ['9h', '8h', '2c'],
+          optionFeedback: [
+            'Das sind die Straßen-Outs ohne Abzug: Zwei davon sind Herzen und machen beim Gegner einen Flush.',
+            '',
+            'Zu wenig: Es fallen nur die zwei Herz-Outs weg, nicht vier.',
+            'Mehr Outs, als eine offene Straße überhaupt hat – es sind höchstens acht.',
+          ],
           explanation:
             'Q♥ und 7♥ komplettieren zwar deine Straight, aber gleichzeitig den gegnerischen Flush. Diese beiden Outs discountest du: 8 − 2 = 6.',
         },
@@ -117,7 +133,7 @@ const m3: Module = {
         {
           heading: 'So funktioniert die Regel',
           body:
-            '**Equity** ist dein prozentualer Anteil am Pot – die Wahrscheinlichkeit, dass deine Hand am Ende gewinnt. Die Regel von 2 und 4 übersetzt Outs direkt in Equity:\n\n- **Outs × 2**: deine ungefähre Equity in Prozent, wenn noch **eine** Karte kommt (Flop auf Turn oder Turn auf River).\n- **Outs × 4**: deine ungefähre Equity, wenn du **beide** verbleibenden Karten sehen wirst – also vom Flop bis zum River.\n\nWarum funktioniert das? Nach dem Turn sind 46 Karten unbekannt, jedes Out trifft also mit 1/46 ≈ 2,2 %. Der Faktor 2 ist eine leicht abgerundete Version davon. Über zwei Karten hast du zwei Chancen, deshalb ungefähr das Doppelte – Faktor 4.\n\nBeispiel Flushdraw: 9 Outs × 2 = 18 % für eine Karte (exakt: 19,6 % am River). 9 × 4 = 36 % vom Flop bis zum River (exakt: 35,0 %). Für Entscheidungen am Tisch ist diese Genauigkeit mehr als ausreichend – die Fehlerquelle ist fast nie die Regel, sondern falsch gezählte Outs.',
+            '**Equity** ist dein prozentualer Anteil am Pot – die Wahrscheinlichkeit, dass deine Hand am Ende gewinnt. Die Regel von 2 und 4 übersetzt Outs direkt in Equity:\n\n- **Outs × 2**: deine ungefähre Equity in Prozent, wenn noch eine Karte kommt (Flop auf Turn oder Turn auf River).\n- **Outs × 4**: deine ungefähre Equity, wenn du beide verbleibenden Karten sehen wirst – also vom Flop bis zum River.\n\nWarum funktioniert das? Nach dem Turn sind 46 Karten unbekannt, jedes Out trifft also mit 1/46 ≈ 2,2 %. Der Faktor 2 ist eine leicht abgerundete Version davon. Über zwei Karten hast du zwei Chancen, deshalb ungefähr das Doppelte – Faktor 4.\n\nBeispiel Flushdraw: 9 Outs × 2 = 18 % für eine Karte (exakt: 19,6 % am River). 9 × 4 = 36 % vom Flop bis zum River (exakt: 35,0 %). Für Entscheidungen am Tisch ist diese Genauigkeit mehr als ausreichend – die Fehlerquelle ist fast nie die Regel, sondern falsch gezählte Outs.',
           tip: 'Merke dir die drei wichtigsten Ergebnisse als Fixpunkte: Gutshot ca. 8/16 %, OESD ca. 16/32 %, Flushdraw ca. 18/36 % (eine Karte / zwei Karten).',
         },
         {
@@ -138,14 +154,14 @@ const m3: Module = {
         {
           heading: 'Der häufigste Fehler: ×4 ohne All-in',
           body:
-            'Die Regel von 4 gilt nur, wenn du **garantiert beide Karten siehst, ohne weiter bezahlen zu müssen** – praktisch also nur, wenn am Flop jemand all-in ist (du oder der Gegner).\n\nDer klassische Denkfehler geht so: Du hältst einen Flushdraw am Flop, der Gegner bettet, und du rechnest dir 36 % Equity schön. Aber dein Call bezahlt nur die Turn-Karte! Kommt der Flush dort nicht an, wird der Gegner am Turn meist erneut betten – und du musst für den River **noch einmal** zahlen. Für die aktuelle Entscheidung zählt deshalb nur die Regel von 2: rund 18 %.\n\nRichtig gedacht: Jede Street ist eine eigene Entscheidung mit eigenem Preis. Nur wenn kein weiterer Einsatz mehr möglich ist, darfst du beide Karten zusammen bewerten.\n\nDieser eine Unterschied – 18 % statt 36 % – ist einer der teuersten Rechenfehler überhaupt, weil er aus klaren Folds vermeintliche Calls macht. Wenn du am Flop gegen eine Bet mit ×4 rechnest, obwohl noch Chips hinter den Stacks liegen, bezahlst du systematisch zu viel für deine Draws.',
+            'Die Regel von 4 gilt nur, wenn du garantiert beide Karten siehst, ohne weiter bezahlen zu müssen – praktisch also nur, wenn am Flop jemand all-in ist (du oder der Gegner).\n\nDer klassische Denkfehler geht so: Du hältst einen Flushdraw am Flop, der Gegner bettet, und du rechnest dir 36 % Equity schön. Aber dein Call bezahlt nur die Turn-Karte! Kommt der Flush dort nicht an, wird der Gegner am Turn meist erneut betten – und du musst für den River noch einmal zahlen. Für die aktuelle Entscheidung zählt deshalb nur die Regel von 2: rund 18 %.\n\nRichtig gedacht: Jede Street ist eine eigene Entscheidung mit eigenem Preis. Nur wenn kein weiterer Einsatz mehr möglich ist, darfst du beide Karten zusammen bewerten.\n\nDieser eine Unterschied – 18 % statt 36 % – ist einer der teuersten Rechenfehler überhaupt, weil er aus klaren Folds vermeintliche Calls macht. Wenn du am Flop gegen eine Bet mit ×4 rechnest, obwohl noch Chips hinter den Stacks liegen, bezahlst du systematisch zu viel für deine Draws.',
           example:
             'Flushdraw am Flop, Gegner bettet, beide haben noch tiefe Stacks: Rechne 9 × 2 = 18 % für den Call. Nur wenn der Gegner all-in geht, gilt 9 × 4 = 36 %.',
         },
         {
           heading: 'Genauigkeitsgrenzen bei vielen Outs',
           body:
-            'Ab etwa 9 oder 10 Outs beginnt die Regel von 4 zu überschätzen. Der Grund: Die Multiplikation tut so, als könntest du an Turn **und** River treffen und zählt diese Fälle doppelt. Bei wenigen Outs fällt das kaum ins Gewicht, bei vielen Outs summiert sich der Fehler.\n\nDeutlich wird das beim 15-Outs-Monster-Draw: 15 × 4 = 60 %, exakt sind es aber 54,1 % – fast sechs Prozentpunkte Unterschied. Bei 20 Outs würde die Regel sogar 80 % behaupten, real sind es rund 68 %.\n\nFür solche Fälle gibt es eine einfache **Korrekturformel**: Bei mehr als 8 Outs rechnest du (Outs × 4) − (Outs − 8).\n\n- 12 Outs: 48 − 4 = 44 % (exakt 45,0 %)\n- 15 Outs: 60 − 7 = 53 % (exakt 54,1 %)\n\nDie Regel von 2 hat dieses Problem übrigens kaum – sie ist über den gesamten Bereich leicht **zu niedrig** (9 Outs: 18 % statt 19,6 %), was in der Praxis eine harmlose, konservative Abweichung ist.\n\nUnterm Strich: Regel von 2 immer bedenkenlos, Regel von 4 bis 8 Outs bedenkenlos, darüber mit Korrektur.',
+            'Ab etwa 9 oder 10 Outs beginnt die Regel von 4 zu überschätzen. Der Grund: Die Multiplikation tut so, als könntest du an Turn und River treffen und zählt diese Fälle doppelt. Bei wenigen Outs fällt das kaum ins Gewicht, bei vielen Outs summiert sich der Fehler.\n\nDeutlich wird das beim 15-Outs-Monster-Draw: 15 × 4 = 60 %, exakt sind es aber 54,1 % – fast sechs Prozentpunkte Unterschied. Bei 20 Outs würde die Regel sogar 80 % behaupten, real sind es rund 68 %.\n\nFür solche Fälle gibt es eine einfache Korrekturformel: Bei mehr als 8 Outs rechnest du (Outs × 4) − (Outs − 8).\n\n- 12 Outs: 48 − 4 = 44 % (exakt 45,0 %)\n- 15 Outs: 60 − 7 = 53 % (exakt 54,1 %)\n\nDie Regel von 2 hat dieses Problem übrigens kaum – sie ist über den gesamten Bereich leicht zu niedrig (9 Outs: 18 % statt 19,6 %), was in der Praxis eine harmlose, konservative Abweichung ist.\n\nUnterm Strich: Regel von 2 immer bedenkenlos, Regel von 4 bis 8 Outs bedenkenlos, darüber mit Korrektur.',
           tip: 'Merksatz für große Draws: Ab 9 Outs von der ×4-Schätzung die Differenz zu 8 Outs abziehen. So bleibst du auch bei Monster-Draws auf ein bis zwei Prozentpunkte genau.',
         },
       ],
@@ -168,10 +184,10 @@ const m3: Module = {
         {
           question: 'Wann darfst du deine Outs mit 4 multiplizieren?',
           options: [
-            'Immer, wenn du am Flop bist',
-            'Nur wenn du Turn und River garantiert ohne weiteren Einsatz siehst, z. B. bei All-in am Flop',
-            'Immer, wenn du mehr als 8 Outs hast',
-            'Nur bei Flushdraws',
+            'Immer, wenn du am Flop bist und damit noch zwei Karten kommen, die du siehst',
+            'Nur wenn du Turn und River ohne weiteren Einsatz siehst, z. B. bei All-in am Flop',
+            'Immer, wenn du mehr als 8 Outs hast und der Gegner bettet',
+            'Nur bei Flushdraws, weil nur dort zwei Karten zählen',
           ],
           correctIndex: 1,
           explanation:
@@ -195,10 +211,10 @@ const m3: Module = {
           question:
             'Flushdraw am Flop, der Gegner bettet, beide Stacks sind noch tief. Womit rechnest du für diesen Call?',
           options: [
-            '9 × 4 = 36 %, weil noch zwei Karten kommen',
+            '9 × 4 = 36 %, weil noch zwei Karten kommen und der Flush beide Chancen hat',
             '9 × 2 = 18 %, weil dein Call nur die Turn-Karte bezahlt',
-            '9 × 3 = 27 % als Kompromiss',
-            '50 %, weil der Flush entweder kommt oder nicht',
+            '9 × 3 = 27 % als Kompromiss zwischen Regel von 2 und Regel von 4',
+            '50 %, weil der Flush entweder kommt oder nicht – ein Münzwurf',
           ],
           correctIndex: 1,
           explanation:
@@ -216,7 +232,7 @@ const m3: Module = {
         {
           heading: 'Die Grundidee: der Preis eines Calls',
           body:
-            '**Pot Odds** beschreiben das Verhältnis zwischen dem, was du gewinnen kannst, und dem, was du dafür riskieren musst. Daraus ergibt sich direkt die Equity, die du für einen profitablen Call mindestens brauchst.\n\nDie Formel: **Benötigte Equity = Call / (Pot nach deinem Call)** – also Call geteilt durch die Summe aus bisherigem Pot, gegnerischer Bet und deinem eigenen Call.\n\nBeispiel: Im Pot liegen 100 €, der Gegner bettet 50 €. Du musst 50 € callen, der Pot nach deinem Call beträgt 100 + 50 + 50 = 200 €. Benötigte Equity: 50/200 = **25 %**. Gewinnst du öfter als jedes vierte Mal, ist der Call langfristig profitabel.\n\nDieselbe Information als Verhältnis: Du bekommst 150 € (Pot plus Bet) für 50 € Einsatz, also **3:1**. Die Umrechnung in Prozent: 1/(3+1) = 25 %. Beide Schreibweisen sind gleichwertig – gewöhne dir die an, mit der du schneller rechnest.\n\nDer entscheidende Punkt: Du musst **nicht** öfter gewinnen als verlieren. Bei 3:1 reichen 25 %, weil der Pot deine drei Niederlagen mit einem einzigen Gewinn bezahlt.',
+            '**Pot Odds** beschreiben das Verhältnis zwischen dem, was du gewinnen kannst, und dem, was du dafür riskieren musst. Daraus ergibt sich direkt die Equity, die du für einen profitablen Call mindestens brauchst.\n\nDie Formel: Benötigte Equity = Call / (Pot nach deinem Call) – also Call geteilt durch die Summe aus bisherigem Pot, gegnerischer Bet und deinem eigenen Call.\n\nBeispiel: Im Pot liegen 100 €, der Gegner bettet 50 €. Du musst 50 € callen, der Pot nach deinem Call beträgt 100 + 50 + 50 = 200 €. Benötigte Equity: 50/200 = 25 %. Gewinnst du öfter als jedes vierte Mal, ist der Call langfristig profitabel.\n\nDieselbe Information als Verhältnis: Du bekommst 150 € (Pot plus Bet) für 50 € Einsatz, also 3:1. Die Umrechnung in Prozent: 1/(3+1) = 25 %. Beide Schreibweisen sind gleichwertig – gewöhne dir die an, mit der du schneller rechnest.\n\nDer entscheidende Punkt: Du musst nicht öfter gewinnen als verlieren. Bei 3:1 reichen 25 %, weil der Pot deine drei Niederlagen mit einem einzigen Gewinn bezahlt.',
           tip: 'Präge dir die Denkweise ein: „Was kostet mich der Call, was liegt danach im Pot?“ – nicht „Wie stark ist meine Hand?“. Pot Odds sind eine Preisfrage, keine Stärkefrage.',
         },
         {
@@ -228,7 +244,7 @@ const m3: Module = {
         {
           heading: 'Benötigte Equity nach Bet-Größe',
           body:
-            'Weil sich Bet-Größen fast immer am Pot orientieren, kannst du die benötigte Equity für die Standardgrößen einfach auswendig lernen – dann entfällt die Rechnung am Tisch komplett.\n\nDie Herleitung am Beispiel der halben Potsize-Bet: Bei Pot P bettet der Gegner P/2. Du callst P/2, der Endpot ist P + P/2 + P/2 = 2P. Benötigte Equity: (P/2) / 2P = 25 %.\n\nZwei Beobachtungen lohnen sich: Erstens wächst die benötigte Equity **langsamer** als die Bet-Größe – eine doppelte Potsize-Bet verlangt nicht doppelt so viel Equity wie eine Potsize-Bet, sondern 40 % statt 33,3 %. Zweitens sind selbst große Bets nie ein automatischer Fold: Gegen 2x Pot brauchst du 40 % – ein starker Combo-Draw bringt das mit.\n\nUmgekehrt gilt für dich als Aggressor: Je größer deine Bet, desto mehr Equity zwingst du den Draws deines Gegners ab. Eine 1/3-Pot-Bet gibt jedem Flushdraw einen profitablen Call; eine Potsize-Bet stellt ihn vor eine echte Entscheidung.',
+            'Weil sich Bet-Größen fast immer am Pot orientieren, kannst du die benötigte Equity für die Standardgrößen einfach auswendig lernen – dann entfällt die Rechnung am Tisch komplett.\n\nDie Herleitung am Beispiel der halben Potsize-Bet: Bei Pot P bettet der Gegner P/2. Du callst P/2, der Endpot ist P + P/2 + P/2 = 2P. Benötigte Equity: (P/2) / 2P = 25 %.\n\nZwei Beobachtungen lohnen sich: Erstens wächst die benötigte Equity langsamer als die Bet-Größe – eine doppelte Potsize-Bet verlangt nicht doppelt so viel Equity wie eine Potsize-Bet, sondern 40 % statt 33,3 %. Zweitens sind selbst große Bets nie ein automatischer Fold: Gegen 2x Pot brauchst du 40 % – ein starker Combo-Draw bringt das mit.\n\nUmgekehrt gilt für dich als Aggressor: Je größer deine Bet, desto mehr Equity zwingst du den Draws deines Gegners ab. Eine 1/3-Pot-Bet gibt jedem Flushdraw einen profitablen Call; eine Potsize-Bet stellt ihn vor eine echte Entscheidung.',
           table: {
             headers: ['Bet-Größe', 'Pot Odds', 'Benötigte Equity'],
             rows: [
@@ -281,10 +297,10 @@ const m3: Module = {
           question:
             'Flushdraw am Turn (ca. 20 % Equity), der Gegner bettet 1/2 Pot (25 % benötigt). Wie lautet die Einschätzung rein nach direkten Pot Odds?',
           options: [
-            'Klarer Call – Flushdraws callt man immer',
+            'Klarer Call – Flushdraws callt man immer, weil der Pot dafür groß genug ist',
             'Fold – deine Equity liegt unter der benötigten Schwelle',
-            'Raise ist mathematisch erzwungen',
-            'Call, weil 20 % nah genug an 25 % liegt',
+            'Raise ist mathematisch erzwungen, weil der Draw sonst nie bezahlt wird',
+            'Call, weil 20 % nah genug an 25 % liegt und der Unterschied klein ist',
           ],
           correctIndex: 1,
           explanation:
@@ -309,7 +325,7 @@ const m3: Module = {
         {
           heading: 'Was sind Implied Odds?',
           body:
-            '**Implied Odds** sind deine effektiven Odds, wenn du die Einsätze mitrechnest, die du auf späteren Streets **zusätzlich** gewinnst, falls dein Draw ankommt. Der Pot, um den du wirklich spielst, ist oft größer als der Pot, der jetzt auf dem Tisch liegt.\n\nBeispiel: Am Turn liegen 100 € im Pot, der Gegner bettet 50 €. Direkte Rechnung: 50/200 = 25 % benötigt, dein Flushdraw bringt aber nur 19,6 % – Fold. Erwartest du jedoch, nach einem getroffenen Flush am River im Schnitt noch 100 € zu gewinnen, spielst du effektiv um 300 €: 50/300 ≈ 16,7 % benötigt. Jetzt ist der Call profitabel.\n\nDie ehrliche Frage lautet also: **Wie viel muss ich am River noch gewinnen, damit sich der Call lohnt – und ist das realistisch?** Im Beispiel kannst du die Mindestsumme direkt ausrechnen: Du brauchst zusätzliche Gewinne von etwa 55 €, damit die Rechnung aufgeht.\n\nVorsicht vor Selbstbetrug: „Implied Odds“ ist die beliebteste Ausrede für schlechte Calls. Zukünftige Gewinne sind kein Wunschkonzert, sondern eine Schätzung, die von Gegner, Stacktiefe und Board abhängen muss.',
+            '**Implied Odds** sind deine effektiven Odds, wenn du die Einsätze mitrechnest, die du auf späteren Streets zusätzlich gewinnst, falls dein Draw ankommt. Der Pot, um den du wirklich spielst, ist oft größer als der Pot, der jetzt auf dem Tisch liegt.\n\nBeispiel: Am Turn liegen 100 € im Pot, der Gegner bettet 50 €. Direkte Rechnung: 50/200 = 25 % benötigt, dein Flushdraw bringt aber nur 19,6 % – Fold. Erwartest du jedoch, nach einem getroffenen Flush am River im Schnitt noch 100 € zu gewinnen, spielst du effektiv um 300 €: 50/300 ≈ 16,7 % benötigt. Jetzt ist der Call profitabel.\n\nDie ehrliche Frage lautet also: Wie viel muss ich am River noch gewinnen, damit sich der Call lohnt – und ist das realistisch? Im Beispiel kannst du die Mindestsumme direkt ausrechnen: Du brauchst zusätzliche Gewinne von etwa 55 €, damit die Rechnung aufgeht.\n\nVorsicht vor Selbstbetrug: „Implied Odds“ ist die beliebteste Ausrede für schlechte Calls. Zukünftige Gewinne sind kein Wunschkonzert, sondern eine Schätzung, die von Gegner, Stacktiefe und Board abhängen muss.',
           tip: 'Rechne die Lücke konkret aus: (Benötigter Gesamtgewinn) minus (aktueller Pot plus Bet). Wenn du dem Gegner diese Summe nach einem offensichtlichen Flush-River realistisch nicht mehr abnehmen kannst, sind deine Implied Odds eine Illusion.',
         },
         {
@@ -322,13 +338,13 @@ const m3: Module = {
         {
           heading: 'Set-Mining: die 15:1-Faustregel',
           body:
-            '**Set-Mining** – ein kleines oder mittleres Pocket Pair preflop callen, um ein Set zu floppen – ist die reinste Form des Implied-Odds-Spiels. Die Zahlen: Mit einem Pocket Pair floppst du in rund **11,8 %** der Fälle ein Set oder besser, also etwa einmal in 8,5 Versuchen (7,5:1 dagegen).\n\nTrotzdem lautet die bewährte Faustregel: Calle nur, wenn die **effektiven Stacks mindestens etwa das 15-Fache des Calls** betragen (15:1, teils wird konservativer 20:1 empfohlen). Warum so viel mehr als 7,5:1? Weil drei Abschläge nötig sind: Du wirst nach einem Treffer nicht immer voll ausbezahlt (der Gegner hat oft nichts oder gibt auf), dein Set verliert gelegentlich gegen ein höheres Set oder einen eingelaufenen Draw, und manchmal foldet der Gegner schon am Flop auf deine erste Bet.\n\nKonkret bei 100bb: Ein Open-Raise auf 3bb darfst du mit 22–66 bequem callen (3 × 15 = 45bb benötigt). Ein 3-Bet auf 12bb ist dagegen kein reiner Set-Mining-Call mehr: 12 × 15 = 180bb – mehr, als im Stack liegt. Dann muss die Hand anderen Value mitbringen oder in den Fold.\n\nDie Regel skaliert mit der Stacktiefe: Je tiefer, desto profitabler wird Set-Mining; je kürzer die Stacks, desto schneller wird aus dem Standard-Call ein Standard-Fold.',
+            'Set-Mining – ein kleines oder mittleres Pocket Pair preflop callen, um ein Set zu floppen – ist die reinste Form des Implied-Odds-Spiels. Die Zahlen: Mit einem Pocket Pair floppst du in rund 11,8 % der Fälle ein Set oder besser, also etwa einmal in 8,5 Versuchen (7,5:1 dagegen).\n\nTrotzdem lautet die bewährte Faustregel: Calle nur, wenn die effektiven Stacks mindestens etwa das 15-Fache des Calls betragen (15:1, teils wird konservativer 20:1 empfohlen). Warum so viel mehr als 7,5:1? Weil drei Abschläge nötig sind: Du wirst nach einem Treffer nicht immer voll ausbezahlt (der Gegner hat oft nichts oder gibt auf), dein Set verliert gelegentlich gegen ein höheres Set oder einen eingelaufenen Draw, und manchmal foldet der Gegner schon am Flop auf deine erste Bet.\n\nKonkret bei 100bb: Ein Open-Raise auf 3bb darfst du mit 22–66 bequem callen (3 × 15 = 45bb benötigt). Ein 3-Bet auf 12bb ist dagegen kein reiner Set-Mining-Call mehr: 12 × 15 = 180bb – mehr, als im Stack liegt. Dann muss die Hand anderen Value mitbringen oder in den Fold.\n\nDie Regel skaliert mit der Stacktiefe: Je tiefer, desto profitabler wird Set-Mining; je kürzer die Stacks, desto schneller wird aus dem Standard-Call ein Standard-Fold.',
           cards: ['6d', '6c'],
         },
         {
           heading: 'Reverse Implied Odds: wenn Treffen teuer wird',
           body:
-            '**Reverse Implied Odds** sind die dunkle Seite der Medaille: Du verlierst auf späteren Streets zusätzliches Geld, gerade **weil** deine Hand ankommt – als zweitbeste Hand.\n\nDer Klassiker sind dominierte Draws:\n\n- **Kleiner Flushdraw**: Mit 8♥ 7♥ triffst du deinen Flush genauso oft wie mit A♥ 5♥ – aber wenn ein Gegner gleichzeitig einen höheren Flushdraw hält, gewinnt er den großen Pot und du bezahlst ihn. Du gewinnst klein (wenn niemand etwas hat) und verlierst groß (wenn Flush auf Flush trifft).\n- **Das dumme Ende der Straight**: Mit 6♠ 5♠ auf 7-8-9 hast du zwar eine fertige Straight, aber jede T-6- und jede J-T-Kombination beim Gegner macht dich zum Underdog im dicken Pot.\n- **Dominierte Paare**: KTo trifft auf K-hoch-Boards Top Pair – und verliert dann teuer gegen KQ, AK und besser. Auch fertige Hände können Reverse-Implied-Odds-Probleme haben.\n\nDie Konsequenz für deine Rechnung: Bei Nut-Draws darfst du Implied Odds großzügig ansetzen, bei Non-Nut-Draws musst du sie kürzen – und teilweise sogar negative zukünftige Beträge einplanen. Genau deshalb sind A♥ 5♥ und K♥ Q♥ deutlich bessere Preflop-Kandidaten als 8♥ 7♥, obwohl alle drei gleich oft den Flush treffen: Der Unterschied liegt nicht in der Trefferquote, sondern in dem, was der Treffer wert ist.',
+            '**Reverse Implied Odds** sind die dunkle Seite der Medaille: Du verlierst auf späteren Streets zusätzliches Geld, gerade weil deine Hand ankommt – als zweitbeste Hand.\n\nDer Klassiker sind dominierte Draws:\n\n- **Kleiner Flushdraw**: Mit 8♥ 7♥ triffst du deinen Flush genauso oft wie mit A♥ 5♥ – aber wenn ein Gegner gleichzeitig einen höheren Flushdraw hält, gewinnt er den großen Pot und du bezahlst ihn. Du gewinnst klein (wenn niemand etwas hat) und verlierst groß (wenn Flush auf Flush trifft).\n- **Das dumme Ende der Straight**: Mit 6♠ 5♠ auf 7-8-9 hast du zwar eine fertige Straight, aber jede T-6- und jede J-T-Kombination beim Gegner macht dich zum Underdog im dicken Pot.\n- **Dominierte Paare**: KTo trifft auf K-hoch-Boards Top Pair – und verliert dann teuer gegen KQ, AK und besser. Auch fertige Hände können Reverse-Implied-Odds-Probleme haben.\n\nDie Konsequenz für deine Rechnung: Bei Nut-Draws darfst du Implied Odds großzügig ansetzen, bei Non-Nut-Draws musst du sie kürzen – und teilweise sogar negative zukünftige Beträge einplanen. Genau deshalb sind A♥ 5♥ und K♥ Q♥ deutlich bessere Preflop-Kandidaten als 8♥ 7♥, obwohl alle drei gleich oft den Flush treffen: Der Unterschied liegt nicht in der Trefferquote, sondern in dem, was der Treffer wert ist.',
           tip: 'Stelle dir vor jedem Draw-Call die Frage: „Wenn ich treffe – bin ich dann sicher vorne?“ Nut-Draws dürfen auf Auszahlung hoffen, dominierte Draws müssen sie fürchten.',
         },
       ],
@@ -343,10 +359,10 @@ const m3: Module = {
         {
           question: 'Was beschreiben Implied Odds?',
           options: [
-            'Die Odds, die der Gegner auf seinen Draw bekommt',
-            'Die Wahrscheinlichkeit, dass dein Draw bis zum River ankommt',
-            'Erwartete zusätzliche Gewinne auf späteren Streets, die deinen effektiven Preis für den Call verbessern',
-            'Die Pot Odds nach Abzug des Rake',
+            'Die Odds, die der Gegner auf seinen Draw bekommt, wenn er callt',
+            'Die Wahrscheinlichkeit, dass dein Draw bis zum River ankommt und dort tatsächlich trifft',
+            'Erwartete zusätzliche Gewinne auf späteren Streets, die deinen Call-Preis verbessern',
+            'Die Pot Odds nach Abzug des Rake und der Gebühren des Kartenraums',
           ],
           correctIndex: 2,
           explanation:
@@ -369,10 +385,10 @@ const m3: Module = {
           question:
             'Warum verlangt die Set-Mining-Regel etwa 15:1, obwohl die Odds gegen ein Set am Flop nur rund 7,5:1 stehen?',
           options: [
-            'Weil die Regel einen festen Aufschlag für den Rake enthält',
+            'Weil die Regel einen festen Aufschlag für den Rake enthält und Casinos Gebühren nehmen',
             'Weil du dein Set nicht immer voll ausbezahlt bekommst und es gelegentlich verliert',
-            'Weil Sets in der Praxis seltener kommen als die Theorie sagt',
-            'Weil die Regel auch Turn- und River-Sets abdecken muss',
+            'Weil Sets in der Praxis seltener kommen als die Theorie sagt, wegen der Mischung',
+            'Weil die Regel auch Turn- und River-Sets mit abdecken muss, die später kommen',
           ],
           correctIndex: 1,
           explanation:
@@ -383,9 +399,9 @@ const m3: Module = {
             'Du hältst 8♥ 7♥ mit Flushdraw. Warum sind deine Implied Odds schlechter als mit A♥ 5♥ in derselben Situation?',
           options: [
             'Weil dein Flush gegen einen höheren Flush verlieren kann – du gewinnst kleine Pötte und verlierst große',
-            'Weil 87s weniger Flush-Outs hat als A5s',
-            'Weil 87s den Flush seltener trifft',
-            'Weil das Ass die Trefferwahrscheinlichkeit erhöht',
+            'Weil 87s weniger Flush-Outs hat als A5s, obwohl beide dieselbe Farbe haben',
+            'Weil 87s den Flush seltener trifft, da die Karten niedriger sind',
+            'Weil das Ass die Trefferwahrscheinlichkeit erhöht und mehr Outs bringt',
           ],
           correctIndex: 0,
           explanation:
@@ -395,10 +411,10 @@ const m3: Module = {
           question:
             'Effektive Stacks 40bb, ein Gegner raist auf 4bb, du hältst 3♠ 3♦. Was sagt die Set-Mining-Faustregel?',
           options: [
-            'Call – Sets gewinnen fast immer große Pötte',
+            'Call – Sets gewinnen fast immer große Pötte, deshalb lohnt sich der Call',
             'Fold – du bräuchtest etwa 60bb effektiv (4bb × 15)',
-            'Call – 40bb reichen für 15:1 locker aus',
-            'All-in, um die Implied Odds zu maximieren',
+            'Call – 40bb reichen für 15:1 locker aus, weil der Raise nur 4bb beträgt',
+            'All-in, um die Implied Odds zu maximieren und den Gegner zu schlagen',
           ],
           correctIndex: 1,
           explanation:
@@ -416,31 +432,31 @@ const m3: Module = {
         {
           heading: 'Die EV-Formel',
           body:
-            'Der **Expected Value (EV)**, deutsch Erwartungswert, verdichtet eine Entscheidung auf eine einzige Zahl:\n\n**EV = (Gewinnwahrscheinlichkeit × Gewinn) − (Verlustwahrscheinlichkeit × Einsatz)**\n\nDabei ist der **Gewinn** das, was du bei Erfolg dazugewinnst – bei einem Call also der Pot inklusive der gegnerischen Bet, aber ohne dein eigenes Geld. Der **Einsatz** ist das, was du bei Misserfolg verlierst – bei einem Call genau der Call-Betrag. Die beiden Wahrscheinlichkeiten ergänzen sich zu 100 %.\n\nEin schnelles Beispiel: Du callst 25 € und gewinnst damit in 25 % der Fälle einen Pot von 100 €. EV = 0,25 × 100 − 0,75 × 25 = 25 − 18,75 = **+6,25 €**. Im Durchschnitt bringt dir dieser Call also 6,25 € – nicht in dieser einen Hand, sondern gemittelt über viele Wiederholungen.\n\nEV und Pot Odds sind zwei Seiten derselben Rechnung: Die benötigte Equity aus der Pot-Odds-Formel ist genau der Punkt, an dem der EV eines Calls null wird. Pot Odds beantworten die Ja/Nein-Frage schneller; die EV-Rechnung sagt dir zusätzlich, **wie** profitabel oder teuer eine Entscheidung ist.',
+            'Der **Expected Value (EV)**, deutsch Erwartungswert, verdichtet eine Entscheidung auf eine einzige Zahl:\n\nEV = (Gewinnwahrscheinlichkeit × Gewinn) − (Verlustwahrscheinlichkeit × Einsatz)\n\nDabei ist der Gewinn das, was du bei Erfolg dazugewinnst – bei einem Call also der Pot inklusive der gegnerischen Bet, aber ohne dein eigenes Geld. Der Einsatz ist das, was du bei Misserfolg verlierst – bei einem Call genau der Call-Betrag. Die beiden Wahrscheinlichkeiten ergänzen sich zu 100 %.\n\nEin schnelles Beispiel: Du callst 25 € und gewinnst damit in 25 % der Fälle einen Pot von 100 €. EV = 0,25 × 100 − 0,75 × 25 = 25 − 18,75 = +6,25 €. Im Durchschnitt bringt dir dieser Call also 6,25 € – nicht in dieser einen Hand, sondern gemittelt über viele Wiederholungen.\n\nEV und Pot Odds sind zwei Seiten derselben Rechnung: Die benötigte Equity aus der Pot-Odds-Formel ist genau der Punkt, an dem der EV eines Calls null wird. Pot Odds beantworten die Ja/Nein-Frage schneller; die EV-Rechnung sagt dir zusätzlich, wie profitabel oder teuer eine Entscheidung ist.',
           tip: 'Positive EV-Entscheidungen heißen +EV, negative −EV. Dein gesamtes Poker-Ergebnis ist nichts anderes als die Summe aller EVs deiner Entscheidungen plus kurzfristiges Kartenglück – nur den ersten Teil kannst du kontrollieren.',
         },
         {
           heading: 'Rechenbeispiel 1: Call mit Flushdraw am Turn',
           body:
-            'Situation: Pot 100 €, der Gegner bettet 50 €. Du hältst den Nut-Flushdraw, eine Karte kommt noch – Equity 9/46 ≈ 19,6 %. Lohnt der Call von 50 €?\n\n- **Gewinnfall**: In 19,6 % der Fälle gewinnst du Pot plus Bet = 150 €.\n- **Verlustfall**: In 80,4 % der Fälle verlierst du deinen Call von 50 €.\n\nEV = 0,1957 × 150 − 0,8043 × 50 = 29,35 − 40,22 ≈ **−10,90 €**.\n\nJeder dieser Calls kostet dich im Durchschnitt fast elf Euro – unabhängig davon, ob der Flush in der konkreten Hand einläuft oder nicht. Das deckt sich mit der Pot-Odds-Betrachtung: benötigt 25 %, vorhanden 19,6 %.\n\nInteressant wird die Gegenprobe: Wie groß müsste der Pot sein, damit derselbe Call +EV wird? Der EV wird bei einem Gewinnbetrag von etwa 205 € neutral (0,196 × 205 ≈ 0,804 × 50). Du bräuchtest also gut 55 € zusätzliche zukünftige Gewinne – exakt die Zahl, die in der Implied-Odds-Lektion auftauchte. EV-Rechnung, Pot Odds und Implied Odds sind ein einziges zusammenhängendes System.',
+            'Situation: Pot 100 €, der Gegner bettet 50 €. Du hältst den Nut-Flushdraw, eine Karte kommt noch – Equity 9/46 ≈ 19,6 %. Lohnt der Call von 50 €?\n\n- **Gewinnfall**: In 19,6 % der Fälle gewinnst du Pot plus Bet = 150 €.\n- **Verlustfall**: In 80,4 % der Fälle verlierst du deinen Call von 50 €.\n\nEV = 0,1957 × 150 − 0,8043 × 50 = 29,35 − 40,22 ≈ −10,90 €.\n\nJeder dieser Calls kostet dich im Durchschnitt fast elf Euro – unabhängig davon, ob der Flush in der konkreten Hand einläuft oder nicht. Das deckt sich mit der Pot-Odds-Betrachtung: benötigt 25 %, vorhanden 19,6 %.\n\nInteressant wird die Gegenprobe: Wie groß müsste der Pot sein, damit derselbe Call +EV wird? Der EV wird bei einem Gewinnbetrag von etwa 205 € neutral (0,196 × 205 ≈ 0,804 × 50). Du bräuchtest also gut 55 € zusätzliche zukünftige Gewinne – exakt die Zahl, die in der Implied-Odds-Lektion auftauchte. EV-Rechnung, Pot Odds und Implied Odds sind ein einziges zusammenhängendes System.',
           cards: ['Ah', 'Qh'],
         },
         {
           heading: 'Rechenbeispiel 2: All-in-Call mit Combo-Draw',
           body:
-            'Situation: Am Flop liegen 120 € im Pot, der Gegner geht mit seinen letzten 80 € all-in. Du hältst Flushdraw plus Gutshot – 12 Outs, beide Karten kommen garantiert, also gilt die Regel von 4 mit Korrektur: rund 45 % Equity.\n\n- **Gewinnfall**: In 45 % der Fälle gewinnst du 120 + 80 = 200 €.\n- **Verlustfall**: In 55 % der Fälle verlierst du deinen Call von 80 €.\n\nEV = 0,45 × 200 − 0,55 × 80 = 90 − 44 = **+46 €**.\n\nObwohl du in der Mehrheit der Fälle verlierst, ist dieser Call hochprofitabel: Der Pot bietet dir mehr, als deine Unterlegenheit kostet. Genau das ist die Kernbotschaft des EV-Denkens – „meistens verlieren“ und „profitabel spielen“ schließen sich nicht aus.\n\nZum Vergleich die Pot-Odds-Sicht: Du callst 80 € in einen Endpot von 280 €, benötigst also 80/280 ≈ 28,6 % Equity. Mit 45 % liegst du weit darüber. Beide Methoden führen zwingend zum selben Ergebnis; die EV-Zahl macht nur sichtbar, wie viel Geld auf dem Spiel steht: Wer solche Calls aus Angst vor dem Verlieren ablehnt, verschenkt hier im Schnitt 46 € pro Entscheidung.',
+            'Situation: Am Flop liegen 120 € im Pot, der Gegner geht mit seinen letzten 80 € all-in. Du hältst Flushdraw plus Gutshot – 12 Outs, beide Karten kommen garantiert, also gilt die Regel von 4 mit Korrektur: rund 45 % Equity.\n\n- **Gewinnfall**: In 45 % der Fälle gewinnst du 120 + 80 = 200 €.\n- **Verlustfall**: In 55 % der Fälle verlierst du deinen Call von 80 €.\n\nEV = 0,45 × 200 − 0,55 × 80 = 90 − 44 = +46 €.\n\nObwohl du in der Mehrheit der Fälle verlierst, ist dieser Call hochprofitabel: Der Pot bietet dir mehr, als deine Unterlegenheit kostet. Genau das ist die Kernbotschaft des EV-Denkens – „meistens verlieren“ und „profitabel spielen“ schließen sich nicht aus.\n\nZum Vergleich die Pot-Odds-Sicht: Du callst 80 € in einen Endpot von 280 €, benötigst also 80/280 ≈ 28,6 % Equity. Mit 45 % liegst du weit darüber. Beide Methoden führen zwingend zum selben Ergebnis; die EV-Zahl macht nur sichtbar, wie viel Geld auf dem Spiel steht: Wer solche Calls aus Angst vor dem Verlieren ablehnt, verschenkt hier im Schnitt 46 € pro Entscheidung.',
         },
         {
           heading: 'Rechenbeispiel 3: EV eines Bluffs',
           body:
-            'EV-Rechnung funktioniert nicht nur für Calls. Beim Bluff ist die Gewinnwahrscheinlichkeit die **Fold-Wahrscheinlichkeit** des Gegners.\n\nSituation: Am River liegen 100 € im Pot, deine Hand kann am Showdown nicht gewinnen. Du überlegst, 50 € zu bluffen.\n\nEV = (Fold-Wahrscheinlichkeit × 100) − (Call-Wahrscheinlichkeit × 50).\n\nDer Break-even-Punkt liegt dort, wo der EV null wird: F × 100 = (1 − F) × 50, also F = 50/150 = **33,3 %**. Allgemein: Ein Bluff muss in Einsatz/(Einsatz + Pot) der Fälle durchkommen – dieselbe Struktur wie die Pot-Odds-Formel, nur aus der Perspektive des Aggressors.\n\nFoldet der Gegner in 45 % der Fälle, ergibt sich EV = 0,45 × 100 − 0,55 × 50 = 45 − 27,50 = **+17,50 €**. Ein Bluff, der meistens scheitert, ist trotzdem klar profitabel.\n\nBemerkenswert: Der Gegner muss nur in einem Drittel der Fälle folden, obwohl du einen halben Pot riskierst. Kleine Bluffs brauchen wenig Erfolgsquote, große Bluffs viel – eine Potsize-Bluff-Bet braucht 50 %. Deshalb ist die realistische Einschätzung der gegnerischen Fold-Bereitschaft wichtiger als jede Rechenkunst.',
+            'EV-Rechnung funktioniert nicht nur für Calls. Beim Bluff ist die Gewinnwahrscheinlichkeit die Fold-Wahrscheinlichkeit des Gegners.\n\nSituation: Am River liegen 100 € im Pot, deine Hand kann am Showdown nicht gewinnen. Du überlegst, 50 € zu bluffen.\n\nEV = (Fold-Wahrscheinlichkeit × 100) − (Call-Wahrscheinlichkeit × 50).\n\nDer Break-even-Punkt liegt dort, wo der EV null wird: F × 100 = (1 − F) × 50, also F = 50/150 = 33,3 %. Allgemein: Ein Bluff muss in Einsatz/(Einsatz + Pot) der Fälle durchkommen – dieselbe Struktur wie die Pot-Odds-Formel, nur aus der Perspektive des Aggressors.\n\nFoldet der Gegner in 45 % der Fälle, ergibt sich EV = 0,45 × 100 − 0,55 × 50 = 45 − 27,50 = +17,50 €. Ein Bluff, der meistens scheitert, ist trotzdem klar profitabel.\n\nBemerkenswert: Der Gegner muss nur in einem Drittel der Fälle folden, obwohl du einen halben Pot riskierst. Kleine Bluffs brauchen wenig Erfolgsquote, große Bluffs viel – eine Potsize-Bluff-Bet braucht 50 %. Deshalb ist die realistische Einschätzung der gegnerischen Fold-Bereitschaft wichtiger als jede Rechenkunst.',
           example:
             'Bluff 50 € in 100 € Pot: break-even ab 33,3 % Folds. Schätzt du die Fold-Quote des Gegners auf 45 %, verdient der Bluff im Schnitt 17,50 € – obwohl er öfter scheitert als gelingt.',
         },
         {
           heading: 'In EV denken, nicht in Ergebnissen',
           body:
-            'Die schwierigste Lektion der Poker-Mathematik ist psychologisch: **Das Ergebnis einer einzelnen Hand sagt fast nichts über die Qualität deiner Entscheidung.** Der +46-€-Call aus Beispiel 2 verliert in 55 % der Fälle – und war trotzdem jedes Mal richtig. Der −10,90-€-Call aus Beispiel 1 gewinnt in fast jedem fünften Fall – und war trotzdem jedes Mal falsch.\n\nWer Entscheidungen nach Ergebnissen bewertet, lernt systematisch das Falsche. Dieses Denkmuster hat einen Namen: **Results-Oriented Thinking**. Es führt dazu, dass du korrekte Draws aufgibst, weil sie dreimal hintereinander nicht ankamen, oder schlechte Calls wiederholst, weil einer davon zufällig gewann.\n\nDie Alternative: Bewerte nach der Entscheidung. Frage nach jeder größeren Hand nicht „Habe ich gewonnen?“, sondern „War die Aktion +EV, mit den Informationen, die ich hatte?“. Auf lange Sicht – über zehntausende Hände – konvergiert dein Ergebnis gegen die Summe deiner EVs; die Varianz gleicht sich aus, die Entscheidungsqualität bleibt.\n\nDieses Denken ist auch die Grundlage für verantwortungsvolles Spiel: Wer EV versteht, akzeptiert Downswings als statistische Normalität, spielt nur mit einer Bankroll, deren Verlust er verkraften kann, und jagt Verlusten nicht hinterher. Kurzfristig regiert der Zufall – langfristig regiert die Mathematik.',
+            'Die schwierigste Lektion der Poker-Mathematik ist psychologisch: Das Ergebnis einer einzelnen Hand sagt fast nichts über die Qualität deiner Entscheidung. Der +46-€-Call aus Beispiel 2 verliert in 55 % der Fälle – und war trotzdem jedes Mal richtig. Der −10,90-€-Call aus Beispiel 1 gewinnt in fast jedem fünften Fall – und war trotzdem jedes Mal falsch.\n\nWer Entscheidungen nach Ergebnissen bewertet, lernt systematisch das Falsche. Dieses Denkmuster hat einen Namen: Results-Oriented Thinking. Es führt dazu, dass du korrekte Draws aufgibst, weil sie dreimal hintereinander nicht ankamen, oder schlechte Calls wiederholst, weil einer davon zufällig gewann.\n\nDie Alternative: Bewerte nach der Entscheidung. Frage nach jeder größeren Hand nicht „Habe ich gewonnen?“, sondern „War die Aktion +EV, mit den Informationen, die ich hatte?“. Auf lange Sicht – über zehntausende Hände – konvergiert dein Ergebnis gegen die Summe deiner EVs; die Varianz gleicht sich aus, die Entscheidungsqualität bleibt.\n\nDieses Denken ist auch die Grundlage für verantwortungsvolles Spiel: Wer EV versteht, akzeptiert Downswings als statistische Normalität, spielt nur mit einer Bankroll, deren Verlust er verkraften kann, und jagt Verlusten nicht hinterher. Kurzfristig regiert der Zufall – langfristig regiert die Mathematik.',
           tip: 'Führe eine kleine Review-Routine ein: Analysiere nach der Session zwei oder drei große Pötte nur nach der Frage „richtige Entscheidung?“ – und ignoriere dabei bewusst, wie die Hand ausging.',
         },
       ],
@@ -463,9 +479,9 @@ const m3: Module = {
         {
           question: 'Was bedeutet ein negativer EV bei einem Call?',
           options: [
-            'Du verlierst diese konkrete Hand mit Sicherheit',
-            'Der Call gewinnt höchstens den halben Pot',
-            'Der Call ist nur bei tiefen Stacks erlaubt',
+            'Du verlierst diese konkrete Hand mit Sicherheit und verlierst auch die nächste',
+            'Der Call gewinnt höchstens den halben Pot, wenn der Gegner passt',
+            'Der Call ist nur bei tiefen Stacks erlaubt, bei kurzen Stacks verboten',
             'Auf lange Sicht verlierst du mit diesem Call im Durchschnitt Geld',
           ],
           correctIndex: 3,
@@ -484,9 +500,9 @@ const m3: Module = {
           question: 'Du machst einen klar profitablen (+EV) Call, verlierst aber die Hand. Wie bewertest du die Entscheidung?',
           options: [
             'Die Entscheidung war richtig – EV bewertet Entscheidungen, nicht einzelne Ergebnisse',
-            'Die Entscheidung war falsch, das Ergebnis beweist es',
-            'EV-Rechnungen gelten nur für All-in-Situationen',
-            'Die Entscheidung war neutral, weil sich Glück und Können aufheben',
+            'Die Entscheidung war falsch, das Ergebnis beweist es eindeutig – man hätte folden sollen',
+            'EV-Rechnungen gelten nur für All-in-Situationen und nicht für normale Calls',
+            'Die Entscheidung war neutral, weil sich Glück und Können am Ende immer aufheben',
           ],
           correctIndex: 0,
           explanation:
@@ -512,13 +528,13 @@ const m3: Module = {
         {
           heading: 'Combos: die Grundeinheit des Hand-Readings',
           body:
-            'Eine **Combo** ist eine konkrete Zwei-Karten-Kombination. Insgesamt gibt es 1326 mögliche Starthände – aber für das Hand-Reading zählt vor allem, wie viele Combos jede Hand-Klasse hat:\n\n- **Pocket Pairs: 6 Combos.** Aus vier Karten eines Rangs lassen sich sechs Paare bilden (A♠A♥, A♠A♦, A♠A♣, A♥A♦, A♥A♣, A♦A♣).\n- **Unpaired Hände: 16 Combos.** 4 × 4 Kombinationen zweier verschiedener Ränge – davon **4 suited** und **12 offsuit**.\n\nDiese Asymmetrie ist strategisch enorm wichtig. AKo kommt dreimal so oft vor wie AKs. Und eine Range wie „AK oder QQ“ besteht aus 16 + 6 = 22 Combos, ist also fast drei Viertel der Zeit AK – ein Detail, das viele Entscheidungen gegen genau diese Range dreht.\n\nGewöhne dir an, Ranges nicht in Hand-Namen, sondern in Combo-Zahlen zu denken: „Er hat QQ+ und AK“ bedeutet 6 + 6 + 6 + 16 = 34 Combos. Erst diese Zahlen machen Aussagen wie „meistens hat er ein Overpair“ überprüfbar – in diesem Fall wäre sie übrigens falsch: 18 Overpair-Combos (ohne AA wären es je nach Board weniger) stehen 16 AK-Combos gegenüber, es ist fast ein Münzwurf.',
+            'Eine **Combo** ist eine konkrete Zwei-Karten-Kombination. Insgesamt gibt es 1326 mögliche Starthände – aber für das Hand-Reading zählt vor allem, wie viele Combos jede Hand-Klasse hat:\n\n- **Pocket Pairs: 6 Combos.** Aus vier Karten eines Rangs lassen sich sechs Paare bilden (A♠A♥, A♠A♦, A♠A♣, A♥A♦, A♥A♣, A♦A♣).\n- **Unpaired Hände: 16 Combos.** 4 × 4 Kombinationen zweier verschiedener Ränge – davon 4 suited und 12 offsuit.\n\nDiese Asymmetrie ist strategisch enorm wichtig. AKo kommt dreimal so oft vor wie AKs. Und eine Range wie „AK oder QQ“ besteht aus 16 + 6 = 22 Combos, ist also fast drei Viertel der Zeit AK – ein Detail, das viele Entscheidungen gegen genau diese Range dreht.\n\nGewöhne dir an, Ranges nicht in Hand-Namen, sondern in Combo-Zahlen zu denken: „Er hat QQ+ und AK“ bedeutet 6 + 6 + 6 + 16 = 34 Combos. Erst diese Zahlen machen Aussagen wie „meistens hat er ein Overpair“ überprüfbar – in diesem Fall wäre sie übrigens falsch: 18 Overpair-Combos (ohne AA wären es je nach Board weniger) stehen 16 AK-Combos gegenüber, es ist fast ein Münzwurf.',
           cards: ['As', 'Kh'],
         },
         {
           heading: 'Preflop-Wahrscheinlichkeiten',
           body:
-            'Aus den Combo-Zahlen folgen die Preflop-Wahrscheinlichkeiten direkt: Wahrscheinlichkeit = Combos / 1326.\n\n- **Ein bestimmtes Paar** (z. B. AA): 6/1326 = **0,45 %**, also einmal in 221 Händen. Wer eine Stunde online auf zwei Tischen spielt, sieht Asse im Schnitt etwa einmal.\n- **Irgendein Pocket Pair**: 78/1326 = **5,9 %**, rund einmal alle 17 Hände.\n- **AK (suited oder offsuit)**: 16/1326 = **1,2 %**, etwa einmal alle 83 Hände. AA, KK und AK zusammen – die klassischen Premium-Konfrontationshände – kommen auf gut 2 % aller Starthände.\n\nDiese Zahlen erden dein Spiel in zwei Richtungen. Erstens gegen Ungeduld: Premiums sind selten, und wer sie erzwingen will, spielt zwangsläufig zu viele schwache Hände. Zweitens gegen Paranoia: Wenn du KK hältst, hat ein einzelner Gegner nur in etwa 0,5 % der Fälle AA – die Angst vor dem Monster unter dem Bett ist meistens teurer als das Monster selbst.',
+            'Aus den Combo-Zahlen folgen die Preflop-Wahrscheinlichkeiten direkt: Wahrscheinlichkeit = Combos / 1326.\n\n- **Ein bestimmtes Paar** (z. B. AA): 6/1326 = 0,45 %, also einmal in 221 Händen. Wer eine Stunde online auf zwei Tischen spielt, sieht Asse im Schnitt etwa einmal.\n- **Irgendein Pocket Pair**: 78/1326 = 5,9 %, rund einmal alle 17 Hände.\n- **AK (suited oder offsuit)**: 16/1326 = 1,2 %, etwa einmal alle 83 Hände. AA, KK und AK zusammen – die klassischen Premium-Konfrontationshände – kommen auf gut 2 % aller Starthände.\n\nDiese Zahlen erden dein Spiel in zwei Richtungen. Erstens gegen Ungeduld: Premiums sind selten, und wer sie erzwingen will, spielt zwangsläufig zu viele schwache Hände. Zweitens gegen Paranoia: Wenn du KK hältst, hat ein einzelner Gegner nur in etwa 0,5 % der Fälle AA – die Angst vor dem Monster unter dem Bett ist meistens teurer als das Monster selbst.',
           table: {
             headers: ['Ereignis', 'Wahrscheinlichkeit', 'Odds'],
             rows: [
@@ -537,15 +553,16 @@ const m3: Module = {
         },
         {
           heading: 'Combos im Hand-Reading nutzen',
+          cards: ['As', '7d', '2c'],
           body:
-            'Der praktische Wert der Kombinatorik: **Card Removal**. Jede sichtbare Karte – deine Holecards, das Board – streicht Combos aus der gegnerischen Range.\n\nDurchgerechnetes Beispiel: Das Board zeigt A♠ 7♦ 2♣, du willst wissen, wie oft der Gegner Top Pair oder besser hält. Vor dem Flop hatte er 16 AK-Combos. Jetzt liegt ein Ass auf dem Board: Es bleiben 3 Asse × 4 Könige = **12 AK-Combos**. Genauso schrumpft AA von 6 auf **3 Combos** (aus drei verbliebenen Assen) und 77 sowie 22 auf je **3 Combos**.\n\nAngenommen, seine Preflop-Range enthält AA, AK, AQ, 77 und 22. Dann hält er auf diesem Flop: 3 + 3 + 3 = 9 Set/Overset-Combos gegen 12 + 12 = 24 Top-Pair-Combos. Top Pair ist fast dreimal so wahrscheinlich wie ein Set – eine Erkenntnis, die ohne Zählen reine Gefühlssache wäre.\n\nHältst du selbst ein Ass, verschiebt sich alles noch einmal: Seine AK-Combos fallen auf 8, seine AA-Combos auf 3 (bzw. 1, wenn zusätzlich das Board-Ass zählt). Genau so entsteht modernes Hand-Reading: nicht raten, sondern zählen, wie viele Combos jeder Handkategorie übrig sind – und die eigene Entscheidung an diesen Mehrheitsverhältnissen ausrichten.',
+            'Der praktische Wert der Kombinatorik: Card Removal. Jede sichtbare Karte – deine Holecards, das Board – streicht Combos aus der gegnerischen Range.\n\nDurchgerechnetes Beispiel: Das Board zeigt A♠ 7♦ 2♣, du willst wissen, wie oft der Gegner Top Pair oder besser hält. Vor dem Flop hatte er 16 AK-Combos. Jetzt liegt ein Ass auf dem Board: Es bleiben 3 Asse × 4 Könige = 12 AK-Combos. Genauso schrumpft AA von 6 auf 3 Combos (aus drei verbliebenen Assen) und 77 sowie 22 auf je 3 Combos.\n\nAngenommen, seine Preflop-Range enthält AA, AK, AQ, 77 und 22. Dann hält er auf diesem Flop: 3 + 3 + 3 = 9 Set/Overset-Combos gegen 12 + 12 = 24 Top-Pair-Combos. Top Pair ist fast dreimal so wahrscheinlich wie ein Set – eine Erkenntnis, die ohne Zählen reine Gefühlssache wäre.\n\nHältst du selbst ein Ass, verschiebt sich alles noch einmal: Seine AK-Combos fallen auf 8, seine AA-Combos auf 3 (bzw. 1, wenn zusätzlich das Board-Ass zählt). Genau so entsteht modernes Hand-Reading: nicht raten, sondern zählen, wie viele Combos jeder Handkategorie übrig sind – und die eigene Entscheidung an diesen Mehrheitsverhältnissen ausrichten.',
           example:
             'Board A♠ 7♦ 2♣, gegnerische Range AA/AK/AQ/77/22: 9 Set-Combos gegen 24 Top-Pair-Combos. Gegen eine große Bet ist „er hat doch eh das Set“ also messbar zu pessimistisch.',
         },
         {
           heading: 'Blocker: die Grundidee',
           body:
-            'Ein **Blocker** ist eine Karte in deiner Hand, die bestimmte gegnerische Combos unmöglich macht. Das ist Card Removal, aktiv gedacht: Du fragst nicht nur „was kann er halten?“, sondern „was kann er **wegen meiner Karten nicht** halten?“.\n\nDie zwei wichtigsten Anwendungen:\n\n- **Bluffs auswählen**: Auf einem Board mit drei Herzkarten hältst du A♥ (ohne zweites Herz). Damit ist der Nut Flush für alle Gegner unmöglich – jede gegnerische Flush-Combo mit dem A♥ ist gestrichen. Deine Bluffs auf diesem Board sind glaubwürdiger und erfolgreicher, weil die stärkste Hand, mit der dich der Gegner callen könnte, gar nicht existiert. Genau deshalb sind Hände wie A♥ 5♠ auf Herz-Boards Standard-Bluffkandidaten.\n- **Calls und Folds feinjustieren**: Hältst du ein Ass, halbieren sich die AA-Combos des Gegners von 6 auf 3 und seine AK-Combos sinken von 16 auf 12. Mit A♣ K♦ gegen eine 4-Bet ist AA schlicht seltener, als es sich anfühlt.\n\nWichtig für den Anfang: Blocker verschieben Wahrscheinlichkeiten um Prozentpunkte, sie zaubern keine Gewissheiten. Ein Blocker macht aus einem knappen Spot einen etwas besseren – aus einem schlechten Bluff macht er keinen guten. Als Feinjustierung auf solide Grundlagen gehört Blocker-Denken aber fest ins Repertoire jedes fortgeschrittenen Spielers.',
+            'Ein **Blocker** ist eine Karte in deiner Hand, die bestimmte gegnerische Combos unmöglich macht. Das ist Card Removal, aktiv gedacht: Du fragst nicht nur „was kann er halten?“, sondern „was kann er wegen meiner Karten nicht halten?“.\n\nDie zwei wichtigsten Anwendungen:\n\n- **Bluffs auswählen**: Auf einem Board mit drei Herzkarten hältst du A♥ (ohne zweites Herz). Damit ist der Nut Flush für alle Gegner unmöglich – jede gegnerische Flush-Combo mit dem A♥ ist gestrichen. Deine Bluffs auf diesem Board sind glaubwürdiger und erfolgreicher, weil die stärkste Hand, mit der dich der Gegner callen könnte, gar nicht existiert. Genau deshalb sind Hände wie A♥ 5♠ auf Herz-Boards Standard-Bluffkandidaten.\n- **Calls und Folds feinjustieren**: Hältst du ein Ass, halbieren sich die AA-Combos des Gegners von 6 auf 3 und seine AK-Combos sinken von 16 auf 12. Mit A♣ K♦ gegen eine 4-Bet ist AA schlicht seltener, als es sich anfühlt.\n\nWichtig für den Anfang: Blocker verschieben Wahrscheinlichkeiten um Prozentpunkte, sie zaubern keine Gewissheiten. Ein Blocker macht aus einem knappen Spot einen etwas besseren – aus einem schlechten Bluff macht er keinen guten. Als Feinjustierung auf solide Grundlagen gehört Blocker-Denken aber fest ins Repertoire jedes fortgeschrittenen Spielers.',
           cards: ['Ah', '5s'],
         },
       ],
@@ -577,9 +594,10 @@ const m3: Module = {
             '6 von 1326 Combos sind AA: 6/1326 = 0,45 %, also einmal in 221 Händen. 5,9 % gilt für irgendein Paar, 1,2 % für AK.',
         },
         {
-          question: 'Auf dem Board liegt A♠ 7♦ 2♣. Wie viele AK-Combos kann dein Gegner noch halten?',
+          question: 'Auf dem Flop liegt das gezeigte Board. Wie viele AK-Combos kann dein Gegner noch halten?',
           options: ['16', '12', '9', '8'],
           correctIndex: 1,
+          board: ['As', '7d', '2c'],
           explanation:
             'Ein Ass ist auf dem Board sichtbar: Es bleiben 3 Asse × 4 Könige = 12 Combos.',
         },
@@ -601,10 +619,10 @@ const m3: Module = {
           question:
             'Auf einem Board mit drei Herzkarten hältst du A♥ (ohne zweites Herz). Was ist die wichtigste Konsequenz?',
           options: [
-            'Du solltest nie bluffen, weil du den Flush blockierst',
-            'Niemand kann den Nut Flush halten – dein A♥ ist ein Blocker und macht deine Bluffs glaubwürdiger',
-            'Der Gegner hat dadurch mehr Flush-Combos in seiner Range',
-            'Blocker spielen nur preflop eine Rolle',
+            'Du solltest nie bluffen, weil du den Flush blockierst und selbst keinen hast',
+            'Niemand kann den Nut Flush halten – dein A♥ blockt ihn und macht Bluffs glaubwürdiger',
+            'Der Gegner hat dadurch mehr Flush-Combos in seiner Range, weil du Herzen blockierst und so Karten aus dem Deck nimmst',
+            'Blocker spielen nur preflop eine Rolle und verlieren postflop jede Wirkung',
           ],
           correctIndex: 1,
           explanation:

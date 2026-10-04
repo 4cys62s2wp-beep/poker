@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T10:50:08.630Z",
+  "geprueft_am": "2026-10-04T12:47:37.574Z",
   "befunde_gesamt": 0,
   "je_bereich": {},
   "messwerte": {
@@ -7,7 +7,7 @@
       {
         "seite": "Lektion",
         "adresse": "lernen/m1/m1-l1",
-        "seitenhoehe": 5722,
+        "seitenhoehe": 5897,
         "gescrollt": 1800,
         "titel": "So funktioniert Texas Hold’em",
         "rueckweg": "Grundlagen"
@@ -15,7 +15,7 @@
       {
         "seite": "Glossar",
         "adresse": "nachschlagen/glossar",
-        "seitenhoehe": 11805,
+        "seitenhoehe": 12188,
         "gescrollt": 1800,
         "titel": "Glossar",
         "rueckweg": "Nachschlagen"

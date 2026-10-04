@@ -21,6 +21,7 @@ import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/play';
 import { STR as PRO } from '../i18n/pages/pro';
 import { usePro } from '../lib/pro/ProProvider';
+import { MitBegriffen } from '../components/Begriff';
 
 const START_STACK = 200; // 100bb bei Blinds 1/2
 const SB = 1;
@@ -479,12 +480,13 @@ export function PlayPage() {
           </div>
           {coachInfo.call > 0 && (
             <p className="small muted" style={{ marginTop: 8 }}>
-              {coachInfo.equity > coachInfo.required + 0.05
-                ? L.adviceCall
-                : coachInfo.equity < coachInfo.required - 0.05
-                  ? L.adviceFold
-                  : L.adviceClose}
-              {' '}{L.adviceNote}
+              <MitBegriffen
+                text={`${coachInfo.equity > coachInfo.required + 0.05
+                  ? L.adviceCall
+                  : coachInfo.equity < coachInfo.required - 0.05
+                    ? L.adviceFold
+                    : L.adviceClose} ${L.adviceNote}`}
+              />
             </p>
           )}
         </div>

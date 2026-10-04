@@ -3,12 +3,12 @@
    Geprüft wird die Auskunft, die drei Bildschirme brauchen — und die
    Ränder, an denen eine Fortschrittsanzeige sonst hässlich wird. */
 
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { rangstand } from '../rang/stand';
 import {
   LEKTION_XP_GRUND, LEKTION_XP_HOECHSTENS, LEKTION_XP_QUIZ, lektionsstand,
 } from '../rang/lektionen';
+import { lektionsXp } from '../lernen/quiz';
 import { LEVEL_TITLES, xpThreshold } from '../../state/AppState';
 
 describe('Der Rangstand', () => {
@@ -122,15 +122,12 @@ describe('Der Stand in einem Modul', () => {
   });
 
   it('hält die angezeigte XP-Höchstzahl mit der Vergabe zusammen', () => {
-    /* Der Bildschirm zeigt „bis 100 XP". Vergeben werden sie in
-       `completeLesson`. Zwei Stellen, eine Zahl — dieser Test ist das Band
-       dazwischen: Wer die Vergabe ändert und die Anzeige vergisst, sieht es
-       hier. */
-    const quelle = readFileSync('src/state/AppState.tsx', 'utf8');
-    const zeile = quelle.match(/d\.xp \+= (\d+) \+ Math\.round\(\((\d+) \*/);
-    expect(zeile, 'Die XP-Vergabe in completeLesson sieht anders aus als erwartet').not.toBeNull();
-    expect(Number(zeile![1])).toBe(LEKTION_XP_GRUND);
-    expect(Number(zeile![2])).toBe(LEKTION_XP_QUIZ);
+    /* Der Bildschirm zeigt „bis 100 XP". Vergeben wird dieselbe Rechnung
+       (`lektionsXp`) — beide lesen dieselben Konstanten. */
+    expect(lektionsXp(5, 5)).toBe(LEKTION_XP_HOECHSTENS);
     expect(LEKTION_XP_HOECHSTENS).toBe(LEKTION_XP_GRUND + LEKTION_XP_QUIZ);
+    /* Die Rechnung selbst, an den Grenzen: 20 fest, 80 nach Anteil. */
+    expect(lektionsXp(4, 5)).toBe(20 + 64);
+    expect(lektionsXp(0, 5)).toBe(20);
   });
 });

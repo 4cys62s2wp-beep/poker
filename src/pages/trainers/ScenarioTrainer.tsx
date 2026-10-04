@@ -11,6 +11,8 @@ import { STR as PRO_STR } from '../../i18n/pages/pro';
 import { ProLock } from '../../components/pro/ProLock';
 import { usePro } from '../../lib/pro/ProProvider';
 import { Zurueck } from '../../components/ui';
+import { MitBegriffen } from '../../components/Begriff';
+import { KonzeptLink } from '../../components/KonzeptLink';
 
 function shuffled<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -133,7 +135,7 @@ export function ScenarioTrainer() {
                   {L.qualityLabel[opt.quality]}
                 </span>
               </div>
-              <p className="small muted">{opt.explanation}</p>
+              <p className="small muted"><MitBegriffen text={opt.explanation} /></p>
             </div>
           );
         })}
@@ -142,11 +144,13 @@ export function ScenarioTrainer() {
           <>
             <div className="callout tip" style={{ marginTop: 6 }}>
               <span className="label">{L.lessonLabel}</span>
-              {scenario.lesson}
+              <MitBegriffen text={scenario.lesson} />
             </div>
           </>
         )}
       </div>
+
+      <KonzeptLink ziel="szenario" />
 
       <Entscheidung label={L.title} viele={!answered}>
         {!answered ? (

@@ -13,6 +13,16 @@ export interface QuizQuestion {
   correctIndex: number;
   /** Kurze Erklärung, warum die Antwort korrekt ist. */
   explanation: string;
+  /** Optional: die eigenen Karten, als Karten über den Optionen — Rang + Farbe
+   *  wie bei `LessonSection.cards` („As", „Kh"). */
+  cards?: string[];
+  /** Optional: das Board (Flop, Turn, River), ebenfalls als Karten. */
+  board?: string[];
+  /** Optional: je Option der Denkfehler, der sie falsch macht — gleiche Länge
+   *  wie `options`. Wer die falsche Option wählt, liest, **warum gerade sie**
+   *  falsch ist, nicht nur, was richtig gewesen wäre. Leere Zeichenketten für
+   *  Optionen ohne eigene Erklärung. */
+  optionFeedback?: string[];
 }
 
 export interface LessonSection {

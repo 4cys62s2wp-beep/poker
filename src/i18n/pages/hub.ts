@@ -47,6 +47,8 @@ export const STR = defineStrings(
     feldCoach: 'Live-Coach',
 
     weiterMit: 'Weiter mit',
+    /* Nur, wo der Abschnitt beim Lesen gemessen wurde (E-092) — keine erfundene Zahl. */
+    weiterBei: (n: number, total: number) => `Weiter bei Abschnitt ${n} von ${total}`,
     ersteLektion: 'Erste Lektion',
     weiterlernen: 'Weiterlernen',
     anfangen: 'Anfangen',
@@ -138,6 +140,7 @@ export const STR = defineStrings(
     feldCoach: 'Live coach',
 
     weiterMit: 'Continue with',
+    weiterBei: (n: number, total: number) => `Continue at section ${n} of ${total}`,
     ersteLektion: 'First lesson',
     weiterlernen: 'Keep learning',
     anfangen: 'Start',

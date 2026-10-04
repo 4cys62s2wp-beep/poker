@@ -5043,3 +5043,112 @@ Versprechen „ohne Tracking".
 **Gemessen:** Der Durchgang lädt die Datei in einem echten Browser, prüft Inhalt und Uhrzeit und
 zählt die Aufrufe von `Notification.requestPermission` (0). Ein Test sucht den Quelltext nach
 `requestPermission`, `pushManager` und `firebase/messaging` ab.
+
+---
+
+## E-091 · 2026-10-04 · Bestehen heißt verstanden: Fokus-Quiz, gemischte Antworten, Zwischenstand
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 5.1, 5.2, 5.3).
+
+**Entschieden:**
+
+- **Bestehensgrenze ceil(0,8 × Fragen)** (`lib/lernen/quiz.ts`, `grenze`). Darunter gilt die Lektion
+  als **versucht** (`lessonAttempts`: bestes Ergebnis, Zahl der Versuche), nicht als abgeschlossen:
+  kein Abzeichen, keine XP für die Lektion, kein Haken im Pfad. Bisher galt 0 von 5 als
+  „abgeschlossen" und brachte 60 XP und „Erste Schritte".
+- **XP 20 fest + 80 × Anteil richtig** (`lektionsXp`), vergeben nur beim Bestehen und nur einmal je
+  Lektion. Wiederholen bringt nichts mehr, das Ergebnis zählt das beste.
+- **Eigene Route** `/lernen/:modul/:lektion/quiz` statt eines Komponentenzustands: Zurück verlässt
+  nur das Quiz, ein Neuladen verliert die Stelle nicht. Der äußere Baustein hängt an der Lektions-id
+  (`key`), damit ein Quiz nie den Stand der vorigen Lektion zeigt.
+- **Fokusmodus:** Kreuz, Balken, „2/5", dann die Frage — ohne Seitenkopf. Unten die **Ergebnisleiste
+  mit fester Höhe** (`--ergebnisleiste-h`, höchstens 48 % der Bildschirmhöhe): Der Platz ist von
+  Anfang an reserviert, beim Antworten verschiebt sich keine Option (Regel 8a.2). Eine längere
+  Erklärung scrollt in der Leiste, sie vergrößert sie nicht; ein Test begrenzt Erklärung plus
+  Fehlerhinweis auf 340 Zeichen, damit das nie nötig wird. **Quer** (390 px Höhe) steht die Leiste
+  als zweite Spalte neben der Frage — unten hätte sie 187 von 390 px gefressen (`quer`: 98 Befunde,
+  danach 0).
+- **Der Knopf der Leiste bleibt:** Vor der Antwort ist „Nächste Frage" gesperrt und trägt den
+  Hinweis „Wähle eine Antwort." (umrandet, nicht verblasst — der Satz muss lesbar bleiben, `pruefen`
+  maß 98 Kontrastbefunde an der verblassten Fassung). Nach der Antwort wandert der Fokus auf ihn,
+  nach „Nächste Frage" auf die neue Frage. Eine Leiste ganz ohne Knopf verletzte außerdem
+  `daumen` (Regel 9a).
+- **Zwischenstand** in `sessionStorage` (`lib/lernen/zwischenstand.ts`): Wer ein Quiz verlässt,
+  macht bei derselben Frage weiter; „Quiz verlassen?" fragt erst ab der ersten Antwort.
+- **Mischen** (`mischeFrage`): Die Optionen werden je Anzeige gemischt, der Samen kommt aus
+  Frage und Tag bzw. Versuch (`zufall.ts`, xmur3 + mulberry32 — der erste Versuch mit einer
+  einfachen Mischung erreichte nur 6 von 24 Reihenfolgen). `optionFeedback` wird mitgemischt, die
+  Abbildung gezeigt → original steht im Ergebnis. In 58 % der Fragen war B richtig, in 75 % die
+  längste Option; Modul 8: 93 %.
+- **Ergebnis:** ein Urteil („Bestanden" / „Noch nicht bestanden"), Kacheln (XP, Stand im Modul,
+  Ergebnis, zum Bestehen, neues Abzeichen), darunter „Das hattest du falsch" mit gewählter und
+  richtiger Antwort und „kommt in deine Wiederholung". Hauptknopf bei Nichtbestehen: **Fehler
+  nochmal üben** — nur die falschen Fragen, zählt nicht für die Lektion, damit „Bestehen" nur im
+  ganzen Quiz möglich ist. Kein sich füllender Ring (Regel 8a.2).
+
+**Distraktoren:** Die 187 falschen Optionen wurden in allen neun Modulen (DE und EN) so
+umgeschrieben, dass die richtige nicht mehr an der Länge zu erkennen ist. Eine Testsperre
+(`lernen.test.ts`) hält den Anteil „richtig = längste" je Modul bei **höchstens 40 %**. Erreicht
+ist **37 %** als höchster Modulwert. Beim Durchgehen fiel eine **falsche Frage** auf (m1-l5, Omaha:
+A♠ K♠ als „zwei Pik" — korrigiert zu A♠ K♥).
+
+**Ehrlich:** Die Grenze 40 % ist ein Deckel, kein Ziel; nach unten ist die Sperre ebenfalls gesetzt
+(wer nie die längste wählt, soll auch nicht bestehen). Die Bestehensgrenze gilt rückwirkend nicht:
+bereits abgeschlossene Lektionen bleiben abgeschlossen.
+
+---
+
+## E-092 · 2026-10-04 · Lesen mit Stand, antippbare Begriffe, Lektion ↔ Übung
+
+**Stand:** umgesetzt (FAHRPLAN 5.4 Stufe 1, 5.5, 5.6, 5.7, 5.8, 5.9 Stufe 1, 5.10 Stufe 1).
+
+**Lesestand (5.4).** Die Lektion zeigt „Abschnitt 3 von 6" und hat eine klebende Leiste im
+Daumenbereich: „Weiter" geht zum nächsten Abschnitt, am letzten wird derselbe Knopf zu „Quiz
+starten" — **derselbe Knopf**, nicht ein Wechsel von Knopf zu Link, weil sonst der Tastaturfokus
+am Ende verloren ging (`bedienbar`: `fokusziel-verschwunden`). Der Abschnittsstand steht **über** dem
+Knopf, nicht neben ihm: Nebeneinander bekam der Knopf nur die halbe Breite (`daumen`: 50 % statt
+über 80 %). Welcher Abschnitt gelesen wird, kommt
+aus dem Bild (letzte Überschrift im oberen Drittel, `lib/lernen/lesestand.ts`); gespeichert wird
+nur vorwärts (`lessonProgress`). Wer wiederkommt, landet an der Stelle und liest „Weiter bei
+Abschnitt 4 von 6 · Von vorn". Zurück aus dem Quiz stellt die Scrollverwaltung selbst her; ein
+Sprung dort würde sie stören. Die Startkarte sagt „Weiter bei Abschnitt 3 von 6" — nur dort, wo der
+Abschnitt beim Lesen gemessen wurde, nie als erfundene Zahl.
+
+**Begriffe antippbar (5.6).** Fett gesetzte Begriffe mit Glossareintrag öffnen das Unterblatt
+(`Begriff.tsx`, Tippfläche ≥ 44 px, auch quer); `KonzeptLink` und `MitBegriffen` machen dasselbe in
+Trainern. Ein Test prüft, dass jede verlinkte id existiert; sechs Einträge fehlten und wurden in
+DE und EN ergänzt. Im Fließtext ist ein `.begriff` keine Bedienfläche im Sinne von `daumen` und
+`quer` (Text scrollt unter einer klebenden Leiste durch) und von beiden ausgenommen.
+
+**Hervorhebungen (5.5).** 858 → **505**. Das ist **nicht die Hälfte**: Mehr zu streichen hätte
+Definitionen entwertet, die der Glossarlink braucht. Fett ist jetzt `--text-betont` (kein Gold, im
+dunklen und im hellen Modus verschieden, Kontrast gemessen). Karten: 45 statt 36 Abschnitte mit
+Beispielkarten; sieben Karten nebeneinander werden klein gesetzt (sonst 4 px seitlicher Überlauf).
+**Fragen mit Karten:** 20 Fragen zeigen Board bzw. Hand als Spielkarten, sieben haben
+`optionFeedback` (jede falsche Option erklärt ihren eigenen Denkfehler).
+
+**Lektion ↔ Übung (5.7).** `lib/lernen/uebung.ts` leitet beide Richtungen aus derselben Tabelle ab:
+Nach dem Quiz erscheint „Jetzt üben: <Trainer>", jeder Trainer zeigt „Konzept nachlesen:
+<Lektion>". Ein Test sperrt Tabelle und Routen gegeneinander.
+
+**Lernpfad (5.8).** Nur die Stufe mit „Hier weiter" ist aufgeklappt; die anderen sind eine Zeile,
+fertige mit Haken. „Neu"-Pillen verschwinden nach dem ersten Besuch, „Wiederholen" erscheint nur mit
+fälligen Karten (mit Zahl), „Spielstil" erst ab der ersten gespielten Hand, der Suchplatzhalter
+heißt „Lektionen durchsuchen".
+
+**Wiederholen (5.9).** „Die nächste Wiederholung ist morgen dran", keine Dopplung, kein „0 fällig".
+
+**Nicht umgesetzt, mit Grund:**
+
+- **5.4 Stufe 2** (168 Abschnitte über 180 Wörter von Hand teilen, Zwischenfragen `nachAbschnitt`):
+  Das sind Inhaltsentscheidungen für 224 Abschnitte in zwei Sprachen und gehört nicht in einen
+  Durchgang, der Struktur ändert. Der Lesestand macht lange Abschnitte erträglich, ersetzt aber
+  keine Kürzung.
+- **5.5** Positionsschema in m1-l3 (hängt an 6.8) und Minikarten im Fließtext.
+- **5.8** Die Stufenfolge m5 „Profi" vor m6 „Einsteiger" bleibt: Ids, Gratisgrenze (Modul 1–3) und
+  Lernpfad hängen daran; eine Umordnung ist eine Produktentscheidung.
+- **5.9 Stufe 2** (Trainerfehler im Wiederholungsstapel): ReviewItem müsste Trainerzustände
+  speichern und Spots neu aufbauen können.
+- **5.10** Die Typen 'zahl', 'karten' (CardPicker) und 'matrix': eigene Bewertungslogik; die
+  Kartenanzeige und `optionFeedback` sind drin.
+- Der Pot-Odds-Drill (`PotOddsDrill.tsx`) hat noch keinen `KonzeptLink`; der Pot-Odds-Trainer hat ihn.

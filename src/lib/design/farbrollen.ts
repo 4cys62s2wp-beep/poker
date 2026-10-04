@@ -27,7 +27,7 @@ export const TEXT_ERGEBNIS = ['--ergebnis-gut', '--ergebnis-schlecht'] as const;
 
 /** Text auf den normalen Flächen, 4,5 zu 1. */
 export const TEXT_NORMAL = [
-  '--text', '--text-dim', '--text-faint', '--text-stark',
+  '--text', '--text-dim', '--text-faint', '--text-stark', '--text-betont',
   '--akzent', '--akzent-text', '--auszeichnung',
 ] as const;
 

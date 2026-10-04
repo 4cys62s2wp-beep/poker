@@ -20,6 +20,7 @@ import { StatsPage } from './pages/StatsPage';
 import { LearnPage } from './pages/LearnPage';
 import { ModulePage } from './pages/ModulePage';
 import { LessonPage } from './pages/LessonPage';
+import { LessonQuizPage } from './pages/LessonQuizPage';
 import { ReviewPage } from './pages/ReviewPage';
 import { DailyQuizPage } from './pages/DailyQuizPage';
 import { ProInsightsPage } from './pages/ProInsightsPage';
@@ -177,6 +178,7 @@ export function App() {
               „wiederholen" als Modul-Kennung gelesen. */}
           <Route path="/lernen/:moduleId" element={<ModulePage />} />
           <Route path="/lernen/:moduleId/:lessonId" element={<LessonPage />} />
+          <Route path="/lernen/:moduleId/:lessonId/quiz" element={<LessonQuizPage />} />
 
           {/* ── Bereich: Nachschlagen ────────────────────────────────── */}
           <Route path="/nachschlagen" element={<ReferencePage />} />

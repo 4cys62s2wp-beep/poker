@@ -268,7 +268,16 @@ export function HubPage() {
         {naechste ? (
           <>
             <div className="start-lektion">
-              <span className="marke">{erstesMal ? L.ersteLektion : L.weiterMit}</span>
+              <span className="marke">
+                {erstesMal
+                  ? L.ersteLektion
+                  : (data.lessonProgress[naechste.lektion.id] ?? 0) >= 1
+                    ? L.weiterBei(
+                      (data.lessonProgress[naechste.lektion.id] ?? 0) + 1,
+                      naechste.lektion.sections.length,
+                    )
+                    : L.weiterMit}
+              </span>
               <span className="name">{naechste.lektion.title}</span>
             </div>
             {/* Fällige Fragen stehen vor „Weiterlernen": Sie verfallen, die

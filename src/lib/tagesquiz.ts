@@ -15,6 +15,7 @@
    sich dann ändert.) */
 
 import type { Module, QuizQuestion } from '../content/types';
+import { seededRng } from './zufall';
 
 /** Wie viele Fragen ein Tag bringt. */
 export const FRAGEN_PRO_TAG = 5;
@@ -40,17 +41,6 @@ export function quizPool(modules: Module[], abgeschlossen: Record<string, unknow
     }
   }
   return pool;
-}
-
-/** Deterministischer Zufall aus dem Datum — am selben Tag bekommt dieselbe
- *  Auswahl, wer die App mittags noch einmal öffnet. */
-function seededRng(seedStr: string): () => number {
-  let s = 0;
-  for (let i = 0; i < seedStr.length; i++) s = (s * 31 + seedStr.charCodeAt(i)) >>> 0;
-  return () => {
-    s = (s * 1664525 + 1013904223) >>> 0;
-    return s / 4294967296;
-  };
 }
 
 /** Die Fragen von `tag`: Mischen mit Datums-Seed, die ersten `n`. Weniger,

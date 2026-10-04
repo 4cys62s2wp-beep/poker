@@ -17,7 +17,7 @@ const m7: Module = {
         {
           heading: 'Tempo: ein Bruchteil der Hände',
           body:
-            'Der fundamentalste Unterschied ist das Tempo. Ein Live-Tisch (meist 8- oder 9-handed) schafft etwa **25–30 Hände pro Stunde**: Der Dealer mischt physisch, Chips werden von Hand gezählt, Spieler brauchen Zeit. Online liefert ein einzelner 6-max-Tisch 75–90 Hände pro Stunde, und wer vier Tische parallel spielt, kommt auf über 300 – mehr als das Zehnfache.\n\nDas hat drei praktische Folgen:\n\n- **Premiums sind selten**: Auf AA oder KK wartest du live im Schnitt rund vier Stunden. Geduld ist keine Tugend, sondern eine Kernkompetenz.\n- **Jede Hand zählt mehr**: Ein grober Fehler pro Stunde wiegt live schwerer, weil du ihn nicht mit hunderten sauberer Hände verdünnst.\n- **Leerlauf ist Arbeitszeit**: Die vielen Hände, an denen du nicht beteiligt bist, sind deine wichtigste Informationsquelle. Wer dabei aufs Handy schaut, verschenkt den größten Live-Vorteil: Beobachtung.\n\nStell dich mental darauf ein, dass eine Live-Session sich langsam anfühlt. Langeweile ist der häufigste Grund, warum disziplinierte Online-Spieler live plötzlich zu viele Hände spielen.',
+            'Der fundamentalste Unterschied ist das Tempo. Ein Live-Tisch (meist 8- oder 9-handed) schafft etwa 25–30 Hände pro Stunde: Der Dealer mischt physisch, Chips werden von Hand gezählt, Spieler brauchen Zeit. Online liefert ein einzelner 6-max-Tisch 75–90 Hände pro Stunde, und wer vier Tische parallel spielt, kommt auf über 300 – mehr als das Zehnfache.\n\nDas hat drei praktische Folgen:\n\n- **Premiums sind selten**: Auf AA oder KK wartest du live im Schnitt rund vier Stunden. Geduld ist keine Tugend, sondern eine Kernkompetenz.\n- **Jede Hand zählt mehr**: Ein grober Fehler pro Stunde wiegt live schwerer, weil du ihn nicht mit hunderten sauberer Hände verdünnst.\n- **Leerlauf ist Arbeitszeit**: Die vielen Hände, an denen du nicht beteiligt bist, sind deine wichtigste Informationsquelle. Wer dabei aufs Handy schaut, verschenkt den größten Live-Vorteil: Beobachtung.\n\nStell dich mental darauf ein, dass eine Live-Session sich langsam anfühlt. Langeweile ist der häufigste Grund, warum disziplinierte Online-Spieler live plötzlich zu viele Hände spielen.',
           table: {
             headers: ['Umgebung', 'Hände pro Stunde'],
             rows: [
@@ -36,7 +36,7 @@ const m7: Module = {
         {
           heading: 'Preflop: größere Sizings sind normal',
           body:
-            'Online sind Open-Raises von 2,2–2,5bb Standard. Live wären sie oft ein Fehler: Auf typischen 1/2- oder 1/3-Tischen sind Opens von **4–6bb** üblich – und werden trotzdem von mehreren Spielern gecallt. Der Grund ist simpel: Loose Spieler reagieren kaum auf Sizing. Wer sowieso callen will, callt auch das Doppelte.\n\nDaraus folgen zwei Anpassungen:\n\n- **Size dich an den Tisch an**: Wenn 6bb-Opens noch drei Caller bekommen, verschenkst du mit 2,5bb Value mit deinen guten Händen. Über Limpern gilt als Faustregel: etwa 4bb plus 1bb pro Limper.\n- **Rechne mit niedrigeren SPRs**: Größere Preflop-Pötte bedeuten ein kleineres Verhältnis von Stack zu Pot (Stack-to-Pot Ratio). Bei 100bb landest du nach einem gecallten 6bb-Open schneller in Situationen, in denen Top Pair für den ganzen Stack gut genug sein kann.\n\nGleichzeitig steigt der Preis der Spekulation: Ein Call über 6bb mit 7♠ 6♠ braucht deutlich bessere Implied Odds (erwartete zukünftige Gewinne bei einem Treffer) als ein Call über 2,5bb. Passe deine Calling-Ranges an die tatsächlichen Sizings an, nicht an die Online-Gewohnheit.',
+            'Online sind Open-Raises von 2,2–2,5bb Standard. Live wären sie oft ein Fehler: Auf typischen 1/2- oder 1/3-Tischen sind Opens von 4–6bb üblich – und werden trotzdem von mehreren Spielern gecallt. Der Grund ist simpel: Loose Spieler reagieren kaum auf Sizing. Wer sowieso callen will, callt auch das Doppelte.\n\nDaraus folgen zwei Anpassungen:\n\n- **Size dich an den Tisch an**: Wenn 6bb-Opens noch drei Caller bekommen, verschenkst du mit 2,5bb Value mit deinen guten Händen. Über Limpern gilt als Faustregel: etwa 4bb plus 1bb pro Limper.\n- **Rechne mit niedrigeren SPRs**: Größere Preflop-Pötte bedeuten ein kleineres Verhältnis von Stack zu Pot (Stack-to-Pot Ratio). Bei 100bb landest du nach einem gecallten 6bb-Open schneller in Situationen, in denen Top Pair für den ganzen Stack gut genug sein kann.\n\nGleichzeitig steigt der Preis der Spekulation: Ein Call über 6bb mit 7♠ 6♠ braucht deutlich bessere Implied Odds (erwartete zukünftige Gewinne bei einem Treffer) als ein Call über 2,5bb. Passe deine Calling-Ranges an die tatsächlichen Sizings an, nicht an die Online-Gewohnheit.',
           example:
             'Auf einem 1/2-Tisch limpen drei Spieler. Du hältst A♥ Q♥ im Cutoff. Statt der Online-üblichen 2,5bb raist du auf etwa 7bb (4bb + 3 Limper). Callen zwei Limper, spielst du einen Pot von rund 23bb mit Position und der besten Hand-Range – genau das Szenario, von dem Live-Winrates leben.',
           cards: ['Ah', 'Qh'],
@@ -49,7 +49,7 @@ const m7: Module = {
         {
           heading: 'Varianz: gleiches Spiel, längere Zeiträume',
           body:
-            'Die Varianz **pro Hand** ist live und online ähnlich – Poker bleibt Poker. Aber weil du live nur einen Bruchteil der Hände spielst, dehnen sich Schwankungen in Echtzeit enorm: Eine Stichprobe von 30.000 Händen ist online in einem Monat machbar, live sind das über 1.000 Tischstunden – für die meisten ein ganzes Jahr oder mehr.\n\nDas bedeutet konkret:\n\n- **Downswings dauern Monate statt Wochen** – nicht weil das Spiel unfairer wäre, sondern weil dieselbe Händezahl länger braucht.\n- **Einzelne Sessions sagen fast nichts** über dein Können aus. Ergebnisse werden live in bb pro Stunde gemessen und brauchen hunderte Stunden, bevor sie aussagekräftig sind.\n- **Bankroll und Psyche** müssen darauf vorbereitet sein: Wer nach zehn Verlustsessions sein Spiel umwirft, reagiert auf Rauschen, nicht auf Signal.\n\nDie gute Nachricht: Weil der Live-Pool schwächer ist, sind die erreichbaren Winrates pro 100 Hände in guten Spielen höher als online – das dämpft die relative Schwankung. Garantien gibt es trotzdem keine. Führe von der ersten Session an ehrlich Buch (Datum, Limit, Stunden, Ergebnis); nur so trennst du langfristig Können von Zufall.',
+            'Die Varianz pro Hand ist live und online ähnlich – Poker bleibt Poker. Aber weil du live nur einen Bruchteil der Hände spielst, dehnen sich Schwankungen in Echtzeit enorm: Eine Stichprobe von 30.000 Händen ist online in einem Monat machbar, live sind das über 1.000 Tischstunden – für die meisten ein ganzes Jahr oder mehr.\n\nDas bedeutet konkret:\n\n- **Downswings dauern Monate statt Wochen** – nicht weil das Spiel unfairer wäre, sondern weil dieselbe Händezahl länger braucht.\n- **Einzelne Sessions sagen fast nichts** über dein Können aus. Ergebnisse werden live in bb pro Stunde gemessen und brauchen hunderte Stunden, bevor sie aussagekräftig sind.\n- **Bankroll und Psyche** müssen darauf vorbereitet sein: Wer nach zehn Verlustsessions sein Spiel umwirft, reagiert auf Rauschen, nicht auf Signal.\n\nDie gute Nachricht: Weil der Live-Pool schwächer ist, sind die erreichbaren Winrates pro 100 Hände in guten Spielen höher als online – das dämpft die relative Schwankung. Garantien gibt es trotzdem keine. Führe von der ersten Session an ehrlich Buch (Datum, Limit, Stunden, Ergebnis); nur so trennst du langfristig Können von Zufall.',
           tip: 'Bewerte deine Live-Sessions nie am Ergebnis, sondern an der Qualität deiner Entscheidungen. Eine gewonnene Session voller Fehler ist ein schlechtes Zeichen, eine verlorene Session mit guten Entscheidungen ein gutes.',
         },
       ],
@@ -88,9 +88,9 @@ const m7: Module = {
         {
           question: 'Warum fühlen sich Downswings live oft dramatischer an als online, obwohl das Spiel dasselbe ist?',
           options: [
-            'Live ist die Varianz pro Hand deutlich höher',
-            'Der Rake macht Live-Poker unschlagbar',
-            'Live-Dealer mischen schlechter als der Zufallsgenerator',
+            'Live ist die Varianz pro Hand deutlich höher, weil weniger Spieler am Tisch sitzen',
+            'Der Rake macht Live-Poker langfristig unschlagbar, sodass Verlustphasen länger dauern',
+            'Live-Dealer mischen schlechter als der Zufallsgenerator, wodurch Schwankungen größer ausfallen',
             'Dieselbe Händezahl dauert live viel länger, daher ziehen sich Schwankungen über Monate',
           ],
           correctIndex: 3,
@@ -100,9 +100,9 @@ const m7: Module = {
         {
           question: 'Auf einem lebhaften 1/2-Tisch limpen drei Spieler vor dir. Du willst mit einer starken Hand raisen. Welches Sizing ist als Faustregel angemessen?',
           options: [
-            'Etwa 2,5bb wie online üblich',
+            'Etwa 2,5bb, wie es online üblich ist und auch live meist gecallt wird',
             'Etwa 4bb plus 1bb pro Limper, hier also rund 7bb',
-            'Immer All-in, um die Limper zu bestrafen',
+            'Immer All-in, um die Limper zu bestrafen und sofort alles zu entscheiden',
             'Nur callen, um den Pot klein zu halten',
           ],
           correctIndex: 1,
@@ -133,13 +133,13 @@ const m7: Module = {
         {
           heading: 'Dein erster Besuch: Schritt für Schritt',
           body:
-            'So läuft ein typischer Besuch im Cardroom ab:\n\n- **Einlass**: Ausweis mitbringen (Pflicht), auf den Dresscode achten – meist reicht gepflegte Freizeitkleidung.\n- **Anmelden**: Geh zur Rezeption des Pokerbereichs oder direkt zum **Floor** (der aufsichtführende Mitarbeiter, der Streitfälle entscheidet und Tische organisiert). Sag einfach: „Ich möchte auf die Liste für 1/2 No-Limit Hold’em.“\n- **Warteliste**: Bei vollen Tischen kommst du auf eine Liste und wirst per Aufruf oder Anzeige gerufen. Bleib in Hörweite.\n- **Einkaufen**: Chips bekommst du an der Kasse (Cage) oder je nach Haus direkt am Tisch. Üblich sind Buy-ins zwischen Minimum (oft 50bb) und Maximum (oft 100–250bb). Kauf dich für so viel ein, wie deine Bankroll und dein Spielplan hergeben – tiefe Stacks bevorzugen den besseren Spieler.\n- **Platz nehmen**: Du darfst sofort einen Blind nachzahlen (Post) oder kostenlos warten, bis der Big Blind zu dir kommt. Beides ist in Ordnung; die Wartezeit kannst du zum Beobachten nutzen.\n\nWenn du irgendetwas nicht weißt: Frag den Dealer außerhalb einer laufenden Hand. Niemand erwartet, dass Neulinge alle Abläufe kennen – Dealer helfen gern, und Fragen ist deutlich besser als Raten.',
+            'So läuft ein typischer Besuch im Cardroom ab:\n\n- **Einlass**: Ausweis mitbringen (Pflicht), auf den Dresscode achten – meist reicht gepflegte Freizeitkleidung.\n- **Anmelden**: Geh zur Rezeption des Pokerbereichs oder direkt zum Floor (der aufsichtführende Mitarbeiter, der Streitfälle entscheidet und Tische organisiert). Sag einfach: „Ich möchte auf die Liste für 1/2 No-Limit Hold’em.“\n- **Warteliste**: Bei vollen Tischen kommst du auf eine Liste und wirst per Aufruf oder Anzeige gerufen. Bleib in Hörweite.\n- **Einkaufen**: Chips bekommst du an der Kasse (Cage) oder je nach Haus direkt am Tisch. Üblich sind Buy-ins zwischen Minimum (oft 50bb) und Maximum (oft 100–250bb). Kauf dich für so viel ein, wie deine Bankroll und dein Spielplan hergeben – tiefe Stacks bevorzugen den besseren Spieler.\n- **Platz nehmen**: Du darfst sofort einen Blind nachzahlen (Post) oder kostenlos warten, bis der Big Blind zu dir kommt. Beides ist in Ordnung; die Wartezeit kannst du zum Beobachten nutzen.\n\nWenn du irgendetwas nicht weißt: Frag den Dealer außerhalb einer laufenden Hand. Niemand erwartet, dass Neulinge alle Abläufe kennen – Dealer helfen gern, und Fragen ist deutlich besser als Raten.',
           tip: 'Sag dem Dealer ruhig beim Hinsetzen, dass du zum ersten Mal live spielst. Das nimmt Druck raus, und der Dealer achtet dann eher darauf, dich vor Formfehlern zu bewahren.',
         },
         {
           heading: 'Rake: die Kosten des Spiels',
           body:
-            'Das Casino verdient am Poker über den **Rake** – eine Gebühr, die aus fast jedem Pot entnommen wird. Die zwei gängigen Modelle:\n\n- **Pot-Rake**: Ein Prozentsatz des Pots (je nach Haus etwa 3–10 %) bis zu einem Maximalbetrag pro Hand, dem **Cap**. Beispiel: 10 % bis maximal 6 €. Verbreitet ist die Regel „No Flop, no Drop“: Endet die Hand vor dem Flop, wird kein Rake genommen.\n- **Time-Rake**: Auf höheren Limits zahlt stattdessen jeder Spieler einen festen Betrag pro halbe Stunde, unabhängig von den Pötten.\n\nWarum das strategisch wichtig ist: Auf niedrigen Limits ist der Rake relativ zu den Blinds hoch und frisst einen erheblichen Teil der möglichen Winrate. Kleine Pötte, die gerade so über die Flop-Schwelle rutschen, werden prozentual am härtesten belastet. Das spricht live zusätzlich für eine Value-orientierte Spielweise: Du willst große Pötte mit starken Händen gewinnen, nicht viele Kleinstpötte, von denen der Cap jeweils einen großen Bissen nimmt.\n\nInformiere dich vor der Session über die Rake-Struktur deines Casinos – sie steht meist am Tisch oder auf der Website. Ein Unterschied von wenigen Euro im Cap kann über hunderte Stunden den Unterschied zwischen einem schlagbaren und einem kaum schlagbaren Spiel ausmachen.',
+            'Das Casino verdient am Poker über den **Rake** – eine Gebühr, die aus fast jedem Pot entnommen wird. Die zwei gängigen Modelle:\n\n- **Pot-Rake**: Ein Prozentsatz des Pots (je nach Haus etwa 3–10 %) bis zu einem Maximalbetrag pro Hand, dem Cap. Beispiel: 10 % bis maximal 6 €. Verbreitet ist die Regel „No Flop, no Drop“: Endet die Hand vor dem Flop, wird kein Rake genommen.\n- **Time-Rake**: Auf höheren Limits zahlt stattdessen jeder Spieler einen festen Betrag pro halbe Stunde, unabhängig von den Pötten.\n\nWarum das strategisch wichtig ist: Auf niedrigen Limits ist der Rake relativ zu den Blinds hoch und frisst einen erheblichen Teil der möglichen Winrate. Kleine Pötte, die gerade so über die Flop-Schwelle rutschen, werden prozentual am härtesten belastet. Das spricht live zusätzlich für eine Value-orientierte Spielweise: Du willst große Pötte mit starken Händen gewinnen, nicht viele Kleinstpötte, von denen der Cap jeweils einen großen Bissen nimmt.\n\nInformiere dich vor der Session über die Rake-Struktur deines Casinos – sie steht meist am Tisch oder auf der Website. Ein Unterschied von wenigen Euro im Cap kann über hunderte Stunden den Unterschied zwischen einem schlagbaren und einem kaum schlagbaren Spiel ausmachen.',
           table: {
             headers: ['Modell', 'Funktionsweise', 'Verbreitung'],
             rows: [
@@ -156,14 +156,14 @@ const m7: Module = {
         {
           heading: 'String Bets und die One-Chip-Rule',
           body:
-            'Zwei Formregeln stolpern fast alle Live-Neulinge einmal an:\n\n**String Bet**: Chips müssen in **einer zusammenhängenden Bewegung** in den Pot gebracht werden – oder du sagst deine Aktion vorher an. Wer erst einen Stapel setzt, zurückgreift und nachlegt („Ich calle deine 20 ... und raise nochmal 50“), macht einen String Bet: Nur die erste Bewegung zählt, aus dem geplanten Raise wird ein bloßer Call. Die Regel verhindert, dass jemand die Reaktion des Gegners auf den ersten Teil der Bet abwartet.\n\nDie sichere Methode: **Ansagen, dann handeln.** Sag klar „Raise auf 75“, danach darfst du die Chips in beliebig vielen Bewegungen nachschieben.\n\n**One-Chip-Rule**: Wirfst du gegen eine Bet ohne Ansage einen einzelnen Chip in den Pot, der größer ist als der Callbetrag, gilt das als **Call** – nicht als Raise. Der 100er-Chip auf eine 25er-Bet ist ohne das Wort „Raise“ nur ein Call. Auch hier schützt dich die verbale Ansage.\n\nGewöhn dir deshalb von Anfang an an, jede nicht-triviale Aktion anzusagen: „Call“, „Raise auf X“, „All-in“. Das ist regelsicher, eindeutig für den Dealer – und ganz nebenbei ein Baustein einer tell-armen Routine.',
+            'Zwei Formregeln stolpern fast alle Live-Neulinge einmal an:\n\n**String Bet**: Chips müssen in einer zusammenhängenden Bewegung in den Pot gebracht werden – oder du sagst deine Aktion vorher an. Wer erst einen Stapel setzt, zurückgreift und nachlegt („Ich calle deine 20 ... und raise nochmal 50“), macht einen String Bet: Nur die erste Bewegung zählt, aus dem geplanten Raise wird ein bloßer Call. Die Regel verhindert, dass jemand die Reaktion des Gegners auf den ersten Teil der Bet abwartet.\n\nDie sichere Methode: Ansagen, dann handeln. Sag klar „Raise auf 75“, danach darfst du die Chips in beliebig vielen Bewegungen nachschieben.\n\nOne-Chip-Rule: Wirfst du gegen eine Bet ohne Ansage einen einzelnen Chip in den Pot, der größer ist als der Callbetrag, gilt das als **Call** – nicht als Raise. Der 100er-Chip auf eine 25er-Bet ist ohne das Wort „Raise“ nur ein Call. Auch hier schützt dich die verbale Ansage.\n\nGewöhn dir deshalb von Anfang an an, jede nicht-triviale Aktion anzusagen: „Call“, „Raise auf X“, „All-in“. Das ist regelsicher, eindeutig für den Dealer – und ganz nebenbei ein Baustein einer tell-armen Routine.',
           example:
             'Der Gegner bettet 25 €. Du schiebst wortlos einen einzelnen 100-€-Chip vor. Ergebnis: Call über 25 €, du bekommst 75 € zurück. Hättest du vorher „Raise auf 100“ gesagt, wäre es ein Raise gewesen. Dieselben Chips, völlig andere Aktion – der Unterschied liegt allein in der Ansage.',
         },
         {
           heading: 'Trinkgeld und Umgangston',
           body:
-            'In den USA ist Trinkgeld (Tip) für Dealer fest etabliert: üblich sind 1–2 $ pro gewonnenem Pot, bei sehr großen Pötten gern mehr. In Europa ist das Bild uneinheitlich – in manchen Ländern und Häusern ist Trinkgeld üblich, in anderen unüblich oder dem Personal sogar untersagt. Die pragmatische Lösung: Beobachte in den ersten Runden, was die anderen Spieler tun, oder frag den Dealer außerhalb einer Hand nach den Gepflogenheiten des Hauses. Als Winning Player solltest du Tips realistisch als Kostenfaktor einkalkulieren, aber nicht am falschen Ende knausern: Dealer und Servicekräfte prägen die Atmosphäre, von der gute Spiele leben.\n\nZum Umgangston: Sei der Spieler, neben dem man gern sitzt. Konkret heißt das:\n\n- Keine Belehrungen, kein Spott über schwache Spielzüge.\n- Kein **Slowroll**: Wenn du am Showdown sicher die beste Hand hältst, zeige sie sofort – bewusst zögern, um den Gegner leiden zu lassen, gilt als grober Verstoß gegen die Etikette.\n- Verluste ohne Drama hinnehmen; Wutausbrüche und Kartenwerfen schaden deinem Image und können zum Ausschluss führen.\n\nEtikette ist kein Selbstzweck: Ein angenehmer Tisch hält Freizeitspieler im Spiel und macht deine Session profitabler und schöner zugleich.',
+            'In den USA ist Trinkgeld (Tip) für Dealer fest etabliert: üblich sind 1–2 $ pro gewonnenem Pot, bei sehr großen Pötten gern mehr. In Europa ist das Bild uneinheitlich – in manchen Ländern und Häusern ist Trinkgeld üblich, in anderen unüblich oder dem Personal sogar untersagt. Die pragmatische Lösung: Beobachte in den ersten Runden, was die anderen Spieler tun, oder frag den Dealer außerhalb einer Hand nach den Gepflogenheiten des Hauses. Als Winning Player solltest du Tips realistisch als Kostenfaktor einkalkulieren, aber nicht am falschen Ende knausern: Dealer und Servicekräfte prägen die Atmosphäre, von der gute Spiele leben.\n\nZum Umgangston: Sei der Spieler, neben dem man gern sitzt. Konkret heißt das:\n\n- Keine Belehrungen, kein Spott über schwache Spielzüge.\n- Kein Slowroll: Wenn du am Showdown sicher die beste Hand hältst, zeige sie sofort – bewusst zögern, um den Gegner leiden zu lassen, gilt als grober Verstoß gegen die Etikette.\n- Verluste ohne Drama hinnehmen; Wutausbrüche und Kartenwerfen schaden deinem Image und können zum Ausschluss führen.\n\nEtikette ist kein Selbstzweck: Ein angenehmer Tisch hält Freizeitspieler im Spiel und macht deine Session profitabler und schöner zugleich.',
         },
         {
           heading: 'Angle Shooting erkennen und sich schützen',
@@ -183,10 +183,10 @@ const m7: Module = {
         {
           question: 'Du betrittst zum ersten Mal einen Cardroom und willst 1/2 NLH spielen. Was ist der richtige erste Schritt?',
           options: [
-            'Dich an den erstbesten freien Platz setzen und Bargeld auf den Tisch legen',
+            'Dich an den erstbesten freien Platz setzen und Bargeld auf den Tisch legen, ohne jemanden zu fragen',
             'An der Rezeption des Pokerbereichs oder beim Floor auf die Liste für dein Limit setzen lassen',
-            'Den Dealer während einer laufenden Hand nach einem Platz fragen',
-            'Erst an den Automaten spielen, bis ein Platz frei wird',
+            'Den Dealer während einer laufenden Hand nach einem freien Platz am Tisch fragen',
+            'Erst an den Automaten spielen, bis am Pokertisch von selbst ein Platz frei wird',
           ],
           correctIndex: 1,
           explanation:
@@ -195,10 +195,10 @@ const m7: Module = {
         {
           question: 'Ein Casino nimmt „10 % Rake, Cap 6 €, No Flop no Drop“. Was bedeutet das?',
           options: [
-            'Jeder Spieler zahlt 6 € pro Stunde Spielzeit',
-            'Aus jedem Pot mit Flop werden 10 % entnommen, höchstens aber 6 €; endet die Hand preflop, fällt kein Rake an',
-            'Der Gewinner zahlt immer genau 6 € an das Casino',
-            'Es werden 10 % vom Buy-in jedes Spielers einbehalten',
+            'Jeder Spieler zahlt 6 € pro Stunde Spielzeit, egal wie viele Pots er gewinnt oder verliert',
+            'Aus jedem Pot mit Flop werden 10 % entnommen, höchstens 6 €; endet die Hand preflop, fällt kein Rake an',
+            'Der Gewinner zahlt in jeder Hand immer genau 6 € an das Casino, unabhängig vom Pot',
+            'Es werden 10 % vom Buy-in jedes Spielers einbehalten, sobald er sich an den Tisch setzt',
           ],
           correctIndex: 1,
           explanation:
@@ -207,10 +207,10 @@ const m7: Module = {
         {
           question: 'Du sagst nichts, setzt erst 20 € vor die Linie, greifst zurück und legst weitere 40 € nach. Was gilt?',
           options: [
-            'Ein Raise auf 60 €, weil die Absicht erkennbar war',
-            'Die Hand ist tot',
+            'Ein Raise auf 60 €, weil die Absicht des Spielers erkennbar war und die Chips zählen',
+            'Die Hand ist tot, weil ein String Bet den Spieler automatisch aus der Hand nimmt',
             'Nur die ersten 20 € zählen – ein String Bet wird auf die erste Bewegung reduziert',
-            'Der Dealer entscheidet per Münzwurf',
+            'Der Dealer entscheidet per Münzwurf, welcher Einsatz am Ende gelten soll',
           ],
           correctIndex: 2,
           explanation:
@@ -219,10 +219,10 @@ const m7: Module = {
         {
           question: 'Der Gegner bettet 10 €. Du wirfst wortlos einen 50-€-Chip in den Pot. Welche Aktion hast du gemacht?',
           options: [
-            'Einen Raise auf 50 €',
+            'Einen Raise auf 50 €, weil der Chip größer ist als die Bet des Gegners',
             'Einen Call über 10 € – die One-Chip-Rule wertet den einzelnen Chip ohne Ansage als Call',
-            'Einen Fold, weil die Aktion unklar ist',
-            'Ein All-in',
+            'Einen Fold, weil die Aktion unklar ist und der Dealer sie nicht deuten kann',
+            'Ein All-in, weil ein einzelner Chip ohne Ansage immer den ganzen Stack bedeutet',
           ],
           correctIndex: 1,
           explanation:
@@ -231,10 +231,10 @@ const m7: Module = {
         {
           question: 'Warum solltest du deine Hole Cards mit einem Chip oder Card Protector abdecken?',
           options: [
-            'Damit die Gegner die Kartenrücken nicht analysieren können',
-            'Es ist reine Dekoration ohne praktische Funktion',
-            'Ungeschützte Karten kann der Dealer versehentlich einziehen – und gemuckte Karten sind fast immer tot',
-            'Weil unbedeckte Karten automatisch als Fold gewertet werden',
+            'Damit die Gegner die Kartenrücken nicht analysieren und markierte Karten erkennen können',
+            'Es ist reine Dekoration ohne praktische Funktion und wird nur aus Gewohnheit gemacht',
+            'Ungeschützte Karten kann der Dealer versehentlich einziehen – gemuckte Karten sind fast immer tot',
+            'Weil unbedeckte Karten nach den Regeln der meisten Casinos automatisch als Fold gewertet werden, sobald ein anderer Spieler setzt',
           ],
           correctIndex: 2,
           explanation:
@@ -244,9 +244,9 @@ const m7: Module = {
           question: 'Am Showdown sagt dein Gegner selbstbewusst „Straße“, du hältst zwei Paar. Was ist die richtige Reaktion?',
           options: [
             'Deine Karten offen hinlegen und den Dealer die Hände werten lassen – Cards speak',
-            'Deine Hand mucken, um keine Zeit zu verschwenden',
-            'Sofort den Sicherheitsdienst rufen',
-            'Seine Ansage akzeptieren und den Pot rüberschieben',
+            'Deine Hand mucken, um keine Zeit zu verschwenden und den Gegner nicht zu verärgern',
+            'Sofort den Sicherheitsdienst rufen, weil falsche Ansagen als Betrug gelten',
+            'Seine Ansage akzeptieren und den Pot rüberschieben, um Streit am Tisch zu vermeiden',
           ],
           correctIndex: 0,
           explanation:
@@ -264,12 +264,12 @@ const m7: Module = {
         {
           heading: 'Vergiss Hollywood',
           body:
-            'Im Kino verrät ein Augenzucken den Bluff und ein Keks-Geräusch die Nuts. Die Realität ist unspektakulärer: Verwertbare Tells sind subtil, spielerspezifisch und nie hundertprozentig. Wer glaubt, Gegner wie ein Buch zu lesen, macht typischerweise zwei teure Fehler:\n\n- **Überinterpretation**: Aus einer einzelnen Beobachtung („Er hat geschluckt!“) wird eine sichere Diagnose. Menschen schlucken, zittern und schauen weg – aus hundert Gründen.\n- **Falsche Priorität**: Physische Signale überstimmen die Betting-Logik. Wenn Range-Analyse und Sizing klar für einen Fold sprechen, rettet ein vermeintlicher Nervositäts-Tell den Call nicht.\n\nDie richtige Einordnung: Tells sind **Zünglein an der Waage in knappen Situationen** – nicht die Grundlage deiner Strategie. Erst kommt die normale Analyse (Range, Sizing, Board, Spielertyp). Ist die Entscheidung danach eng, darf ein solider Read den Ausschlag geben. Ist sie klar, ignorierst du den Tell.\n\nDazu kommt: Gegen aufmerksame Gegner können Signale auch gespielt sein. Gerade auffällig zur Schau gestelltes Verhalten – demonstratives Seufzen, betontes Desinteresse – ist häufiger Theater als Leck. Als Faustregel gilt: Bewusst gesendete Signale bedeuten oft das Gegenteil, unbewusste Leaks sind die wertvollen.',
+            'Im Kino verrät ein Augenzucken den Bluff und ein Keks-Geräusch die Nuts. Die Realität ist unspektakulärer: Verwertbare Tells sind subtil, spielerspezifisch und nie hundertprozentig. Wer glaubt, Gegner wie ein Buch zu lesen, macht typischerweise zwei teure Fehler:\n\n- **Überinterpretation**: Aus einer einzelnen Beobachtung („Er hat geschluckt!“) wird eine sichere Diagnose. Menschen schlucken, zittern und schauen weg – aus hundert Gründen.\n- **Falsche Priorität**: Physische Signale überstimmen die Betting-Logik. Wenn Range-Analyse und Sizing klar für einen Fold sprechen, rettet ein vermeintlicher Nervositäts-Tell den Call nicht.\n\nDie richtige Einordnung: Tells sind Zünglein an der Waage in knappen Situationen – nicht die Grundlage deiner Strategie. Erst kommt die normale Analyse (Range, Sizing, Board, Spielertyp). Ist die Entscheidung danach eng, darf ein solider Read den Ausschlag geben. Ist sie klar, ignorierst du den Tell.\n\nDazu kommt: Gegen aufmerksame Gegner können Signale auch gespielt sein. Gerade auffällig zur Schau gestelltes Verhalten – demonstratives Seufzen, betontes Desinteresse – ist häufiger Theater als Leck. Als Faustregel gilt: Bewusst gesendete Signale bedeuten oft das Gegenteil, unbewusste Leaks sind die wertvollen.',
         },
         {
           heading: 'Baseline: erst beobachten, dann deuten',
           body:
-            'Kein Tell hat Bedeutung ohne Vergleichsmaßstab. Deshalb beginnt systematisches Tell-Lesen mit der **Baseline**: dem Normalverhalten eines Spielers, wenn nichts auf dem Spiel steht.\n\nBeobachte jeden Gegner zunächst in unkritischen Momenten: Wie sitzt er, wenn er nicht in der Hand ist? Redet er viel oder wenig? Wie schnell handelt er in Standard-Situationen? Wie fasst er seine Chips an? Erst wenn du dieses Grundrauschen kennst, wird eine **Abweichung** zum Signal: Der Dauerredner, der mitten im großen Pot verstummt. Der hektische Spieler, der plötzlich ganz still sitzt. Nicht das Verhalten selbst trägt die Information, sondern der Bruch mit dem Muster.\n\nDer wertvollste Kalibrierungsmoment ist der **Showdown**: Dort siehst du Verhalten und tatsächliche Hand nebeneinander. Präge dir ein: Wie hat sich Seat 5 verhalten, während er mit dem Set gebettet hat? Wie sah sein einziger aufgedeckter Bluff aus? Zwei, drei solcher Datenpunkte machen aus vagen Eindrücken einen belastbaren spielerspezifischen Read.\n\nPraktisch heißt das: Die beste Zeit zum Beobachten sind die Hände, an denen du **nicht** beteiligt bist. Beobachte gezielt einen Spieler pro Runde statt diffus den ganzen Tisch – und schau bei Aktionen der Gegner nicht auf das Board, sondern auf die Spieler: Das Board läuft dir nicht weg, die Reaktionen schon.',
+            'Kein Tell hat Bedeutung ohne Vergleichsmaßstab. Deshalb beginnt systematisches Tell-Lesen mit der Baseline: dem Normalverhalten eines Spielers, wenn nichts auf dem Spiel steht.\n\nBeobachte jeden Gegner zunächst in unkritischen Momenten: Wie sitzt er, wenn er nicht in der Hand ist? Redet er viel oder wenig? Wie schnell handelt er in Standard-Situationen? Wie fasst er seine Chips an? Erst wenn du dieses Grundrauschen kennst, wird eine Abweichung zum Signal: Der Dauerredner, der mitten im großen Pot verstummt. Der hektische Spieler, der plötzlich ganz still sitzt. Nicht das Verhalten selbst trägt die Information, sondern der Bruch mit dem Muster.\n\nDer wertvollste Kalibrierungsmoment ist der **Showdown**: Dort siehst du Verhalten und tatsächliche Hand nebeneinander. Präge dir ein: Wie hat sich Seat 5 verhalten, während er mit dem Set gebettet hat? Wie sah sein einziger aufgedeckter Bluff aus? Zwei, drei solcher Datenpunkte machen aus vagen Eindrücken einen belastbaren spielerspezifischen Read.\n\nPraktisch heißt das: Die beste Zeit zum Beobachten sind die Hände, an denen du nicht beteiligt bist. Beobachte gezielt einen Spieler pro Runde statt diffus den ganzen Tisch – und schau bei Aktionen der Gegner nicht auf das Board, sondern auf die Spieler: Das Board läuft dir nicht weg, die Reaktionen schon.',
           tip: 'Schau beim Austeilen des Flops nicht auf die Karten, sondern auf die Gegner, die vor dir handeln. Ihre erste Reaktion auf das Board ist unverfälschter als alles, was danach kommt.',
         },
         {
@@ -283,12 +283,12 @@ const m7: Module = {
         {
           heading: 'Hände, Chips und Stimme',
           body:
-            'Neben dem Timing liefern drei Bereiche brauchbare Signale:\n\n**Chip-Handling vor der Aktion**: Greift ein Gegner demonstrativ zu seinen Chips, während du überlegst, ist das oft ein Abschreckungsversuch – er signalisiert Call-Bereitschaft, um deine Bet zu verhindern, und ist dann eher schwach bis mittelstark. Umgekehrt sind still abgezählte Chips, die unauffällig bereitliegen, häufiger echte Call- oder Raise-Absicht.\n\n**Zitternde Hände**: Der Klassiker aus der Tell-Literatur – und kontraintuitiv: Zittern beim Setzen bedeutet meist **Stärke**, nicht Nervosität. Es ist Adrenalinabbau nach dem Treffer einer großen Hand. Bluffer zittern selten; sie kontrollieren sich eher zu viel und wirken hölzern.\n\n**Redseligkeit und Verstummen**: Wer mitten in einem großen Pot entspannt weiterplaudert, flüssig antwortet und locker wirkt, ist überdurchschnittlich oft stark – echte Entspanntheit lässt sich schwer spielen. Das Gegenteil, plötzliches Verstummen, eingefrorene Haltung, flacher Atem und regloser Blick, findet sich gehäuft bei Bluffs: Der Körper geht in Deckung, um nichts zu verraten, und verrät genau dadurch etwas.\n\nAlle drei Kategorien funktionieren nur relativ zur Baseline des jeweiligen Spielers – ein grundsätzlich stiller Mensch, der still bleibt, sagt dir nichts.',
+            'Neben dem Timing liefern drei Bereiche brauchbare Signale:\n\nChip-Handling vor der Aktion: Greift ein Gegner demonstrativ zu seinen Chips, während du überlegst, ist das oft ein Abschreckungsversuch – er signalisiert Call-Bereitschaft, um deine Bet zu verhindern, und ist dann eher schwach bis mittelstark. Umgekehrt sind still abgezählte Chips, die unauffällig bereitliegen, häufiger echte Call- oder Raise-Absicht.\n\nZitternde Hände: Der Klassiker aus der Tell-Literatur – und kontraintuitiv: Zittern beim Setzen bedeutet meist Stärke, nicht Nervosität. Es ist Adrenalinabbau nach dem Treffer einer großen Hand. Bluffer zittern selten; sie kontrollieren sich eher zu viel und wirken hölzern.\n\nRedseligkeit und Verstummen: Wer mitten in einem großen Pot entspannt weiterplaudert, flüssig antwortet und locker wirkt, ist überdurchschnittlich oft stark – echte Entspanntheit lässt sich schwer spielen. Das Gegenteil, plötzliches Verstummen, eingefrorene Haltung, flacher Atem und regloser Blick, findet sich gehäuft bei Bluffs: Der Körper geht in Deckung, um nichts zu verraten, und verrät genau dadurch etwas.\n\nAlle drei Kategorien funktionieren nur relativ zur Baseline des jeweiligen Spielers – ein grundsätzlich stiller Mensch, der still bleibt, sagt dir nichts.',
         },
         {
           heading: 'Bet-Sizing: der größte Tell von allen',
           body:
-            'Der zuverlässigste „Tell“ ist gar kein körperlicher: Es ist das **Bet-Sizing**. Freizeitspieler bemessen ihre Einsätze unbewusst nach Handstärke, nicht nach Strategie – und diese Muster sind stabiler und leichter zu lesen als jede Geste:\n\n- **Ungewöhnlich große Bets** (Overbets, plötzliche Verdreifachung) sind bei passiven Spielern überproportional oft sehr stark – „Ich will endlich bezahlt werden“ oder Schutzpanik mit einem Monster.\n- **Auffällig kleine Bets** in großen Pötten sind oft mittelstarke Hände, die billig zum Showdown wollen (Blocking Bets).\n- **Der Min-Raise eines passiven Spielers** am Turn oder River ist einer der stärksten Alarmsignale im Live-Poker – dahinter steckt fast immer eine sehr große Hand.\n- **Abweichungen vom persönlichen Muster** zählen am meisten: Wer dreimal 60 % Pot als Value gebettet hat und plötzlich 130 % bettet, erzählt eine neue Geschichte – finde heraus, welche.\n\nOrdne deine Informationsquellen deshalb bewusst in eine Hierarchie (siehe Tabelle) und gewichte sie entsprechend. Sizing- und Aktionsmuster stehen oben, Gesichtsausdrücke ganz unten. So systematisierst du Reads, statt Eindrücken hinterherzulaufen.',
+            'Der zuverlässigste „Tell“ ist gar kein körperlicher: Es ist das Bet-Sizing. Freizeitspieler bemessen ihre Einsätze unbewusst nach Handstärke, nicht nach Strategie – und diese Muster sind stabiler und leichter zu lesen als jede Geste:\n\n- **Ungewöhnlich große Bets** (Overbets, plötzliche Verdreifachung) sind bei passiven Spielern überproportional oft sehr stark – „Ich will endlich bezahlt werden“ oder Schutzpanik mit einem Monster.\n- **Auffällig kleine Bets** in großen Pötten sind oft mittelstarke Hände, die billig zum Showdown wollen (Blocking Bets).\n- **Der Min-Raise eines passiven Spielers** am Turn oder River ist einer der stärksten Alarmsignale im Live-Poker – dahinter steckt fast immer eine sehr große Hand.\n- **Abweichungen vom persönlichen Muster** zählen am meisten: Wer dreimal 60 % Pot als Value gebettet hat und plötzlich 130 % bettet, erzählt eine neue Geschichte – finde heraus, welche.\n\nOrdne deine Informationsquellen deshalb bewusst in eine Hierarchie (siehe Tabelle) und gewichte sie entsprechend. Sizing- und Aktionsmuster stehen oben, Gesichtsausdrücke ganz unten. So systematisierst du Reads, statt Eindrücken hinterherzulaufen.',
           table: {
             headers: ['Rang', 'Signalquelle', 'Verlässlichkeit'],
             rows: [
@@ -312,9 +312,9 @@ const m7: Module = {
         {
           question: 'Welche Rolle sollten Tells in deinem Entscheidungsprozess spielen?',
           options: [
-            'Sie sind die primäre Entscheidungsgrundlage im Live-Poker',
-            'Sie geben in ansonsten knappen Situationen den Ausschlag, überstimmen aber keine klare strategische Analyse',
-            'Sie sind komplett wertlos und sollten ignoriert werden',
+            'Sie sind die primäre Entscheidungsgrundlage im Live-Poker, weil Karten und Zahlen allein nicht reichen',
+            'Sie geben in knappen Situationen den Ausschlag, überstimmen aber keine klare strategische Analyse',
+            'Sie sind komplett wertlos und sollten vollständig ignoriert werden, weil sie nie verlässlich sind',
             'Sie ersetzen die Range-Analyse, sobald man den Gegner eine Stunde beobachtet hat',
           ],
           correctIndex: 1,
@@ -324,10 +324,10 @@ const m7: Module = {
         {
           question: 'Warum brauchst du eine Baseline, bevor du Verhalten deutest?',
           options: [
-            'Weil Tells nur bei Anfängern funktionieren',
-            'Weil das Casino Baselines vorschreibt',
-            'Weil nicht das Verhalten selbst die Information trägt, sondern die Abweichung vom Normalverhalten des jeweiligen Spielers',
-            'Weil man Tells nur am Showdown deuten darf',
+            'Weil Tells nur bei Anfängern funktionieren und Profis ihr Verhalten vollständig kontrollieren',
+            'Weil das Casino Baselines vorschreibt und Verstöße mit Platzverweis ahndet',
+            'Weil nicht das Verhalten selbst die Information trägt, sondern die Abweichung vom Normalverhalten des Spielers',
+            'Weil man Tells nur am Showdown deuten darf und nie während der Hand',
           ],
           correctIndex: 2,
           explanation:
@@ -336,10 +336,10 @@ const m7: Module = {
         {
           question: 'Dein Gegner callt deine Flop-Bet, bevor deine Chips überhaupt liegen. Was ist die wahrscheinlichste Deutung?',
           options: [
-            'Er hat fast sicher ein Set und slowplayt',
+            'Er hat fast sicher ein Set und slowplayt, weil er den Pot langsam aufbauen will',
             'Er wollte weder Raise noch Fold erwägen – typisch für Draws und mittelstarke Hände',
-            'Er hat sich verklickt',
-            'Insta-Calls sind grundsätzlich nicht deutbar',
+            'Er hat sich vertan und aus Versehen gecallt, obwohl er folden wollte',
+            'Insta-Calls sind grundsätzlich nicht deutbar, weil jeder Spieler anders reagiert',
           ],
           correctIndex: 1,
           explanation:
@@ -348,10 +348,10 @@ const m7: Module = {
         {
           question: 'Ein Gegner setzt eine große Turn-Bet und seine Hände zittern dabei sichtbar. Klassische Deutung?',
           options: [
-            'Nervosität wegen eines Bluffs – ein klarer Call',
-            'Er hat zu viel Kaffee getrunken, das Signal ist wertlos',
+            'Nervosität wegen eines Bluffs – ein klarer Call, weil Zittern bei Bluffern am häufigsten ist',
+            'Er hat zu viel Kaffee getrunken, das Signal ist wertlos und sagt nichts über seine Hand',
             'Meist echte Stärke: Zittern ist typischer Adrenalinabbau nach dem Treffer einer großen Hand',
-            'Er will das Zittern zeigen, also ist es sicher gespielt',
+            'Er will das Zittern zeigen, also ist es sicher gespielt und der Gegner hat nichts',
           ],
           correctIndex: 2,
           explanation:
@@ -381,13 +381,13 @@ const m7: Module = {
         {
           heading: 'Eine feste Routine für jede Aktion',
           body:
-            'Tells entstehen durch **Variation**: Wer mit den Nuts anders handelt als mit einem Bluff, ist lesbar. Die Lösung ist keine Schauspielkunst, sondern Standardisierung – gleiche Abläufe für alle Hände:\n\n- **Gleiches Timing**: Baue vor jeder Aktion eine kurze, feste Pause ein – zähle innerlich zum Beispiel bis fünf, egal ob die Entscheidung trivial ist oder schwer. So verschwinden Insta-Aktionen (die Schwäche verraten) genauso wie auffällige Denkpausen. Bei wirklich schweren Entscheidungen darfst du natürlich länger brauchen – die Grundpause sorgt dafür, dass „kurz“ und „lang“ bei dir näher beieinanderliegen.\n- **Gleiche Bewegung**: Setze Chips immer mit derselben Hand, derselben Geste, auf dieselbe Stelle. Keine wuchtigen Splash-Bets mit starken Händen, kein zaghaftes Nachschieben mit Bluffs.\n- **Gleiche Ansagen**: Kündige Aktionen mit denselben knappen Worten an („Raise, 75“) – immer im selben Tonfall.\n- **Gleiche Haltung nach der Bet**: Entscheide dich für eine neutrale Position (z. B. Hände ruhig vor dir, Blick auf die Tischmitte) und nimm sie nach jeder Bet ein – nach Value Bets wie nach Bluffs.\n\nDer Maßstab ist einfach: Ein Beobachter, der nur dein Verhalten sieht, dürfte keinen Unterschied zwischen deiner stärksten und deiner schwächsten Hand feststellen. Routinen erreichen das zuverlässiger als jede Willensanstrengung im Einzelfall.',
+            'Tells entstehen durch Variation: Wer mit den Nuts anders handelt als mit einem Bluff, ist lesbar. Die Lösung ist keine Schauspielkunst, sondern Standardisierung – gleiche Abläufe für alle Hände:\n\n- **Gleiches Timing**: Baue vor jeder Aktion eine kurze, feste Pause ein – zähle innerlich zum Beispiel bis fünf, egal ob die Entscheidung trivial ist oder schwer. So verschwinden Insta-Aktionen (die Schwäche verraten) genauso wie auffällige Denkpausen. Bei wirklich schweren Entscheidungen darfst du natürlich länger brauchen – die Grundpause sorgt dafür, dass „kurz“ und „lang“ bei dir näher beieinanderliegen.\n- **Gleiche Bewegung**: Setze Chips immer mit derselben Hand, derselben Geste, auf dieselbe Stelle. Keine wuchtigen Splash-Bets mit starken Händen, kein zaghaftes Nachschieben mit Bluffs.\n- **Gleiche Ansagen**: Kündige Aktionen mit denselben knappen Worten an („Raise, 75“) – immer im selben Tonfall.\n- **Gleiche Haltung nach der Bet**: Entscheide dich für eine neutrale Position (z. B. Hände ruhig vor dir, Blick auf die Tischmitte) und nimm sie nach jeder Bet ein – nach Value Bets wie nach Bluffs.\n\nDer Maßstab ist einfach: Ein Beobachter, der nur dein Verhalten sieht, dürfte keinen Unterschied zwischen deiner stärksten und deiner schwächsten Hand feststellen. Routinen erreichen das zuverlässiger als jede Willensanstrengung im Einzelfall.',
           tip: 'Trainiere die Routine dort, wo sie nichts kostet: in Kleinstpötten und Standardsituationen. Wenn sie dort automatisch läuft, hält sie auch im 400bb-Pot, wenn dein Puls auf 140 ist.',
         },
         {
           heading: 'Karten anschauen: einmal, gleich, merken',
           body:
-            'Der Moment, in dem du deine Hole Cards ansiehst, ist ein klassisches Leck. Drei Regeln dichten es ab:\n\n- **Immer zum gleichen Zeitpunkt schauen**. Viele erfahrene Spieler schauen erst, wenn die Action bei ihnen ankommt: Vorher gibt es schlicht nichts zu verraten, und nebenbei kannst du die Reaktionen der Gegner vor dir beobachten. Wichtig ist weniger der gewählte Zeitpunkt als seine Konstanz – wer mal sofort, mal spät schaut, erzeugt ein Muster.\n- **Einmal schauen und alles merken**: Ränge **und** Farben. Das klassische Leck: Am Flop erscheinen drei Herzen, und du musst nachschauen, ob dein Ass rot ist. Aufmerksame Gegner wissen dann: Wer auf einem monotonen Board nachschaut, hat fast nie den fertigen Flush (den hätte er sich gemerkt), sondern prüft eine einzelne Karte. Merke dir deshalb bei jedem ersten Blick beide Farben mit – nach kurzer Zeit ist das Automatismus.\n- **Keine Reaktion, kein Chip-Blick**: Schau nach dem Flop nicht reflexhaft auf deine Chips – der schnelle Blick zum eigenen Stack, wenn das Board dich getroffen hat, ist einer der bekanntesten Anfänger-Tells überhaupt. Board ansehen, kurze feste Pause, dann handeln.\n\nDiese Gewohnheiten kosten nichts, wirken sofort und halten ein ganzes Pokerleben.',
+            'Der Moment, in dem du deine Hole Cards ansiehst, ist ein klassisches Leck. Drei Regeln dichten es ab:\n\n- **Immer zum gleichen Zeitpunkt schauen**. Viele erfahrene Spieler schauen erst, wenn die Action bei ihnen ankommt: Vorher gibt es schlicht nichts zu verraten, und nebenbei kannst du die Reaktionen der Gegner vor dir beobachten. Wichtig ist weniger der gewählte Zeitpunkt als seine Konstanz – wer mal sofort, mal spät schaut, erzeugt ein Muster.\n- **Einmal schauen und alles merken**: Ränge und Farben. Das klassische Leck: Am Flop erscheinen drei Herzen, und du musst nachschauen, ob dein Ass rot ist. Aufmerksame Gegner wissen dann: Wer auf einem monotonen Board nachschaut, hat fast nie den fertigen Flush (den hätte er sich gemerkt), sondern prüft eine einzelne Karte. Merke dir deshalb bei jedem ersten Blick beide Farben mit – nach kurzer Zeit ist das Automatismus.\n- **Keine Reaktion, kein Chip-Blick**: Schau nach dem Flop nicht reflexhaft auf deine Chips – der schnelle Blick zum eigenen Stack, wenn das Board dich getroffen hat, ist einer der bekanntesten Anfänger-Tells überhaupt. Board ansehen, kurze feste Pause, dann handeln.\n\nDiese Gewohnheiten kosten nichts, wirken sofort und halten ein ganzes Pokerleben.',
           example:
             'Du hältst A♠ 7♠, der Turn bringt das dritte Pik. Weil du dir beim ersten Blick beide Farben eingeprägt hast, bettest du ohne erneutes Nachschauen in normalem Rhythmus. Dein Gegner, der auf genau dieses Nachschauen achtet, bekommt die Information nicht – und dein Flush bleibt unsichtbar.',
           cards: ['As', '7s'],
@@ -395,12 +395,12 @@ const m7: Module = {
         {
           heading: 'Wenn du im großen Pot angesprochen wirst',
           body:
-            'Früher oder später passiert es: Du setzt am River deinen Stack, und der Gegner beginnt zu reden. „Hast du das Set?“ – „Wenn ich calle, zeigst du?“ – manche starren dich einfach nur an. Dieses **Speech Play** hat ein Ziel: eine Reaktion provozieren, aus der sich etwas ablesen lässt.\n\nDie robusteste Verteidigung ist eine **vorab festgelegte, immer gleiche Antwortpolitik**. Die einfachste und meistempfohlene: freundliches Schweigen. Ein kurzes Lächeln oder ein neutrales „Viel Erfolg bei der Entscheidung“ – und dann konsequent nichts mehr, bei jedem Pot, mit jeder Hand. Entscheidend ist nicht, was du tust, sondern dass es **immer dasselbe** ist. Wer mal antwortet und mal schweigt, macht die Abweichung selbst zum Tell: Reden mit Value, Schweigen mit Bluffs (oder umgekehrt) ist ein Muster, das gute Gegner nach zwei Showdowns kennen.\n\nDazu gehört die körperliche Komponente: gleiche Haltung, ruhiger Atem (bewusst normal weiteratmen – flacher Atem ist sicht- und hörbar), Blick auf einen festen Punkt statt Blickkontakt-Duelle. Beantworte auch scheinbar harmlose Fragen nicht („Willst du, dass ich calle?“) – jede echte Antwort ist Information, und Lügen unter Druck können die wenigsten überzeugend.\n\nFalls du gern am Tisch redest: erlaubt und sogar gut fürs Spielklima – aber stell das Reden ein, sobald du in einer laufenden großen Hand bist. Konsequent, nicht handabhängig.',
+            'Früher oder später passiert es: Du setzt am River deinen Stack, und der Gegner beginnt zu reden. „Hast du das Set?“ – „Wenn ich calle, zeigst du?“ – manche starren dich einfach nur an. Dieses Speech Play hat ein Ziel: eine Reaktion provozieren, aus der sich etwas ablesen lässt.\n\nDie robusteste Verteidigung ist eine vorab festgelegte, immer gleiche Antwortpolitik. Die einfachste und meistempfohlene: freundliches Schweigen. Ein kurzes Lächeln oder ein neutrales „Viel Erfolg bei der Entscheidung“ – und dann konsequent nichts mehr, bei jedem Pot, mit jeder Hand. Entscheidend ist nicht, was du tust, sondern dass es immer dasselbe ist. Wer mal antwortet und mal schweigt, macht die Abweichung selbst zum Tell: Reden mit Value, Schweigen mit Bluffs (oder umgekehrt) ist ein Muster, das gute Gegner nach zwei Showdowns kennen.\n\nDazu gehört die körperliche Komponente: gleiche Haltung, ruhiger Atem (bewusst normal weiteratmen – flacher Atem ist sicht- und hörbar), Blick auf einen festen Punkt statt Blickkontakt-Duelle. Beantworte auch scheinbar harmlose Fragen nicht („Willst du, dass ich calle?“) – jede echte Antwort ist Information, und Lügen unter Druck können die wenigsten überzeugend.\n\nFalls du gern am Tisch redest: erlaubt und sogar gut fürs Spielklima – aber stell das Reden ein, sobald du in einer laufenden großen Hand bist. Konsequent, nicht handabhängig.',
         },
         {
           heading: 'Sonnenbrille, Kapuze, Kopfhörer: pragmatisch betrachtet',
           body:
-            'Die Ausrüstungsfrage wird überschätzt. Eine nüchterne Bewertung:\n\n- **Sonnenbrille**: Verbirgt Blickrichtung und Pupillen – also Signale, die ohnehin am unteren Ende der Zuverlässigkeitshierarchie stehen. Kosten: schlechtere Sicht auf Karten und Chips in dunklen Räumen, erschwerter sozialer Kontakt (schlecht fürs Spielklima und damit für die Spielqualität) und für manche Gegner eine Einladung, dich als ernsthaften Spieler zu meiden. Nutzen gering, Kosten real – für die meisten verzichtbar.\n- **Kapuze und Schal**: Verdecken Hals und Teile des Gesichts (etwa sichtbaren Puls). Marginaler Effekt, aber günstig und unauffälliger als die Brille. Geschmackssache.\n- **Kopfhörer**: Blocken Speech Play und helfen manchen bei der Konzentration – aber du verpasst Tischgespräche, Ansagen und wertvolle verbale Information der Gegner. Wenn überhaupt, dann ein Ohr frei, und heraus damit, sobald du in einer Hand bist.\n\nDie ehrliche Wahrheit: **Deine ausbeutbaren Lecks sind Timing, Sizing und Routinebrüche – und gegen die hilft keine Brille.** Ausrüstung darf eine Krücke für die Nervosität der ersten Sessions sein; das eigentliche Fundament sind die Routinen aus dieser Lektion. Wer konsistent handelt, ist auch mit freiem Gesicht kaum lesbar. Wer inkonsistent handelt, verrät sich auch hinter verspiegelten Gläsern.',
+            'Die Ausrüstungsfrage wird überschätzt. Eine nüchterne Bewertung:\n\n- **Sonnenbrille**: Verbirgt Blickrichtung und Pupillen – also Signale, die ohnehin am unteren Ende der Zuverlässigkeitshierarchie stehen. Kosten: schlechtere Sicht auf Karten und Chips in dunklen Räumen, erschwerter sozialer Kontakt (schlecht fürs Spielklima und damit für die Spielqualität) und für manche Gegner eine Einladung, dich als ernsthaften Spieler zu meiden. Nutzen gering, Kosten real – für die meisten verzichtbar.\n- **Kapuze und Schal**: Verdecken Hals und Teile des Gesichts (etwa sichtbaren Puls). Marginaler Effekt, aber günstig und unauffälliger als die Brille. Geschmackssache.\n- **Kopfhörer**: Blocken Speech Play und helfen manchen bei der Konzentration – aber du verpasst Tischgespräche, Ansagen und wertvolle verbale Information der Gegner. Wenn überhaupt, dann ein Ohr frei, und heraus damit, sobald du in einer Hand bist.\n\nDie ehrliche Wahrheit: Deine ausbeutbaren Lecks sind Timing, Sizing und Routinebrüche – und gegen die hilft keine Brille. Ausrüstung darf eine Krücke für die Nervosität der ersten Sessions sein; das eigentliche Fundament sind die Routinen aus dieser Lektion. Wer konsistent handelt, ist auch mit freiem Gesicht kaum lesbar. Wer inkonsistent handelt, verrät sich auch hinter verspiegelten Gläsern.',
           tip: 'Investiere die Energie, die du in Verkleidung stecken würdest, in eine einzige Kennzahl: Wie gleichförmig sind dein Timing und deine Bewegungen über alle Handstärken hinweg? Das ist der komplette Kern der Tell-Vermeidung.',
         },
       ],
@@ -415,10 +415,10 @@ const m7: Module = {
         {
           question: 'Was ist der wirksamste Grundschutz gegen eigene Timing-Tells?',
           options: [
-            'Immer so schnell wie möglich handeln, um keine Denkzeit zu zeigen',
+            'Immer so schnell wie möglich handeln, um keine Denkzeit zu zeigen und nie zu zögern',
             'Eine feste kurze Pause vor jeder Aktion, unabhängig von der Handstärke',
-            'Bei starken Händen bewusst lange nachdenken',
-            'Das Timing zufällig variieren, um Verwirrung zu stiften',
+            'Bei starken Händen bewusst lange nachdenken, damit der Gegner Stärke für Schwäche hält',
+            'Das Timing zufällig variieren, um Verwirrung zu stiften und kein Muster zu zeigen',
           ],
           correctIndex: 1,
           explanation:
@@ -427,10 +427,10 @@ const m7: Module = {
         {
           question: 'Warum solltest du dir beim ersten Blick auf deine Hole Cards auch die Farben einprägen?',
           options: [
-            'Weil der Dealer die Farben abfragen darf',
-            'Weil man sonst die One-Chip-Rule verletzt',
-            'Damit du auf monotonen Boards nicht nachschauen musst – das Nachschauen verrät, dass du höchstens eine Karte der Farbe hältst',
-            'Farben sind irrelevant, nur die Ränge zählen',
+            'Weil der Dealer die Farben abfragen darf und Fehler mit Strafen belegt',
+            'Weil man sonst die One-Chip-Rule verletzt und der Einsatz verfällt',
+            'Damit du auf monotonen Boards nicht nachschauen musst – das verriete, dass du keinen Flush hältst',
+            'Farben sind irrelevant, nur die Ränge der Karten zählen für die Handstärke und für jeden Showdown',
           ],
           correctIndex: 2,
           explanation:
@@ -439,10 +439,10 @@ const m7: Module = {
         {
           question: 'Du bettest am River all-in und dein Gegner fragt: „Zeigst du, wenn ich folde?“ Was ist die beste Reaktion?',
           options: [
-            'Ehrlich antworten, um fair zu bleiben',
-            'Nur bei einem Bluff antworten, um ihn zum Fold zu bewegen',
-            'Zurückstarren, bis er wegschaut',
-            'Deine vorab festgelegte Standardreaktion zeigen – zum Beispiel freundliches Schweigen, wie in jedem anderen großen Pot auch',
+            'Ehrlich antworten, um fair zu bleiben und dem Gegner keinen Anlass für Ärger zu geben',
+            'Nur bei einem Bluff antworten, um ihn damit zum Fold zu bewegen und den Pot zu gewinnen',
+            'Zurückstarren, bis er wegschaut, und erst dann in Ruhe weiterspielen oder reagieren',
+            'Deine vorab festgelegte Standardreaktion zeigen – zum Beispiel freundliches Schweigen wie in jedem anderen großen Pot',
           ],
           correctIndex: 3,
           explanation:
@@ -451,10 +451,10 @@ const m7: Module = {
         {
           question: 'Wie ist eine Sonnenbrille am Pokertisch nüchtern zu bewerten?',
           options: [
-            'Unverzichtbar – ohne sie ist man für gute Gegner ein offenes Buch',
-            'Geringer Nutzen, weil sie nur die unzuverlässigsten Signale verdeckt – Timing- und Sizing-Lecks bleiben ungeschützt',
-            'Verboten in allen Casinos',
-            'Sinnvoll, weil sie automatisch das Bet-Sizing verbessert',
+            'Unverzichtbar – ohne sie ist man für gute Gegner ein offenes Buch und verrät jede Hand',
+            'Geringer Nutzen, weil sie nur die unzuverlässigsten Signale verdeckt – Timing- und Sizing-Lecks bleiben offen',
+            'In allen Casinos verboten, weil sie die Identifizierung des Spielers am Tisch verhindert',
+            'Sinnvoll, weil sie automatisch das Bet-Sizing verbessert und Reads auf die eigene Hand verhindert',
           ],
           correctIndex: 1,
           explanation:
@@ -464,9 +464,9 @@ const m7: Module = {
           question: 'Der Flop trifft deine Hand hart. Welches Verhalten wäre ein klassischer Anfänger-Tell, den du vermeiden solltest?',
           options: [
             'Der reflexhafte kurze Blick auf die eigenen Chips',
-            'Das Board in normalem Tempo ansehen',
-            'Die gewohnte feste Pause vor der Aktion',
-            'Die übliche neutrale Sitzhaltung beibehalten',
+            'Das Board in normalem Tempo und mit unveränderter Haltung ansehen',
+            'Die gewohnte feste Pause vor der Aktion einhalten, auch wenn die Hand stark ist',
+            'Die übliche neutrale Sitzhaltung beibehalten und nicht auf den Stack schauen',
           ],
           correctIndex: 0,
           explanation:
@@ -484,7 +484,7 @@ const m7: Module = {
         {
           heading: 'Mehr Value Bets – und dünnere',
           body:
-            'Die wichtigste Live-Anpassung in einem Satz: **Verlagere dein Geldverdienen von Bluffs auf Value Bets.** Loose-passive Gegner folden zu selten und callen zu weit – jede dieser Eigenschaften macht Value Betting profitabler.\n\nKonkret heißt das:\n\n- **Bette starke Hände konsequent über drei Streets.** Slowplay ist gegen Spieler, die ohnehin callen, meist reine Geldverschwendung.\n- **Bette dünner auf Value.** Eine Bet ist „dünner Value“, wenn sie von der gegnerischen Call-Range nur knapp mehrheitlich geschlagen wird. Gegen Calling Stations (Spieler, die notorisch zu viel callen) sind River-Bets mit Top Pair, mittelmäßigem Kicker oder sogar Second Pair oft klar profitabel – Hände, mit denen du online gegen Regs eher checkst.\n- **Size größer.** Loose Caller reagieren wenig elastisch auf Sizing: Sie callen 75 % Pot fast so oft wie 40 %. Wenn die Call-Wahrscheinlichkeit kaum sinkt, maximiert die größere Bet deinen Erwartungswert.\n\nDie mentale Hürde ist real: Dünne Value Bets werden regelmäßig gesnapcallt und gelegentlich zeigst du die schlechtere Hand. Das gehört dazu – entscheidend ist, dass der Call-Pool deiner Bet mehrheitlich aus schlechteren Händen besteht, nicht dass du jede einzelne Konfrontation gewinnst.',
+            'Die wichtigste Live-Anpassung in einem Satz: Verlagere dein Geldverdienen von Bluffs auf Value Bets. Loose-passive Gegner folden zu selten und callen zu weit – jede dieser Eigenschaften macht Value Betting profitabler.\n\nKonkret heißt das:\n\n- **Bette starke Hände konsequent über drei Streets.** Slowplay ist gegen Spieler, die ohnehin callen, meist reine Geldverschwendung.\n- **Bette dünner auf Value.** Eine Bet ist „dünner Value“, wenn sie von der gegnerischen Call-Range nur knapp mehrheitlich geschlagen wird. Gegen Calling Stations (Spieler, die notorisch zu viel callen) sind River-Bets mit Top Pair, mittelmäßigem Kicker oder sogar Second Pair oft klar profitabel – Hände, mit denen du online gegen Regs eher checkst.\n- **Size größer.** Loose Caller reagieren wenig elastisch auf Sizing: Sie callen 75 % Pot fast so oft wie 40 %. Wenn die Call-Wahrscheinlichkeit kaum sinkt, maximiert die größere Bet deinen Erwartungswert.\n\nDie mentale Hürde ist real: Dünne Value Bets werden regelmäßig gesnapcallt und gelegentlich zeigst du die schlechtere Hand. Das gehört dazu – entscheidend ist, dass der Call-Pool deiner Bet mehrheitlich aus schlechteren Händen besteht, nicht dass du jede einzelne Konfrontation gewinnst.',
           example:
             'Du hältst K♦ J♦ auf K♠ 8♥ 4♣ 7♦ 2♠ gegen einen Calling Station, der Flop und Turn gecallt hat. Online gegen einen Reg wäre der River oft ein Check. Hier bettest du klar auf Value, etwa 60–70 % Pot: Seine Call-Range ist voll mit schlechteren Königen, Achten und hartnäckigen Paaren, die dich auszahlen.',
           cards: ['Kd', 'Jd'],
@@ -492,13 +492,13 @@ const m7: Module = {
         {
           heading: 'Weniger große Bluffs',
           body:
-            'Die Kehrseite derselben Medaille: **Große Bluffs verlieren in loosen Pools massiv an Wert.** Ein Bluff ist nur profitabel, wenn der Gegner oft genug foldet – genau das tun Live-Freizeitspieler nicht. Der Triple-Barrel, der online eine solide Fold Equity hat, wird auf 1/2 vom unbeeindruckten Station mit Third Pair gecallt.\n\nDaraus folgt keine Bluff-Abstinenz, sondern Selektion:\n\n- **Bluffe die Richtigen**: Gegen den tighten Reg, der fold-fähig ist, funktionieren Bluffs weiter. Gegen den Station, der „einfach mal schauen will“, sind pure River-Bluffs verbrennen von Geld.\n- **Bluffe mit Equity**: Semi-Bluffs mit Flush- oder Straight-Draws behalten ihren Wert, weil sie zwei Gewinnwege haben – Fold jetzt oder Treffer später. Reine Air-Bluffs ohne Verbesserungschance streichst du weitgehend.\n- **Kleine Bluffs mit realer Fold Equity bleiben**: Das Stehlen verwaister Limp-Pötte oder eine Bet gegen offensichtliches Desinteresse kostet wenig und funktioniert auch live.\n- **Multiway blufft man kaum**: Jeder zusätzliche Spieler muss folden, damit der Bluff durchgeht – bei drei, vier Gegnern hält fast immer jemand eine Hand, die nicht loslässt.\n\nDie Faustregel für loose-passive Tische: Wenn du unsicher bist, ob eine Bet als Bluff oder als Value zählt, und der Gegner ein Station ist – checke die Bluffs, bette die Value.',
+            'Die Kehrseite derselben Medaille: Große Bluffs verlieren in loosen Pools massiv an Wert. Ein Bluff ist nur profitabel, wenn der Gegner oft genug foldet – genau das tun Live-Freizeitspieler nicht. Der Triple-Barrel, der online eine solide Fold Equity hat, wird auf 1/2 vom unbeeindruckten Station mit Third Pair gecallt.\n\nDaraus folgt keine Bluff-Abstinenz, sondern Selektion:\n\n- **Bluffe die Richtigen**: Gegen den tighten Reg, der fold-fähig ist, funktionieren Bluffs weiter. Gegen den Station, der „einfach mal schauen will“, sind pure River-Bluffs verbrennen von Geld.\n- **Bluffe mit Equity**: Semi-Bluffs mit Flush- oder Straight-Draws behalten ihren Wert, weil sie zwei Gewinnwege haben – Fold jetzt oder Treffer später. Reine Air-Bluffs ohne Verbesserungschance streichst du weitgehend.\n- **Kleine Bluffs mit realer Fold Equity bleiben**: Das Stehlen verwaister Limp-Pötte oder eine Bet gegen offensichtliches Desinteresse kostet wenig und funktioniert auch live.\n- **Multiway blufft man kaum**: Jeder zusätzliche Spieler muss folden, damit der Bluff durchgeht – bei drei, vier Gegnern hält fast immer jemand eine Hand, die nicht loslässt.\n\nDie Faustregel für loose-passive Tische: Wenn du unsicher bist, ob eine Bet als Bluff oder als Value zählt, und der Gegner ein Station ist – checke die Bluffs, bette die Value.',
           tip: 'Prüfe vor jedem geplanten Bluff eine einzige Frage: „Welche konkreten besseren Hände foldet DIESER Gegner?“ Fällt dir keine plausible Antwort ein, gibt es den Bluff nicht.',
         },
         {
           heading: 'Multiway-Pötte: nut-orientiert spielen',
           body:
-            'Live siehst du deutlich häufiger Flops mit drei, vier oder fünf Spielern. Multiway verschieben sich die Anforderungen fundamental: **Je mehr Spieler, desto stärker muss die Gewinnerhand am Ende sein** – irgendjemand trifft fast immer etwas.\n\nDie Konsequenzen:\n\n- **Handauswahl preflop**: Hände mit Nut-Potenzial gewinnen an Wert – Pocket Pairs (Set-Mining mit exzellenten Implied Odds gegen viele Zahler), Suited Aces (Nut-Flush-Potenzial), gute Suited Connectors. Dominierbare Offsuit-Broadways wie KJo oder QTo verlieren an Wert: Sie treffen Top Pair mit Kicker-Problemen und werden in Multiway-Pötten regelmäßig von besseren gleichen Paaren ausbezahlt statt umgekehrt.\n- **Vorsicht mit Non-Nut-Draws**: Der kleine Flushdraw ist multiway gefährlich – trifft er, ist die Gefahr real, gegen einen höheren Flush den Stack zu verlieren (Flush over Flush ist mit fünf Spielern am Flop keine Rarität mehr).\n- **Postflop ehrlicher spielen**: One Pair schrumpft im Wert, Bluffs sind selten sinnvoll (siehe oben), und starke Hände wollen betten – zum Value und zum Schutz gegen die vielen Draws, die multiway unterwegs sind. Wer mit einem Set auf drawlastigem Board gegen vier Gegner slowplayt, lädt zum kostenlosen Überholen ein.\n\nMerksatz: Heads-up gewinnt oft die frechere Hand, multiway gewinnt die bessere. Spiele Hände, die die bessere sein können.',
+            'Live siehst du deutlich häufiger Flops mit drei, vier oder fünf Spielern. Multiway verschieben sich die Anforderungen fundamental: Je mehr Spieler, desto stärker muss die Gewinnerhand am Ende sein – irgendjemand trifft fast immer etwas.\n\nDie Konsequenzen:\n\n- **Handauswahl preflop**: Hände mit Nut-Potenzial gewinnen an Wert – Pocket Pairs (Set-Mining mit exzellenten Implied Odds gegen viele Zahler), Suited Aces (Nut-Flush-Potenzial), gute Suited Connectors. Dominierbare Offsuit-Broadways wie KJo oder QTo verlieren an Wert: Sie treffen Top Pair mit Kicker-Problemen und werden in Multiway-Pötten regelmäßig von besseren gleichen Paaren ausbezahlt statt umgekehrt.\n- **Vorsicht mit Non-Nut-Draws**: Der kleine Flushdraw ist multiway gefährlich – trifft er, ist die Gefahr real, gegen einen höheren Flush den Stack zu verlieren (Flush over Flush ist mit fünf Spielern am Flop keine Rarität mehr).\n- **Postflop ehrlicher spielen**: One Pair schrumpft im Wert, Bluffs sind selten sinnvoll (siehe oben), und starke Hände wollen betten – zum Value und zum Schutz gegen die vielen Draws, die multiway unterwegs sind. Wer mit einem Set auf drawlastigem Board gegen vier Gegner slowplayt, lädt zum kostenlosen Überholen ein.\n\nMerksatz: Heads-up gewinnt oft die frechere Hand, multiway gewinnt die bessere. Spiele Hände, die die bessere sein können.',
           example:
             'Fünf Spieler sehen den Flop. Mit 6♥ 5♥ triffst du auf A♥ 9♥ 2♣ deinen Flushdraw – aber es ist der Baby-Flushdraw in einem Feld, in dem A♥ X♥ und K♥ X♥ realistisch vertreten sind. Statt den Draw um jeden Preis zu maximieren, spielst du ihn kontrolliert: mitgehen ja, aber keine großen Pötte aufbauen, die praktisch nur ein höherer Flush callt.',
           cards: ['6h', '5h'],
@@ -506,12 +506,12 @@ const m7: Module = {
         {
           heading: 'Tiefe Stacks: 200bb und mehr',
           body:
-            'Online-Cash-Games sind meist auf 100bb gedeckelt. Live wachsen Stacks über lange Sessions ungehindert – effektive Tiefen von 200bb, 300bb oder mehr sind normal, sobald zwei große Stacks aneinandergeraten. Das verändert die Strategie tiefgreifend:\n\n- **One Pair verliert an Wert für große Pötte**: Bei 100bb ist Top Pair Top Kicker oft ein legitimer Stack-off. Bei 250bb gilt: Wenn der ganze Stack in die Mitte geht, gewinnen überwiegend Two Pair plus, Sets, Straßen, Flushes. Wer AA bei 300bb gegen einen tighten Spieler nicht vom Overpair-Thron heben kann, zahlt teures Lehrgeld – **big pots need big hands**.\n- **Implied Odds explodieren**: Spekulative Hände mit Nut-Potenzial – Pocket Pairs, Suited Aces, Suited Connectors – steigen im Wert, weil ein Treffer ein Vielfaches des Preflop-Einsatzes gewinnen kann.\n- **Position wird noch wichtiger**: Je tiefer die Stacks, desto mehr Streets mit großen Entscheidungen – und desto wertvoller ist es, sie mit Informationsvorsprung zu treffen. Spiele tiefe Spots out of Position deutlich vorsichtiger.\n- **3-Bet-Ranges verschieben sich**: Sehr tief sinkt der Wert reiner Blocker-3-Bets, und auch AKo-Stack-offs preflop verlieren an Reiz; spielbare, boardtreffende Hände gewinnen.\n\nDie einfache Heuristik für tiefe Live-Spots: Frage dich früh in der Hand, welche Handstärke am Ende einen 250bb-Pot rechtfertigt – und plane rückwärts, ob deine Hand dieses Potenzial hat.',
+            'Online-Cash-Games sind meist auf 100bb gedeckelt. Live wachsen Stacks über lange Sessions ungehindert – effektive Tiefen von 200bb, 300bb oder mehr sind normal, sobald zwei große Stacks aneinandergeraten. Das verändert die Strategie tiefgreifend:\n\n- **One Pair verliert an Wert für große Pötte**: Bei 100bb ist Top Pair Top Kicker oft ein legitimer Stack-off. Bei 250bb gilt: Wenn der ganze Stack in die Mitte geht, gewinnen überwiegend Two Pair plus, Sets, Straßen, Flushes. Wer AA bei 300bb gegen einen tighten Spieler nicht vom Overpair-Thron heben kann, zahlt teures Lehrgeld – big pots need big hands.\n- **Implied Odds explodieren**: Spekulative Hände mit Nut-Potenzial – Pocket Pairs, Suited Aces, Suited Connectors – steigen im Wert, weil ein Treffer ein Vielfaches des Preflop-Einsatzes gewinnen kann.\n- **Position wird noch wichtiger**: Je tiefer die Stacks, desto mehr Streets mit großen Entscheidungen – und desto wertvoller ist es, sie mit Informationsvorsprung zu treffen. Spiele tiefe Spots out of Position deutlich vorsichtiger.\n- **3-Bet-Ranges verschieben sich**: Sehr tief sinkt der Wert reiner Blocker-3-Bets, und auch AKo-Stack-offs preflop verlieren an Reiz; spielbare, boardtreffende Hände gewinnen.\n\nDie einfache Heuristik für tiefe Live-Spots: Frage dich früh in der Hand, welche Handstärke am Ende einen 250bb-Pot rechtfertigt – und plane rückwärts, ob deine Hand dieses Potenzial hat.',
         },
         {
           heading: 'Straddles verstehen',
           body:
-            'Ein **Straddle** ist ein freiwilliger Blind-Einsatz vor dem Austeilen, klassisch von der UTG-Position (dem Spieler links vom Big Blind) in Höhe von **2 Big Blinds**. Der Straddler kauft sich damit das Recht, preflop als Letzter zu handeln; die Action beginnt links von ihm.\n\nDie Mathematik ist unromantisch: Als blinder Einsatz ohne Ansehen der Karten ist der Straddle für den Straddler selbst ein Minusgeschäft – er zahlt doppelten Blind ohne Informationsvorteil. Warum er trotzdem existiert: Er verdoppelt das Spiel und macht es actionreicher; an manchen Tischen gehört er zur Kultur, gelegentlich als von allen gespielter Round-Straddle.\n\nStrategisch entscheidend ist die Umrechnung: **Der Straddle verdoppelt die Blinds und halbiert damit die effektive Stack-Tiefe.** Behandle den Straddle als neuen Big Blind: Raises bemisst du als Vielfaches des Straddles (z. B. 3–4x), Ranges passt du an die flachere effektive Tiefe an – rohe High-Card-Stärke gewinnt, spekulative Implied-Odds-Hände verlieren etwas an Wert. Und beachte die veränderte Preflop-Reihenfolge: Der Straddler schließt die Action, die Blinds handeln vor ihm.\n\nWichtig für die Selbststeuerung: Ein Tisch, der jede Hand straddelt, spielt faktisch das doppelte Limit. Prüfe ehrlich, ob deine Bankroll dieses Spiel trägt – „1/2 mit Straddle“ ist ökonomisch ein 2/4-Spiel.',
+            'Ein **Straddle** ist ein freiwilliger Blind-Einsatz vor dem Austeilen, klassisch von der UTG-Position (dem Spieler links vom Big Blind) in Höhe von 2 Big Blinds. Der Straddler kauft sich damit das Recht, preflop als Letzter zu handeln; die Action beginnt links von ihm.\n\nDie Mathematik ist unromantisch: Als blinder Einsatz ohne Ansehen der Karten ist der Straddle für den Straddler selbst ein Minusgeschäft – er zahlt doppelten Blind ohne Informationsvorteil. Warum er trotzdem existiert: Er verdoppelt das Spiel und macht es actionreicher; an manchen Tischen gehört er zur Kultur, gelegentlich als von allen gespielter Round-Straddle.\n\nStrategisch entscheidend ist die Umrechnung: Der Straddle verdoppelt die Blinds und halbiert damit die effektive Stack-Tiefe. Behandle den Straddle als neuen Big Blind: Raises bemisst du als Vielfaches des Straddles (z. B. 3–4x), Ranges passt du an die flachere effektive Tiefe an – rohe High-Card-Stärke gewinnt, spekulative Implied-Odds-Hände verlieren etwas an Wert. Und beachte die veränderte Preflop-Reihenfolge: Der Straddler schließt die Action, die Blinds handeln vor ihm.\n\nWichtig für die Selbststeuerung: Ein Tisch, der jede Hand straddelt, spielt faktisch das doppelte Limit. Prüfe ehrlich, ob deine Bankroll dieses Spiel trägt – „1/2 mit Straddle“ ist ökonomisch ein 2/4-Spiel.',
           table: {
             headers: ['Situation', 'Stack 200 €', 'Effektive Tiefe'],
             rows: [
@@ -523,7 +523,7 @@ const m7: Module = {
         {
           heading: 'Tisch- und Platzwahl: der unterschätzte Edge',
           body:
-            'Kein strategisches Detail bringt live so viel Winrate wie die Wahl des richtigen Spiels. Online wechselst du Tische per Klick – live entscheidet oft ein einziger Tischwechsel über den Wert des ganzen Abends.\n\n**Tischauswahl** – gute Zeichen beim Vorbeigehen oder Umschauen:\n\n- Viele Limper und Multiway-Flops, hohe durchschnittliche Pötte\n- Lachen, Getränke, Unterhaltung – Spieler, die primär Spaß haben wollen\n- Große, unregelmäßige Stacks statt einheitlicher 100bb-Buy-ins\n\nEin stiller Tisch voller konzentrierter Regs mit Kopfhörern ist das Gegenteil. Lass dich beim Floor auf die Wechselliste für bessere Tische setzen – das ist üblich und niemand nimmt es krumm.\n\n**Platzwahl**: Das Geld fließt am Pokertisch tendenziell im Uhrzeigersinn – du gewinnst am meisten von den Spielern, auf die du Position hast. Ideal sitzt du daher **links von den loosen, aggressiven und schwächsten Spielern** (du hast Position auf sie und kontrollierst die Pötte gegen sie), während tighte, berechenbare Spieler links von dir wenig Schaden anrichten. Wird der Traumsitz frei, frag den Dealer nach dem Seat Change.\n\nZuletzt die Disziplinfrage: Bleib, solange das Spiel gut ist **und** du gut bist. Verlässt einer der beiden Faktoren den Raum – die Fische gehen heim oder deine Konzentration schwindet –, ist das Spiel für heute vorbei. Diese Ausstiegsdisziplin trennt langfristig erfolgreiche Live-Spieler zuverlässiger von den anderen als jede Fachkenntnis.',
+            'Kein strategisches Detail bringt live so viel Winrate wie die Wahl des richtigen Spiels. Online wechselst du Tische per Klick – live entscheidet oft ein einziger Tischwechsel über den Wert des ganzen Abends.\n\nTischauswahl – gute Zeichen beim Vorbeigehen oder Umschauen:\n\n- Viele Limper und Multiway-Flops, hohe durchschnittliche Pötte\n- Lachen, Getränke, Unterhaltung – Spieler, die primär Spaß haben wollen\n- Große, unregelmäßige Stacks statt einheitlicher 100bb-Buy-ins\n\nEin stiller Tisch voller konzentrierter Regs mit Kopfhörern ist das Gegenteil. Lass dich beim Floor auf die Wechselliste für bessere Tische setzen – das ist üblich und niemand nimmt es krumm.\n\nPlatzwahl: Das Geld fließt am Pokertisch tendenziell im Uhrzeigersinn – du gewinnst am meisten von den Spielern, auf die du Position hast. Ideal sitzt du daher links von den loosen, aggressiven und schwächsten Spielern (du hast Position auf sie und kontrollierst die Pötte gegen sie), während tighte, berechenbare Spieler links von dir wenig Schaden anrichten. Wird der Traumsitz frei, frag den Dealer nach dem Seat Change.\n\nZuletzt die Disziplinfrage: Bleib, solange das Spiel gut ist und du gut bist. Verlässt einer der beiden Faktoren den Raum – die Fische gehen heim oder deine Konzentration schwindet –, ist das Spiel für heute vorbei. Diese Ausstiegsdisziplin trennt langfristig erfolgreiche Live-Spieler zuverlässiger von den anderen als jede Fachkenntnis.',
           tip: 'Bewerte einen Tisch nie nach deinem aktuellen Ergebnis, sondern nach seiner Qualität: An einem schlechten Tisch zu gewinnen ist Glück, an einem guten zu verlieren ist Pech – bleib bei den guten Tischen und die Ergebnisse folgen.',
         },
       ],
@@ -538,10 +538,10 @@ const m7: Module = {
         {
           question: 'Was ist eine „dünne“ Value Bet und warum ist sie gegen Calling Stations wichtig?',
           options: [
-            'Eine sehr kleine Bet mit den Nuts, um Calls zu provozieren',
-            'Eine Bet mit einer Hand, die von der gegnerischen Call-Range nur knapp mehrheitlich geschlagen wird – gegen weite Call-Ranges werden solche Bets profitabel',
-            'Ein kleiner Bluff mit komplett wertloser Hand',
-            'Eine Bet, die man nur aus Position spielt',
+            'Eine sehr kleine Bet mit den Nuts, um Calls zu provozieren und den Pot langsam aufzubauen',
+            'Eine Bet mit einer Hand, die den Großteil der gegnerischen Call-Range nur knapp schlägt',
+            'Ein kleiner Bluff mit komplett wertloser Hand, der nur selten gecallt werden soll',
+            'Eine Bet, die man ausschließlich aus Position spielt, weil man sonst nie dünn setzen darf',
           ],
           correctIndex: 1,
           explanation:
@@ -550,10 +550,10 @@ const m7: Module = {
         {
           question: 'Warum funktionieren große River-Bluffs gegen typische Live-Freizeitspieler schlecht?',
           options: [
-            'Weil live Bluffen gegen die Etikette verstößt',
-            'Weil der Rake Bluffs unprofitabel macht',
+            'Weil Bluffen live gegen die Etikette verstößt und Mitspieler dich dafür meiden',
+            'Weil der Rake Bluffs unprofitabel macht, da er jeden Pot vorab verkleinert',
             'Weil Bluffs Fold Equity brauchen – und loose-passive Spieler schlicht zu selten folden',
-            'Weil man live seine Karten zeigen muss, wenn der Bluff durchgeht',
+            'Weil man live seine Karten zeigen muss, wenn der Bluff durchgeht und alle anderen schon gefoldet haben',
           ],
           correctIndex: 2,
           explanation:
@@ -562,10 +562,10 @@ const m7: Module = {
         {
           question: 'Fünf Spieler sehen den Flop. Welche Aussage über Multiway-Pötte ist korrekt?',
           options: [
-            'Die Gewinnerhand ist im Schnitt stärker, daher steigt der Wert von Nut-Potenzial und sinkt der Wert dominierbarer Hände wie KJo',
-            'Bluffs werden profitabler, weil mehr Spieler folden können',
-            'Top Pair gewinnt multiway genauso oft wie heads-up',
-            'Kleine Flushdraws werden multiway wertvoller, weil mehr Gegner auszahlen',
+            'Die Gewinnerhand ist im Schnitt stärker – Nut-Potenzial gewinnt an Wert, dominierbare Hände verlieren',
+            'Bluffs werden profitabler, weil mehr Spieler folden können und der Pot größer ist',
+            'Top Pair gewinnt multiway genauso oft wie heads-up, weil die Karten gleich verteilt sind',
+            'Kleine Flushdraws werden multiway wertvoller, weil mehr Gegner auszahlen und der Pot wächst',
           ],
           correctIndex: 0,
           explanation:
@@ -574,10 +574,10 @@ const m7: Module = {
         {
           question: 'Du spielst 300bb tief gegen einen tighten Gegner. Er raist deine Turn-Bet groß, du hältst ein Overpair. Welche Leitlinie gilt?',
           options: [
-            'Overpairs sind bei jeder Stacktiefe ein klarer Stack-off',
+            'Overpairs sind bei jeder Stacktiefe ein klarer Stack-off, weil sie fast immer vorne liegen',
             'Je tiefer die Stacks, desto stärker muss die Hand für den ganzen Stack sein – One Pair reicht bei 300bb selten',
-            'Bei tiefen Stacks sollte man grundsätzlich jede Bet callen, weil die Implied Odds so gut sind',
-            'Tiefe Stacks ändern strategisch nichts',
+            'Bei tiefen Stacks sollte man grundsätzlich jede Bet callen, weil die Implied Odds so gut sind und man später gewinnt',
+            'Tiefe Stacks ändern strategisch nichts, weil Pot Odds und Equity gleich bleiben',
           ],
           correctIndex: 1,
           explanation:
@@ -586,10 +586,10 @@ const m7: Module = {
         {
           question: 'Am 1/2-Tisch straddelt UTG jede Hand auf 4 €. Was bedeutet das praktisch?',
           options: [
-            'Nichts – der Straddle ist nur ein Trinkgeld an den Pot',
-            'Die effektive Stack-Tiefe verdoppelt sich',
-            'Der Straddler bekommt eine zusätzliche Karte',
-            'Das Spiel wird faktisch zum doppelten Limit: Blinds verdoppelt, effektive Tiefe in Einheiten des Straddles halbiert, Raises bemisst man am Straddle',
+            'Nichts – der Straddle ist nur ein freiwilliges Trinkgeld an den Pot und ändert an Blinds, Tiefe und Sizing nichts',
+            'Die effektive Stack-Tiefe verdoppelt sich, weil mehr Geld im Pot liegt',
+            'Der Straddler bekommt eine zusätzliche Karte und handelt dafür preflop zuletzt',
+            'Das Spiel wird faktisch zum doppelten Limit: Blinds verdoppelt, effektive Tiefe in Straddle-Einheiten halbiert',
           ],
           correctIndex: 3,
           explanation:
@@ -598,10 +598,10 @@ const m7: Module = {
         {
           question: 'Ein sehr looser, aggressiver Freizeitspieler wechselt an deinen Tisch. Welcher Sitzplatz relativ zu ihm ist ideal?',
           options: [
-            'Direkt rechts von ihm, damit er nach dir handeln muss',
+            'Direkt rechts von ihm, damit er nach dir handeln muss und du seine Aktionen sofort siehst',
             'Direkt links von ihm, damit du in den meisten Händen Position auf ihn hast',
-            'Möglichst weit weg, um seinen Händen auszuweichen',
-            'Der Sitzplatz ist egal, solange der Tisch gut ist',
+            'Möglichst weit weg, um seinen Händen auszuweichen und nicht mit ihm im Pot zu landen',
+            'Der Sitzplatz ist egal, solange der Tisch insgesamt gut besetzt ist und viele Fische sitzen',
           ],
           correctIndex: 1,
           explanation:

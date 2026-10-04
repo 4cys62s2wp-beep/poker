@@ -9,6 +9,8 @@ import { useLang } from '../../i18n';
 import { STR, type OutsTemplateKey } from '../../i18n/pages/outstrainer';
 import { Rueckmeldung } from '../../components/Rueckmeldung';
 import { Zurueck } from '../../components/ui';
+import { MitBegriffen } from '../../components/Begriff';
+import { KonzeptLink } from '../../components/KonzeptLink';
 
 interface Scenario {
   hole: number[];
@@ -173,7 +175,7 @@ export function OutsTrainer() {
           <>
             <Rueckmeldung urteil={selected === scenario.outs ? 'richtig' : 'falsch'} style={{ marginTop: 16 }}>
               {selected !== scenario.outs && <>{L.outsAre(scenario.outs)}{' '}</>}
-              {L.explanations[scenario.key]}{' '}
+              <MitBegriffen text={L.explanations[scenario.key]} />{' '}
               <span className="muted">
                 {L.equityNote(Math.min(95, scenario.outs * 4))}
               </span>
@@ -181,6 +183,8 @@ export function OutsTrainer() {
           </>
         )}
       </div>
+
+      <KonzeptLink ziel="outs" />
 
       {/* Antworten und Weitermachen an derselben Stelle, unten im
           Daumenbereich (E-039). */}

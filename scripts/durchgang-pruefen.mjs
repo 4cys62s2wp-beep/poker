@@ -969,6 +969,320 @@ await schritt('Erinnern ohne Server: Kalendereintrag und Glossar-Sprung', async 
   };
 });
 
+/* ── Lektion und Quiz ─────────────────────────────────────────────────────
+   Drei Schritte an einem Gerät ohne Fortschritt:
+   1. Die Lektion zeigt, wo man liest, und führt mit „Weiter" durch.
+   2. Das Quiz ist eine eigene Adresse im Fokusmodus: Beim Antworten
+      verschiebt sich nichts, das Verlassen fragt erst ab der ersten Antwort,
+      und der Zwischenstand überlebt es.
+   3. Bestehen heißt verstanden: Ein schlechter Durchgang gibt keinen Haken,
+      kein Abzeichen, keine XP; ein guter schon. */
+
+const lektionsKontext = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' });
+await lektionsKontext.addInitScript(() => localStorage.setItem('pokermentor-lang-v1', 'de'));
+const lp = await lektionsKontext.newPage();
+lp.on('pageerror', (e) => seitenfehler.push(`Lektion: ${e.message}`));
+const lernstand = () => lp.evaluate(() => {
+  const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+  const d = JSON.parse(localStorage.getItem(`pokermentor-data-${idx.activeId}`));
+  return {
+    xp: d.xp,
+    fertig: Object.keys(d.completedLessons),
+    versucht: d.lessonAttempts,
+    fortschritt: d.lessonProgress,
+    abzeichen: Object.keys(d.badges),
+    wiederholung: d.reviews.length,
+    streak: d.streak.count,
+  };
+});
+
+await schritt('Die Lektion zeigt, wo man liest, und führt mit „Weiter“ durch', async () => {
+  await lp.goto(`${GRUND}/#/lernen/m1/m1-l1`, { waitUntil: 'domcontentloaded' });
+  await lp.waitForSelector('.lektions-leiste');
+  await lp.waitForTimeout(500);
+  const leiste = async () => lp.evaluate(() => {
+    const el = document.querySelector('.lektions-leiste');
+    const r = el.getBoundingClientRect();
+    return {
+      stand: el.querySelector('.stand')?.textContent.trim(),
+      knopf: el.querySelector('.btn')?.textContent.trim(),
+      unten_px: Math.round(r.bottom),
+      fenster_px: window.innerHeight,
+      klebt: getComputedStyle(el).position === 'sticky',
+      scroll_y: Math.round(window.scrollY),
+    };
+  });
+  const anfang = await leiste();
+  const abschnitte = await lp.locator('section.lesson-section[id^="abschnitt-"]').count();
+  // Zweimal „Weiter" — die Leiste folgt dem Lesen.
+  await lp.locator('.lektions-leiste button').click();
+  await lp.waitForTimeout(900);
+  await lp.locator('.lektions-leiste button').click();
+  await lp.waitForTimeout(900);
+  const mitte = await leiste();
+  const gemerkt = (await lernstand()).fortschritt['m1-l1'] ?? null;
+  // Ans Ende: Aus „Weiter" wird das Quiz.
+  await lp.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await lp.waitForTimeout(700);
+  const ende = await leiste();
+  // Zurück auf die Liste und wieder hinein: Die Seite springt an die gemerkte Stelle.
+  const gemerktEnde = (await lernstand()).fortschritt['m1-l1'] ?? null;
+  await lp.goto(`${GRUND}/#/lernen/m1`, { waitUntil: 'domcontentloaded' });
+  await lp.waitForSelector('.lektionen');
+  await lp.locator('.lektion-karte').first().click();
+  await lp.waitForSelector('.lektions-leiste');
+  await lp.waitForTimeout(1200);
+  const wieder = await lp.evaluate(() => ({
+    hinweis: document.querySelector('.lese-hinweis')?.textContent.replace(/\s+/g, ' ').trim() ?? null,
+    scroll_y: Math.round(window.scrollY),
+  }));
+  await lp.evaluate(() => window.scrollTo(0, 0));
+  return {
+    abschnitte,
+    stand_am_anfang: anfang.stand,
+    knopf_am_anfang: anfang.knopf,
+    klebt: anfang.klebt,
+    leiste_unten_am_fensterrand: anfang.unten_px === anfang.fenster_px,
+    stand_nach_zweimal_weiter: mitte.stand,
+    scrollte_beim_weiter: mitte.scroll_y > anfang.scroll_y,
+    abschnitt_gemerkt_nach_weiter: gemerkt,
+    knopf_am_ende: ende.knopf,
+    abschnitt_gemerkt_am_ende: gemerktEnde,
+    wiederkehr_hinweis: wieder.hinweis,
+    wiederkehr_sprang: wieder.scroll_y > 300,
+  };
+});
+
+/** Messwerte der Quiz-Seite: wo steht was. */
+const quizGeometrie = () => lp.evaluate(() => {
+  const top = (sel) => Math.round(document.querySelector(sel)?.getBoundingClientRect().top ?? -1);
+  const optionen = [...document.querySelectorAll('.quiz-option')].map((o) => Math.round(o.getBoundingClientRect().top));
+  const leiste = document.querySelector('.quiz-leiste');
+  const r = leiste.getBoundingClientRect();
+  return {
+    frage_oben: top('.quiz-frage'),
+    optionen,
+    leiste_oben: Math.round(r.top),
+    leiste_hoehe: Math.round(r.height),
+    leiste_unten: Math.round(r.bottom),
+    fenster: window.innerHeight,
+    klebt: getComputedStyle(leiste).position === 'sticky',
+    zaehler: document.querySelector('.quiz-zaehler')?.textContent.trim(),
+  };
+});
+
+await schritt('Das Quiz ist eine eigene Adresse im Fokusmodus', async () => {
+  await lp.goto(`${GRUND}/#/lernen/m1/m1-l1`, { waitUntil: 'domcontentloaded' });
+  await lp.waitForSelector('.lektions-leiste');
+  await lp.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await lp.waitForTimeout(600);
+  await lp.getByRole('button', { name: /Quiz starten/ }).click();
+  await lp.waitForSelector('.quiz-fokus');
+  await lp.waitForTimeout(400);
+  const adresse = lp.url().split('#')[1];
+  const vorher = await quizGeometrie();
+  const kopf = await lp.evaluate(() => ({
+    schliessen: document.querySelectorAll('.quiz-schliessen').length,
+    seitenkopf: document.querySelectorAll('main .page-header').length,
+    h1: document.querySelectorAll('main h1').length,
+  }));
+  await lp.locator('.quiz-option').first().click();
+  await lp.waitForTimeout(350);
+  const nachher = await quizGeometrie();
+  const verschiebung = Math.max(
+    ...vorher.optionen.map((y, i) => Math.abs(y - nachher.optionen[i])),
+    Math.abs(vorher.frage_oben - nachher.frage_oben),
+    Math.abs(vorher.leiste_oben - nachher.leiste_oben),
+    Math.abs(vorher.leiste_hoehe - nachher.leiste_hoehe),
+  );
+  const text = await lp.evaluate(() => ({
+    urteil: document.querySelector('.quiz-leiste .rueckmeldung-kopf')?.textContent.trim(),
+    knopf: document.querySelector('.quiz-weiter')?.textContent.trim(),
+    karten_unter_leiste: document.querySelector('.quiz-leiste').getBoundingClientRect().bottom <= window.innerHeight,
+  }));
+  // Weiter zu Frage 2, dann verlassen: Die Rückfrage kommt, der Stand bleibt.
+  await lp.locator('.quiz-weiter').click();
+  await lp.waitForTimeout(250);
+  await lp.locator('.quiz-schliessen').click();
+  await lp.waitForSelector('.quiz-rueckfrage');
+  const rueckfrageText = (await lp.locator('.quiz-rueckfrage').innerText()).replace(/\s+/g, ' ');
+  await lp.getByRole('button', { name: 'Verlassen', exact: true }).click();
+  await lp.waitForSelector('.lektions-leiste');
+  await lp.waitForTimeout(500);
+  const zurueck = lp.url().split('#')[1];
+  await lp.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await lp.waitForTimeout(500);
+  const fortsetzen = (await lp.locator('.lektions-leiste .btn.primary').innerText()).trim();
+  await lp.locator('.lektions-leiste .btn.primary').click();
+  await lp.waitForSelector('.quiz-fokus');
+  await lp.waitForTimeout(300);
+  const wieder = (await quizGeometrie()).zaehler;
+  // Browser-Zurück verlässt nur das Quiz.
+  await lp.goBack();
+  await lp.waitForSelector('.lektions-leiste');
+  const nachZurueck = lp.url().split('#')[1];
+  return {
+    adresse,
+    frage_oben_px: vorher.frage_oben,
+    kopf,
+    verschiebung_beim_antworten_px: verschiebung,
+    leiste_hoehe_px: vorher.leiste_hoehe,
+    leiste_klebt: vorher.klebt,
+    leiste_am_fensterrand: vorher.leiste_unten === vorher.fenster,
+    nach_antwort: text,
+    rueckfrage: rueckfrageText,
+    nach_verlassen: zurueck,
+    knopf_danach: fortsetzen,
+    zaehler_nach_fortsetzen: wieder,
+    nach_browser_zurueck: nachZurueck,
+  };
+});
+
+await schritt('Bestehen heißt verstanden', async () => {
+  const neueLektion = async () => {
+    await lp.evaluate(() => sessionStorage.clear());
+    await lp.goto(`${GRUND}/#/lernen/m1/m1-l1/quiz`, { waitUntil: 'domcontentloaded' });
+    await lp.waitForSelector('.quiz-fokus');
+    await lp.waitForTimeout(300);
+  };
+  /** Ein Durchgang. `richtigeTexte`: Frage → Text der richtigen Option; ohne
+   *  Angabe wird immer die erste gewählt (und die richtige gemerkt). */
+  const durchgang = async (richtigeTexte) => {
+    const gemerkt = {};
+    const reihenfolgen = {};
+    for (let i = 0; i < 5; i += 1) {
+      await lp.waitForSelector('.quiz-option');
+      const frage = (await lp.locator('.quiz-frage').innerText()).trim();
+      reihenfolgen[frage] = await lp.locator('.quiz-option').allInnerTexts();
+      if (richtigeTexte) {
+        await lp.evaluate((ziel) => {
+          const o = [...document.querySelectorAll('.quiz-option')]
+            .find((b) => b.textContent.replace(/^[A-D]/, '').replace(/\s+/g, ' ').trim() === ziel);
+          o.click();
+        }, richtigeTexte[frage]);
+      } else {
+        await lp.locator('.quiz-option').first().click();
+      }
+      await lp.waitForSelector('.quiz-option.correct');
+      gemerkt[frage] = await lp.evaluate(() => document.querySelector('.quiz-option.correct')
+        .textContent.replace(/^[A-D]/, '').replace(/\s+/g, ' ').trim());
+      await lp.locator('.quiz-weiter').click();
+      await lp.waitForTimeout(150);
+    }
+    await lp.waitForSelector('.quiz-ergebnis');
+    await lp.waitForTimeout(350);
+    return { gemerkt, reihenfolgen };
+  };
+  const ergebnis = () => lp.evaluate(() => ({
+    urteil: document.querySelector('.ergebnis-kopf .urteil')?.textContent.trim(),
+    punkte: document.querySelector('.ergebnis-kopf .big-stat')?.textContent.trim(),
+    kacheln: [...document.querySelectorAll('.ergebnis-kachel')].map((k) => k.textContent.replace(/\s+/g, ' ').trim()),
+    falsch_liste: document.querySelectorAll('.ergebnis-falsch li').length,
+    in_wiederholung: document.querySelectorAll('.ergebnis-falsch li .small').length,
+    knoepfe: [...document.querySelectorAll('.entscheidung .btn')].map((b) => b.textContent.trim()),
+    toasts: document.querySelectorAll('.toast, .toast-stapel > *').length,
+    leiste_im_daumenbereich: (() => {
+      const r = document.querySelector('.entscheidung').getBoundingClientRect();
+      return r.top + r.height / 2 >= window.innerHeight / 2;
+    })(),
+  }));
+
+  const vor = await lernstand();
+  await neueLektion();
+  /* Ein Durchgang, in dem immer die erste Option gewählt wird, besteht mit
+     etwa 1,6 % Wahrscheinlichkeit durch Zufall. Dann noch einmal. */
+  let erster = await durchgang();
+  let e1 = await ergebnis();
+  for (let n = 0; n < 4 && e1.urteil === 'Bestanden'; n += 1) {
+    await lp.evaluate(() => {
+      const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+      const key = `pokermentor-data-${idx.activeId}`;
+      const d = JSON.parse(localStorage.getItem(key));
+      d.completedLessons = {}; d.xp = 0; d.badges = {}; d.reviews = [];
+      localStorage.setItem(key, JSON.stringify(d));
+    });
+    await lp.reload({ waitUntil: 'domcontentloaded' });
+    await neueLektion();
+    erster = await durchgang();
+    e1 = await ergebnis();
+  }
+  const nachFehlschlag = await lernstand();
+  const reihenfolge1 = erster.reihenfolgen;
+
+  // Die Modulübersicht sagt „versucht", nicht „abgeschlossen".
+  await lp.goto(`${GRUND}/#/lernen/m1`, { waitUntil: 'domcontentloaded' });
+  await lp.waitForSelector('.lektionen');
+  const modulZeile = await lp.evaluate(() => {
+    const z = document.querySelector('.lektionen .lektion');
+    return {
+      klassen: [...z.classList],
+      meta: z.querySelector('.meta')?.textContent.trim(),
+      hinweis: z.querySelector('.hinweis')?.textContent.trim(),
+    };
+  });
+
+  // Fehler nochmal üben: nur die falschen Fragen, ohne Folgen.
+  await lp.goto(`${GRUND}/#/lernen/m1/m1-l1/quiz`, { waitUntil: 'domcontentloaded' });
+  await lp.waitForSelector('.quiz-fokus');
+  const richtigeErste = erster.gemerkt;
+  // Neuer Durchgang mit den richtigen Antworten, aber zuerst: den Fehlschlag noch einmal herstellen und üben.
+  await lp.evaluate(() => sessionStorage.clear());
+  await lp.reload({ waitUntil: 'domcontentloaded' });
+  await lp.waitForSelector('.quiz-fokus');
+  const zweiter = await durchgang();
+  const e2 = await ergebnis();
+  await lp.getByRole('button', { name: 'Fehler nochmal üben' }).click();
+  await lp.waitForSelector('.quiz-fokus');
+  const uebungsFragen = await lp.evaluate(() => document.querySelector('.quiz-zaehler')?.textContent.trim());
+  const nochmal = Number(uebungsFragen?.split('/')[1] ?? 0);
+  for (let i = 0; i < nochmal; i += 1) {
+    await lp.waitForSelector('.quiz-option');
+    await lp.locator('.quiz-option').first().click();
+    await lp.waitForSelector('.quiz-option.correct');
+    await lp.locator('.quiz-weiter').click();
+    await lp.waitForTimeout(150);
+  }
+  await lp.waitForSelector('.quiz-ergebnis');
+  const uebung = await lp.evaluate(() => ({
+    titel: document.querySelector('.ergebnis-kopf h2')?.textContent.trim(),
+    hinweis: document.querySelector('.ergebnis-kopf p')?.textContent.trim(),
+  }));
+  const nachUebung = await lernstand();
+
+  // Und jetzt bestehen: mit den richtigen Antworten (gemerkt aus den Durchgängen).
+  const richtige = { ...richtigeErste, ...zweiter.gemerkt };
+  await lp.getByRole('button', { name: 'Quiz noch einmal von vorn' }).click();
+  await lp.waitForSelector('.quiz-fokus');
+  await lp.waitForTimeout(300);
+  const dritter = await durchgang(richtige);
+  const e3 = await ergebnis();
+  const nachBestehen = await lernstand();
+  const reihenfolge3 = dritter.reihenfolgen;
+  const andereReihenfolge = Object.keys(reihenfolge1).filter(
+    (f) => reihenfolge3[f] && JSON.stringify(reihenfolge1[f]) !== JSON.stringify(reihenfolge3[f]),
+  ).length;
+
+  return {
+    fehlschlag: e1,
+    xp_nach_fehlschlag: nachFehlschlag.xp - vor.xp,
+    lektion_fertig_nach_fehlschlag: nachFehlschlag.fertig.includes('m1-l1'),
+    versucht_gemerkt: nachFehlschlag.versucht['m1-l1'] ?? null,
+    abzeichen_nach_fehlschlag: nachFehlschlag.abzeichen,
+    wiederholung_nach_fehlschlag: nachFehlschlag.wiederholung,
+    modul_zeile: modulZeile,
+    uebung,
+    lektion_fertig_nach_uebung: nachUebung.fertig.includes('m1-l1'),
+    bestanden: e3,
+    xp_durch_bestehen: nachBestehen.xp - nachUebung.xp,
+    lektion_fertig_nach_bestehen: nachBestehen.fertig.includes('m1-l1'),
+    versucht_danach: nachBestehen.versucht['m1-l1'] ?? null,
+    abzeichen_nach_bestehen: nachBestehen.abzeichen,
+    optionen_gemischt: andereReihenfolge,
+  };
+});
+
+await lektionsKontext.close();
+
 await schritt('Jeder Bildschirm hat einen sichtbaren Weg zur Startseite', async () => {
   /* Ohne untere Leiste trägt die Marke oben diesen Weg. Geprüft wird an
      einem tief liegenden Bildschirm, nicht an der Startseite selbst. */

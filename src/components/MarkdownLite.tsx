@@ -1,11 +1,21 @@
-import { Fragment, type ReactNode } from 'react';
+import { Fragment, useMemo, type ReactNode } from 'react';
+import { useLang } from '../i18n';
+import { baueIndex, findeEintrag, type Index } from '../lib/glossar/verknuepfen';
+import { Begriff } from './Begriff';
 
-/** Rendert **fett** innerhalb einer Zeile. */
-function renderInline(text: string, keyPrefix: string): ReactNode[] {
+/** Rendert **fett** innerhalb einer Zeile. Ein fett gesetzter Begriff, zu dem
+ *  es einen Glossareintrag gibt, ist antippbar (E-092). */
+function renderInline(text: string, keyPrefix: string, index: Index): ReactNode[] {
   const parts = text.split(/\*\*(.+?)\*\*/g);
-  return parts.map((part, i) =>
-    i % 2 === 1 ? <strong key={`${keyPrefix}-${i}`}>{part}</strong> : <Fragment key={`${keyPrefix}-${i}`}>{part}</Fragment>,
-  );
+  return parts.map((part, i) => {
+    if (i % 2 === 0) return <Fragment key={`${keyPrefix}-${i}`}>{part}</Fragment>;
+    const eintrag = findeEintrag(index, part);
+    return (
+      <strong key={`${keyPrefix}-${i}`}>
+        {eintrag ? <Begriff eintrag={eintrag}>{part}</Begriff> : part}
+      </strong>
+    );
+  });
 }
 
 /**
@@ -13,6 +23,8 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
  * Absätze (Leerzeile), Listen ("- "), **fett**.
  */
 export function MarkdownLite({ text }: { text: string }) {
+  const { content } = useLang();
+  const index = useMemo(() => baueIndex(content.glossary), [content.glossary]);
   const blocks = text.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
   return (
     <>
@@ -23,12 +35,12 @@ export function MarkdownLite({ text }: { text: string }) {
           return (
             <ul key={bi}>
               {lines.map((l, li) => (
-                <li key={li}>{renderInline(l.slice(2), `${bi}-${li}`)}</li>
+                <li key={li}>{renderInline(l.slice(2), `${bi}-${li}`, index)}</li>
               ))}
             </ul>
           );
         }
-        return <p key={bi}>{renderInline(lines.join(' '), `${bi}`)}</p>;
+        return <p key={bi}>{renderInline(lines.join(' '), `${bi}`, index)}</p>;
       })}
     </>
   );

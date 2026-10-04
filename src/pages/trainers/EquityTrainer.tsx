@@ -10,6 +10,7 @@ import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/equitytrainer';
 import { Rueckmeldung } from '../../components/Rueckmeldung';
 import { Zurueck } from '../../components/ui';
+import { KonzeptLink } from '../../components/KonzeptLink';
 
 const TOLERANCE = 7; // Prozentpunkte
 
@@ -118,6 +119,8 @@ export function EquityTrainer() {
           </Rueckmeldung>
         )}
       </div>
+
+      <KonzeptLink ziel="equity" />
 
       {/* Der Schieber bleibt oben — er gehört zur Aufgabe. Was den Schritt
           auslöst, steht unten im Daumenbereich (E-039). */}

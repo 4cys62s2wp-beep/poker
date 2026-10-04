@@ -14,6 +14,9 @@ export const STR = defineStrings(
     emptyTitle: 'Erst eine Lektion abschließen',
     emptyText: 'Das Tages-Quiz fragt nur, was du schon gelernt hast. Sobald du eine Lektion abgeschlossen hast, steht es hier bereit.',
     emptyGo: 'Zur nächsten Lektion',
+    toPath: 'Zum Lernpfad',
+    allRight: 'Alles richtig – bis morgen!',
+    toReview: (n: number) => (n === 1 ? 'Eine Frage kommt in deine Wiederholung.' : `${n} Fragen kommen in deine Wiederholung.`),
   },
   {
     title: 'Daily Quiz',
@@ -27,5 +30,8 @@ export const STR = defineStrings(
     emptyTitle: 'Finish a lesson first',
     emptyText: 'The Daily Quiz only asks what you have already learned. Once you have finished a lesson, it will be waiting here.',
     emptyGo: 'To the next lesson',
+    toPath: 'To the learning path',
+    allRight: 'All correct – see you tomorrow!',
+    toReview: (n: number) => (n === 1 ? 'One question goes into your review.' : `${n} questions go into your review.`),
   },
 );

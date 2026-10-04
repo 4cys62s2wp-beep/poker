@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { suchbar } from '../lib/eingabe/suche';
 import { STR as NAV } from '../i18n/pages/layout';
 import { Zurueck } from '../components/ui';
@@ -15,6 +15,7 @@ import { rangstand } from '../lib/rang/stand';
 import { zeichenFuer } from '../lib/zeichen';
 import { usePro } from '../lib/pro/ProProvider';
 import { isFreeModule } from '../lib/pro/plan';
+import { markiereGesehen, wurdeGesehen } from '../lib/gesehen';
 
 const LEVEL_PILL: Record<string, string> = {
   Einsteiger: 'ok',
@@ -48,6 +49,11 @@ export function LearnPage() {
      dann sieht die Seite exakt so aus wie bisher. */
   const unlocked = fullAccess;
   const [query, setQuery] = useState('');
+  /* „Neu"-Marken stehen nur beim ersten Besuch: Danach ist es nicht mehr neu,
+     und eine Marke, die nie verschwindet, ist keine Auskunft mehr (E-092). */
+  const [neuDrill] = useState(() => !wurdeGesehen('drill'));
+  const [neuPros] = useState(() => !wurdeGesehen('pros'));
+  useEffect(() => { markiereGesehen('drill'); markiereGesehen('pros'); }, []);
 
   const hits = useMemo<SearchHit[]>(() => {
     const q = suchbar(query.trim());
@@ -116,18 +122,25 @@ export function LearnPage() {
         badge: quote === null ? undefined : L.trainerQuote(quote),
       };
     }),
-    {
-      to: '/lernen/wiederholen', icon: zeichenFuer('/lernen/wiederholen'), tone: 'blue',
+    /* Wiederholen steht hier nur, wenn etwas fällig ist — und mit der Zahl.
+       Eine Kachel „0 fällig" ist ein Weg zu einer leeren Seite. */
+    ...(dueReviewCount > 0 ? [{
+      to: '/lernen/wiederholen', icon: zeichenFuer('/lernen/wiederholen'), tone: 'blue' as const,
       title: L.reviewTitle, sub: L.reviewSub,
-      badge: dueReviewCount > 0 ? L.reviewDue(dueReviewCount) : undefined,
-    },
+      badge: L.reviewDue(dueReviewCount),
+    }] : []),
     {
       to: '/lernen/tagesquiz', icon: zeichenFuer('/lernen/tagesquiz'), tone: 'green',
       title: L.quizTitle, sub: L.quizSub,
       badge: quizOffen ? L.quizOpen : undefined,
     },
     { to: '/lernen/uebungstisch', icon: zeichenFuer('/lernen/uebungstisch'), tone: 'red', title: L.practiceTitle, sub: L.practiceSub },
-    { to: '/lernen/statistik', icon: zeichenFuer('/lernen/statistik'), tone: 'violet', title: L.styleTitle, sub: L.styleSub },
+    /* Die Spielstil-Analyse wertet gespielte Hände aus: ohne sie gibt es
+       nichts zu zeigen. */
+    ...(data.handsPlayed > 0 ? [{
+      to: '/lernen/statistik', icon: zeichenFuer('/lernen/statistik'), tone: 'violet' as const,
+      title: L.styleTitle, sub: L.styleSub,
+    }] : []),
   ];
 
   const rang = rangstand(data.xp, rangnamen(lang));
@@ -186,35 +199,78 @@ export function LearnPage() {
             .slice(0, idx)
             .every((v) => moduleProgress(data, v.id) === 1);
           const zustand = locked ? 'gesperrt' : fertig ? 'fertig' : naechste ? 'offen' : 'spaeter';
+
+          /* Nur die Stufe, an der es weitergeht, ist aufgeklappt (E-092): Sie
+             zeigt ihre Lektionen und einen Knopf zur nächsten. Alle anderen
+             sind eine Zeile — vorher waren es neun gleich große Karten, 3680
+             Pixel Seitenhöhe. */
+          if (naechste) {
+            const dran = m.lessons.find((l) => !data.completedLessons[l.id]) ?? m.lessons[0];
+            return (
+              <li key={m.id} className={`stufe ${zustand}`}>
+                <div className="stufe-karte aufgeklappt">
+                  <Link to={`/lernen/${m.id}`} className="stufe-kopf">
+                    <Levelring
+                      wert={idx + 1}
+                      anteil={prog}
+                      groesse={48}
+                      className="auszeichnung"
+                      beschriftung={L.stufeRing(done, m.lessons.length)}
+                    />
+                    <div className="stufe-text">
+                      <div className="kopf">
+                        <span className="titel">{m.title}</span>
+                        <span className={`pill ${LEVEL_PILL[m.level] ?? ''}`}>{levelLabel(m.level, lang)}</span>
+                      </div>
+                      <span className="unter">{m.subtitle}</span>
+                      <span className="zahl">{L.doneLine(done, m.lessons.length)}</span>
+                    </div>
+                    <span className="stufe-hinweis">{L.stufeOffen}</span>
+                  </Link>
+                  <ol className="stufe-lektionen">
+                    {m.lessons.map((l) => {
+                      const erledigt = !!data.completedLessons[l.id];
+                      return (
+                        <li key={l.id} className={`${erledigt ? 'fertig' : ''}${l.id === dran.id ? ' dran' : ''}`}>
+                          <Link to={`/lernen/${m.id}/${l.id}`}>
+                            <span className="punkt" aria-hidden="true">
+                              {erledigt ? <Icon name="check" size={14} /> : null}
+                            </span>
+                            <span className="name">{l.title}</span>
+                            <span className="dauer">{L.minuten(l.duration)}</span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                  <Link to={`/lernen/${m.id}/${dran.id}`} className="stufe-weiter">
+                    {L.weiterLektion(dran.title, dran.duration)}
+                  </Link>
+                </div>
+              </li>
+            );
+          }
+
           return (
             <li key={m.id} className={`stufe ${zustand}`}>
-              <Link to={`/lernen/${m.id}`} className="stufe-karte">
+              <Link to={`/lernen/${m.id}`} className="stufe-karte kompakt">
                 <Levelring
-                  wert={fertig ? <Icon name="check" size={18} /> : idx + 1}
+                  wert={fertig ? <Icon name="check" size={16} /> : idx + 1}
                   anteil={prog}
-                  groesse={48}
+                  groesse={36}
                   className={fertig ? 'fertig' : 'auszeichnung'}
                   beschriftung={L.stufeRing(done, m.lessons.length)}
                 />
-                <div className="stufe-text">
-                  <div className="kopf">
-                    <span className="titel">{m.title}</span>
-                    {locked && (
-                      <span className="pill gold" title={L.lockedHint} aria-label={L.lockedHint}>
-                        <Icon name="lock" size={13} />
-                      </span>
-                    )}
-                  </div>
-                  <span className="unter">{m.subtitle}</span>
-                  <div className="marken">
-                    <span className={`pill ${LEVEL_PILL[m.level] ?? ''}`}>
-                      {levelLabel(m.level, lang)}
-                    </span>
-                    <span className="zahl">{L.doneLine(done, m.lessons.length)}</span>
-                  </div>
-                </div>
-                {naechste && <span className="stufe-hinweis">{L.stufeOffen}</span>}
-                {fertig && <span className="stufe-hinweis fertig">{L.stufeFertig}</span>}
+                <span className="titel">{m.title}</span>
+                {locked ? (
+                  <span className="pill gold" title={L.lockedHint} aria-label={L.lockedHint}>
+                    <Icon name="lock" size={13} />
+                  </span>
+                ) : fertig ? (
+                  <span className="stufe-hinweis fertig">{L.stufeFertig}</span>
+                ) : (
+                  <span className="zahl">{done}/{m.lessons.length}</span>
+                )}
               </Link>
             </li>
           );
@@ -272,7 +328,7 @@ export function LearnPage() {
                 <div className="small muted" style={{ marginTop: 3 }}>{L.drillSub}</div>
               </div>
             </div>
-            <span className="pill gold">{L.drillPill}</span>
+            {neuDrill && <span className="pill gold">{L.drillPill}</span>}
           </div>
         </Link>
 
@@ -308,7 +364,7 @@ export function LearnPage() {
                 {L.proSub}
               </div>
             </div>
-            <span className="pill gold">{L.newPill}</span>
+            {neuPros && <span className="pill gold">{L.newPill}</span>}
           </div>
         </Link>
         </>

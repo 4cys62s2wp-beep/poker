@@ -7,6 +7,7 @@ import { defineStrings } from '..';
 
 export const STR = defineStrings(
   {
+    konzeptNachlesen: 'Konzept nachlesen:',
     serie: 'Serie',
     serieRing: (n: number) => `Serie: ${n} richtige in Folge`,
     treffer: 'Treffer',
@@ -20,6 +21,7 @@ export const STR = defineStrings(
     neuerRekord: 'Rekord',
   },
   {
+    konzeptNachlesen: 'Read up on the concept:',
     serie: 'Streak',
     serieRing: (n: number) => `Streak: ${n} correct in a row`,
     treffer: 'Hit rate',

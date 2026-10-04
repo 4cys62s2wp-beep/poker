@@ -10,6 +10,7 @@ import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/handranktrainer';
 import { Rueckmeldung } from '../../components/Rueckmeldung';
 import { Zurueck } from '../../components/ui';
+import { KonzeptLink } from '../../components/KonzeptLink';
 
 interface Scenario {
   hole: number[];
@@ -92,6 +93,8 @@ export function HandRankTrainer() {
           </>
         )}
       </div>
+
+      <KonzeptLink ziel="handranking" />
 
       {/* Sieben Kategorien passen nicht in eine Zeile — die Leiste bricht um
           (E-039). */}

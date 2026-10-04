@@ -1,11 +1,11 @@
 {
-  "geprueft_am": "2026-10-04T10:51:04.523Z",
+  "geprueft_am": "2026-10-04T12:49:00.238Z",
   "grund": "http://localhost:4173",
   "breite": 390,
   "hoehe": 844,
   "sperre_wirkt": true,
-  "bildschirme": 90,
-  "geladen": 90,
+  "bildschirme": 139,
+  "geladen": 139,
   "voller_speicher": {
     "hinweis": "Nicht auf dem Gerät gespeichert Der Speicher ist voll. Beim nächsten Start holt die App diesen Stand aus ihrer Sicherung — schaffe trotzdem Platz.",
     "stand_nach_neustart": "Zweiter Name",

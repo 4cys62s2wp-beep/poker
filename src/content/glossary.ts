@@ -1,5 +1,5 @@
 // Poker-Glossar für PokerMentor.
-// 159 Einträge, alphabetisch sortiert. `related` verweist auf exakte
+// 165 Einträge, alphabetisch sortiert. `related` verweist auf exakte
 // `term`-Strings anderer Einträge.
 
 import type { GlossaryEntry } from './types';
@@ -76,6 +76,13 @@ const glossary: GlossaryEntry[] = [
     related: ['Value Bet', 'Overbet', 'Boardtextur'],
   },
   {
+    term: 'Big Blind',
+    definition:
+      'Der höhere der beiden Pflichteinsätze, gesetzt vom zweiten Spieler links vom Button. Er ist zugleich die Maßeinheit für Stacks und Einsätze („20 BB“) und handelt preflop als Letzter.',
+    category: 'Grundlagen',
+    related: ['Small Blind', 'Blinds', 'Button'],
+  },
+  {
     term: 'Blank',
     definition:
       'Eine Turn- oder River-Karte, die die Kräfteverhältnisse voraussichtlich nicht verändert, etwa eine niedrige Karte ohne Flush- oder Straight-Bezug. Auch Brick genannt.',
@@ -144,6 +151,13 @@ const glossary: GlossaryEntry[] = [
       'Die Phase kurz vor den bezahlten Plätzen eines Turniers. Auf der Bubble steigt der ICM-Druck stark: Große Stacks können aggressiv stehlen, kurze Stacks müssen eng spielen.',
     category: 'Turnier',
     related: ['ICM', 'ITM', 'Final Table'],
+  },
+  {
+    term: 'Burn Card',
+    definition:
+      'Eine verdeckt abgelegte Karte, die der Dealer vor Flop, Turn und River aus dem Stapel nimmt. Sie schützt davor, dass markierte oder gesehene Karten ins Spiel kommen.',
+    category: 'Live',
+    related: ['Flop', 'Community Cards'],
   },
   {
     term: 'Button',
@@ -501,6 +515,13 @@ const glossary: GlossaryEntry[] = [
       'Erweiterte Pot Odds, die zukünftige Gewinne einbeziehen, falls der eigene Draw trifft. Gute Implied Odds rechtfertigen Calls, die nach reinen Pot Odds zu teuer wären, besonders mit tiefen Stacks.',
     category: 'Mathematik',
     related: ['Pot Odds', 'Reverse Implied Odds', 'Set Mining'],
+  },
+  {
+    term: 'Initiative',
+    definition:
+      'Die Rolle des Spielers, der in der vorigen Setzrunde zuletzt aggressiv war. Wer die Initiative hat, darf zuerst setzen und gewinnt Pots auch ohne die beste Hand, weil der Gegner folden kann.',
+    category: 'Strategie',
+    related: ['C-Bet', 'Position', 'Value Bet'],
   },
   {
     term: 'Isolation',
@@ -895,6 +916,13 @@ const glossary: GlossaryEntry[] = [
     related: ['Check-Raise', 'Nuts', 'Dry Board'],
   },
   {
+    term: 'Small Blind',
+    definition:
+      'Der kleinere der beiden Pflichteinsätze, gesetzt vom Spieler direkt links vom Button – meist die Hälfte des Big Blinds. Postflop handelt er als Erster und sitzt damit in der schwächsten Position.',
+    category: 'Grundlagen',
+    related: ['Big Blind', 'Blinds', 'Button'],
+  },
+  {
     term: 'Snap Call',
     definition:
       'Ein sofortiger Call ohne jede Bedenkzeit, meist mit einer sehr starken Hand oder in einer eindeutigen Situation. Die Geschwindigkeit einer Aktion kann im Live-Spiel selbst ein Tell sein.',
@@ -949,6 +977,13 @@ const glossary: GlossaryEntry[] = [
       'Fünf Karten in lückenloser Reihenfolge, unabhängig von der Farbe, etwa 5-6-7-8-9. Das Ass kann oben (Broadway) oder unten (Wheel: A-2-3-4-5) verwendet werden.',
     category: 'Grundlagen',
     related: ['Broadway', 'OESD', 'Gutshot'],
+  },
+  {
+    term: 'Straight Flush',
+    definition:
+      'Fünf Karten in lückenloser Reihenfolge, alle in derselben Farbe, etwa 5♥ 6♥ 7♥ 8♥ 9♥. Nach dem Royal Flush ist er die zweitstärkste Hand im Poker.',
+    category: 'Grundlagen',
+    related: ['Straight', 'Flush', 'Royal Flush'],
   },
   {
     term: 'String Bet',
@@ -1103,6 +1138,13 @@ const glossary: GlossaryEntry[] = [
       'Ein sehr schwacher Spieler mit sehr viel Geld, der an hohen Limits große Summen verliert. Whales sind oft der Grund, warum ganze Runden hoher Cash Games überhaupt zustande kommen.',
     category: 'Slang',
     related: ['Fish', 'Calling Station'],
+  },
+  {
+    term: 'Wheel',
+    definition:
+      'Die niedrigste mögliche Straße: A-2-3-4-5, bei der das Ass unten steht. Sie ist die schwächste Straße und verliert gegen jede höhere.',
+    category: 'Grundlagen',
+    related: ['Straight', 'Broadway'],
   },
   {
     term: 'Win Rate',

@@ -14,6 +14,8 @@ import { ProLock } from '../../components/pro/ProLock';
 import { usePro } from '../../lib/pro/ProProvider';
 import { Rueckmeldung } from '../../components/Rueckmeldung';
 import { Zurueck } from '../../components/ui';
+import { MitBegriffen } from '../../components/Begriff';
+import { KonzeptLink } from '../../components/KonzeptLink';
 
 interface Spot {
   chartIdx: number;
@@ -107,7 +109,7 @@ export function PushFoldTrainer() {
           <>
             <Rueckmeldung urteil={isCorrect ? 'richtig' : 'falsch'} style={{ marginTop: 16 }}>
               {L.verdict(spot.label, chart.stack, chart.position, correct === 'push', pct)}{' '}
-              {content.pushStackInfo[chart.stack]}
+              <MitBegriffen text={content.pushStackInfo[chart.stack]} />
             </Rueckmeldung>
 
             <div style={{ marginTop: 18 }}>
@@ -129,6 +131,8 @@ export function PushFoldTrainer() {
           {L.footnote}
         </p>
       </div>
+
+      <KonzeptLink ziel="pushfold" />
 
       {/* Antworten und Weitermachen an derselben Stelle, unten im
           Daumenbereich (E-039). */}

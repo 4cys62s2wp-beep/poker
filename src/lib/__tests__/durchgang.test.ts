@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(37);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(40);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -845,6 +845,162 @@ describe('Erinnern ohne Server (FAHRPLAN 4.6)', () => {
   it('öffnet im Glossar den Begriff, mit dem man kommt', () => {
     expect(e().glossar_offen).toEqual(['Call']);
     expect(e().glossar_treffer_mehr_als_einer).toBe(true);
+  });
+});
+
+describe('Die Lektion führt durch (FAHRPLAN 5.4)', () => {
+  const l = () => schritt('Die Lektion zeigt, wo man liest, und führt mit „Weiter“ durch');
+
+  it('nennt den Abschnitt und die Zahl der Abschnitte', () => {
+    expect(l().stand_am_anfang).toBe(`Abschnitt 1 von ${l().abschnitte}`);
+  });
+
+  it('hat eine klebende Leiste am unteren Rand mit „Weiter"', () => {
+    expect(l().klebt).toBe(true);
+    expect(l().leiste_unten_am_fensterrand).toBe(true);
+    expect(l().knopf_am_anfang).toBe('Weiter');
+  });
+
+  it('scrollt mit „Weiter" zum nächsten Abschnitt und zählt mit', () => {
+    expect(l().scrollte_beim_weiter).toBe(true);
+    expect(l().stand_nach_zweimal_weiter).toBe(`Abschnitt 3 von ${l().abschnitte}`);
+  });
+
+  it('misst beim Lesen, wie weit man ist, und merkt es', () => {
+    /* Der Abschnitt kommt aus dem Bild (Index 2 = dritter Abschnitt), nicht aus
+       einer Annahme. Am Ende steht der letzte. */
+    expect(l().abschnitt_gemerkt_nach_weiter).toBe(2);
+    expect(l().abschnitt_gemerkt_am_ende).toBe((l().abschnitte as number) - 1);
+  });
+
+  it('macht am Ende aus „Weiter" das Quiz', () => {
+    expect(String(l().knopf_am_ende)).toMatch(/^Quiz starten/);
+  });
+
+  it('springt beim Wiederkommen an die gemerkte Stelle und sagt es', () => {
+    expect(l().wiederkehr_sprang).toBe(true);
+    expect(String(l().wiederkehr_hinweis)).toMatch(/Weiter bei Abschnitt \d+ von \d+/);
+  });
+});
+
+describe('Das Quiz im Fokusmodus (FAHRPLAN 5.2)', () => {
+  const q = () => schritt('Das Quiz ist eine eigene Adresse im Fokusmodus');
+
+  it('hat eine eigene Adresse', () => {
+    expect(q().adresse).toBe('/lernen/m1/m1-l1/quiz');
+  });
+
+  it('kommt ohne Seitenkopf aus: Kreuz, Balken, Zähler', () => {
+    const k = q().kopf as { schliessen: number; seitenkopf: number; h1: number };
+    expect(k.schliessen).toBe(1);
+    expect(k.seitenkopf).toBe(0);
+    /* Heute begann die Frage erst bei y ≈ 500. */
+    expect(q().frage_oben_px as number).toBeLessThan(200);
+  });
+
+  it('verschiebt beim Antworten keinen Pixel (Regel 8a.2)', () => {
+    expect(q().verschiebung_beim_antworten_px).toBe(0);
+  });
+
+  it('hat eine klebende Ergebnisleiste mit fester Höhe, die in der unteren Hälfte beginnt', () => {
+    expect(q().leiste_klebt).toBe(true);
+    expect(q().leiste_hoehe_px as number).toBeGreaterThan(150);
+  });
+
+  it('zeigt Urteil und „Nächste Frage" in der Leiste, ohne scrollen zu müssen', () => {
+    const n = q().nach_antwort as { urteil: string; knopf: string; karten_unter_leiste: boolean };
+    expect(n.urteil).toMatch(/Richtig|Nicht ganz/);
+    expect(n.knopf).toBe('Nächste Frage');
+    expect(n.karten_unter_leiste).toBe(true);
+  });
+
+  it('fragt beim Verlassen erst ab der ersten Antwort und behält den Stand', () => {
+    expect(String(q().rueckfrage)).toMatch(/Quiz verlassen\?.*Frage 2/);
+    expect(q().nach_verlassen).toBe('/lernen/m1/m1-l1');
+    expect(q().knopf_danach).toBe('Quiz fortsetzen bei Frage 2');
+    expect(q().zaehler_nach_fortsetzen).toBe('2/5');
+  });
+
+  it('lässt Browser-Zurück nur das Quiz verlassen', () => {
+    expect(q().nach_browser_zurueck).toBe('/lernen/m1/m1-l1');
+  });
+});
+
+describe('Bestehen heißt verstanden (FAHRPLAN 5.1, 5.3)', () => {
+  const b = () => schritt('Bestehen heißt verstanden');
+  const f = () => b().fehlschlag as {
+    urteil: string; punkte: string; kacheln: string[]; falsch_liste: number;
+    in_wiederholung: number; knoepfe: string[]; toasts: number; leiste_im_daumenbereich: boolean;
+  };
+  const g = () => b().bestanden as {
+    urteil: string; punkte: string; kacheln: string[]; knoepfe: string[]; toasts: number;
+    leiste_im_daumenbereich: boolean;
+  };
+
+  it('lässt einen schlechten Durchgang nicht bestehen — kein Haken, keine XP, kein Abzeichen', () => {
+    expect(f().urteil).toBe('Noch nicht bestanden');
+    expect(b().lektion_fertig_nach_fehlschlag).toBe(false);
+    expect(b().xp_nach_fehlschlag).toBe(0);
+    expect(b().abzeichen_nach_fehlschlag).toEqual([]);
+  });
+
+  it('merkt sich das beste Ergebnis als „versucht"', () => {
+    const v = b().versucht_gemerkt as { bestScore: number; total: number; tries: number };
+    expect(v.total).toBe(5);
+    expect(v.tries).toBe(1);
+    expect(v.bestScore).toBeLessThan(4);
+  });
+
+  it('zeigt in der Modulübersicht „versucht", nicht „abgeschlossen"', () => {
+    const z = b().modul_zeile as { klassen: string[]; meta: string; hinweis: string };
+    expect(z.klassen).not.toContain('fertig');
+    expect(z.meta).toMatch(/Quiz: \d\/5/);
+    expect(z.hinweis).toBe('Noch einmal');
+  });
+
+  it('zeigt jede falsche Frage mit „kommt in deine Wiederholung" und legt sie in den Stapel', () => {
+    expect(f().falsch_liste).toBeGreaterThan(0);
+    expect(f().in_wiederholung).toBe(f().falsch_liste);
+    expect(b().wiederholung_nach_fehlschlag).toBe(f().falsch_liste);
+  });
+
+  it('bietet „Fehler nochmal üben" als Hauptweg', () => {
+    expect(f().knoepfe[0]).toBe('Fehler nochmal üben');
+    expect(f().knoepfe).toContain('Quiz noch einmal von vorn');
+  });
+
+  it('hält das Üben aus der Lektion heraus', () => {
+    const u = b().uebung as { titel: string; hinweis: string };
+    expect(u.titel).toBe('Fehler üben');
+    expect(u.hinweis).toMatch(/zählt nicht/);
+    expect(b().lektion_fertig_nach_uebung).toBe(false);
+  });
+
+  it('lässt einen guten Durchgang bestehen: Haken, 20/80-XP, Abzeichen als Kachel statt Toast', () => {
+    expect(g().urteil).toBe('Bestanden');
+    expect(b().lektion_fertig_nach_bestehen).toBe(true);
+    expect(b().xp_durch_bestehen).toBe(100);
+    expect(b().versucht_danach).toBeNull();
+    expect(b().abzeichen_nach_bestehen).toEqual(expect.arrayContaining(['first-lesson', 'quiz-perfect']));
+    expect(g().kacheln.some((k) => /\+100\s*XP/.test(k))).toBe(true);
+    expect(g().kacheln.some((k) => /1\/5\s*im Modul/.test(k))).toBe(true);
+    expect(g().kacheln.some((k) => /Neues Abzeichen/.test(k))).toBe(true);
+    expect(g().toasts).toBe(0);
+  });
+
+  it('führt nach dem Bestehen weiter und ins passende Training', () => {
+    expect(g().knoepfe[0]).toMatch(/^Nächste Lektion/);
+    expect(g().knoepfe.some((k) => /^Jetzt üben:/.test(k))).toBe(true);
+  });
+
+  it('legt die Ergebnisleiste in den Daumenbereich', () => {
+    expect(f().leiste_im_daumenbereich).toBe(true);
+    expect(g().leiste_im_daumenbereich).toBe(true);
+  });
+
+  it('mischt die Optionen bei jedem Durchgang anders', () => {
+    /* Der Grund: In 58 % der Fragen war B richtig. */
+    expect(b().optionen_gemischt as number).toBeGreaterThan(0);
   });
 });
 

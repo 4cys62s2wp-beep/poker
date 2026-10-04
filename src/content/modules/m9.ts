@@ -17,7 +17,7 @@ const m9: Module = {
         {
           heading: 'Die Regeln: vier Karten, genau zwei zählen',
           body:
-            'In Omaha bekommst du **vier** verdeckte Karten statt zwei. Die wichtigste Regel, die Einsteiger ständig vergessen: Du musst **genau zwei** deiner vier Karten mit **genau drei** Boardkarten kombinieren – nicht mehr, nicht weniger.\n\nLiegen vier Herz-Karten auf dem Board und du hältst nur das Herz-Ass, hast du KEINEN Flush – du brauchst zwei Herz-Karten in der Hand. Genauso macht ein Paar auf dem Board mit einer passenden Karte in deiner Hand noch lange kein Full House.\n\nGespielt wird fast immer **Pot-Limit**: Die maximale Bet ist die aktuelle Potgröße. Dadurch wachsen die Pötte langsamer als bei No-Limit, explodieren aber trotzdem regelmäßig – denn mit vier Karten treffen alle öfter etwas.',
+            'In Omaha bekommst du vier verdeckte Karten statt zwei. Die wichtigste Regel, die Einsteiger ständig vergessen: Du musst genau zwei deiner vier Karten mit genau drei Boardkarten kombinieren – nicht mehr, nicht weniger.\n\nLiegen vier Herz-Karten auf dem Board und du hältst nur das Herz-Ass, hast du KEINEN Flush – du brauchst zwei Herz-Karten in der Hand. Genauso macht ein Paar auf dem Board mit einer passenden Karte in deiner Hand noch lange kein Full House.\n\nGespielt wird fast immer Pot-Limit: Die maximale Bet ist die aktuelle Potgröße. Dadurch wachsen die Pötte langsamer als bei No-Limit, explodieren aber trotzdem regelmäßig – denn mit vier Karten treffen alle öfter etwas.',
           example:
             'Board: K♥ Q♥ 7♥ 2♥ 3♠. Du hältst A♥ A♠ 9♦ 8♦. Kein Flush! Du hast nur EIN Herz – für den Flush brauchst du zwei aus der Hand.',
         },
@@ -31,7 +31,7 @@ const m9: Module = {
         {
           heading: 'Nuts oder nichts',
           body:
-            'Der wichtigste Strategie-Unterschied: In PLO gewinnen am Showdown viel öfter die **Nuts** oder Near-Nuts. Wenn drei Spieler den Flop sehen, hält beim großen All-in selten jemand weniger als ein Set, den Nut-Flush oder die Nut-Straße.\n\nDaraus folgen die klassischen PLO-Grundsätze:\n\n- Spiele Starthände, die **zusammenarbeiten** (vier Karten, die Straßen, Flushs und Sets gleichzeitig ermöglichen), z. B. J-T-9-8 double-suited.\n- Non-Nut-Draws sind gefährlich: Der kleine Flush verliert in PLO ständig gegen den größeren.\n- Ein Overpair ohne Verbesserungspotenzial ist fast nie eine Hand für große Pötte.\n\nHold’em-Spieler überschätzen in PLO vor allem: nackte Asse, Top Pair und kleine Flushs. Das sind die drei teuersten Umgewöhnungsfehler.',
+            'Der wichtigste Strategie-Unterschied: In PLO gewinnen am Showdown viel öfter die **Nuts** oder Near-Nuts. Wenn drei Spieler den Flop sehen, hält beim großen All-in selten jemand weniger als ein Set, den Nut-Flush oder die Nut-Straße.\n\nDaraus folgen die klassischen PLO-Grundsätze:\n\n- Spiele Starthände, die zusammenarbeiten (vier Karten, die Straßen, Flushs und Sets gleichzeitig ermöglichen), z. B. J-T-9-8 double-suited.\n- Non-Nut-Draws sind gefährlich: Der kleine Flush verliert in PLO ständig gegen den größeren.\n- Ein Overpair ohne Verbesserungspotenzial ist fast nie eine Hand für große Pötte.\n\nHold’em-Spieler überschätzen in PLO vor allem: nackte Asse, Top Pair und kleine Flushs. Das sind die drei teuersten Umgewöhnungsfehler.',
           cards: ['Jh', 'Th', '9s', '8s'],
         },
         {
@@ -49,24 +49,32 @@ const m9: Module = {
       ],
       quiz: [
         {
-          question: 'Board: A♠ K♠ Q♠ J♠ 2♦. Du hältst T♠ 9♥ 8♦ 7♣. Was hast du?',
+          question: 'Du hältst in Omaha die gezeigten Karten, das Board liegt oben. Was hast du?',
           options: [
-            'Einen Royal Flush in Pik',
-            'Eine Ass-hohe Straße (Broadway)',
-            'Gar keine Straße – nur Ass-hoch',
+            'Einen Royal Flush in Pik (A-K-Q-J-T)',
+            'Eine Ass-hohe Straße (Broadway: A-K-Q-J-T)',
+            'Gar keine Straße – nur Ass-hoch ohne Draw',
             'Eine Königs-hohe Straße (K-Q-J-T-9)',
           ],
           correctIndex: 3,
+          cards: ['Ts', '9h', '8d', '7c'],
+          board: ['As', 'Ks', 'Qs', 'Js', '2d'],
+          optionFeedback: [
+            'Ein Royal Flush bräuchte zwei Pik-Hole-Cards – du hältst nur T♠.',
+            'Die Ass-hohe Straße bräuchte K und Q in der Hand – die hältst du nicht.',
+            'Doch: T♠ 9♥ mit K♠ Q♠ J♠ ergibt K-Q-J-T-9.',
+            '',
+          ],
           explanation:
-            'In Omaha musst du genau zwei Handkarten verwenden. T♠ + 9♥ kombiniert mit K♠ Q♠ J♠ vom Board ergibt K-Q-J-T-9 – eine Königs-hohe Straße. Royal Flush oder Broadway sind unmöglich: Dafür müsstest du nur eine einzige Handkarte (T♠) nutzen, und genau das ist verboten. Diese Regel übersehen Hold’em-Umsteiger am häufigsten.',
+            'In Omaha musst du genau zwei Handkarten verwenden. T♠ + 9♥ mit K♠ Q♠ J♠ vom Board ergibt K-Q-J-T-9. Royal Flush oder Broadway wären nur mit einer einzigen Handkarte (T♠) möglich – und das ist verboten. Diese Regel übersehen Hold’em-Umsteiger am häufigsten.',
         },
         {
           question: 'Warum ist Preflop-Aggression in PLO weniger wertvoll als in Hold’em?',
           options: [
-            'Weil man in PLO nicht raisen darf',
+            'Weil man in PLO nicht raisen darf, sondern nur callen kann',
             'Weil die Equities der Starthände viel enger beieinander liegen',
-            'Weil es keine Blinds gibt',
-            'Weil alle Spieler immer folden',
+            'Weil es in PLO keine Blinds gibt, die man verteidigen muss',
+            'Weil alle Spieler in PLO sofort folden, sobald jemand preflop raist',
           ],
           correctIndex: 1,
           explanation:
@@ -75,10 +83,10 @@ const m9: Module = {
         {
           question: 'Welche Hand ist die klassische Hold’em-Spieler-Falle in PLO?',
           options: [
-            'Der Nut-Flush',
-            'Ein Set auf trockenem Board',
+            'Der Nut-Flush mit Ass und zwei Beikarten',
+            'Ein Set auf einem trockenen Board mit Draws',
             'Nackte Asse ohne koordinierte Beikarten',
-            'Die Nut-Straße mit Flushdraw',
+            'Die Nut-Straße zusammen mit einem Flushdraw',
           ],
           correctIndex: 2,
           explanation:
@@ -88,9 +96,9 @@ const m9: Module = {
           question: 'Was bedeutet „Pot-Limit“?',
           options: [
             'Man darf maximal die aktuelle Potgröße setzen',
-            'Der Pot ist auf 100bb begrenzt',
-            'Man darf nur einmal pro Street setzen',
-            'Es gibt keine Raises',
+            'Der Pot ist auf 100bb begrenzt und wächst nicht weiter',
+            'Man darf nur einmal pro Street setzen oder raisen',
+            'Es gibt keine Raises, nur Calls und Checks',
           ],
           correctIndex: 0,
           explanation:
@@ -99,10 +107,10 @@ const m9: Module = {
         {
           question: 'Warum sind kleine Flushs in PLO so gefährlich?',
           options: [
-            'Weil Flushs in PLO nichts zählen',
+            'Weil Flushs in PLO nur als Showdown-Wert zählen und nichts gewinnen',
             'Weil bei vier Handkarten pro Spieler viel öfter auch der höhere Flush im Spiel ist',
-            'Weil man mit einem Flush nicht mehr setzen darf',
-            'Weil das Board dann immer ein Paar zeigt',
+            'Weil man mit einem Flush nicht mehr setzen darf, sobald das Board paart und alle Spieler vorsichtiger werden',
+            'Weil das Board dann immer ein Paar zeigt und Full Houses möglich sind',
           ],
           correctIndex: 1,
           explanation:
@@ -120,12 +128,12 @@ const m9: Module = {
         {
           heading: 'Das Spiel mit 36 Karten',
           body:
-            'Bei Short Deck werden alle Zweier bis Fünfer aus dem Deck entfernt – übrig bleiben 36 Karten von der Sechs bis zum Ass. Das Ass bleibt flexibel: Es bildet weiterhin die höchste Straße und ersetzt in der niedrigsten Straße die Fünf, sodass **A-6-7-8-9** eine gültige Straße ist.\n\nGespielt wird meist mit **Antes von allen Spielern** statt klassischer Blinds (der Button zahlt oft doppelt) – das macht jeden Pot von Anfang an größer und belohnt aggressives Spiel.\n\nPopulär wurde die Variante durch die Triton-High-Roller-Serie in Asien; inzwischen bieten sie auch große Online-Anbieter an.',
+            'Bei Short Deck werden alle Zweier bis Fünfer aus dem Deck entfernt – übrig bleiben 36 Karten von der Sechs bis zum Ass. Das Ass bleibt flexibel: Es bildet weiterhin die höchste Straße und ersetzt in der niedrigsten Straße die Fünf, sodass A-6-7-8-9 eine gültige Straße ist.\n\nGespielt wird meist mit Antes von allen Spielern statt klassischer Blinds (der Button zahlt oft doppelt) – das macht jeden Pot von Anfang an größer und belohnt aggressives Spiel.\n\nPopulär wurde die Variante durch die Triton-High-Roller-Serie in Asien; inzwischen bieten sie auch große Online-Anbieter an.',
         },
         {
           heading: 'Neue Rankings: Der Flush steigt auf',
           body:
-            'Weil vier Ränge fehlen, verschieben sich die Wahrscheinlichkeiten – und damit die Handrankings. Die wichtigste Änderung in den heute üblichen Regeln: **Der Flush schlägt das Full House.** Mit nur neun Karten pro Farbe ist ein Flush deutlich seltener geworden, ein Full House durch die dichteren Ränge deutlich häufiger.\n\nIn manchen älteren Regelvarianten schlägt zusätzlich der Drilling die Straße – die verbreiteten Online- und Triton-Regeln behalten aber die normale Reihenfolge (Straße > Drilling) bei. Frag im Zweifel IMMER vor dem ersten Blatt nach den Hausregeln.',
+            'Weil vier Ränge fehlen, verschieben sich die Wahrscheinlichkeiten – und damit die Handrankings. Die wichtigste Änderung in den heute üblichen Regeln: Der Flush schlägt das Full House. Mit nur neun Karten pro Farbe ist ein Flush deutlich seltener geworden, ein Full House durch die dichteren Ränge deutlich häufiger.\n\nIn manchen älteren Regelvarianten schlägt zusätzlich der Drilling die Straße – die verbreiteten Online- und Triton-Regeln behalten aber die normale Reihenfolge (Straße > Drilling) bei. Frag im Zweifel IMMER vor dem ersten Blatt nach den Hausregeln.',
           table: {
             headers: ['Hand', 'Klassisch', 'Short Deck (üblich)'],
             rows: [
@@ -159,10 +167,10 @@ const m9: Module = {
         {
           question: 'Warum schlägt der Flush in Short Deck üblicherweise das Full House?',
           options: [
-            'Aus Tradition',
+            'Aus Tradition, weil sich das Ranking an den klassischen Hold’em-Regeln orientieren soll',
             'Weil der Flush mit nur 9 Karten pro Farbe seltener geworden ist als das Full House',
-            'Weil Full Houses verboten sind',
-            'Weil das Ass fehlt',
+            'Weil Full Houses in Short Deck verboten sind und nicht zählen',
+            'Weil das Ass fehlt und dadurch das ganze Ranking umgekehrt wurde',
           ],
           correctIndex: 1,
           explanation:
@@ -193,19 +201,19 @@ const m9: Module = {
         {
           heading: 'So funktioniert Stud',
           body:
-            'Seven Card Stud kennt keine Gemeinschaftskarten und meist kein No-Limit – gespielt wird klassisch mit **festen Einsätzen (Fixed Limit)** und Antes.\n\nJeder Spieler erhält nach und nach **sieben eigene Karten**: zwei verdeckt und eine offen zum Start („Third Street“), dann drei weitere offene Karten und zum Schluss eine verdeckte. Die schlechteste offene Startkarte muss den „**Bring-in**“ zahlen und eröffnet damit die Action; ab der vierten Karte beginnt jeweils die beste sichtbare Hand.\n\nAm Showdown gewinnt wie gewohnt die beste Fünf-Karten-Hand aus den sieben eigenen Karten.',
+            'Seven Card Stud kennt keine Gemeinschaftskarten und meist kein No-Limit – gespielt wird klassisch mit festen Einsätzen (Fixed Limit) und Antes.\n\nJeder Spieler erhält nach und nach sieben eigene Karten: zwei verdeckt und eine offen zum Start („Third Street“), dann drei weitere offene Karten und zum Schluss eine verdeckte. Die schlechteste offene Startkarte muss den „Bring-in“ zahlen und eröffnet damit die Action; ab der vierten Karte beginnt jeweils die beste sichtbare Hand.\n\nAm Showdown gewinnt wie gewohnt die beste Fünf-Karten-Hand aus den sieben eigenen Karten.',
         },
         {
           heading: 'Die Kernfähigkeit: tote Karten lesen',
           body:
-            'Weil viele Karten offen liegen, ist Stud ein Spiel des Beobachtens: Welche Karten sind schon sichtbar – und damit für deine Draws **tot**?\n\nEin Beispiel: Du hältst vier Pik zur Flush-Chance. In Hold’em rechnest du stumpf mit 9 Outs. In Stud zählst du zuerst, wie viele Pik bereits bei den Gegnern offen liegen – sind es drei, hast du nur noch sechs echte Outs. Gute Stud-Spieler merken sich JEDE gefoldete offene Karte.\n\nDie zweite Kernregel: Starthände brauchen entweder ein großes Paar, drei zusammenhängende hohe Karten oder drei zur gleichen Farbe – und die Stärke deiner Hand hängt immer davon ab, wie „lebendig“ deine Outs noch sind.',
+            'Weil viele Karten offen liegen, ist Stud ein Spiel des Beobachtens: Welche Karten sind schon sichtbar – und damit für deine Draws tot?\n\nEin Beispiel: Du hältst vier Pik zur Flush-Chance. In Hold’em rechnest du stumpf mit 9 Outs. In Stud zählst du zuerst, wie viele Pik bereits bei den Gegnern offen liegen – sind es drei, hast du nur noch sechs echte Outs. Gute Stud-Spieler merken sich JEDE gefoldete offene Karte.\n\nDie zweite Kernregel: Starthände brauchen entweder ein großes Paar, drei zusammenhängende hohe Karten oder drei zur gleichen Farbe – und die Stärke deiner Hand hängt immer davon ab, wie „lebendig“ deine Outs noch sind.',
           tip:
             'Genau dieses Beobachtungstraining macht Stud so wertvoll für Hold’em-Spieler: Wer gelernt hat, tote Karten zu verfolgen, nimmt automatisch auch am Hold’em-Tisch mehr wahr.',
         },
         {
           heading: 'Razz: Stud auf links gedreht',
           body:
-            'Razz ist Seven Card Stud als **Lowball**: Die NIEDRIGSTE Hand gewinnt. Straßen und Flushs zählen nicht gegen dich, Asse sind immer niedrig – die bestmögliche Hand ist **A-2-3-4-5**, das „Wheel“.\n\nRazz dreht alle Instinkte um: Ein König als offene Startkarte ist eine Katastrophe, drei Karten unter der Acht sind Premium. Und weil jeder die offenen Karten der Gegner sieht, entsteht ein faszinierendes Informationsspiel: Zeigt dein Gegner 2-4-6 offen, während du 3-5-7 zeigst, aber verdeckt zwei Bildkarten hältst, weißt nur DU, wie schwach du wirklich bist – und umgekehrt.\n\nRazz gilt als das frustrierendste und zugleich lehrreichste Spiel der Mixed-Game-Welt: pure Disziplin und Odds-Rechnung.',
+            'Razz ist Seven Card Stud als Lowball: Die NIEDRIGSTE Hand gewinnt. Straßen und Flushs zählen nicht gegen dich, Asse sind immer niedrig – die bestmögliche Hand ist A-2-3-4-5, das „Wheel“.\n\nRazz dreht alle Instinkte um: Ein König als offene Startkarte ist eine Katastrophe, drei Karten unter der Acht sind Premium. Und weil jeder die offenen Karten der Gegner sieht, entsteht ein faszinierendes Informationsspiel: Zeigt dein Gegner 2-4-6 offen, während du 3-5-7 zeigst, aber verdeckt zwei Bildkarten hältst, weißt nur DU, wie schwach du wirklich bist – und umgekehrt.\n\nRazz gilt als das frustrierendste und zugleich lehrreichste Spiel der Mixed-Game-Welt: pure Disziplin und Odds-Rechnung.',
         },
       ],
       takeaways: [
@@ -218,10 +226,10 @@ const m9: Module = {
         {
           question: 'Wer zahlt in Stud den Bring-in?',
           options: [
-            'Der Spieler links vom Dealer',
+            'Der Spieler links vom Dealer, weil er die Action eröffnet',
             'Der Spieler mit der schlechtesten offenen Startkarte',
-            'Der Spieler mit der besten offenen Startkarte',
-            'Alle Spieler gleichzeitig',
+            'Der Spieler mit der besten offenen Startkarte, weil er Stärke zeigt',
+            'Alle Spieler gleichzeitig, damit ein Startpot entsteht',
           ],
           correctIndex: 1,
           explanation:
@@ -264,13 +272,13 @@ const m9: Module = {
         {
           heading: 'Split-Pot-Spiele: zwei Gewinner pro Hand',
           body:
-            'In **Hi/Lo-Varianten** (z. B. Omaha Hi/Lo, Stud Hi/Lo) wird der Pot geteilt: Die beste hohe Hand gewinnt eine Hälfte, die beste niedrige Hand (meist „8 or better“: fünf verschiedene Karten bis maximal zur Acht) die andere.\n\nDas strategische Ziel ist das **Scooping** – beide Hälften mit einer Hand gewinnen, etwa mit A-2-3-4-5, das gleichzeitig eine Straße (hoch) und ein perfektes Low ist. Wer dagegen ständig nur um eine Hälfte spielt, gewinnt langfristig fast nichts: Der halbe Pot enthält ja auch die Hälfte deiner eigenen Einsätze.\n\nAnfängerregel für alle Split-Spiele: Spiele Hände mit **Scoop-Potenzial** (A-2-x-x mit Ass suited in Omaha Hi/Lo) und meide Hände, die nur eine Richtung können.',
+            'In Hi/Lo-Varianten (z. B. Omaha Hi/Lo, Stud Hi/Lo) wird der Pot geteilt: Die beste hohe Hand gewinnt eine Hälfte, die beste niedrige Hand (meist „8 or better“: fünf verschiedene Karten bis maximal zur Acht) die andere.\n\nDas strategische Ziel ist das Scooping – beide Hälften mit einer Hand gewinnen, etwa mit A-2-3-4-5, das gleichzeitig eine Straße (hoch) und ein perfektes Low ist. Wer dagegen ständig nur um eine Hälfte spielt, gewinnt langfristig fast nichts: Der halbe Pot enthält ja auch die Hälfte deiner eigenen Einsätze.\n\nAnfängerregel für alle Split-Spiele: Spiele Hände mit Scoop-Potenzial (A-2-x-x mit Ass suited in Omaha Hi/Lo) und meide Hände, die nur eine Richtung können.',
           tip: 'Merksatz der Mixed-Game-Profis: „Drei Viertel gewinnen ist gut, scoopen ist das Ziel, um die Hälfte kämpfen ist verlieren in Zeitlupe.“',
         },
         {
           heading: 'Homegame-Klassiker: Bomb Pots, Stand-up & Co.',
           body:
-            'Private Runden lieben Formate, die Action garantieren:\n\n- **Bomb Pot**: Alle zahlen vor der Hand einen festen Betrag, Preflop wird übersprungen, es geht direkt mit großem Pot zum Flop – oft als Double-Board-Variante mit zwei Flops.\n- **Stand-up Game**: Wer zuerst eine Hand gewinnt, darf sich „setzen“ – der letzte Stehende zahlt eine Strafe.\n- **Dealer’s Choice**: Wer den Button hat, wählt die Variante der Runde – die Homegame-Version von Mixed Games.\n\nStrategisch gilt bei allen Action-Formaten dasselbe: Große Pötte ohne Preflop-Information bedeuten **Nut-orientiertes Spiel**. In einem Bomb Pot mit sieben Spielern ist Top Pair fast wertlos – gespielt werden Draws zu den Nuts und fertige Monster.',
+            'Private Runden lieben Formate, die Action garantieren:\n\n- **Bomb Pot**: Alle zahlen vor der Hand einen festen Betrag, Preflop wird übersprungen, es geht direkt mit großem Pot zum Flop – oft als Double-Board-Variante mit zwei Flops.\n- **Stand-up Game**: Wer zuerst eine Hand gewinnt, darf sich „setzen“ – der letzte Stehende zahlt eine Strafe.\n- **Dealer’s Choice**: Wer den Button hat, wählt die Variante der Runde – die Homegame-Version von Mixed Games.\n\nStrategisch gilt bei allen Action-Formaten dasselbe: Große Pötte ohne Preflop-Information bedeuten Nut-orientiertes Spiel. In einem Bomb Pot mit sieben Spielern ist Top Pair fast wertlos – gespielt werden Draws zu den Nuts und fertige Monster.',
         },
       ],
       takeaways: [
@@ -289,10 +297,10 @@ const m9: Module = {
         {
           question: 'Was bedeutet „Scoopen“ in einem Hi/Lo-Spiel?',
           options: [
-            'Den Pot aufgeben',
+            'Den Pot freiwillig aufgeben, wenn die Low-Hälfte bereits verloren ist',
             'Beide Pot-Hälften (High und Low) mit einer Hand gewinnen',
-            'Nur die Low-Hälfte gewinnen',
-            'Alle Chips nachkaufen',
+            'Nur die Low-Hälfte gewinnen, aber das sicher',
+            'Alle Chips nachkaufen, wenn man den Pot verliert',
           ],
           correctIndex: 1,
           explanation:
@@ -301,10 +309,10 @@ const m9: Module = {
         {
           question: 'Warum ist Top Pair in einem 7-Spieler-Bomb-Pot fast wertlos?',
           options: [
-            'Weil Paare dort nicht zählen',
-            'Weil ohne Preflop-Selektion sieben zufällige Ranges den Flop sehen – irgendjemand trifft fast immer besser',
-            'Weil man mit Top Pair nicht setzen darf',
-            'Weil der Pot geteilt wird',
+            'Weil Paare in einem Bomb-Pot nicht zählen und nur Draws gewinnen können',
+            'Weil ohne Preflop-Selektion sieben zufällige Ranges den Flop sehen – fast immer trifft jemand besser',
+            'Weil man mit Top Pair im Bomb-Pot nicht setzen darf, solange jemand zuerst bettet',
+            'Weil der Pot im Bomb-Pot automatisch geteilt wird, sobald jemand all-in geht',
           ],
           correctIndex: 1,
           explanation:
@@ -312,7 +320,12 @@ const m9: Module = {
         },
         {
           question: 'Welche Omaha-Hi/Lo-Starthand hat das beste Scoop-Potenzial?',
-          options: ['K-K-Q-J ohne Suits', 'A-2-3-4 mit Ass suited', '9-9-8-8', 'Q-J-T-9 offsuit'],
+          options: [
+            'K-K-Q-J ohne passende Suits',
+            'A-2-3-4 mit Ass suited',
+            '9-9-8-8 mit doppeltem Paar',
+            'Q-J-T-9 offsuit, ohne Ass',
+          ],
           correctIndex: 1,
           explanation:
             'A-2-x-x mit niedrigen Beikarten kann das beste Low UND (über Wheel-Straßen und Nut-Flush) das beste High machen – der Prototyp einer Scoop-Hand.',
@@ -376,10 +389,10 @@ const m9: Module = {
         {
           question: 'Wie viel Bankroll-Puffer empfiehlt sich für PLO-Cash im Vergleich zu Hold’em?',
           options: [
-            'Halb so viel – PLO ist einfacher',
-            'Gleich viel',
+            'Halb so viel – PLO ist einfacher zu spielen',
+            'Gleich viel wie in Hold’em',
             'Etwa doppelt so viel (50–100 Buy-ins)',
-            'Bankroll spielt in PLO keine Rolle',
+            'Bankroll spielt in PLO keine Rolle, weil die Varianz kleiner ist',
           ],
           correctIndex: 2,
           explanation:
@@ -388,10 +401,10 @@ const m9: Module = {
         {
           question: 'Was ist der empfohlene Lernpfad für Einsteiger?',
           options: [
-            'Sofort alle Varianten parallel lernen',
+            'Sofort alle Varianten parallel lernen und gleichzeitig spielen',
             'Hold’em-Fundament zuerst, dann Varianten erkunden',
-            'Mit Razz anfangen',
-            'Nur Short Deck spielen',
+            'Mit Razz anfangen, weil es das einfachste Spiel ist',
+            'Nur Short Deck spielen, weil es am schnellsten geht',
           ],
           correctIndex: 1,
           explanation:
@@ -400,10 +413,10 @@ const m9: Module = {
         {
           question: 'Warum solltest du eine neue Variante auf niedrigeren Limits starten?',
           options: [
-            'Weil höhere Limits verboten sind',
-            'Weil du dort garantiert gewinnst',
-            'Weil Umgewöhnungsfehler unvermeidlich sind – auf kleinen Limits kosten sie wenig Lehrgeld',
-            'Weil die Regeln dort anders sind',
+            'Weil höhere Limits in neuen Varianten nicht gespielt werden dürfen, bevor man sie beherrscht',
+            'Weil du dort in einer neuen Variante garantiert gewinnst',
+            'Weil Umgewöhnungsfehler unvermeidlich sind und auf kleinen Limits wenig kosten',
+            'Weil die Regeln auf höheren Limits grundlegend anders sind',
           ],
           correctIndex: 2,
           explanation:

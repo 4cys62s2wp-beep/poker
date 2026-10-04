@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { QuizRunner } from '../components/QuizRunner';
 import { Icon } from '../components/Icon';
 import { useAppState } from '../state/AppState';
@@ -14,6 +14,7 @@ export function DailyQuizPage() {
   const { data, completeDailyQuiz, addReviewItem } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
+  const navigate = useNavigate();
   const [started, setStarted] = useState(false);
   const today = tagesschluessel();
   const alreadyDone = data.daily?.date === today;
@@ -33,6 +34,39 @@ export function DailyQuizPage() {
     }
     return null;
   }, [content.modules, data.completedLessons]);
+
+  /* Im Quiz selbst gibt es keine Seitenkopfzeile: Fokusmodus (E-091). Der
+     Startwert ist das Datum — alle sehen am selben Tag dieselbe Mischung. */
+  if (started) {
+    return (
+      <QuizRunner
+        titel={L.title}
+        questions={questions}
+        startwert={today}
+        onSchliessen={() => navigate('/lernen')}
+        onFinish={(score, total) => completeDailyQuiz(score, total)}
+        onWrong={(i) => {
+          const q = questions[i];
+          addReviewItem(q.moduleId, q.lessonId, q.qi);
+        }}
+        ergebnis={(e) => (
+          <div className="quiz-ergebnis">
+            <div className="ergebnis-kopf" role="status" aria-live="polite">
+              <div className="big-stat">{e.score} / {e.total}</div>
+              <p className="muted small">
+                {e.falsch.length > 0 ? L.toReview(e.falsch.length) : L.allRight}
+              </p>
+            </div>
+            <div className="entscheidung-leiste entscheidung">
+              <div className="entscheidung-innen stapel">
+                <Link className="btn primary" to="/lernen">{L.toPath}</Link>
+              </div>
+            </div>
+          </div>
+        )}
+      />
+    );
+  }
 
   return (
     <div>
@@ -84,22 +118,6 @@ export function DailyQuizPage() {
           <button className="btn primary lg" onClick={() => setStarted(true)}>
             {L.start}
           </button>
-        </div>
-      )}
-
-      {started && (
-        <div>
-          <QuizRunner
-            questions={questions}
-            onFinish={(score, total) => completeDailyQuiz(score, total)}
-            /* Jede Frage stammt aus einer abgeschlossenen Lektion — eine falsche
-               Antwort ist hier also tatsächlich etwas, das man wiederholen
-               sollte. */
-            onWrong={(i) => {
-              const q = questions[i];
-              addReviewItem(q.moduleId, q.lessonId, q.qi);
-            }}
-          />
         </div>
       )}
     </div>

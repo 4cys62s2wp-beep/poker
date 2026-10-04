@@ -15,6 +15,7 @@ export const STR = defineStrings(
     modulFertig: 'Modul abgeschlossen',
     lektionDran: 'Hier weiter',
     lektionFertig: 'Abgeschlossen',
+    lektionVersucht: 'Noch einmal',
     xpBis: (bis: number) => `bis ${bis} XP`,
   },
   {
@@ -30,6 +31,7 @@ export const STR = defineStrings(
     modulFertig: 'Module completed',
     lektionDran: 'Continue here',
     lektionFertig: 'Completed',
+    lektionVersucht: 'Try again',
     xpBis: (bis: number) => `up to ${bis} XP`,
   },
 );

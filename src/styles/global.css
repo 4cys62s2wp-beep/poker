@@ -110,6 +110,10 @@
      eine Zeile von 44 px. `rahmen.test` misst nach, dass sie stimmt — Toasts und
      Sprungziele rechnen damit. */
   --kopf-h: 58px;
+  /* Die Ergebnisleiste im Quiz hat immer diese Höhe — auch leer. So belegt sie
+     ihren Platz, bevor sie etwas zu sagen hat, und beim Antworten verschiebt
+     sich keine Option (Regel 8a.2). */
+  --ergebnisleiste-h: min(48vh, 19rem);
 
   /* ── Schriftgrößen ───────────────────────────────────────────────────
      Eine Familie mit echten Gewichtsabstufungen statt drei Familien.
@@ -366,6 +370,9 @@
   --ergebnis-gut: #6ec97d;
   --ergebnis-schlecht: #f2a09a;
   --text-stark: #d8d5cb;
+  /* Hervorhebung im Lesetext: heller als der Fließtext, in Gewicht und Ton —
+     nicht in Gold. Gold steht für Lernen und Fortschritt (E-092). */
+  --text-betont: #f7f4ea;
   --ok-lesbar: #90d69c;
   --info-lesbar: #94bdea;
   --danger-lesbar: #eda49f;
@@ -441,6 +448,7 @@
   --ergebnis-gut: #0d522e;
   --ergebnis-schlecht: #892019;
   --text-stark: #0f120f;
+  --text-betont: #050806;
   --ok-lesbar: #14622d;
   --info-lesbar: #164a8c;
   --danger-lesbar: #8f1f18;
@@ -1445,7 +1453,28 @@ button.pill {
 .prose p { margin: 0 0 14px; color: var(--text-stark); }
 .prose ul { margin: 0 0 14px 20px; }
 .prose li { margin-bottom: 7px; color: var(--text-stark); }
-.prose strong { color: var(--auszeichnung-lesbar); font-weight: 750; }
+.prose strong { color: var(--text-betont); font-weight: 700; }
+
+/* Ein antippbarer Fachbegriff: gestrichelt unterstrichen, damit man ihn als
+   Bedienfläche erkennt. Fläche und Hitzone kommen aus dem Zeilenabstand des
+   Textes (ein Knopf im Fließtext wird nach seiner Zeilenhöhe beurteilt). */
+.begriff {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline dashed;
+  text-decoration-color: var(--akzent-text);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.begriff:hover { text-decoration-style: solid; }
 
 .lesson-section { margin-bottom: 34px; }
 
@@ -1555,6 +1584,334 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .quiz-option.wrong { background: var(--danger-dim); border-color: rgba(224, 92, 85, 0.55); }
 .quiz-option.dimmed { opacity: var(--gedimmt); }
 .quiz-option:disabled { cursor: default; }
+
+/* ── Quiz im Fokusmodus (E-091) ───────────────────────────────────────
+   Eine Frage je Bildschirm: oben Kreuz, Balken, Zähler; darunter die Frage
+   und die Optionen; unten die Ergebnisleiste mit fester Höhe. */
+.quiz-fokus {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.quiz-kopf {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.quiz-schliessen {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tipp-min);
+  height: var(--tipp-min);
+  margin-left: calc(var(--sp-2) * -1);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.quiz-schliessen:hover { color: var(--text); background: var(--veil-3); }
+
+.quiz-balken { flex: 1 1 auto; margin: 0; }
+
+.quiz-zaehler {
+  flex: 0 0 auto;
+  min-width: 3ch;
+  text-align: right;
+  font-size: var(--fs-beschriftung);
+  font-weight: var(--fw-bold);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+.quiz-rueckfrage { margin-bottom: var(--sp-4); }
+.quiz-rueckfrage p { margin: var(--sp-1) 0 var(--sp-3); }
+
+.quiz-frage {
+  margin: 0 0 var(--sp-4);
+  font-size: var(--fs-fliesstext);
+  line-height: 1.45;
+}
+
+.quiz-frage:focus { outline: none; }
+
+.quiz-optionen { margin-bottom: var(--sp-4); }
+
+.quiz-karten {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-4);
+  margin: 0 0 var(--sp-4);
+}
+
+/* Die Leiste klebt unten (Regel 9a.2) und hat ihre feste Höhe: Der Platz ist
+   reserviert, nicht belegt, sobald etwas erscheint. */
+.entscheidung-leiste.quiz-leiste {
+  height: var(--ergebnisleiste-h);
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--sp-3);
+}
+
+.quiz-leiste-innen {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  width: 100%;
+  max-width: var(--breite-standard);
+  margin: 0 auto;
+}
+
+/* Eine lange Erklärung scrollt in der Leiste, sie vergrößert sie nicht. */
+.quiz-leiste-text {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.quiz-leiste-text .feedback-box {
+  margin: 0;
+  /* Etwas kleiner als der Fließtext: Die längste Erklärung (319 Zeichen) muss
+     ohne Scrollen in die Leiste passen, und die Leiste darf nicht wachsen. */
+  padding: var(--sp-3) var(--sp-3);
+  font-size: var(--fs-beschriftung);
+  line-height: 1.45;
+}
+
+.quiz-weiter {
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: calc(var(--tipp-min) + var(--sp-3));
+  justify-content: center;
+}
+
+/* Vor der Antwort ist der Knopf gesperrt und sagt, was zu tun ist. Gesperrt
+   heißt hier nicht „blass": Der Satz muss lesbar bleiben, deshalb keine
+   Deckkraft, sondern eine Umrandung statt der vollen Fläche. */
+.quiz-weiter:disabled {
+  opacity: 1;
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+
+
+/* Quer am Handy (390 Pixel Höhe) wäre eine Leiste unten fast die halbe Höhe.
+   Dort steht die Ergebnisleiste als zweite Spalte neben der Frage: Die Optionen
+   behalten ihre Höhe, die Erklärung bekommt eine eigene Fläche, die mitgeht. */
+@media (orientation: landscape) and (max-height: 560px) {
+  /* `.main:has(...) > *` reicht die Höhe sonst als Spalte weiter; der Selektor
+     muss das schlagen. */
+  .quiz-fokus,
+  .main:has(.entscheidung-leiste) > .quiz-fokus {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 38%);
+    column-gap: var(--sp-5);
+    align-items: start;
+    align-content: start;
+  }
+  .quiz-fokus > .quiz-kopf { grid-column: 1 / -1; }
+  .quiz-fokus > :not(.quiz-kopf):not(.quiz-leiste):not(.sr-only) { grid-column: 1; }
+  .entscheidung-leiste.quiz-leiste {
+    grid-column: 2;
+    grid-row: 2 / span 6;
+    position: sticky;
+    top: var(--sp-3);
+    bottom: auto;
+    align-self: start;
+    height: auto;
+    min-height: 11rem;
+    max-height: calc(100vh - var(--sp-6));
+    margin: 0;
+    padding: var(--sp-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+}
+
+/* ── Ergebnis eines Quiz (E-091) ──────────────────────────────────────
+   Ein Urteil, drei Kacheln, die Liste dessen, was falsch war. Kein sich
+   füllender Ring: Er wäre eine Wartezeit (Regel 8a.2). */
+.quiz-ergebnis {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  gap: var(--sp-4);
+}
+
+.ergebnis-kopf { text-align: center; }
+
+.ergebnis-kopf .urteil {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+}
+
+.ergebnis-kopf .urteil.gut { color: var(--ergebnis-gut); }
+.ergebnis-kopf .urteil.offen { color: var(--auszeichnung-lesbar); }
+.ergebnis-kopf .big-stat { margin-top: var(--sp-1); }
+
+.ergebnis-titel {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-ueberschrift);
+  font-weight: var(--fw-bold);
+}
+.ergebnis-kopf p { margin: var(--sp-1) 0 0; }
+
+.ergebnis-kacheln {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: var(--sp-2);
+}
+
+.ergebnis-kachel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  padding: var(--sp-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  text-align: center;
+}
+
+.ergebnis-kachel strong {
+  font-size: var(--fs-ueberschrift);
+  font-variant-numeric: var(--ziffern);
+  line-height: 1;
+}
+
+.ergebnis-kachel span {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+}
+
+.ergebnis-kachel.abzeichen { grid-column: 1 / -1; flex-direction: row; justify-content: flex-start; }
+.ergebnis-kachel.abzeichen strong { font-size: var(--fs-ueberschrift); }
+
+.ergebnis-falsch h2 {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-fliesstext);
+}
+
+.ergebnis-falsch ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.ergebnis-falsch li {
+  padding: var(--sp-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.ergebnis-falsch .frage { margin: 0 0 var(--sp-2); font-weight: var(--fw-bold); }
+
+.ergebnis-falsch .antwort {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-1);
+  font-size: var(--fs-beschriftung);
+}
+
+.ergebnis-falsch .antwort svg { flex: 0 0 auto; margin-top: 2px; }
+.ergebnis-falsch .antwort.falsch { color: var(--ergebnis-schlecht); }
+.ergebnis-falsch .antwort.richtig { color: var(--ergebnis-gut); }
+
+.ergebnis-falsch details {
+  margin: var(--sp-2) 0;
+  font-size: var(--fs-beschriftung);
+  color: var(--text-dim);
+}
+
+.ergebnis-falsch summary {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--tipp-min);
+  cursor: pointer;
+  list-style: none;
+  color: var(--text);
+  font-weight: var(--fw-bold);
+}
+
+.ergebnis-falsch summary::-webkit-details-marker { display: none; }
+
+/* Der Pfeil zeigt, dass sich etwas aufklappt — und dreht sich, wenn es
+   offen ist. */
+.ergebnis-falsch summary::before {
+  content: '›';
+  display: inline-block;
+  width: var(--sp-3);
+  text-align: center;
+  color: var(--text-dim);
+  transition: transform 120ms ease-out;
+}
+
+.ergebnis-falsch details[open] > summary::before { transform: rotate(90deg); }
+
+.ergebnis-falsch details p { margin: 0 0 var(--sp-2); }
+.ergebnis-falsch li > p.small { margin: 0; }
+
+/* Zwei Wege untereinander statt nebeneinander: Der Hauptweg hat die volle
+   Breite, der zweite auch — Beschriftungen wie „Nächste Lektion: …" sind
+   lang. */
+.entscheidung-leiste .entscheidung-innen.stapel { flex-direction: column; }
+
+/* Die Leiste einer Lektion: darüber, wo man ist; darunter ein Knopf über die
+   ganze Breite. Nebeneinander teilte die Zeile den Knopf auf die Hälfte
+   (`daumen`: 50 % statt über 80 %). */
+.lektions-leiste .entscheidung-innen { gap: var(--sp-1); }
+.lektions-leiste .entscheidung-innen > .stand {
+  flex: 0 0 auto;
+  min-height: 0;
+  text-align: center;
+  font-size: var(--fs-beschriftung);
+  font-weight: var(--fw-bold);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+.lektions-leiste .entscheidung-innen > .btn { flex: 0 0 auto; width: 100%; justify-content: center; }
+
+/* Der Hinweis nach dem Sprung an die gemerkte Stelle. Klebt oben unter der
+   Kopfzeile, damit man ihn auch dort sieht, wo man gelandet ist. */
+.lese-hinweis {
+  position: sticky;
+  top: calc(var(--kopf-h) + var(--sp-2));
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  font-size: var(--fs-beschriftung);
+}
+.entscheidung-leiste .entscheidung-innen.stapel > * { justify-content: center; text-align: center; }
 
 .feedback-box {
   border-radius: var(--radius-sm);
@@ -4137,20 +4494,6 @@ input[type="radio"] {
   color: var(--text-dim);
 }
 
-.lernpfad .stufe-text .marken {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  flex-wrap: wrap;
-  margin-top: var(--sp-1);
-}
-
-.lernpfad .stufe-text .marken .zahl {
-  font-size: var(--fs-kleingedrucktes);
-  color: var(--text-dim);
-  font-variant-numeric: var(--ziffern);
-}
-
 .lernpfad .stufe-hinweis {
   align-self: center;
   flex: 0 0 auto;
@@ -4161,6 +4504,106 @@ input[type="radio"] {
 }
 
 .lernpfad .stufe-hinweis.fertig { color: var(--ok); }
+
+/* Eine Stufe, an der es nicht weitergeht, ist eine Zeile (E-092): Ring, Name
+   und Stand. Rund 56 Pixel statt einer Karte mit drei Zeilen. */
+.lernpfad .stufe-karte.kompakt {
+  align-items: center;
+  min-height: 56px;
+  padding: var(--sp-2) var(--sp-4);
+}
+
+.lernpfad .stufe-karte.kompakt .titel {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lernpfad .stufe-karte.kompakt .zahl {
+  flex: 0 0 auto;
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+/* Die aufgeklappte Stufe: Kopf, Lektionen, ein Knopf. */
+.lernpfad .stufe-karte.aufgeklappt {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--sp-2);
+}
+
+.lernpfad .stufe-kopf {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lernpfad .stufe-text .zahl {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+.lernpfad .stufe-lektionen {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+.lernpfad .stufe-lektionen a {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--tipp-min);
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: var(--fs-beschriftung);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lernpfad .stufe-lektionen .punkt {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--sp-5);
+  height: var(--sp-5);
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 2px var(--border-strong);
+  color: var(--ok);
+}
+
+.lernpfad .stufe-lektionen .fertig .punkt { box-shadow: inset 0 0 0 2px var(--ok); }
+.lernpfad .stufe-lektionen .dran a { color: var(--text); font-weight: var(--fw-bold); }
+.lernpfad .stufe-lektionen .dran .punkt { box-shadow: inset 0 0 0 2px var(--akzent); }
+.lernpfad .stufe-lektionen .name { flex: 1 1 auto; min-width: 0; }
+.lernpfad .stufe-lektionen .dauer { flex: 0 0 auto; font-size: var(--fs-kleingedrucktes); color: var(--text-dim); }
+
+.lernpfad .stufe-weiter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--tipp-min) + var(--sp-2));
+  padding: 0 var(--sp-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--akzent);
+  color: var(--akzent-text);
+  font-weight: var(--fw-bold);
+  text-align: center;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lernpfad .stufe-weiter:active { background: var(--bg-card-hover); }
 
 /* ── Der Stand in einem Modul ─────────────────────────────────────────
    Gebaut wie der Rangstand auf dem Lernpfad — dieselbe Art Auskunft,

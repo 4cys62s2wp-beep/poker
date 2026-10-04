@@ -418,7 +418,7 @@ Eine .ics-Erinnerung über das vorhandene downloadBlob (lib/download.ts). setApp
 **Ziel:** Lernen fühlt sich an wie in den besten Lern-Apps: Lektionen in überschaubaren Schritten mit Wiedereinstieg, ein Quiz, das Verstehen prüft und Fehler zeigt, antippbare Begriffe und ein direkter Weg ins passende Training.  
 **Baut auf:** 1, 2
 
-### [ ] 5.1 Bestehen heißt verstanden, und der Abschluss zeigt, was falsch war  
+### [x] 5.1 Bestehen heißt verstanden, und der Abschluss zeigt, was falsch war  
 *Wirkung 5 · Aufwand M*
 
 Heute gilt 0 von 5 als „abgeschlossen“ und bringt das Abzeichen „Erste Schritte“ und 60 XP, weil QuizRunner immer onFinish aufruft und completeLesson in AppState.tsx keine Schwelle kennt. Neu: Bestehensgrenze ceil(0,8 × total). Darunter kein completeLesson, sondern der Zustand „versucht“ mit dem besten Ergebnis, und der Hauptknopf heißt „Fehler nochmal üben“ (nur die falschen Fragen). XP aufgeteilt 20/80 statt 60 + 40 × Anteil. Der Ergebnisbildschirm zeigt Kacheln für „+XP“, „Modul 2/5“ und gegebenenfalls „neues Abzeichen“ (statt Toast), dazu die Liste „Das hattest du falsch“ mit richtiger Antwort, aufklappbarer Erklärung und der Zeile „kommt in deine Wiederholung“. Keinen sich füllenden Ring: Regel 8a.2 nennt das eine Wartezeit.
@@ -430,7 +430,7 @@ Heute gilt 0 von 5 als „abgeschlossen“ und bringt das Abzeichen „Erste Sch
 
 </details>
 
-### [ ] 5.2 Quiz als Fokusmodus mit fester Ergebnisleiste  
+### [x] 5.2 Quiz als Fokusmodus mit fester Ergebnisleiste  
 *Wirkung 5 · Aufwand M*
 
 Eigene Route /lernen/:m/:l/quiz statt des Komponentenzustands showQuiz in LessonPage.tsx; Zurück verlässt nur das Quiz. Das Fokuslayout kommt ohne page-header aus: X links, Balken, „2/5“; die Frage beginnt heute erst bei y≈500. Die Ergebnisleiste liegt fixed am unteren Rand, ihr Platz ist von Anfang an per padding-bottom reserviert. Sie überlagert und verschiebt keine Option (8a.2: 0 px Versatz). Heute liegt die Rückmeldung bei y=823 und „Nächste Frage“ bei y=962. QuizRunner, ReviewPage und DailyQuizPage bekommen die Klasse entscheidung, damit Regel 9a.1 greift und npm run daumen sie prüft. Eine Rückfrage beim Abbrechen kommt erst ab einer beantworteten Frage; der Zwischenstand liegt in sessionStorage („Quiz fortsetzen bei Frage 3“). Haptik bei falsch mit umschlag() (haptik.ts), ohne dass der globale Listener zusätzlich bestaetigt auslöst.
@@ -443,7 +443,7 @@ Eigene Route /lernen/:m/:l/quiz statt des Komponentenzustands showQuiz in Lesson
 
 </details>
 
-### [ ] 5.3 Antworten mischen und Distraktoren angleichen  
+### [x] 5.3 Antworten mischen und Distraktoren angleichen  
 *Wirkung 5 · Aufwand M*
 
 In 58 % der 248 Fragen ist B richtig, in 75 % die längste Option. QuizRunner und ReviewPage mischen die Optionen künftig je Anzeige, das Tages-Quiz mit Datums-Seed; im State steht die Abbildung gemischter Index → Originalindex. Danach die 187 Distraktoren in src/content/modules/m1.ts … m9.ts umschreiben. Eine Testsperre für den Anteil „längste Antwort“ je Modul startet beim heutigen Wert und sinkt schrittweise auf höchstens 40 %.
@@ -454,8 +454,10 @@ In 58 % der 248 Fragen ist B richtig, in 75 % die längste Option. QuizRunner un
 
 </details>
 
-### [ ] 5.4 Lektion in Abschnitten mit Fortschritt und Wiedereinstieg  
+### [x] 5.4 Lektion in Abschnitten mit Fortschritt und Wiedereinstieg  
 *Wirkung 5 · Aufwand L*
+
+**Stand:** Stufe 1 umgesetzt (Abschnittsanzeige, klebende Leiste, Lesestand mit Wiedereinstieg). Stufe 2 (Abschnitte teilen, Zwischenfragen) offen, siehe E-092.
 
 Stufe 1: Fortschrittsanzeige („Abschnitt 3 von 6“) und ein klebendes „Weiter“ in der entscheidung-leiste (9a.2). Die Leseposition wird neu erhoben: lessonProgress[lessonId] = Abschnittsindex in AppData, per IntersectionObserver auf die Abschnittsüberschriften. window.scrollTo(0,0) in LessonPage.tsx:33 springt künftig an die gemerkte Stelle. Erst danach zeigt die Startkarte „Weiter bei Abschnitt 3 von 6“, weil HubPage keine ungemessene Zahl zeigen darf. Stufe 2: Abschnitte über 180 Wörter in den Inhaltsdateien von Hand teilen, nicht automatisch, damit Beispiel und Tipp nicht vom Text getrennt werden. Zwischenfragen über nachAbschnitt?: number, Modul für Modul. Ein echter Schrittmodus braucht eine eigene Entscheidung; E-036 führt die Fließtext-Absätze selbst als offen.
 
@@ -467,8 +469,10 @@ Stufe 1: Fortschrittsanzeige („Abschnitt 3 von 6“) und ein klebendes „Weit
 
 </details>
 
-### [ ] 5.5 Lektionstext gestalten: weniger Gold, echte Karten, eine Tischskizze  
+### [x] 5.5 Lektionstext gestalten: weniger Gold, echte Karten, eine Tischskizze  
 *Wirkung 5 · Aufwand L*
+
+**Stand:** Fett in `--text-betont` ohne Gold, Hervorhebungen 858 → 505, Karten in 45 statt 36 Abschnitten. Offen: Hälfte nicht erreicht, Positionsschema (6.8), Minikarten im Fließtext; siehe E-092.
 
 .prose strong (global.css 1220) in --text-stark mit Gewicht 700, ohne Gold; die Hervorhebungen in den Inhalten halbieren (m1 hat 144, insgesamt 858). Das Feld cards (types.ts, heute in 36 von 224 Abschnitten) in den Beispielabschnitten pflegen, vorrangig in m1 und m2, statt Karten per Regex im Fließtext zu erkennen. Minikarten im Fließtext nur mit Kontrasttest in hell und dunkel (rote Farben 4,5:1). Für Blinds und Position (m1-l3) das Positionsschema aus Punkt 6.8 einbauen; als Inhalt statt Dekoration besteht es den Prüfstein aus E-035/E-036. .prose-Breite kommt aus Punkt 1.2.
 
@@ -479,7 +483,7 @@ Stufe 1: Fortschrittsanzeige („Abschnitt 3 von 6“) und ein klebendes „Weit
 
 </details>
 
-### [ ] 5.6 Fachbegriffe antippbar machen  
+### [x] 5.6 Fachbegriffe antippbar machen  
 *Wirkung 5 · Aufwand M*
 
 MarkdownLite.tsx, QuizRunner.tsx und die Trainer haben heute keine Verbindung zum Glossar. In Lektionen werden die **fett** markierten Begriffe mit Glossareintrag (rund 208 von 858) antippbar, in Trainern, Übungstisch-Coach und Live-Coach jeweils das erste Vorkommen pro Bildschirm („c-bettet“, „Semi-Bluff“, „polar“, „Standard-Shove“, „Implied Odds“, „Fold Equity“). Das Unterblatt aus Herkunft.tsx wird wiederverwendet, die Tippfläche ist mindestens 44 px. Ein Test prüft, dass jede verlinkte id im Glossar existiert.
@@ -491,7 +495,7 @@ MarkdownLite.tsx, QuizRunner.tsx und die Trainer haben heute keine Verbindung zu
 
 </details>
 
-### [ ] 5.7 Lektion und Training verweisen aufeinander  
+### [x] 5.7 Lektion und Training verweisen aufeinander  
 *Wirkung 4 · Aufwand M*
 
 Lesson bekommt das Feld ueben?: TrainerId. Nach dem Quiz erscheint der zweite Knopf „Jetzt üben: <Trainer>“ (z. B. m3 „Pot Odds“ → Pot-Odds-Drill), jeder Trainer in src/pages/trainers/*.tsx zeigt „Konzept nachlesen: <Lektion>“, umgekehrt aus denselben Daten abgeleitet. Übungsknoten im Pfad und Bonus-XP folgen später. Das fordert CONCEPT.md, Leitprinzip 2.
@@ -502,8 +506,10 @@ Lesson bekommt das Feld ueben?: TrainerId. Nach dem Quiz erscheint der zweite Kn
 
 </details>
 
-### [ ] 5.8 Lernpfad verdichten: eine aufgeklappte Stufe, ehrliche Marken, Übungen nach Bedarf  
+### [x] 5.8 Lernpfad verdichten: eine aufgeklappte Stufe, ehrliche Marken, Übungen nach Bedarf  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt bis auf die Niveau-Reihenfolge (m5 vor m6): Inhalts- und Produktfrage, siehe E-092.
 
 Innerhalb von Regel 10a.2 (eine Linie, neun Stufen, ein Wegweiser): Die Stufe mit „Hier weiter“ ist aufgeklappt, zeigt ihre Lektionen und einen Knopf mit der nächsten Lektion und ihrer Dauer. Die anderen Stufen werden zu einer Zeile von ~56 px, fertige bekommen einen Haken. Die Niveau-Reihenfolge korrigieren: m5 „Profi“ steht vor m6 „Einsteiger“ (m5.ts/m6.ts level); das ist eine Inhaltsfrage. Die „Neu“-Pillen (LearnPage.tsx 274/310, learn.ts drillPill/newPill) bleiben nur bis zum ersten Besuch. „Wiederholen“ erscheint nur mit fälligen Karten und Zahl, „Spielstil“ erst ab handsPlayed > 0. Platzhalter der Suche auf „Lektionen durchsuchen“ kürzen (heute „„Pot O“). Keine Aufteilung in Hauptpfad und Vertiefungen, das bräche 10a.2.
 
@@ -516,8 +522,10 @@ Innerhalb von Regel 10a.2 (eine Linie, neun Stufen, ein Wegweiser): Die Stufe mi
 
 </details>
 
-### [ ] 5.9 Wiederholen verständlich machen und auf Trainerfehler ausweiten  
+### [x] 5.9 Wiederholen verständlich machen und auf Trainerfehler ausweiten  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Stufe 1 umgesetzt. Stufe 2 (Trainerfehler im Stapel) offen, siehe E-092.
 
 ReviewPage zeigt nextDue relativ („morgen“, „in 3 Tagen“) statt „2026-10-05“. Die Dopplung zwischen Untertitel und Leerzustand sowie „0 fällig · 0 im Stapel“ entfernen. In einem zweiten Schritt kommen Fehler aus Preflop-, Push/Fold- und Szenario-Trainer in den Stapel. Dafür wird ReviewItem eine Union mit Trainer-Zustand, und der Trainer muss einen Spot neu aufbauen können; das ist deutlich mehr Arbeit.
 
@@ -528,8 +536,10 @@ ReviewPage zeigt nextDue relativ („morgen“, „in 3 Tagen“) statt „2026-
 
 </details>
 
-### [ ] 5.10 Kartenfragen statt reiner Textauswahl  
+### [x] 5.10 Kartenfragen statt reiner Textauswahl  
 *Wirkung 4 · Aufwand L*
+
+**Stand:** Karten, Board und `optionFeedback` umgesetzt. Offen: Typen 'zahl', 'karten', 'matrix', siehe E-092.
 
 QuizQuestion (src/content/types.ts) bekommt die optionalen Felder cards?/board?. Dann stehen Fragen wie „Board A♣ 8♠ 6♥ 4♦ 2♣ … Wer gewinnt?“ als PlayingCards über den Optionen. Dazu optionFeedback?: string[], damit eine bestimmte falsche Option ihren eigenen Denkfehler erklärt. Danach die Typen 'zahl' und 'karten' (CardPicker) nur für m1-l2 und m3; 'matrix' (HandMatrix) braucht eine eigene Bewertungslogik und kommt später.
 

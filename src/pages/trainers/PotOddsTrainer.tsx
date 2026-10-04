@@ -7,6 +7,8 @@ import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/potoddstrainer';
 import { Rueckmeldung } from '../../components/Rueckmeldung';
 import { Zurueck } from '../../components/ui';
+import { MitBegriffen } from '../../components/Begriff';
+import { KonzeptLink } from '../../components/KonzeptLink';
 
 interface Problem {
   pot: number;
@@ -123,11 +125,13 @@ export function PotOddsTrainer() {
           <>
             <Rueckmeldung urteil={isCorrect ? 'richtig' : 'falsch'}>
               {L.calc(bet, pot, totalAfterCall)}<strong>{L.requiredPct(problem.required)}</strong>.
-              {' '}{L.mnemonic}
+              {' '}<MitBegriffen text={L.mnemonic} />
             </Rueckmeldung>
           </>
         )}
       </div>
+
+      <KonzeptLink ziel="potodds" />
 
       <Entscheidung label={L.title} viele={!answered}>
         {!answered ? (

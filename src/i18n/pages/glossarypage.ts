@@ -11,6 +11,8 @@ export const STR = defineStrings(
     searchLabel: 'Begriff suchen',
     noResults: 'Kein Begriff gefunden.',
     seeAlso: 'Siehe auch:',
+    imGlossar: 'Im Glossar ansehen',
+    begriffOeffnen: 'Begriff erklären',
     buchstabe: (b: string) => `Begriffe mit ${b}`,
     categoryLabels: {
       Alle: 'Alle',
@@ -31,6 +33,8 @@ export const STR = defineStrings(
     searchLabel: 'Search terms',
     noResults: 'No term found.',
     seeAlso: 'See also:',
+    imGlossar: 'View in the glossary',
+    begriffOeffnen: 'Explain term',
     buchstabe: (b: string) => `Terms starting with ${b}`,
     categoryLabels: {
       Alle: 'All',

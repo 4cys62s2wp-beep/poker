@@ -11,6 +11,8 @@ import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/prefloptrainer';
 import { Rueckmeldung } from '../../components/Rueckmeldung';
 import { Zurueck } from '../../components/ui';
+import { MitBegriffen } from '../../components/Begriff';
+import { KonzeptLink } from '../../components/KonzeptLink';
 
 type Scenario =
   | { kind: 'rfi'; position: (typeof RFI_CHARTS)[number]['position']; cards: [number, number]; label: string }
@@ -110,11 +112,11 @@ export function PreflopTrainer() {
             <Rueckmeldung urteil={isCorrect ? 'richtig' : 'falsch'} style={{ marginTop: 16 }}>
               {scenario.kind === 'rfi' ? (
                 <>
-                  {L.rfiVerdict(scenario.label, correctAnswer === 'raise', scenario.position)} {L.rfiDesc[scenario.position]}
+                  {L.rfiVerdict(scenario.label, correctAnswer === 'raise', scenario.position)} <MitBegriffen text={L.rfiDesc[scenario.position]} />
                 </>
               ) : (
                 <>
-                  {L.bbVerdict(scenario.label, correctAnswer)} {L.bbDefenseDesc}
+                  {L.bbVerdict(scenario.label, correctAnswer)} <MitBegriffen text={L.bbDefenseDesc} />
                 </>
               )}
             </Rueckmeldung>
@@ -145,6 +147,8 @@ export function PreflopTrainer() {
           </>
         )}
       </div>
+
+      <KonzeptLink ziel="preflop" />
 
       {/* Antworten und Weitermachen an derselben Stelle, unten im
           Daumenbereich (E-039). */}

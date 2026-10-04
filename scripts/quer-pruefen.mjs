@@ -65,6 +65,10 @@ for (const adresse of adressen) {
       for (const el of document.querySelectorAll('button, a[href], input, select')) {
         const r = el.getBoundingClientRect();
         if (r.height === 0) continue;
+        /* Ein antippbares Wort im Fließtext (`.begriff`) ist keine Bedienfläche, die
+           eine Leiste verdecken könnte: Text scrollt immer unter einer klebenden
+           Leiste durch, und das Wort ist im nächsten Bild wieder da. */
+        if (el.classList.contains('begriff')) continue;
         // Nur was ganz im Bereich der Leiste liegt und nicht zu ihr gehört.
         if (r.top >= grenze && r.bottom <= innerHeight && !fest.some((f) => f.contains(el))) {
           verdeckt.push((el.textContent ?? el.getAttribute('aria-label') ?? el.tagName).trim().slice(0, 40));

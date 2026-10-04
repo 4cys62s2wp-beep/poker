@@ -36,7 +36,7 @@ const m5: Module = {
         {
           heading: 'Example Hand: A Complete Range Analysis',
           body:
-            'Cash game, 6-max, 100bb. A solid reg open-raises to 2.5bb in the cutoff, you call in the big blind with 8♠ 8♦. His starting range: about 27% – all pairs, broadways, suited aces, suited connectors, plus ATo+, KJo+.\n\n**Flop K♦ 7♣ 2♥** (pot 5.5bb): You check, he bets 1.8bb. On this dry king-high board, good regs c-bet small and very often, frequently with their entire range. Filtering effect: minimal. Your call with 88 is standard – you beat his many unpaired hands.\n\n**Turn 4♠** (pot 9.1bb): He barrels 6.5bb, about 70%. Now the filter kicks in: the second, bigger bet is played mainly by Kx (AK, KQ, KJs, KTs), sets (KK, 77, 22), AA – and, as bluffs, gutshots and open-ended draws like 65s, 86s, 53s, A5s. Hands like QJ or A8s usually give up. Your 88 now only beats the bluffs, but there are enough of them: call.\n\n**River A♥** (pot 22.1bb): He bets 16.5bb. Count it out: the ace turns his ace-high bluffs into value (A5s now has top pair, 53s even the A-2-3-4-5 straight), AK becomes two pair, AA a set. What remains as bluffs is almost exclusively missed 65s and 86s – few combos. Your 88 blocks none of the relevant ones. The range analysis is unambiguous: **fold**.',
+            'Cash game, 6-max, 100bb. A solid reg open-raises to 2.5bb in the cutoff, you call in the big blind with 8♠ 8♦. His starting range: about 27% – all pairs, broadways, suited aces, suited connectors, plus ATo+, KJo+.\n\nFlop K♦ 7♣ 2♥ (pot 5.5bb): You check, he bets 1.8bb. On this dry king-high board, good regs c-bet small and very often, frequently with their entire range. Filtering effect: minimal. Your call with 88 is standard – you beat his many unpaired hands.\n\nTurn 4♠ (pot 9.1bb): He barrels 6.5bb, about 70%. Now the filter kicks in: the second, bigger bet is played mainly by Kx (AK, KQ, KJs, KTs), sets (KK, 77, 22), AA – and, as bluffs, gutshots and open-ended draws like 65s, 86s, 53s, A5s. Hands like QJ or A8s usually give up. Your 88 now only beats the bluffs, but there are enough of them: call.\n\nRiver A♥ (pot 22.1bb): He bets 16.5bb. Count it out: the ace turns his ace-high bluffs into value (A5s now has top pair, 53s even the A-2-3-4-5 straight), AK becomes two pair, AA a set. What remains as bluffs is almost exclusively missed 65s and 86s – few combos. Your 88 blocks none of the relevant ones. The range analysis is unambiguous: **fold**.',
           cards: ['Kd', '7c', '2h', '4s', 'Ah'],
           example:
             'The core of the analysis: not “Does he have me beat?” but “How many value combos versus how many bluff combos remain after this line on this card?” On the river above, roughly 40+ value combos face a handful of missed draws – that’s why the fold is mathematically clear, even though 88 is a pair.',
@@ -59,9 +59,9 @@ const m5: Module = {
         {
           question: 'What is the core difference between range thinking and “I put him on AK”?',
           options: [
-            'Range thinking only works with tracking software',
-            'Range thinking means always assuming the worst',
-            'There is none – both are reads',
+            'Range thinking only works with tracking software that records every hand your opponent plays',
+            'Range thinking means assuming the worst possible holding for your opponent in every decision',
+            'There is no difference – both are reads, just with a different name and a different level of precision',
             'Range thinking works with the weighted set of all consistent hands instead of a single guessed hand',
           ],
           correctIndex: 3,
@@ -69,47 +69,49 @@ const m5: Module = {
             'Guessing a single hand is almost always wrong and impossible to calculate against. Against a range, however, you can compute equity and combos and reach reproducible decisions.',
         },
         {
-          question: 'A good reg c-bets one third pot on K♦ 7♣ 2♥. How much does that narrow his range?',
+          question: 'A good reg c-bets one third of the pot on the flop shown. How much does that narrow his range?',
           options: [
-            'A great deal – it signals at least top pair',
+            'A great deal – a player who bets small almost always shows at least top pair',
             'Barely – on dry boards many players bet almost their entire range small there',
-            'It removes all bluffs from his range',
-            'It removes all strong hands, because he would slowplay those',
+            'It removes every bluff from his range, because nobody with air would bet that small',
+            'It removes every strong hand from his range, because he would slowplay them on a dry board',
           ],
           correctIndex: 1,
+          board: ['Kd', '7c', '2h'],
           explanation:
             'Small c-bets on dry, range-friendly boards are often made with (almost) the entire range. The filtering effect is minimal – real information only comes from later, bigger bets.',
         },
         {
           question: 'What best describes the thinking error known as “range morphing”?',
           options: [
-            'You forget to update the range after the turn',
-            'You give the opponent too many nut combos',
+            'You forget to update the opposing range after the turn with the new card',
+            'You give the opponent too many nut combos in his betting range on every board',
             'You retroactively adjust the opposing range so it justifies the call you want to make',
-            'You confuse suited and offsuit combos',
+            'You confuse suited and offsuit combos and so count the wrong number of hands',
           ],
           correctIndex: 2,
           explanation:
             'With range morphing, you invent bluffs or weaker hands in the opponent’s range because you want to call. But the range has to follow from his actions, not from your desired outcome.',
         },
         {
-          question: 'In the example hand (board K♦ 7♣ 2♥ 4♠ A♥), 88 becomes a fold on the river. What is the main reason?',
+          question: 'In the example hand (board above) 88 becomes a fold on the river. What is the main reason?',
           options: [
             'The ace turns many of his bluffs into value hands, so hardly any bluff combos remain',
-            '88 can no longer beat a bluff',
-            'The opponent always has AK when he bets three times',
-            'Pocket pairs are always folds on the river',
+            '88 can no longer beat a single bluff on this board, because every bluff combo suddenly holds an ace',
+            'Anyone who bets three times in a row always has AK – that is why 88 is a clear fold here',
+            'Pocket pairs are always folds on the river as soon as an overcard lands on the board',
           ],
           correctIndex: 0,
+          board: ['Kd', '7c', '2h', '4s', 'Ah'],
           explanation:
             'The river smashes his barreling range: A5s, 53s, AK, and AA turn into value, while almost the only bluffs left are missed 65s/86s. The value-to-bluff ratio tips so far that the call becomes unprofitable.',
         },
         {
           question: 'Why does a big-blind calling range against a button open usually contain no more premiums like AA or AK?',
           options: [
-            'Because you fold premiums in the big blind',
-            'Because the button blocks premiums',
-            'Because premiums are unplayable out of position',
+            'Because you fold premiums in the big blind on principle to defend with weaker hands',
+            'Because the button blocks premiums with his open, so they can hardly show up in the big blind at all',
+            'Because premiums are unplayable out of position and the big blind only loses with them postflop',
             'Because those hands would mostly be 3-bet and are therefore filtered out of the pure calling range',
           ],
           correctIndex: 3,
@@ -128,13 +130,13 @@ const m5: Module = {
         {
           heading: 'What GTO Really Means',
           body:
-            'GTO stands for **Game Theory Optimal** and describes an equilibrium strategy (Nash equilibrium): a mixed strategy against which no opponent can profitably deviate in the long run – no matter what he does. GTO is therefore **unexploitable**, not “maximally profitable”.\n\nThe central tool is **indifference**: a GTO strategy mixes value bets and bluffs in exactly the ratio at which the opponent’s bluff-catchers have the same expected value whether they call or fold – namely zero extra profit. The opponent cannot improve no matter what he chooses. That’s precisely why solvers play so many actions at mixed frequencies (“30% bet, 70% check”).\n\nAvoid two misconceptions. First: GTO does not mean tight or passive – equilibrium strategies bluff a lot and aggressively, just in balanced proportions. Second: against players with big mistakes, GTO leaves money on the table, because it doesn’t attack those mistakes directly. It automatically wins something against mistakes, but not the maximum.\n\nThe practical value of GTO study lies less in memorizing frequencies than in understanding the structure: which hands make good bluffs, which boards belong to which range, how much defense is required.',
+            'GTO stands for Game Theory Optimal and describes an equilibrium strategy (Nash equilibrium): a mixed strategy against which no opponent can profitably deviate in the long run – no matter what he does. GTO is therefore unexploitable, not “maximally profitable”.\n\nThe central tool is indifference: a GTO strategy mixes value bets and bluffs in exactly the ratio at which the opponent’s bluff-catchers have the same expected value whether they call or fold – namely zero extra profit. The opponent cannot improve no matter what he chooses. That’s precisely why solvers play so many actions at mixed frequencies (“30% bet, 70% check”).\n\nAvoid two misconceptions. First: GTO does not mean tight or passive – equilibrium strategies bluff a lot and aggressively, just in balanced proportions. Second: against players with big mistakes, GTO leaves money on the table, because it doesn’t attack those mistakes directly. It automatically wins something against mistakes, but not the maximum.\n\nThe practical value of GTO study lies less in memorizing frequencies than in understanding the structure: which hands make good bluffs, which boards belong to which range, how much defense is required.',
           tip: 'Use solver outputs as a map, not a rulebook: understand WHY a hand gets bet (equity, blockers, playability) – the reasoning transfers, the exact frequency doesn’t.',
         },
         {
           heading: 'MDF: How Often Do You Have to Defend?',
           body:
-            'The **minimum defense frequency (MDF)** answers the question: what share of my range must I continue with against a bet, at minimum, so that the opponent can’t automatically profit with any random bluff?\n\nThe formula: **MDF = pot / (pot + bet)**.\n\nIts counterpart is **alpha**, the break-even success rate of a bluff: **alpha = bet / (bet + pot)** – the share of folds a pure bluff needs to pay for itself. It always holds that alpha = 1 − MDF.\n\nExample: with a pot-size bet, the bluffer risks one pot unit to win one. If you fold more than 50% of the time, he prints money with every bluff. Against a small one-third-pot bet, by contrast, a fold 25% of the time is already enough for him – which is why you have to defend very wide against small bets.\n\nAn important caveat: MDF is a concept for opponents who bluff often enough. Against someone who practically never bluffs, folding below MDF is not a leak but the correct exploit. MDF tells you what balance would require – not what wins the most against this specific opponent.',
+            'The **minimum defense frequency (MDF)** answers the question: what share of my range must I continue with against a bet, at minimum, so that the opponent can’t automatically profit with any random bluff?\n\nThe formula: MDF = pot / (pot + bet).\n\nIts counterpart is alpha, the break-even success rate of a bluff: alpha = bet / (bet + pot) – the share of folds a pure bluff needs to pay for itself. It always holds that alpha = 1 − MDF.\n\nExample: with a pot-size bet, the bluffer risks one pot unit to win one. If you fold more than 50% of the time, he prints money with every bluff. Against a small one-third-pot bet, by contrast, a fold 25% of the time is already enough for him – which is why you have to defend very wide against small bets.\n\nAn important caveat: MDF is a concept for opponents who bluff often enough. Against someone who practically never bluffs, folding below MDF is not a leak but the correct exploit. MDF tells you what balance would require – not what wins the most against this specific opponent.',
           table: {
             headers: ['Bet size', 'MDF (your defense share)', 'Alpha (bluff break-even)'],
             rows: [
@@ -188,10 +190,10 @@ const m5: Module = {
         {
           question: 'What does a true GTO strategy guarantee – and what does it NOT guarantee?',
           options: [
-            'It guarantees you can’t be exploited in the long run – but not maximum profit against flawed opponents',
-            'It guarantees maximum profit against every player type',
-            'It guarantees you never lose a big pot',
-            'It guarantees profits only against other GTO players',
+            'It guarantees you can’t be exploited in the long run – but not maximum profit against weak opponents',
+            'It guarantees maximum profit against every player type, because it gives up no weakness',
+            'It guarantees you never lose a big pot, even in the short run, and that variance disappears completely',
+            'It guarantees profits only against other GTO players and loses money against weaker opponents',
           ],
           correctIndex: 0,
           explanation:
@@ -207,9 +209,9 @@ const m5: Module = {
         {
           question: 'You notice that an opponent practically never bluffs on big river bets. What is the correct adjustment?',
           options: [
-            'Keep defending exactly at MDF to stay balanced',
-            'Bluff more on the river yourself',
-            'Only call with the nuts and slowplay them',
+            'Keep defending exactly at MDF so your own strategy stays balanced and unexploitable',
+            'Bluff more on the river yourself to push the passive opponent out of the pot',
+            'Only call with the nuts and slowplay them to extract as much value as possible',
             'Fold your bluff-catchers well below MDF – overfolding is the exploit against this mistake',
           ],
           correctIndex: 3,
@@ -219,10 +221,10 @@ const m5: Module = {
         {
           question: 'Why is “more value, less fancy play” the right default at low stakes?',
           options: [
-            'Because the rake forbids bluffing there',
-            'Because the population calls too much and bluffs too little – thin value bets win the most there, big bluffs the least',
-            'Because GTO doesn’t work at low stakes',
-            'Because you can’t gather reads there',
+            'Because the rake at low stakes rules out bluffing, so elaborate plays earn nothing',
+            'Because the population calls too much and bluffs too little – thin value wins the most there',
+            'Because GTO fundamentally doesn’t work at low stakes, which makes all theory worthless',
+            'Because you can’t gather reads there, so every adjustment rests on pure guessing',
           ],
           correctIndex: 1,
           explanation:
@@ -240,21 +242,21 @@ const m5: Module = {
         {
           heading: 'The Principle: Your Cards Are Missing from His Range',
           body:
-            'A **blocker** is a card in your hand (or on the board) that reduces the number of certain opposing combos – the effect is called **card removal**.\n\nThe math behind it is simple combo arithmetic: four cards of every rank exist. AA normally comes in 6 combos. If you hold an ace yourself, only 3 remain for your opponent – you’ve halved his chance of having aces. AK comes in 16 combos; with an ace in your hand, only 12.\n\nWhy is that strategically relevant? Because many river decisions are razor thin: whether a call or a bluff is profitable often depends on whether the opposing range contains a few value combos more or fewer. Blockers shift exactly that ratio – sometimes in your favor, sometimes against you.\n\nThat leads to the two basic applications:\n\n- **When bluffing**, you want to block the hands your opponent would call with – above all his strongest.\n- **When bluff-catching**, you want to block his value hands and specifically NOT block his bluffs (“unblock” them), so that as many bluff combos as possible remain.',
+            'A **blocker** is a card in your hand (or on the board) that reduces the number of certain opposing combos – the effect is called card removal.\n\nThe math behind it is simple combo arithmetic: four cards of every rank exist. AA normally comes in 6 combos. If you hold an ace yourself, only 3 remain for your opponent – you’ve halved his chance of having aces. AK comes in 16 combos; with an ace in your hand, only 12.\n\nWhy is that strategically relevant? Because many river decisions are razor thin: whether a call or a bluff is profitable often depends on whether the opposing range contains a few value combos more or fewer. Blockers shift exactly that ratio – sometimes in your favor, sometimes against you.\n\nThat leads to the two basic applications:\n\n- **When bluffing**, you want to block the hands your opponent would call with – above all his strongest.\n- **When bluff-catching**, you want to block his value hands and specifically NOT block his bluffs (“unblock” them), so that as many bluff combos as possible remain.',
           example:
             'On the board K♦ 7♣ 2♥, without removal there are 3 combos of top set KK. If you hold a king yourself, say K♠ Q♦, exactly 1 combo remains – you’ve removed two thirds of his top set from his range. It’s exactly these combo shifts that turn a close spot into a clear one.',
         },
         {
           heading: 'The Classic: The Naked A♠ on a Flush Board',
           body:
-            'The best-known blocker example: on a board with three spades – say 9♠ 6♠ 2♠ – you hold the A♠ without a second spade, for example A♠ K♦.\n\nTwo effects work at once. First: your opponent **cannot possibly hold the nut flush**, because the card required for it is in your hand. His calling range against big bets loses its top end. Second: you can credibly **represent** the nut flush – from your opponent’s perspective, A♠ X♠ is a central part of your possible value range.\n\nThat’s why hands with the naked nut blocker are first-class bluff candidates on monotone boards and on boards where the flush draw arrives on the turn or river: you bet or raise big and put hands like small flushes, sets, and overpairs under maximum pressure.\n\nThe same logic works, in weakened form, with the K♠ as the second-nut blocker. But the range logic from lesson 1 still applies: the blocker makes the bluff better, not automatically good. Against an opponent who never folds a flush anyway, the prettiest A♠ does you no good – then you’re better off not bluffing it in the first place.',
+            'The best-known blocker example: on a board with three spades – say 9♠ 6♠ 2♠ – you hold the A♠ without a second spade, for example A♠ K♦.\n\nTwo effects work at once. First: your opponent cannot possibly hold the nut flush, because the card required for it is in your hand. His calling range against big bets loses its top end. Second: you can credibly represent the nut flush – from your opponent’s perspective, A♠ X♠ is a central part of your possible value range.\n\nThat’s why hands with the naked nut blocker are first-class bluff candidates on monotone boards and on boards where the flush draw arrives on the turn or river: you bet or raise big and put hands like small flushes, sets, and overpairs under maximum pressure.\n\nThe same logic works, in weakened form, with the K♠ as the second-nut blocker. But the range logic from lesson 1 still applies: the blocker makes the bluff better, not automatically good. Against an opponent who never folds a flush anyway, the prettiest A♠ does you no good – then you’re better off not bluffing it in the first place.',
           cards: ['As', 'Kd', '9s', '6s', '2s'],
           tip: 'Remember the hierarchy on flush boards: the nut blocker is valuable for bluffing because it removes the strongest calling hand AND makes your story credible. Hardly any other blocker type gives you both at once.',
         },
         {
           heading: 'Nut Blockers Preflop: Why A5s Is the Perfect 3-Bet Bluff',
           body:
-            'Blockers work preflop too. Modern 3-bet ranges (a 3-bet is the re-raise against an open-raise) contain targeted bluffs alongside value hands – and the classics for that role are **A5s through A2s**, A5s above all.\n\nThree reasons make these hands ideal:\n\n- **Blocker effect**: your ace halves your opponent’s AA combos (6 down to 3) and cuts AK from 16 to 12. Exactly the hands that would 4-bet you or call your 3-bet and dominate you become rarer. Your 3-bet therefore wins the pot outright more often.\n- **Playability**: if you get called, you have a real hand: nut flush potential, the wheel straight (A-2-3-4-5), and with the five a connection to low boards that miss the caller’s range.\n- **No range loss**: A5s is only mediocre as a call against an open – so you aren’t “burning” a hand that would be worth much more as a call. An ace with a better kicker like ATs prefers to call; a hand like 96o is simply too weak to play as a 3-bet bluff.\n\nThis pattern – nut blocker plus playability plus low opportunity cost – is the blueprint for good bluff selection in almost any spot.',
+            'Blockers work preflop too. Modern 3-bet ranges (a 3-bet is the re-raise against an open-raise) contain targeted bluffs alongside value hands – and the classics for that role are A5s through A2s, A5s above all.\n\nThree reasons make these hands ideal:\n\n- **Blocker effect**: your ace halves your opponent’s AA combos (6 down to 3) and cuts AK from 16 to 12. Exactly the hands that would 4-bet you or call your 3-bet and dominate you become rarer. Your 3-bet therefore wins the pot outright more often.\n- **Playability**: if you get called, you have a real hand: nut flush potential, the wheel straight (A-2-3-4-5), and with the five a connection to low boards that miss the caller’s range.\n- **No range loss**: A5s is only mediocre as a call against an open – so you aren’t “burning” a hand that would be worth much more as a call. An ace with a better kicker like ATs prefers to call; a hand like 96o is simply too weak to play as a 3-bet bluff.\n\nThis pattern – nut blocker plus playability plus low opportunity cost – is the blueprint for good bluff selection in almost any spot.',
           cards: ['Ah', '5h'],
           example:
             'The button open-raises and you hold A♥ 5♥ in the small blind. Instead of calling (out of position, mediocre hand), you 3-bet: you block AA/AK, immediately fold out many worse button hands, and if called you keep nut draws and wheel potential as a fallback.',
@@ -262,7 +264,7 @@ const m5: Module = {
         {
           heading: 'Removal When Bluff-Catching: Block Value, Unblock Bluffs',
           body:
-            'When calling, the logic flips. A good bluff-catcher meets two removal criteria:\n\n- It **blocks value**: cards that make the opponent’s nut hands less likely increase the bluff share of his betting range.\n- It **unblocks bluffs**: it contains as few cards as possible from the missed draws your opponent bluffs with. If you hold pieces of his bluff region yourself, fewer bluff combos remain – and your call gets worse.\n\nExample: board T♠ 8♠ 4♦ 2♣ 3♠, your opponent overbets the river. With A♦ A♠ your call is clearly better than with A♦ A♥ – same hand strength, but the A♠ removes every single nut flush combo from his value range. Conversely, J♥ T♥ (top pair) is a worse bluff-catcher here than it looks: your jack sits right inside the missed straight draws (QJ, J9), so you block part of the very hands he can bluff with at all.\n\nThis kind of thinking explains seemingly paradoxical solver decisions: sometimes the weaker hand calls and the stronger one folds, because the weaker one has the better removal properties. On the river, where equity is essentially locked in, blockers are often the only criterion that still separates two equally strong bluff-catchers.',
+            'When calling, the logic flips. A good bluff-catcher meets two removal criteria:\n\n- It blocks value: cards that make the opponent’s nut hands less likely increase the bluff share of his betting range.\n- It unblocks bluffs: it contains as few cards as possible from the missed draws your opponent bluffs with. If you hold pieces of his bluff region yourself, fewer bluff combos remain – and your call gets worse.\n\nExample: board T♠ 8♠ 4♦ 2♣ 3♠, your opponent overbets the river. With A♦ A♠ your call is clearly better than with A♦ A♥ – same hand strength, but the A♠ removes every single nut flush combo from his value range. Conversely, J♥ T♥ (top pair) is a worse bluff-catcher here than it looks: your jack sits right inside the missed straight draws (QJ, J9), so you block part of the very hands he can bluff with at all.\n\nThis kind of thinking explains seemingly paradoxical solver decisions: sometimes the weaker hand calls and the stronger one folds, because the weaker one has the better removal properties. On the river, where equity is essentially locked in, blockers are often the only criterion that still separates two equally strong bluff-catchers.',
           tip: 'Before close river calls, always ask both questions: “Which of his value hands do I block?” AND “Which of his bluffs do I block?” A call gets stronger through the former and weaker through the latter.',
         },
         {
@@ -289,24 +291,26 @@ const m5: Module = {
             'Without removal there are 6 AA combos. With one ace in your hand, three aces remain in the deck, which form only 3 possible two-card combinations.',
         },
         {
-          question: 'Why is A♠ K♦ a strong bluff candidate on the board 9♠ 6♠ 2♠?',
+          question: 'Why is the hand shown a strong bluff candidate on this board?',
           options: [
             'Because your opponent can’t hold the nut flush and you credibly represent it at the same time',
-            'Because ace-high often wins at showdown',
-            'Because the board is low and your overcards are live',
-            'Because the K♦ blocks the second-best hand',
+            'Because ace-high often wins at showdown on flush boards, so you are rarely called',
+            'Because the board is low and your overcards can still pair up if you get called and hit',
+            'Because the K♦ blocks the opponent’s second-best hand and narrows his calling range',
           ],
           correctIndex: 0,
+          cards: ['As', 'Kd'],
+          board: ['9s', '6s', '2s'],
           explanation:
             'The A♠ in your hand removes every nut flush combo from the opposing range and makes your own story (“I have the nut flush”) credible – the double effect of the classic nut-blocker bluff.',
         },
         {
           question: 'What makes A5s a better 3-bet bluff than, say, K9o?',
           options: [
-            'A5s wins unimproved at showdown more often',
+            'A5s wins more often unimproved at showdown and is therefore profitable even when the bluff fails',
             'A5s blocks AA/AK, has nut flush and wheel potential, and is only mediocre as a call anyway',
-            'K9o blocks too many of the opponent’s bluffs',
-            'A5s is a favorite against all of the opponent’s hands',
+            'K9o blocks too many of the opponent’s bluffs and so shrinks the number of his folds',
+            'A5s is ahead of the opponent’s calling range, which turns the bluff into a value 3-bet',
           ],
           correctIndex: 1,
           explanation:
@@ -315,10 +319,10 @@ const m5: Module = {
         {
           question: 'On the river, your opponent’s most important bluffs are missed QJ straight draws. Which statement about your bluff-catcher is true?',
           options: [
-            'With a Q or a J in your hand, your call gets better',
+            'With a Q or a J in your hand your call gets better, because you block his value hands',
             'With a Q or a J in your hand, your call gets worse, because you block his bluff combos',
-            'Blockers don’t matter when calling, only when bluffing',
-            'You should only call if you hold QJ yourself',
+            'Blockers play no role when calling – they only work when bluffing and when value betting',
+            'You should only call if you hold QJ yourself, because only then do his bluffs drop out of the range',
           ],
           correctIndex: 1,
           explanation:
@@ -327,10 +331,10 @@ const m5: Module = {
         {
           question: 'What is the most important limit of blocker thinking?',
           options: [
-            'Blockers only work with suited hands',
-            'Blockers shift only a few combos – they’re a tie-breaker in close spots, but no substitute for range analysis, and they do nothing against opponents who never fold or never bluff',
-            'Blockers only apply preflop, not postflop',
-            'Blockers are only relevant when you hold the nuts yourself',
+            'Blockers only work with suited hands, because only suits can remove combos from a range',
+            'Blockers shift only a few combos – a tie-breaker in close spots, but no substitute for range analysis',
+            'Blockers only apply preflop and lose all effect postflop once board cards have fallen',
+            'Blockers only matter when you hold the nuts yourself and the opponent can therefore only bluff or fold',
           ],
           correctIndex: 1,
           explanation:
@@ -348,13 +352,13 @@ const m5: Module = {
         {
           heading: 'Two Blueprints for a Range',
           body:
-            'A **polarized range** consists of two extremes: very strong value hands (the “nuts” or close to it) and bluffs – the middle is missing. The logic: your strong hands want maximum value, your bluffs want maximum fold pressure, and both benefit from the same aggressive approach. Medium-strength hands don’t fit in: they win nothing from worse hands that call and fold out no better ones – they prefer to check.\n\nA **linear range** (also called “merged”) is the counter-model: it starts with the strongest hands and runs down without gaps to a cutoff – nuts, strong hands, good medium hands. It contains few bluffs in the strict sense; its weakest hands are more like thin value bets or semi-bluffs with substance.\n\nThe difference becomes tangible with a 3-bet range: polarized, you 3-bet QQ+/AK plus bluffs like A5s – and call the middle (TT, AQs, KQs). Linear, you simply 3-bet the best X percent in one block: QQ+, AK, AQ, TT, KQs and so on, with no classic bluffs at all.\n\nWhich blueprint is right depends on how your opponent reacts to pressure – that’s the key to the next sections.',
+            'A polarized range consists of two extremes: very strong value hands (the “nuts” or close to it) and bluffs – the middle is missing. The logic: your strong hands want maximum value, your bluffs want maximum fold pressure, and both benefit from the same aggressive approach. Medium-strength hands don’t fit in: they win nothing from worse hands that call and fold out no better ones – they prefer to check.\n\nA linear range (also called “merged”) is the counter-model: it starts with the strongest hands and runs down without gaps to a cutoff – nuts, strong hands, good medium hands. It contains few bluffs in the strict sense; its weakest hands are more like thin value bets or semi-bluffs with substance.\n\nThe difference becomes tangible with a 3-bet range: polarized, you 3-bet QQ+/AK plus bluffs like A5s – and call the middle (TT, AQs, KQs). Linear, you simply 3-bet the best X percent in one block: QQ+, AK, AQ, TT, KQs and so on, with no classic bluffs at all.\n\nWhich blueprint is right depends on how your opponent reacts to pressure – that’s the key to the next sections.',
           tip: 'Mnemonic: polarized = barbell (two heavy ends, nothing in the middle). Linear = ramp (sloping down from the top with no gaps). With every bet – yours and your opponent’s – ask yourself: barbell or ramp?',
         },
         {
           heading: 'Sizing Follows Range Structure',
           body:
-            'Range blueprint and bet size belong together – that’s not a matter of style, it’s math.\n\n**Polarized = big.** Your nut hands want to inflate the pot maximally, and your bluffs need fold equity against exactly the medium hands that beat you. Add the frequency effect: the bigger the bet, the worse the pot odds for the caller – and the more bluffs your range may contain at equilibrium without becoming exploitable. That’s why overbets (bets above pot size) exist practically only from polarized ranges, typically when your range can contain the nuts and the opponent’s is capped.\n\n**Linear = small to medium.** A range full of good but not overwhelming hands wants value from worse hands, equity denial (making weak hands fold their outs), and a controlled pot. Big sizings would fold out exactly the hands you want value from and inflate the pot against the hands that beat you.\n\nAs river guidelines from equilibrium logic: the bluff share of a polarized bet grows with the sizing – it corresponds exactly to the pot odds the caller is being offered.',
+            'Range blueprint and bet size belong together – that’s not a matter of style, it’s math.\n\nPolarized = big. Your nut hands want to inflate the pot maximally, and your bluffs need fold equity against exactly the medium hands that beat you. Add the frequency effect: the bigger the bet, the worse the pot odds for the caller – and the more bluffs your range may contain at equilibrium without becoming exploitable. That’s why overbets (bets above pot size) exist practically only from polarized ranges, typically when your range can contain the nuts and the opponent’s is capped.\n\nLinear = small to medium. A range full of good but not overwhelming hands wants value from worse hands, equity denial (making weak hands fold their outs), and a controlled pot. Big sizings would fold out exactly the hands you want value from and inflate the pot against the hands that beat you.\n\nAs river guidelines from equilibrium logic: the bluff share of a polarized bet grows with the sizing – it corresponds exactly to the pot odds the caller is being offered.',
           table: {
             headers: ['River sizing', 'Bluff share (GTO guideline)', 'Value : bluff'],
             rows: [
@@ -377,7 +381,7 @@ const m5: Module = {
         {
           heading: 'Typical Linear Spots',
           body:
-            'You build your range linear when folds are unlikely or unwanted – in other words, when you primarily want to get paid by worse hands:\n\n- **Value 3-bets against loose callers**: against a player who calls 3-bets with far too many hands, bluff 3-bets are pointless (he doesn’t fold) and thin value 3-bets are gold. You 3-bet linear: simply every hand that dominates his calling range – down to AJs, KQs, 99.\n- **Small c-bets on dry boards**: on boards like K♦ 7♣ 2♥ that clearly favor your preflop range, modern strategy often bets (almost) the entire range small – a linear construct: lots of thin value hands and equity-denial bets, hardly any pure polarity.\n- **Thin river value against stations**: against players who call with any pair, you bet top pair with a medium kicker small to medium for value – a hand that would be a check in polarized logic.\n- **Isolation raises against limpers**: here too, you don’t want a fold – you want to build the pot with the better hand in position, so you raise a linear, dominating range.\n\nThe rule to take with you: **against players who fold too much, you polarize. Against players who call too much, you play linear.** Anyone who bluffs polarized into a calling station or value bets thin and linear against a nit has matched the wrong blueprint to the opponent.',
+            'You build your range linear when folds are unlikely or unwanted – in other words, when you primarily want to get paid by worse hands:\n\n- **Value 3-bets against loose callers**: against a player who calls 3-bets with far too many hands, bluff 3-bets are pointless (he doesn’t fold) and thin value 3-bets are gold. You 3-bet linear: simply every hand that dominates his calling range – down to AJs, KQs, 99.\n- **Small c-bets on dry boards**: on boards like K♦ 7♣ 2♥ that clearly favor your preflop range, modern strategy often bets (almost) the entire range small – a linear construct: lots of thin value hands and equity-denial bets, hardly any pure polarity.\n- **Thin river value against stations**: against players who call with any pair, you bet top pair with a medium kicker small to medium for value – a hand that would be a check in polarized logic.\n- **Isolation raises against limpers**: here too, you don’t want a fold – you want to build the pot with the better hand in position, so you raise a linear, dominating range.\n\nThe rule to take with you: against players who fold too much, you polarize. Against players who call too much, you play linear. Anyone who bluffs polarized into a calling station or value bets thin and linear against a nit has matched the wrong blueprint to the opponent.',
           tip: 'Test your river sizing with one question: “Which hands do I want to get called by – and does this opponent really call them at this size?” If the answers don’t line up, either the sizing or the blueprint is wrong.',
         },
       ],
@@ -392,10 +396,10 @@ const m5: Module = {
         {
           question: 'What does a polarized betting range consist of?',
           options: [
-            'The best X percent of all hands, descending without gaps',
+            'The best X percent of all hands, in descending order of strength without any gaps',
             'Very strong value hands and bluffs – without the medium-strength hands in between',
-            'Only bluffs with good blockers',
-            'All hands with at least 50% equity',
+            'Only bluffs with good blockers, because value hands get hidden through slowplay',
+            'All hands that have at least 50% equity against the opponent’s range',
           ],
           correctIndex: 1,
           explanation:
@@ -404,10 +408,10 @@ const m5: Module = {
         {
           question: 'Why do overbets belong almost exclusively to polarized ranges?',
           options: [
-            'Because overbets are only allowed with the nuts',
-            'Because at huge sizings medium hands neither get value nor fold out better hands – only nuts and bluffs profit, and the big sizing simultaneously allows more bluffs',
-            'Because overbets reduce variance',
-            'Because linear ranges never bet the river',
+            'Because overbets are only allowed with the nuts and any other hand would be playing them against the rules',
+            'Because at huge sizings medium hands neither collect value nor push better hands to fold',
+            'Because overbets reduce variance and are therefore played mostly with medium-strength hands',
+            'Because linear ranges never bet the river and are therefore not eligible for overbets',
           ],
           correctIndex: 1,
           explanation:
@@ -423,10 +427,10 @@ const m5: Module = {
         {
           question: 'A loose player calls 3-bets with far too many dominated hands. How do you construct your 3-bet range against him?',
           options: [
-            'Polarized: premiums plus A5s bluffs',
-            'Linear: every hand that dominates his calling range, including thinner value like AJs or 99 – and practically no bluffs',
-            'Don’t 3-bet at all, just call',
-            'Only AA and KK, to be safe',
+            'Polarized: premiums plus A5s bluffs, so the opponent never knows which half of the range you hold',
+            'Linear: every hand that dominates his calling range, including thinner value like AJs or 99 – hardly any bluffs',
+            'Don’t 3-bet at all, just call, because aggression can gain nothing against a player who never folds',
+            'Only AA and KK, to be sure you are never in the pot with a dominated hand',
           ],
           correctIndex: 1,
           explanation:
@@ -435,10 +439,10 @@ const m5: Module = {
         {
           question: 'A solid reg overbets the river after betting the turn hard. What follows for your medium-strength hands?',
           options: [
-            'They are now clear value raises',
-            'They become pure bluff-catchers – his range is nuts or bluff, and blocker criteria decide between call and fold',
-            'They are automatic calls because of the pot odds',
-            'They are automatic folds, because overbets are never bluffs',
+            'They are now clear value raises, because they beat almost everything a solid opponent represents with an overbet',
+            'They become pure bluff-catchers – his range is nuts or bluff, blockers decide between call and fold',
+            'They are automatic calls because of the pot odds that an overbet always offers the caller',
+            'They are automatic folds, because overbets from solid players are never bluffs',
           ],
           correctIndex: 1,
           explanation:
@@ -462,20 +466,20 @@ const m5: Module = {
         {
           heading: 'Strategy by Stack Depth',
           body:
-            'Stack depth dictates which tools are even available to you:\n\n- **Above 60bb**: close to cash game play – full range diversity, postflop room to maneuver, speculative hands keep their value.\n- **25–60bb**: beware of bloated pots: a 3-bet plus call quickly ties up a quarter of the stack. 4-bets effectively commit you; hands like small pairs and suited connectors lose implied odds.\n- **15–25bb**: the 3-bet often becomes an all-in (“3-bet shove” or resteal) – shallow enough to combine fold equity with showdown equity, too shallow for raise-then-call maneuvers.\n- **Below 15–20bb**: the **push/fold tendency** takes over: raising first and then folding to a shove burns too much of the stack, and postflop play out of position with a mini stack is barely playable profitably. Below about 10bb, open-shove or fold is almost always the best choice.\n\nShoving principles: **position beats card strength** – as a rough Nash guideline, at 10bb you shove well over 40% of hands from the button, but more like 15–20% from early position in 6-max. The first raiser has the advantage of fold equity; **calling ranges are therefore always considerably tighter than shoving ranges**. And: better to shove a round too early with fold equity than to get blinded down to 4bb with no leverage left.',
+            'Stack depth dictates which tools are even available to you:\n\n- **Above 60bb**: close to cash game play – full range diversity, postflop room to maneuver, speculative hands keep their value.\n- **25–60bb**: beware of bloated pots: a 3-bet plus call quickly ties up a quarter of the stack. 4-bets effectively commit you; hands like small pairs and suited connectors lose implied odds.\n- **15–25bb**: the 3-bet often becomes an all-in (“3-bet shove” or resteal) – shallow enough to combine fold equity with showdown equity, too shallow for raise-then-call maneuvers.\n- **Below 15–20bb**: the push/fold tendency takes over: raising first and then folding to a shove burns too much of the stack, and postflop play out of position with a mini stack is barely playable profitably. Below about 10bb, open-shove or fold is almost always the best choice.\n\nShoving principles: position beats card strength – as a rough Nash guideline, at 10bb you shove well over 40% of hands from the button, but more like 15–20% from early position in 6-max. The first raiser has the advantage of fold equity; calling ranges are therefore always considerably tighter than shoving ranges. And: better to shove a round too early with fold equity than to get blinded down to 4bb with no leverage left.',
           example:
             'Blinds 500/1,000 with a big blind ante, you hold 9,500 chips (under 10bb) on the button with A♦ 7♣. A standard raise to 2,200 would be a mistake: facing a shove from the blinds, you’d usually have to fold and would have given away a quarter of your stack. The correct play is the open-shove – at this depth, A7o sits clearly inside the button shoving range.',
         },
         {
           heading: 'ICM: Why Chips Don’t Convert Linearly into Money',
           body:
-            'The **Independent Chip Model (ICM)** translates chip stacks into money equity – your fair share of the prize pool. The core insight: **the monetary value of chips grows sublinearly** – every additional chip is worth less than the one before.\n\nThe reason lies in the payout structure: finishing positions get paid, not chips. Whoever wins all the chips still only receives first prize – typically 20–30% of the prize pool, not 100%. The rest of the value sits in the places below, and short stacks still have a claim on those too.\n\nA numerical example makes it tangible: a 9-player sit-and-go paying 50/30/20, everyone starts with equal chips – so 11.1% equity in the prize pool each. If you double your stack in the first hand, you have twice the chips, but by ICM only around 20% equity instead of 22.2%. Put the other way around: the player who risked his tournament life put more money equity on the line than he could possibly win.\n\nFrom this follows the most important tournament rule: **a chip-EV-neutral flip is a losing proposition under ICM.** Close spots that would be automatic calls in a cash game become folds in a tournament – and all the more clearly, the closer the next payout jump gets.',
+            'The **Independent Chip Model (ICM)** translates chip stacks into money equity – your fair share of the prize pool. The core insight: the monetary value of chips grows sublinearly – every additional chip is worth less than the one before.\n\nThe reason lies in the payout structure: finishing positions get paid, not chips. Whoever wins all the chips still only receives first prize – typically 20–30% of the prize pool, not 100%. The rest of the value sits in the places below, and short stacks still have a claim on those too.\n\nA numerical example makes it tangible: a 9-player sit-and-go paying 50/30/20, everyone starts with equal chips – so 11.1% equity in the prize pool each. If you double your stack in the first hand, you have twice the chips, but by ICM only around 20% equity instead of 22.2%. Put the other way around: the player who risked his tournament life put more money equity on the line than he could possibly win.\n\nFrom this follows the most important tournament rule: a chip-EV-neutral flip is a losing proposition under ICM. Close spots that would be automatic calls in a cash game become folds in a tournament – and all the more clearly, the closer the next payout jump gets.',
           tip: 'Memorize this: lose your stack and you lose 100% of your tournament equity – double it and you gain less than 100%. That asymmetry is ICM in one sentence.',
         },
         {
           heading: 'Risk Premium: The Bubble and the Final Table',
           body:
-            'The difference between the equity a call would need on pure chip EV and the equity it needs under ICM is called the **risk premium**. It’s the surcharge for risking your tournament life – and it isn’t constant, it explodes in two places:\n\n**The bubble** (just before the paid places): here the risk premium is at its highest, often 5–15 percentage points of additional equity a call requires. The practical consequences: big stacks shove and raise almost with impunity, because nobody wants to call without a monster. Medium stacks suffer the most – they have a lot to lose and must play the tightest. Short stacks stay comparatively free, because their residual value is small.\n\n**The final table**: every other player’s bust means a pay jump for you. That’s why, with a short stack, it can be correct to wait very tight while two other short stacks fight for survival (“laddering”). Confrontations between two big stacks are especially expensive under ICM – the one who profits is always the one watching from the sidelines.\n\nThe extreme case is the satellite: if five equal tickets go to the last five of six players, it can be correct to **fold even AA before the flop** when a bigger stack covers you – your possible gain is minimal, your risk total. No other example shows so clearly that chips and money are two different currencies.',
+            'The difference between the equity a call would need on pure chip EV and the equity it needs under ICM is called the risk premium. It’s the surcharge for risking your tournament life – and it isn’t constant, it explodes in two places:\n\nThe bubble (just before the paid places): here the risk premium is at its highest, often 5–15 percentage points of additional equity a call requires. The practical consequences: big stacks shove and raise almost with impunity, because nobody wants to call without a monster. Medium stacks suffer the most – they have a lot to lose and must play the tightest. Short stacks stay comparatively free, because their residual value is small.\n\nThe final table: every other player’s bust means a pay jump for you. That’s why, with a short stack, it can be correct to wait very tight while two other short stacks fight for survival (“laddering”). Confrontations between two big stacks are especially expensive under ICM – the one who profits is always the one watching from the sidelines.\n\nThe extreme case is the satellite: if five equal tickets go to the last five of six players, it can be correct to fold even AA before the flop when a bigger stack covers you – your possible gain is minimal, your risk total. No other example shows so clearly that chips and money are two different currencies.',
           example:
             'Tournament bubble, you hold Q♠ Q♥ in the big blind with 25bb. The chip leader shoves from the button, and a mini stack with 2bb sits at the neighboring table. On chip EV, QQ is a standard call – under ICM the fold can be correct: against his wide range you usually win chips, but the bubble’s risk premium eats up the money EV of the call, while the guaranteed min-cash is within reach.',
         },
@@ -497,10 +501,10 @@ const m5: Module = {
         {
           question: 'Why is a chip-EV-neutral coinflip for your entire stack usually a money-EV loss in a tournament?',
           options: [
-            'Because flips are won less often in tournaments',
-            'Because chips grow sublinearly in money equity: the doubled stack is worth less than twice as much, while the lost stack costs 100%',
-            'Because the rake is higher in tournaments',
-            'Because you have to play tighter after a flip',
+            'Because flips are won less often in tournaments than in cash games, where the blinds stay constant and stacks are deeper',
+            'Because chips grow sublinearly in money equity: the doubled stack is worth less than twice as much',
+            'Because the rake in tournaments is higher than in cash games and makes every flip more expensive',
+            'Because after a won flip you have to play tighter and so lose follow-up profit',
           ],
           correctIndex: 1,
           explanation:
@@ -516,10 +520,10 @@ const m5: Module = {
         {
           question: 'With 9bb on the button you hold A♦ 7♣. What is the best standard action?',
           options: [
-            'Fold – A7o is too weak for aggression',
-            'Min-raise intending to fold to a shove',
+            'Fold – A7o is too weak for aggression, even though the button is the best position',
+            'Min-raise intending to fold to a shove from the blinds and save the rest of the stack',
             'Open-shove – at this depth, the hand clearly belongs in the button push range',
-            'Limp and see a flop',
+            'Limp and see a flop, because A7o is easier to play postflop than preflop',
           ],
           correctIndex: 2,
           explanation:
@@ -528,10 +532,10 @@ const m5: Module = {
         {
           question: 'Who suffers most from ICM pressure on the bubble?',
           options: [
-            'The chip leader',
-            'The shortest stacks',
+            'The chip leader, because with the biggest stack he also has the most money to lose',
+            'The shortest stacks, because they are the first to bust and have hardly any room left',
             'The medium stacks – they have a lot to lose and must give up the closest spots',
-            'Everyone equally, ICM is symmetric',
+            'Everyone equally, because ICM works symmetrically for every stack on the bubble',
           ],
           correctIndex: 2,
           explanation:
@@ -540,10 +544,10 @@ const m5: Module = {
         {
           question: 'In which scenario can folding AA preflop be correct?',
           options: [
-            'Never – AA is always a call',
-            'On the bubble of a satellite with equal-value tickets, when a bigger stack covers you: minimal gain, total risk',
-            'Whenever three players are all-in',
-            'At the final table of a normal tournament, as a rule',
+            'Never – AA is always a call preflop, because no hand has a better chance of winning',
+            'On the bubble of a satellite, when a bigger stack covers you: minimal gain, total risk',
+            'Always when three or more players are all-in, because multiway pots devalue aces',
+            'At the final table of a normal tournament as a rule, because the payout jumps are biggest there and every fold earns money',
           ],
           correctIndex: 1,
           explanation:
@@ -552,10 +556,10 @@ const m5: Module = {
         {
           question: 'Why do multi-table tournaments demand a much bigger bankroll than cash games?',
           options: [
-            'Because the buy-ins are always higher',
-            'Because the top-heavy payout structure creates extreme variance – even winners rarely cash big and endure long dry spells',
-            'Because you can’t rebuy in tournaments',
-            'Because ICM halves your win rate',
+            'Because tournament buy-ins are always higher than the stakes in a cash game',
+            'Because the top-heavy payout structure creates extreme variance – even winners endure long dry spells',
+            'Because you can’t rebuy in tournaments and so have to pay a new buy-in after every bust',
+            'Because ICM regularly halves a player’s win rate in tournaments',
           ],
           correctIndex: 1,
           explanation:
@@ -589,20 +593,20 @@ const m5: Module = {
         {
           heading: 'VPIP and PFR: The Foundation of Every Profile',
           body:
-            '**VPIP** (“Voluntarily Put Money In Pot”) measures the percentage of hands in which a player voluntarily invests money – by calling or raising; blinds don’t count. **PFR** (“Preflop Raise”) measures how often he raises preflop while doing so. Read together, they are a player’s X-ray.\n\nGuidelines for 6-max online cash:\n\n- Solid regs: VPIP 21–26, with PFR 2–4 points below it (e.g. 24/20).\n- Below 18 VPIP: tight to nitty. Above 32: loose. Above 40: almost always a recreational player.\n\nThe most valuable information sits in the **gap between VPIP and PFR**: it shows how often someone passively just calls. A 24/20 plays almost all of his hands with initiative – dangerous. A 35/10 calls constantly without a plan – the classic fish, whose wide, weak calling ranges you isolate with value hands.\n\nAlso crucial is **sample size**: VPIP and PFR start saying something reliable after about 50–100 hands. Anyone reading “24/20, solid reg” after eight hands is interpreting noise. As a rule of thumb: only when a stat is based on several dozen opportunities may you bet on it strategically.',
+            '**VPIP** (“Voluntarily Put Money In Pot”) measures the percentage of hands in which a player voluntarily invests money – by calling or raising; blinds don’t count. **PFR** (“Preflop Raise”) measures how often he raises preflop while doing so. Read together, they are a player’s X-ray.\n\nGuidelines for 6-max online cash:\n\n- Solid regs: VPIP 21–26, with PFR 2–4 points below it (e.g. 24/20).\n- Below 18 VPIP: tight to nitty. Above 32: loose. Above 40: almost always a recreational player.\n\nThe most valuable information sits in the gap between VPIP and PFR: it shows how often someone passively just calls. A 24/20 plays almost all of his hands with initiative – dangerous. A 35/10 calls constantly without a plan – the classic fish, whose wide, weak calling ranges you isolate with value hands.\n\nAlso crucial is sample size: VPIP and PFR start saying something reliable after about 50–100 hands. Anyone reading “24/20, solid reg” after eight hands is interpreting noise. As a rule of thumb: only when a stat is based on several dozen opportunities may you bet on it strategically.',
           example:
             'Two opponents with an identical VPIP of 28: one is 28/24 – a LAG who will put you under pressure with 3-bets and barrels. The other is 28/6 – a passive caller you value bet thin against and waste no big bluffs on. Same first number, opposite adjustments: only the VPIP/PFR pair completes the picture.',
         },
         {
           heading: 'AF and 3-Bet%: Measuring Aggression',
           body:
-            'The **aggression factor (AF)** measures postflop behavior: AF = (bets + raises) / calls. An AF of 2–3 counts as healthily balanced. Below 1.5, someone is playing passively – take his bets seriously; his calls are weak and wide. Above 4, someone is hyperaggressive – his betting range contains many bluffs, and your bluff-catchers rise in value.\n\nThe **3-bet%** shows how often someone re-raises against an open-raise. Modern guidelines for 6-max:\n\n- 7–9%: a healthy, mixed 3-bet range (value plus bluffs like A5s).\n- Below 4%: almost exclusively premiums. Against this player’s 3-bet you fold hands like AQo or 99 with a clear conscience – and 4-bet bluffs are burning money.\n- Above 11%: very light. Here your defense widens: more 4-bets (including as bluffs with blocker hands) and more calls in position.\n\nThe sample-size warning applies here too, only more so: a 3-bet opportunity arises in just a fraction of hands. Below 300–500 hands, a 3-bet% is barely reliable; the AF also needs a few hundred hands. Until then, a single hand shown at showdown often carries more weight than the number in the HUD (heads-up display, the stat overlay shown in online play).',
+            'The **aggression factor (AF)** measures postflop behavior: AF = (bets + raises) / calls. An AF of 2–3 counts as healthily balanced. Below 1.5, someone is playing passively – take his bets seriously; his calls are weak and wide. Above 4, someone is hyperaggressive – his betting range contains many bluffs, and your bluff-catchers rise in value.\n\nThe 3-bet% shows how often someone re-raises against an open-raise. Modern guidelines for 6-max:\n\n- 7–9%: a healthy, mixed 3-bet range (value plus bluffs like A5s).\n- Below 4%: almost exclusively premiums. Against this player’s 3-bet you fold hands like AQo or 99 with a clear conscience – and 4-bet bluffs are burning money.\n- Above 11%: very light. Here your defense widens: more 4-bets (including as bluffs with blocker hands) and more calls in position.\n\nThe sample-size warning applies here too, only more so: a 3-bet opportunity arises in just a fraction of hands. Below 300–500 hands, a 3-bet% is barely reliable; the AF also needs a few hundred hands. Until then, a single hand shown at showdown often carries more weight than the number in the HUD (heads-up display, the stat overlay shown in online play).',
           tip: 'Prioritize stats by stability: VPIP/PFR first (quickly meaningful), then fold-to-c-bet and 3-bet%, and only then subtleties like river aggression. And one showdown that confirms or refutes a stat is worth more than ten additional hands of sample.',
         },
         {
           heading: 'Live Without Stats: Profiles from Observation',
           body:
-            'At the live table there’s no HUD – but more information than most players ever tap into. Here’s how to build profiles systematically:\n\n- **Showdowns are gold**: every revealed hand exposes a complete line in reverse. Someone who shows 74s from early position has just revealed his entire range philosophy to you. After every showdown, briefly reconstruct: how did he play this hand on each street?\n- **Count hands played per orbit**: an orbit at a full table is nine hands. Someone who plays three or four of them is running a VPIP of 35–45 – your live substitute for the stat. Two orbits of observation are enough for a first classification.\n- **Watch the how**: does he limp or raise? How big are his raises – and do the sizings change with hand strength? Many live players bet their strong hands big and their weak ones small (or the other way around) and never notice.\n- **Context signals**: buy-in amount (a minimum buy-in often suggests caution or a thin bankroll), how he handles his chips, chattiness after won and lost pots, drinking habits, visible tilt behavior after bad beats.\n\nAs long as you have no individual reads, play against the **population default** for live low stakes: too loose and too passive preflop, too many calls postflop, big bets and raises almost always value. That is exactly the calling-station adjustment package – value bet thin, bluff little, respect aggression – until a player individually shows you otherwise.',
+            'At the live table there’s no HUD – but more information than most players ever tap into. Here’s how to build profiles systematically:\n\n- **Showdowns are gold**: every revealed hand exposes a complete line in reverse. Someone who shows 74s from early position has just revealed his entire range philosophy to you. After every showdown, briefly reconstruct: how did he play this hand on each street?\n- **Count hands played per orbit**: an orbit at a full table is nine hands. Someone who plays three or four of them is running a VPIP of 35–45 – your live substitute for the stat. Two orbits of observation are enough for a first classification.\n- **Watch the how**: does he limp or raise? How big are his raises – and do the sizings change with hand strength? Many live players bet their strong hands big and their weak ones small (or the other way around) and never notice.\n- **Context signals**: buy-in amount (a minimum buy-in often suggests caution or a thin bankroll), how he handles his chips, chattiness after won and lost pots, drinking habits, visible tilt behavior after bad beats.\n\nAs long as you have no individual reads, play against the population default for live low stakes: too loose and too passive preflop, too many calls postflop, big bets and raises almost always value. That is exactly the calling-station adjustment package – value bet thin, bluff little, respect aggression – until a player individually shows you otherwise.',
           example:
             'New table, live 1/2: after two orbits you’ve noted: player A limps every other hand and calls every c-bet (station – value bet thin). Player B has raised twice in 18 hands and folded everything else (tight – respect her raises, steal her blinds). Player C raises every third hand to five times the big blind (suspected maniac – call him down with premiums). Three usable profiles, zero software.',
         },
@@ -618,10 +622,10 @@ const m5: Module = {
         {
           question: 'An opponent runs 45/8 with a low AF over 400 hands. Which type, and which exploit?',
           options: [
-            'LAG – play tighter and upgrade your bluff-catchers',
+            'LAG – play tighter, upgrade your bluff-catchers and call his aggression more often',
             'Calling station – value bet thin and big, practically never bluff',
-            'Nit – steal blinds and fold to aggression',
-            'TAG – hold your own solidly and attack capped spots',
+            'Nit – steal his blinds and fold immediately to any resistance',
+            'TAG – hold your own solidly and consistently attack his capped spots',
           ],
           correctIndex: 1,
           explanation:
@@ -630,10 +634,10 @@ const m5: Module = {
         {
           question: 'What does a big gap between VPIP and PFR (e.g. 35/10) reveal?',
           options: [
-            'The player 3-bets too much',
+            'The player 3-bets too much and so plays almost every hand with initiative preflop',
             'The player plays many hands passively as calls instead of with initiative – a classic sign of weakness',
-            'The player is especially tricky and balanced',
-            'The player folds too often preflop',
+            'The player is especially tricky and balanced, because he deliberately plays his hands passively',
+            'The player folds too often preflop and so lets his blinds be stolen without a fight',
           ],
           correctIndex: 1,
           explanation:
@@ -643,9 +647,9 @@ const m5: Module = {
           question: 'A player with a 3-bet% of 3 (over a large sample) 3-bets your cutoff open. You hold AQo. Best response?',
           options: [
             'Fold – his 3-bet range is almost exclusively premiums that dominate AQo',
-            '4-bet as a bluff to apply pressure',
-            'Call and stack off on any ace-high flop',
-            'Call, because AQo is ahead of any 3-bet range',
+            '4-bet as a bluff to build pressure and force the opponent to fold',
+            'Call and stack off on any ace-high flop, because AQo then usually holds top pair with a good kicker',
+            'Call, because AQo is ahead of every kind of 3-bet range and is never dominated',
           ],
           correctIndex: 0,
           explanation:
@@ -654,10 +658,10 @@ const m5: Module = {
         {
           question: 'How do you estimate an opponent’s VPIP live without software?',
           options: [
-            'By the size of his buy-in',
+            'By the size of his buy-in, because bigger stacks point to a wider starting-hand selection',
             'By counting how many hands he voluntarily plays per orbit',
-            'By his seat at the table',
-            'You can’t – VPIP can’t be estimated without a HUD',
+            'By his seat at the table, because players near the button always play looser',
+            'You can’t – without a HUD and software, VPIP can’t be estimated live',
           ],
           correctIndex: 1,
           explanation:
@@ -666,10 +670,10 @@ const m5: Module = {
         {
           question: 'Why should you NOT interpret a 3-bet% of 15 after only 40 hands as a “light 3-bettor”?',
           options: [
-            'Because 15% is a normal 3-bet frequency',
-            'Because only a few 3-bet opportunities occur in 40 hands – the stat is almost pure noise and needs several hundred hands',
-            'Because 3-bet% is only meaningful live',
-            'Because 3-bets can’t be exploited',
+            'Because 15% is a completely normal 3-bet frequency and so says nothing about his style',
+            'Because only a few 3-bet opportunities occur in 40 hands – the stat is almost pure noise',
+            'Because 3-bet% is only meaningful live and gets distorted by HUD software online, which mixes up samples',
+            'Because 3-bets can’t be exploited, no matter how often the opponent plays them',
           ],
           correctIndex: 1,
           explanation:

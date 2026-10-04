@@ -5,14 +5,15 @@
    Bildschirme brauchen, gehört nicht dreimal in JSX. Und eine Rechnung
    lässt sich prüfen. */
 
+import { XP_ERGEBNIS, XP_FEST } from '../lernen/quiz';
+
 /** Was eine Lektion höchstens einbringt.
  *
- *  Die Vergabe steht in `state/AppState.tsx` (`completeLesson`): 60 Punkte
- *  fürs Abschließen, dazu bis zu 40 für das Quiz. Die Zahl steht hier, weil
- *  ein Bildschirm sie anzeigt — und ein Test hält beide Stellen zusammen,
- *  damit sie nicht auseinanderlaufen. */
-export const LEKTION_XP_GRUND = 60;
-export const LEKTION_XP_QUIZ = 40;
+ *  Die Vergabe steht in `lib/lernen/quiz.ts` (`lektionsXp`): 20 Punkte fest,
+ *  dazu bis zu 80 nach dem Ergebnis. Diese Datei nennt dieselben Zahlen unter
+ *  den Namen, die die Anzeige braucht — eine Quelle, kein Band dazwischen. */
+export const LEKTION_XP_GRUND = XP_FEST;
+export const LEKTION_XP_QUIZ = XP_ERGEBNIS;
 export const LEKTION_XP_HOECHSTENS = LEKTION_XP_GRUND + LEKTION_XP_QUIZ;
 
 interface Lektion { id: string }

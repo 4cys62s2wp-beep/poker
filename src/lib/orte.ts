@@ -139,6 +139,10 @@ export function findeOrt(pathname: string): Treffer {
     if (seg[1] === 'drill') return { ort: '/lernen/drill', eltern: '/lernen', genau: false };
     if (seg.length === 2) return { ort: '/lernen', eltern: '/lernen', genau: false };
     if (seg.length === 3) return { ort: '/lernen', eltern: `/lernen/${seg[1]}`, genau: false };
+    /* Das Quiz einer Lektion: Zurück führt in die Lektion, nicht in die Liste. */
+    if (seg.length === 4 && seg[3] === 'quiz') {
+      return { ort: '/lernen', eltern: `/lernen/${seg[1]}/${seg[2]}`, genau: false };
+    }
   }
   if (seg[0] === 'session') {
     if (seg[1] === 'abende' || seg[1] === 'spieler') {
@@ -185,6 +189,8 @@ export function waehleAktiv(ziele: NavZiel[], pathname: string): string | null {
 
 /** Die Seitenbreite am Ort; dynamische Seiten erben vom nächsten benannten Ort. */
 export function breiteVon(pathname: string): Breite {
+  /* Eine Aufgabe je Bildschirm ist schmal — auch das Quiz einer Lektion. */
+  if (/^\/lernen\/[^/]+\/[^/]+\/quiz\/?$/.test(pathname)) return 'schmal';
   const t = findeOrt(pathname);
   return NACH_PFAD.get(t.ort)?.breite ?? 'standard';
 }

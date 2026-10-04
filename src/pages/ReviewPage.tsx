@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
 import { Zurueck, EmptyState } from '../components/ui';
 import { Link } from 'react-router-dom';
@@ -8,10 +8,15 @@ import { useAppState, type ReviewItem } from '../state/AppState';
 import { zeichenFuer } from '../lib/zeichen';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/review';
+import { STR as QUIZ } from '../i18n/pages/quiz';
 import { STR as PRO_STR } from '../i18n/pages/pro';
 import { ProLock } from '../components/pro/ProLock';
 import { usePro } from '../lib/pro/ProProvider';
 import { Rueckmeldung } from '../components/Rueckmeldung';
+import { CardsRow } from '../components/PlayingCard';
+import { frischerStartwert } from '../lib/zufall';
+import { mischeFrage } from '../lib/lernen/quiz';
+import { tageBis } from '../lib/lernen/faellig';
 
 interface DueCard {
   item: ReviewItem;
@@ -34,6 +39,9 @@ export function ReviewPage() {
   const unlocked = fullAccess;
   const [selected, setSelected] = useState<number | null>(null);
   const [sessionDone, setSessionDone] = useState(0);
+  /* Die Optionen stehen bei jeder Anzeige anders (E-091); der Startwert wechselt
+     mit jeder Karte. */
+  const [startwert, setStartwert] = useState(frischerStartwert);
 
   const today = todayStr();
   const dueCards = useMemo<DueCard[]>(() => {
@@ -52,6 +60,15 @@ export function ReviewPage() {
 
   const current = dueCards[0];
   const answered = selected !== null;
+  const weiterRef = useRef<HTMLButtonElement>(null);
+  /* Die gewählte Option wird gesperrt; der Fokus wandert zu „Nächste Karte". */
+  useEffect(() => {
+    if (answered) weiterRef.current?.focus({ preventScroll: true });
+  }, [answered]);
+  const gemischt = useMemo(
+    () => (current ? mischeFrage(current.question, `${startwert}:${current.item.key}`) : null),
+    [current, startwert],
+  );
 
   function choose(i: number) {
     if (answered || !current) return;
@@ -60,9 +77,10 @@ export function ReviewPage() {
 
   function next() {
     if (!current || selected === null) return;
-    const correct = selected === current.question.correctIndex;
+    const correct = gemischt !== null && selected === gemischt.frage.correctIndex;
     answerReview(current.item.key, correct);
     setSelected(null);
+    setStartwert(frischerStartwert());
     setSessionDone((s) => s + 1);
   }
 
@@ -81,11 +99,15 @@ export function ReviewPage() {
         </p>
       </div>
 
-      <div className="row wrap" style={{ marginBottom: 18 }}>
-        <span className="pill gold">{L.due(dueCards.length)}</span>
-        <span className="pill">{L.inDeck(data.reviews.length)}</span>
-        {sessionDone > 0 && <span className="pill ok">{L.doneToday(sessionDone)}</span>}
-      </div>
+      {/* Zahlen nur, wenn es etwas zu zählen gibt: „0 fällig · 0 im Stapel" über
+          einem leeren Stapel sagte zweimal dasselbe wie der Leerzustand. */}
+      {(data.reviews.length > 0 || sessionDone > 0) && (
+        <div className="row wrap" style={{ marginBottom: 18 }}>
+          {dueCards.length > 0 && <span className="pill gold">{L.due(dueCards.length)}</span>}
+          {data.reviews.length > 0 && <span className="pill">{L.inDeck(data.reviews.length)}</span>}
+          {sessionDone > 0 && <span className="pill ok">{L.doneToday(sessionDone)}</span>}
+        </div>
+      )}
 
       {!unlocked && (
         <div>
@@ -113,32 +135,38 @@ export function ReviewPage() {
           <h2 style={{ fontSize: 'var(--fs-ueberschrift)', marginBottom: 8 }}>{L.allDoneTitle}</h2>
           <p className="muted small">
             {L.allDoneText}
-            {nextDue && <> {L.nextDueBefore} <strong>{nextDue}</strong>.</>}
+            {nextDue && <> {L.nextDue(tageBis(nextDue, today))}</>}
           </p>
         </div>
       )}
 
-      {unlocked && current && (
-        <div>
-          <div className="card">
-            <div className="row between wrap" style={{ marginBottom: 14 }}>
-              <span className="small faint">
-                {current.moduleTitle} · {current.lessonTitle}
-              </span>
-              <span className="pill">
-                {L.streakPill(current.item.streak)}
-              </span>
+      {unlocked && current && gemischt && (
+        <div className="quiz-fokus">
+          <div className="row between wrap" style={{ marginBottom: 14 }}>
+            <span className="small faint">
+              {current.moduleTitle} · {current.lessonTitle}
+            </span>
+            <span className="pill">
+              {L.streakPill(current.item.streak)}
+            </span>
+          </div>
+          <h2 className="quiz-frage">{gemischt.frage.question}</h2>
+          {(gemischt.frage.cards || gemischt.frage.board) && (
+            <div className="quiz-karten">
+              {gemischt.frage.cards && <CardsRow cards={gemischt.frage.cards} size="md" />}
+              {gemischt.frage.board && <CardsRow cards={gemischt.frage.board} size="md" />}
             </div>
-            <h3 style={{ marginBottom: 16, fontSize: 'var(--fs-fliesstext)', lineHeight: 1.45 }}>{current.question.question}</h3>
-            {current.question.options.map((opt, i) => {
+          )}
+          <div className="quiz-optionen">
+            {gemischt.frage.options.map((opt, i) => {
               let cls = 'quiz-option';
               if (answered) {
-                if (i === current.question.correctIndex) cls += ' correct';
+                if (i === gemischt.frage.correctIndex) cls += ' correct';
                 else if (i === selected) cls += ' wrong';
                 else cls += ' dimmed';
               }
               return (
-                <button key={i} className={cls} onClick={() => choose(i)} disabled={answered}>
+                <button key={i} type="button" className={cls} onClick={() => choose(i)} disabled={answered}>
                   <span className="pill" style={{ minWidth: 28, justifyContent: 'center', flexShrink: 0 }}>
                     {String.fromCharCode(65 + i)}
                   </span>
@@ -146,16 +174,32 @@ export function ReviewPage() {
                 </button>
               );
             })}
-            {answered && (
-              <>
-                <Rueckmeldung urteil={selected === current.question.correctIndex ? 'richtig' : 'falsch'}>
-                  {current.question.explanation}
-                </Rueckmeldung>
-                <button className="btn primary" style={{ marginTop: 14 }} onClick={next}>
-                  {dueCards.length > 1 ? L.nextCard : L.finish}
-                </button>
-              </>
-            )}
+          </div>
+          {/* Dieselbe Ergebnisleiste wie im Quiz: feste Höhe, nichts verschiebt sich. */}
+          <div className="quiz-leiste entscheidung-leiste entscheidung">
+            <div className="quiz-leiste-innen">
+              <div className="quiz-leiste-text">
+                {answered && (
+                  <Rueckmeldung urteil={selected === gemischt.frage.correctIndex ? 'richtig' : 'falsch'}>
+                    {selected !== gemischt.frage.correctIndex && selected !== null
+                      && gemischt.frage.optionFeedback?.[selected] && (
+                      <>{gemischt.frage.optionFeedback[selected]}{' '}</>
+                    )}
+                    {gemischt.frage.explanation}
+                  </Rueckmeldung>
+                )}
+              </div>
+              {/* Wie im Quiz: der Knopf bleibt, vor der Antwort gesperrt. */}
+              <button
+                ref={weiterRef}
+                type="button"
+                className="btn primary quiz-weiter"
+                onClick={next}
+                disabled={!answered}
+              >
+                {!answered ? QUIZ[lang].hint : dueCards.length > 1 ? L.nextCard : L.finish}
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -1,10 +1,10 @@
 {
-  "geprueft_am": "2026-10-04T10:46:41.687Z",
+  "geprueft_am": "2026-10-04T12:45:58.202Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
-  "bildschirme": 90,
-  "mit_entscheidung": 8,
+  "bildschirme": 139,
+  "mit_entscheidung": 106,
   "befunde": [],
   "messungen": [
     {
@@ -19,7 +19,7 @@
     {
       "hash": "#/lernen",
       "scrollt": true,
-      "ueberlauf_px": 2874,
+      "ueberlauf_px": 2321,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -28,7 +28,45 @@
     {
       "hash": "#/lernen/m1/m1-l1",
       "scrollt": true,
-      "ueberlauf_px": 4878,
+      "ueberlauf_px": 5053,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m1/m1-l1/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/wiederholen",
+      "scrollt": false,
+      "ueberlauf_px": 0,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -55,7 +93,7 @@
     {
       "hash": "#/nachschlagen/glossar",
       "scrollt": true,
-      "ueberlauf_px": 10961,
+      "ueberlauf_px": 11344,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -142,6 +180,158 @@
       "grenze_px": 422,
       "leisten": 0,
       "leiste": null
+    },
+    {
+      "hash": "#/lernen/m1/m1-l2",
+      "scrollt": true,
+      "ueberlauf_px": 6001,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m1/m1-l2/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 40,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m1/m1-l3",
+      "scrollt": true,
+      "ueberlauf_px": 4942,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m1/m1-l3/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 100,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m1/m1-l4",
+      "scrollt": true,
+      "ueberlauf_px": 5527,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m1/m1-l4/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 80,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m1/m1-l5",
+      "scrollt": true,
+      "ueberlauf_px": 5433,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m1/m1-l5/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 168,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m2",
@@ -244,15 +434,15 @@
     },
     {
       "hash": "#/lernen/trainer/equity",
-      "scrollt": false,
-      "ueberlauf_px": 0,
+      "scrollt": true,
+      "ueberlauf_px": 18,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 715,
-        "unten_px": 820,
-        "mitte_px": 768,
+        "oben_px": 733,
+        "unten_px": 838,
+        "mitte_px": 785,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 1,
@@ -283,14 +473,14 @@
     {
       "hash": "#/lernen/trainer/outs",
       "scrollt": true,
-      "ueberlauf_px": 39,
+      "ueberlauf_px": 11,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 683,
-        "unten_px": 844,
-        "mitte_px": 764,
+        "oben_px": 670,
+        "unten_px": 831,
+        "mitte_px": 750,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -301,15 +491,15 @@
     },
     {
       "hash": "#/lernen/trainer/potodds",
-      "scrollt": false,
-      "ueberlauf_px": 0,
+      "scrollt": true,
+      "ueberlauf_px": 27,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 639,
-        "unten_px": 820,
-        "mitte_px": 730,
+        "oben_px": 663,
+        "unten_px": 844,
+        "mitte_px": 754,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -359,7 +549,7 @@
     {
       "hash": "#/lernen/trainer/szenario",
       "scrollt": true,
-      "ueberlauf_px": 211,
+      "ueberlauf_px": 77,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
@@ -379,15 +569,6 @@
       "hash": "#/lernen/uebungstisch",
       "scrollt": true,
       "ueberlauf_px": 173,
-      "fensterhoehe": 844,
-      "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
-    },
-    {
-      "hash": "#/lernen/wiederholen",
-      "scrollt": false,
-      "ueberlauf_px": 0,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -466,436 +647,1676 @@
       "leiste": null
     },
     {
-      "hash": "#/lernen/m1/m1-l2",
-      "scrollt": true,
-      "ueberlauf_px": 5851,
-      "fensterhoehe": 844,
-      "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
-    },
-    {
-      "hash": "#/lernen/m1/m1-l3",
-      "scrollt": true,
-      "ueberlauf_px": 4770,
-      "fensterhoehe": 844,
-      "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
-    },
-    {
-      "hash": "#/lernen/m1/m1-l4",
-      "scrollt": true,
-      "ueberlauf_px": 5461,
-      "fensterhoehe": 844,
-      "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
-    },
-    {
-      "hash": "#/lernen/m1/m1-l5",
-      "scrollt": true,
-      "ueberlauf_px": 5367,
-      "fensterhoehe": 844,
-      "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
-    },
-    {
       "hash": "#/lernen/m2/m2-l1",
       "scrollt": true,
-      "ueberlauf_px": 4241,
+      "ueberlauf_px": 4413,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m2/m2-l1/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m2/m2-l2",
       "scrollt": true,
-      "ueberlauf_px": 3947,
+      "ueberlauf_px": 4119,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m2/m2-l2/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 34,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m2/m2-l3",
       "scrollt": true,
-      "ueberlauf_px": 5891,
+      "ueberlauf_px": 6063,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m2/m2-l3/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m2/m2-l4",
       "scrollt": true,
-      "ueberlauf_px": 4218,
+      "ueberlauf_px": 4365,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m2/m2-l4/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m2/m2-l5",
       "scrollt": true,
-      "ueberlauf_px": 4893,
+      "ueberlauf_px": 5014,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m2/m2-l5/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m3/m3-l1",
       "scrollt": true,
-      "ueberlauf_px": 4701,
+      "ueberlauf_px": 4767,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m3/m3-l1/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 45,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m3/m3-l2",
       "scrollt": true,
-      "ueberlauf_px": 3821,
+      "ueberlauf_px": 3913,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m3/m3-l2/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m3/m3-l3",
       "scrollt": true,
-      "ueberlauf_px": 4050,
+      "ueberlauf_px": 4141,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m3/m3-l3/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m3/m3-l4",
       "scrollt": true,
-      "ueberlauf_px": 4719,
+      "ueberlauf_px": 4810,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m3/m3-l4/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 55,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m3/m3-l5",
       "scrollt": true,
-      "ueberlauf_px": 5223,
+      "ueberlauf_px": 5288,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m3/m3-l5/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m3/m3-l6",
       "scrollt": true,
-      "ueberlauf_px": 5469,
+      "ueberlauf_px": 5642,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m3/m3-l6/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m4/m4-l1",
       "scrollt": true,
-      "ueberlauf_px": 5438,
+      "ueberlauf_px": 5530,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m4/m4-l1/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m4/m4-l2",
       "scrollt": true,
-      "ueberlauf_px": 5279,
+      "ueberlauf_px": 5320,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m4/m4-l2/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 9,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 525,
+        "unten_px": 829,
+        "mitte_px": 677,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m4/m4-l3",
       "scrollt": true,
-      "ueberlauf_px": 5139,
+      "ueberlauf_px": 5204,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m4/m4-l3/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 77,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m4/m4-l4",
       "scrollt": true,
-      "ueberlauf_px": 5424,
+      "ueberlauf_px": 5515,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m4/m4-l4/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 69,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m4/m4-l5",
       "scrollt": true,
-      "ueberlauf_px": 5607,
+      "ueberlauf_px": 5724,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m4/m4-l5/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 9,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 525,
+        "unten_px": 829,
+        "mitte_px": 677,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m4/m4-l6",
       "scrollt": true,
-      "ueberlauf_px": 5937,
+      "ueberlauf_px": 5977,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m4/m4-l6/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 92,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m5/m5-l1",
       "scrollt": true,
-      "ueberlauf_px": 5629,
+      "ueberlauf_px": 5695,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m5/m5-l1/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 166,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m5/m5-l2",
       "scrollt": true,
-      "ueberlauf_px": 6392,
+      "ueberlauf_px": 6483,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m5/m5-l2/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m5/m5-l3",
       "scrollt": true,
-      "ueberlauf_px": 6057,
+      "ueberlauf_px": 6149,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m5/m5-l3/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m5/m5-l4",
       "scrollt": true,
-      "ueberlauf_px": 5189,
+      "ueberlauf_px": 5281,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m5/m5-l4/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 122,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m5/m5-l5",
       "scrollt": true,
-      "ueberlauf_px": 6453,
+      "ueberlauf_px": 6545,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m5/m5-l5/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 190,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m5/m5-l6",
       "scrollt": true,
-      "ueberlauf_px": 6065,
+      "ueberlauf_px": 6131,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m5/m5-l6/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 102,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m6/m6-l1",
       "scrollt": true,
-      "ueberlauf_px": 5916,
+      "ueberlauf_px": 5982,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m6/m6-l1/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 78,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m6/m6-l2",
       "scrollt": true,
-      "ueberlauf_px": 5844,
+      "ueberlauf_px": 5935,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m6/m6-l2/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 15,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 531,
+        "unten_px": 835,
+        "mitte_px": 683,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m6/m6-l3",
       "scrollt": true,
-      "ueberlauf_px": 5102,
+      "ueberlauf_px": 5193,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m6/m6-l3/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 124,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m6/m6-l4",
       "scrollt": true,
-      "ueberlauf_px": 6053,
+      "ueberlauf_px": 6068,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m6/m6-l4/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 34,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m6/m6-l5",
       "scrollt": true,
-      "ueberlauf_px": 5080,
+      "ueberlauf_px": 5171,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m6/m6-l5/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 166,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m7/m7-l1",
       "scrollt": true,
-      "ueberlauf_px": 5619,
+      "ueberlauf_px": 5685,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m7/m7-l1/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 40,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m7/m7-l2",
       "scrollt": true,
-      "ueberlauf_px": 6901,
+      "ueberlauf_px": 6993,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m7/m7-l2/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 146,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m7/m7-l3",
       "scrollt": true,
-      "ueberlauf_px": 6328,
+      "ueberlauf_px": 6393,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m7/m7-l3/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 144,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m7/m7-l4",
       "scrollt": true,
-      "ueberlauf_px": 5105,
+      "ueberlauf_px": 5196,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m7/m7-l4/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 122,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m7/m7-l5",
       "scrollt": true,
-      "ueberlauf_px": 7834,
+      "ueberlauf_px": 7925,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m7/m7-l5/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 122,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m8/m8-l1",
       "scrollt": true,
-      "ueberlauf_px": 5578,
+      "ueberlauf_px": 5643,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m8/m8-l1/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 168,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m8/m8-l2",
       "scrollt": true,
-      "ueberlauf_px": 4678,
+      "ueberlauf_px": 4769,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m8/m8-l2/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 168,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m8/m8-l3",
       "scrollt": true,
-      "ueberlauf_px": 5651,
+      "ueberlauf_px": 5665,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m8/m8-l3/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 166,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m8/m8-l4",
       "scrollt": true,
-      "ueberlauf_px": 5644,
+      "ueberlauf_px": 5735,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m8/m8-l4/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 122,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m8/m8-l5",
       "scrollt": true,
-      "ueberlauf_px": 5854,
+      "ueberlauf_px": 5945,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m8/m8-l5/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 58,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m8/m8-l6",
       "scrollt": true,
-      "ueberlauf_px": 6164,
+      "ueberlauf_px": 6255,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m8/m8-l6/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 168,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m9/m9-l1",
       "scrollt": true,
-      "ueberlauf_px": 2651,
+      "ueberlauf_px": 2742,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m9/m9-l1/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 174,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 540,
+        "unten_px": 844,
+        "mitte_px": 692,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m9/m9-l2",
       "scrollt": true,
-      "ueberlauf_px": 2037,
+      "ueberlauf_px": 2128,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m9/m9-l2/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m9/m9-l3",
       "scrollt": true,
-      "ueberlauf_px": 1818,
+      "ueberlauf_px": 1909,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m9/m9-l3/quiz",
+      "scrollt": true,
+      "ueberlauf_px": 11,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 527,
+        "unten_px": 831,
+        "mitte_px": 679,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m9/m9-l4",
       "scrollt": true,
-      "ueberlauf_px": 2179,
+      "ueberlauf_px": 2271,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m9/m9-l4/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/lernen/m9/m9-l5",
       "scrollt": true,
-      "ueberlauf_px": 2359,
+      "ueberlauf_px": 2451,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 709,
+        "unten_px": 844,
+        "mitte_px": 776,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
+    },
+    {
+      "hash": "#/lernen/m9/m9-l5/quiz",
+      "scrollt": false,
+      "ueberlauf_px": 0,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 516,
+        "unten_px": 820,
+        "mitte_px": 668,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 46,
+        "breitenanteil": 0.92
+      }
     }
   ]
 }

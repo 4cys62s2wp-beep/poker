@@ -1,5 +1,5 @@
 // Poker glossary for PokerMentor (English).
-// 159 entries, sorted alphabetically. `related` references exact
+// 165 entries, sorted alphabetically. `related` references exact
 // `term` strings of other entries.
 
 import type { GlossaryEntry } from '../types';
@@ -76,6 +76,13 @@ const glossary: GlossaryEntry[] = [
     related: ['Value Bet', 'Overbet', 'Boardtextur'],
   },
   {
+    term: 'Big Blind',
+    definition:
+      'The larger of the two forced bets, posted by the second player to the left of the button. It is also the unit for stacks and bets (“20 BB”) and acts last preflop.',
+    category: 'Grundlagen',
+    related: ['Small Blind', 'Blinds', 'Button'],
+  },
+  {
     term: 'Blank',
     definition:
       'A turn or river card that is unlikely to change the balance of power, such as a low card unconnected to any flush or straight. Also called a brick.',
@@ -144,6 +151,13 @@ const glossary: GlossaryEntry[] = [
       'The phase of a tournament just before the paid places. On the bubble, ICM pressure rises sharply: big stacks can steal aggressively, while short stacks have to play tight.',
     category: 'Turnier',
     related: ['ICM', 'ITM', 'Final Table'],
+  },
+  {
+    term: 'Burn Card',
+    definition:
+      'A card the dealer discards face down from the deck before the flop, turn and river. It protects against marked or exposed cards coming into play.',
+    category: 'Live',
+    related: ['Flop', 'Community Cards'],
   },
   {
     term: 'Button',
@@ -501,6 +515,13 @@ const glossary: GlossaryEntry[] = [
       'Extended pot odds that factor in future winnings if your draw hits. Good implied odds justify calls that would be too expensive on pure pot odds, especially with deep stacks.',
     category: 'Mathematik',
     related: ['Pot Odds', 'Reverse Implied Odds', 'Set Mining'],
+  },
+  {
+    term: 'Initiative',
+    definition:
+      'The role of the player who was last aggressive in the previous betting round. The player with the initiative bets first and wins pots without the best hand, because the opponent can fold.',
+    category: 'Strategie',
+    related: ['C-Bet', 'Position', 'Value Bet'],
   },
   {
     term: 'Isolation',
@@ -895,6 +916,13 @@ const glossary: GlossaryEntry[] = [
     related: ['Check-Raise', 'Nuts', 'Dry Board'],
   },
   {
+    term: 'Small Blind',
+    definition:
+      'The smaller of the two forced bets, posted by the player directly to the left of the button – usually half the big blind. Postflop he acts first, which makes it the weakest position.',
+    category: 'Grundlagen',
+    related: ['Big Blind', 'Blinds', 'Button'],
+  },
+  {
     term: 'Snap Call',
     definition:
       'An instant call without a moment’s thought, usually with a very strong hand or in a clear-cut situation. In live play, the speed of an action can itself be a tell.',
@@ -949,6 +977,13 @@ const glossary: GlossaryEntry[] = [
       'Five cards in unbroken sequence, regardless of suit, such as 5-6-7-8-9. The ace can play high (Broadway) or low (the wheel: A-2-3-4-5).',
     category: 'Grundlagen',
     related: ['Broadway', 'OESD', 'Gutshot'],
+  },
+  {
+    term: 'Straight Flush',
+    definition:
+      'Five cards in unbroken sequence, all of the same suit, for example 5♥ 6♥ 7♥ 8♥ 9♥. After the royal flush it is the second strongest hand in poker.',
+    category: 'Grundlagen',
+    related: ['Straight', 'Flush', 'Royal Flush'],
   },
   {
     term: 'String Bet',
@@ -1103,6 +1138,13 @@ const glossary: GlossaryEntry[] = [
       'A very weak player with very deep pockets who loses large sums at high stakes. Whales are often the reason entire high-stakes cash games get going in the first place.',
     category: 'Slang',
     related: ['Fish', 'Calling Station'],
+  },
+  {
+    term: 'Wheel',
+    definition:
+      'The lowest possible straight: A-2-3-4-5, with the ace playing low. It is the weakest straight and loses to every higher one.',
+    category: 'Grundlagen',
+    related: ['Straight', 'Broadway'],
   },
   {
     term: 'Win Rate',

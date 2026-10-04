@@ -1,7 +1,7 @@
 {
-  "geprueft_am": "2026-10-04T10:55:23Z",
+  "geprueft_am": "2026-10-04T12:41:38Z",
   "breite": 390,
-  "erreichbar": 90,
+  "erreichbar": 139,
   "bildschirme": 41,
   "groesste_tiefe": 2,
   "sackgassen": [],
@@ -32,6 +32,18 @@
       "tiefe": 1,
       "zurueck": true,
       "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l1/quiz",
+      "tiefe": 1,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/wiederholen",
+      "tiefe": 1,
+      "zurueck": true,
+      "inhalt": false
     },
     {
       "hash": "#/nachschlagen",
@@ -98,6 +110,54 @@
       "tiefe": 2,
       "zurueck": true,
       "inhalt": false
+    },
+    {
+      "hash": "#/lernen/m1/m1-l2",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l2/quiz",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l3",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l3/quiz",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l4",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l4/quiz",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l5",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m1/m1-l5/quiz",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": true
     },
     {
       "hash": "#/lernen/m2",
@@ -214,12 +274,6 @@
       "inhalt": false
     },
     {
-      "hash": "#/lernen/wiederholen",
-      "tiefe": 2,
-      "zurueck": true,
-      "inhalt": false
-    },
-    {
       "hash": "#/nachschlagen/equity",
       "tiefe": 2,
       "zurueck": true,
@@ -268,31 +322,13 @@
       "inhalt": false
     },
     {
-      "hash": "#/lernen/m1/m1-l2",
-      "tiefe": 3,
-      "zurueck": true,
-      "inhalt": true
-    },
-    {
-      "hash": "#/lernen/m1/m1-l3",
-      "tiefe": 3,
-      "zurueck": true,
-      "inhalt": true
-    },
-    {
-      "hash": "#/lernen/m1/m1-l4",
-      "tiefe": 3,
-      "zurueck": true,
-      "inhalt": true
-    },
-    {
-      "hash": "#/lernen/m1/m1-l5",
-      "tiefe": 3,
-      "zurueck": true,
-      "inhalt": true
-    },
-    {
       "hash": "#/lernen/m2/m2-l1",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m2/m2-l1/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -304,7 +340,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m2/m2-l2/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m2/m2-l3",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m2/m2-l3/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -316,7 +364,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m2/m2-l4/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m2/m2-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m2/m2-l5/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -328,7 +388,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m3/m3-l1/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m3/m3-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m3/m3-l2/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -340,7 +412,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m3/m3-l3/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m3/m3-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m3/m3-l4/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -352,7 +436,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m3/m3-l5/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m3/m3-l6",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m3/m3-l6/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -364,7 +460,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m4/m4-l1/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m4/m4-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m4/m4-l2/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -376,7 +484,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m4/m4-l3/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m4/m4-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m4/m4-l4/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -388,7 +508,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m4/m4-l5/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m4/m4-l6",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m4/m4-l6/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -400,7 +532,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m5/m5-l1/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m5/m5-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m5/m5-l2/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -412,7 +556,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m5/m5-l3/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m5/m5-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m5/m5-l4/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -424,7 +580,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m5/m5-l5/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m5/m5-l6",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m5/m5-l6/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -436,7 +604,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m6/m6-l1/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m6/m6-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m6/m6-l2/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -448,7 +628,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m6/m6-l3/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m6/m6-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m6/m6-l4/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -460,7 +652,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m6/m6-l5/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m7/m7-l1",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m7/m7-l1/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -472,7 +676,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m7/m7-l2/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m7/m7-l3",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m7/m7-l3/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -484,7 +700,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m7/m7-l4/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m7/m7-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m7/m7-l5/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -496,7 +724,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m8/m8-l1/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m8/m8-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m8/m8-l2/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -508,7 +748,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m8/m8-l3/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m8/m8-l4",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m8/m8-l4/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -520,7 +772,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m8/m8-l5/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m8/m8-l6",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m8/m8-l6/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -532,7 +796,19 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m9/m9-l1/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m9/m9-l2",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m9/m9-l2/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
@@ -544,13 +820,31 @@
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m9/m9-l3/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m9/m9-l4",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true
     },
     {
+      "hash": "#/lernen/m9/m9-l4/quiz",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
       "hash": "#/lernen/m9/m9-l5",
+      "tiefe": 3,
+      "zurueck": true,
+      "inhalt": true
+    },
+    {
+      "hash": "#/lernen/m9/m9-l5/quiz",
       "tiefe": 3,
       "zurueck": true,
       "inhalt": true

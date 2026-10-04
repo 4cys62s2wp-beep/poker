@@ -42,6 +42,7 @@ const MAX_TIEFE = 3;
  */
 const KEIN_EIGENER_BILDSCHIRM = [
   /^#\/lernen\/m\d+\/m\d+-l\d+$/,   // einzelne Lektion
+  /^#\/lernen\/m\d+\/m\d+-l\d+\/quiz$/,   // das Quiz einer Lektion (Fokusmodus)
 ];
 
 const browser = await chromium.launch();
@@ -51,6 +52,24 @@ const seite = await kontext.newPage();
 // Sprache setzen, damit der Willkommensdialog nicht jeden Klick abfängt.
 await seite.goto(`${GRUND}/`, { waitUntil: 'domcontentloaded' });
 await seite.evaluate(() => localStorage.setItem('pokermentor-lang-v1', 'de'));
+await seite.waitForTimeout(400);
+
+/* Zwei Kacheln auf „Lernen" erscheinen erst mit Inhalt (E-092): „Wiederholen"
+   mit einer fälligen Frage, „Spielstil" mit einer gespielten Hand. Eine Wegsuche
+   an einem leeren Gerät fände beide Bildschirme nie — und meldete sie als
+   unerreichbar, obwohl sie es ab der ersten Frage beziehungsweise Hand sind.
+   Deshalb beginnt sie mit einem Stand, der beide zeigt. */
+await seite.evaluate(() => {
+  const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1') ?? 'null');
+  if (!idx) return;
+  const key = `pokermentor-data-${idx.activeId}`;
+  const d = JSON.parse(localStorage.getItem(key) ?? 'null');
+  if (!d) return;
+  d.handsPlayed = 1;
+  d.reviews = [{ key: 'm1-l1:0', moduleId: 'm1', lessonId: 'm1-l1', questionIndex: 0, due: '2000-01-01', interval: 0, streak: 0 }];
+  localStorage.setItem(key, JSON.stringify(d));
+});
+await seite.reload({ waitUntil: 'domcontentloaded' });
 
 /** Alle sichtbaren Ziele auf der aktuellen Seite. */
 async function sichtbareZiele() {
@@ -81,6 +100,18 @@ for (let tiefe = 0; tiefe <= MAX_TIEFE && rand.length > 0; tiefe += 1) {
   for (const hash of rand) {
     await oeffne(hash);
     const ziele = [...new Set(await sichtbareZiele())];
+    /* Der Weg ins Quiz einer Lektion ist ein Knopf in der klebenden Leiste, der
+       erst am Ende der Lektion zum Link wird — und die Wegsuche scrollt nicht.
+       Das Quiz ist trotzdem ein Bildschirm, den Kontrast, Tippflächen und
+       Daumenbereich prüfen sollen; deshalb wird es hier als Ziel der Lektion
+       mitgeführt. */
+    if (/^#\/lernen\/m\d+\/m\d+-l\d+$/.test(hash) && !gesehen.has(`${hash}/quiz`)) {
+      /* Auf derselben Tiefe wie die Lektion und noch in dieser Runde besucht:
+         Es ist ein Teil der Lektion, kein weiterer Schritt weg von der
+         Startseite. */
+      gesehen.set(`${hash}/quiz`, { tiefe, zurueck: false, ziele: [], inhalt: true });
+      rand.push(`${hash}/quiz`);
+    }
     /* Ein Weg zurück zur Startseite: entweder ein sichtbarer Link auf #/ —
        das ist der Zurück-Link oder die untere Navigation — oder die
        Startseite selbst. */

@@ -17,7 +17,7 @@ const m2: Module = {
         {
           heading: 'The 169 Starting Hands',
           body:
-            'Texas Hold’em has exactly **169 distinct starting hands** if you distinguish only by rank and the suited/offsuit question: 13 pairs (AA down to 22), 78 suited hands (both cards in the same suit), and 78 offsuit hands.\n\nBehind each of these hand classes sit different numbers of specific card combinations, known as **combos**. A pair like AA can be dealt 6 ways, a suited hand like AKs 4 ways, and an offsuit hand like AKo 12 ways. In total, that makes 1326 possible combos.\n\nWhy does this matter? Because it gives you a feel for frequencies: offsuit hands make up the lion’s share of all hands dealt, suited hands only about 24%. And you get one specific pair only about once in 221 hands — so AA really is rare. You hold some pair about 6% of the time, roughly once every 17 hands.\n\nThis combo thinking is the foundation for everything that comes later: reading ranges, understanding blockers, estimating probabilities.',
+            'Texas Hold’em has exactly 169 distinct starting hands if you distinguish only by rank and the suited/offsuit question: 13 pairs (AA down to 22), 78 suited hands (both cards in the same suit), and 78 offsuit hands.\n\nBehind each of these hand classes sit different numbers of specific card combinations, known as **combos**. A pair like AA can be dealt 6 ways, a suited hand like AKs 4 ways, and an offsuit hand like AKo 12 ways. In total, that makes 1326 possible combos.\n\nWhy does this matter? Because it gives you a feel for frequencies: offsuit hands make up the lion’s share of all hands dealt, suited hands only about 24%. And you get one specific pair only about once in 221 hands — so AA really is rare. You hold some pair about 6% of the time, roughly once every 17 hands.\n\nThis combo thinking is the foundation for everything that comes later: reading ranges, understanding blockers, estimating probabilities.',
           table: {
             headers: ['Type', 'Hand classes', 'Combos per hand', 'Total combos'],
             rows: [
@@ -31,12 +31,13 @@ const m2: Module = {
         {
           heading: 'Notation: AKs vs. AKo',
           body:
-            'The standard notation is compact: ranks are abbreviated with 2–9, T (ten), J, Q, K, A. A small **s** after them stands for suited, an **o** for offsuit. So AKs is ace-king of the same suit, AKo in two different suits. Pairs need no suffix — QQ is simply QQ.\n\nThe difference between suited and offsuit looks small but is strategically significant. AKs wins against a random hand about 67% of the time, AKo about 65%. Two percentage points sound like little, but the real advantage lies in **playability**: a suited hand flops a flush draw about 11% of the time and makes a flush by the river a good 6% of the time. That means more situations in which you can profitably keep playing — semi-bluffing, applying pressure, winning big pots.\n\nHence the rule of thumb: you can add suited hands considerably further down your range than their offsuit siblings. K9s can be a solid open-raise in late position, while K9o usually belongs in the muck.',
+            'The standard notation is compact: ranks are abbreviated with 2–9, T (ten), J, Q, K, A. A small s after them stands for suited, an o for offsuit. So AKs is ace-king of the same suit, AKo in two different suits. Pairs need no suffix — QQ is simply QQ.\n\nThe difference between suited and offsuit looks small but is strategically significant. AKs wins against a random hand about 67% of the time, AKo about 65%. Two percentage points sound like little, but the real advantage lies in playability: a suited hand flops a flush draw about 11% of the time and makes a flush by the river a good 6% of the time. That means more situations in which you can profitably keep playing — semi-bluffing, applying pressure, winning big pots.\n\nHence the rule of thumb: you can add suited hands considerably further down your range than their offsuit siblings. K9s can be a solid open-raise in late position, while K9o usually belongs in the muck.',
           cards: ['As', 'Ks', 'Ah', 'Kd'],
           tip: 'Don’t confuse equity with playability. Q7o has over 50% equity against a random hand but is barely playable at a profit, because it rarely makes strong, clearly dominating hands.',
         },
         {
           heading: 'The Key Hand Categories',
+          cards: ['7h', '6h'],
           body:
             'Instead of learning 169 hands individually, you think in categories with similar properties:\n\n- **Premiums** (AA, KK, QQ, AK): the strongest hands. They dominate almost everything and want to build the pot early — almost always raise or 3-bet.\n- **Broadways** (AQ, AJ, AT, KQ, KJ, QJ, etc.): two cards ten or higher. They often make top pair with a good kicker but are vulnerable to domination by premiums.\n- **Suited connectors** (JTs, T9s, 98s, 76s ...): connected suited cards. They hit straights and flushes and play best in position and with deep stacks.\n- **Small and medium pairs** (22–88): their main value lies in set mining — you flop a set just under 12% of the time, and a set can win big pots.\n- **Suited aces** (A2s–A9s): nut-flush potential plus blocker value. Hands like A5s are also classic bluff candidates later on.\n\nEach category has its own profile of showdown strength, draw potential, and positional dependence. The preflop ranges of the coming lessons are derived from exactly that.',
           example:
@@ -45,7 +46,7 @@ const m2: Module = {
         {
           heading: 'Why Tight-Aggressive Is the Right Way to Start',
           body:
-            'The best-proven starting style is **tight-aggressive** (TAG): you play relatively few hands (roughly 20–25% in 6-max), but when you play, you play with initiative — raising instead of calling, betting instead of checking.\n\nPlaying tight has two big advantages. First, you start with the stronger range than your opponents on average, and thereby win the many small standard situations. Second, you avoid the most expensive beginner mistakes: dominated hands like KTo or A7o from early position that flop a good — but second-best — pair.\n\nPlaying aggressively gives you two ways to win instead of one: you can hold the best hand at showdown, **or** you can make your opponents fold. If you only ever call, you can only win the first way, and you hand your opponent control of the pot.\n\nImportant: tight doesn’t mean passive or timid. It means selective. You wait for situations with an edge — good hand, good position, clear plan — and then apply pressure consistently. As your experience grows, you can widen your ranges step by step, but the order is crucial: solid first, creative later.',
+            'The best-proven starting style is tight-aggressive (TAG): you play relatively few hands (roughly 20–25% in 6-max), but when you play, you play with initiative — raising instead of calling, betting instead of checking.\n\nPlaying tight has two big advantages. First, you start with the stronger range than your opponents on average, and thereby win the many small standard situations. Second, you avoid the most expensive beginner mistakes: dominated hands like KTo or A7o from early position that flop a good — but second-best — pair.\n\nPlaying aggressively gives you two ways to win instead of one: you can hold the best hand at showdown, or you can make your opponents fold. If you only ever call, you can only win the first way, and you hand your opponent control of the pot.\n\nImportant: tight doesn’t mean passive or timid. It means selective. You wait for situations with an edge — good hand, good position, clear plan — and then apply pressure consistently. As your experience grows, you can widen your ranges step by step, but the order is crucial: solid first, creative later.',
           tip: 'A rule of thumb for the start: if you’re unsure whether a hand is playable, fold it. The mistake of folding a borderline hand costs far less in the long run than the mistake of playing too many weak hands.',
         },
       ],
@@ -72,10 +73,10 @@ const m2: Module = {
         {
           question: 'Why is A♠ K♠ stronger than A♥ K♦, even though both have the same ranks?',
           options: [
-            'Because spades are the highest suit in the rankings',
-            'Because suited hands hit a pair more often',
-            'Because the suited version has flush potential, gaining extra equity and playability',
-            'The difference is purely psychological',
+            'Because spades are the highest suit in the ranking and spade hands therefore take precedence',
+            'Because suited hands hit a pair more often than hands of different suits',
+            'Because the suited version has flush potential and therefore more equity and playability',
+            'The difference is purely psychological, mathematically both hands are equally strong',
           ],
           correctIndex: 2,
           explanation:
@@ -84,10 +85,10 @@ const m2: Module = {
         {
           question: 'Which category does 7♦ 6♦ belong to, and what is its main strength?',
           options: [
-            'Broadway — strong top pairs',
-            'Suited ace — nut-flush potential',
+            'Broadway – strong top pairs and high straights',
+            'Suited ace – nut flush potential and strong kickers',
             'Suited connector — straight and flush potential',
-            'Small pair — set mining',
+            'Small pair – set mining with implied odds',
           ],
           correctIndex: 2,
           explanation:
@@ -108,10 +109,10 @@ const m2: Module = {
         {
           question: 'What is the core of the tight-aggressive style?',
           options: [
-            'Seeing as many cheap flops as possible and deciding from there',
+            'See as many flops as cheaply as possible and only then decide on bet and hand',
             'Playing few, strong hands and driving them forward with raises and bets',
-            'Playing only premiums and always going all-in with them',
-            'Bluffing aggressively whenever opponents look weak',
+            'Play only premiums and always go all-in with them before anyone can fold',
+            'Bluff aggressively as soon as the opponents look weak, leaving no hands out',
           ],
           correctIndex: 1,
           explanation:
@@ -129,7 +130,7 @@ const m2: Module = {
         {
           heading: 'Raise First In (RFI)',
           body:
-            '**RFI (raise first in)** describes the situation where nobody before you has voluntarily put money into the pot, and you’re the first to make the decision. The modern standard answer is a pure **raise-or-fold strategy**: either your hand is good enough for an open-raise, or it goes into the muck.\n\nWhy raise instead of call? An open-raise achieves three things at once. First, you can win immediately if everyone folds — the blinds are small, but those wins add up. Second, you build the pot with your strong hands while you’re likely ahead. Third, you seize the **initiative**: as the preflop aggressor, you can fire a credible continuation bet (c-bet) on many flops, even when you’ve missed.\n\nYour RFI range is not a matter of taste — it follows clear logic: the more players still sitting behind you, the likelier someone holds a strong hand — and the tighter you have to be. And the later your position, the more often you’ll play postflop in position, which makes every hand more valuable.',
+            'RFI (raise first in) describes the situation where nobody before you has voluntarily put money into the pot, and you’re the first to make the decision. The modern standard answer is a pure raise-or-fold strategy: either your hand is good enough for an open-raise, or it goes into the muck.\n\nWhy raise instead of call? An open-raise achieves three things at once. First, you can win immediately if everyone folds — the blinds are small, but those wins add up. Second, you build the pot with your strong hands while you’re likely ahead. Third, you seize the **initiative**: as the preflop aggressor, you can fire a credible continuation bet (c-bet) on many flops, even when you’ve missed.\n\nYour RFI range is not a matter of taste — it follows clear logic: the more players still sitting behind you, the likelier someone holds a strong hand — and the tighter you have to be. And the later your position, the more often you’ll play postflop in position, which makes every hand more valuable.',
         },
         {
           heading: 'From UTG to the Button: Ranges Get Wider',
@@ -149,15 +150,16 @@ const m2: Module = {
         },
         {
           heading: 'The Right Open Sizing',
+          cards: ['Ad', 'Jd'],
           body:
-            'Online, the standard open today is small: **2.2–3bb**, at many tables exactly 2.5bb. Small opens risk less when you run into a 3-bet and have to give up, and they let you play a wider range profitably. From the small blind, you’ll choose more like 3–3.5bb, because you’re out of position postflop and don’t want to invite the big blind in with dream odds.\n\n**Live**, bigger opens are standard: **3–5bb**, and even more in loose games. The reason is practical: live players call far too much, and a 2.5bb open there often produces family pots with four or five players. You increase the sizing until you usually get only one or two callers.\n\nWhat’s decisive in both worlds: **pick one fixed size per position and use it for your entire range.** If you raise big with AA and small with 76s, you’re giving away your hand strength — observant opponents read that faster than you’d think. Sizing is adjusted to the situation (position, limpers, table dynamics), never to the strength of your own hand.',
+            'Online, the standard open today is small: 2.2–3bb, at many tables exactly 2.5bb. Small opens risk less when you run into a 3-bet and have to give up, and they let you play a wider range profitably. From the small blind, you’ll choose more like 3–3.5bb, because you’re out of position postflop and don’t want to invite the big blind in with dream odds.\n\nLive, bigger opens are standard: 3–5bb, and even more in loose games. The reason is practical: live players call far too much, and a 2.5bb open there often produces family pots with four or five players. You increase the sizing until you usually get only one or two callers.\n\nWhat’s decisive in both worlds: pick one fixed size per position and use it for your entire range. If you raise big with AA and small with 76s, you’re giving away your hand strength — observant opponents read that faster than you’d think. Sizing is adjusted to the situation (position, limpers, table dynamics), never to the strength of your own hand.',
           example:
             'Online cash game, 100bb: you’re in the CO with A♦ J♦ and everyone folds to you. The standard play: raise to 2.5bb. You would choose the same size here with 55, KQo, or AA.',
         },
         {
           heading: 'Why Open-Limping Is Almost Always a Mistake',
           body:
-            'Open-limping — just calling the big blind as the first player in — is a leak in almost every situation. The reasons:\n\n- **No fold equity:** you can’t win the pot immediately. A raise regularly picks up the blinds without a fight; a limp never does.\n- **No initiative:** postflop, nobody has the aggressor’s story. Your c-bets are missing, your range looks weak — and that’s exactly how it gets treated.\n- **You invite attacks:** good players relentlessly raise limpers (isolation). You then either pay too much with a weak hand or throw your limp away.\n- **Multiway pots:** limps produce pots with many players, in which your medium-strength hands lose massive value.\n- **Your range is capped:** since you would raise your strong hands, a limp almost always signals weakness.\n\nThe only notable exception in cash games: in some strategies, the small blind may limp part of its range against the big blind (a complete), because it only has to add half a blind. For now, though, the simple rule applies: **if nobody is in before you — raise or fold.**',
+            'Open-limping — just calling the big blind as the first player in — is a leak in almost every situation. The reasons:\n\n- **No fold equity:** you can’t win the pot immediately. A raise regularly picks up the blinds without a fight; a limp never does.\n- **No initiative:** postflop, nobody has the aggressor’s story. Your c-bets are missing, your range looks weak — and that’s exactly how it gets treated.\n- **You invite attacks:** good players relentlessly raise limpers (isolation). You then either pay too much with a weak hand or throw your limp away.\n- **Multiway pots:** limps produce pots with many players, in which your medium-strength hands lose massive value.\n- **Your range is capped:** since you would raise your strong hands, a limp almost always signals weakness.\n\nThe only notable exception in cash games: in some strategies, the small blind may limp part of its range against the big blind (a complete), because it only has to add half a blind. For now, though, the simple rule applies: if nobody is in before you — raise or fold.',
         },
       ],
       takeaways: [
@@ -183,10 +185,10 @@ const m2: Module = {
         {
           question: 'Why can the button open so much wider than UTG?',
           options: [
-            'Because the button is dealt its cards last',
+            'Because the button receives his cards last and can therefore judge them better',
             'Because only two opponents remain and the button always plays in position postflop',
-            'Because the blinds are obligated to fold to the button',
-            'Because the button is allowed to make smaller raises',
+            'Because the blinds are obliged to fold against the button when he opens, so he is left undisturbed',
+            'Because the button may make smaller raises than the other positions at the table',
           ],
           correctIndex: 1,
           explanation:
@@ -207,10 +209,10 @@ const m2: Module = {
         {
           question: 'Which reason does NOT argue against open-limping?',
           options: [
-            'A limp can’t win the pot immediately',
-            'A limp gives away the initiative for the flop',
+            'A limp can’t win the pot immediately and gives opponents favorable prices',
+            'A limp gives away the initiative for the flop and with it many pots',
             'A limp keeps the pot small and thus automatically saves money in the long run',
-            'A limp invites opponents to make isolation raises',
+            'A limp invites opponents to isolation raises that you play badly against',
           ],
           correctIndex: 2,
           explanation:
@@ -220,9 +222,9 @@ const m2: Module = {
           question: 'You hold KTo under the gun in 6-max. What is the standard play?',
           options: [
             'Fold — the hand is outside the UTG range of about 15–18%',
-            'Open-raise — any Broadway is playable from anywhere',
-            'Limp, to see a cheap flop',
-            'Open-raise to 5bb, to protect the hand',
+            'Open-raise – every broadway hand is playable from anywhere, because it holds high cards',
+            'Limp to see a flop cheaply and play the hand on the cheap',
+            'Open-raise to 5bb to protect the hand and force the opponents out of position',
           ],
           correctIndex: 0,
           explanation:
@@ -244,27 +246,28 @@ const m2: Module = {
         },
         {
           heading: 'Value 3-Bets: The Core',
+          cards: ['Ac', 'Qs'],
           body:
-            'The foundation of every 3-bet range is the **value hands**: hands that are ahead of the opener’s continue range (their calls and 4-bets). The undisputed core is **QQ+ and AK** — you 3-bet these hands against practically any open from any position.\n\nHow far you extend the value range beyond that depends on the opener’s range. Against a tight UTG open (about 15–18%), it stays at the core, because hands like AQ or JJ are often only barely ahead — or behind — against the UTG continue range. Against a button open (40%+), the world looks different: now TT, 99, AQ, AJs, and KQs are clear value 3-bets too, because the opener has to continue with much weaker material.\n\nA widespread beginner mistake is **slowplaying premiums**: just calling with AA or KK to disguise the hand. That costs you twice — you miss value while you’re ahead, and you let hands come along cheaply that overtake you on many flops. Build the pot while you have the best hand.',
+            'The foundation of every 3-bet range is the value hands: hands that are ahead of the opener’s continue range (their calls and 4-bets). The undisputed core is QQ+ and AK — you 3-bet these hands against practically any open from any position.\n\nHow far you extend the value range beyond that depends on the opener’s range. Against a tight UTG open (about 15–18%), it stays at the core, because hands like AQ or JJ are often only barely ahead — or behind — against the UTG continue range. Against a button open (40%+), the world looks different: now TT, 99, AQ, AJs, and KQs are clear value 3-bets too, because the opener has to continue with much weaker material.\n\nA widespread beginner mistake is slowplaying premiums: just calling with AA or KK to disguise the hand. That costs you twice — you miss value while you’re ahead, and you let hands come along cheaply that overtake you on many flops. Build the pot while you have the best hand.',
           example:
             'The CO opens to 2.5bb and you’re on the BTN with A♣ Q♠. Against the CO range of about 25–28%, AQo is a profitable value 3-bet to about 7.5–8bb. Against a UTG open, the same hand would be more of a call — or even a fold.',
         },
         {
           heading: 'Bluff 3-Bets and the Power of Blockers',
           body:
-            'If you only ever 3-bet QQ+/AK, your opponents could respond perfectly: fold to your 3-bet, and move on. That’s why you mix in **bluff 3-bets** — chosen not at random, but by two criteria: blockers and playability.\n\nThe prototype is **A5s** (and similar hands like A4s, A3s, A2s). The ace is a **blocker**: when you hold an ace, your opponent’s AA combos drop from 6 to 3 and their AK combos from 16 to 12. The very hands that would most like to fight back have become rarer — your 3-bet generates a fold more often.\n\nThen there’s the playability: if you get called, A5s can make a nut flush, hit a wheel straight (A-2-3-4-5) with the 5, and at least occasionally win at showdown with a pair of aces. Compare that to a hand like 96o, which is almost always hopeless after a call.\n\nOther good bluff candidates, depending on the situation: suited connectors like 76s, suited Broadways like KJs at the edge of your continue range, and suited kings like K6s against very wide opens.',
+            'If you only ever 3-bet QQ+/AK, your opponents could respond perfectly: fold to your 3-bet, and move on. That’s why you mix in bluff 3-bets — chosen not at random, but by two criteria: blockers and playability.\n\nThe prototype is A5s (and similar hands like A4s, A3s, A2s). The ace is a **blocker**: when you hold an ace, your opponent’s AA combos drop from 6 to 3 and their AK combos from 16 to 12. The very hands that would most like to fight back have become rarer — your 3-bet generates a fold more often.\n\nThen there’s the playability: if you get called, A5s can make a nut flush, hit a wheel straight (A-2-3-4-5) with the 5, and at least occasionally win at showdown with a pair of aces. Compare that to a hand like 96o, which is almost always hopeless after a call.\n\nOther good bluff candidates, depending on the situation: suited connectors like 76s, suited Broadways like KJs at the edge of your continue range, and suited kings like K6s against very wide opens.',
           cards: ['Ah', '5h'],
           tip: 'Pick your bluff 3-bets from hands that are just barely too weak to call. Your clear calls (e.g. 99, AJs in position) keep calling — that way, neither part of your strategy loses anything.',
         },
         {
           heading: 'Linear vs. Polarized',
           body:
-            'There are two basic types of 3-bet ranges:\n\n- **Linear (merged):** you 3-bet your best hands from the top down — roughly QQ+, AK, then JJ, TT, AQ, AJs, KQs, and so on. There are hardly any pure bluffs, just a continuum from strong to solid.\n- **Polarized:** your 3-bet range consists of two blocks — premiums at the top, bluffs like A5s at the bottom. The medium-strength hands (99, AJs, KQs, JTs) go into your **calling range** instead.\n\nThe choice follows a simple rule: **if you have a calling range, polarize. If you don’t, play linear.** In position against an open, you can comfortably call with medium-strength hands — so you 3-bet polarized. In the small blind, by contrast, calling is unattractive (you’re always out of position postflop, and the big blind can squeeze), which is why many play raise-or-fold there with a rather linear 3-bet range.\n\nOpponent type matters too: against players who call 3-bets too often, you shift toward linear — more solid value hands, fewer bluffs, because your bluffs aren’t getting folds. Against players who fold too often, you can get more polarized and more bluff-heavy.',
+            'There are two basic types of 3-bet ranges:\n\n- **Linear (merged):** you 3-bet your best hands from the top down — roughly QQ+, AK, then JJ, TT, AQ, AJs, KQs, and so on. There are hardly any pure bluffs, just a continuum from strong to solid.\n- **Polarized:** your 3-bet range consists of two blocks — premiums at the top, bluffs like A5s at the bottom. The medium-strength hands (99, AJs, KQs, JTs) go into your calling range instead.\n\nThe choice follows a simple rule: if you have a calling range, polarize. If you don’t, play linear. In position against an open, you can comfortably call with medium-strength hands — so you 3-bet polarized. In the small blind, by contrast, calling is unattractive (you’re always out of position postflop, and the big blind can squeeze), which is why many play raise-or-fold there with a rather linear 3-bet range.\n\nOpponent type matters too: against players who call 3-bets too often, you shift toward linear — more solid value hands, fewer bluffs, because your bluffs aren’t getting folds. Against players who fold too often, you can get more polarized and more bluff-heavy.',
         },
         {
           heading: 'The Right 3-Bet Sizing',
           body:
-            'The proven rule of thumb: **about 3x the size of the open in position, about 4x out of position.**\n\nWhy the difference? Out of position, you need more fold equity and want to give the opener worse odds and worse playability for their call — after all, they have the positional advantage postflop. In position, you may stay somewhat smaller: if you get called, you play the flop with the positional advantage and the initiative — a very profitable setup.\n\nJust as important as with the open-raise: **one sizing for the entire range.** If you 3-bet AA to 12bb and A5s to 8bb, you’re handing observant opponents a manual for playing back at you.\n\nTwo practical adjustments: if callers already sit between the opener and you, increase the sizing (see the squeeze in Lesson 5). And with stacks deeper than 100bb, the 3-bet may grow a little as well, so the stack-to-pot ratio — the remaining stack relative to the pot size — stays favorable for your strong hands. As a sanity check, watch your opponent: if they call your 3-bets with obviously too-weak hands, your sizing is more likely too small than too big.',
+            'The proven rule of thumb: about 3x the size of the open in position, about 4x out of position.\n\nWhy the difference? Out of position, you need more fold equity and want to give the opener worse odds and worse playability for their call — after all, they have the positional advantage postflop. In position, you may stay somewhat smaller: if you get called, you play the flop with the positional advantage and the initiative — a very profitable setup.\n\nJust as important as with the open-raise: one sizing for the entire range. If you 3-bet AA to 12bb and A5s to 8bb, you’re handing observant opponents a manual for playing back at you.\n\nTwo practical adjustments: if callers already sit between the opener and you, increase the sizing (see the squeeze in Lesson 5). And with stacks deeper than 100bb, the 3-bet may grow a little as well, so the stack-to-pot ratio — the remaining stack relative to the pot size — stays favorable for your strong hands. As a sanity check, watch your opponent: if they call your 3-bets with obviously too-weak hands, your sizing is more likely too small than too big.',
           table: {
             headers: ['Situation', 'Open size', '3-bet size (approx.)'],
             rows: [
@@ -277,7 +280,7 @@ const m2: Module = {
         {
           heading: 'When You Get 3-Bet Yourself',
           body:
-            'Sooner or later it happens to you: you open, and a 3-bet comes in behind you. Now the basic logic is **4-bet / call / fold**:\n\n- **4-bet for value:** KK and AA always; QQ and AK depending on opponent and positions. Sizing: about 2.2–2.5 times the 3-bet, somewhat larger out of position.\n- **4-bet as a bluff:** once again, blocker hands like A5s are ideal — they block AA/AK and have equity in case it does go to showdown. Use sparingly.\n- **Call:** hands that play well against the 3-bet range, especially in position — e.g. TT, 99, AQs, KQs, JTs. Out of position, you call considerably tighter.\n- **Fold:** the rest — and that’s completely fine. The bottom part of your opening range (say A9o or K7s from the button) has no business continuing against a 3-bet. Roughly half of your opens may go into the muck against a 3-bet.\n\nThe most common mistake is calling too wide out of position: you pay 8–10bb only to play a flop without position and without initiative — a flop you’ll miss two-thirds of the time. Disciplined folding here is money in the bank.',
+            'Sooner or later it happens to you: you open, and a 3-bet comes in behind you. Now the basic logic is 4-bet / call / fold:\n\n- **4-bet for value:** KK and AA always; QQ and AK depending on opponent and positions. Sizing: about 2.2–2.5 times the 3-bet, somewhat larger out of position.\n- **4-bet as a bluff:** once again, blocker hands like A5s are ideal — they block AA/AK and have equity in case it does go to showdown. Use sparingly.\n- **Call:** hands that play well against the 3-bet range, especially in position — e.g. TT, 99, AQs, KQs, JTs. Out of position, you call considerably tighter.\n- **Fold:** the rest — and that’s completely fine. The bottom part of your opening range (say A9o or K7s from the button) has no business continuing against a 3-bet. Roughly half of your opens may go into the muck against a 3-bet.\n\nThe most common mistake is calling too wide out of position: you pay 8–10bb only to play a flop without position and without initiative — a flop you’ll miss two-thirds of the time. Disciplined folding here is money in the bank.',
           tip: 'Take notes on which opponents almost never 3-bet. Against their 3-bets, you can occasionally just call — or even fold — hands like QQ and AK: a 3-bet frequency of 2–3% almost always means QQ+/AK.',
         },
       ],
@@ -304,10 +307,10 @@ const m2: Module = {
         {
           question: 'Why is A♥ 5♥ a better bluff 3-bet candidate than 9♠ 6♦?',
           options: [
-            'Because A5s flops a pair more often',
+            'Because A5s flops a pair more often than any other suited hand without an ace',
             'Because the ace blocks AA/AK, and when called the hand has nut-flush and straight potential',
-            'Because A5s is ahead of AA',
-            'Because suited hands generate more fold equity when bluffing',
+            'Because A5s is clearly ahead of the opponent’s 4-bet range',
+            'Because suited hands create more fold equity when bluffing, once the opponent sees them',
           ],
           correctIndex: 1,
           explanation:
@@ -316,10 +319,10 @@ const m2: Module = {
         {
           question: 'When is a polarized 3-bet range preferable to a linear one?',
           options: [
-            'When you have no calling range, as in the small blind',
+            'When you have no calling range, such as in the small blind, and have to 3-bet everything',
             'When you can call your medium-strength hands instead, e.g. in position against an open',
-            'Always against tight players from early position',
-            'Only in tournaments with short stacks',
+            'Always against tight players from early position, because they rarely 4-bet',
+            'Only in tournaments with short stacks, because every hand goes all-in there',
           ],
           correctIndex: 1,
           explanation:
@@ -340,10 +343,10 @@ const m2: Module = {
         {
           question: 'You open 2.5bb from the CO with A♦ 9♦, and the BTN 3-bets to 8bb. What is the standard response?',
           options: [
-            '4-bet, because the ace blocks AA',
-            'Call, because the hand is suited',
+            '4-bet, because the ace blocks AA and the opponent therefore mostly folds when attacked',
+            'Call, because the hand is suited and therefore stays playable',
             'Fold — the bottom part of the opening range doesn’t continue against 3-bets',
-            'Call, to hit the flush',
+            'Call to hit the flush and make the pot bigger later',
           ],
           correctIndex: 2,
           explanation:
@@ -352,10 +355,10 @@ const m2: Module = {
         {
           question: 'What is the most common mistake when defending against 3-bets?',
           options: [
-            '4-betting premiums too often',
+            'Four-betting too often with premiums, so the opponent never calls',
             'Calling too wide out of position and then playing without position or initiative',
-            'Folding AA too often',
-            'Ignoring the opponent’s 3-bet size',
+            'Folding aces too often, out of fear of losing',
+            'Ignoring the opponent’s 3-bet size and always answering the same way',
           ],
           correctIndex: 1,
           explanation:
@@ -373,7 +376,7 @@ const m2: Module = {
         {
           heading: 'The Big Blind’s Discount',
           body:
-            'When it comes to defending, the big blind has one decisive advantage over every other position: **you have already invested 1bb, so you get the call at a discount.**\n\nLet’s run the numbers: the button opens to 2.5bb, the small blind folds. The pot now holds 2.5bb (the open) + 0.5bb (SB) + 1bb (your blind) = 4bb. The call costs you only 1.5bb more. So you’re paying 1.5bb for a pot that will hold 5.5bb after your call — you need only around **27% equity** for the call to work out mathematically.\n\nOn top of that comes a second advantage: you’re the last player to decide preflop (**closing the action**). Nobody behind you can raise and push you out of the pot — your call is safe.\n\nAgainst a random hand, even weak hands like 96s or Q7o have over 40% equity. That’s why the big blind can defend astonishingly wide against small opens. The catch: raw equity isn’t everything, because you play the rest of the hand out of position — more on that in a moment.',
+            'When it comes to defending, the big blind has one decisive advantage over every other position: you have already invested 1bb, so you get the call at a discount.\n\nLet’s run the numbers: the button opens to 2.5bb, the small blind folds. The pot now holds 2.5bb (the open) + 0.5bb (SB) + 1bb (your blind) = 4bb. The call costs you only 1.5bb more. So you’re paying 1.5bb for a pot that will hold 5.5bb after your call — you need only around 27% equity for the call to work out mathematically.\n\nOn top of that comes a second advantage: you’re the last player to decide preflop (closing the action). Nobody behind you can raise and push you out of the pot — your call is safe.\n\nAgainst a random hand, even weak hands like 96s or Q7o have over 40% equity. That’s why the big blind can defend astonishingly wide against small opens. The catch: raw equity isn’t everything, because you play the rest of the hand out of position — more on that in a moment.',
           table: {
             headers: ['BTN open', 'Your call', 'Pot after call', 'Equity needed'],
             rows: [
@@ -385,21 +388,22 @@ const m2: Module = {
         },
         {
           heading: 'The Defending Range Against a Button Open',
+          cards: ['8c', '6c'],
           body:
-            'Against a 2.5bb open from the button, modern theory has the big blind defending very wide: **around half of all hands in total**, split between 3-bets and calls.\n\n- **3-bet (about 10–15%):** polarized — value with QQ+/AK, and against the wide button range also TT/JJ, AQ, and good suited Broadways, plus bluffs like A5s–A2s, K9s, or suited connectors.\n- **Call (about 30–40%):** the broad middle — pairs, suited hands of almost every kind, connected cards, Broadways, many Ax hands. Suited hands like 86s or J7s are clear defends thanks to the pot odds.\n- **Fold:** the unplayable rest — disconnected offsuit hands like 92o, T4o, J3o. Even with the discount, these hands are too weak: they rarely hit, and when they do, they’re dominated.\n\nThe logic behind it: the smaller the open and the later the opener’s position, the wider you may defend. Against a UTG open to 3bb, your defending range shrinks considerably — the odds are worse and the opposing range is much stronger.',
+            'Against a 2.5bb open from the button, modern theory has the big blind defending very wide: around half of all hands in total, split between 3-bets and calls.\n\n- **3-bet (about 10–15%):** polarized — value with QQ+/AK, and against the wide button range also TT/JJ, AQ, and good suited Broadways, plus bluffs like A5s–A2s, K9s, or suited connectors.\n- **Call (about 30–40%):** the broad middle — pairs, suited hands of almost every kind, connected cards, Broadways, many Ax hands. Suited hands like 86s or J7s are clear defends thanks to the pot odds.\n- **Fold:** the unplayable rest — disconnected offsuit hands like 92o, T4o, J3o. Even with the discount, these hands are too weak: they rarely hit, and when they do, they’re dominated.\n\nThe logic behind it: the smaller the open and the later the opener’s position, the wider you may defend. Against a UTG open to 3bb, your defending range shrinks considerably — the odds are worse and the opposing range is much stronger.',
           example:
             'The BTN opens 2.5bb and you hold 8♣ 6♣ in the BB. Folding would be too tight: the hand has a good 40% equity against the button range, costs only 1.5bb with the discount, and hits draws that are playable even out of position. Standard: call. The same hand offsuit (8♥ 6♦), on the other hand, is a fold.',
         },
         {
           heading: 'The Small Blind: The Hardest Position',
           body:
-            'The small blind is the most thankless position at the table, for three reasons:\n\n- **Always out of position:** postflop, you have to act first against every opponent — including the big blind.\n- **Only half the discount:** your forced investment is 0.5bb, so your pot odds are considerably worse than in the big blind.\n- **One player still sits behind you:** your call doesn’t close the action. The big blind can squeeze, and even if they just call, you’re playing a multiway pot from the worst position.\n\nThe consequence in modern theory: **in the small blind, you play mostly raise-or-fold against opens.** You 3-bet your good hands (leaning linear, as discussed in Lesson 3), and the rest folds. Flat calls you cut down to a minimum — a few strong hands that don’t quite make the 3-bet, against small opens.\n\nExpect to lose money in both blinds over the long run — that’s normal and unavoidable, because you’re forced to invest blind. Your goal is not to turn the blinds into winning positions, but **to lose less than your opponents do in the same situation**.',
+            'The small blind is the most thankless position at the table, for three reasons:\n\n- **Always out of position:** postflop, you have to act first against every opponent — including the big blind.\n- **Only half the discount:** your forced investment is 0.5bb, so your pot odds are considerably worse than in the big blind.\n- **One player still sits behind you:** your call doesn’t close the action. The big blind can squeeze, and even if they just call, you’re playing a multiway pot from the worst position.\n\nThe consequence in modern theory: in the small blind, you play mostly raise-or-fold against opens. You 3-bet your good hands (leaning linear, as discussed in Lesson 3), and the rest folds. Flat calls you cut down to a minimum — a few strong hands that don’t quite make the 3-bet, against small opens.\n\nExpect to lose money in both blinds over the long run — that’s normal and unavoidable, because you’re forced to invest blind. Your goal is not to turn the blinds into winning positions, but to lose less than your opponents do in the same situation.',
           tip: 'When everyone folds to you in the small blind, the opposite of caution applies: against only one remaining opponent, you open wide (roughly 40–50%), ideally to 3–3.5bb. Many players fold far too often in the big blind against SB opens.',
         },
         {
           heading: 'Don’t Over-Defend: Equity Is Not Profit',
           body:
-            'The pot-odds math above has a catch: it assumes that you fully **realize** your equity — that is, you win as often as your raw winning probability promises. Out of position, you don’t.\n\nWithout position, you give away information first on every street, you bluff less effectively, you get pushed off good draws by bets more often, and you win smaller pots with marginal hands. A hand like J4o may have 35% raw equity against the button range — out of position, you’ll realize only part of it, and the hand becomes a losing proposition, even though the pot odds seem to justify it.\n\nThree practical rules follow:\n\n- **Suited clearly beats offsuit:** suited hands realize their equity better, because they more often hit strong, clearly playable draws. Defend suited hands generously; fold offsuit junk with discipline.\n- **Connectedness counts:** 76s is a clear defend, 72s is not.\n- **Tighten up against bigger opens:** against 3bb+ and against early positions, your defending range shrinks substantially.\n\nOver-defending on principle (“but I’m getting the odds”) is one of the most expensive leaks in the big blind. The odds are a necessary argument, but not a sufficient one.',
+            'The pot-odds math above has a catch: it assumes that you fully realize your equity — that is, you win as often as your raw winning probability promises. Out of position, you don’t.\n\nWithout position, you give away information first on every street, you bluff less effectively, you get pushed off good draws by bets more often, and you win smaller pots with marginal hands. A hand like J4o may have 35% raw equity against the button range — out of position, you’ll realize only part of it, and the hand becomes a losing proposition, even though the pot odds seem to justify it.\n\nThree practical rules follow:\n\n- **Suited clearly beats offsuit:** suited hands realize their equity better, because they more often hit strong, clearly playable draws. Defend suited hands generously; fold offsuit junk with discipline.\n- **Connectedness counts:** 76s is a clear defend, 72s is not.\n- **Tighten up against bigger opens:** against 3bb+ and against early positions, your defending range shrinks substantially.\n\nOver-defending on principle (“but I’m getting the odds”) is one of the most expensive leaks in the big blind. The odds are a necessary argument, but not a sufficient one.',
         },
       ],
       takeaways: [
@@ -425,10 +429,10 @@ const m2: Module = {
         {
           question: 'Which two factors allow the big blind to defend so wide?',
           options: [
-            'Position postflop and initiative',
+            'Position postflop and the initiative after calling preflop, because you act first',
             'The 1bb discount and closing the action (nobody can raise behind you)',
-            'The ability to squeeze and the half blind',
-            'Fold equity and nut potential',
+            'The chance to squeeze and the half blind that is already in the pot',
+            'Fold equity and the nut potential of your own hands',
           ],
           correctIndex: 1,
           explanation:
@@ -437,10 +441,10 @@ const m2: Module = {
         {
           question: 'Why is the small blind considered the hardest position?',
           options: [
-            'Because it pays the largest forced bet',
-            'Because it must always act first postflop, gets only half the discount, and the BB still sits behind it',
-            'Because it’s never allowed to 3-bet',
-            'Because its range is capped',
+            'Because he pays the highest forced bet and therefore has to invest the most chips',
+            'Because he always has to act first postflop, only gets half the discount and the BB still sits behind him',
+            'Because he may never 3-bet while the big blind still sits behind him',
+            'Because his range is always capped and he never holds premiums',
           ],
           correctIndex: 1,
           explanation:
@@ -461,10 +465,10 @@ const m2: Module = {
         {
           question: 'What does the statement “I’m getting pot odds, so I have to call” overlook in the big blind?',
           options: [
-            'That rake makes the pot smaller',
+            'That the pot gets smaller through rake than the pot odds assume',
             'That raw equity is only partially realized out of position',
-            'That the button is always stronger than the big blind',
-            'That you should always raise in the big blind',
+            'That the button is always stronger than the big blind, whatever the hand',
+            'That in the big blind you should always raise and never call',
           ],
           correctIndex: 1,
           explanation:
@@ -481,21 +485,22 @@ const m2: Module = {
       sections: [
         {
           heading: 'Isolating Limpers',
+          cards: ['Ks', 'Js'],
           body:
-            'When one or more players limp in front of you, the standard answer with playable hands is the **isolation raise** (iso-raise for short). You raise bigger than usual in order to play the pot heads-up against the limper whenever possible — with initiative, position, and the stronger range.\n\nThe proven online sizing formula: **3bb plus 1bb per limper.** One limper: raise to 4bb. Two limpers: 5bb. If you’re out of position, add about another 1bb. Live, you scale up in line with the bigger standard opens — 5–6bb against one limper is common there, more in call-happy games.\n\nWhy bigger than a normal open? The limper has already invested and therefore gets better odds to call. With too small a raise, you accomplish nothing: everyone calls, and you’re playing a multiway pot with no real edge.\n\nYour iso range is wider than your normal opening range in the same position, because limpers usually signal weak, passive ranges — they would have raised their strong hands. Good candidates: all the hands in your normal opening range, plus additional Broadways and suited hands that profit from the weak limper range.',
+            'When one or more players limp in front of you, the standard answer with playable hands is the isolation raise (iso-raise for short). You raise bigger than usual in order to play the pot heads-up against the limper whenever possible — with initiative, position, and the stronger range.\n\nThe proven online sizing formula: 3bb plus 1bb per limper. One limper: raise to 4bb. Two limpers: 5bb. If you’re out of position, add about another 1bb. Live, you scale up in line with the bigger standard opens — 5–6bb against one limper is common there, more in call-happy games.\n\nWhy bigger than a normal open? The limper has already invested and therefore gets better odds to call. With too small a raise, you accomplish nothing: everyone calls, and you’re playing a multiway pot with no real edge.\n\nYour iso range is wider than your normal opening range in the same position, because limpers usually signal weak, passive ranges — they would have raised their strong hands. Good candidates: all the hands in your normal opening range, plus additional Broadways and suited hands that profit from the weak limper range.',
           example:
             'Online 6-max: a player limps from the HJ and you’re on the BTN with K♠ J♠. Standard: iso-raise to 4bb (3bb + 1 per limper). If only the limper calls, you play the flop in position, with initiative, and against a range that almost never contains a premium hand.',
         },
         {
           heading: 'The Squeeze Play',
           body:
-            'A **squeeze** is a 3-bet after one player has opened and at least one other has called the open. The name captures the principle: the opponents get caught in a vise.\n\nThe situation is ideal for a big 3-bet, because both opponents are under pressure:\n\n- **The opener** has to worry about the caller still lurking behind — they can’t simply call wide and need a real hand against your big bet.\n- **The caller** has already shown weakness with their call: they would usually have 3-bet their strongest hands (QQ+, AK) themselves. Their range is **capped** and folds often.\n\nOn top of that, there’s already considerably more money in the pot than with a normal 3-bet — you win more right away when both fold.\n\nWith sizing, you have to price in the caller. Rule of thumb: **about 4x the open in position, 5x out of position, plus around one open per additional caller.** Example: open 2.5bb, one caller — you squeeze to about 10–11bb in position, more like 12–13bb from the big blind. Undersized squeezes are a classic mistake — they give both opponents good odds, and suddenly you’re playing a bloated multiway pot.\n\nYou build your squeeze range like a polarized 3-bet range: value with QQ+/AK (wider against loose opponents), bluffs with blocker hands like A5s.',
+            'A **squeeze** is a 3-bet after one player has opened and at least one other has called the open. The name captures the principle: the opponents get caught in a vise.\n\nThe situation is ideal for a big 3-bet, because both opponents are under pressure:\n\n- **The opener** has to worry about the caller still lurking behind — they can’t simply call wide and need a real hand against your big bet.\n- **The caller** has already shown weakness with their call: they would usually have 3-bet their strongest hands (QQ+, AK) themselves. Their range is capped and folds often.\n\nOn top of that, there’s already considerably more money in the pot than with a normal 3-bet — you win more right away when both fold.\n\nWith sizing, you have to price in the caller. Rule of thumb: about 4x the open in position, 5x out of position, plus around one open per additional caller. Example: open 2.5bb, one caller — you squeeze to about 10–11bb in position, more like 12–13bb from the big blind. Undersized squeezes are a classic mistake — they give both opponents good odds, and suddenly you’re playing a bloated multiway pot.\n\nYou build your squeeze range like a polarized 3-bet range: value with QQ+/AK (wider against loose opponents), bluffs with blocker hands like A5s.',
           tip: 'Squeeze bluffs work best when the opener comes from late position (wide range) and the caller is known to be loose-passive. Against a UTG open plus a call from a tight player, you squeeze almost exclusively for value.',
         },
         {
           heading: 'How Multiway Pots Shift Hand Values',
           body:
-            'As soon as three or more players see the flop, hand values shift fundamentally. The reason is simple math: **your equity drops with every additional opponent**, because more hands can beat you. AA wins around 85% heads-up against a random hand — against four random hands, only about 56%.\n\nEven more important is the shift in **relative** values:\n\n- **Nut potential gains:** hands that can make the best possible hand rise in value — small pairs (sets), suited aces (nut flushes), suited connectors (straights). In big multiway pots, a very strong hand usually gets shown at the end; you want to be holding the one that wins.\n- **Marginal hands lose:** offsuit Broadways like KJo or QTo live off top pair with a good kicker. Heads-up, that’s often enough — against four opponents, top pair is frequently only the second-best hand, and you lose big exactly when you hit (reverse implied odds).\n- **Small flushes and dominated hands turn dangerous:** hitting a flush with 96s when three opponents can also hold suited hands is a classic setup for big losses.\n\nRemember: **heads-up, the best pair often wins — multiway, the best hand wins.** So play hands multiway that can make the nuts, and be careful with anything that only produces a good pair.',
+            'As soon as three or more players see the flop, hand values shift fundamentally. The reason is simple math: your equity drops with every additional opponent, because more hands can beat you. AA wins around 85% heads-up against a random hand — against four random hands, only about 56%.\n\nEven more important is the shift in relative values:\n\n- **Nut potential gains:** hands that can make the best possible hand rise in value — small pairs (sets), suited aces (nut flushes), suited connectors (straights). In big multiway pots, a very strong hand usually gets shown at the end; you want to be holding the one that wins.\n- **Marginal hands lose:** offsuit Broadways like KJo or QTo live off top pair with a good kicker. Heads-up, that’s often enough — against four opponents, top pair is frequently only the second-best hand, and you lose big exactly when you hit (reverse implied odds).\n- **Small flushes and dominated hands turn dangerous:** hitting a flush with 96s when three opponents can also hold suited hands is a classic setup for big losses.\n\nRemember: heads-up, the best pair often wins — multiway, the best hand wins. So play hands multiway that can make the nuts, and be careful with anything that only produces a good pair.',
           cards: ['Ad', '4d', 'Kh', 'Jc'],
         },
         {
@@ -528,10 +533,10 @@ const m2: Module = {
         {
           question: 'What defines a squeeze play?',
           options: [
-            'A raise against multiple limpers',
+            'A raise against several limpers to isolate the pot',
             'A 3-bet after an open has already found at least one caller',
-            'A 4-bet from the blinds',
-            'An all-in with a draw',
+            'A 4-bet from the blinds against an open and a caller',
+            'An all-in with a draw to put the opponent under pressure and use fold equity',
           ],
           correctIndex: 1,
           explanation:
@@ -540,10 +545,10 @@ const m2: Module = {
         {
           question: 'Why is the caller’s range typically capped in a squeeze situation?',
           options: [
-            'Because they sit out of position',
+            'Because he sits out of position and therefore can never play strongly',
             'Because they would usually have 3-bet their strongest hands (QQ+, AK) themselves instead of just calling',
-            'Because callers are fundamentally weak players',
-            'Because they have invested fewer chips than the opener',
+            'Because callers are always weak players who go along with any hand',
+            'Because he has invested fewer chips than the opener and is therefore more careful',
           ],
           correctIndex: 1,
           explanation:
@@ -564,10 +569,10 @@ const m2: Module = {
         {
           question: 'Three opponents see the flop with you, and you’ve missed completely with A♣ K♦. Why is a bluff c-bet much weaker here than heads-up?',
           options: [
-            'Because the pot is too small for a bluff',
-            'Because all opponents have to fold at the same time, which gets less likely with every additional player',
-            'Because AK has no equity left against three opponents',
-            'Because c-bets only work in position',
+            'Because the pot is too small for a bluff and the effort isn’t worth it against three opponents',
+            'Because all opponents have to fold – with every extra player that becomes less likely',
+            'Because AK has no equity against three opponents any more and can never win',
+            'Because c-bets only work in position and out-of-position bets must never bluff',
           ],
           correctIndex: 1,
           explanation:

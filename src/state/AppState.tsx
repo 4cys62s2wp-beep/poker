@@ -9,6 +9,7 @@ import { ALL_MODULES } from '../content';
 import { BADGES } from '../content/badges';
 import { durableDelete, durableSet, requestPersistentStorage } from '../lib/storage';
 import { setzeAppMarke } from '../lib/appmarke';
+import { bestanden, lektionsXp } from '../lib/lernen/quiz';
 import { useLang, levelTitleFor } from '../i18n';
 import { MAX_TRACKED_HANDS, sanitizeHandFacts, type HandFacts } from '../lib/poker/stats';
 
@@ -20,6 +21,15 @@ export interface LessonResult {
   completedAt: string;
   quizScore: number;
   quizTotal: number;
+}
+
+/** Eine Lektion, deren Quiz nicht bestanden wurde (siehe `lib/lernen/quiz.ts`):
+ *  versucht, nicht abgeschlossen. Gemerkt wird das beste Ergebnis. */
+export interface LessonAttempt {
+  bestScore: number;
+  total: number;
+  tries: number;
+  lastAt: string;
 }
 
 export interface TrainerStats {
@@ -71,6 +81,11 @@ export interface HandRecord {
 export interface AppData {
   xp: number;
   completedLessons: Record<string, LessonResult>;
+  /** Lektionen mit nicht bestandenem Quiz — noch nicht abgeschlossen. */
+  lessonAttempts: Record<string, LessonAttempt>;
+  /** Wie weit man in einer Lektion gelesen hat: Index des zuletzt erreichten
+      Abschnitts. Erhoben beim Lesen, nie erfunden (E-032). */
+  lessonProgress: Record<string, number>;
   trainers: Record<string, TrainerStats>;
   badges: Record<string, string>;
   streak: { lastDay: string; count: number };
@@ -110,6 +125,8 @@ interface ProfilesIndex {
 const DEFAULT_DATA: AppData = {
   xp: 0,
   completedLessons: {},
+  lessonAttempts: {},
+  lessonProgress: {},
   trainers: {},
   badges: {},
   streak: { lastDay: '', count: 0 },
@@ -156,7 +173,11 @@ interface AppStateValue {
   dueReviewCount: number;
   profiles: ProfileMeta[];
   activeProfile: ProfileMeta;
+  /** Das Quiz einer Lektion verbuchen. Nur ab der Bestehensgrenze gilt die
+      Lektion als abgeschlossen; darunter ist sie „versucht". */
   completeLesson: (lessonId: string, quizScore: number, quizTotal: number) => void;
+  /** Den erreichten Abschnitt einer Lektion merken (nie rückwärts). */
+  recordLessonProgress: (lessonId: string, section: number) => void;
   recordTrainer: (trainerId: string, correct: boolean) => void;
   /** Die Antwort auf die Hand des Tages verbuchen: kleine XP und der Tag für
       die Serie. Einmal je Tag ruft die Startseite es auf (E-087). */
@@ -270,6 +291,27 @@ export function sanitizeAppData(input: unknown): AppData {
           quizTotal: zaehler(r.quizTotal, 100),
         };
       }
+    }
+  }
+
+  if (typeof d.lessonAttempts === 'object' && d.lessonAttempts !== null) {
+    for (const [k, v] of Object.entries(d.lessonAttempts as Record<string, unknown>)) {
+      if (typeof v === 'object' && v !== null && /^m\d+-l\d+$/.test(k)) {
+        const r = v as Record<string, unknown>;
+        const total = zaehler(r.total, 100);
+        out.lessonAttempts[k] = {
+          bestScore: Math.min(total, zaehler(r.bestScore, 100)),
+          total,
+          tries: Math.max(1, zaehler(r.tries, 10_000)),
+          lastAt: zeitpunkt(r.lastAt),
+        };
+      }
+    }
+  }
+
+  if (typeof d.lessonProgress === 'object' && d.lessonProgress !== null) {
+    for (const [k, v] of Object.entries(d.lessonProgress as Record<string, unknown>)) {
+      if (/^m\d+-l\d+$/.test(k)) out.lessonProgress[k] = zaehler(v, 200);
     }
   }
 
@@ -564,6 +606,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   /** Stand, gegen den die nächsten Toasts verglichen werden (nur Meldungen, keine Daten). */
   const notifyBaseRef = useRef<{ level: number; badges: Record<string, string> } | null>(null);
+  /** true = die Abzeichen des nächsten Datenwechsels zeigt der Bildschirm selbst. */
+  const stilleAbzeichen = useRef(false);
   /** true = der nächste Datenwechsel ist ein Austausch (Profilwechsel, Import, Cloud) – keine Toasts. */
   const skipNotifyRef = useRef(false);
 
@@ -593,6 +637,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     notifyBaseRef.current = { level, badges: { ...data.badges } };
     const skip = skipNotifyRef.current;
     skipNotifyRef.current = false;
+    const still = stilleAbzeichen.current;
+    stilleAbzeichen.current = false;
     // Erster Lauf (geladener Stand) oder Datenaustausch: nur den Vergleichsstand merken.
     if (!base || skip) return;
 
@@ -601,7 +647,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       pushToast(l === 'de' ? `Level ${level} erreicht!` : `Level ${level} reached!`, levelTitleFor(level, l));
     }
     for (const b of BADGES) {
-      if (data.badges[b.id] && !base.badges[b.id]) {
+      if (!still && data.badges[b.id] && !base.badges[b.id]) {
         const def = badgeDefsRef.current.find((d) => d.id === b.id) ?? b;
         pushToast(`${def.icon} ${l === 'de' ? 'Abzeichen' : 'Badge'}: ${def.title}`, def.description);
       }
@@ -610,21 +656,49 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   const completeLesson = useCallback(
     (lessonId: string, quizScore: number, quizTotal: number) => {
+      /* Die Abzeichen dieses Quiz zeigt der Ergebnisbildschirm als Kachel
+         (E-091); ein Toast darüber wäre dieselbe Nachricht ein zweites Mal. */
+      stilleAbzeichen.current = true;
       mutate((d) => {
-        const already = !!d.completedLessons[lessonId];
         const prevResult = d.completedLessons[lessonId];
+        if (!bestanden(quizScore, quizTotal)) {
+          /* Versucht, nicht verstanden. Eine früher bestandene Lektion bleibt
+             bestanden — ein schlechterer zweiter Versuch nimmt nichts weg. */
+          if (!prevResult) {
+            const a = d.lessonAttempts[lessonId];
+            d.lessonAttempts[lessonId] = {
+              bestScore: Math.max(a?.bestScore ?? 0, quizScore),
+              total: quizTotal,
+              tries: (a?.tries ?? 0) + 1,
+              lastAt: new Date().toISOString(),
+            };
+          }
+          touchStreak(d);
+          return;
+        }
         d.completedLessons[lessonId] = {
-          completedAt: new Date().toISOString(),
+          completedAt: prevResult?.completedAt || new Date().toISOString(),
           quizScore: Math.max(quizScore, prevResult?.quizScore ?? 0),
           quizTotal,
         };
-        if (!already) {
-          d.xp += 60 + Math.round((40 * quizScore) / Math.max(1, quizTotal));
-        } else if (quizScore > (prevResult?.quizScore ?? 0)) {
+        delete d.lessonAttempts[lessonId];
+        if (!prevResult) {
+          d.xp += lektionsXp(quizScore, quizTotal);
+        } else if (quizScore > prevResult.quizScore) {
           d.xp += 10;
         }
         if (quizScore === quizTotal) award(d, 'quiz-perfect');
         touchStreak(d);
+      });
+    },
+    [mutate],
+  );
+
+  const recordLessonProgress = useCallback(
+    (lessonId: string, section: number) => {
+      mutate((d) => {
+        if ((d.lessonProgress[lessonId] ?? -1) >= section) return;
+        d.lessonProgress[lessonId] = section;
       });
     },
     [mutate],
@@ -967,6 +1041,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       profiles: index.profiles,
       activeProfile,
       completeLesson,
+      recordLessonProgress,
       recordTrainer,
       recordDailyHand,
       recordHand,
@@ -990,7 +1065,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       consumeFeature,
       startTrial,
     }),
-    [data, toasts, level, dueReviewCount, index.profiles, activeProfile, completeLesson, recordTrainer, recordDailyHand, recordHand,
+    [data, toasts, level, dueReviewCount, index.profiles, activeProfile, completeLesson, recordLessonProgress, recordTrainer, recordDailyHand, recordHand,
      addSession, deleteSession, setName, resetAll, addReviewItem, answerReview, completeDailyQuiz, addHandRecord,
      exportJson, importJson, createProfile, switchProfile, deleteProfile, updateProfile, replaceData, linkCloudProfile,
      todayUsage, consumeFeature, startTrial],

@@ -22,6 +22,7 @@ import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/coach';
 import { STR as PRO } from '../i18n/pages/pro';
 import { usePro } from '../lib/pro/ProProvider';
+import { MitBegriffen } from '../components/Begriff';
 
 type Step = 'setup' | 'hand' | 'preflop' | 'flop-in' | 'flop' | 'turn-in' | 'turn' | 'river-in' | 'river';
 
@@ -295,14 +296,14 @@ export function CoachPage() {
                   {advice.reasons.map((r, i) => (
                     <li key={i} className="takeaway">
                       <span className="tick">›</span>
-                      <span>{r}</span>
+                      <span><MitBegriffen text={r} /></span>
                     </li>
                   ))}
                 </ul>
                 {advice.lowStakes && (
                   <div className="callout tip" style={{ marginBottom: 0 }}>
                     <span className="label">{L.homegameTip}</span>
-                    {advice.lowStakes}
+                    <MitBegriffen text={advice.lowStakes} />
                   </div>
                 )}
               </>

@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T10:43:27.501Z",
+  "geprueft_am": "2026-10-04T12:50:06.705Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 885,
+        "dauer_ms": 891,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -571,6 +571,123 @@
       "uebersprungen": false
     },
     {
+      "name": "Die Lektion zeigt, wo man liest, und führt mit „Weiter“ durch",
+      "ergebnis": {
+        "abschnitte": 5,
+        "stand_am_anfang": "Abschnitt 1 von 5",
+        "knopf_am_anfang": "Weiter",
+        "klebt": true,
+        "leiste_unten_am_fensterrand": true,
+        "stand_nach_zweimal_weiter": "Abschnitt 3 von 5",
+        "scrollte_beim_weiter": true,
+        "abschnitt_gemerkt_nach_weiter": 2,
+        "knopf_am_ende": "Quiz starten (5 Fragen)",
+        "abschnitt_gemerkt_am_ende": 4,
+        "wiederkehr_hinweis": "Weiter bei Abschnitt 5 von 5.Von vorn lesen",
+        "wiederkehr_sprang": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Das Quiz ist eine eigene Adresse im Fokusmodus",
+      "ergebnis": {
+        "adresse": "/lernen/m1/m1-l1/quiz",
+        "frage_oben_px": 136,
+        "kopf": {
+          "schliessen": 1,
+          "seitenkopf": 0,
+          "h1": 1
+        },
+        "verschiebung_beim_antworten_px": 0,
+        "leiste_hoehe_px": 304,
+        "leiste_klebt": true,
+        "leiste_am_fensterrand": false,
+        "nach_antwort": {
+          "urteil": "Nicht ganz",
+          "knopf": "Nächste Frage",
+          "karten_unter_leiste": true
+        },
+        "rueckfrage": "Quiz verlassen? Dein Stand bleibt erhalten – du machst bei Frage 2 weiter. Weitermachen Verlassen",
+        "nach_verlassen": "/lernen/m1/m1-l1",
+        "knopf_danach": "Quiz fortsetzen bei Frage 2",
+        "zaehler_nach_fortsetzen": "2/5",
+        "nach_browser_zurueck": "/lernen/m1/m1-l1"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Bestehen heißt verstanden",
+      "ergebnis": {
+        "fehlschlag": {
+          "urteil": "Noch nicht bestanden",
+          "punkte": "0 von 5 richtig",
+          "kacheln": [
+            "0/5dein Ergebnis",
+            "4/5zum Bestehen"
+          ],
+          "falsch_liste": 5,
+          "in_wiederholung": 5,
+          "knoepfe": [
+            "Fehler nochmal üben",
+            "Quiz noch einmal von vorn"
+          ],
+          "toasts": 0,
+          "leiste_im_daumenbereich": true
+        },
+        "xp_nach_fehlschlag": 0,
+        "lektion_fertig_nach_fehlschlag": false,
+        "versucht_gemerkt": {
+          "bestScore": 0,
+          "total": 5,
+          "tries": 1,
+          "lastAt": "2026-10-04T12:49:44.671Z"
+        },
+        "abzeichen_nach_fehlschlag": [],
+        "wiederholung_nach_fehlschlag": 5,
+        "modul_zeile": {
+          "klassen": [
+            "lektion",
+            "dran"
+          ],
+          "meta": "ca. 9 Min. · 5 Quizfragen · Quiz: 0/5",
+          "hinweis": "Noch einmal"
+        },
+        "uebung": {
+          "titel": "Fehler üben",
+          "hinweis": "Das hier zählt nicht für die Lektion — es ist zum Üben. Bestehen kannst du nur im ganzen Quiz."
+        },
+        "lektion_fertig_nach_uebung": false,
+        "bestanden": {
+          "urteil": "Bestanden",
+          "punkte": "5 von 5 richtig",
+          "kacheln": [
+            "+100XP",
+            "1/5im Modul",
+            "💯Neues Abzeichen: Fehlerfrei",
+            "📖Neues Abzeichen: Erste Schritte"
+          ],
+          "falsch_liste": 0,
+          "in_wiederholung": 0,
+          "knoepfe": [
+            "Nächste Lektion: Die Handrankings",
+            "Jetzt üben: Übungstisch",
+            "Modulübersicht"
+          ],
+          "toasts": 0,
+          "leiste_im_daumenbereich": true
+        },
+        "xp_durch_bestehen": 100,
+        "lektion_fertig_nach_bestehen": true,
+        "versucht_danach": null,
+        "abzeichen_nach_bestehen": [
+          "quiz-perfect",
+          "first-lesson"
+        ],
+        "optionen_gemischt": 5
+      },
+      "uebersprungen": false
+    },
+    {
       "name": "Jeder Bildschirm hat einen sichtbaren Weg zur Startseite",
       "ergebnis": {
         "sichtbar": true,
@@ -683,12 +800,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 37,
+        "dauer_ms": 35,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "24,1 %",
+        "ergebnis_text": "54,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },
@@ -706,7 +823,7 @@
         "mit_vorschau": 3,
         "inhalte": [
           "Hand rein, Empfehlung mit Begründung raus",
-          "159 Begriffe von A bis Z",
+          "165 Begriffe von A bis Z",
           "Alle 169 Hände · Button eröffnet 42 %",
           "5 Eröffnungs-Charts, dazu Call und 3-Bet",
           "Flushdraw 35 %, Gutshot 16 % bis zum River",
@@ -720,8 +837,8 @@
     {
       "name": "Das Glossar ist ein Wörterbuch, keine Wand",
       "ergebnis": {
-        "seitenhoehe": 11805,
-        "eintraege": 159,
+        "seitenhoehe": 12188,
+        "eintraege": 165,
         "erste_hoehe": 64,
         "buchstaben": 22,
         "aufgeklappt": 0,

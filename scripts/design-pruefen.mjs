@@ -363,8 +363,10 @@ for (const bs of [...bildschirme, ...HINTER_EINEM_KLICK]) {
         if (!sichtbar(el)) continue;
         const r = el.getBoundingClientRect();
         /* Ein Link im Fließtext ist keine Bedienfläche, sondern Text — er
-           wird nach seiner Zeilenhöhe beurteilt und nicht nach 44 Pixeln. */
-        const imFliesstext = el.tagName === 'A'
+           wird nach seiner Zeilenhöhe beurteilt und nicht nach 44 Pixeln.
+           Dasselbe gilt für einen antippbaren Fachbegriff (`.begriff`, E-092):
+           Er ist ein Wort im Satz, und sein Blatt öffnet von unten. */
+        const imFliesstext = (el.tagName === 'A' || el.classList.contains('begriff'))
           && el.parentElement
           && ['P', 'LI', 'SPAN', 'STRONG', 'EM'].includes(el.parentElement.tagName);
         if (imFliesstext) continue;

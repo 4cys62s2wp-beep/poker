@@ -107,7 +107,10 @@ describe('Schriftskala', () => {
   });
 
   it('begrenzt den Fließtext auf eine lesbare Zeilenlänge', () => {
-    const w = CSS.match(/\.prose\s*\{\s*max-width:\s*([0-9.]+)ch;/)?.[1];
+    /* Die Breite steht als Token (E-077); aufgelöst muss sie in ch stehen. */
+    const token = CSS.match(/\.prose\s*\{\s*max-width:\s*var\((--[a-z-]+)\);/)?.[1];
+    expect(token, '.prose braucht einen Breiten-Token').toBeTruthy();
+    const w = CSS.match(new RegExp(`${token}:\\s*([0-9.]+)ch;`))?.[1];
     expect(w, '.prose braucht eine Breite in ch, nicht in px').toBeTruthy();
     expect(Number(w)).toBeLessThanOrEqual(70);
   });

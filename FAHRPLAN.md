@@ -46,7 +46,7 @@ Die 34 festen font-size-Werte in global.css (darunter 0.4375rem, 0.5rem, 0.53125
 
 </details>
 
-### [ ] 1.3 Flächen, Radien, Schatten und Inhaltsbreiten als Tokens  
+### [x] 1.3 Flächen, Radien, Schatten und Inhaltsbreiten als Tokens  
 *Wirkung 3 · Aufwand M*
 
 Die 24 border-radius-Werte in global.css (4–56 px, Knöpfe mit 9, 12 und 13 px) auf die vier vorhandenen Radius-Tokens zurückführen, die 19 box-shadow-Werte auf Flächenstufen. npm run streuung um radius und shadow erweitern. Die Kartenfläche eine Stufe vom Seitengrund absetzen; heute sind es 1,12:1 (dunkel) bzw. 1,09:1 (hell), allein über Ränder mit Alpha 0,075. In beiden Modi messen. Breiten-Tokens Lesen, Standard und Weit anlegen; Paket 2 setzt sie ein.

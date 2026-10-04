@@ -4486,3 +4486,44 @@ ein Lern-Gold-Knopf.
 Gemessen: Design (182 Messungen), Bedienbar (180), Durchgang, Daumen — null
 Befunde. `farbrollen.test.ts` hält es fest (10 Prüfungen); zwei davon mit
 Gegenprobe rot gesehen.
+
+
+## E-077 · 2026-10-04 · Karten heben sich ab, und Radien und Breiten haben je eine Stelle
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 1.3).
+
+**Gemessen vor der Änderung:** Grund und Karte lagen 1,12 zu 1 (dunkel) und
+1,09 zu 1 (hell) auseinander, getragen allein von einem Rand mit Alpha 0,075.
+Nachher: 1,19 zu 1 und 1,18 zu 1 — die Karte ist eine Fläche, nicht nur ein
+Umriss. Im hellen Modus ist der Grund dafür einen Schritt dunkler geworden
+(`#ece9e0`), die Karte bleibt fast weiß.
+
+**Radien:** 19 nackte Pixelwerte im Stylesheet laufen jetzt über die
+Skala `--radius-xs/-sm/-/-lg/-pill` (8, 10, 16, 22, 999). Was bleibt, ist
+Kartengeometrie (Spielkarten, Tischrund, Schild) — dort ist der Radius Teil
+der Form, nicht der Skala.
+
+**Breiten:** vier Tokens statt 560-, 640-, 660- und 1140-px-Werten, die je
+Seite neu erfunden wurden: `--breite-lesen` 65ch, `--breite-schmal` 35rem,
+`--breite-standard` 40rem, `--breite-weit` 72rem. In rem, damit sie mit der
+Browser-Schrift wachsen (E-057).
+
+**Folge für die Farbtokens:** Die hellere Fläche hat zwei Ergebnisfarben unter
+7 zu 1 gedrückt und den Titel der Live-Session-Kachel (hell) auf 4,32 zu 1.
+Korrigiert: `--ergebnis-gut/-schlecht` in beiden Modi nachgezogen, und der
+Kachel-Titel liest `--akzent-text` (neu), das auf dem Farbverlauf 5,6 zu 1
+hält. Gefunden hat beides der Kontrastlauf, nicht das Auge.
+
+**Verworfene Alternative:** Schatten ebenfalls zu einer Skala bündeln. Von den
+übrigen `box-shadow`-Werten sind fast alle Fokusringe, Innenkanten oder die
+Plastik der Spielkarte; eine Skala dafür hätte Werte zusammengezwungen, die
+nichts miteinander zu tun haben. Die beiden echten Höhenstufen
+(`--shadow-soft`, `--shadow`) waren schon Tokens.
+
+**Zweite verworfene Alternative:** Karten über einen kräftigeren Rand
+absetzen statt über die Fläche. Das hätte den Wert 1,12 zu 1 nicht verändert,
+nur umrandet, und in der Sonne bleibt ein Rand die schwächste Unterscheidung.
+
+Gemessen: Design (182), Bedienbar (180), Daumen, Quer, Tisch, Durchgang — null
+Befunde. `flaechen.test.ts` hält es fest (8 Prüfungen); die Abhebung mit
+Gegenprobe rot gesehen.

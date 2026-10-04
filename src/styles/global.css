@@ -66,9 +66,20 @@
 
   /* ── Radien ──────────────────────────────────────────────────────── */
   --radius: 16px;
+  --radius-xs: 8px;
   --radius-sm: 10px;
   --radius-lg: 22px;
   --radius-pill: 999px;
+
+  /* Inhaltsbreiten: Lesen (Fließtext), Schmal (eine Aufgabe je Bildschirm),
+     Standard (Listen, Karten), Weit (Rahmen der App, Tabellen). In rem, damit
+     sie mit der Browser-Schrift wachsen — die Zeile bleibt gleich lang in
+     Zeichen. Statt 560-, 640- und 660-px-Werten, die je Seite neu erfunden
+     wurden (E-077). */
+  --breite-lesen: 65ch;
+  --breite-schmal: 35rem;
+  --breite-standard: 40rem;
+  --breite-weit: 72rem;
 
   /* ── Schriftgrößen ───────────────────────────────────────────────────
      Eine Familie mit echten Gewichtsabstufungen statt drei Familien.
@@ -288,14 +299,16 @@
   --bg: #0c110e;
   --bg-deep: #090d0b;
   --bg-elev: #121814;
-  --bg-card: #161e19;
+  /* Eine Stufe vom Grund abgesetzt: 1,19 zu 1 (vorher 1,12, allein über einen
+     Rand mit Alpha 0,075 — Karten verschwammen mit dem Grund, E-077). */
+  --bg-card: #1a241e;
   /* Die Fläche eines Eingabefeldes. Sie stand bis E-042 auf --scrim —
      einem durchscheinenden Schleier, der für Überlagerungen auf dunklem
      Grund gedacht ist. Im hellen Modus ergab das 45 % Dunkel auf Creme:
      Jedes Suchfeld und jedes Textfeld der App war ein grauer Klotz.
      Ein Feld ist eine eigene Fläche und braucht einen eigenen Wert. */
   --feld: #0e1310;
-  --bg-card-hover: #1b241e;
+  --bg-card-hover: #202b25;
   --border: rgba(236, 233, 223, 0.075);
   --border-strong: rgba(236, 233, 223, 0.16);
   --flaeche-tisch: #1d5a43;
@@ -319,8 +332,9 @@
   --accent-live-dim: rgba(47, 127, 94, 0.16);
   --akzent: #4fbf8e;
   --akzent-dim: rgba(79, 191, 142, 0.16);
+  --akzent-text: #4fbf8e;
   --ergebnis-gut: #6ec97d;
-  --ergebnis-schlecht: #f29b95;
+  --ergebnis-schlecht: #f2a09a;
   --text-stark: #d8d5cb;
   --ok-lesbar: #90d69c;
   --info-lesbar: #94bdea;
@@ -362,8 +376,10 @@
    Farbton (158 Grad gegen 154 Grad — dieselbe Farbe, anderer Helligkeitswert)
    und erreicht 5,6 zu 1. */
 [data-modus="hell"] {
-  --bg: #f4f2ec;
-  --bg-deep: #efece5;
+  /* Grund und Karte 1,18 zu 1 (vorher 1,09): Die Karte ist heller als der
+     Grund statt nur von einem Rand umzogen (E-077). */
+  --bg: #ece9e0;
+  --bg-deep: #e6e3d9;
   --bg-elev: #fbfaf6;
   --bg-card: #fdfcf9;
   --feld: #fffefc;
@@ -391,8 +407,9 @@
   --accent-live-dim: rgba(10, 107, 71, 0.14);
   --akzent: #0a6b47;
   --akzent-dim: rgba(10, 107, 71, 0.12);
-  --ergebnis-gut: #0f5a32;
-  --ergebnis-schlecht: #95231c;
+  --akzent-text: #08583a;
+  --ergebnis-gut: #0d522e;
+  --ergebnis-schlecht: #892019;
   --text-stark: #0f120f;
   --ok-lesbar: #14622d;
   --info-lesbar: #164a8c;
@@ -569,7 +586,7 @@ table.data td {
   justify-content: center;
   width: 34px;
   height: 34px;
-  border-radius: 9px;
+  border-radius: var(--radius-sm);
   background: linear-gradient(150deg, var(--flaeche-tisch-verlauf-hell), var(--flaeche-tisch-verlauf-tief));
   border: 1px solid var(--auszeichnung-lesbar-a35);
   color: var(--auszeichnung-lesbar);
@@ -644,7 +661,7 @@ table.data td {
   flex: 1;
   min-width: 0;
   padding: 28px clamp(16px, 4vw, 48px) 96px;
-  max-width: 1140px;
+  max-width: var(--breite-weit);
 }
 
 /* Mobile: Kopfzeile mit Marke. Eine untere Leiste gibt es nicht mehr —
@@ -684,7 +701,7 @@ table.data td {
     justify-content: center;
     width: 30px;
     height: 30px;
-    border-radius: 8px;
+    border-radius: var(--radius-xs);
     background: linear-gradient(150deg, var(--flaeche-tisch-verlauf-hell), var(--flaeche-tisch-verlauf-tief));
     border: 1px solid var(--auszeichnung-lesbar-a35);
     color: var(--auszeichnung-lesbar);
@@ -764,7 +781,7 @@ table.data td {
 .page-header .sub {
   color: var(--text-dim);
   margin-top: 9px;
-  max-width: 660px;
+  max-width: var(--breite-standard);
   font-size: var(--fs-fliesstext);
 }
 
@@ -856,7 +873,7 @@ h2.section-title::after {
   justify-content: center;
   gap: var(--sp-2);
   padding: 11px 20px;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong);
   background: var(--veil-1);
   color: var(--text);
@@ -907,11 +924,11 @@ h2.section-title::after {
 .btn.sm {
   padding: 7px 13px;
   font-size: var(--fs-beschriftung);
-  border-radius: 9px;
+  border-radius: var(--radius-sm);
   min-height: var(--tipp-min);
   min-width: var(--tipp-min);
 }
-.btn.lg { padding: 14px 26px; font-size: var(--fs-fliesstext); border-radius: 13px; }
+.btn.lg { padding: 14px 26px; font-size: var(--fs-fliesstext); border-radius: var(--radius-sm); }
 .btn.block { width: 100%; }
 
 .pill {
@@ -919,7 +936,7 @@ h2.section-title::after {
   align-items: center;
   gap: 6px;
   padding: 3.5px 11px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: var(--fs-kleingedrucktes);
   font-weight: 700;
   background: rgba(236, 233, 223, 0.055);
@@ -951,7 +968,7 @@ button.pill {
 
 .progressbar {
   height: 8px;
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   background: var(--scrim);
   border: 1px solid var(--border);
   overflow: hidden;
@@ -959,7 +976,7 @@ button.pill {
 
 .progressbar > div {
   height: 100%;
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   background: linear-gradient(90deg, var(--auszeichnung-tief), var(--auszeichnung-lesbar));
   transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -1086,7 +1103,7 @@ button.pill {
 
 .picker-key {
   padding: var(--sp-3) 0;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong);
   background: var(--veil-2);
   color: var(--text);
@@ -1173,7 +1190,7 @@ button.pill {
   display: grid;
   grid-template-columns: repeat(13, 1fr);
   gap: 2.5px;
-  max-width: 640px;
+  max-width: var(--breite-standard);
   min-width: 400px; /* ~29px pro Zelle – darunter ist "AKs" nicht mehr lesbar */
   user-select: none;
 }
@@ -1245,7 +1262,7 @@ button.pill {
    Lektionen (Prose)
    ========================================================================== */
 
-.prose { max-width: 65ch; }
+.prose { max-width: var(--breite-lesen); }
 
 .prose p { margin: 0 0 14px; color: var(--text-stark); }
 .prose ul { margin: 0 0 14px 20px; }
@@ -1262,7 +1279,7 @@ button.pill {
 }
 
 .callout {
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   padding: 15px 17px;
   margin: var(--sp-4) 0;
   font-size: var(--fs-fliesstext);
@@ -1290,7 +1307,7 @@ button.pill {
 .table-wrap {
   overflow-x: auto;
   margin: var(--sp-4) 0;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--bg-elev);
 }
@@ -1337,7 +1354,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   width: 100%;
   text-align: left;
   padding: 14px var(--sp-4);
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   background: var(--bg-elev);
   border: 1px solid var(--border);
   color: var(--text);
@@ -1362,7 +1379,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .quiz-option:disabled { cursor: default; }
 
 .feedback-box {
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   padding: 15px 17px;
   margin-top: 6px;
   font-size: var(--fs-fliesstext);
@@ -1484,7 +1501,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   align-items: center;
   gap: 14px;
   padding: 17px 19px;
-  border-radius: 14px;
+  border-radius: var(--radius-sm);
   border: 1px solid;
   margin: var(--sp-1) 0 14px;
 }
@@ -1527,7 +1544,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
      Fehler wie bei der Handmatrix und beim Knopf aus E-034. */
   background: var(--veil-3);
   border: 1px solid var(--border-strong);
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   padding: 3px;
   gap: 3px;
   flex-wrap: wrap;
@@ -1541,7 +1558,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   min-width: var(--tipp-min);
   padding: var(--sp-2) var(--sp-4);
   border: 0;
-  border-radius: 9px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--text-dim);
   font-size: var(--fs-beschriftung);
@@ -1682,7 +1699,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .search-input, .text-input, select.text-input {
   width: 100%;
   padding: var(--sp-3) var(--sp-4);
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong);
   background: var(--feld);
   color: var(--text);
@@ -1716,7 +1733,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .toast {
   background: linear-gradient(175deg, var(--veil-1), transparent 45%), var(--bg-card);
   border: 1px solid var(--auszeichnung-a45);
-  border-radius: 13px;
+  border-radius: var(--radius-sm);
   padding: var(--sp-3) 18px;
   font-size: var(--fs-beschriftung);
   font-weight: 700;
@@ -2122,7 +2139,7 @@ input[type="radio"] {
      Handy-Block), und dieser Wert ist nur noch der Rückfall für breite
      Geräte. */
   min-height: 78svh;
-  max-width: 560px;
+  max-width: var(--breite-schmal);
 
   /* Höhe der schwebenden Bedienleiste: Knopf plus Punktestand plus Polster.
      Die Auflösung hält sich unten so viel Platz frei — sonst verschwindet
@@ -2501,7 +2518,7 @@ input[type="radio"] {
    damit sichtbar bleibt, dass darunter die Aufgabe weiterliegt. */
 .herkunft-blatt {
   width: 100%;
-  max-width: 560px;
+  max-width: var(--breite-schmal);
   max-height: 80svh;
   display: flex;
   flex-direction: column;
@@ -2714,7 +2731,7 @@ input[type="radio"] {
   display: flex;
   flex-direction: column;
   gap: var(--tipp-abstand);
-  max-width: 560px;
+  max-width: var(--breite-schmal);
 }
 
 /* Nur dort, wo die Karten die Navigation sind: auf dem Handy. Auf breiten
@@ -2895,7 +2912,7 @@ input[type="radio"] {
 
   /* Rund wie ein Tisch: auf dem Handy eine Rennbahn mit weichen Ecken,
      weil eine echte Ellipse dort die äußeren Plätze abschneiden würde. */
-  border-radius: 56px;
+  border-radius: var(--radius-sm);
 
   /* Die Rail: außen Holz, innen ein Lederwulst, dazwischen ein Lichtsaum.
      Drei Schichten, weil ein Tisch drei hat — ein einzelner Rahmen sieht aus
@@ -3487,7 +3504,7 @@ input[type="radio"] {
   .du-karten .pcard.xl {
     width: 55px;
     height: 77px;
-    border-radius: 8px;
+    border-radius: var(--radius-xs);
   }
 
   .du-karten .pcard.xl .corner { top: 4px; left: 6px; font-size: 0.9375rem; }
@@ -3567,7 +3584,7 @@ input[type="radio"] {
 .entscheidung-leiste .entscheidung-innen {
   display: flex;
   gap: var(--tipp-abstand);
-  max-width: 640px;
+  max-width: var(--breite-standard);
   margin: 0 auto;
 }
 
@@ -3711,7 +3728,7 @@ input[type="radio"] {
 }
 
 .rangstand.gross {
-  max-width: 560px;
+  max-width: var(--breite-schmal);
   padding: var(--sp-5);
   gap: var(--sp-5);
 }
@@ -3725,7 +3742,7 @@ input[type="radio"] {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-width: 640px;
+  max-width: var(--breite-standard);
 }
 
 .lernpfad .stufe {
@@ -4475,7 +4492,8 @@ input[type="radio"] {
 
 .start-einstieg.gross .titel {
   font-size: calc(var(--fs-ueberschrift) * 1.35);
-  color: var(--akzent);
+  /* Text auf dem Farbverlauf braucht mehr Dunkel als der Rand daneben. */
+  color: var(--akzent-text);
 }
 
 .start-einstieg.gross .unter { font-size: var(--fs-fliesstext); }
@@ -4690,7 +4708,7 @@ input[type="radio"] {
 
 .tisch-frage-blatt {
   width: 100%;
-  max-width: 560px;
+  max-width: var(--breite-schmal);
   background: var(--bg-elev);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
@@ -4888,7 +4906,7 @@ input[type="radio"] {
   display: flex;
   flex-direction: column;
   gap: var(--sp-5);
-  max-width: 560px;
+  max-width: var(--breite-schmal);
 }
 
 .einrichten-block {
@@ -4903,7 +4921,7 @@ input[type="radio"] {
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
-  max-width: 560px;
+  max-width: var(--breite-schmal);
   margin-bottom: var(--sp-5);
   padding: var(--sp-4);
   border: 1px solid var(--accent-live);

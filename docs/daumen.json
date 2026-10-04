@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T07:28:56.473Z",
+  "geprueft_am": "2026-10-04T07:44:31.307Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -64,7 +64,7 @@
     {
       "hash": "#/nachschlagen/haende",
       "scrollt": true,
-      "ueberlauf_px": 1186,
+      "ueberlauf_px": 1190,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -359,14 +359,14 @@
     {
       "hash": "#/lernen/trainer/szenario",
       "scrollt": true,
-      "ueberlauf_px": 254,
+      "ueberlauf_px": 34,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 641,
+        "oben_px": 619,
         "unten_px": 844,
-        "mitte_px": 743,
+        "mitte_px": 732,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 3,

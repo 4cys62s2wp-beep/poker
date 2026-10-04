@@ -83,23 +83,20 @@ Deshalb gibt es jetzt eigene Töne für Ergebniszahlen:
 `--ergebnis-gut` (#6ec97d, 9,36) und `--ergebnis-schlecht` (#f29b95, 8,98).
 `--ok` und `--danger` bleiben den kleinen Zustandsanzeigen vorbehalten.
 
-### Genau eine Akzentfarbe
+### Eine Farbe je Bereich — und Gold ist Lernen
 
-`--akzent` (#4fbf8e), reserviert für den **Live-Bereich**. Sonst neutrale
-Grautöne.
+Der Abschnitt hieß bis E-076 „Genau eine Akzentfarbe" und widersprach damit
+Regel 10.9 („Jeder Bereich hat seine Farbe") im selben Dokument. Aufgelöst
+ist er so: **Es gibt keine App-weite Akzentfarbe, sondern eine Farbe je
+Bereich** — Regel 12.5 sagt, wie sie wirkt. Der alte Satz galt der Frage,
+warum Farbe überhaupt etwas heißen muss, und die gilt weiter:
 
-**Warum eine.** Wenn jede Ecke der App ihre eigene Farbe hat, heißt Farbe
-nichts mehr. Ein Akzent, der nur an einer Stelle vorkommt, sagt: *hier*.
+**Warum.** Wenn jede Ecke der App ihre eigene Farbe hat, heißt Farbe nichts
+mehr. Eine Farbe, die an einem Ort vorkommt, sagt: *hier*.
 
-**Warum ausgerechnet der Live-Bereich.** Er ist der einzige, der unter
-Zeitdruck geöffnet wird. Farbe ist schneller zu finden als Text.
-
-**Stand der Umsetzung, ehrlich.** Die Regel gilt ab sofort für neu gebaute
-Bildschirme. Der Bestand trägt noch vier Bereichsfarben (Gold für Lernen,
-Blau für Werkzeuge, Violett für Freunde, Grün für Live). Sie über 37
-Bildschirme in einer Nacht auszutauschen hieße, einen Unterschied zu
-erzeugen, den niemand mehr prüfen kann. Der Umbau steht in `BACKLOG.md`;
-begründet in `ENTSCHEIDUNGEN.md`, E-025.
+Der Stand vor E-076, ehrlich: Gold stand auf dem Hauptknopf, auf dem
+gewählten Eintrag, auf jeder Augenbraue, an Fortschrittsbalken (mit Glühen)
+und an der aktiven Seitenleiste. Fünf Bedeutungen für eine Farbe.
 
 ### Zustände nicht nur an der Farbe
 
@@ -1210,3 +1207,29 @@ Etiketten tragen `.satz` und bleiben in Satzschreibung.
 `.prose` stand auf 730 Pixeln, das sind rund 95 Zeichen. Es steht jetzt auf
 `65ch`. Auf einem breiten Bildschirm bleibt die Spalte schmal; wer mehr
 Breite braucht, bekommt sie für Tabellen und Karten, nicht für Fließtext.
+
+### Regel 12.5 — Farbe sagt, wo man ist; der Hauptknopf sagt nichts
+
+Seit E-076.
+
+1. **Die Bereichsfarbe hängt am Rahmen der App** (`data-bereich` am
+   `.modus-rahmen`, abgeleitet vom Pfad) und wird als `--bereich` gelesen:
+   Lernen Gold, Nachschlagen Blau, Live-Session Grün. Start, Profil und
+   Freunde haben keine — dort spricht alles in der Textfarbe.
+2. **Augenbraue und Seitenleiste** lesen `--bereich`. Das goldene
+   „LIVE-SESSION" und „NACHSCHLAGEN", das Regel 10.9 verletzte (E-036 führte
+   es selbst als „noch nicht getan" auf), ist damit weg.
+3. **Gold ist die Farbe des Lernens und des Fortschritts** — Lernpfad, XP,
+   Rang, Abzeichen. Es steht nirgends mehr als Schmuck: nicht auf dem
+   Hauptknopf, nicht auf einer Auswahl, nicht an einer Fortschrittsleiste
+   außerhalb des Lernens.
+4. **Der Hauptknopf ist flach und neutral** — Fläche in der Textfarbe, Schrift
+   in der Grundfarbe, kein Verlauf, kein Glühen. In der Live-Session ist er
+   derselbe wie im Lernpfad; ein Goldknopf dort hieße „Lernen".
+5. **Auswahl ist keine Handlung.** Ein gewählter Eintrag bekommt eine Fläche
+   und einen Rand in der Textfarbe (`inset 0 0 0 1.5px var(--text)`), nie den
+   Stil des Hauptknopfs. Der Willkommensdialog zeigt keine Sprache als
+   vorausgewählt.
+6. **Nichts glüht.** Weder Fortschrittsbalken noch Schrittpunkte.
+
+Test: `farbrollen.test.ts`.

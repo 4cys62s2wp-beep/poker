@@ -120,7 +120,7 @@ export function Onboarding() {
           <>
             <div className="stat-label" style={{ marginBottom: 10 }}>{T.pickLang}</div>
             <div style={{ display: 'grid', gap: 10 }}>
-              <button className="btn primary" style={{ justifyContent: 'center', fontSize: 'var(--fs-fliesstext)' }} onClick={() => chooseLang('de')}>
+              <button className="btn" style={{ justifyContent: 'center', fontSize: 'var(--fs-fliesstext)' }} onClick={() => chooseLang('de')}>
                 <span aria-hidden="true">🇩🇪&nbsp;</span> Deutsch
               </button>
               <button className="btn" style={{ justifyContent: 'center', fontSize: 'var(--fs-fliesstext)' }} onClick={() => chooseLang('en')}>

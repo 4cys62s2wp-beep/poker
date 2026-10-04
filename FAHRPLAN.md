@@ -20,7 +20,7 @@ Die Reihenfolge folgt der Hebelwirkung. Paket 1 (Design-Fundament) und Paket 2 (
 **Ziel:** Jeder Bildschirm wirkt aus einem Guss: Farbe trägt wieder Bedeutung, Text ist lesbar, Karten sind eindeutig, und dieselbe Sache sieht überall gleich aus und heißt überall gleich.  
 **Baut auf:** —
 
-### [ ] 1.1 Farbrollen festlegen und Gold entlasten, Bereichsfarbe auf die Bereichsseiten bringen  
+### [x] 1.1 Farbrollen festlegen und Gold entlasten, Bereichsfarbe auf die Bereichsseiten bringen  
 *Wirkung 5 · Aufwand L*
 
 Zuerst in DESIGN.md den Widerspruch zwischen §2 (eine Akzentfarbe, Z. 86ff.) und Regel 10.9 (Bereichsfarbe, Z. 631) mit einer neuen E-Nummer auflösen. Die farbigen Startkarten sind laut E-042 gewollt und bleiben. Ob Gold nur noch für Belohnungen (XP, Rang, Abzeichen) steht, entscheidet der Auftraggeber. Dann in global.css: (a) Auswahlzustand app-weit als neutrale Fläche plus Rand in --text, nie im Hauptknopf-Stil (Live-Coach-Segmente, „Deutsch“ im Willkommensdialog). (b) .btn.primary (global.css 855–860) als flache Fläche ohne Verlauf und Glow; E-034 erlaubt das, weil Knopfflächen eigene Tokens sind. (c) data-bereich am .modus-rahmen nach Pfadpräfix; .eyebrow (global.css 724, heute fest auf var(--auszeichnung)), der aktive .nav-link und BackLink lesen var(--bereich). Damit verschwindet das goldene „LIVE-SESSION“ und „NACHSCHLAGEN“, ein Verstoß gegen 10.9, den E-036 unter „noch nicht getan“ selbst aufführt. (d) Glow-Schatten an Fortschrittsbalken entfernen. Vorher- und Nachher-Fotos in hell und dunkel. Die Rangfarben für Daten kommen in Punkt 1.6.

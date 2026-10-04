@@ -4443,3 +4443,46 @@ keine Achsenbeschriftung, nur Kürzel wie „ATo".
 Gemessen: Design, Durchgang, Tisch, Quer, Bedienbar — null Befunde.
 `spielkarten.test.ts` hält es fest; die Prüfung „nur auf der großen Karte" mit
 Gegenprobe rot gesehen.
+
+---
+
+## E-076 · 2026-10-04 · Gold hatte fünf Bedeutungen — jetzt hat es eine
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 1.1).
+
+Gold stand auf dem Hauptknopf, auf dem gewählten Eintrag (Live-Coach,
+Willkommensdialog), auf jeder Augenbraue, an den Fortschrittsbalken — mit
+Glühen — und an der aktiven Seitenleiste. Wer fragte, was Gold bedeutet, bekam
+fünf Antworten. Und DESIGN.md §2 („genau eine Akzentfarbe, nur Live")
+widersprach Regel 10.9 („jeder Bereich hat seine Farbe") im selben Dokument;
+E-036 hatte das goldene „LIVE-SESSION" selbst unter „noch nicht getan"
+geführt.
+
+**Aufgelöst** zugunsten von 10.9 — der Abschnitt in §2 heißt jetzt „Eine
+Farbe je Bereich" und verweist auf die neue Regel 12.5:
+
+- Die **Bereichsfarbe** hängt am Rahmen der App (`data-bereich`, vom Pfad
+  abgeleitet) und wird von Augenbraue und Seitenleiste gelesen.
+- Der **Hauptknopf** ist flach und neutral (Textfarbe auf Grundfarbe).
+- **Auswahl** ist Fläche plus Rand in der Textfarbe.
+- **Nichts glüht.**
+
+**Zur Frage „Gold nur für Belohnungen?"**, die der Fahrplan dem Auftraggeber
+vorlegte: Ich habe sie enger beantwortet als vorgeschlagen. Gold bleibt die
+Farbe des **Lernens und des Fortschritts** (Lernpfad, XP, Rang, Abzeichen).
+Rang und Abzeichen entstehen aus dem Lernen — beides in einer Farbe ist
+stimmig, und ein viertes Farbfeld für „Lernen" hätte die Palette ohne Not
+verbreitert. Was weg ist, ist Gold als *Schmuck*.
+
+**Verworfene Alternative:** Gold nur für Belohnungen und Lernen in einer
+vierten Farbe. Das hätte die Bereichsfarben geklärt, aber einen neuen Ton
+durch beide Modi und den Kontrastlauf getragen, ohne dass sich für den Nutzer
+etwas klärt, was die Neutralisierung nicht schon klärt.
+
+**Hauptknopf neutral statt Gold:** Gegen E-034, das den goldenen Knopf als
+Marke wollte. Der Nutzen überwiegt: In der Live-Session war „Abend starten"
+ein Lern-Gold-Knopf.
+
+Gemessen: Design (182 Messungen), Bedienbar (180), Durchgang, Daumen — null
+Befunde. `farbrollen.test.ts` hält es fest (10 Prüfungen); zwei davon mit
+Gegenprobe rot gesehen.

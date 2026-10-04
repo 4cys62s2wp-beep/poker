@@ -1,3 +1,4 @@
+import { bereichVon } from './lib/design/bereich';
 import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { Layout } from './components/Layout';
@@ -114,6 +115,7 @@ export function App() {
           nicht an `:root`. Kein Bildschirm weiß davon. */}
       <div
         className="modus-rahmen"
+        data-bereich={bereichVon(ort.pathname)}
         {...(erzwingtDunkel(ort.pathname) ? { 'data-modus': 'dunkel' } : {})}
       >
       <Routes>

@@ -612,8 +612,8 @@ table.data td {
 }
 
 .nav-link.active {
-  background: var(--auszeichnung-schwach);
-  color: var(--auszeichnung-lesbar);
+  background: var(--bereich-schwach);
+  color: var(--text);
 }
 
 .nav-link.active::before {
@@ -624,7 +624,7 @@ table.data td {
   bottom: 20%;
   width: 3px;
   border-radius: 0 3px 3px 0;
-  background: linear-gradient(180deg, var(--auszeichnung-lesbar), var(--auszeichnung-tief));
+  background: var(--bereich);
 }
 
 .nav-link .ico {
@@ -713,6 +713,26 @@ table.data td {
    Typografie & Seitenköpfe
    ========================================================================== */
 
+/* Die Farbe des Bereichs, in dem man gerade ist (Regel 12.5). Sie hängt am
+   Rahmen der App und wird von Augenbraue und Seitenleiste gelesen. Start,
+   Profil und Freunde haben keine — dort spricht alles in der Textfarbe. */
+.modus-rahmen {
+  --bereich: var(--text-dim);
+  --bereich-schwach: var(--veil-2);
+}
+.modus-rahmen[data-bereich="lernen"] {
+  --bereich: var(--auszeichnung-lesbar);
+  --bereich-schwach: var(--auszeichnung-schwach);
+}
+.modus-rahmen[data-bereich="nachschlagen"] {
+  --bereich: var(--info-lesbar);
+  --bereich-schwach: var(--info-dim);
+}
+.modus-rahmen[data-bereich="session"] {
+  --bereich: var(--ok-lesbar);
+  --bereich-schwach: var(--ok-dim);
+}
+
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -721,7 +741,7 @@ table.data td {
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--auszeichnung);
+  color: var(--bereich);
   margin-bottom: 10px;
 }
 
@@ -853,10 +873,13 @@ h2.section-title::after {
 .btn:disabled { opacity: 0.38; cursor: default; transform: none; }
 
 .btn.primary {
-  background: linear-gradient(160deg, var(--knopf-auszeichnung-hell), var(--knopf-auszeichnung-mitte) 52%, var(--knopf-auszeichnung-tief));
-  border-color: rgba(240, 212, 146, 0.5);
-  color: var(--auf-auszeichnung);
-  box-shadow: 0 2px 10px var(--auszeichnung-a28), inset 0 1px 0 var(--lift-hi);
+  /* Flach und neutral: Der Hauptknopf ist in jedem Bereich derselbe. Gold ist
+     die Farbe des Lernens (Regel 12.5) — ein Knopf in der Live-Session ist
+     nicht „Lernen". Kein Verlauf, kein Glühen (E-076). */
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+  box-shadow: none;
 }
 
 .btn.primary:hover { filter: brightness(1.06); }
@@ -938,13 +961,11 @@ button.pill {
   height: 100%;
   border-radius: 99px;
   background: linear-gradient(90deg, var(--auszeichnung-tief), var(--auszeichnung-lesbar));
-  box-shadow: 0 0 8px var(--auszeichnung-a40);
   transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .progressbar.green > div {
   background: linear-gradient(90deg, #3d8a52, var(--btn-ok-hi));
-  box-shadow: 0 0 8px rgba(88, 179, 104, 0.35);
 }
 
 /* ==========================================================================
@@ -1497,7 +1518,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   background: rgba(236, 233, 223, 0.14);
 }
 
-.step-dots .dot.on { background: var(--auszeichnung); box-shadow: 0 0 7px rgba(212, 175, 94, 0.55); }
+.step-dots .dot.on { background: var(--auszeichnung); }
 
 .segmented {
   display: inline-flex;
@@ -1531,14 +1552,13 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .segmented button.on {
-  /* `--knopf-auszeichnung-mitte`, nicht `--auszeichnung`: Der Token für die
-     Auszeichnungsfarbe wird im hellen Modus dunkel (er muss dort als
-     Textfarbe lesbar sein). In einem Knopfverlauf wird daraus dunkler Text
-     auf dunklem Gold — gemessen 2,76 zu 1. Genau der Fund aus E-034, hier
-     beim Aufräumen übersehen und jetzt vom erweiterten Prüflauf gefunden
-     (E-039). */
-  background: linear-gradient(160deg, var(--knopf-auszeichnung-hell), var(--knopf-auszeichnung-mitte) 55%, var(--knopf-auszeichnung-tief));
-  color: var(--auf-auszeichnung);
+  /* Auswahl ist keine Handlung: Sie bekommt eine Fläche und einen Rand in der
+     Textfarbe, nie den Stil des Hauptknopfs (Regel 12.5). Vorher stand hier
+     derselbe Goldverlauf wie am Hauptknopf — man konnte „gewählt" nicht von
+     „hier tippen" unterscheiden. */
+  background: var(--bg-card);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1.5px var(--text);
 }
 
 /* ==========================================================================

@@ -16,6 +16,7 @@ import { useTasten } from '../lib/useTasten';
 import { STR as SUCHE } from '../i18n/pages/suche';
 import { Marke } from './Marke';
 import { Medaille } from './Medaille';
+import { beobachteLeisten } from '../lib/leisten';
 import { UpdateBand } from './UpdateBand';
 import { breiteVon, findeOrt, ortName, waehleAktiv, type NavZiel, type OrtPfad } from '../lib/orte';
 import { ladeLaufende, type LaufendeSession } from '../lib/session/laufend';
@@ -38,6 +39,10 @@ export function Layout() {
   const location = useLocation();
   const mainRef = useRef<HTMLElement>(null);
   useSectionHeadings(mainRef);
+  useEffect(() => {
+    const haupt = mainRef.current;
+    return haupt ? beobachteLeisten(haupt) : undefined;
+  }, []);
 
   /* Die Suche von überall: Lupe, Eintrag in der Seitenleiste, „/“ und Strg + K. */
   const [sucheOffen, setSucheOffen] = useState(false);

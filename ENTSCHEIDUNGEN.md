@@ -5668,3 +5668,50 @@ ein Call — in Tabelle, Trainer-Logik und Coach.
   bei den groben Listen.
 - **Eine zweite Sprachfassung der Range-Namen („Hijack“ …):** Die Plätze stehen als UTG · HJ · CO · BTN · SB · BB, wie überall.
 - **Die Tabelle in `tools/poker-math` erzeugen:** siehe oben — sie bekäme eine Herkunft, die sie nicht hat.
+
+## E-101 · 2026-10-04 · Doppelte Schriftgröße: ein Lauf, der sie misst, und drei Regeln, die das Layout halten
+
+**Stand:** entschieden und umgesetzt (Lücke „Layout hält größere Schrift aus“).
+
+**Die Lücke.** Regel 10.15 sorgt dafür, dass die Schrift mitwächst (`schriftgroesse.test.ts`); ob das *Layout* das trägt, prüfte niemand.
+Von Hand gemessen bei „Schriftgröße: sehr groß“: Die Seite schob sich zur Seite, die Nachschlagen-Chips liefen ineinander, die
+Session-Kacheln hießen „Abend f…“, die Leiste im Preflop-Trainer verdeckte die Aufgabe.
+
+**Der Lauf: `npm run gross`.** Er stellt die **Standardschrift des Browsers** auf 32 statt 16 Pixel — über das Protokoll
+(`Page.setFontSizes`), nicht über ein eingeschobenes `html { font-size: 200% }`. Das ist ein Unterschied, der zählt: Medienabfragen in
+`em` beziehen sich auf die Standardschrift, nicht auf `html`; mit eingeschobenem Stylesheet wären sie unverändert geblieben und der
+Lauf hätte ein Verhalten gemessen, das kein Nutzer je sieht. Gemessen wird an allen 140 Bildschirmen bei 390 Pixel Breite:
+(1) waagerechtes Überlaufen, (2) abgeschnittene Texte (jedes Element mit `overflow: hidden`, dessen Inhalt breiter ist), (3) eine
+klebende Leiste über 45 % der Höhe, (4) die erste Spielkarte angeschnitten oder überdeckt von der Antwort-Leiste, (5) das Seitenende
+unter der Leiste. Ergebnis in `docs/gross.json`, festgehalten in `gross.test.ts`; in der Action ein eigener Schritt.
+**Gegenprobe:** Der erste Lauf vor den Änderungen fand **202 Befunde** (140 Seiten mit Überlauf, 11 gekürzte Titel, 51 zu hohe
+Leisten); nach den Änderungen 0. Zwei Lücken im Lauf selbst fanden sich dabei: Die Spielkarten haben die Klasse `pcard`, nicht
+`playing-card` (die Karten-Prüfung hatte nie etwas getroffen), und ein Seitenende nach der Antwort kennt nur der Durchgang — dort steht
+jetzt ein Schritt „Doppelte Schrift: Drill“, der einen echten Überlauf fand (6 Pixel an der Prozentzahl nach der Antwort).
+
+**Was es war und was gilt.**
+- **Eine Ursache für 140 Seiten:** die Kopfzeile. Zeichen, Name, Lupe und „Du“ brauchen etwa 21 rem; bei 390 Pixel und doppelter Schrift
+  sind es 12. Die Kopfzeile misst sich jetzt selbst (`container-type: inline-size`, Abfrage in `rem`) und lässt unter 21 rem den Namen
+  weg — das Zeichen bleibt, das `aria-label` der Marke auch.
+- **Titel brechen um, statt zu kürzen oder die Seite zu schieben:** `overflow-wrap: anywhere` und `hyphens: auto` auf Überschriften,
+  Titelzeilen, Beschriftungen und Antworten; `…` wurde aus Lernpfad-Kacheln, Session-Kacheln und dem Übungsstand entfernt (sie wachsen
+  in die Höhe), `.takeaway > span` darf schrumpfen (`min-width: 0`) — ein Flex-Kind mit langem Wort schob 94 Pixel hinaus.
+- **Eine Leiste, die den Bildschirm füllt, klebt nicht mehr.** `lib/leisten.ts` beobachtet `.entscheidung-leiste` (mit
+  `ResizeObserver` und `MutationObserver`, auch später hinzukommende) und setzt ab **40 % der Fensterhöhe** `data-hoch`; das
+  Stylesheet lässt sie dann mit der Seite scrollen. Gemessen wird, was da ist, statt eine Schriftgröße zu erraten. Ausgenommen ist die
+  Ergebnisleiste im Quiz: Sie hat eine feste, gedeckelte Höhe (`--ergebnisleiste-h`) und scrollt ihren Text selbst — bei schmalem
+  Bildschirm im Verhältnis zur Schrift (`@media (max-width: 20em)`: 640 Pixel bei doppelter Schrift) auf 34 statt 44 % der Höhe, damit
+  die Aufgabe nicht darunter verschwindet. Bei normaler Schrift ändert sich nichts.
+- **Die große Zahl im Drill** (`--fs-ergebnis`) hatte eine Untergrenze von 4 rem, bei doppelter Schrift 128 Pixel — mehr als 390 Pixel
+  Breite tragen. Die Untergrenze ist jetzt `min(4rem, 17vw)`: bei normaler Schrift unverändert 64 Pixel, bei doppelter 66.
+
+**Nicht umgesetzt, mit Grund:**
+- **Spielkarten und Symbole in `em` an die Schrift koppeln** (Fahrplan, Punkt 4): WCAG 1.4.4 verlangt, dass *Text* sich
+  vergrößern lässt; Karten und Symbole sind Bilder. Eine Reihe von fünf Karten füllt bei 390 Pixel schon die Breite — bei doppelter
+  Größe bräche sie um oder liefe über. Eine Obergrenze, die das verhindert, ließe die Karten kaum größer werden als heute. Die
+  Bedienflächen (44 × 44) sind unabhängig davon in Pixeln gesichert.
+- **`--drill-bedienung-h` per `ResizeObserver` aus dem Inhalt messen** (Punkt 3): Der Drill hält die Zusage „zwischen Eingabe und
+  Ergebnis bewegt sich nichts“ mit einer festen Reserve; eine gemessene Höhe würde mit dem Knopftext wechseln und sie brechen. Gemessen
+  und festgehalten ist stattdessen das Ergebnis: Bei 32 Pixel Schrift endet die Auflösung 100 Pixel über der Leiste, ohne Überlauf.
+- **Das Seitenende unter der Leiste in jedem Zustand:** Der Lauf misst den Zustand beim Öffnen; Zustände nach einer Antwort kennt der
+  Durchgang, bisher nur beim Drill.

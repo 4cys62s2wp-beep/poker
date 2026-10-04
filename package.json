@@ -26,6 +26,7 @@
     "speichersperre": "node scripts/speichersperre-pruefen.mjs",
     "sperren": "node scripts/sperren-pruefen.mjs",
     "quer": "node scripts/quer-pruefen.mjs",
+    "gross": "node scripts/gross-pruefen.mjs",
     "rahmen": "node scripts/rahmen-pruefen.mjs",
     "update": "node scripts/update-pruefen.mjs",
     "screenshots": "node scripts/gen-screenshots.mjs"

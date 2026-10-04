@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T19:11:13.876Z",
+  "geprueft_am": "2026-10-04T19:44:30.989Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -111,7 +111,7 @@
     {
       "hash": "#/nachschlagen/odds",
       "scrollt": true,
-      "ueberlauf_px": 1972,
+      "ueberlauf_px": 1953,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -408,7 +408,7 @@
     {
       "hash": "#/lernen/pros",
       "scrollt": true,
-      "ueberlauf_px": 4435,
+      "ueberlauf_px": 4446,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -473,14 +473,14 @@
     {
       "hash": "#/lernen/trainer/outs",
       "scrollt": true,
-      "ueberlauf_px": 31,
+      "ueberlauf_px": 5,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 683,
-        "unten_px": 844,
-        "mitte_px": 764,
+        "oben_px": 664,
+        "unten_px": 825,
+        "mitte_px": 745,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -511,7 +511,7 @@
     {
       "hash": "#/lernen/trainer/preflop",
       "scrollt": true,
-      "ueberlauf_px": 89,
+      "ueberlauf_px": 87,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,

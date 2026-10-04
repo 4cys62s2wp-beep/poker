@@ -1053,8 +1053,10 @@ Mehrere Kernpunkte des Fahrplans setzen Funktionen voraus, die für Gratisnutzer
 
 Beleg: Eigener Lauf eigen/luecken/k4.mjs (Testphase abgelaufen, Monetarisierung an): eigen/luecken/gesperrt_wiederholen.png (Erklärtext + „Pro-Funktion“), eigen/luecken/gesperrt_lernen.png bzw. gl_2.png (Push/Fold, Wiederholen, Pro-Insights ohne Schloss), eigen/luecken/gesperrt_tisch.png („Coach-Modus Pro“), eigen/luecken/gesperrt_m5.png. Code: plan.ts:43–53 und 63 (FREE_MODULE_IDS m1, m2, m3, m6), ReviewPage.tsx:91, PushFoldTrainer.tsx:77, ScenarioTrainer.tsx:88, ProInsightsPage.tsx:58, PlayPage.tsx:54.
 
-### [ ] Layout hält größere Schrift aus: Prüflauf bei 200 % Schriftgröße  
+### [x] Layout hält größere Schrift aus: Prüflauf bei 200 % Schriftgröße  
 *Wirkung 4 · gehört zu Paket 1*
+
+**Stand:** Umgesetzt mit zwei Abweichungen: `npm run gross` misst alle 140 Bildschirme bei 32 Pixel Standardschrift (202 Befunde → 0), Kopfzeile, Titel, Kacheln und klebende Leisten halten das Layout. Spielkarten/Symbole in `em` und eine gemessene Drill-Höhe sind **nicht** umgesetzt (Begründung in E-101). Siehe E-101.
 
 Regel 10.15 sorgt dafür, dass die Schrift mitwächst; ob das Layout das trägt, prüft niemand. Bei html{font-size:200%} (Browser-Einstellung „Schriftgröße“, 390 px) entsteht horizontales Scrollen (scrollWidth 396 bei 390). Auf der Startseite laufen die Nachschlagen-Chips ineinander („GlossarStarthänd“), „Du“ wird rechts angeschnitten. Die Session-Kacheln heißen nur noch „Abend f…“, „Frühere A…“, „Chip-Rech…“, weil die Zeitmarken („Am Abend“, „Danach“, „Vorher“) daneben stehen bleiben. Im Preflop-Trainer verdeckt die klebende Leiste die Situationskarte samt Handkarten, und das Etikett heißt „TREFF…“. Spielkarten und Icons bleiben in px klein, während der Text daneben doppelt so groß ist. Lösung: (1) Ein npm-Lauf „gross“ mit 200 % Schriftgröße über alle Routen; er schlägt fehl bei scrollWidth > innerWidth, bei Ellipsen in Titeln (zusammen mit 9.6) und wenn .entscheidung Inhalt der Situationskarte überdeckt. (2) Nachschlagen-Chips und Session-Kacheln mit flex-wrap bzw. Marke unter dem Titel ab einer Container-Breite (Container-Query statt Viewport). (3) Die Höhe der Drill-Leiste aus dem Inhalt messen (--drill-bedienung-h per ResizeObserver) statt fest. (4) Kartengröße und Icons in em an die Schriftgröße koppeln, mit Obergrenze.
 

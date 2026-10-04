@@ -144,6 +144,12 @@ jobs:
         # Klebende Kopfzeile, Scrollposition, Seitenleiste, Zentrierung bei
         # 1920 Pixeln, Meldungen — was nur ein echter Browser sieht (E-082).
         run: npm run rahmen
+      - name: Doppelte Schriftgröße
+        if: '!cancelled()'
+        # Die Standardschrift des Browsers auf 32 statt 16 Pixel (Protokoll des
+        # Browsers, keine eingeschobene Regel): Überläuft eine Seite, kürzt ein
+        # Titel, frisst die klebende Leiste den Bildschirm? (E-101)
+        run: npm run gross
       - name: Gratis und Pro
         if: '!cancelled()'
         # Die ausgelieferte Konfiguration hat die Monetarisierung aus, deshalb

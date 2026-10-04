@@ -86,7 +86,7 @@ cd tools/poker-math && pip install -r requirements.txt && python -m pytest -q
 
 ### Messläufe
 
-Vierzehn Läufe messen die gebaute App in einem echten Browser statt im
+Fünfzehn Läufe messen die gebaute App in einem echten Browser statt im
 Quelltext — der Grund steht in `DESIGN.md`: Ein Lauf über den Quelltext hat
 elf Sackgassen nicht gefunden, weil die Links zwar da waren, aber in einer
 unter 920 Pixel ausgeblendeten Seitenleiste standen. Jeder Lauf schreibt sein
@@ -113,6 +113,7 @@ npm run ohnenetz       # Jeder Bildschirm ohne Netz (braucht 127.0.0.1, nicht lo
 npm run speichersperre # Jeder Bildschirm bei gesperrtem localStorage (privates Fenster)
 npm run quer           # Jeder Bildschirm quer (844 × 390)
 npm run sperren        # Gratis und Pro: Schloss an jeder Kachel, Vorschau auf jeder gesperrten Seite
+npm run gross          # Doppelte Schriftgröße: kein Überlaufen, keine gekürzten Titel, keine zu hohe Leiste
 npm run rahmen         # Rahmen: klebende Kopfzeile, Scrollposition, Seitenleiste, Zentrierung
 npm run update         # Neue Fassung: Band, Warten, Übernehmen (eigener Server)
 npm run tisch          # Maße des Übungstisches

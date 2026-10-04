@@ -2686,6 +2686,34 @@ await schritt('Live-Coach: nach dem Raise fragt er, von wo er kam', async () => 
   return { ohne_raise, spaet, blinds, frueh };
 });
 
+await schritt('Doppelte Schrift: Drill — das Ende der Auflösung liegt über der Leiste', async () => {
+  const k = await neuerKontext(390, 844);
+  const p = await k.newPage();
+  const protokoll = await k.newCDPSession(p);
+  await protokoll.send('Page.setFontSizes', { fontSizes: { standard: 32, fixed: 26 } });
+  await p.goto(`${GRUND}/#/lernen/drill`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.drill-unten button');
+  await p.locator('.drill-unten button').first().click();
+  await p.waitForSelector('.drill-aufloesung');
+  await p.waitForTimeout(600);
+  const m = await p.evaluate(() => {
+    window.scrollTo(0, document.documentElement.scrollHeight);
+    const leiste = document.querySelector('.drill-unten').getBoundingClientRect();
+    const aufl = document.querySelector('.drill-aufloesung');
+    const kinder = [...aufl.querySelectorAll('*')].filter((e) => e.getBoundingClientRect().height > 0);
+    const tiefster = Math.max(...kinder.map((e) => e.getBoundingClientRect().bottom));
+    return {
+      schrift_px: parseFloat(getComputedStyle(document.documentElement).fontSize),
+      leiste_hoehe: Math.round(leiste.height),
+      reserve_px: Math.round(parseFloat(getComputedStyle(document.querySelector('.drill-aufloesung')).paddingBottom)),
+      ende_ueber_leiste: Math.round(leiste.top - tiefster),
+      breit: document.documentElement.scrollWidth - window.innerWidth,
+    };
+  });
+  await k.close();
+  return m;
+});
+
 await browser.close();
 
 const ergebnis = {

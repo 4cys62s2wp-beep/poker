@@ -1296,8 +1296,25 @@ await schritt('Bestehen heißt verstanden', async () => {
   await lp.evaluate(() => sessionStorage.clear());
   await lp.reload({ waitUntil: 'domcontentloaded' });
   await lp.waitForSelector('.quiz-fokus');
-  const zweiter = await durchgang();
-  const e2 = await ergebnis();
+  /* Auch dieser Durchgang wählt immer die erste Option und besteht mit etwa
+     1,6 % durch Zufall — dann gibt es keinen Knopf „Fehler nochmal üben“, und
+     der Schritt lief in der Action ins Leere (20:03 Uhr, 30bb9a8). Wie beim
+     ersten Durchgang: Besteht er, wird der Stand von vorher wiederhergestellt
+     und es geht noch einmal. */
+  const profilSchluessel = () => lp.evaluate(() => {
+    const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+    return `pokermentor-data-${idx.activeId}`;
+  });
+  const standVorher = await lp.evaluate((k) => localStorage.getItem(k), await profilSchluessel());
+  let zweiter = await durchgang();
+  let e2 = await ergebnis();
+  for (let n = 0; n < 6 && e2.urteil === 'Bestanden'; n += 1) {
+    await lp.evaluate(([k, roh]) => localStorage.setItem(k, roh), [await profilSchluessel(), standVorher]);
+    await lp.reload({ waitUntil: 'domcontentloaded' });
+    await neueLektion();
+    zweiter = await durchgang();
+    e2 = await ergebnis();
+  }
   await lp.getByRole('button', { name: 'Fehler nochmal üben' }).click();
   await lp.waitForSelector('.quiz-fokus');
   const uebungsFragen = await lp.evaluate(() => document.querySelector('.quiz-zaehler')?.textContent.trim());

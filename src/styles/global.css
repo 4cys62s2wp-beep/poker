@@ -72,13 +72,13 @@
   --radius-pill: 999px;
 
   /* Inhaltsbreiten: Lesen (Fließtext), Schmal (eine Aufgabe je Bildschirm),
-     Standard (Listen, Karten), Weit (Rahmen der App, Tabellen). In rem, damit
+     Standard (Listen, Lektionen, Trainer), Weit (Rahmen der App, Tabellen). In rem, damit
      sie mit der Browser-Schrift wachsen — die Zeile bleibt gleich lang in
      Zeichen. Statt 560-, 640- und 660-px-Werten, die je Seite neu erfunden
      wurden (E-077). */
   --breite-lesen: 65ch;
   --breite-schmal: 35rem;
-  --breite-standard: 40rem;
+  --breite-standard: 46rem;
   --breite-weit: 72rem;
 
   /* ── Aktionsfarben ───────────────────────────────────────────────────
@@ -94,6 +94,11 @@
   --range-call: linear-gradient(150deg, #479a63, #3c8956);
   --range-call-text: #000;
   --range-fold: var(--veil-3);
+
+  /* Höhe der klebenden Kopfzeile am Handy ohne Statusleiste: 14 px Abstand und
+     eine Zeile von 44 px. `rahmen.test` misst nach, dass sie stimmt — Toasts und
+     Sprungziele rechnen damit. */
+  --kopf-h: 58px;
 
   /* ── Schriftgrößen ───────────────────────────────────────────────────
      Eine Familie mit echten Gewichtsabstufungen statt drei Familien.
@@ -573,7 +578,7 @@ table.data td {
   flex-shrink: 0;
   background: linear-gradient(180deg, rgba(29, 90, 67, 0.1), transparent 240px), var(--bg-deep);
   border-right: 1px solid var(--border);
-  padding: var(--sp-5) 14px var(--sp-4);
+  padding: var(--sp-5) 14px 0;
   position: sticky;
   top: 0;
   height: 100vh;
@@ -664,11 +669,56 @@ table.data td {
   text-align: center;
 }
 
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Die Fußzeile klebt unten. Bei 768 oder 860 Pixel Höhe rutschten „Du", Level
+   und Rechtliches sonst aus dem Bild (gemessen: scrollHeight 1109 bei
+   clientHeight 860). Jetzt scrollt die Leiste in der Mitte, und was
+   persönlich ist, bleibt stehen. */
 .sidebar-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
   margin-top: auto;
-  padding: 14px 10px var(--sp-1);
+  margin-inline: -14px;
+  padding: var(--sp-2) 24px var(--sp-3);
+  background: var(--bg-deep);
+  border-top: 1px solid var(--border);
   font-size: var(--fs-kleingedrucktes);
   color: var(--text-faint);
+}
+
+.nav-link.fuss { padding-block: 8px; }
+
+.fuss-stand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--sp-1) 10px var(--sp-2);
+}
+
+/* Läuft ein Abend: ein grüner Punkt und die geltenden Blinds. Ein Punkt allein
+   sagt „irgendetwas"; die Blinds sagen, was. */
+.nav-laeuft {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ok-lesbar);
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: var(--ziffern);
+}
+
+.nav-laeuft .punkt {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
 }
 
 .main {
@@ -676,7 +726,22 @@ table.data td {
   min-width: 0;
   padding: 28px clamp(16px, 4vw, 48px) 96px;
   max-width: var(--breite-weit);
+  /* Zentriert in der Spalte neben der Seitenleiste: Auf einem 1920er Schirm
+     standen vorher über 1000 Pixel leer rechts neben einer linksbündigen
+     Handyspalte. */
+  margin-inline: auto;
+  width: 100%;
 }
+
+/* Jede Seite sitzt zentriert in einer Spalte, deren Breite der Ort bestimmt
+   (`orte.ts`): Eine Aufgabe je Bildschirm ist schmal, Listen und Lesetext sind
+   Standard. Vorher legte jede Seite ihre eigene Breite fest — auf dem Lernpfad
+   standen Rangkarte (390), Modulliste (520) und Trainerraster (830) auf einer
+   Seite untereinander, im Profil Karten mit 462, 523 und 440 Pixeln. */
+.main > * { margin-inline: auto; width: 100%; }
+.main[data-breite="schmal"] > * { max-width: var(--breite-schmal); }
+.main[data-breite="standard"] > * { max-width: var(--breite-standard); }
+.main[data-breite="weit"] > * { max-width: var(--breite-weit); }
 
 /* Mobile: Kopfzeile mit Marke. Eine untere Leiste gibt es nicht mehr —
    sie führte zu denselben Zielen wie die drei Karten der Startseite und
@@ -692,6 +757,12 @@ table.data td {
     display: none;
   }
   .mobile-top {
+    /* Klebt oben (DESIGN 9a.2), mit deckendem Grund: Darunter läuft der Text
+       durch, und ohne Grund läse man ihn durch die Marke hindurch. */
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: var(--bg);
     display: flex;
     align-items: center;
     gap: 9px;
@@ -727,6 +798,69 @@ table.data td {
     background-clip: text;
     color: transparent;
   }
+
+  /* Der Haarstrich erscheint erst, wenn etwas darunter läuft. */
+  .mobile-top.gescrollt { box-shadow: 0 1px 0 var(--border); }
+
+  /* Nach dem Scrollen: „‹ Zurückziel · Titel" in der Mitte; die Marke schrumpft
+     auf ihr Zeichen. Die Höhe der Zeile ändert sich dabei nicht. */
+  .mobile-top-ort { display: none; }
+  .mobile-top.mit-ort .mobile-top-marke .grad { display: none; }
+  .mobile-top.mit-ort .mobile-top-ort {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: var(--touch-min);
+    padding: 0 var(--sp-2);
+    border: 0;
+    background: none;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: var(--fs-beschriftung);
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-top-ort .pfeil { color: var(--text-dim); font-size: var(--fs-ueberschrift); line-height: 1; }
+  .mobile-top-ort .rueckname { color: var(--text-dim); white-space: nowrap; flex: 0 0 auto; max-width: 48%; overflow: hidden; text-overflow: ellipsis; }
+  .mobile-top-ort .trenner { color: var(--text-faint); }
+  .mobile-top-ort .seitentitel { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: var(--fw-bold); }
+
+  /* Wie weit man in der Lektion ist: zwei Pixel am unteren Rand der Zeile. */
+  .lesefortschritt {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--border);
+  }
+  .lesefortschritt::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform-origin: left;
+    transform: scaleX(var(--lese, 0));
+    background: var(--bereich);
+  }
+
+  /* Sprungziele (Anker, Fokus) liegen nicht unter der klebenden Zeile. */
+  html { scroll-padding-top: calc(var(--kopf-h, 64px) + var(--safe-top)); }
+  [id] { scroll-margin-top: calc(var(--kopf-h, 64px) + var(--safe-top)); }
+}
+
+/* Querformat am Handy: 390 Pixel Höhe. Eine klebende Zeile nähme ein Sechstel
+   davon, und die Entscheidungsleiste unten noch einmal ein Fünftel. Dort bleibt
+   die Zeile ein Block am Anfang der Seite. */
+@media (max-width: 920px) and (max-height: 500px) {
+  .mobile-top { position: static; }
+  html { scroll-padding-top: 0; }
+  [id] { scroll-margin-top: 0; }
+}
+
+@media (max-width: 920px) {
   .main {
     flex: 1 1 auto;
     padding-top: 18px;
@@ -1647,7 +1781,6 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
    ausgeklappt — 30 219 Pixel Seitenhöhe. Jetzt eine Zeile je Begriff mit
    der ersten Zeile der Erklärung, nach Anfangsbuchstaben gruppiert. */
 .glossar {
-  max-width: 760px;
   display: flex;
   flex-direction: column;
   gap: var(--sp-4);
@@ -1764,7 +1897,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .toast-stack {
   position: fixed;
-  top: 16px;
+  top: calc(var(--safe-top) + 16px);
   right: 16px;
   z-index: 100;
   display: flex;
@@ -1783,6 +1916,22 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   box-shadow: var(--shadow);
   animation: toast-in 0.32s cubic-bezier(0.22, 1, 0.36, 1), toast-out 0.4s ease 3.4s forwards;
   max-width: 330px;
+}
+
+/* Am Handy: mittig, unter der Kopfzeile — nie über der Marke und dem „Du",
+   die man gerade antippen will (gemessen: „PokerMent…" abgeschnitten). */
+@media (max-width: 920px) {
+  .toast-stack {
+    top: calc(var(--safe-top) + var(--kopf-h) + var(--sp-2));
+    left: 50%;
+    right: auto;
+    width: min(92vw, 360px);
+    transform: translateX(-50%);
+  }
+  .toast { max-width: none; }
+}
+@media (max-width: 920px) and (max-height: 500px) {
+  .toast-stack { top: calc(var(--safe-top) + var(--sp-2)); }
 }
 
 .toast .t-title { color: var(--auszeichnung-lesbar); }
@@ -2145,7 +2294,8 @@ input[type="radio"] {
   }
 
   .mobile-top-you.active {
-    color: var(--auszeichnung-lesbar);
+    color: var(--text);
+    font-weight: var(--fw-bold);
   }
 }
 
@@ -2792,6 +2942,27 @@ input[type="radio"] {
   flex-direction: column;
   gap: var(--tipp-abstand);
   max-width: var(--breite-schmal);
+}
+
+/* Ab 1100 Pixeln zwei Spalten statt einer Handyspalte, die in der Mitte eines
+   1920er Schirms steht: links, was man tut (die Hand des Tages, Lernen),
+   rechts, wohin man geht (Live-Session, Nachschlagen). Die Reihenfolge im
+   Dokument bleibt die der Handyspalte — nur die Zuordnung zu den Spalten
+   ändert sich. */
+@media (min-width: 1100px) {
+  .start {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--sp-5);
+    row-gap: var(--tipp-abstand);
+    align-items: start;
+    max-width: var(--breite-weit);
+  }
+  .start > .start-erklaerung { grid-column: 1 / -1; }
+  .start > .heute { grid-column: 1; grid-row: 1; }
+  .start > .start-einstieg.mittel { grid-column: 1; grid-row: 2; }
+  .start > .start-einstieg.gross { grid-column: 2; grid-row: 1; }
+  .start > .start-einstieg.klein { grid-column: 2; grid-row: 2; }
 }
 
 /* Nur dort, wo die Karten die Navigation sind: auf dem Handy. Auf breiten
@@ -3673,7 +3844,6 @@ input[type="radio"] {
   display: flex;
   align-items: stretch;
   gap: var(--sp-2);
-  max-width: 480px;
   margin-bottom: var(--sp-4);
 }
 
@@ -3740,7 +3910,6 @@ input[type="radio"] {
   display: flex;
   align-items: center;
   gap: var(--sp-4);
-  max-width: 480px;
   margin-bottom: var(--sp-5);
   padding: var(--sp-4);
   border-radius: var(--radius);
@@ -3788,7 +3957,6 @@ input[type="radio"] {
 }
 
 .rangstand.gross {
-  max-width: var(--breite-schmal);
   padding: var(--sp-5);
   gap: var(--sp-5);
 }
@@ -3802,7 +3970,6 @@ input[type="radio"] {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-width: var(--breite-standard);
 }
 
 .lernpfad .stufe {
@@ -3919,7 +4086,6 @@ input[type="radio"] {
   display: flex;
   align-items: center;
   gap: var(--sp-4);
-  max-width: 480px;
   margin-bottom: var(--sp-5);
   padding: var(--sp-3) var(--sp-4);
   border-radius: var(--radius);

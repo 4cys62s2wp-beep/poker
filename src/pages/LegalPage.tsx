@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
-import { BackLink } from '../components/ui';
+import { Zurueck } from '../components/ui';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/legal';
 import { loadLegalConfig, type LegalConfig } from '../lib/legal';
@@ -12,7 +12,7 @@ import { usePro } from '../lib/pro/ProProvider';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="card" style={{ maxWidth: 720, marginBottom: 14 }}>
+    <div className="card" style={{ marginBottom: 14 }}>
       <div style={{ fontWeight: 800, fontSize: 'var(--fs-fliesstext)', marginBottom: 8 }}>{title}</div>
       {children}
     </div>
@@ -37,7 +37,7 @@ export function LegalPage() {
 
   return (
     <div>
-      <BackLink to="/profil" label={NAV[lang].profile} />
+      <Zurueck to="/profil" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>

@@ -12,7 +12,6 @@ export type OutsTemplateKey =
 
 export const STR = defineStrings(
   {
-    back: '← Trainer',
     title: 'Outs-Zähler',
     sub: 'Outs sind die Karten, die deine Hand verbessern · Regel von 2 und 4',
     streak: (n: number) => `Serie: ${n}`,
@@ -45,7 +44,6 @@ export const STR = defineStrings(
     nextSituation: 'Nächste Situation',
   },
   {
-    back: '← Trainers',
     title: 'Outs Counter',
     sub: 'Outs are the cards that improve your hand · rule of 2 and 4',
     streak: (n: number) => `Streak: ${n}`,

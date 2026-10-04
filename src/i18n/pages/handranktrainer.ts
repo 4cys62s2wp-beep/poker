@@ -2,7 +2,6 @@ import { defineStrings } from '..';
 
 export const STR = defineStrings(
   {
-    back: '← Trainer',
     title: 'Handranking-Trainer',
     sub: 'Beste Fünf-Karten-Hand aus deinen Karten und dem Board',
     streak: (n: number) => `Serie: ${n}`,
@@ -23,7 +22,6 @@ export const STR = defineStrings(
     nextHand: 'Nächste Hand',
   },
   {
-    back: '← Trainers',
     title: 'Hand Ranking Trainer',
     sub: 'Best five-card hand from your cards and the board',
     streak: (n: number) => `Streak: ${n}`,

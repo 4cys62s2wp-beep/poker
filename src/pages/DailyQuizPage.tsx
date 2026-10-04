@@ -7,6 +7,7 @@ import { useAppState } from '../state/AppState';
 import { zeichenFuer } from '../lib/zeichen';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/dailyquiz';
+import { Zurueck } from '../components/ui';
 
 const QUESTIONS_PER_DAY = 5;
 
@@ -57,9 +58,7 @@ export function DailyQuizPage() {
 
   return (
     <div>
-      <Link to="/lernen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        {L.back}
-      </Link>
+      <Zurueck to="/lernen" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">
@@ -68,7 +67,7 @@ export function DailyQuizPage() {
       </div>
 
       {alreadyDone && !started && (
-        <div className="card" style={{ maxWidth: 640, textAlign: 'center', padding: 36 }}>
+        <div className="card" style={{ textAlign: 'center', padding: 36 }}>
           <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
             <Icon name={zeichenFuer('/lernen/tagesquiz')} size={38} />
           </div>
@@ -80,7 +79,7 @@ export function DailyQuizPage() {
       )}
 
       {!alreadyDone && !started && (
-        <div className="card" style={{ maxWidth: 640, textAlign: 'center', padding: 36 }}>
+        <div className="card" style={{ textAlign: 'center', padding: 36 }}>
           <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
             <Icon name={zeichenFuer('/lernen/tagesquiz')} size={38} />
           </div>
@@ -95,7 +94,7 @@ export function DailyQuizPage() {
       )}
 
       {started && (
-        <div style={{ maxWidth: 680 }}>
+        <div>
           <QuizRunner
             questions={questions}
             onFinish={(score, total) => completeDailyQuiz(score, total)}

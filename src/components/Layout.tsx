@@ -1,15 +1,24 @@
-import { useEffect, useRef, type RefObject } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { Icon, type IconName } from './Icon';
 import { useAppState, levelForXp, xpThreshold } from '../state/AppState';
 import { useLang, levelTitleFor } from '../i18n';
 import { STR } from '../i18n/pages/layout';
 import { STR as PRO } from '../i18n/pages/pro';
-import { zeichenFuer } from '../lib/zeichen';
+import { zeichenFuer, type ZeichenPfad } from '../lib/zeichen';
 import { STR as LEGAL } from '../i18n/pages/legal';
 import { usePro } from '../lib/pro/ProProvider';
-import { STR as FRIENDS } from '../i18n/pages/friends';
 import { OnlineBadge } from './social/OnlineBadge';
+import { Kopfzeile } from './Kopfzeile';
+import { breiteVon, findeOrt, ortName, waehleAktiv, type NavZiel, type OrtPfad } from '../lib/orte';
+import { ladeLaufende, type LaufendeSession } from '../lib/session/laufend';
+import { standDerUhr } from '../lib/live/uhr';
+
+interface NavEintrag extends NavZiel {
+  name: string;
+  icon: IconName;
+  zusatz?: ReactNode;
+}
 
 export function Layout() {
   const { data, toasts } = useAppState();
@@ -17,88 +26,98 @@ export function Layout() {
   const L = STR[lang];
   const P = PRO[lang];
   const G = LEGAL[lang];
-  const FR = FRIENDS[lang];
   const proCtx = usePro();
   const level = levelForXp(data.xp);
   const location = useLocation();
   const mainRef = useRef<HTMLElement>(null);
   useSectionHeadings(mainRef);
 
-  /* Die Seitenleiste folgt derselben Gliederung wie der Hub: drei Absichten
-     plus Persönliches – Lernen (mit Fortschritt), Nachschlagen (ohne) und
-     Live-Session (am echten Tisch). Vorher waren es vier Gruppen, benannt
-     nach der ART der Sache („Anwenden“) statt nach der ABSICHT.
-     (docs/SCREEN_STRUKTUR.md, ENTSCHEIDUNGEN.md E-011) */
-  const navGroups: Array<{ label: string; items: Array<{ to: string; icon: IconName; label: string; end?: boolean }> }> = [
-    { label: L.navOverview, items: [{ to: '/', icon: zeichenFuer('/'), label: L.start, end: true }] },
+  /* Läuft ein Abend? Der Eintrag „Abend führen" führt dann zur Uhr statt in ein
+     leeres Formular (E-073), und „Live-Session" zeigt, was gerade gilt. Der
+     Stand wird beim Wechsel der Seite neu gelesen; eine Uhr, die in der
+     Seitenleiste mitläuft, wäre eine zweite Uhr. */
+  const [laufend, setLaufend] = useState<LaufendeSession | null>(ladeLaufende);
+  useEffect(() => { setLaufend(ladeLaufende()); }, [location.pathname]);
+  const blinds = laufend ? standDerUhr(laufend, Date.now()).blinds : null;
+
+  /* Die Seitenleiste folgt derselben Gliederung wie der Hub: drei Absichten –
+     Lernen (mit Fortschritt), Nachschlagen (ohne) und Live-Session (am echten
+     Tisch). Die Namen kommen aus der Ortstabelle (src/lib/orte.ts): Was hier
+     steht, steht überall so. Spielstil und Pro-Insights sind von der
+     Lernseite aus erreichbar und stehen nicht doppelt in der Leiste. */
+  const eintrag = (pfad: OrtPfad & ZeichenPfad, extra?: Partial<NavEintrag>): NavEintrag => ({
+    to: pfad, name: ortName(pfad, lang), icon: zeichenFuer(pfad), ...extra,
+  });
+  const navGroups: Array<{ label: string; items: NavEintrag[] }> = [
+    { label: L.navOverview, items: [eintrag('/')] },
     {
       label: L.navLearn,
       items: [
-        { to: '/lernen', icon: zeichenFuer('/lernen'), label: L.learnPath },
-        { to: '/lernen/wiederholen', icon: zeichenFuer('/lernen/wiederholen'), label: L.review },
-        { to: '/lernen/uebungstisch', icon: zeichenFuer('/lernen/uebungstisch'), label: L.practiceTable },
-        { to: '/lernen/statistik', icon: zeichenFuer('/lernen/statistik'), label: L.playStyle },
-        { to: '/lernen/pros', icon: zeichenFuer('/lernen/pros'), label: L.proInsights },
+        eintrag('/lernen'),
+        eintrag('/lernen/wiederholen', { zusatz: <DueBubble /> }),
+        eintrag('/lernen/uebungstisch'),
       ],
     },
     {
       label: L.navLookup,
-      items: [
-        { to: '/nachschlagen', icon: zeichenFuer('/nachschlagen'), label: L.lookupAll },
-        { to: '/nachschlagen/coach', icon: zeichenFuer('/nachschlagen/coach'), label: L.liveCoach },
-        { to: '/nachschlagen/glossar', icon: zeichenFuer('/nachschlagen/glossar'), label: L.glossary },
-      ],
+      items: [eintrag('/nachschlagen'), eintrag('/nachschlagen/coach'), eintrag('/nachschlagen/glossar')],
     },
     {
       label: L.navSession,
       items: [
-        { to: '/session/chips', icon: zeichenFuer('/session/chips'), label: L.chipCalc },
-        { to: '/session/auszahlung', icon: zeichenFuer('/session/auszahlung'), label: L.payout },
-        { to: '/session/bankroll', icon: zeichenFuer('/session/bankroll'), label: L.bankroll },
-      ],
-    },
-    {
-      label: L.navYou,
-      items: [
-        { to: '/profil', icon: zeichenFuer('/profil'), label: L.profile },
-        { to: '/freunde', icon: zeichenFuer('/freunde'), label: FR.navFriends },
-        ...(proCtx.enabled ? [{ to: '/pro', icon: zeichenFuer('/pro'), label: P.navPro }] : []),
+        eintrag('/session', {
+          zusatz: blinds && (
+            <span className="nav-laeuft" title={L.runningNow}>
+              <span className="punkt" aria-hidden="true" />
+              {blinds[0]}/{blinds[1]}
+              <span className="sr-only"> {L.runningNow}</span>
+            </span>
+          ),
+        }),
+        eintrag('/session/live', {
+          to: laufend ? '/session/live' : '/session/live/einrichten',
+          pfade: ['/session/live'],
+        }),
+        eintrag('/session/abende', { pfade: ['/session/abende', '/session/spieler'] }),
+        eintrag('/session/chips'),
+        eintrag('/session/auszahlung'),
+        eintrag('/session/bankroll'),
       ],
     },
   ];
+  const fussEintraege: NavEintrag[] = [eintrag('/profil'), eintrag('/freunde')];
+  const aktiv = waehleAktiv(
+    [...navGroups.flatMap((g) => g.items), ...fussEintraege, eintrag('/pro')],
+    location.pathname,
+  );
+  const navLink = (item: NavEintrag, kind: 'nav' | 'fuss' = 'nav') => (
+    <Link
+      key={item.to}
+      to={item.to}
+      className={`nav-link${item.to === aktiv ? ' active' : ''}${kind === 'fuss' ? ' fuss' : ''}`}
+      aria-current={item.to === aktiv ? 'page' : undefined}
+    >
+      <span className="ico">
+        <Icon name={item.icon} size={18} />
+      </span>
+      {item.name}
+      {item.zusatz}
+    </Link>
+  );
 
-  /* Längste Übereinstimmung zuerst: '/lernen/trainer' muss vor '/lernen'
-     stehen, sonst hieße jede Trainer-Seite „Lernpfad“. */
-  const titles: Array<[prefix: string, title: string]> = [
-    ['/lernen/wiederholen', L.review],
-    ['/lernen/tagesquiz', L.dailyQuiz],
-    ['/lernen/pros', L.proInsights],
-    ['/lernen/uebungstisch', L.practiceTable],
-    ['/lernen/statistik', L.playStyle],
-    ['/lernen', L.learnPath],
-    ['/nachschlagen/coach', L.liveCoach],
-    ['/nachschlagen/glossar', L.glossary],
-    ['/nachschlagen/haende', L.handExplorer],
-    ['/nachschlagen/ranges', L.ranges],
-    ['/nachschlagen/odds', L.odds],
-    ['/nachschlagen/equity', L.equity],
-    ['/nachschlagen/tells', L.tells],
-    ['/nachschlagen', L.navLookup],
-    ['/session/chips', L.chipCalc],
-    ['/session/auszahlung', L.payout],
-    ['/session/bankroll', L.bankroll],
-    ['/session', L.navSession],
-    ['/profil', L.profile],
-    ['/freunde', FR.navFriends],
-    ['/pro', P.navPro],
-    ['/rechtliches', G.navLegal],
-    ['/kuendigen', G.cancelTitle],
-  ];
-
+  /* Der Titel des Browser-Tabs ist der Name des Ortes; auf dynamischen Seiten
+     (Lektion, Modul, früherer Abend) die Überschrift der Seite. */
   useEffect(() => {
-    const match = titles.find(([p]) => location.pathname.startsWith(p));
-    document.title = match ? `${match[1]} · PokerMentor` : 'PokerMentor';
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const ort = findeOrt(location.pathname);
+    const setze = () => {
+      const h1 = mainRef.current?.querySelector('h1')?.textContent?.trim();
+      const name = ort.genau ? ortName(ort.ort, lang) : h1 || ortName(ort.ort, lang);
+      document.title = ort.ort === '/' ? 'PokerMentor' : `${name} · PokerMentor`;
+    };
+    setze();
+    /* Lazy geladene Seiten haben beim ersten Lauf noch keine Überschrift. */
+    const id = window.setTimeout(setze, 400);
+    return () => window.clearTimeout(id);
   }, [location.pathname, lang]);
 
   return (
@@ -110,89 +129,56 @@ export function Layout() {
           </span>
           <span className="grad">PokerMentor</span>
         </div>
-        {navGroups.map((group) => (
-          <div key={group.label}>
-            <div className="nav-group">{group.label}</div>
-            {group.items.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-              >
-                <span className="ico">
-                  <Icon name={item.icon} size={18} />
-                </span>
-                {item.label}
-                {item.to === '/lernen/wiederholen' && <DueBubble />}
-              </NavLink>
-            ))}
-          </div>
-        ))}
+        <nav className="sidebar-nav" aria-label={L.navOverview}>
+          {navGroups.map((group) => (
+            <div key={group.label}>
+              <div className="nav-group">{group.label}</div>
+              {group.items.map((item) => navLink(item))}
+            </div>
+          ))}
+        </nav>
+        {/* Die Fußzeile klebt unten: Bei 768 oder 860 Pixel Höhe rutschten
+            „Du", Level und Rechtliches sonst aus dem Bild. */}
         <div className="sidebar-footer">
+          {fussEintraege.map((item) => navLink(item, 'fuss'))}
+          <div className="fuss-stand">
+            <ProfileBadge />
+            <div>{L.level} {level} · {levelTitleFor(level, lang)} · {data.xp} XP</div>
+            <div className="progressbar">
+              <div style={{ width: `${levelProgressPct(data.xp)}%` }} />
+            </div>
+          </div>
           <div style={{ marginBottom: 9 }}><OnlineBadge /></div>
-          <ProfileBadge />
           {proCtx.enabled && (
             <div style={{ marginBottom: 9 }}>
               {proCtx.pro ? (
                 <span className="pill gold"><Icon name="crown" size={13} /> {P.proBadge}</span>
               ) : proCtx.trialActive ? (
-                <NavLink to="/pro" className="pill gold" style={{ textDecoration: 'none' }}>
+                <Link to="/pro" className="pill gold" style={{ textDecoration: 'none' }}>
                   {P.trialBadge(proCtx.trialDaysLeft)}
-                </NavLink>
+                </Link>
               ) : (
-                <NavLink to="/pro" className="pill" style={{ textDecoration: 'none' }}>
+                <Link to="/pro" className="pill" style={{ textDecoration: 'none' }}>
                   {P.upgradeNudge}
-                </NavLink>
+                </Link>
               )}
             </div>
           )}
-          <div className="row between" style={{ marginBottom: 6 }}>
-            <span>
-              {L.level} {level} · {levelTitleFor(level, lang)}
-            </span>
-          </div>
-          <div className="progressbar">
-            <div style={{ width: `${levelProgressPct(data.xp)}%` }} />
-          </div>
-          <div style={{ marginTop: 6 }}>{data.xp} XP</div>
-          <NavLink to="/rechtliches" className="small faint" style={{ display: 'inline-block', marginTop: 10 }}>
+          <Link to="/rechtliches" className="small faint" style={{ display: 'inline-block', marginTop: 4 }}>
             {G.navLegal}
-          </NavLink>
+          </Link>
           {/* § 312k BGB: ohne Anmeldung erreichbar, deshalb dauerhaft im Footer. */}
           {proCtx.enabled && (
-            <NavLink to="/kuendigen" className="small faint" style={{ display: 'block', marginTop: 4 }}>
+            <Link to="/kuendigen" className="small faint" style={{ display: 'block', marginTop: 4 }}>
               {G.cancelNav}
-            </NavLink>
+            </Link>
           )}
         </div>
       </aside>
 
       <div className="inhalt">
-        <div className="mobile-top">
-          {/* Seit die untere Leiste weg ist (E-032), ist die Marke der Weg
-              zurück zur Startseite. Sie steht auf jedem Bildschirm an
-              derselben Stelle — genau das, was eine Marke oben links seit
-              jeher bedeutet, und was ein Nutzer dort ohnehin antippt. */}
-          <NavLink to="/" end className="mobile-top-marke">
-            <span className="spade">
-              <Icon name="spade" size={15} />
-            </span>
-            <span className="grad">PokerMentor</span>
-          </NavLink>
-          {/* Der Weg zum Profil auf dem Handy. Er stand vorher in der unteren
-              Leiste; dort ist mit drei Bereichen kein Platz mehr für einen
-              fünften beschrifteten Punkt. Hier ist er sichtbar, beschriftet
-              und auf jedem Bildschirm erreichbar. */}
-          <NavLink
-            to="/profil"
-            className={({ isActive }) => `mobile-top-you${isActive ? ' active' : ''}`}
-          >
-            <Icon name="profile" size={16} />
-            <span>{L.mobileYou}</span>
-          </NavLink>
-        </div>
-        <main className="main" ref={mainRef}>
+        <Kopfzeile mainRef={mainRef} />
+        <main className="main" ref={mainRef} data-breite={breiteVon(location.pathname)}>
           <Outlet />
         </main>
       </div>

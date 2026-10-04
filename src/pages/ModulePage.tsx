@@ -9,6 +9,7 @@ import { isFreeLesson } from '../lib/pro/plan';
 import { Icon } from '../components/Icon';
 import { Levelring } from '../components/Levelring';
 import { LEKTION_XP_HOECHSTENS, lektionsstand } from '../lib/rang/lektionen';
+import { Zurueck } from '../components/ui';
 
 export function ModulePage() {
   const { moduleId } = useParams();
@@ -39,9 +40,7 @@ export function ModulePage() {
 
   return (
     <div>
-      <Link to="/lernen" className="pill" style={{ marginBottom: 16, display: 'inline-flex' }}>
-        {L.back}
-      </Link>
+      <Zurueck to="/lernen" />
       <div className="page-header" style={{ marginTop: 10 }}>
         <h1>
           {module.icon} {module.title}
@@ -70,7 +69,7 @@ export function ModulePage() {
         </div>
       </section>
 
-      <ol className="lektionen" style={{ maxWidth: 760 }}>
+      <ol className="lektionen">
         {module.lessons.map((lesson, i) => {
           const result = data.completedLessons[lesson.id];
           const lessonLocked = !unlocked && !isFreeLesson(module.id, lesson.id);
@@ -110,7 +109,7 @@ export function ModulePage() {
       </ol>
 
       {hasLocked && (
-        <div style={{ maxWidth: 760, marginTop: 16 }}>
+        <div style={{ marginTop: 16 }}>
           <ProLock text={P.lockedModule} compact />
         </div>
       )}

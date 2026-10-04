@@ -107,11 +107,9 @@ export function SessionPage() {
   return (
     <div>
       <PageHeader
-        eyebrow={L.eyebrow}
         title={L.title}
         sub={L.sub}
         backTo="/"
-        backLabel={L.backHome}
       />
 
       {(sessions > 0 || data.handsPlayed > 0) && (

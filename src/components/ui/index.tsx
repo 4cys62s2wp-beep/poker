@@ -13,6 +13,8 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon, type IconName } from '../Icon';
+import { useLang } from '../../i18n';
+import { istOrt, ortName, type OrtPfad } from '../../lib/orte';
 
 /* ------------------------------------------------------------------ *
  * Karte
@@ -283,11 +285,21 @@ export function EmptyState({
  * „Browser-Zurück": Wer über einen geteilten Link direkt auf einer
  * Detailseite landet, hat kein Zurück.
  */
-export function BackLink({ to, label }: { to: string; label?: string }) {
+type ZurueckProps =
+  | { to: OrtPfad; label?: never }
+  | { to: string; label: string };
+
+export function Zurueck({ to, label }: ZurueckProps) {
+  const { lang } = useLang();
+  /* Die Beschriftung kommt aus der Ortstabelle, nicht aus der Seite, die den
+     Link setzt: Ein fester Ort hat einen Namen (src/lib/orte.ts). Nur wo das
+     Ziel dynamisch ist — ein Modul, eine Lektion —, nennt die Seite es selbst. */
+  const text = label ?? (istOrt(to) ? ortName(to, lang) : to);
   return (
     <Link
       to={to}
-      className="small"
+      className="zurueck small"
+      data-ziel={to}
       style={{
         /* Eigene Zeile, nicht inline: Sonst stünde der Rückweg neben der
            Bereichszeile und beide läsen sich als ein Text. */
@@ -297,24 +309,23 @@ export function BackLink({ to, label }: { to: string; label?: string }) {
         marginBottom: 'var(--sp-2)', minHeight: 'var(--touch-min)',
       }}
     >
-      <span aria-hidden="true">←</span> {label ?? 'Zurück'}
+      <span aria-hidden="true">←</span> {text}
     </Link>
   );
 }
 
 export function PageHeader({
-  eyebrow, title, sub, backTo, backLabel, actions,
+  eyebrow, title, sub, backTo, actions,
 }: {
   eyebrow?: string;
   title: string;
   sub?: string;
-  backTo?: string;
-  backLabel?: string;
+  backTo?: OrtPfad;
   actions?: ReactNode;
 }) {
   return (
     <div className="page-header">
-      {backTo && <BackLink to={backTo} label={backLabel} />}
+      {backTo && <Zurueck to={backTo} />}
       {eyebrow && <div className="eyebrow">{eyebrow}</div>}
       <div className="row between wrap" style={{ gap: 'var(--sp-3)' }}>
         <h1>{title}</h1>

@@ -26,7 +26,7 @@ export function AbendPage() {
     return (
       <div className="page">
         <PageHeader title={L.unbekannterAbend}
-          backTo="/session/abende" backLabel={L.zurueckListe} />
+          backTo="/session/abende" />
       </div>
     );
   }
@@ -40,7 +40,7 @@ export function AbendPage() {
   return (
     <div className="page">
       <PageHeader title={datum}
-        backTo="/session/abende" backLabel={L.zurueckListe} />
+        backTo="/session/abende" />
 
       <div className="abend-kopfzahlen">
         <div><span className="hinweis">{L.dauer}</span><span>{grobeDauer(abend.gespielt_ms, lang)}</span></div>

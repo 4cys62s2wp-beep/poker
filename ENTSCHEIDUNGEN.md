@@ -4698,3 +4698,77 @@ zweite Zeile um und schob den siebten Weg 26 Pixel unter die Kante (6 statt 7
 sichtbar). Jetzt eine Zeile: „Hand, Begriff oder Werkzeug finden." —
 Textlänge ist Layout. `augenbraue.test.ts` hält es fest (6 Prüfungen).
 
+
+## E-082 · 2026-10-04 · Der Rahmen: klebende Kopfzeile, Scrollposition, ein Name pro Ort, zentrierte Spalten
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 2.1–2.6).
+
+**Gefunden** (gemessen am Bestand, nicht geschätzt):
+- Die Kopfzeile am Handy war ein Block am Seitenanfang. In einer Lektion (5612 px),
+  im Glossar (11 425 px), in den Tells (6679 px) war man nach dem ersten Wischer
+  ohne Rückweg, ohne Titel, ohne Stand.
+- Neue Seiten öffneten in der Tiefe der Seite davor: Pro-Insights bei scrollY 2836,
+  der Übungstisch bei 343; Zurück ging nicht an die alte Stelle.
+- Dieselbe Seite hatte drei Namen (Seitenleiste „Spielstil", Titel „Dein Spielstil",
+  Kachel „Spielstil-Analyse"); „Nachschlagen" hieß als Seite „Schnell etwas wissen";
+  elf Rücklinks hießen „← Trainer" und führten auf eine Seite, die es seit E-037
+  nicht mehr gibt.
+- In der Seitenleiste waren auf vier Seiten zwei Einträge aktiv, auf der Live-
+  Session-Seite keiner; bei 768 und 860 Pixeln Höhe rutschte die Fußzeile aus
+  dem Bild (`scrollHeight` 1109 bei `clientHeight` 860).
+- Auf einem 1920er Schirm standen über 1000 Pixel leer rechts neben einer
+  linksbündigen Handyspalte; auf dem Lernpfad lagen Rangkarte (390), Modulliste
+  (520) und Trainerraster (830) untereinander.
+- Meldungen lagen über „PokerMentor" und „Du".
+
+**Entschieden:**
+- `<Kopfzeile>` klebt (Handy hochkant), zeigt nach dem Scrollen „‹ Rückziel ·
+  Titel", gelesen aus dem Bild; Lektionen bekommen einen 2-px-Lesestreifen. Quer klebt sie
+  nicht.
+- `Scrollverwaltung`: vorwärts oben (Fokus auf der h1), zurück an die gemerkte
+  Position (erst, wenn die Seite hoch genug ist), ersetzen nur bei neuer Seite.
+- `src/lib/orte.ts`: Name, Kurzform, Eltern und Breite je Ort. `<Zurueck>` ersetzt
+  `BackLink`, zwölf Pillen und `PageHeader.backLabel`; Seitentitel gleichen ihrem
+  Namen (Nachschlagen, Live-Session, Spielstil, Starthände, Odds-Tabellen, Bankroll,
+  Profil).
+- Drei Seitenbreiten (schmal, standard, weit); die Seite wählt keine eigene. Die
+  Startseite ist ab 1100 px zweispaltig.
+- Seitenleiste: der längste passende Pfad gewinnt; Live-Session-Gruppe mit
+  „Live-Session", „Abend führen" (zur Uhr, wenn einer läuft; mit grünem Punkt und
+  Blinds), „Frühere Abende"; Spielstil und Pro-Insights stehen nicht mehr doppelt
+  in der Leiste; Fußzeile klebt.
+- Meldungen am Handy mittig unter der Kopfzeile.
+
+**Verworfene Alternative:** Eine untere Tab-Leiste, um den Rückweg aus der Tiefe zu
+bekommen. E-032 und DESIGN §10 schließen sie aus: Sie führte zu denselben Zielen
+wie die drei Karten der Startseite. Die klebende Kopfzeile liefert den Nutzen ohne
+diesen Bruch.
+
+**Zweite verworfene Alternative:** Die Kopfzeile beim Hochwischen ein- und beim
+Runterwischen ausblenden. Das spart Höhe, aber die Leiste taucht dort auf, wo der
+Daumen gerade etwas anderes tun wollte; und sie ändert beim Scrollen das Layout.
+
+**Dritte verworfene Alternative:** Titel und Rückziel der Kopfzeile aus der Ortstabelle
+statt aus dem Bild. Das ginge für feste Orte, aber nicht für Lektionen und Module,
+deren Titel Inhalt sind — und es bliebe eine zweite Quelle, die von der Seite
+abweichen kann. Aus dem Bild gelesen kann die Zeile nichts anderes sagen als die Seite.
+
+**Nicht gebaut:** das mitlaufende Inhaltsverzeichnis ab 1200 px (BACKLOG): Die Lektionen
+haben keine Abschnitte, aus denen ein ehrliches Verzeichnis entstünde.
+
+**Was die Messung gefunden hat, das der Entwurf nicht kannte:**
+- Die Scrollposition wurde unter `location.key` gemerkt — der ist für jeden Eintrag, den der
+  Router nicht selbst angelegt hat (Adresse von Hand geändert), derselbe, nämlich
+  `default`. Eine zweite Seite bekam so die Tiefe der ersten. Jetzt Schlüssel plus Pfad.
+- `margin-inline: auto` an einem Kind einer Flex-Spalte hebt das Strecken auf: Die
+  Startseite stand auf dem Tablet 355 statt 560 Pixel breit. `width: 100%` dazu.
+- Die Klasse `.bereich` war schon vergeben (die Kachelkarte): Das erste Bild der
+  Kopfzeile zeigte den Rückweg als weiße Pille.
+
+Gemessen: `npm run rahmen` (neu, 12. Messlauf, in der Action): Kopfzeile auf vier langen
+Seiten (1800 px gescrollt), Lesefortschritt, Scroll vorwärts/zurück/vorwärts, Meldung,
+24 Seiten × aktiver Eintrag, Fußzeile bei 860 und 768 Pixeln, 16 Seiten bei 1920 auf
+gleichen Rand, Startseite zweispaltig, Tablet; Gegenprobe (Kopfzeile `static`,
+Scrollverwaltung entfernt) rot. Design (182), Bedienbar (180), Daumen, Quer, Wege,
+Durchgang — null Befunde.
+

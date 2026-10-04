@@ -7,10 +7,8 @@ import { defineStrings } from '..';
    die genau das beantwortet. */
 export const STR = defineStrings(
   {
-    eyebrow: 'Live-Session',
-    title: 'Der Abend läuft',
+    title: 'Live-Session',
     sub: 'Chips einteilen, Blinds hochziehen, am Ende gerecht auszahlen.',
-    backHome: 'Start',
 
     chipsTitle: 'Chip-Rechner',
     chipsWhen: 'Bevor die erste Karte fällt',
@@ -47,10 +45,8 @@ export const STR = defineStrings(
     handsLabel: 'Hände am Tisch',
   },
   {
-    eyebrow: 'Live session',
-    title: 'The night is on',
+    title: 'Live session',
     sub: 'Split the chips, raise the blinds, pay out fairly at the end.',
-    backHome: 'Home',
 
     chipsTitle: 'Chip calculator',
     chipsWhen: 'Before the first card',

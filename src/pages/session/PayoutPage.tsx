@@ -46,7 +46,6 @@ export function PayoutPage() {
         title={L.title}
         sub={L.sub}
         backTo="/session"
-        backLabel={L.back}
       />
 
       <div className="card" style={{ marginBottom: 'var(--sp-4)' }}>

@@ -6,7 +6,7 @@ import { STR } from '../../i18n/pages/bankroll';
 import { downloadBlob } from '../../lib/download';
 import { csvDatei } from '../../lib/export/csv';
 import { zahlAusEingabe } from '../../lib/eingabe/zahl';
-import { BackLink } from '../../components/ui';
+import { Zurueck } from '../../components/ui';
 import { STR as NAV } from '../../i18n/pages/layout';
 import { Icon } from '../../components/Icon';
 
@@ -97,13 +97,13 @@ export function BankrollTracker() {
 
   return (
     <div>
-      <BackLink to="/session" label={NAV[lang].navSession} />
+      <Zurueck to="/session" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>
       </div>
 
-      <div className="row wrap between" style={{ marginBottom: 16, maxWidth: 680 }}>
+      <div className="row wrap between" style={{ marginBottom: 16 }}>
         <div className="segmented">
           <button className={filter === 'alle' ? 'on' : ''} onClick={() => setFilter('alle')}>{L.filterAll}</button>
           <button className={filter === 'online' ? 'on' : ''} onClick={() => setFilter('online')}>{L.filterOnline}</button>
@@ -151,7 +151,7 @@ export function BankrollTracker() {
         </>
       )}
 
-      <div className="card" style={{ maxWidth: 680, marginBottom: 18 }}>
+      <div className="card" style={{ marginBottom: 18 }}>
         <div className="section-title" style={{ marginTop: 0 }}>{L.newSession}</div>
         <div className="grid cols-2" style={{ gap: 12 }}>
           <label>
@@ -195,7 +195,7 @@ export function BankrollTracker() {
       {filteredSessions.length > 0 && (
         <>
           <div className="section-title">{L.sessionsTitle}</div>
-          <div className="grid" style={{ maxWidth: 680 }}>
+          <div className="grid">
             {[...filteredSessions].reverse().map((s: SessionEntry) => {
               const p = s.cashOut - s.buyIn;
               return (

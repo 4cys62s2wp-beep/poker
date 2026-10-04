@@ -13,6 +13,7 @@ import { STR as PRO_STR } from '../../i18n/pages/pro';
 import { ProLock } from '../../components/pro/ProLock';
 import { usePro } from '../../lib/pro/ProProvider';
 import { Rueckmeldung } from '../../components/Rueckmeldung';
+import { Zurueck } from '../../components/ui';
 
 interface Spot {
   chartIdx: number;
@@ -66,14 +67,12 @@ export function PushFoldTrainer() {
   if (!unlocked) {
     return (
       <div>
-        <Link to="/lernen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-          {L.back}
-        </Link>
+        <Zurueck to="/lernen" />
         <div className="page-header">
           <h1>{L.title}</h1>
           <p className="sub">{L.sub}</p>
         </div>
-        <div style={{ maxWidth: 720 }}>
+        <div>
           <ProLock text={P.lockedTrainer} />
         </div>
       </div>
@@ -82,9 +81,7 @@ export function PushFoldTrainer() {
 
   return (
     <div>
-      <Link to="/lernen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        {L.back}
-      </Link>
+      <Zurueck to="/lernen" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>
@@ -92,7 +89,7 @@ export function PushFoldTrainer() {
 
       <Uebungsstand werte={stats} />
 
-      <div className="card" style={{ maxWidth: 720 }}>
+      <div className="card">
         <p style={{ marginBottom: 14 }}>
           {L.introBefore}
           <strong style={{ color: 'var(--auszeichnung-lesbar)' }}>{L.stackApprox(chart.stack)}</strong>

@@ -3,7 +3,6 @@ import type { PushStack } from '../../content/pushfold';
 
 export const STR = defineStrings(
   {
-    back: '← Trainer',
     title: 'Push/Fold-Trainer',
     sub: 'Vereinfachte Nash-Ranges für 10 bb und 5 bb · ohne Antes',
     streak: (n: number) => `Serie: ${n}`,
@@ -22,7 +21,6 @@ export const STR = defineStrings(
       'Vereinfachte Nash-Push-Ranges ohne Antes. Mit Antes wird die All-in-Range noch breiter; gegen Spieler, die zu wenig callen, ebenfalls.',
   },
   {
-    back: '← Trainers',
     title: 'Push/Fold Trainer',
     sub: 'Simplified Nash ranges for 10 bb and 5 bb · no antes',
     streak: (n: number) => `Streak: ${n}`,

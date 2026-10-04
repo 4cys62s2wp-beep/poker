@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { suchbar } from '../lib/eingabe/suche';
 import { STR as NAV } from '../i18n/pages/layout';
-import { BackLink } from '../components/ui';
+import { Zurueck } from '../components/ui';
 import { Link } from 'react-router-dom';
 import { moduleProgress, useAppState } from '../state/AppState';
 import { rangnamen } from '../lib/rang/titel';
@@ -134,7 +134,7 @@ export function LearnPage() {
 
   return (
     <div>
-      <BackLink to="/" label={NAV[lang].start} />
+      <Zurueck to="/" />
       <div className="page-header">
         <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>
@@ -232,14 +232,14 @@ export function LearnPage() {
         /* Ein Platzhalter ist kein Name: Er verschwindet beim ersten
            Zeichen, und dann heißt das Feld „Eingabefeld" (E-043). */
         aria-label={L.searchLabel}
-        style={{ maxWidth: 480, margin: 'var(--sp-5) 0 var(--sp-5)' }}
+        style={{ margin: 'var(--sp-5) 0 var(--sp-5)' }}
         placeholder={L.searchPlaceholder}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
 
       {searching && (
-        <div style={{ maxWidth: 720, marginBottom: 24 }}>
+        <div style={{ marginBottom: 24 }}>
           {hits.length === 0 && <p className="muted">{L.noHits}</p>}
           {hits.map((h) => (
             <Link key={h.lessonId} to={`/lernen/${h.moduleId}/${h.lessonId}`} className="card clickable" style={{ display: 'block', marginBottom: 10, padding: 14 }}>

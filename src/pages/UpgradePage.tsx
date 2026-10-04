@@ -83,7 +83,7 @@ export function UpgradePage() {
       </div>
 
       {pro ? (
-        <div className="card" style={{ maxWidth: 560, marginBottom: 22, borderColor: 'rgba(88,179,104,0.32)' }}>
+        <div className="card" style={{ marginBottom: 22, borderColor: 'rgba(88,179,104,0.32)' }}>
           <div className="row" style={{ marginBottom: 10 }}>
             <span className="pill ok"><Icon name="check" size={13} /> {L.proBadge}</span>
           </div>
@@ -97,14 +97,14 @@ export function UpgradePage() {
       ) : (
         <>
           {trialActive && (
-            <div className="card" style={{ maxWidth: 560, marginBottom: 22, borderColor: 'rgba(212,175,94,0.34)' }}>
+            <div className="card" style={{ marginBottom: 22, borderColor: 'rgba(212,175,94,0.34)' }}>
               <div style={{ fontWeight: 800, marginBottom: 5 }}>{L.trialTitle(trialDaysLeft)}</div>
               <p className="small muted">{L.trialSub}</p>
             </div>
           )}
 
           {/* Preisblock */}
-          <div className="card" style={{ maxWidth: 560, marginBottom: 22 }}>
+          <div className="card" style={{ marginBottom: 22 }}>
             {hasAnnual && (
               <div className="row" style={{ marginBottom: 16, gap: 8 }}>
                 <button
@@ -225,7 +225,7 @@ export function UpgradePage() {
 
       {/* FAQ */}
       <div className="section-title">{L.faqTitle}</div>
-      <div style={{ maxWidth: 640 }}>
+      <div>
         {L.faq.map((f) => (
           <details key={f.q} className="card" style={{ marginBottom: 9, padding: '13px 16px' }}>
             <summary style={{ fontWeight: 700, cursor: 'pointer' }}>{f.q}</summary>

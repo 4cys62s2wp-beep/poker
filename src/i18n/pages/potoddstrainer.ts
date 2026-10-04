@@ -2,7 +2,6 @@ import { defineStrings } from '..';
 
 export const STR = defineStrings(
   {
-    back: '← Trainer',
     title: 'Pot-Odds-Trainer',
     sub: 'Formel: Call ÷ (Pot + Bet + Call)',
     streak: (n: number) => `Serie: ${n}`,
@@ -20,7 +19,6 @@ export const STR = defineStrings(
     nextProblem: 'Nächste Aufgabe',
   },
   {
-    back: '← Trainers',
     title: 'Pot Odds Trainer',
     sub: 'Formula: call ÷ (pot + bet + call)',
     streak: (n: number) => `Streak: ${n}`,

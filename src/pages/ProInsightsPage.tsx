@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
-import { BackLink } from '../components/ui';
+import { Zurueck } from '../components/ui';
 import { Icon } from '../components/Icon';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/proinsights';
@@ -23,14 +23,14 @@ export function ProInsightsPage() {
     const teaserInitials = teaser.name.split(' ').map((w) => w[0]).join('').slice(0, 2);
     return (
       <div>
-        <BackLink to="/lernen" label={NAV[lang].navLearn} />
+        <Zurueck to="/lernen" />
       <div className="page-header">
           <h1>{L.title}</h1>
           <p className="sub">{L.sub}</p>
         </div>
 
         <div className="section-title">{L.headsTitle}</div>
-        <div className="grid" style={{ maxWidth: 780 }}>
+        <div className="grid">
           <div className="card">
             <div className="row">
               <span
@@ -64,14 +64,14 @@ export function ProInsightsPage() {
 
   return (
     <div>
-      <BackLink to="/lernen" label={NAV[lang].navLearn} />
+      <Zurueck to="/lernen" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>
       </div>
 
       <div className="section-title">{L.headsTitle}</div>
-      <div className="grid" style={{ maxWidth: 780 }}>
+      <div className="grid">
         {content.proProfiles.map((pro) => {
           const open = openId === pro.id;
           const initials = pro.name.split(' ').map((w) => w[0]).join('').slice(0, 2);
@@ -123,7 +123,7 @@ export function ProInsightsPage() {
       </div>
 
       <div className="section-title">{L.mistakesTitle}</div>
-      <div style={{ maxWidth: 780 }}>
+      <div>
         {content.beginnerMistakes.map((m, i) => (
           <div key={i} className="tell-item">
             <span
@@ -145,7 +145,7 @@ export function ProInsightsPage() {
       </div>
 
       <div className="section-title">{L.edgeTitle}</div>
-      <div className="grid cols-2" style={{ maxWidth: 900 }}>
+      <div className="grid cols-2">
         {content.edgeSpots.map((e, i) => (
           <div key={i} className="card">
             <div className="row" style={{ marginBottom: 8 }}>
@@ -159,7 +159,7 @@ export function ProInsightsPage() {
         ))}
       </div>
 
-      <p className="small faint" style={{ maxWidth: 780, marginTop: 24 }}>{content.proSourceNote}</p>
+      <p className="small faint" style={{ marginTop: 24 }}>{content.proSourceNote}</p>
       <div className="suit-deco">♠ ♥ ♦ ♣</div>
     </div>
   );

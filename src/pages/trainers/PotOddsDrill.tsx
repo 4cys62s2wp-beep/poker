@@ -37,7 +37,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BackLink } from '../../components/ui';
+import { Zurueck } from '../../components/ui';
 import { CardsRow } from '../../components/PlayingCard';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useAppState } from '../../state/AppState';
@@ -194,7 +194,7 @@ export function PotOddsDrill() {
   if (schlimm) {
     return (
       <div>
-        <BackLink to="/lernen" label={L.back} />
+        <Zurueck to="/lernen" />
         <div className="card" style={{ borderColor: 'var(--danger)' }}>
           <div className="drill-fehler-titel">{L.errorTitle}</div>
           <p className="small" style={{ marginTop: 'var(--sp-2)' }}>{schlimm}</p>
@@ -209,7 +209,7 @@ export function PotOddsDrill() {
   if (adressfehler) {
     return (
       <div>
-        <BackLink to="/lernen" label={L.back} />
+        <Zurueck to="/lernen" />
         <div className="card">
           <div className="drill-fehler-titel">{L.addressTitle}</div>
           <p className="small" style={{ marginTop: 'var(--sp-2)' }}>
@@ -231,7 +231,7 @@ export function PotOddsDrill() {
   if (!daten || !aufgabe || !aufloesung) {
     return (
       <div>
-        <BackLink to="/lernen" label={L.back} />
+        <Zurueck to="/lernen" />
         <p className="muted">{L.loading}</p>
       </div>
     );
@@ -243,7 +243,7 @@ export function PotOddsDrill() {
 
   return (
     <div>
-      <BackLink to="/lernen" label={L.back} />
+      <Zurueck to="/lernen" />
 
       <Uebungsstand werte={data.trainers[DRILL_KENNUNG]} />
       <div className="drill">

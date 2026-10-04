@@ -5,7 +5,7 @@ import { STR } from '../../i18n/pages/oddstables';
    erscheinen als Vorschau auf der Nachschlagen-Seite, und eine zweite
    Abschrift läuft irgendwann auseinander. */
 import { chanceEineKarte as oneCard, chanceZweiKarten as twoCards } from '../../lib/poker/outs';
-import { BackLink } from '../../components/ui';
+import { Zurueck } from '../../components/ui';
 import { STR as NAV } from '../../i18n/pages/layout';
 
 export function OddsTables() {
@@ -15,14 +15,14 @@ export function OddsTables() {
 
   return (
     <div>
-      <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
+      <Zurueck to="/nachschlagen" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>
       </div>
 
       <div className="section-title">{L.sectionOuts}</div>
-      <div className="table-wrap" style={{ maxWidth: 760 }}>
+      <div className="table-wrap">
         <table className="data">
           <thead>
             <tr>
@@ -46,12 +46,12 @@ export function OddsTables() {
           </tbody>
         </table>
       </div>
-      <p className="small faint" style={{ maxWidth: 700 }}>
+      <p className="small faint">
         {L.outsNote}
       </p>
 
       <div className="section-title">{L.sectionMatchups}</div>
-      <div className="table-wrap" style={{ maxWidth: 760 }}>
+      <div className="table-wrap">
         <table className="data">
           <thead>
             <tr>
@@ -73,7 +73,7 @@ export function OddsTables() {
       </div>
 
       <div className="section-title">{L.sectionPotOdds}</div>
-      <div className="table-wrap" style={{ maxWidth: 760 }}>
+      <div className="table-wrap">
         <table className="data">
           <thead>
             <tr>
@@ -95,7 +95,7 @@ export function OddsTables() {
       </div>
 
       <div className="section-title">{L.sectionPreflop}</div>
-      <div className="table-wrap" style={{ maxWidth: 760 }}>
+      <div className="table-wrap">
         <table className="data">
           <thead>
             <tr>

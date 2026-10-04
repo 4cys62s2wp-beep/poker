@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
-import { BackLink, EmptyState } from '../components/ui';
+import { Zurueck, EmptyState } from '../components/ui';
 import { Link } from 'react-router-dom';
 import type { QuizQuestion } from '../content/types';
 import { Icon } from '../components/Icon';
@@ -73,7 +73,7 @@ export function ReviewPage() {
 
   return (
     <div>
-      <BackLink to="/lernen" label={NAV[lang].navLearn} />
+      <Zurueck to="/lernen" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">
@@ -88,13 +88,13 @@ export function ReviewPage() {
       </div>
 
       {!unlocked && (
-        <div style={{ maxWidth: 640 }}>
+        <div>
           <ProLock text={P.lockedGeneric} />
         </div>
       )}
 
       {unlocked && !current && data.reviews.length === 0 && (
-        <div style={{ maxWidth: 640 }}>
+        <div>
           <EmptyState
             icon={zeichenFuer('/lernen/wiederholen')}
             title={L.emptyTitle}
@@ -106,7 +106,7 @@ export function ReviewPage() {
       )}
 
       {unlocked && !current && data.reviews.length > 0 && (
-        <div className="card" style={{ maxWidth: 640, textAlign: 'center', padding: 36 }}>
+        <div className="card" style={{ textAlign: 'center', padding: 36 }}>
           <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
             <Icon name={zeichenFuer('/lernen/wiederholen')} size={38} />
           </div>
@@ -119,7 +119,7 @@ export function ReviewPage() {
       )}
 
       {unlocked && current && (
-        <div style={{ maxWidth: 680 }}>
+        <div>
           <div className="card">
             <div className="row between wrap" style={{ marginBottom: 14 }}>
               <span className="small faint">

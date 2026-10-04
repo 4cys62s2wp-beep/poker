@@ -2,7 +2,7 @@ import { defineStrings } from '..';
 
 export const STR = defineStrings(
   {
-    title: 'Odds-Spickzettel',
+    title: 'Odds-Tabellen',
     sub: 'Die wichtigsten Zahlen zum Nachschlagen – exakt berechnet, nicht nur Faustregel.',
     fmtPct: (x: number, digits = 1) => (100 * x).toFixed(digits).replace('.', ',') + ' %',
     fmtIntPct: (n: number) => `${n} %`,
@@ -65,7 +65,7 @@ export const STR = defineStrings(
     ],
   },
   {
-    title: 'Odds Cheat Sheet',
+    title: 'Odds Tables',
     sub: 'The key numbers for quick reference – calculated exactly, not just rules of thumb.',
     fmtPct: (x: number, digits = 1) => (100 * x).toFixed(digits) + '%',
     fmtIntPct: (n: number) => `${n}%`,

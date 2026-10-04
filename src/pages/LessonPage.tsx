@@ -11,6 +11,7 @@ import { ProLock } from '../components/pro/ProLock';
 import { usePro } from '../lib/pro/ProProvider';
 import { isFreeLesson } from '../lib/pro/plan';
 import { Icon } from '../components/Icon';
+import { Zurueck } from '../components/ui';
 
 export function LessonPage() {
   const { moduleId, lessonId } = useParams();
@@ -31,7 +32,8 @@ export function LessonPage() {
   useEffect(() => {
     setShowQuiz(false);
     setQuizDone(false);
-    window.scrollTo(0, 0);
+    /* Nach oben scrollt die Scrollverwaltung beim Seitenwechsel — hier nicht
+       noch einmal, sonst überschriebe sie das Zurück an die alte Stelle. */
   }, [moduleId, lessonId]);
 
   if (!found) {
@@ -60,9 +62,7 @@ export function LessonPage() {
 
   return (
     <div>
-      <Link to={`/lernen/${module.id}`} className="pill" style={{ display: 'inline-flex' }}>
-        ← {module.title}
-      </Link>
+      <Zurueck to={`/lernen/${module.id}`} label={module.title} />
 
       <div className="page-header" style={{ marginTop: 14 }}>
         <div className="row wrap" style={{ marginBottom: 8 }}>
@@ -77,7 +77,7 @@ export function LessonPage() {
       </div>
 
       {locked && (
-        <div style={{ maxWidth: 720 }}>
+        <div>
           <ProLock text={P.lockedModule} />
         </div>
       )}
@@ -151,7 +151,7 @@ export function LessonPage() {
       )}
 
       {!locked && showQuiz && (
-        <div style={{ maxWidth: 720 }}>
+        <div>
           {!quizDone && (
             <button className="btn ghost sm" style={{ marginBottom: 16 }} onClick={() => setShowQuiz(false)}>
               {L.backToLesson}

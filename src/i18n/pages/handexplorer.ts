@@ -2,7 +2,7 @@ import { defineStrings } from '..';
 
 export const STR = defineStrings(
   {
-    title: 'Starthand-Explorer',
+    title: 'Starthände',
     sub: 'Wähle eine Hand: Gewinnwahrscheinlichkeit gegen 1, 3 und 5 Gegner, Einordnung und konkrete Empfehlung, wie du sie spielst.',
 
     /* ── Die zweite Auswahl (E-039) ─────────────────────────────────── */
@@ -49,7 +49,7 @@ export const STR = defineStrings(
     comboOffsuit: ' (offsuit)',
   },
   {
-    title: 'Starting Hand Explorer',
+    title: 'Starting Hands',
     sub: 'Tap a hand in the matrix: win probability against 1, 3, and 5 opponents, its category, and concrete advice on how to play it.',
     waehleTitel: 'Pick a hand',
     ersteKarte: 'First card',

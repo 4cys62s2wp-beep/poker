@@ -1,6 +1,7 @@
 import { bereichVon } from './lib/design/bereich';
 import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
+import { Scrollverwaltung } from './components/Scrollverwaltung';
 import { Layout } from './components/Layout';
 import { horcheAufBedienung } from './lib/design/haptik';
 import { merkeGelungenenStart } from './components/ErrorBoundary';
@@ -109,6 +110,7 @@ export function App() {
 
   return (
     <>
+      <Scrollverwaltung />
       {!istGeteilteAufgabe(ort.pathname) && <Onboarding />}
       <PaywallModal />
       {/* Der dunkle Satz gilt für alles darunter — er hängt am Attribut,

@@ -3,7 +3,6 @@ import { defineStrings } from '..';
 /* Texte des Tages-Quiz. */
 export const STR = defineStrings(
   {
-    back: '← Trainer',
     title: 'Tages-Quiz',
     sub: 'Fünf zufällige Fragen quer durch alle Module – jeden Tag neu. Bonus: 30 XP plus 4 XP pro richtiger Antwort.',
     doneTitle: 'Heute schon erledigt!',
@@ -14,7 +13,6 @@ export const STR = defineStrings(
     start: 'Tages-Quiz starten',
   },
   {
-    back: '← Trainers',
     title: 'Daily Quiz',
     sub: 'Five random questions from across all modules – new every day. Bonus: 30 XP plus 4 XP per correct answer.',
     doneTitle: 'Already done for today!',

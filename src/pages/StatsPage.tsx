@@ -10,7 +10,7 @@
    33 Tests belegt. Hier wird nur dargestellt. */
 
 import { Link } from 'react-router-dom';
-import { EmptyState, PageHeader, StatPill } from '../components/ui';
+import { EmptyState, PageHeader, StatPill, Zurueck } from '../components/ui';
 import { useAppState } from '../state/AppState';
 import { zeichenFuer } from '../lib/zeichen';
 import { useLang } from '../i18n';
@@ -51,7 +51,7 @@ export function StatsPage() {
   if (stats.hands === 0) {
     return (
       <div>
-        <PageHeader title={L.title} backTo="/lernen" backLabel={NV.navLearn} />
+        <PageHeader title={L.title} backTo="/lernen" />
         <EmptyState
           icon={zeichenFuer('/lernen/statistik')}
           title={L.emptyTitle}
@@ -76,7 +76,6 @@ export function StatsPage() {
         title={L.title}
         sub={L.sub}
         backTo="/lernen"
-        backLabel={NV.navLearn}
       />
 
       {/* ── Umfang und Belastbarkeit ──────────────────────────────────── */}
@@ -213,9 +212,7 @@ export function StatsPage() {
         />
       </div>
 
-      <p className="small faint" style={{ marginTop: 'var(--sp-5)' }}>
-        <Link to="/lernen">← {NV.navLearn}</Link>
-      </p>
+      <div style={{ marginTop: 'var(--sp-5)' }}><Zurueck to="/lernen" /></div>
     </div>
   );
 }

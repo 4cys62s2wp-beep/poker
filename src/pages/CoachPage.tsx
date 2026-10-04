@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { zahlAusEingabe } from '../lib/eingabe/zahl';
 import { STR as NAV } from '../i18n/pages/layout';
-import { BackLink } from '../components/ui';
+import { Zurueck } from '../components/ui';
 import { CardPicker } from '../components/CardPicker';
 import { CardsRow } from '../components/PlayingCard';
 import type { Card } from '../lib/poker/cards';
@@ -136,7 +136,7 @@ export function CoachPage() {
 
   return (
     <div>
-      <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
+      <Zurueck to="/nachschlagen" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">
@@ -145,7 +145,7 @@ export function CoachPage() {
       </div>
 
       {step === 'setup' && (
-        <div className="card" style={{ maxWidth: 640 }}>
+        <div className="card">
           <div className="stat-label satz" style={{ marginBottom: 8 }}>{L.playersQuestion}</div>
           <div className="segmented" style={{ marginBottom: 20 }}>
             {[2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
@@ -207,7 +207,7 @@ export function CoachPage() {
       )}
 
       {step === 'hand' && (
-        <div className="card" style={{ maxWidth: 640 }}>
+        <div className="card">
           <CardPicker
             count={2}
             used={used}
@@ -226,7 +226,7 @@ export function CoachPage() {
       )}
 
       {step === 'flop-in' && (
-        <div className="card" style={{ maxWidth: 640 }}>
+        <div className="card">
           <div className="row" style={{ marginBottom: 14 }}>
             <span className="stat-label">{L.yourHand}</span>
             <CardsRow cards={hole} size="sm" />
@@ -244,7 +244,7 @@ export function CoachPage() {
       )}
 
       {(step === 'turn-in' || step === 'river-in') && (
-        <div className="card" style={{ maxWidth: 640 }}>
+        <div className="card">
           <div className="row wrap" style={{ marginBottom: 14 }}>
             <span className="stat-label">{L.handShort}</span>
             <CardsRow cards={hole} size="sm" />
@@ -264,7 +264,7 @@ export function CoachPage() {
       )}
 
       {showAnalysis && (
-        <div style={{ maxWidth: 680 }}>
+        <div>
           <div className="card" style={{ marginBottom: 14 }}>
             <div className="row between wrap" style={{ marginBottom: 14 }}>
               <div className="row wrap">

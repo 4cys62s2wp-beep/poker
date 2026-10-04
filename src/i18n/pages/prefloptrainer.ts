@@ -5,7 +5,6 @@ type RfiPosition = Exclude<Position, 'BB'>;
 
 export const STR = defineStrings(
   {
-    back: '← Trainer',
     title: 'Preflop-Trainer',
     sub: '6-max Cash Game · 100 bb effektiv',
     streak: (n: number) => `Serie: ${n}`,
@@ -30,7 +29,6 @@ export const STR = defineStrings(
     nextHand: 'Nächste Hand',
   },
   {
-    back: '← Trainers',
     title: 'Preflop Trainer',
     sub: '6-max cash game · 100 bb effective',
     streak: (n: number) => `Streak: ${n}`,

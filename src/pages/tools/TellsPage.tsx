@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import type { TellCategory } from '../../content/tells';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/tellspage';
-import { BackLink } from '../../components/ui';
+import { Zurueck } from '../../components/ui';
 import { STR as NAV } from '../../i18n/pages/layout';
 
 function Stars({ n }: { n: number }) {
@@ -26,7 +26,7 @@ export function TellsPage() {
 
   return (
     <div>
-      <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
+      <Zurueck to="/nachschlagen" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>
@@ -47,7 +47,7 @@ export function TellsPage() {
         ))}
       </div>
 
-      <div style={{ maxWidth: 760 }}>
+      <div>
         {filtered.map((t) => (
           <div key={t.name} className="tell-item">
             <span className="t-ico">{t.icon}</span>
@@ -63,7 +63,7 @@ export function TellsPage() {
         ))}
       </div>
 
-      <div className="card" style={{ maxWidth: 760, marginTop: 22 }}>
+      <div className="card" style={{ marginTop: 22 }}>
         <div style={{ fontWeight: 800, marginBottom: 6 }}>{L.ruleTitle}</div>
         <p className="small muted">{L.ruleText}</p>
       </div>

@@ -14,7 +14,7 @@
 import { useMemo, useState } from 'react';
 import { zahlAusEingabe } from '../../lib/eingabe/zahl';
 import { Link, useNavigate } from 'react-router-dom';
-import { BackLink } from '../../components/ui';
+import { Zurueck } from '../../components/ui';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/live';
 import { VOREINSTELLUNG, baueStruktur, type Tempo } from '../../lib/live/blinds';
@@ -99,7 +99,7 @@ export function EinrichtenPage() {
 
   return (
     <div>
-      <BackLink to="/session" label={L.zurueck} />
+      <Zurueck to="/session" />
       <div className="page-header">
         <h1>{L.einrichtenTitel}</h1>
         <p className="sub">{L.einrichtenSub}</p>

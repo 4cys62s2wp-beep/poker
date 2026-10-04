@@ -127,7 +127,7 @@ Regel in DESIGN.md: Die Augenbraue nennt den Bereich oder entfällt; kein Englis
 **Ziel:** Von jeder Scrolltiefe und auf jedem Gerät ist der Rückweg einen Tipp entfernt, Zurück führt an die Stelle, an der man war, und Desktop und Tablet nutzen ihre Breite statt einer linksbündigen Handyspalte.  
 **Baut auf:** 1
 
-### [ ] 2.1 Klebende Kopfzeile mit Ort, Rückweg und Lesefortschritt  
+### [x] 2.1 Klebende Kopfzeile mit Ort, Rückweg und Lesefortschritt  
 *Wirkung 5 · Aufwand M*
 
 .mobile-top (global.css ab Z. 655, Layout.tsx Z. 184, heute position: static) wird position: sticky; top: 0, mit safe-area und deckendem --bg; der Haarstrich erscheint erst nach dem Scrollen. Nach dem Scrollen zeigt eine kompakte Mittelzeile „‹ Bereich · Seitentitel“, der Titel kommt aus der titles-Tabelle in Layout.tsx. In Lektionen kommt ein 2-px-Lesefortschritt dazu. Für Sprungziele scroll-margin-top setzen. Die Kopfzeile wird beim Scrollen nicht aus- und eingeblendet. Danach die Startseite mit npm run daumen nachmessen (Regel 10.1). Eine Tab-Leiste kommt nicht in den Fahrplan: E-032 und DESIGN §10 schließen sie ausdrücklich aus, und den Hauptnutzen, den Rückweg aus der Tiefe einer langen Seite, liefert die klebende Kopfzeile ohne diesen Bruch. DESIGN 9a.2 bevorzugt sticky ausdrücklich.
@@ -140,7 +140,7 @@ Regel in DESIGN.md: Die Augenbraue nennt den Bereich oder entfällt; kein Englis
 
 </details>
 
-### [ ] 2.2 Scrollposition: neue Seiten oben, Zurück an die alte Stelle  
+### [x] 2.2 Scrollposition: neue Seiten oben, Zurück an die alte Stelle  
 *Wirkung 4 · Aufwand S*
 
 history.scrollRestoration = 'manual'. Bei PUSH auf 0 scrollen und den Fokus auf die h1 (tabIndex=-1) legen. Bei POP die gespeicherte Position erst nach dem Rendern wiederherstellen (useLayoutEffect plus requestAnimationFrame), weil lazy geladene Seiten sonst auf 0 klemmen. Ein Test prüft /lernen → Trainer → zurück in beide Richtungen. Zusätzlich ruft PlayPage beim startSession() scrollTo(0,0) auf.
@@ -152,7 +152,7 @@ history.scrollRestoration = 'manual'. Bei PUSH auf 0 scrollen und den Fokus auf 
 
 </details>
 
-### [ ] 2.3 Ein Zurück-Baustein und ein Name pro Ort  
+### [x] 2.3 Ein Zurück-Baustein und ein Name pro Ort  
 *Wirkung 4 · Aufwand S*
 
 Eine Tabelle Route → Name, abgeleitet aus layout.ts, mit den Kurzformen „Suchen“ und „Du“ als zweiter Spalte. Eine <Zurueck>-Komponente (BackLink) holt ihr Label nur noch daraus und ersetzt die Pille in LessonPage.tsx 62, ModulePage und den 8 Trainern, die Pille in voller Breite und den Ghost-Link „← Zurück zur Lektion“. „← Trainer“ (i18n/pages/*trainer.ts back, dailyquiz.ts) führt auf eine Seite, die es nicht mehr gibt (App.tsx:146 leitet um), und wird so automatisch zu „← Lernen“. Die Prüfung aus E-042 wird erweitert: Die Beschriftung muss dem Titel des Ziels entsprechen. Seitentitel als Ortsnamen: „Schnell etwas wissen“ wird „Nachschlagen“; Lernen/Lernpfad/Dein Weg/Dein Curriculum werden vereinheitlicht, ebenso Starthände/Starthand-Explorer, Odds/Odds-Tabellen/Odds-Spickzettel, Spielstil/Spielstil-Analyse/Dein Spielstil und „Du“/„Profil & Fortschritt“.
@@ -167,7 +167,7 @@ Eine Tabelle Route → Name, abgeleitet aus layout.ts, mit den Kurzformen „Suc
 
 </details>
 
-### [ ] 2.4 Desktop und Tablet: zentrierter Inhalt, einheitliche Breiten, zweispaltige Startseite  
+### [x] 2.4 Desktop und Tablet: zentrierter Inhalt, einheitliche Breiten, zweispaltige Startseite  
 *Wirkung 5 · Aufwand L*
 
 .main (global.css Z. 643, max-width 1140px) bekommt margin-inline: auto. Die Breiten-Tokens aus Paket 1 werden je Seitentyp eingesetzt: Auf dem Lernpfad stehen heute Rangkarte (~390), Modulliste (~520) und Trainerraster (~830) auf einer Seite; im Profil die Inline-maxWidth 520 sowie Karten mit 462, 523 und 440 px; im Drill stehen die Kacheln links, der Titel zentriert. Die Startseite wird ab etwa 1100 px zweispaltig: links Hand des Tages und Lernen, rechts Live-Session, Nachschlagen und „n fällig“. Ab 1200 px bekommt die Lektion ein mitlaufendes Inhaltsverzeichnis rechts (nachrangig). Die Höhenregeln 10.1–10.7 sind fürs Handy gemessen, eine Entscheidung zum Desktop-Layout gibt es nicht.
@@ -179,7 +179,7 @@ Eine Tabelle Route → Name, abgeleitet aus layout.ts, mit den Kurzformen „Suc
 
 </details>
 
-### [ ] 2.5 Seitenleiste: genau ein aktiver Eintrag, Live-Session vollständig, Fußzeile immer sichtbar  
+### [x] 2.5 Seitenleiste: genau ein aktiver Eintrag, Live-Session vollständig, Fußzeile immer sichtbar  
 *Wirkung 4 · Aufwand S*
 
 In Layout.tsx (Z. 35–57) die Aktiv-Logik so bauen, dass der längste passende Pfad gewinnt. Ein bloßes end auf /lernen reicht nicht, sonst wäre auf /lernen/m1/… nichts mehr aktiv. Heute sind auf #/lernen/uebungstisch, /wiederholen, /pros und /statistik zwei Einträge aktiv, auf #/nachschlagen/coach ebenfalls zwei, auf #/session und #/session/live/einrichten keiner. Die Live-Gruppe bekommt „Live-Session“ (/session, mit grünem Punkt und Blinds, wenn eine Runde läuft), „Abend führen“ (bei laufender Runde Ziel /session/live) und „Frühere Abende“. Die Gruppe Lernen wird auf Lernpfad, Üben, Wiederholen (n) und Übungstisch gekürzt. „Du“, Level/XP und Rechtliches stehen als feste Fußzeile (position: sticky; bottom: 0), damit bei 768 und 860 px Höhe nichts abgeschnitten wird. In der titles-Tabelle /session/live/einrichten und /session/abende ergänzen. Keine Symbolspalte bei 920–1200 px.
@@ -194,7 +194,7 @@ In Layout.tsx (Z. 35–57) die Aktiv-Logik so bauen, dass der längste passende 
 
 </details>
 
-### [ ] 2.6 Meldungen nicht über Marke und Notch  
+### [x] 2.6 Meldungen nicht über Marke und Notch  
 *Wirkung 3 · Aufwand S*
 
 .toast-stack (global.css Z. 1664, heute top: 16px; right: 16px) auf top: calc(var(--safe-top) + 8px) setzen, auf schmalen Geräten mittig mit min(92vw, 360px) unter der Kopfzeile oder am unteren Rand, nie über Marke und „Du“.

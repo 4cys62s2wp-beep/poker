@@ -62,17 +62,17 @@ export function CancelPage() {
       </div>
 
       {!enabled ? (
-        <div className="card" style={{ maxWidth: 560 }}>
+        <div className="card">
           <p className="small muted">{L.cancelUnavailable}</p>
         </div>
       ) : sent ? (
-        <div className="card" style={{ maxWidth: 560, borderColor: 'rgba(88,179,104,0.32)' }}>
+        <div className="card" style={{ borderColor: 'rgba(88,179,104,0.32)' }}>
           <div style={{ fontWeight: 800, marginBottom: 6 }}>{L.cancelSent}</div>
           <p className="small muted">{L.cancelSentBody}</p>
           {target && <p className="small faint" style={{ marginTop: 8 }}>{L.cancelMailFallback}</p>}
         </div>
       ) : (
-        <form className="card" style={{ maxWidth: 560 }} onSubmit={submit}>
+        <form className="card" onSubmit={submit}>
           <label className="stat-label" htmlFor="c-name" style={{ display: 'block', marginBottom: 5 }}>
             {L.cancelName}
           </label>

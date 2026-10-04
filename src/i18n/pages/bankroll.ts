@@ -4,7 +4,7 @@ import { defineStrings } from '..';
    bewusst deutsch (Datenexport, kein UI-Text). */
 export const STR = defineStrings(
   {
-    title: 'Bankroll-Tracker',
+    title: 'Bankroll',
     sub: 'Halte jede Session ehrlich fest – live und online. Die Daten bleiben lokal auf deinem Gerät.',
     filterAll: 'Alle',
     filterOnline: 'Online',
@@ -46,7 +46,7 @@ export const STR = defineStrings(
     deleteAria: 'Session löschen',
   },
   {
-    title: 'Bankroll Tracker',
+    title: 'Bankroll',
     sub: 'Log every session honestly – live and online. Your data stays local on your device.',
     filterAll: 'All',
     filterOnline: 'Online',

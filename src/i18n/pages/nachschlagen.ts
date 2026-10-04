@@ -8,10 +8,8 @@ import { defineStrings } from '..';
    Weg zu einer Antwort ist. */
 export const STR = defineStrings(
   {
-    eyebrow: 'Nachschlagen',
-    title: 'Schnell etwas wissen',
+    title: 'Nachschlagen',
     sub: 'Hand, Begriff oder Werkzeug finden.',
-    backHome: 'Start',
 
     searchLabel: 'Suchen',
     searchPlaceholder: 'Begriff, Hand oder Thema …',
@@ -47,10 +45,8 @@ export const STR = defineStrings(
     tellsInhalt: (n: number) => `${n} Tells, jeder mit Zuverlässigkeit`,
   },
   {
-    eyebrow: 'Reference',
-    title: 'Look something up',
+    title: 'Reference',
     sub: 'Find a hand, a term or a tool.',
-    backHome: 'Home',
 
     searchLabel: 'Search',
     searchPlaceholder: 'Term, hand or topic …',

@@ -5,7 +5,7 @@ import { parseCard, type Card } from '../../lib/poker/cards';
 import { equityVsHands } from '../../lib/poker/equity';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/equitycalc';
-import { BackLink } from '../../components/ui';
+import { Zurueck } from '../../components/ui';
 import { STR as NAV } from '../../i18n/pages/layout';
 
 interface ParseResult {
@@ -82,7 +82,7 @@ export function EquityCalc() {
 
   return (
     <div>
-      <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
+      <Zurueck to="/nachschlagen" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">
@@ -90,7 +90,7 @@ export function EquityCalc() {
         </p>
       </div>
 
-      <div className="card" style={{ maxWidth: 640 }}>
+      <div className="card">
         <div className="grid" style={{ gap: 12 }}>
           <label>
             <div className="stat-label" style={{ marginBottom: 5 }}>{L.hand1}</div>

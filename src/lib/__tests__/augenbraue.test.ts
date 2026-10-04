@@ -11,8 +11,6 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { STR as LERNEN } from '../../i18n/pages/learn';
-import { STR as NACHSCHLAGEN } from '../../i18n/pages/nachschlagen';
-import { STR as SESSION } from '../../i18n/pages/session';
 
 function dateien(ordner: string, endung: RegExp, aus: string[] = []): string[] {
   for (const e of readdirSync(ordner)) {
@@ -23,19 +21,16 @@ function dateien(ordner: string, endung: RegExp, aus: string[] = []): string[] {
   return aus;
 }
 
-/** Die einzigen Seiten mit Augenbraue: oberste Ebene eines Bereichs, deren
- *  Titel den Bereich nicht nennt („Lernpfad", „Schnell etwas wissen"). */
+/** Die einzige Seite mit Augenbraue: oberste Ebene eines Bereichs, deren
+ *  Titel den Bereich nicht nennt („Lernpfad"). Nachschlagen und Live-Session
+ *  heißen als Seite wie als Bereich — dort wäre die Zeile eine Wiederholung. */
 const MIT_AUGENBRAUE: Record<string, string> = {
   'src/i18n/pages/learn.ts': 'Lernen',
-  'src/i18n/pages/nachschlagen.ts': 'Nachschlagen',
-  'src/i18n/pages/session.ts': 'Live-Session',
 };
 
 describe('Augenbraue', () => {
-  it('nennt auf den drei obersten Seiten den Bereich', () => {
+  it('nennt auf dem Lernpfad den Bereich', () => {
     expect(LERNEN.de.eyebrow).toBe('Lernen');
-    expect(NACHSCHLAGEN.de.eyebrow).toBe('Nachschlagen');
-    expect(SESSION.de.eyebrow).toBe('Live-Session');
   });
 
   it('kommt in keiner anderen Textdatei als Schlüssel vor', () => {
@@ -54,7 +49,7 @@ describe('Augenbraue', () => {
     });
     expect(mit).toEqual(['src/pages/LearnPage.tsx']);
     const kopf = dateien('src/pages', /\.tsx$/).filter((d) => /eyebrow=\{/.test(readFileSync(d, 'utf8')));
-    expect(kopf.sort()).toEqual(['src/pages/ReferencePage.tsx', 'src/pages/SessionPage.tsx']);
+    expect(kopf).toEqual([]);
   });
 
   it('trägt in der Farbe des Bereichs, auch die Linie davor', () => {

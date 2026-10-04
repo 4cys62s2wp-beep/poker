@@ -1,0 +1,256 @@
+{
+  "geprueft_am": "2026-10-04T09:36:25.252Z",
+  "befunde_gesamt": 0,
+  "je_bereich": {},
+  "messwerte": {
+    "kopfzeile": [
+      {
+        "seite": "Lektion",
+        "adresse": "lernen/m1/m1-l1",
+        "seitenhoehe": 5722,
+        "gescrollt": 1800,
+        "titel": "So funktioniert Texas Hold’em",
+        "rueckweg": "Grundlagen"
+      },
+      {
+        "seite": "Glossar",
+        "adresse": "nachschlagen/glossar",
+        "seitenhoehe": 11805,
+        "gescrollt": 1800,
+        "titel": "Glossar",
+        "rueckweg": "Nachschlagen"
+      },
+      {
+        "seite": "Tells",
+        "adresse": "nachschlagen/tells",
+        "seitenhoehe": 6867,
+        "gescrollt": 1800,
+        "titel": "Tells & Reads",
+        "rueckweg": "Nachschlagen"
+      },
+      {
+        "seite": "Profil",
+        "adresse": "profil",
+        "seitenhoehe": 5437,
+        "gescrollt": 1800,
+        "titel": "Profil",
+        "rueckweg": "Start"
+      }
+    ],
+    "lesefortschritt": {
+      "oben": 0,
+      "unten": 1
+    },
+    "scroll": {
+      "vorher": 1400,
+      "neueSeite": 0,
+      "zurueck": 1400,
+      "vorwaertsErneut": 0
+    },
+    "quer": {
+      "position": "static"
+    },
+    "meldung": {
+      "top": 66,
+      "links": 16,
+      "rechts": 16,
+      "kopfUnten": 58,
+      "ueberMarke": false,
+      "ueberDu": false
+    },
+    "seitenleiste": {
+      "seiten": 25,
+      "laufenderAbend": {
+        "ziel": "#/session/live",
+        "laeuft": "25/50 läuft gerade",
+        "aktiv": [
+          "#/session"
+        ]
+      }
+    },
+    "fussleiste": [
+      {
+        "adresse": "#/",
+        "hoehe": 860,
+        "unten": 860,
+        "legalUnten": 848,
+        "duOben": 681
+      },
+      {
+        "adresse": "#/lernen",
+        "hoehe": 860,
+        "unten": 860,
+        "legalUnten": 848,
+        "duOben": 681
+      },
+      {
+        "adresse": "#/session/live/einrichten",
+        "hoehe": 860,
+        "unten": 860,
+        "legalUnten": 848,
+        "duOben": 681
+      },
+      {
+        "adresse": "#/",
+        "hoehe": 768,
+        "unten": 768,
+        "legalUnten": 756,
+        "duOben": 589
+      },
+      {
+        "adresse": "#/lernen",
+        "hoehe": 768,
+        "unten": 768,
+        "legalUnten": 756,
+        "duOben": 589
+      },
+      {
+        "adresse": "#/session/live/einrichten",
+        "hoehe": 768,
+        "unten": 768,
+        "legalUnten": 756,
+        "duOben": 589
+      }
+    ],
+    "zentrierung": [
+      {
+        "adresse": "#/",
+        "breite": "weit",
+        "rand": {
+          "links": 306,
+          "rechts": 306
+        }
+      },
+      {
+        "adresse": "#/lernen",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/lernen/m1",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/lernen/m1/m1-l1",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/lernen/drill",
+        "breite": "schmal",
+        "rand": {
+          "links": 554,
+          "rechts": 554
+        }
+      },
+      {
+        "adresse": "#/lernen/trainer/preflop",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/lernen/wiederholen",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/lernen/uebungstisch",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/nachschlagen",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/nachschlagen/glossar",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/nachschlagen/odds",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/session",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/session/bankroll",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/profil",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/freunde",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/rechtliches",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      }
+    ],
+    "startseite": {
+      "linksX": 558,
+      "rechtsX": 1097
+    },
+    "tablet": {
+      "links": 33,
+      "rechts": 33,
+      "breite": 754
+    }
+  },
+  "befunde": []
+}

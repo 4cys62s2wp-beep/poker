@@ -318,3 +318,26 @@ zwei Sätze nicht genügen, und zwar mit Angabe, woran es liegt. „Mehr Auswahl
 ist keiner — die zwei Sätze sind nicht deshalb zwei, weil niemand an mehr
 gedacht hätte.
 
+---
+
+## Mitlaufendes Inhaltsverzeichnis in der Lektion (Desktop)
+
+**Worum es geht.** Ab 1200 Pixeln Breite stünde rechts neben dem Lektionstext
+ein Inhaltsverzeichnis, das mit dem Lesen mitläuft und den aktuellen Abschnitt
+hervorhebt. Gedacht war es im Fahrplan (2.4) als nachrangiger Teil des
+Desktop-Layouts.
+
+**Warum es wertvoll wäre.** Lektionen sind 5600 Pixel lang; am Handy hilft
+die klebende Kopfzeile mit Rücklink und Lesefortschritt, am Desktop gäbe es
+mit dem Verzeichnis eine Orientierung nach Abschnitten statt nach Pixeln.
+
+**Was daran schwierig ist.** Die Lektionen sind Fließtext mit Markdown-
+Überschriften, nicht Datenstrukturen mit Abschnitten: Das Verzeichnis müsste
+aus dem gerenderten Text gelesen werden, und ein Abschnitt ohne eigene
+Überschrift (Beispiele, Merksätze) bliebe darin unsichtbar. Erst der Umbau in
+Abschnitte (FAHRPLAN 5.4) gibt dem Verzeichnis eine ehrliche Grundlage.
+
+**Was es voraussetzt.** FAHRPLAN 5.4 (Lektion in Abschnitten). Danach ist es
+eine Seitenleiste auf bestehenden Daten und ein Tag Arbeit; vorher wäre es
+eine zweite Gliederung neben der echten.
+

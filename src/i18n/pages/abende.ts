@@ -8,8 +8,6 @@ export const STR = {
     leerTitel: 'Noch kein Abend aufgezeichnet.',
     leerSub: 'Der erste wird gespeichert, sobald ein Abend beendet wird.',
     abendEinrichten: 'Abend einrichten',
-    zurueckListe: 'Frühere Abende',
-    zurueckSession: 'Live-Session',
 
     spielerTitel: (name: string) => name,
     spielerSub: (abende: number, siege: number) =>
@@ -33,8 +31,6 @@ export const STR = {
     leerTitel: 'No evening recorded yet.',
     leerSub: 'The first one is kept as soon as an evening is finished.',
     abendEinrichten: 'Set up an evening',
-    zurueckListe: 'Earlier evenings',
-    zurueckSession: 'Live session',
 
     spielerTitel: (name: string) => name,
     spielerSub: (abende: number, siege: number) =>

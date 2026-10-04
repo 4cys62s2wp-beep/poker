@@ -5,7 +5,6 @@ export const STR = defineStrings(
   {
     title: 'Auszahlung',
     sub: 'Wer bekommt am Ende wie viel? Diese Frage gehört an den Anfang des Abends – danach hat der Sieger die großzügigste Meinung.',
-    back: 'Live-Session',
 
     playersLabel: 'Spieler',
     buyInLabel: 'Buy-in je Spieler',
@@ -35,7 +34,6 @@ export const STR = defineStrings(
   {
     title: 'Payouts',
     sub: 'Who gets what at the end? Settle it at the start of the night – afterwards the winner has the most generous opinion.',
-    back: 'Live session',
 
     playersLabel: 'Players',
     buyInLabel: 'Buy-in per player',

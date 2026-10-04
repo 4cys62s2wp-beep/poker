@@ -1312,7 +1312,8 @@ Seit E-081.
 
 1. **Die Augenbraue nennt den Bereich** — Lernen, Nachschlagen, Live-Session —
    und steht nur auf der obersten Seite eines Bereichs, deren Titel den Bereich
-   nicht selbst nennt („Lernpfad", „Schnell etwas wissen", „Der Abend läuft").
+   nicht selbst nennt. Das ist heute nur der Lernpfad (Bereich „Lernen");
+   „Nachschlagen" und „Live-Session" heißen als Seite wie als Bereich.
 2. **Auf jeder tieferen Seite entfällt sie.** Dort steht über dem Titel schon
    „← Lernen"; die Zeile zu wiederholen kostet Höhe und sagt nichts.
 3. **Kein Englisch, keine Slogans, keine Beschreibung des Inhalts** — dafür
@@ -1325,4 +1326,64 @@ Seit E-081.
    und bleiben ausgenommen.
 
 Test: `augenbraue.test.ts`.
+
+## 13. Der Rahmen
+
+### Regel 13.1 — Die Kopfzeile am Handy klebt und nennt den Ort
+
+Seit E-082.
+
+1. **Sie bleibt oben**: `position: sticky; top: 0`, deckender Grund, Abstand für
+   die Statusleiste. Sie blendet beim Scrollen nicht ein und aus.
+2. **Nach dem Scrollen** steht in der Mitte „‹ Rückziel · Seitentitel". Beides
+   wird aus dem Bild gelesen (Ziel und Beschriftung des `<Zurueck>`-Links, die
+   Überschrift) und nicht ein zweites Mal gepflegt.
+3. **In Lektionen** läuft ein 2-px-Streifen als Lesefortschritt.
+4. **Quer** (unter 500 px Höhe) klebt sie nicht: Ein Sechstel der Höhe und die
+   Entscheidungsleiste darunter ließen vom Inhalt zu wenig übrig.
+5. **Sprungziele** liegen nicht unter ihr (`scroll-margin-top`).
+
+### Regel 13.2 — Die Scrollposition gehört der App
+
+1. **Vorwärts nach oben**, mit dem Fokus auf der Überschrift.
+2. **Zurück an die alte Stelle**, wiederhergestellt erst, wenn die (nachgeladene)
+   Seite hoch genug ist.
+3. **Ersetzen** (Umleitung, neue Drill-Adresse) scrollt nur, wenn sich die Seite
+   ändert.
+4. Alle anderen Stellen, die `window.scrollTo` aufrufen, tun es für einen
+   Zustandswechsel innerhalb der Seite (Quiz starten, Tisch aufbauen), nie für
+   einen Seitenwechsel.
+
+### Regel 13.3 — Ein Name pro Ort
+
+Seit E-082. `src/lib/orte.ts` führt jeden Ort mit Namen (und, wo es eine gibt,
+Kurzform), Eltern-Ort und Seitenbreite. Seitenleiste, Rückweg, Kopfzeile und
+Dokumenttitel fragen dort; der Titel einer Seite ist ihr Name. `<Zurueck>` nimmt
+die Beschriftung aus der Tabelle — nur dynamische Ziele (Modul) bekommen sie
+mit.
+
+### Regel 13.4 — Seiten sitzen zentriert in einer Spalte nach Typ
+
+1. **Schmal** (35 rem): eine Aufgabe je Bildschirm. **Standard** (46 rem): Listen,
+   Lesetext, Trainer. **Weit** (72 rem): nur wo zwei Spalten oder ein Raster
+   gebraucht werden.
+2. **Die Seite wählt keine eigene Breite.** Inline-`maxWidth` im Seitenquelltext
+   gibt es nur für kleine Einzelteile.
+3. **Die Startseite** ist ab 1100 px zweispaltig: links tun (Hand des Tages,
+   Lernen), rechts hingehen (Live-Session, Nachschlagen).
+
+### Regel 13.5 — Die Seitenleiste hat genau einen aktiven Eintrag
+
+Der mit dem längsten passenden Pfad (`waehleAktiv`). Die Fußzeile (Profil,
+Freunde, Level, Rechtliches) klebt unten und bleibt bei 768 und 860 px Höhe im
+Bild. Läuft ein Abend, zeigt „Live-Session" einen grünen Punkt und die Blinds,
+und „Abend führen" führt zur Uhr.
+
+### Regel 13.6 — Meldungen liegen nicht über der Marke
+
+Am Handy mittig, unter der Kopfzeile; am Desktop oben rechts mit Abstand für
+die Statusleiste.
+
+Test: `rahmen.test.ts` (gemessen mit `npm run rahmen`), `orte.test.ts`,
+`scroll.test.ts`.
 

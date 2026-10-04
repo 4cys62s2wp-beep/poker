@@ -2,7 +2,6 @@ import { defineStrings } from '..';
 
 export const STR = defineStrings(
   {
-    back: '← Trainer',
     title: 'Equity-Schätzer',
     sub: (tolerance: number) =>
       `Beide Hände offen · richtig ist alles innerhalb von ±${tolerance} Prozentpunkten`,
@@ -22,7 +21,6 @@ export const STR = defineStrings(
     nextMatchup: 'Nächstes Matchup',
   },
   {
-    back: '← Trainers',
     title: 'Equity Estimator',
     sub: (tolerance: number) =>
       `Both hands face up · anything within ±${tolerance} percentage points counts`,

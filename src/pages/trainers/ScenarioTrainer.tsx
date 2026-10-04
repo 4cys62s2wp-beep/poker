@@ -10,6 +10,7 @@ import { STR } from '../../i18n/pages/scenariotrainer';
 import { STR as PRO_STR } from '../../i18n/pages/pro';
 import { ProLock } from '../../components/pro/ProLock';
 import { usePro } from '../../lib/pro/ProProvider';
+import { Zurueck } from '../../components/ui';
 
 function shuffled<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -76,14 +77,12 @@ export function ScenarioTrainer() {
   if (!unlocked) {
     return (
       <div>
-        <Link to="/lernen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-          {L.back}
-        </Link>
+        <Zurueck to="/lernen" />
         <div className="page-header">
           <h1>{L.title}</h1>
           <p className="sub">{L.sub}</p>
         </div>
-        <div style={{ maxWidth: 720 }}>
+        <div>
           <ProLock text={P.lockedTrainer} />
         </div>
       </div>
@@ -92,9 +91,7 @@ export function ScenarioTrainer() {
 
   return (
     <div>
-      <Link to="/lernen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        {L.back}
-      </Link>
+      <Zurueck to="/lernen" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>
@@ -102,7 +99,7 @@ export function ScenarioTrainer() {
 
       <Uebungsstand werte={stats} />
 
-      <div className="card" style={{ maxWidth: 720 }}>
+      <div className="card">
         <div className="row between wrap" style={{ marginBottom: 10 }}>
           <h2 style={{ fontSize: 'var(--fs-ueberschrift)' }}>{scenario.title}</h2>
           <span className="pill info">{L.street(scenario.street)}</span>

@@ -18,6 +18,7 @@ import { STR as LEGAL } from '../i18n/pages/legal';
 import { STR as PRO_STR } from '../i18n/pages/pro';
 import { zeichenFuer } from '../lib/zeichen';
 import { usePro } from '../lib/pro/ProProvider';
+import { Zurueck } from '../components/ui';
 
 export function ProfilePage() {
   const {
@@ -92,6 +93,7 @@ export function ProfilePage() {
 
   return (
     <div>
+      <Zurueck to="/" />
       <div className="page-header">
         <h1>{P.title}</h1>
         <p className="sub">
@@ -201,7 +203,7 @@ export function ProfilePage() {
           920 px ausgeblendet ist. Auf dem Handy waren beide Seiten damit
           nicht erreichbar, obwohl die alte Erreichbarkeitstabelle „über
           Profil" behauptete. Diese Zeilen sind die Korrektur. */}
-      <div style={{ display: 'grid', gap: 'var(--sp-2)', maxWidth: 560, marginTop: 'var(--sp-3)' }}>
+      <div style={{ display: 'grid', gap: 'var(--sp-2)', marginTop: 'var(--sp-3)' }}>
         <ProfilLink to="/freunde" icon={zeichenFuer('/freunde')} label={FRIENDS[lang].navFriends} />
         {proCtx.enabled && <ProfilLink to="/pro" icon={zeichenFuer('/pro')} label={PRO_STR[lang].navPro} />}
         <ProfilLink to="/rechtliches" icon={zeichenFuer('/rechtliches')} label={LEGAL[lang].navLegal} />
@@ -211,7 +213,7 @@ export function ProfilePage() {
       </div>
 
       <div className="section-title">{P.profilesSection}</div>
-      <div className="card" style={{ maxWidth: 560 }}>
+      <div className="card">
         <p className="small muted" style={{ marginBottom: 14 }}>
           {P.profilesIntro}
         </p>
@@ -316,7 +318,7 @@ export function ProfilePage() {
       </div>
 
       <div className="section-title">{P.settingsSection}</div>
-      <div className="card" style={{ maxWidth: 520 }}>
+      <div className="card">
         {/* Eine sichtbare Beschriftung, die nicht mit dem Feld verbunden ist,
             gibt es für ein Vorlesegerät nicht — dort hieß das Feld bis E-043
             nur „Eingabefeld". */}
@@ -417,7 +419,7 @@ export function ProfilePage() {
         )}
       </div>
 
-      <div className="card" style={{ maxWidth: 520, marginTop: 14 }}>
+      <div className="card" style={{ marginTop: 14 }}>
         <div style={{ fontWeight: 800, marginBottom: 6 }}>{P.backupTitle}</div>
         <p className="small muted" style={{ marginBottom: 12 }}>
           {P.backupDesc}
@@ -454,14 +456,14 @@ export function ProfilePage() {
 
       <ShareCard />
 
-      <div className="card" style={{ maxWidth: 520, marginTop: 14 }}>
+      <div className="card" style={{ marginTop: 14 }}>
         <div style={{ fontWeight: 700, marginBottom: 6 }}>{P.installTitle}</div>
         <p className="small muted">
           {P.installBody1} <strong>{P.installStrong}</strong> {P.installBody2}
         </p>
       </div>
 
-      <div className="card" style={{ maxWidth: 520, marginTop: 14 }}>
+      <div className="card" style={{ marginTop: 14 }}>
         <div style={{ fontWeight: 700, marginBottom: 6 }}>{P.aboutTitle}</div>
         <p className="small muted">
           {P.aboutBody}

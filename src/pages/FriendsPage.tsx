@@ -6,7 +6,7 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
-import { BackLink, EmptyState } from '../components/ui';
+import { Zurueck, EmptyState } from '../components/ui';
 import { zeichenFuer } from '../lib/zeichen';
 import { Link } from 'react-router-dom';
 import { Icon } from '../components/Icon';
@@ -43,7 +43,7 @@ export function FriendsPage() {
 
   const header = (
     <>
-      <BackLink to="/profil" label={NAV[lang].profile} />
+      <Zurueck to="/profil" />
       <div className="page-header">
         <h1>{F.title}</h1>
         <p className="sub">{F.sub}</p>
@@ -175,7 +175,7 @@ export function FriendsPage() {
       </div>
 
       {social.friends.length === 0 ? (
-        <div style={{ maxWidth: 620, marginBottom: 22 }}>
+        <div style={{ marginBottom: 22 }}>
           <EmptyState icon={zeichenFuer('/freunde')} title={F.emptyTitle} body={F.emptyBody}>
             <ol className="small muted" style={{ margin: 0, paddingLeft: 18, display: 'grid', gap: 4, textAlign: 'left' }}>
               <li>{F.emptyStep1}</li>
@@ -295,7 +295,7 @@ export function FriendsPage() {
         </div>
       </div>
 
-      <p className="small faint" style={{ maxWidth: 620 }}>{F.privacyNote}</p>
+      <p className="small faint">{F.privacyNote}</p>
     </div>
   );
 }
@@ -304,7 +304,7 @@ export function FriendsPage() {
 
 function InfoCard({ title, body, children }: { title: string; body: string; children?: React.ReactNode }) {
   return (
-    <div className="card" style={{ maxWidth: 620 }}>
+    <div className="card">
       <div style={{ fontWeight: 800, marginBottom: 6 }}>{title}</div>
       <p className="small muted" style={{ marginBottom: children ? 12 : 0 }}>{body}</p>
       {children}

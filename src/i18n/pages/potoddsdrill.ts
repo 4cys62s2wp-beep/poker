@@ -6,7 +6,6 @@ import { defineStrings } from '..';
    bekommt sie übergeben — aus den gerechneten Daten. */
 export const STR = defineStrings(
   {
-    back: 'Lernen',
     title: 'Pot-Odds-Drill',
 
     handLabel: 'Deine Hand',
@@ -66,7 +65,6 @@ export const STR = defineStrings(
     errorHintSingle: 'Diese Einzeldatei braucht den Ordner „pokermath“ neben sich.',
   },
   {
-    back: 'Learn',
     title: 'Pot odds drill',
 
     handLabel: 'Your hand',

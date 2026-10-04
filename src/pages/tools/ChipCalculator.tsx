@@ -4,7 +4,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { STR as NAV } from '../../i18n/pages/layout';
-import { BackLink } from '../../components/ui';
+import { Zurueck } from '../../components/ui';
 import { planChips, type ChipInput } from '../../lib/chips';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/chips';
@@ -129,7 +129,7 @@ export function ChipCalculator() {
 
   return (
     <div>
-      <BackLink to="/session" label={NAV[lang].navSession} />
+      <Zurueck to="/session" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>

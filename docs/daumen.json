@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T09:00:38.468Z",
+  "geprueft_am": "2026-10-04T09:39:15.056Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -36,8 +36,8 @@
     },
     {
       "hash": "#/nachschlagen",
-      "scrollt": true,
-      "ueberlauf_px": 2,
+      "scrollt": false,
+      "ueberlauf_px": 0,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -82,7 +82,7 @@
     {
       "hash": "#/profil",
       "scrollt": true,
-      "ueberlauf_px": 4541,
+      "ueberlauf_px": 4593,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -154,8 +154,8 @@
     },
     {
       "hash": "#/lernen/m3",
-      "scrollt": true,
-      "ueberlauf_px": 4,
+      "scrollt": false,
+      "ueberlauf_px": 0,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -200,7 +200,7 @@
     {
       "hash": "#/lernen/m8",
       "scrollt": true,
-      "ueberlauf_px": 22,
+      "ueberlauf_px": 6,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -283,14 +283,14 @@
     {
       "hash": "#/lernen/trainer/outs",
       "scrollt": true,
-      "ueberlauf_px": 20,
+      "ueberlauf_px": 14,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 679,
-        "unten_px": 840,
-        "mitte_px": 759,
+        "oben_px": 673,
+        "unten_px": 834,
+        "mitte_px": 753,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -331,10 +331,10 @@
         "mitte_px": 768,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
-        "knoepfe": 2,
+        "knoepfe": 3,
         "klebt": true,
         "kleinster_knopf_px": 56,
-        "breitenanteil": 0.9
+        "breitenanteil": 0.88
       }
     },
     {
@@ -358,15 +358,15 @@
     },
     {
       "hash": "#/lernen/trainer/szenario",
-      "scrollt": false,
-      "ueberlauf_px": 0,
+      "scrollt": true,
+      "ueberlauf_px": 211,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 639,
-        "unten_px": 820,
-        "mitte_px": 730,
+        "oben_px": 641,
+        "unten_px": 844,
+        "mitte_px": 743,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 3,

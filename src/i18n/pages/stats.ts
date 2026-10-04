@@ -6,7 +6,7 @@ import { defineStrings } from '..';
    treffen und nichts nur auf Deutsch existiert. */
 export const STR = defineStrings(
   {
-    title: 'Dein Spielstil',
+    title: 'Spielstil',
     sub: 'Aus deinen Händen am Übungstisch berechnet – dieselben Kennzahlen, mit denen Profis ihr eigenes Spiel prüfen.',
 
     emptyTitle: 'Noch keine Hände gespielt',
@@ -127,7 +127,7 @@ export const STR = defineStrings(
 
   },
   {
-    title: 'Your Playing Style',
+    title: 'Playing Style',
     sub: 'Calculated from your hands at the practice table – the same metrics professionals use to review their own game.',
 
     emptyTitle: 'No hands played yet',

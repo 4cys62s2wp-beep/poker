@@ -43,6 +43,7 @@ export const ZEICHEN = {
   '/nachschlagen/equity': 'pie',
   '/nachschlagen/tells': 'eye',
 
+  '/session': 'history',
   '/session/live': 'table',
   '/session/abende': 'calendar',
   '/session/chips': 'chip',
@@ -72,9 +73,9 @@ export function zeichenFuer(pfad: ZeichenPfad): IconName {
 export const BILDSCHIRME: Record<string, ZeichenPfad[]> = {
   seitenleiste: [
     '/', '/lernen', '/lernen/wiederholen', '/lernen/uebungstisch',
-    '/lernen/statistik', '/lernen/pros', '/nachschlagen', '/nachschlagen/coach',
-    '/nachschlagen/glossar', '/session/chips', '/session/auszahlung',
-    '/session/bankroll', '/profil', '/freunde', '/pro',
+    '/nachschlagen', '/nachschlagen/coach', '/nachschlagen/glossar',
+    '/session', '/session/live', '/session/abende', '/session/chips',
+    '/session/auszahlung', '/session/bankroll', '/profil', '/freunde', '/pro',
   ],
   lernen: [
     '/lernen/trainer/szenario', '/lernen/trainer/preflop',

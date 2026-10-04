@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T08:57:20.220Z",
+  "geprueft_am": "2026-10-04T09:40:56.679Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 893,
+        "dauer_ms": 884,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -598,10 +598,10 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | SERIE | – | TREFFER | 0 | BESTE",
-        "nach_zwei": "2 | REKORD | 100 % | TREFFER | 2 | BESTE",
-        "nach_neuladen": "2 | REKORD | 100 % | TREFFER | 2 | BESTE",
+        "nach_zwei": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
+        "nach_neuladen": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
         "quote_bleibt": true,
-        "quote_nach_zwei": "100 %",
+        "quote_nach_zwei": "0 %",
         "ohne_versuche_kein_prozent": true,
         "felder": 3
       },
@@ -615,7 +615,7 @@
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "27,8 %",
+        "ergebnis_text": "54,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },
@@ -625,9 +625,9 @@
       "name": "Der Nachschlagen-Bereich ist eine Übersicht, keine Strecke",
       "ergebnis": {
         "kacheln": 7,
-        "unterkante_px": 822,
+        "unterkante_px": 785,
         "fenster": 844,
-        "seitenhoehe": 846,
+        "seitenhoehe": 844,
         "sichtbar_ohne_scrollen": 7,
         "mit_inhalt": 7,
         "mit_vorschau": 3,

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { suchbar } from '../lib/eingabe/suche';
 import { STR as NAV } from '../i18n/pages/layout';
-import { BackLink } from '../components/ui';
+import { Zurueck } from '../components/ui';
 import { useSearchParams } from 'react-router-dom';
 import type { GlossaryCategory } from '../content/types';
 import { useLang } from '../i18n';
@@ -85,7 +85,7 @@ export function GlossaryPage() {
 
   return (
     <div>
-      <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
+      <Zurueck to="/nachschlagen" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub(glossary.length)}</p>
@@ -95,7 +95,7 @@ export function GlossaryPage() {
         className="search-input"
         type="search"
         aria-label={L.searchLabel}
-        style={{ maxWidth: 480, marginBottom: 14 }}
+        style={{ marginBottom: 14 }}
         placeholder={L.searchPlaceholder}
         value={query}
         onChange={(e) => setQuery(e.target.value)}

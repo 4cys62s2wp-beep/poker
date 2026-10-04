@@ -6,6 +6,7 @@ import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/potoddstrainer';
 import { Rueckmeldung } from '../../components/Rueckmeldung';
+import { Zurueck } from '../../components/ui';
 
 interface Problem {
   pot: number;
@@ -71,9 +72,7 @@ export function PotOddsTrainer() {
 
   return (
     <div>
-      <Link to="/lernen" className="pill" style={{ display: 'inline-flex', marginBottom: 14 }}>
-        {L.back}
-      </Link>
+      <Zurueck to="/lernen" />
       <div className="page-header">
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>
@@ -81,7 +80,7 @@ export function PotOddsTrainer() {
 
       <Uebungsstand werte={stats} />
 
-      <div className="card" style={{ maxWidth: 640 }}>
+      <div className="card">
         <div className="grid cols-3" style={{ marginBottom: 18, textAlign: 'center' }}>
           <div>
             <div className="stat-label">{L.potLabel}</div>

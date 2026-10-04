@@ -32,7 +32,7 @@ export function AbendePage() {
     return (
       <div className="page">
         <PageHeader title={L.listeTitel} backTo="/session"
-          backLabel={L.zurueckSession} />
+          />
         <EmptyState
           icon={zeichenFuer('/session/abende')}
           title={L.leerTitel}
@@ -47,7 +47,7 @@ export function AbendePage() {
   return (
     <div className="page">
       <PageHeader title={L.listeTitel} sub={L.listeSub}
-        backTo="/session" backLabel={L.zurueckSession} />
+        backTo="/session" />
 
       {/* Die Namen zuerst: Sie sind der Weg, nicht die Datumsliste. */}
       <section className="abende-namen">

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
-import { BackLink } from '../components/ui';
+import { Zurueck } from '../components/ui';
 import { Entscheidung } from '../components/Entscheidung';
 import { createHandTracker, type HandTracker } from '../lib/poker/stats';
 import { CardsRow, PlayingCard } from '../components/PlayingCard';
@@ -79,6 +79,9 @@ export function PlayPage() {
     stacksRef.current = new Array(opponents + 1).fill(START_STACK);
     buttonRef.current = 0;
     handCounter.current = 0;
+    /* Der Tisch beginnt oben: Wer die Auswahl weit unten antippte, sah sonst
+       die untere Hälfte des Tisches (gemessen: scrollY 343). */
+    window.scrollTo(0, 0);
     startHand(opponents);
   }
 
@@ -199,13 +202,13 @@ export function PlayPage() {
   if (numOpponents === null) {
     return (
       <div>
-        <BackLink to="/lernen" label={NAV[lang].navLearn} />
+        <Zurueck to="/lernen" />
       <div className="page-header">
           <h1>{L.title}</h1>
           <p className="sub">{L.intro}</p>
         </div>
 
-        <div className="card" style={{ maxWidth: 640 }}>
+        <div className="card">
           <div className="section-title" style={{ marginTop: 0 }}>{L.chooseTable}</div>
           <div className="grid cols-3">
             <button
@@ -571,7 +574,7 @@ function HandHistoryList({ hands }: { hands: Array<import('../state/AppState').H
   const L = STR[lang];
   const [openId, setOpenId] = useState<string | null>(null);
   return (
-    <div className="grid" style={{ maxWidth: 720 }}>
+    <div className="grid">
       {hands.map((h) => {
         const time = new Date(h.date).toLocaleTimeString(L.timeLocale, { hour: '2-digit', minute: '2-digit' });
         const open = openId === h.id;

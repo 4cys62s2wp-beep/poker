@@ -160,11 +160,9 @@ export function ReferencePage() {
   return (
     <div>
       <PageHeader
-        eyebrow={L.eyebrow}
         title={L.title}
         sub={L.sub}
         backTo="/"
-        backLabel={L.backHome}
       />
 
       <form onSubmit={springen} role="search" style={{ marginBottom: 'var(--sp-4)' }}>

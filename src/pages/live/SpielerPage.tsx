@@ -38,7 +38,6 @@ export function SpielerPage() {
         title={L.spielerTitel(uebersicht?.name ?? name)}
         sub={uebersicht ? L.spielerSub(uebersicht.abende, uebersicht.siege) : undefined}
         backTo="/session/abende"
-        backLabel={L.zurueckListe}
       />
 
       <div className="abende-liste">

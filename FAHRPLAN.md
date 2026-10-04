@@ -57,7 +57,7 @@ Die 24 border-radius-Werte in global.css (4–56 px, Knöpfe mit 9, 12 und 13 px
 
 </details>
 
-### [ ] 1.4 Spielkarten auf Lesbarkeit bauen: keine „6“ auf einer 9, größere kleine Karten  
+### [x] 1.4 Spielkarten auf Lesbarkeit bauen: keine „6“ auf einer 9, größere kleine Karten  
 *Wirkung 5 · Aufwand M*
 
 In PlayingCard.tsx 46–53 und global.css 985–991 den gedrehten Unterindex dort weglassen, wo Karten überlappen oder angeschnitten sind (eigene Hand am Tisch, Showdown, Drill, Hand des Tages, Trainer). Wo er bleibt, 6 und 9 in beiden Indizes unterstreichen (data-rang). Gegenentscheidung: E-036 bzw. DESIGN 10.8 (Z. 626) und E-034 wollen den zweiten Index bewusst „wie auf einer echten Karte“. Der Nutzen überwiegt klar, weil er heute an fünf Stellen eine 9 als 6 zeigt, ausgerechnet auch im Handranking-Trainer. Als Änderung der E-Nummer festhalten. .pcard.sm (global.css 1877–1880, heute 28×40 px mit 8,5-px-Rang und 7-px-Farbe) auf mindestens 32×44 px, Rang ≥ 0.75rem, ohne Mittelsymbol. Rangwahl in Live-Coach und Starthand-Explorer einheitlich mit „10“ als Taste; Kürzel wie „ATo“ bleiben.

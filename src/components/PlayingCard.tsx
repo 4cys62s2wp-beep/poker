@@ -38,19 +38,22 @@ export function PlayingCard({ card, size = 'md' }: Props) {
   return (
     <div className={`pcard suit-${suitCls}${sizeCls}`} role="img" aria-label={label}>
       <span className="corner">
-        {displayRank}
+        <span className="rang" data-rang={displayRank}>{displayRank}</span>
         <span className="c-suit">{symbol}</span>
       </span>
       <span className="center-suit">{symbol}</span>
-      {/* Der zweite Index unten rechts, auf dem Kopf — wie auf einer echten
-          Karte. Er ist der Grund, warum ein Blatt in der Hand von beiden
-          Seiten lesbar ist, und er ist das Kennzeichen, an dem das Auge
-          eine Spielkarte erkennt, bevor es den Rang liest.
+      {/* Der zweite Index unten rechts, auf dem Kopf — nur auf der großen
+          Karte (E-075). Auf einer echten Karte ist er das Kennzeichen, an dem
+          das Auge eine Spielkarte erkennt; auf einem Handy, wo Karten sich
+          überlappen und angeschnitten sind, zeigte er an fünf Stellen eine 9
+          als 6. Wo die große Karte überlappt, blendet das Stylesheet ihn aus.
           `aria-hidden`: Für einen Screenreader ist er eine Wiederholung. */}
-      <span className="corner unten" aria-hidden="true">
-        {displayRank}
-        <span className="c-suit">{symbol}</span>
-      </span>
+      {size === 'xl' && (
+        <span className="corner unten" aria-hidden="true">
+          <span className="rang" data-rang={displayRank}>{displayRank}</span>
+          <span className="c-suit">{symbol}</span>
+        </span>
+      )}
     </div>
   );
 }

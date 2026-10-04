@@ -4406,3 +4406,40 @@ haben die größere Schrift ausgehalten.
 
 `schriftskala.test.ts` hält es fest (acht Prüfungen); drei davon mit
 Gegenprobe rot gesehen.
+
+---
+
+## E-075 · 2026-10-04 · Eine 9 darf nicht wie eine 6 aussehen
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 1.4).
+
+Eine Spielkarte trägt ihren Rang zweimal: oben links und, auf dem Kopf, unten
+rechts. Auf einer echten Karte ist das richtig. Auf einem Handy, wo Karten
+sich überlappen und angeschnitten sind, zeigte der zweite Index an fünf
+Stellen eine 9 als 6 — Tisch, Showdown, Drill, Hand des Tages und
+ausgerechnet auch im Handranking-Trainer. Wer dort eine Hand einordnen soll,
+sieht die falsche Karte.
+
+**Entschieden**, gegen DESIGN 10.8 und E-034/E-036, die den zweiten Index
+bewusst „wie auf einer echten Karte" wollten:
+
+1. Der zweite Index wird nur noch auf der **großen** Karte gezeichnet — und
+   auch dort nicht, wo sie überlappt (Tisch, Bereichsvorschau).
+2. **6 und 9 tragen einen Strich**, oben wie unten. Auf Karten aus dem
+   Casino ist das der Grund, warum man sie nicht verwechselt.
+3. Die **kleine Karte** (zuvor 28 × 40 px mit 8,5-px-Rang und 7-px-Farbe) ist
+   jetzt 36 × 50, auf schmalen Geräten 32 × 44; der Rang ist 16 bzw. 14 px
+   hoch, das Mittelsymbol entfällt.
+
+**Verworfene Alternative:** den zweiten Index überall behalten und nur die 6
+und 9 unterstreichen. Das löst die Verwechslung, lässt aber die Hand am Tisch
+mit einem Index im Anschnitt — und der Anlass war ja, dass man die Karte nicht
+auf einen Blick lesen konnte.
+
+Ein Punkt aus dem Fahrplan entfällt: Die Rangwahl im Live-Coach zeigt „10"
+schon als Taste (`CardPicker`), und die Matrix im Starthand-Explorer hat
+keine Achsenbeschriftung, nur Kürzel wie „ATo".
+
+Gemessen: Design, Durchgang, Tisch, Quer, Bedienbar — null Befunde.
+`spielkarten.test.ts` hält es fest; die Prüfung „nur auf der großen Karte" mit
+Gegenprobe rot gesehen.

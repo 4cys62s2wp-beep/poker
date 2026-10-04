@@ -2,7 +2,7 @@
 // Grundprinzip: value-lastig spielen, wenig bluffen, Preise ausrechnen.
 
 import { expandRangeSpec } from './ranges';
-import { RFI_CHARTS, BB_DEFENSE_VS_BTN } from '../../content/ranges';
+import { RFI_CHARTS, BB_DEFENSE_VS_BTN, type Position } from '../../content/ranges';
 import type { DrawInfo, MadeHandInfo } from './analysis';
 import { pairTypeName } from './analysis';
 
@@ -383,12 +383,16 @@ export function preflopAdvice(
   raisedBefore: boolean,
   limpers: number,
   lang: CoachLang = 'de',
+  /** Der genaue Platz, wenn er bekannt ist (Übungstisch): Der Cutoff hat seine
+   *  eigene Range, sie ist weiter als die der Mitte und enger als die des
+   *  Buttons. Ohne ihn gilt die grobe Einteilung aus `position`. */
+  exakt?: Exclude<Position, 'BB'>,
 ): CoachAdvice {
   const t = TEXT[lang];
   const manyPlayers = playersAtTable >= 7;
 
   if (!raisedBefore) {
-    const inChart = chartFor(position).has(label);
+    const inChart = (exakt ? RFI.get(exakt)! : chartFor(position)).has(label);
     const tightened = manyPlayers && !RFI.get('HJ')!.has(label) && position !== 'spaet';
 
     if (inChart && !tightened) {

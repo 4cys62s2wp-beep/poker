@@ -83,6 +83,8 @@ export const STR = defineStrings(
 
     // Der eine Hinweis
     hintTitle: 'Woran du zuerst arbeiten solltest',
+    practiceNow: 'Jetzt üben',
+    readLesson: (titel: string) => `Nachlesen: ${titel}`,
     noHintTitle: 'Nichts Auffälliges',
     noHintBody:
       'Deine Kennzahlen liegen im Rahmen oder es sind noch zu wenige Hände für ein Urteil. Spiel weiter – sobald etwas deutlich aus der Reihe fällt, steht es hier.',
@@ -201,6 +203,8 @@ export const STR = defineStrings(
     },
 
     hintTitle: 'What to work on first',
+    practiceNow: 'Practise now',
+    readLesson: (titel: string) => `Read up: ${titel}`,
     noHintTitle: 'Nothing standing out',
     noHintBody:
       'Your metrics are within range, or there are still too few hands for a verdict. Keep playing – as soon as something clearly stands out, it appears here.',

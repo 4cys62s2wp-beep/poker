@@ -16,6 +16,11 @@ import { Rueckmeldung } from '../../components/Rueckmeldung';
 import { Zurueck } from '../../components/ui';
 import { MitBegriffen } from '../../components/Begriff';
 import { KonzeptLink } from '../../components/KonzeptLink';
+import { Positionsschema } from '../../components/Positionsschema';
+import type { Position } from '../../content/ranges';
+
+/** Die Reihenfolge, in der am 6-max-Tisch vor dem Flop gehandelt wird. */
+const REIHENFOLGE: Position[] = ['UTG', 'HJ', 'CO', 'BTN', 'SB', 'BB'];
 
 interface Spot {
   chartIdx: number;
@@ -100,7 +105,13 @@ export function PushFoldTrainer() {
           {L.introAfterPosition}
         </p>
 
-        <div className="row" style={{ marginBottom: 18 }}>
+        <Positionsschema
+          eigen={chart.position}
+          gefoldet={REIHENFOLGE.slice(0, Math.max(0, REIHENFOLGE.indexOf(chart.position)))}
+          einsaetze={{ SB: 0.5, BB: 1 }}
+        />
+
+        <div className="row" style={{ margin: '14px 0 18px' }}>
           <CardsRow cards={[spot.cards[0], spot.cards[1]]} size="lg" />
           <span className="pill" style={{ fontSize: 'var(--fs-beschriftung)' }}>{spot.label}</span>
         </div>
@@ -139,14 +150,11 @@ export function PushFoldTrainer() {
       <Entscheidung label={L.title}>
         {!answer ? (
           <>
-            <button
-              className={`btn lg${answer ? (correct === 'push' ? ' success' : '') : ''}`}
-              onClick={() => choose('push')}
-            >
-              {L.allInBtn}
-            </button>
             <button className="btn lg" onClick={() => choose('fold')}>
               {L.foldBtn}
+            </button>
+            <button className="btn lg primary" onClick={() => choose('push')}>
+              {L.allInBtn}
             </button>
           </>
         ) : (

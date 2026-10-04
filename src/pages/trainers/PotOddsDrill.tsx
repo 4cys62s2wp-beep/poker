@@ -92,6 +92,12 @@ export function PotOddsDrill() {
   const [kopiert, setKopiert] = useState(false);
   /** Die Antwort des Nutzers, oder `null`, solange er nicht geantwortet hat. */
   const [antwort, setAntwort] = useState<boolean | null>(null);
+  const aufloesungRef = useRef<HTMLDivElement>(null);
+  /* Nach der Antwort rückt die Auflösung — samt dem Platz, den die Leiste
+     braucht — ins Bild, ohne zu animieren (E-064). */
+  useEffect(() => {
+    if (antwort !== null) aufloesungRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [antwort]);
   /** Ein Eintrag je beantworteter Aufgabe: richtig oder nicht. Nur in dieser
    *  Sitzung, nichts wird gespeichert — kein Konto, keine Ablage. */
   const [verlauf, setVerlauf] = useState<boolean[]>([]);
@@ -264,7 +270,16 @@ export function PotOddsDrill() {
     <div>
       <Zurueck to="/lernen" />
 
-      <Uebungsstand werte={data.trainers[DRILL_KENNUNG]} />
+      {/* „Teilen" steht als Zeichen oben rechts im Übungsstand, nicht mehr in
+          der Bedienleiste: Die Leiste wird 44 Pixel niedriger. */}
+      <Uebungsstand
+        werte={data.trainers[DRILL_KENNUNG]}
+        aktion={
+          <button type="button" className="uebung-teilen" onClick={teilen} aria-label={kopiert ? L.shareCopied : L.share} title={kopiert ? L.shareCopied : L.share}>
+            <Icon name={kopiert ? 'check' : 'share'} />
+          </button>
+        }
+      />
       <div className="drill">
         {/* ── Obere Hälfte: erst die Frage, dann die Zahl ─────────────── */}
         <div className="drill-oben" aria-live="polite">
@@ -341,7 +356,7 @@ export function PotOddsDrill() {
           </div>
 
           {beantwortet && (
-            <div className="drill-aufloesung">
+            <div className="drill-aufloesung" ref={aufloesungRef}>
               <div className={`drill-urteil ${richtig ? 'gut' : aufloesung.grenzfall ? 'knapp' : 'schlecht'}`}>
                 <UrteilKopf urteil={richtig ? 'richtig' : aufloesung.grenzfall ? 'knapp' : 'falsch'} />
                 <span className={`drill-lohnt ${aufloesung.lohnt ? 'ja' : 'nein'}`}>
@@ -407,17 +422,6 @@ export function PotOddsDrill() {
               {L.next}
             </button>
           )}
-          <div className="drill-fuss">
-            {/* Der Sitzungsstand stand hier als „3 von 5". Seit E-038 führt
-                der Übungsstand oben Serie, Trefferquote und Bestserie —
-                und der behält sie über das Schließen hinaus. Zweimal
-                dieselbe Auskunft, davon einmal die schlechtere, ist einmal
-                zu viel. */}
-            <span className="drill-stand" />
-            <button type="button" className="drill-teilen" onClick={teilen}>
-              {kopiert ? L.shareCopied : L.share}
-            </button>
-          </div>
         </div>
       </div>
     </div>

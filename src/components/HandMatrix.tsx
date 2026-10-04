@@ -11,6 +11,9 @@ interface Props {
   /** Ein Label hervorheben (z. B. die aktuelle Trainingshand). */
   highlight?: string;
   onCellClick?: (label: string) => void;
+  /** Nur zum Ansehen, in die Breite des Bildschirms gepasst: keine Beschriftung
+   *  außer der markierten Hand. */
+  kompakt?: boolean;
 }
 
 const SIZE = 13;
@@ -21,7 +24,7 @@ const SIZE = 13;
  *  Damit die Matrix nicht 169 Tab-Stopps erzeugt, wandert der Tab-Stopp mit dem
  *  Fokus („roving tabindex“): Tab springt in die Matrix, die Pfeiltasten bewegen
  *  sich darin, Tab springt wieder heraus. */
-export function HandMatrix({ raise, call, highlight, onCellClick }: Props) {
+export function HandMatrix({ raise, call, highlight, onCellClick, kompakt = false }: Props) {
   const { lang } = useLang();
   const T = STR[lang];
   const gridRef = useRef<HTMLDivElement>(null);
@@ -65,6 +68,26 @@ export function HandMatrix({ raise, call, highlight, onCellClick }: Props) {
     setCursor(next);
     const target = gridRef.current?.children[next];
     if (target instanceof HTMLElement) target.focus();
+  }
+
+  if (kompakt) {
+    const markiert = cells.find((c) => c.marked);
+    const was = markiert ? `: ${markiert.label}, ${markiert.isRaise ? T.raise : markiert.isCall ? T.call : T.fold}` : '';
+    return (
+      <div className="matrix-scroll">
+        <div className="matrix kompakt" role="img" aria-label={`${T.gridLabel}${was}`}>
+          {cells.map(({ idx, label, isRaise, isCall, marked }) => (
+            <div
+              key={idx}
+              className={`cell${isRaise ? ' raise' : isCall ? ' call' : ''}${marked ? ' mark' : ''}`}
+              aria-hidden="true"
+            >
+              {marked ? label : ''}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (

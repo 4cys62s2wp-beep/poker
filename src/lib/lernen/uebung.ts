@@ -70,3 +70,16 @@ export function uebungFuer(lektionId: string): UebungsZiel | null {
 export function lektionenFuer(ziel: UebungsZiel): string[] {
   return Object.entries(UEBUNG).filter(([, z]) => z === ziel).map(([id]) => id);
 }
+
+/** Zu jeder Kennzahl der Spielstil-Analyse: die Lektion, die sie erklärt, und die
+ *  Übung, die daran arbeitet. Ein Hinweis ohne Weg weiter ist eine Diagnose
+ *  ohne Rezept (E-093). */
+export type Kennzahl = 'vpip' | 'pfr' | 'afq' | 'wtsd' | 'wsd';
+
+export const SCHWACHSTELLE: Record<Kennzahl, { lektion: string; ziel: UebungsZiel }> = {
+  vpip: { lektion: 'm2-l1', ziel: 'preflop' },
+  pfr: { lektion: 'm2-l2', ziel: 'preflop' },
+  afq: { lektion: 'm4-l2', ziel: 'szenario' },
+  wtsd: { lektion: 'm4-l6', ziel: 'szenario' },
+  wsd: { lektion: 'm4-l3', ziel: 'szenario' },
+};

@@ -33,7 +33,7 @@ export const STR = defineStrings(
     /* Mit Punkt statt Präposition: Die Zielkategorie kommt aus den Daten
        („Straße", „Flush", „Ein Paar"), und keine deutsche Präposition passt
        zu allen. „bis zum Straße" stand einen Durchlauf lang da. */
-    outsOf: (n: number, ziel: string) => `${n} Outs · Ziel: ${ziel}`,
+    outsOf: (n: number, ziel: string) => `${n} Outs · zählt ab: ${ziel}`,
 
     /* Ein Satz, nicht drei: Die lange Fassung hat die Mindest-Outs unter die
        Bedienleiste geschoben. Was sie erklärte — dass der Turn-Wert die
@@ -91,7 +91,7 @@ export const STR = defineStrings(
     closeNote: 'Wafer-thin. Deciding the other way here is not deciding wrongly.',
     minOuts: (n: number) => `From ${n} outs this bet pays for itself.`,
     minOutsNone: 'No number of outs in this table makes this bet pay for itself.',
-    outsOf: (n: number, ziel: string) => `${n} outs · target: ${ziel}`,
+    outsOf: (n: number, ziel: string) => `${n} outs · counts from: ${ziel}`,
 
     assumption: 'Seeing two cards assumes no second bet on the turn.',
 

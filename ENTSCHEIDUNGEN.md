@@ -5144,11 +5144,89 @@ heißt „Lektionen durchsuchen".
   Das sind Inhaltsentscheidungen für 224 Abschnitte in zwei Sprachen und gehört nicht in einen
   Durchgang, der Struktur ändert. Der Lesestand macht lange Abschnitte erträglich, ersetzt aber
   keine Kürzung.
-- **5.5** Positionsschema in m1-l3 (hängt an 6.8) und Minikarten im Fließtext.
+- **5.5** Minikarten im Fließtext. (Das Positionsschema in m1-l3 kam mit Paket 6, E-093.)
 - **5.8** Die Stufenfolge m5 „Profi" vor m6 „Einsteiger" bleibt: Ids, Gratisgrenze (Modul 1–3) und
   Lernpfad hängen daran; eine Umordnung ist eine Produktentscheidung.
 - **5.9 Stufe 2** (Trainerfehler im Wiederholungsstapel): ReviewItem müsste Trainerzustände
   speichern und Spots neu aufbauen können.
 - **5.10** Die Typen 'zahl', 'karten' (CardPicker) und 'matrix': eigene Bewertungslogik; die
   Kartenanzeige und `optionFeedback` sind drin.
-- Der Pot-Odds-Drill (`PotOddsDrill.tsx`) hat noch keinen `KonzeptLink`; der Pot-Odds-Trainer hat ihn.
+- Der Pot-Odds-Drill (`PotOddsDrill.tsx`) trägt kein „Konzept nachlesen": Seine Höhenkette (zwischen Antwort und Auflösung bewegt sich nichts, auch auf einem 667 Pixel hohen Gerät) lässt keine zusätzliche Zeile zu; der Pot-Odds-Trainer hat es.
+
+---
+
+## E-093 · 2026-10-04 · Übungstisch und Trainer: ein Coach, der der Range folgt, Bewertung nach dem Zug, alles im Bild
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 6.1–6.10, mit den unten genannten Lücken).
+
+**Gegenentscheidung zu E-045.** E-045 sagte: Die Güte des Rats wird nicht geprüft. Der Rat am Tisch rechnete
+Equity gegen **drei zufällige Hände** und teilte durch den Preis des Calls — und riet mit 77 im Cutoff bei
+ungeöffnetem Pot zum Fold, obwohl die Cutoff-Range „22+" enthält. Ein Rat, der nicht einmal der eigenen
+Range folgt, darf nichts bewerten. Deshalb zuerst 6.1, dann 6.5: **`coachForTable`** (`lib/poker/tischcoach.ts`)
+baut den Rat aus derselben Logik wie der Live-Coach (`preflopAdvice` mit dem **genauen Platz**, `postflopAdvice`,
+`facingBetVerdict`). Preflop gibt es keine Equity-Zahl mehr. Ein Test geht alle 169 Hände an fünf Plätzen durch:
+**Raise genau für die Hände der Range, sonst nie.** Der Preis zählt den Einsatz einmal (ein Test hält 8 / 28 = 29 %
+gegen die doppelte Zählung, die der Heute-Karte schon einmal unterlief).
+
+**Bewertung nach der Aktion** (`bewerteAktion`): gleich = **Gut**, eine Stufe daneben (Fold ↔ Call/Check ↔ Raise)
+= **Vertretbar**, zwei Stufen daneben = **Fehler** — nur dort, wo der Rat eindeutig war (vor dem Flop in einem
+unerhöhten Pot; sonst höchstens „Vertretbar"). Ausdrücklich eine **Schätzung nach Faustregeln**, ohne vorgetäuschten
+EV-Verlust; „Warum?" öffnet ein Blatt (E-018) mit Gründen, Platz und dem Hinweis, dass Equity gegen Zufallshände
+einen gegen echte Ranges überschätzt. Der Coach ist standardmäßig mit Bewertung an, der **Tipp vorher** nur auf
+Wunsch („Tipp" am Tisch) oder mit dem Schalter „Tipp vor jeder Entscheidung". Nach der Hand steht eine
+**statische Liste** der Entscheidungen (kein Replayer, E-010). **XP pauschal 6 je Hand** statt 10/2 für
+Gewinn/Verlust: Lektion 1 lehrt, in Entscheidungen zu denken. „Erster Pot" bleibt als Abzeichen (Altdaten), zählt
+aber nicht mehr als XP-Anlass. „Erste Trainer-Aufgabe gelöst" gibt es nur noch für eine **gelöste** Aufgabe (es kam
+bei einer falschen Antwort).
+
+**Beträge in Big Blinds** (`lib/poker/bb.ts`): Die Engine rechnet weiter in Chips (BB = 2), alles Gezeigte —
+Stapel, Pot, Marken, Protokoll, Handliste — steht in BB mit Komma („2,5"). Das Protokoll der Engine trägt
+zusätzlich je Eintrag die **strukturierte Aktion** (`LogAktion`); daraus entstehen die **Marke am Sitz**
+(„Raise 7", „Check") und die Kurzzeile („David raist auf 7").
+
+**Einsatzwahl in der Leiste** (`lib/poker/einsatz.ts`): vor dem Flop 2,5 · 3 · 4 BB, gegen eine Erhöhung 2,5× · 3× · 4×,
+nach dem Flop ⅓ · ½ · ¾ · Pot, dazu All-in; **jede Vorgabe trägt ihren Zielbetrag**, Vorgaben mit gleichem Ergebnis
+sind eine (Bet unter dem Minimum = „Min"). Dazu −/+ (ein halber BB, ab zehn ein ganzer) und der Knopf „Raise auf 3":
+ein Fehltipp setzt nichts. Der Fokus folgt der Leiste.
+
+**Alles in einem Bild** (`.tisch-bild`): Kopf, Tisch und Leiste füllen mindestens den Bildschirm, die Leiste steht
+unten. Bei 375 × 667 liegen Hand, Schild und Board über ihr (gemessen: Schild-Unterkante 500, Leiste ab 530). Dafür
+zeigen die Gegner dort ihre verdeckten Karten nicht (Schild und Marke sagen alles), die eigene Hand ist 62 statt 96 Pixel
+breit, der Rand schmaler; die eigene Wette liegt neben den Karten statt darüber. Der Coach ist ein **Einzeiler in der
+Leiste** („Tipp: Call · Equity 41 % · nötig 28 % · reicht"). Die Leiste **bleibt zwischen den Zügen stehen**, mit
+gesperrten (umrandeten, nicht verblassten) Knöpfen und „Carla überlegt …". Nach dem eigenen Fold: **„Hand zu Ende
+spielen"** ohne Bot-Wartezeit (345 ms gemessen statt bis zu 1,25 s je Aktion). Gegner am Sitz mit Vornamen.
+**Quer** (390 Pixel Höhe) steht die Leiste als **Spalte rechts**, ebenso beim Quiz (E-091) und vor dem Spiel — unten
+hätte sie 113 von 390 Pixeln gefressen.
+
+**Eine Aktionsreihe überall:** Fold · Call · Raise, nur der Raise betont (Tisch, Preflop-, Push/Fold-Trainer).
+Tischwahl als Segment (Heads-Up · 3-handed · 6-max) mit „Hand austeilen" in der Leiste, Coach als **Schalter**
+(`role="switch"`, mit „An/Aus" als Wort) statt Browser-Checkbox, Handliste als **Knopf** (`aria-expanded`) mit den
+letzten zehn und „Alle anzeigen". **Tisch verlassen** zeigt eine Lern-Bilanz (Hände, Entscheidungen, gut/vertretbar/
+Fehler), keinen Gewinn und Verlust (E-010/E-030). Showdown: **beide Hände in Worten** („Paar Damen, Kicker Ass";
+`lib/poker/handtext.ts`), aufgedeckte Karten in md vor Schild und Dealerknopf.
+
+**Trainer:** Das **Positionsschema** (`Positionsschema.tsx`, statisches SVG ohne Filz, eigener Platz in der Bereichsfarbe,
+gefoldete blass, Einsätze als Zahl in BB) steht im Preflop- und im Push/Fold-Trainer und in Lektion m1-l3 („Position ist
+Macht"). Der Preflop-Trainer zieht **gewichtet**: gut die Hälfte der Hände liegt an der Grenze der Range (je zur Hälfte
+von innen und außen), damit „immer Fold" nicht mehr in zwei von drei Aufgaben trifft (vorher 69 %, in der Eröffnung 74 %;
+jetzt unter 67 % an jedem Platz). **Spot-Chips** zeigen Platz und Trefferquote (ab drei Versuchen) und üben einen Spot
+gezielt; die Quote liegt im Gerätespeicher neben dem Lernstand, nicht in ihm (sie würde in Abzeichen und XP doppelt
+zählen). Der Handranking-Trainer wählt die **Kategorie** vor der Ziehung (Straße und Flush zusammen über 20 % statt
+7,6 %; Vierling und Straight Flush werden gebaut, nicht tausendfach abgelehnt) und hebt die **fünf besten Karten**
+hervor. Der Übungsstand ist **eine Zeile** statt drei Kacheln, „Teilen" ein Zeichen daneben, die Drill-Leiste hat
+dieselbe Fläche wie jede Entscheidungsleiste und ist 44 Pixel niedriger. Die Preflop-Matrix nach der Antwort ist
+kompakt und nur zum Ansehen; „Rekord!" statt „Rekord", im Drill „zählt ab: Ein Paar". Auf der Spielstil-Seite führt
+der eine Hinweis mit **„Jetzt üben"** und „Nachlesen" zur Übung und zur Lektion der Kennzahl.
+
+**Nicht umgesetzt, mit Grund:**
+
+- **6.8** Das Schema im **Szenario-Trainer**: Die Szenarien sind Text („Du hältst … gegen eine Erhöhung"), ohne
+  strukturierte Plätze und Einsätze; ein Bild daraus zu raten wäre erfunden.
+- **6.4** Die fünf Gewinnerkarten hervorheben (nachrangig); eine eigene Showdown-Animation gibt es ausdrücklich
+  nicht (E-010).
+- **6.3** Der Rat nach dem Flop gilt gegen Zufallshände (Equity); eine Range für Gegner, die erhöht haben, gibt es
+  nicht — deshalb ist ein „Fehler" dort nie eindeutig.
+- **6.7** Das Scrollen zur Begründung (`scrollIntoView`) gibt es im Preflop-Trainer und im Drill; Handranking,
+  Push/Fold und Szenario haben kurze Karten, bei denen es nichts brächte.
+- Auf dem **Desktop** (breit) steht die Leiste nicht am unteren Bildrand, sondern unter dem Tisch; das gehört zu Paket 9.

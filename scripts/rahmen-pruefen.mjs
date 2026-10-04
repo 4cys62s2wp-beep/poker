@@ -172,8 +172,15 @@ const gehe = async (seite, adresse, warte = 700) => {
   const k = await kontext(390, 844);
   const seite = await k.newPage();
   await gehe(seite, '#/lernen/drill', 900);
-  await seite.locator('.drill-knopf.ja').click();
-  await seite.waitForSelector('.toast', { timeout: 6000 }).catch(() => {});
+  /* Das Abzeichen „Aufgewärmt" gibt es erst für eine gelöste Aufgabe (E-093):
+     Bei „ja" liegt man nur manchmal richtig, also so lange weiter, bis die
+     Meldung erscheint. */
+  for (let i = 0; i < 14; i += 1) {
+    await seite.locator('.drill-knopf.ja').click();
+    const da = await seite.waitForSelector('.toast', { timeout: 1500 }).then(() => true).catch(() => false);
+    if (da) break;
+    await seite.locator('.drill-knopf.weiter').click();
+  }
   await seite.waitForTimeout(500);
   const t = await seite.evaluate(() => {
     const toast = document.querySelector('.toast');

@@ -27,6 +27,9 @@ export const STR = defineStrings(
     bbDefenseDesc:
       'Gegen ein Button-Open von 2,5bb bekommst du im Big Blind hervorragende Pot Odds und schließt die Action: Du verteidigst breit. Die 3-Bet-Range ist polar aufgebaut – starke Value-Hände plus Bluffs mit guten Blockern. Bei Überschneidungen hat die 3-Bet Vorrang.',
     nextHand: 'Nächste Hand',
+    spotGruppe: 'Spot wählen',
+    spotBB: 'BB',
+    spotNeu: 'neu',
   },
   {
     title: 'Preflop Trainer',
@@ -51,5 +54,8 @@ export const STR = defineStrings(
     bbDefenseDesc:
       'Against a 2.5bb Button open you get excellent pot odds in the Big Blind and close the action, so you defend wide. The 3-bet range is built polar – strong value hands plus bluffs with good blockers. Where they overlap, the 3-bet takes priority.',
     nextHand: 'Next Hand',
+    spotGruppe: 'Choose a spot',
+    spotBB: 'BB',
+    spotNeu: 'new',
   },
 );

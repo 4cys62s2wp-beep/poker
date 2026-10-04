@@ -16,6 +16,7 @@ import { zeichenFuer } from '../lib/zeichen';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/stats';
 import { STR as NAV } from '../i18n/pages/layout';
+import { SCHWACHSTELLE, ZIEL_PFAD } from '../lib/lernen/uebung';
 import {
   assessStyle,
   computeStats,
@@ -39,7 +40,7 @@ const VERDICT_COLOR: Record<Verdict, string> = {
 
 export function StatsPage() {
   const { data } = useAppState();
-  const { lang } = useLang();
+  const { lang, content } = useLang();
   const L = STR[lang];
   const NV = NAV[lang];
 
@@ -64,6 +65,15 @@ export function StatsPage() {
   }
 
   const weak = stats.hands < MIN_HANDS_FOR_STYLE;
+  const schwach = hint ? SCHWACHSTELLE[hint.key] : null;
+  const wegModul = schwach ? content.modules.find((m) => m.lessons.some((l) => l.id === schwach.lektion)) : undefined;
+  const wegLektion = wegModul?.lessons.find((l) => l.id === schwach?.lektion);
+  const weg = schwach
+    ? {
+        uebung: ZIEL_PFAD[schwach.ziel],
+        lektion: wegModul && wegLektion ? { zu: `/lernen/${wegModul.id}/${wegLektion.id}`, titel: wegLektion.title } : null,
+      }
+    : null;
 
   return (
     <div>
@@ -142,6 +152,14 @@ export function StatsPage() {
             <p style={{ margin: 0 }}>
               {L.hints[hint.key][hint.verdict === 'low' ? 'low' : 'high']}
             </p>
+            {/* Ein Hinweis ohne Weg weiter ist eine Diagnose ohne Rezept: Die
+                Übung und die Lektion zur Kennzahl stehen gleich darunter. */}
+            {weg && (
+              <div className="row wrap" style={{ marginTop: 'var(--sp-4)' }}>
+                <Link className="btn sm primary" to={weg.uebung}>{L.practiceNow}</Link>
+                {weg.lektion && <Link className="btn sm" to={weg.lektion.zu}>{L.readLesson(weg.lektion.titel)}</Link>}
+              </div>
+            )}
           </>
         ) : (
           <p className="small muted" style={{ margin: 0 }}>{L.noHintBody}</p>

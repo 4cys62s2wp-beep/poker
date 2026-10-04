@@ -13,6 +13,9 @@ import { bestanden, lektionsXp } from '../lib/lernen/quiz';
 import { useLang, levelTitleFor } from '../i18n';
 import { MAX_TRACKED_HANDS, sanitizeHandFacts, type HandFacts } from '../lib/poker/stats';
 
+/** XP für jede am Übungstisch gespielte Hand — gleich, ob gewonnen oder verloren. */
+const HAND_XP = 6;
+
 const PROFILES_KEY = 'pokermentor-profiles-v1';
 const LEGACY_KEY = 'pokermentor-v1';
 const dataKey = (profileId: string) => `pokermentor-data-${profileId}`;
@@ -714,11 +717,13 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
           t.streak += 1;
           t.bestStreak = Math.max(t.bestStreak, t.streak);
           d.xp += 5;
+          /* Das Abzeichen „Erste Trainer-Aufgabe gelöst" gibt es für eine
+             gelöste Aufgabe — nicht dafür, dass man eine falsche angetippt hat. */
+          award(d, 'trainer-first');
         } else {
           t.streak = 0;
         }
         d.trainers[trainerId] = t;
-        award(d, 'trainer-first');
         if (t.streak >= 10) award(d, 'trainer-streak-10');
         touchStreak(d);
       });
@@ -741,7 +746,10 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       mutate((d) => {
         d.handsPlayed += 1;
         if (won) d.handsWon += 1;
-        d.xp += won ? 10 : 2;
+        /* Pauschal je Hand (E-093): Lektion 1 lehrt, in Entscheidungen zu denken,
+           nicht in Ergebnissen — und ein Gewinn ist am Übungstisch großenteils
+           Karten. 10 für einen Gewinn und 2 fürs Verlieren belohnten Glück. */
+        d.xp += HAND_XP;
         if (facts) {
           d.handFacts.push(facts);
           // Ältestes zuerst verwerfen: Der Lernstand wandert als JSON in die

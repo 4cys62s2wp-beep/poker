@@ -1,10 +1,10 @@
 {
-  "geprueft_am": "2026-10-04T12:45:58.202Z",
+  "geprueft_am": "2026-10-04T13:42:27.240Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
   "bildschirme": 139,
-  "mit_entscheidung": 106,
+  "mit_entscheidung": 107,
   "befunde": [],
   "messungen": [
     {
@@ -161,15 +161,15 @@
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 692,
+        "oben_px": 736,
         "unten_px": 820,
-        "mitte_px": 756,
+        "mitte_px": 778,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
-        "knoepfe": 3,
+        "knoepfe": 2,
         "klebt": true,
-        "kleinster_knopf_px": 44,
-        "breitenanteil": 1.18
+        "kleinster_knopf_px": 60,
+        "breitenanteil": 0.9
       }
     },
     {
@@ -222,7 +222,7 @@
     {
       "hash": "#/lernen/m1/m1-l3",
       "scrollt": true,
-      "ueberlauf_px": 4942,
+      "ueberlauf_px": 5116,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
@@ -434,15 +434,15 @@
     },
     {
       "hash": "#/lernen/trainer/equity",
-      "scrollt": true,
-      "ueberlauf_px": 18,
+      "scrollt": false,
+      "ueberlauf_px": 0,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 733,
-        "unten_px": 838,
-        "mitte_px": 785,
+        "oben_px": 715,
+        "unten_px": 820,
+        "mitte_px": 768,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 1,
@@ -473,14 +473,14 @@
     {
       "hash": "#/lernen/trainer/outs",
       "scrollt": true,
-      "ueberlauf_px": 11,
+      "ueberlauf_px": 5,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 670,
-        "unten_px": 831,
-        "mitte_px": 750,
+        "oben_px": 664,
+        "unten_px": 825,
+        "mitte_px": 745,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -491,15 +491,15 @@
     },
     {
       "hash": "#/lernen/trainer/potodds",
-      "scrollt": true,
-      "ueberlauf_px": 27,
+      "scrollt": false,
+      "ueberlauf_px": 0,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 663,
-        "unten_px": 844,
-        "mitte_px": 754,
+        "oben_px": 639,
+        "unten_px": 820,
+        "mitte_px": 730,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -510,34 +510,34 @@
     },
     {
       "hash": "#/lernen/trainer/preflop",
-      "scrollt": false,
-      "ueberlauf_px": 0,
+      "scrollt": true,
+      "ueberlauf_px": 63,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 715,
-        "unten_px": 820,
-        "mitte_px": 768,
+        "oben_px": 739,
+        "unten_px": 844,
+        "mitte_px": 792,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
-        "knoepfe": 3,
+        "knoepfe": 2,
         "klebt": true,
         "kleinster_knopf_px": 56,
-        "breitenanteil": 0.88
+        "breitenanteil": 0.9
       }
     },
     {
       "hash": "#/lernen/trainer/pushfold",
-      "scrollt": false,
-      "ueberlauf_px": 0,
+      "scrollt": true,
+      "ueberlauf_px": 47,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 715,
-        "unten_px": 820,
-        "mitte_px": 768,
+        "oben_px": 739,
+        "unten_px": 844,
+        "mitte_px": 792,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 2,
@@ -549,7 +549,7 @@
     {
       "hash": "#/lernen/trainer/szenario",
       "scrollt": true,
-      "ueberlauf_px": 77,
+      "ueberlauf_px": 85,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
@@ -562,17 +562,27 @@
         "knoepfe": 3,
         "klebt": true,
         "kleinster_knopf_px": 52,
-        "breitenanteil": 1.35
+        "breitenanteil": 1.82
       }
     },
     {
       "hash": "#/lernen/uebungstisch",
       "scrollt": true,
-      "ueberlauf_px": 173,
+      "ueberlauf_px": 160,
       "fensterhoehe": 844,
       "grenze_px": 422,
-      "leisten": 0,
-      "leiste": null
+      "leisten": 1,
+      "leiste": {
+        "oben_px": 739,
+        "unten_px": 844,
+        "mitte_px": 792,
+        "im_daumenbereich": true,
+        "ohne_scrollen": true,
+        "knoepfe": 1,
+        "klebt": true,
+        "kleinster_knopf_px": 56,
+        "breitenanteil": 0.92
+      }
     },
     {
       "hash": "#/nachschlagen/equity",

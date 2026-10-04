@@ -472,7 +472,7 @@ Stufe 1: Fortschrittsanzeige („Abschnitt 3 von 6“) und ein klebendes „Weit
 ### [x] 5.5 Lektionstext gestalten: weniger Gold, echte Karten, eine Tischskizze  
 *Wirkung 5 · Aufwand L*
 
-**Stand:** Fett in `--text-betont` ohne Gold, Hervorhebungen 858 → 505, Karten in 45 statt 36 Abschnitten. Offen: Hälfte nicht erreicht, Positionsschema (6.8), Minikarten im Fließtext; siehe E-092.
+**Stand:** Fett in `--text-betont` ohne Gold, Hervorhebungen 858 → 505, Karten in 45 statt 36 Abschnitten. Offen: Hälfte nicht erreicht, Minikarten im Fließtext; das Positionsschema in m1-l3 kam mit 6.8; siehe E-092.
 
 .prose strong (global.css 1220) in --text-stark mit Gewicht 700, ohne Gold; die Hervorhebungen in den Inhalten halbieren (m1 hat 144, insgesamt 858). Das Feld cards (types.ts, heute in 36 von 224 Abschnitten) in den Beispielabschnitten pflegen, vorrangig in m1 und m2, statt Karten per Regex im Fließtext zu erkennen. Minikarten im Fließtext nur mit Kontrasttest in hell und dunkel (rote Farben 4,5:1). Für Blinds und Position (m1-l3) das Positionsschema aus Punkt 6.8 einbauen; als Inhalt statt Dekoration besteht es den Prüfstein aus E-035/E-036. .prose-Breite kommt aus Punkt 1.2.
 
@@ -554,7 +554,7 @@ QuizQuestion (src/content/types.ts) bekommt die optionalen Felder cards?/board?.
 **Ziel:** Am Übungstisch sieht man Tisch, eigene Karten, Gegneraktionen und Knöpfe auf einen Blick, der Coach rät nicht mehr gegen die eigenen Ranges, und jede Entscheidung bekommt danach eine Rückmeldung, aus der man lernt.  
 **Baut auf:** 1, 2
 
-### [ ] 6.1 Coach auf die vorhandene Range-Logik umstellen  
+### [x] 6.1 Coach auf die vorhandene Range-Logik umstellen  
 *Wirkung 5 · Aufwand M*
 
 Heute rät der Coach mit 77 im CO bei ungeöffnetem Pot zum Fold („Equity vs. 3 zufällige Hände ~35 %“), obwohl die CO-Range in ranges.ts „22+“ enthält. Der Grund: PlayPage.tsx 187–197 und 478–486 vergleichen nur equityVsRandomHands mit call/(pot+call). Neu ist eine reine, getestete Funktion coachForTable(g). Sie bildet positionOf auf CoachPosition ab, leitet raisedBefore und limpers aus g.log ab und nutzt preflopAdvice (coach.ts:379), postflopAdvice, madeHandInfo/detectDraws und facingBetVerdict wie CoachPage.tsx 89–105. Preflop entfällt die Zahl „Equity vs. Zufallshände“. Regressionstests: Eine Hand außerhalb der RFI-Range bekommt im ungeöffneten Pot nie Raise; 77 im CO bekommt nicht Fold.
@@ -566,7 +566,7 @@ Heute rät der Coach mit 77 im CO bei ungeöffnetem Pot zum Fold („Equity vs. 
 
 </details>
 
-### [ ] 6.2 Einsatzwahl in die klebende Leiste, Beträge in BB  
+### [x] 6.2 Einsatzwahl in die klebende Leiste, Beträge in BB  
 *Wirkung 5 · Aufwand M*
 
 Heute öffnet „Raise …“ die Einsatzwahl außerhalb des Bildes: bei 390×844 ab y=958, bei 1366×860 hinter der Leiste. .erhoehen (PlayPage.tsx 497–505, global.css 3487) wandert in <Entscheidung> und damit in die klebende Leiste (global.css 3500). Jeder Vorgabeknopf trägt seinen Zielbetrag: preflop 2,5/3/4 BB, im 3-Bet-Fall das Dreifache des Opens, postflop 33/50/75/100 % Pot, dazu All-in. Ein Feld mit −/+ und der Bestätigungsknopf „Raise auf 6“, damit ein Fehltipp nicht sofort ausgeführt wird. Fast gleiche Vorgaben zusammenlegen (Min 4, ½ Pot 5, ¾ Pot 6, Pot 7 aus raiseTo() 309–322). aria-expanded am Knopf. Den Tisch fest auf BB umstellen, ohne Schalter: Pot, Call, Stacks (START_STACK in PlayPage.tsx:25), Verlauf; halbe BB mit Komma. Den Durchgangstest auf Sichtbarkeit übernehmen.
@@ -578,7 +578,7 @@ Heute öffnet „Raise …“ die Einsatzwahl außerhalb des Bildes: bei 390×84
 
 </details>
 
-### [ ] 6.3 Tisch, eigene Karten, Coach und Knöpfe in einem Bild, und die Leiste bleibt stehen  
+### [x] 6.3 Tisch, eigene Karten, Coach und Knöpfe in einem Bild, und die Leiste bleibt stehen  
 *Wirkung 5 · Aufwand M*
 
 Die Seite wird ein Raster mit min-height 100dvh; die Größe der eigenen Karten richtet sich per Container-Query nach der Höhe (xl → lg unter 720 px). Heute verdeckt bei 375×667 die Leiste die halbe Hand und das eigene Namensschild, bei 390×844 liegt der Coach-Kasten unter der Leiste. Der Coach wird ein Einzeiler in der Leiste („Equity 23 % · nötig 41 %“ mit Haken oder Kreuz), die Erklärung kommt per „Warum?“ als Blatt (E-018). Die Leiste bleibt zwischen den Zügen stehen, mit deaktivierten Knöpfen und dem Text „Carla überlegt …“ statt einer eigenen Karte (PlayPage.tsx 495–539). Nach einem eigenen Fold gibt es „Hand zu Ende spielen“ ohne Bot-Verzögerung (heute 550–1250 ms je Aktion, PlayPage.tsx:174). Botnamen am Sitz nur mit Vornamen. Kein Vollbild-Tisch, keine Vorauswahl-Kästchen, kein Fast-Fold, kein Tempo-Schalter: Das verstärkt den Spielcharakter, den E-010/E-030 begrenzen. Der Prüflauf testet bei 375×667, dass das eigene Namensschild nicht unter der Leiste liegt.
@@ -591,8 +591,10 @@ Die Seite wird ein Raster mit min-height 100dvh; die Größe der eigenen Karten 
 
 </details>
 
-### [ ] 6.4 Am Tisch steht, was passiert ist: Gegneraktionen und Showdown  
+### [x] 6.4 Am Tisch steht, was passiert ist: Gegneraktionen und Showdown  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Marken, Kurzzeile, Showdown-Zeile mit Kicker, aufgedeckte Karten in md umgesetzt. Offen: Gewinnerkarten hervorheben (nachrangig).
 
 Die Aktionsmarke je Sitz („Check“, „Bet 4“, „Raise 7“) aus g.log der laufenden Street ableiten (LogEntry hat playerId und street); heute gibt es nur L.foldedTag und den Einsatz-Chip (PlayPage.tsx 356–384). Dazu eine Kurzzeile „David erhöht auf 7“ in der Zeile filz-lage, die schon aria-live hat. Keine Gold-Animation für neue Boardkarten (E-010, Regel 8a). Showdown: eine Ergebniszeile mit beiden Händen und Kicker („Paar Damen schlägt dein Paar Zweien“), „mit Ein Paar“ wird klein geschrieben, der eigene Verlust steht am Tisch. Aufgedeckte Gegnerkarten (PlayPage.tsx 357–358) mindestens in md und vor Namensschild und D-Knopf. Die fünf Gewinnerkarten hervorzuheben ist nachrangig.
 
@@ -603,7 +605,7 @@ Die Aktionsmarke je Sitz („Check“, „Bet 4“, „Raise 7“) aus g.log der
 
 </details>
 
-### [ ] 6.5 Bewerten nach der Aktion statt die Lösung vorher anzusagen  
+### [x] 6.5 Bewerten nach der Aktion statt die Lösung vorher anzusagen  
 *Wirkung 5 · Aufwand L*
 
 Erst nach Punkt 6.1. Heute erscheint das Coach-Panel (PlayPage.tsx 465–490) vor der Entscheidung mit dem Urteil und verschwindet danach; bewertet wird nie. Neu: Der Coach ist standardmäßig aus bzw. erscheint auf „Tipp anzeigen“; „Tipp vorher“ bleibt wählbar. Nach der Aktion kommt ein Urteil in drei Stufen (Gut / Vertretbar / Fehler), nur dort, wo es eindeutig ist, ausdrücklich als Schätzung gekennzeichnet, ohne vorgetäuschten EV-Verlust. XP pauschal je gespielter Hand statt won ? 10 : 2 (recordHand); das Abzeichen „Erster Pot“ überprüfen. Lektion m1-l1 lehrt „in Entscheidungen, nicht in Ergebnissen“. Gegenentscheidung: E-045 sagt, die Güte des Rats wird nicht geprüft. Der Nutzen überwiegt, weil erst so der Lernkreis entscheiden → Rückmeldung entsteht; Voraussetzung ist die rangebasierte Grundlage aus 6.1. Ein Rückblick nur als statische Liste, kein Replayer (E-010).
@@ -615,7 +617,7 @@ Erst nach Punkt 6.1. Heute erscheint das Coach-Panel (PlayPage.tsx 465–490) vo
 
 </details>
 
-### [ ] 6.6 Einheitliche Aktionen in Tisch und Trainern  
+### [x] 6.6 Einheitliche Aktionen in Tisch und Trainern  
 *Wirkung 4 · Aufwand S*
 
 Feste Reihenfolge Fold · Call · Raise am Tisch (PlayPage.tsx 506–526), im Preflop-Trainer (PreflopTrainer.tsx 155–164, heute „Raise | Fold“) und im Push/Fold-Trainer (PushFoldTrainer.tsx 140–150). Farben aus den Aktions-Tokens von Paket 1, passend zur Matrix-Legende (Fold heute am Tisch rot, in der Legende grau). Fold und Call neutral, Raise als einziger betonter Knopf; heute rot, grau und Gold-Glow. Antwortknöpfe als gleich breites Raster (heute im Szenario linksbündig mit „Fold“ allein in Zeile zwei). Der Szenario-Trainer mischt weiter, weil seine Antworten ausformuliert sind. Die Tischwahl wird ein Segment 1 · 2 · 5 statt drei hoher Karten in Gold, Grün und Rot, der Coach-Modus ein Schalter statt Browser-Checkbox.
@@ -629,8 +631,10 @@ Feste Reihenfolge Fold · Call · Raise am Tisch (PlayPage.tsx 506–526), im Pr
 
 </details>
 
-### [ ] 6.7 Trainer-Kopf und Leiste aufräumen, die Erklärung nach der Antwort sichtbar machen  
+### [x] 6.7 Trainer-Kopf und Leiste aufräumen, die Erklärung nach der Antwort sichtbar machen  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt bis auf `scrollIntoView` in Handranking/Push-Fold/Szenario (kurze Karten), siehe E-093.
 
 .drill-unten (global.css 2327–2340) bekommt den Grund --bg-deep, durchgezogen bis zur Unterkante; die Knöpfe bleiben 24 pt über dem Gestenstreifen (DESIGN §3). Der Inhalt bekommt unten ein padding von --drill-bedienung-h, damit nichts unter der Leiste verschwindet. Die drei Werte aus E-038 (Serie, Treffer, Beste) in eine kompakte Zeile statt drei Kacheln mit ~70 px; „Teilen“ als Icon oben rechts. Nach der Antwort holt scrollIntoView({block:'nearest'}) ohne smooth (E-064) die Kernbegründung über die Leiste; heute liegen „ABSTAND −4,4 pp“ und die Begründung darunter. Die Preflop-Matrix nach der Antwort kompakt und nur zum Ansehen (heute nach „J5s“ abgeschnitten und verdeckt). „Neue Bestserie“ wird „Rekord!“. Im Drill statt „Ziel: Ein Paar“ die Marke „zählt ab: Ein Paar“.
 
@@ -644,8 +648,10 @@ Feste Reihenfolge Fold · Call · Raise am Tisch (PlayPage.tsx 506–526), im Pr
 
 </details>
 
-### [ ] 6.8 Positionsschema statt Lagebeschreibung in Sätzen  
+### [x] 6.8 Positionsschema statt Lagebeschreibung in Sätzen  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Preflop-, Push/Fold-Trainer und Lektion m1-l3 umgesetzt. Offen: Szenario-Trainer (keine strukturierten Daten), siehe E-093.
 
 Ein statisches SVG: sechs Plätze im Oval, Positionskürzel, der eigene Platz in der Bereichsfarbe, Einsätze als Zahl in BB, gefoldete Plätze blass, kein Filz, keine Chip-Grafik. Einsatz im Preflop-Trainer (PreflopTrainer.tsx 89–101), Szenario- und Push/Fold-Trainer, auf der heutigen Leerfläche über den Knöpfen. Dieselbe Komponente dient der Lektion zu Blinds und Position (Punkt 5.5). Gedeckt durch E-030 (Lehrmaterial als Standbild); BACKLOG sagt ausdrücklich „Kein Tisch, keine Animation“, daher kein Filz.
 
@@ -657,7 +663,7 @@ Ein statisches SVG: sechs Plätze im Oval, Positionskürzel, der eigene Platz in
 
 </details>
 
-### [ ] 6.9 Aufgaben, die etwas lehren: Grenzhände und seltene Hände gezielt ziehen  
+### [x] 6.9 Aufgaben, die etwas lehren: Grenzhände und seltene Hände gezielt ziehen  
 *Wirkung 4 · Aufwand M*
 
 PreflopTrainer newScenario() (23–43) zieht heute gleichverteilt, deshalb ist „immer Fold“ in 69,1 % richtig (RFI 74,4 %). Neu: gewichtete Ziehung mit etwa 50 % Grenzhänden (Abstand ≤ 1 Feld zur Range-Grenze), Spot-Chips oben (Position, RFI oder Verteidigung), Trefferquote je Spot über recordTrainer. HandRankTrainer: die Zielkategorie gewichtet per Ablehnungsverfahren mit Obergrenze ziehen (heute 85 % High Card, Paar oder zwei Paare; Straße/Flush 7,6 %), die fünf besten Karten über die 21 Kombinationen von evaluateBest hervorheben. award('trainer-first') nur bei correct (eine Zeile in recordTrainer).
@@ -669,7 +675,7 @@ PreflopTrainer newScenario() (23–43) zieht heute gleichverteilt, deshalb ist �
 
 </details>
 
-### [ ] 6.10 Handliste und Spielstil führen zum nächsten Schritt  
+### [x] 6.10 Handliste und Spielstil führen zum nächsten Schritt  
 *Wirkung 3 · Aufwand M*
 
 Die Handzeile (PlayPage.tsx 581–585, heute <div onClick> ohne role und tabindex) wird ein <button aria-expanded>; das ist für die Barrierefreiheit Pflicht. Die Liste zeigt die letzten 10 und „Alle anzeigen“ statt 3618 px nach 22 Händen. Jede Schwachstelle auf der Spielstil-Seite (StatsPage.tsx:216, heute nur „← Lernen“) bekommt „Jetzt üben“ zur passenden Lektion oder zum passenden Trainer. „Tisch verlassen“ (PlayPage.tsx:331) zeigt eine Lern-Bilanz mit Zahl der Entscheidungen und Fehler-Marken aus Punkt 6.5, aber keinen Gewinn oder Verlust (E-010/E-030).

@@ -18,6 +18,7 @@
 
    In dieser Datei steht keine Ziffer. */
 
+import type { ReactNode } from 'react';
 import { Icon } from './Icon';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/uebungsstand';
@@ -29,7 +30,7 @@ export interface Uebungswerte {
   bestStreak: number;
 }
 
-export function Uebungsstand({ werte }: { werte?: Uebungswerte }) {
+export function Uebungsstand({ werte, aktion }: { werte?: Uebungswerte; aktion?: ReactNode }) {
   const { lang } = useLang();
   const L = STR[lang];
   const attempts = werte?.attempts ?? 0;
@@ -60,6 +61,7 @@ export function Uebungsstand({ werte }: { werte?: Uebungswerte }) {
         <span className="zahl" aria-label={L.besteRing(beste)}>{beste}</span>
         <span className="marke">{L.beste}</span>
       </div>
+      {aktion}
     </div>
   );
 }

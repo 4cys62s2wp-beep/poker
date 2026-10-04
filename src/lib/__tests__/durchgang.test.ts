@@ -1199,6 +1199,116 @@ describe('Der Übungstisch ist eine Spielansicht', () => {
   });
 });
 
+/* ── Der Übungstisch: alles im Bild (FAHRPLAN 6.2, 6.3, 6.5) ────────────
+   Vor E-093 verdeckte die Leiste bei 375 × 667 die halbe Hand und das eigene
+   Namensschild, öffnete sich die Einsatzwahl hinter der Leiste, und der Coach
+   riet vor dem Zug, statt danach zu bewerten. */
+
+describe('Am Übungstisch liegt alles im Bild', () => {
+  type Geraet = {
+    dran: boolean;
+    bild: {
+      fenster: number;
+      leiste: { oben: number; unten: number };
+      schild: { oben: number; unten: number };
+      karten: { oben: number; unten: number };
+      board: { oben: number; unten: number };
+      leiste_am_rand: boolean;
+    };
+    tipp_knopf: number;
+    status_vorher: string;
+    wahl: {
+      vorgaben: string[];
+      alle_im_bild: boolean;
+      bestaetigen: string;
+      leiste: { oben: number; unten: number };
+      schild_unten: number;
+      karten_unten: number;
+    };
+    mehr: string;
+    wieder_weniger: string;
+    noch_nicht_gesetzt: boolean;
+    danach: { status: string; gesperrte_knoepfe: number; urteil: string[] };
+  };
+  const e = () => schritt('Am Übungstisch liegt alles im Bild: Hand, Einsatzwahl, Urteil') as unknown as {
+    geraete: Record<'klein' | 'mittel' | 'breit', Geraet>;
+    fold: { status_nach_fold: string; dauer_ms: number };
+  };
+  const geraete: Array<'klein' | 'mittel' | 'breit'> = ['klein', 'mittel', 'breit'];
+
+  it('legt auf jedem Gerät das eigene Namensschild und die Karten über die Leiste', () => {
+    /* Bei 375 × 667 lag das Schild zur Hälfte darunter. */
+    for (const n of geraete) {
+      const g = e().geraete[n];
+      expect(g.dran, n).toBe(true);
+      expect(g.bild.schild.unten, `${n}: Schild`).toBeLessThanOrEqual(g.bild.leiste.oben);
+      expect(g.bild.karten.unten, `${n}: Karten`).toBeLessThanOrEqual(g.bild.leiste.oben);
+      expect(g.bild.board.unten, `${n}: Board`).toBeLessThanOrEqual(g.bild.leiste.oben);
+    }
+  });
+
+  it('lässt die Leiste auf dem Handy am unteren Rand stehen', () => {
+    for (const n of ['klein', 'mittel'] as const) expect(e().geraete[n].bild.leiste_am_rand, n).toBe(true);
+  });
+
+  it('zeigt die Einsatzgrößen im Bild, jede mit ihrem Zielbetrag', () => {
+    for (const n of geraete) {
+      const w = e().geraete[n].wahl;
+      expect(w.alle_im_bild, `${n}: alles im Bild`).toBe(true);
+      expect(w.vorgaben.length, n).toBeGreaterThanOrEqual(4);
+      for (const v of w.vorgaben) expect(v, `${n}: ${v}`).toMatch(/\d/);
+      expect(w.vorgaben[w.vorgaben.length - 1], n).toMatch(/All-in/);
+      expect(w.bestaetigen, n).toMatch(/^(Raise auf|Bet) \d/);
+    }
+  });
+
+  it('lässt auch mit geöffneter Einsatzwahl die eigene Hand über der Leiste', () => {
+    for (const n of geraete) {
+      const w = e().geraete[n].wahl;
+      expect(w.karten_unten, `${n}: Karten`).toBeLessThanOrEqual(w.leiste.oben);
+    }
+  });
+
+  it('verändert den Betrag um einen Schritt und führt nichts ohne Bestätigung aus', () => {
+    for (const n of geraete) {
+      const g = e().geraete[n];
+      expect(g.mehr, n).not.toBe(g.wahl.bestaetigen);
+      expect(g.wieder_weniger, n).toBe(g.wahl.bestaetigen);
+      expect(g.noch_nicht_gesetzt, n).toBe(true);
+    }
+  });
+
+  it('zeigt den Tipp erst auf Wunsch', () => {
+    for (const n of geraete) {
+      const g = e().geraete[n];
+      expect(g.tipp_knopf, n).toBeGreaterThan(0);
+      expect(g.status_vorher, n).toBe('Du bist dran');
+    }
+  });
+
+  it('lässt die Leiste nach dem Zug stehen, mit gesperrten Knöpfen und dem Namen dessen, der überlegt', () => {
+    for (const n of geraete) {
+      const d = e().geraete[n].danach;
+      expect(d.gesperrte_knoepfe, n).toBe(3);
+      expect(d.status, n).toMatch(/überlegt/);
+    }
+  });
+
+  it('bewertet den Zug nach der Aktion — in drei Stufen', () => {
+    for (const n of geraete) {
+      const d = e().geraete[n].danach;
+      expect(d.urteil.length, n).toBeGreaterThan(0);
+      expect(d.urteil[0], n).toMatch(/Gut|Vertretbar|Fehler/);
+    }
+  });
+
+  it('bietet nach dem eigenen Fold an, die Hand ohne Wartezeit zu Ende zu spielen', () => {
+    expect(e().fold.status_nach_fold).toBe('Du hast gefoldet');
+    /* Die Bots warten sonst 550–1250 ms je Aktion. */
+    expect(e().fold.dauer_ms).toBeLessThan(2500);
+  });
+});
+
 describe('Das private Gerät: der Lernbildschirm', () => {
   it('zeigt vor der Antwort keine Ergebniszahl', () => {
     /* Die Aufgabe steht da, das Ergebnis nicht. Der größte Text ist der Name

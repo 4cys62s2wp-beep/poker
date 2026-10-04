@@ -7,6 +7,7 @@
 import type { Card } from './cards';
 import { cardToPretty, shuffledDeckWithout } from './cards';
 import { evaluateBest, categoryNameIn } from './evaluator';
+import { formatBB } from './bb';
 
 export type Street = 'preflop' | 'flop' | 'turn' | 'river' | 'showdown';
 
@@ -28,10 +29,22 @@ export interface EnginePlayer {
   revealed: boolean;
 }
 
+/** Was ein Spieler getan hat — strukturiert, damit die Oberfläche es am Sitz
+ *  zeigen kann, ohne den Protokolltext zu zerlegen. */
+export type AktionsArt = 'blind' | 'fold' | 'check' | 'call' | 'bet' | 'raise';
+
+export interface LogAktion {
+  art: AktionsArt;
+  /** Der Gesamteinsatz des Spielers in dieser Setzrunde nach der Aktion („Raise auf 7", „Call 7"), in Chips. */
+  betrag?: number;
+  allIn?: boolean;
+}
+
 export interface LogEntry {
   street: Street;
   text: string;
   playerId?: number;
+  aktion?: LogAktion;
 }
 
 export interface PotAward {
@@ -92,16 +105,16 @@ export function setEngineLanguage(l: EngineLang): void {
 
 interface EngineText {
   handStart: (n: number, sb: number, bb: number) => string;
-  postsBlind: (name: string, label: string, paid: number) => string;
+  postsBlind: (name: string, label: string, paid: string) => string;
   folds: (name: string) => string;
   checks: (name: string) => string;
-  calls: (name: string, amount: number, allIn: boolean) => string;
-  betOrRaise: (name: string, isBet: boolean, to: number, allIn: boolean) => string;
+  calls: (name: string, amount: string, allIn: boolean) => string;
+  betOrRaise: (name: string, isBet: boolean, to: string, allIn: boolean) => string;
   boardDealt: (label: string, cards: string) => string;
-  refund: (name: string, amount: number) => string;
-  winsByFold: (name: string, pot: number) => string;
+  refund: (name: string, amount: string) => string;
+  winsByFold: (name: string, pot: string) => string;
   shows: (name: string, cards: string, handName: string) => string;
-  wins: (name: string, amount: number, handName: string) => string;
+  wins: (name: string, amount: string, handName: string) => string;
 }
 
 const ENGINE_TEXT: Record<EngineLang, EngineText> = {
@@ -139,8 +152,13 @@ function txt(): EngineText {
   return ENGINE_TEXT[engineLang];
 }
 
-function log(state: GameState, text: string, playerId?: number) {
-  state.log.push({ street: state.street, text, playerId });
+function log(state: GameState, text: string, playerId?: number, aktion?: LogAktion) {
+  state.log.push({ street: state.street, text, playerId, aktion });
+}
+
+/** Beträge im Protokoll stehen in Big Blinds, wie überall am Tisch (E-093). */
+function bb(state: GameState, chips: number): string {
+  return formatBB(chips, state.bigBlind, engineLang);
 }
 
 function activePlayers(state: GameState): EnginePlayer[] {
@@ -236,7 +254,7 @@ function postBlind(state: GameState, idx: number, amount: number, label: string)
   p.bet += paid;
   p.committed += paid;
   if (p.stack === 0) p.allIn = true;
-  log(state, txt().postsBlind(p.name, label, paid), p.id);
+  log(state, txt().postsBlind(p.name, label, bb(state, paid)), p.id, { art: 'blind', betrag: p.bet, allIn: p.allIn });
 }
 
 /** Legale Aktionen für den Spieler am Zug. */
@@ -268,13 +286,13 @@ export function applyAction(state: GameState, action: Action): void {
     case 'fold': {
       p.folded = true;
       p.hasActed = true;
-      log(state, txt().folds(p.name), p.id);
+      log(state, txt().folds(p.name), p.id, { art: 'fold' });
       break;
     }
     case 'check': {
       if (!la.canCheck) throw new Error('Check nicht möglich');
       p.hasActed = true;
-      log(state, txt().checks(p.name), p.id);
+      log(state, txt().checks(p.name), p.id, { art: 'check' });
       break;
     }
     case 'call': {
@@ -282,7 +300,7 @@ export function applyAction(state: GameState, action: Action): void {
       if (amount <= 0) {
         // Call ohne offenen Einsatz = Check
         p.hasActed = true;
-        log(state, txt().checks(p.name), p.id);
+        log(state, txt().checks(p.name), p.id, { art: 'check' });
         break;
       }
       p.stack -= amount;
@@ -290,7 +308,7 @@ export function applyAction(state: GameState, action: Action): void {
       p.committed += amount;
       p.hasActed = true;
       if (p.stack === 0) p.allIn = true;
-      log(state, txt().calls(p.name, amount, p.allIn), p.id);
+      log(state, txt().calls(p.name, bb(state, amount), p.allIn), p.id, { art: 'call', betrag: p.bet, allIn: p.allIn });
       break;
     }
     case 'raise': {
@@ -319,7 +337,7 @@ export function applyAction(state: GameState, action: Action): void {
         }
       }
       state.currentBet = to;
-      log(state, txt().betOrRaise(p.name, isBet, to, p.allIn), p.id);
+      log(state, txt().betOrRaise(p.name, isBet, bb(state, to), p.allIn), p.id, { art: isBet ? 'bet' : 'raise', betrag: to, allIn: p.allIn });
       break;
     }
   }
@@ -419,7 +437,7 @@ function refundUncalled(state: GameState): void {
     const refund = top.committed - secondMax;
     top.stack += refund;
     top.committed -= refund;
-    if (refund > 0) log(state, txt().refund(top.name, refund), top.id);
+    if (refund > 0) log(state, txt().refund(top.name, bb(state, refund)), top.id);
   }
 }
 
@@ -428,7 +446,7 @@ function endHandByFold(state: GameState, winner: EnginePlayer): void {
   const pot = state.players.reduce((sum, p) => sum + p.committed, 0);
   winner.stack += pot;
   state.awards = [{ playerId: winner.id, amount: pot }];
-  log(state, txt().winsByFold(winner.name, pot), winner.id);
+  log(state, txt().winsByFold(winner.name, bb(state, pot)), winner.id);
   for (const p of state.players) {
     p.committed = 0;
     p.bet = 0;
@@ -501,7 +519,7 @@ function showdown(state: GameState): void {
     p.stack += amount;
     const handName = categoryNameIn(values.get(playerId)!, engineLang);
     state.awards.push({ playerId, amount, handName });
-    log(state, txt().wins(p.name, amount, handName), playerId);
+    log(state, txt().wins(p.name, bb(state, amount), handName), playerId);
   }
   for (const p of state.players) {
     p.committed = 0;

@@ -1246,6 +1246,7 @@ button.pill {
   box-shadow: 0 2px 7px var(--lift-shadow), inset 0 0 0 2px rgba(255, 250, 235, 0.5);
 }
 
+.pcard.dim { opacity: 0.4; }
 .pcard.sm { width: 36px; height: 50px; border-radius: 5px; }
 /* Die kleine Karte trägt nur Rang und Farbe, groß und in der Mitte. Mit 35
    Pixeln Breite blieben für Ecke, Mittelsymbol und zweiten Index je ein paar
@@ -1408,6 +1409,11 @@ button.pill {
   -webkit-tap-highlight-color: transparent;
 }
 
+
+/* Nur zum Ansehen: in die Breite gepasst statt seitlich zu scrollen. Nur die
+   markierte Hand trägt ihr Label — die Matrix zeigt, wo sie liegt. */
+.matrix.kompakt { min-width: 0; gap: 1.5px; }
+.matrix.kompakt .cell { border: 0; border-radius: 3px; font-size: var(--fs-kleingedrucktes); }
 
 .matrix .cell.interactive { cursor: pointer; transition: filter 0.1s, transform 0.08s; }
 .matrix .cell.interactive:hover { filter: brightness(1.25); }
@@ -2780,7 +2786,7 @@ input[type="radio"] {
   /* Höhe der schwebenden Bedienleiste: Knopf plus Punktestand plus Polster.
      Die Auflösung hält sich unten so viel Platz frei — sonst verschwindet
      ihr letzter Satz dauerhaft unter der Leiste, und zwar mitten im Wort. */
-  --drill-bedienung-h: 128px;
+  --drill-bedienung-h: 84px;
 }
 
 /* ── Zone 1: obere Hälfte ─────────────────────────────────────────────── */
@@ -3032,11 +3038,26 @@ input[type="radio"] {
   /* Der Gestenstreifen bleibt frei – dort gewinnt immer das System. */
   bottom: var(--gestenstreifen);
   min-height: var(--drill-bedienung-h);
-  /* Oben ausgeblendet, unten deckend: So sieht man, dass darüber Text
-     weitergeht, statt ihn blass durch die Leiste schimmern zu sehen. */
-  /* Aus dem Seitengrund, nicht fest dunkel: Im hellen Modus stand die
-     Leiste sonst dunkel unter hellem Text — „Teilen" kam auf 2,33 zu 1. */
-  background: linear-gradient(to bottom, transparent, var(--bg) 24px);
+  /* Dieselbe Fläche wie die Entscheidungsleiste (E-039): durchgezogen bis zur
+     Unterkante, mit einer Linie oben. Vorher lief sie oben aus — und unten
+     schimmerte der Text durch den Gestenstreifen. Die Knöpfe bleiben dort, wo
+     sie waren, 24 Pixel über dem Streifen (Regel 3). */
+  background: var(--bg-deep);
+  border-top: 1px solid var(--border);
+  margin-left: calc(var(--sp-4) * -1);
+  margin-right: calc(var(--sp-4) * -1);
+  padding-left: var(--sp-4);
+  padding-right: var(--sp-4);
+}
+
+.drill-unten::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: calc(var(--gestenstreifen) + var(--safe-bottom));
+  background: var(--bg-deep);
 }
 
 @media (max-width: 920px) {
@@ -3094,11 +3115,6 @@ input[type="radio"] {
   background: var(--text-dim);
 }
 
-.drill-stand {
-  font-size: var(--fs-small);
-  font-variant-numeric: tabular-nums;
-  color: var(--text-faint);
-}
 
 /* ═══════════════════════════════════════════════════════════════════════
    „Warum diese Zahl" — Herkunftsanzeige
@@ -3289,33 +3305,6 @@ input[type="radio"] {
 
 /* Der Fuß der Bedienleiste: Punktestand links, Teilen rechts.
    Beides liegt im unteren Drittel und ist mit dem Daumen erreichbar. */
-.drill-fuss {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  padding-top: var(--sp-2);
-  min-height: var(--touch-min);
-}
-
-.drill-teilen {
-  min-height: var(--touch-min);
-  padding: 0 var(--sp-4);
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border-strong);
-  background: transparent;
-  color: var(--text-dim);
-  font-family: inherit;
-  font-size: var(--fs-small);
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.drill-teilen:active {
-  background: var(--bg-card-hover);
-  color: var(--text);
-}
 
 /* Die Aufschlüsselung der durchgerechneten Fälle. Ohne sie wäre die große
    Zahl darüber beeindruckend und nichtssagend. */
@@ -3531,7 +3520,7 @@ input[type="radio"] {
 
 /* Ein Kopf, eine Zeile: Der Tisch soll die Höhe bekommen, nicht die
    Überschrift. */
-.tisch-kopf {
+.uebung-kopf {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
@@ -3539,7 +3528,7 @@ input[type="radio"] {
   margin-bottom: var(--sp-3);
 }
 
-.tisch-kopf .btn.sm.ghost { margin-left: auto; }
+.uebung-kopf .btn.sm.ghost { margin-left: auto; }
 
 /* ═══════════════════════════════════════════════════════════════════════
    Der Übungstisch als Spielansicht (E-040), als Ring (E-041)
@@ -3739,6 +3728,9 @@ input[type="radio"] {
 }
 
 .sitz-karten .cards-row { gap: 0; }
+/* Aufgedeckte Karten liegen vor dem Namensschild und dem Dealerknopf, nicht
+   darunter (E-093): Am Showdown sind sie das, worum es geht. */
+.sitz-karten.offen { position: relative; z-index: 2; margin-bottom: -6px; }
 .sitz-karten .pcard:first-child { transform: rotate(-5deg); }
 .sitz-karten .pcard:last-child { transform: rotate(5deg); margin-left: -9px; }
 
@@ -3864,6 +3856,7 @@ input[type="radio"] {
   text-transform: uppercase;
   color: var(--auszeichnung-lesbar);
   font-variant-numeric: var(--ziffern);
+  white-space: nowrap;
 }
 
 .filz-board {
@@ -3914,9 +3907,13 @@ input[type="radio"] {
   background: rgba(6, 10, 8, 0.72);
   font-size: var(--fs-kleingedrucktes);
   font-weight: var(--fw-bold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: var(--text-stark);
+}
+
+.filz-ergebnis .vergleich {
+  font-weight: var(--fw-normal, 500);
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
 }
 
 .filz-ergebnis {
@@ -3944,12 +3941,21 @@ input[type="radio"] {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Der eigene Einsatz liegt oben — Richtung Tischmitte, wie die Chips,
-     die man nach vorne schiebt. */
-  padding-top: 24px;
 }
 
-.filz-du .sitz-einsatz { top: 0; bottom: auto; }
+/* Der eigene Platz reicht über die ganze Breite des Tisches: So liegen der
+   eigene Einsatz links und das Urteil rechts neben den Karten, am Rand des
+   Tuchs, statt an der Breite des Namensschilds zu hängen. */
+.filz-du { justify-self: stretch; }
+/* Der eigene Einsatz liegt links neben den Karten (das Urteil und der Tipp
+   rechts) — nicht darüber: Eine Zeile über den Karten wäre fast immer leer
+   und kostete auf dem Handy 22 Pixel. */
+.filz-du .sitz-einsatz {
+  top: 40%;
+  bottom: auto;
+  left: var(--sp-1);
+  transform: none;
+}
 
 /* Die eigene Hand ist das, worum es geht — die größte Darstellung auf dem
    Tisch (Regel 10.8), leicht gefächert wie ein Blatt in der Hand. */
@@ -4206,19 +4212,302 @@ input[type="radio"] {
 
 }
 
+/* Quer steht die Leiste als Spalte rechts neben dem Tisch (E-093): Unten hätte
+   sie 113 von 390 Pixeln gefressen und den eigenen Platz verdeckt. Rechts liegt
+   sie dort, wo beim Querhalten der Daumen ist. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .tisch-seite .tisch-bild {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 34%);
+    grid-template-rows: auto 1fr;
+    column-gap: var(--sp-4);
+    align-items: start;
+    min-height: 0;
+    margin-bottom: 0;
+  }
+  .tisch-bild > .uebung-kopf { grid-column: 1; grid-row: 1; }
+  .tisch-bild > .filz { grid-column: 1; grid-row: 2; align-self: stretch; margin-bottom: 0; }
+  .entscheidung-leiste.tisch-leiste {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    position: sticky;
+    top: var(--sp-2);
+    bottom: auto;
+    align-self: start;
+    margin: 0;
+    padding: var(--sp-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .aktions-zeile { flex-direction: column; }
+  .aktions-zeile > .btn { flex: 0 0 auto; }
+  /* Der Coach-Knopf zieht in die Spalte: Am Tisch ist quer kein Platz für ihn. */
+  .tisch-seite .coach-zeile { display: flex; justify-content: center; }
+  .tisch-seite .coach-zeile:empty { display: none; }
+  .tisch-seite .urteil.in-leiste { display: inline-flex; }
+  .tisch-seite .urteil.am-tisch { display: none; }
+}
+
+/* Auch die Auswahl vor dem Spiel: Die Leiste („Hand austeilen") steht quer
+   als Spalte rechts, der Inhalt links — sonst läge die Wahl der Gegner unter
+   ihr. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .main:has(.entscheidung-leiste) > .tisch-setup {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 34%);
+    column-gap: var(--sp-4);
+    align-items: start;
+    align-content: start;
+  }
+  .tisch-setup > * { grid-column: 1; }
+  .tisch-setup > .entscheidung-leiste {
+    grid-column: 2;
+    grid-row: 1 / span 12;
+    position: sticky;
+    top: var(--sp-2);
+    bottom: auto;
+    margin: 0;
+    padding: var(--sp-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+}
+
 /* Quer bleibt auch der Kopf schmal: 128 Pixel Vorspann auf einem 390 Pixel
    hohen Bild sind ein Drittel davon. */
 @media (orientation: landscape) and (max-height: 560px) {
-  .tisch-kopf { margin-bottom: var(--sp-1); }
+  .uebung-kopf { margin-bottom: var(--sp-1); }
 }
 
-/* Die Erhöhen-Auswahl sitzt direkt über der Entscheidungsleiste. */
-.erhoehen {
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Die Leiste am Übungstisch (E-093)
+   ═══════════════════════════════════════════════════════════════════════
+   Alles, was der Daumen braucht, steht in ihr: darüber eine Zeile (wer dran
+   ist, der Tipp), darunter die Knöpfe — oder, wenn man erhöht, die
+   Einsatzgrößen. Sie bleibt zwischen den Zügen stehen, mit gesperrten
+   Knöpfen: Eine Leiste, die kommt und geht, ließe den Tisch darüber
+   springen. */
+.entscheidung-leiste.tisch-leiste .entscheidung-innen.stapel { gap: var(--sp-2); }
+.entscheidung-leiste.tisch-leiste .entscheidung-innen > * { flex: 0 0 auto; min-height: 0; }
+
+.entscheidung-leiste.tisch-leiste .entscheidung-innen > .tisch-status {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--tipp-abstand);
+  align-items: center;
   justify-content: center;
-  margin-top: var(--sp-3);
+  gap: var(--sp-3);
+  min-height: 24px;
+  font-size: var(--fs-beschriftung);
+  font-weight: var(--fw-bold);
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.tisch-status .tipp-zeile { color: var(--text); min-width: 0; }
+
+.aktions-zeile,
+.betrag-zeile,
+.vorgaben {
+  display: flex;
+  gap: var(--tipp-abstand);
+}
+.vorgaben { flex-wrap: wrap; }
+.vorgaben > .btn { flex: 1 1 3.4rem; }
+
+.aktions-zeile > .btn,
+.betrag-zeile > .btn.betrag-bestaetigen,
+.vorgaben > .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  padding-left: var(--sp-2);
+  padding-right: var(--sp-2);
+  white-space: nowrap;
+  min-height: calc(var(--tipp-min) + var(--sp-3));
+}
+
+/* Gesperrt heißt: gerade nicht dran, nicht „kaputt". Umrandet statt
+   verblasst — die Beschriftung bleibt lesbar. */
+.tisch-leiste .btn:disabled {
+  opacity: 1;
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+
+.betrag-knopf { flex: 0 0 auto; min-width: calc(var(--tipp-min) + var(--sp-3)); min-height: calc(var(--tipp-min) + var(--sp-3)); font-size: var(--fs-ueberschrift); padding: 0; justify-content: center; }
+
+/* Eine Einsatzgröße: oben, was sie ist (½ Pot), darunter, was sie kostet. */
+.vorgabe {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--tipp-min);
+  flex-direction: column;
+  gap: 0;
+  padding: var(--sp-1) var(--sp-1);
+  line-height: 1.15;
+  justify-content: center;
+}
+.vorgabe-kopf { font-size: var(--fs-kleingedrucktes); color: var(--text-dim); font-weight: var(--fw-normal, 500); }
+.vorgabe-wert { font-weight: var(--fw-bold); font-variant-numeric: var(--ziffern); }
+.vorgabe.on { box-shadow: inset 0 0 0 1.5px var(--text); background: var(--bg-card); }
+
+/* Das Urteil über den letzten eigenen Zug, neben den eigenen Karten. */
+.urteil {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: var(--tipp-min);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background: rgba(6, 10, 8, 0.88);
+  font: inherit;
+  font-size: var(--fs-beschriftung);
+  font-weight: var(--fw-bold);
+  color: var(--text-stark);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.urteil-gut { border-color: var(--ok); }
+.urteil-vertretbar { border-color: var(--info, var(--border-strong)); }
+.urteil-fehler { border-color: var(--danger); }
+.coach-zeile { display: none; }
+.urteil.in-leiste { display: none; }
+.filz-du .urteil {
+  position: absolute;
+  right: var(--sp-1);
+  top: 40%;
+  z-index: 2;
+}
+.filz-du .tipp-knopf { border-color: var(--border-strong); }
+
+/* Kopf, Tisch und Leiste füllen zusammen den Bildschirm: Die Leiste steht
+   unten, der Tisch bekommt, was übrig bleibt. Darunter beginnt der Verlauf. */
+@media (max-width: 920px) {
+  .tisch-bild {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    min-height: calc(100dvh - var(--kopf-h) - var(--safe-top) - var(--sp-2));
+    /* Der Hauptbereich lässt unten einen Streifen für die Gesten; die Leiste
+       trägt ihn selbst (Polster) und reicht deshalb in ihn hinein. */
+    margin-bottom: calc((var(--gestenstreifen) + env(safe-area-inset-bottom, 0px)) * -1);
+  }
+}
+
+/* Auf der Tischseite fängt der Inhalt dicht unter der Kopfzeile an: Jeder Pixel
+   darüber fehlt dem Tisch. */
+@media (max-width: 920px) {
+  .main:has(.tisch-seite) { padding-top: var(--sp-2); }
+}
+
+.rueckblick-zeile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-1) 0;
+}
+.rueckblick .urteil { background: var(--bg-card); color: var(--text); }
+
+/* Die Handliste: Jede Zeile ist ein Knopf über die ganze Breite. */
+.hand-zeile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  width: 100%;
+  min-height: var(--tipp-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tisch-wahl { display: flex; width: 100%; }
+.tisch-wahl button { flex: 1 1 0; padding-left: var(--sp-2); padding-right: var(--sp-2); }
+
+.bilanz p { margin: var(--sp-1) 0 var(--sp-2); }
+
+/* ── Der Schalter ────────────────────────────────────────────────────── */
+.schalter-zeile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-2) 0;
+}
+.schalter-text { flex: 1 1 auto; min-width: 0; }
+.schalter-label {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  font-weight: var(--fw-bold);
+}
+.schalter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 0 0 auto;
+  min-height: var(--tipp-min);
+  min-width: var(--tipp-min);
+  padding: 0 var(--sp-2);
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-beschriftung);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.schalter-spur {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  border-radius: var(--radius-pill);
+  background: var(--veil-3);
+  border: 1.5px solid var(--border-strong);
+  transition: background 0.15s, border-color 0.15s;
+}
+.schalter-knopf {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  transition: transform 0.15s, background 0.15s;
+}
+.schalter.an .schalter-spur { background: var(--text); border-color: var(--text); }
+.schalter.an .schalter-knopf { transform: translateX(20px); background: var(--bg); }
+.schalter-zustand { min-width: 2.4em; text-align: left; }
+
+/* Auf niedrigen Bildschirmen (375 × 667) muss der ganze Tisch samt eigener
+   Hand über der Leiste liegen: Die Gegner zeigen ihre verdeckten Karten nicht
+   (der Schild und die Marke sagen alles), die eigene Hand ist groß statt sehr
+   groß, die Ränder schmaler. */
+@media (max-height: 720px) and (orientation: portrait) {
+  .uebung-kopf { margin-bottom: var(--sp-2); }
+  .filz {
+    padding: var(--sp-2) var(--sp-2);
+    gap: var(--sp-1);
+    border-width: 9px;
+    margin-bottom: var(--sp-2);
+  }
+  .sitz-karten:not(.offen) { display: none; }
+  .sitz { padding-bottom: 20px; }
+  .du-karten .pcard.xl { width: 62px; height: 87px; border-radius: 9px; }
+  .du-karten .pcard.xl .corner { top: 5px; left: 7px; font-size: 1.0625rem; }
+  .du-karten .pcard.xl .corner .c-suit { font-size: 0.8125rem; }
+  .du-karten .pcard.xl .center-suit { font-size: 2.125rem; margin-top: 10px; }
+  .board-platz { width: 42px; height: 59px; }
 }
 
 /* ── Die Entscheidungsleiste (E-039) ──────────────────────────────────
@@ -4277,36 +4566,46 @@ input[type="radio"] {
 
 .entscheidung-leiste .entscheidung-innen.viele > * { min-height: var(--tipp-min); }
 
+/* Antworten gleich breit und mittig; eine ungerade letzte Antwort bekommt die
+   volle Breite, statt allein und halb in einer Zeile zu stehen. */
+.entscheidung-leiste .entscheidung-innen.viele > .quiz-option { justify-content: center; text-align: center; }
+@media (max-width: 520px) {
+  .entscheidung-leiste .entscheidung-innen.viele > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+
 /* ── Der Übungsstand über jedem Trainer (E-038) ───────────────────────
    Die Serie ist die Hauptzahl: Sie ist das Einzige, was man beim nächsten
    Antippen verlieren kann. */
 .uebungsstand {
   display: flex;
-  align-items: stretch;
-  gap: var(--sp-2);
-  margin-bottom: var(--sp-4);
-}
-
-.uebungsstand .wert {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--sp-1);
-  padding: var(--sp-3) var(--sp-2);
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-4);
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--bg-card);
-  text-align: center;
+}
+
+/* Eine Zeile statt drei Kacheln (E-093): Die drei Werte brauchten 70 Pixel Höhe
+   und lagen über jeder Aufgabe. Jetzt stehen sie nebeneinander — die Serie
+   zuerst, weil sie das Einzige ist, was man beim nächsten Antippen verlieren
+   kann. */
+.uebungsstand .wert {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+  text-align: left;
 }
 
 .uebungsstand .zahl {
-  font-variant-numeric: var(--ziffern);
   display: flex;
   align-items: center;
   gap: var(--sp-1);
-  font-size: var(--fs-ueberschrift);
+  font-size: var(--fs-fliesstext);
   font-weight: var(--fw-bold);
   line-height: 1;
   font-variant-numeric: var(--ziffern);
@@ -4315,31 +4614,19 @@ input[type="radio"] {
 
 .uebungsstand .marke {
   font-size: var(--fs-kleingedrucktes);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--text-dim);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100%;
 }
 
 /* Eine laufende Serie ist die einzige Zahl mit Farbe. Eine Null ist keine
    Serie und bekommt deshalb auch keine. */
-.uebungsstand .wert.serie.laeuft {
-  border-color: var(--akzent);
-  background:
-    radial-gradient(120% 140% at 50% 0%, var(--akzent-dim) 0%, transparent 70%),
-    var(--bg-card);
-}
-
+.uebungsstand:has(.serie.laeuft) { border-color: var(--akzent); }
 .uebungsstand .wert.serie.laeuft .zahl { color: var(--akzent); }
 
 /* Bestmarke erreicht: Das ist der Moment, den man sehen will. */
-.uebungsstand .wert.serie.rekord {
-  border-color: var(--auszeichnung);
-}
-
+.uebungsstand:has(.serie.rekord) { border-color: var(--auszeichnung); }
 .uebungsstand .wert.serie.rekord .zahl,
 .uebungsstand .wert.serie.rekord .marke { color: var(--auszeichnung-lesbar); }
 
@@ -5962,3 +6249,66 @@ input[type="radio"] {
   text-align: center;
   color: var(--text-dim);
 }
+
+/* ── Das Positionsschema (E-093) ──────────────────────────────────────── */
+.schema { display: block; width: 100%; max-width: 340px; margin: 0 auto; }
+.schema-tisch { fill: var(--veil-2); stroke: var(--border); stroke-width: 1.5; }
+.schema-platz circle { fill: var(--bg-card); stroke: var(--border-strong); stroke-width: 1.5; }
+.schema-platz text {
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  fill: var(--text);
+  font-variant-numeric: var(--ziffern);
+}
+.schema-platz.du circle { stroke: var(--akzent); stroke-width: 3.5; }
+.schema-platz.weg { opacity: var(--gedimmt); }
+.schema-platz .schema-einsatz { fill: var(--text-dim); }
+.schema-dealer circle { fill: var(--text); stroke: none; }
+.schema-dealer text { fill: var(--bg); font-size: var(--fs-kleingedrucktes); }
+
+/* ── Spot-Chips im Preflop-Trainer (E-093) ────────────────────────────── */
+.spot-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+.spot-chip {
+  flex: 1 1 4.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tipp-min);
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+  font: inherit;
+  line-height: 1.2;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.spot-chip .spot-name { font-weight: var(--fw-bold); }
+.spot-chip .spot-quote { font-size: var(--fs-kleingedrucktes); color: var(--text-dim); font-variant-numeric: var(--ziffern); }
+.spot-chip.jetzt { box-shadow: inset 0 0 0 1.5px var(--text); }
+.spot-chip[aria-pressed='true'] { background: var(--bg-elev); }
+
+/* „Teilen" als Zeichen am Ende des Übungsstands. */
+.uebung-teilen {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--tipp-min);
+  height: var(--tipp-min);
+  margin: calc(var(--sp-2) * -1) calc(var(--sp-2) * -1) calc(var(--sp-2) * -1) auto;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.uebung-teilen:hover { color: var(--text); background: var(--veil-3); }

@@ -207,6 +207,8 @@ describe('Das Stilblatt hat keine toten Regeln', () => {
   const ZUSAMMENGESETZT = [
     /* `suit-${suitCls}` in PlayingCard.tsx: eine Klasse je Farbe. */
     'suit-c', 'suit-d', 'suit-h', 'suit-s',
+    /* `urteil-${urteil}` in PlayPage.tsx: eine Klasse je Stufe der Bewertung. */
+    'urteil-gut', 'urteil-vertretbar', 'urteil-fehler',
   ];
 
   const quelltext = (() => {

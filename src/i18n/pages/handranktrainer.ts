@@ -19,6 +19,7 @@ export const STR = defineStrings(
       'Straight Flush',
     ],
     bestHandPrefix: 'Die beste Hand ist: ',
+    fuenfBeste: 'Die fünf Karten, die sie bilden, sind hervorgehoben.',
     nextHand: 'Nächste Hand',
   },
   {
@@ -39,6 +40,7 @@ export const STR = defineStrings(
       'Straight Flush',
     ],
     bestHandPrefix: 'The best hand is: ',
+    fuenfBeste: 'The five cards that make it are highlighted.',
     nextHand: 'Next Hand',
   },
 );

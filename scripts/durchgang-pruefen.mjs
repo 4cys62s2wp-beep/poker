@@ -1187,6 +1187,18 @@ await schritt('Bestehen heißt verstanden', async () => {
     })(),
   }));
 
+  /* Ein sauberer Stand: Frühere Schritte haben im selben Browser Fragen aus
+     derselben Lektion falsch beantwortet. Lägen sie schon im Wiederholungsstapel,
+     käme eine zweite falsche Antwort auf dieselbe Frage nicht hinzu — und die
+     Zahl „im Stapel" wäre je nach Würfelglück um eins zu klein. */
+  await lp.evaluate(() => {
+    const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+    const key = `pokermentor-data-${idx.activeId}`;
+    const d = JSON.parse(localStorage.getItem(key));
+    d.completedLessons = {}; d.lessonAttempts = {}; d.reviews = []; d.xp = 0; d.badges = {};
+    localStorage.setItem(key, JSON.stringify(d));
+  });
+  await lp.reload({ waitUntil: 'domcontentloaded' });
   const vor = await lernstand();
   await neueLektion();
   /* Ein Durchgang, in dem immer die erste Option gewählt wird, besteht mit
@@ -1389,11 +1401,12 @@ await schritt('Am Übungstisch überdeckt kein Sitz das Board', async () => {
   await seite.goto(`${GRUND}/#/lernen/uebungstisch`, { waitUntil: 'domcontentloaded' });
   await seite.waitForTimeout(500);
   /* Sechs Plätze — der Fall, in dem der Fehler auftrat. */
-  await seite.locator('.card.clickable').filter({ hasText: /6-max/ }).first().click();
+  await seite.getByRole('radio', { name: /6-max/ }).click();
+  await seite.getByRole('button', { name: /Hand austeilen/ }).click();
   await seite.waitForSelector('.filz');
   /* Warten, bis der Held am Zug ist: Dann steht der Tisch vollständig. */
   for (let i = 0; i < 40; i += 1) {
-    if (await seite.locator('.entscheidung button').count() > 0) break;
+    if (await seite.locator('.aktions-zeile button:not(:disabled)').count() > 0) break;
     await seite.waitForTimeout(400);
   }
   await seite.waitForTimeout(300);
@@ -1702,10 +1715,11 @@ await schritt('Quer gehalten sieht man den ganzen Tisch', async () => {
   try {
     await q.goto(`${GRUND}/#/lernen/uebungstisch`, { waitUntil: 'domcontentloaded' });
     await q.waitForTimeout(400);
-    await q.locator('.card.clickable').filter({ hasText: /6-max/ }).first().click();
+    await q.getByRole('radio', { name: /6-max/ }).click();
+    await q.getByRole('button', { name: /Hand austeilen/ }).click();
     await q.waitForSelector('.filz');
     for (let i = 0; i < 40; i += 1) {
-      if (await q.locator('.entscheidung button').count() > 0) break;
+      if (await q.locator('.aktions-zeile button:not(:disabled)').count() > 0) break;
       await q.waitForTimeout(300);
     }
     await q.waitForTimeout(300);
@@ -1714,12 +1728,18 @@ await schritt('Quer gehalten sieht man den ganzen Tisch', async () => {
     return await q.evaluate(() => {
       const oben = (el) => Math.round(el.getBoundingClientRect().top);
       const unten = (el) => Math.round(el.getBoundingClientRect().bottom);
+      /* Quer steht die Leiste als Spalte neben dem Tisch (E-093), nicht
+         darunter: Dann ist die Grenze ihre linke Kante, nicht ihre obere. */
       const leiste = document.querySelector('.entscheidung');
-      const grenze = leiste ? oben(leiste) : window.innerHeight;
+      const lr = leiste ? leiste.getBoundingClientRect() : null;
+      const seitlich = !!lr && lr.width < window.innerWidth * 0.6;
+      const grenze = leiste && !seitlich ? oben(leiste) : window.innerHeight;
+      const rechts = (el) => Math.round(el.getBoundingClientRect().right);
       const sitze = [...document.querySelectorAll('.sitz')];
       const board = document.querySelector('.board');
       const eigene = document.querySelector('.du-karten');
-      const sichtbar = (el) => el && oben(el) >= 0 && unten(el) <= grenze;
+      const sichtbar = (el) => el && oben(el) >= 0 && unten(el) <= grenze
+        && (!seitlich || rechts(el) <= Math.round(lr.left));
       return {
         fenster: `${window.innerWidth}x${window.innerHeight}`,
         filz_hoehe: Math.round(document.querySelector('.filz').getBoundingClientRect().height),
@@ -1740,6 +1760,122 @@ await schritt('Quer gehalten sieht man den ganzen Tisch', async () => {
   } finally {
     await quer.close();
   }
+});
+
+/* ── Der Übungstisch: alles im Bild ─────────────────────────────────────────
+   Gemessen vor E-093: Bei 375 × 667 lag die Leiste über der halben Hand und
+   über dem eigenen Namensschild, bei 390 × 844 der Coach-Kasten unter ihr, und
+   die Einsatzwahl öffnete sich hinter der Leiste. Geprüft wird die Folge, auf
+   drei Geräten: Nichts Nötiges liegt unter der Leiste, die Einsatzgrößen
+   stehen im Bild und tragen ihren Betrag, und nach dem Zug bleibt die Leiste
+   stehen — mit gesperrten Knöpfen und dem Namen dessen, der überlegt. */
+
+await schritt('Am Übungstisch liegt alles im Bild: Hand, Einsatzwahl, Urteil', async () => {
+  const geraete = [
+    { name: 'klein', breite: 375, hoehe: 667 },
+    { name: 'mittel', breite: 390, hoehe: 844 },
+    { name: 'breit', breite: 1366, hoehe: 860 },
+  ];
+  const aus = {};
+  for (const g of geraete) {
+    const ctx = await browser.newContext({ viewport: { width: g.breite, height: g.hoehe }, locale: 'de-DE' });
+    await ctx.addInitScript(() => {
+      localStorage.setItem('pokermentor-lang-v1', 'de');
+      localStorage.setItem('pokermentor-farbmodus-v1', 'dunkel');
+    });
+    const q = await ctx.newPage();
+    try {
+      await q.goto(`${GRUND}/#/lernen/uebungstisch`, { waitUntil: 'domcontentloaded' });
+      await q.waitForTimeout(400);
+      await q.getByRole('radio', { name: /6-max/ }).click();
+      await q.getByRole('button', { name: /Hand austeilen/ }).click();
+      await q.waitForSelector('.filz');
+      const warteAufMich = async () => {
+        for (let i = 0; i < 60; i += 1) {
+          if (await q.locator('.aktions-zeile button:not(:disabled)').count() > 0) return true;
+          await q.waitForTimeout(300);
+        }
+        return false;
+      };
+      const dran = await warteAufMich();
+      await q.waitForTimeout(300);
+      await q.evaluate(() => window.scrollTo(0, 0));
+      const bild = await q.evaluate(() => {
+        const r = (sel) => { const e = document.querySelector(sel); if (!e) return null; const x = e.getBoundingClientRect(); return { oben: Math.round(x.top), unten: Math.round(x.bottom) }; };
+        const leiste = r('.tisch-leiste');
+        return {
+          fenster: window.innerHeight,
+          leiste,
+          schild: r('.filz-du .sitz-schild'),
+          karten: r('.du-karten'),
+          board: r('.board'),
+          leiste_am_rand: leiste ? Math.abs(leiste.unten - window.innerHeight) <= 1 : null,
+        };
+      });
+      const tippKnopf = await q.getByRole('button', { name: 'Tipp', exact: true }).count();
+      const statusVorher = (await q.locator('.tisch-status').innerText()).trim();
+
+      // Einsatzwahl öffnen
+      await q.getByRole('button', { name: /^(Raise|Bet) …/ }).click();
+      await q.waitForTimeout(200);
+      const wahl = await q.evaluate(() => {
+        const fenster = window.innerHeight;
+        const im = (e) => { const x = e.getBoundingClientRect(); return x.top >= 0 && x.bottom <= fenster + 1; };
+        const knoepfe = [...document.querySelectorAll('.vorgabe')];
+        const ok = document.querySelector('.betrag-bestaetigen');
+        return {
+          vorgaben: knoepfe.map((k) => k.textContent.replace(/\s+/g, ' ').trim()),
+          alle_im_bild: knoepfe.every(im) && !!ok && im(ok),
+          bestaetigen: ok?.textContent.trim(),
+          leiste: (() => { const x = document.querySelector('.tisch-leiste').getBoundingClientRect(); return { oben: Math.round(x.top), unten: Math.round(x.bottom) }; })(),
+          schild_unten: Math.round(document.querySelector('.filz-du .sitz-schild').getBoundingClientRect().bottom),
+          karten_unten: Math.round(document.querySelector('.du-karten').getBoundingClientRect().bottom),
+        };
+      });
+      await q.getByRole('button', { name: 'Mehr' }).click();
+      const mehr = (await q.locator('.betrag-bestaetigen').innerText()).trim();
+      await q.getByRole('button', { name: 'Weniger' }).click();
+      const wiederWeniger = (await q.locator('.betrag-bestaetigen').innerText()).trim();
+      // Ein Fehltipp führt nichts aus: Erst „Raise auf …" setzt.
+      const nochDran = await q.locator('.aktions-zeile').count() === 0 && await q.locator('.betrag-bestaetigen').count() === 1;
+      await q.locator('.betrag-bestaetigen').click();
+      await q.waitForTimeout(300);
+      const danach = {
+        status: (await q.locator('.tisch-status').innerText()).trim(),
+        gesperrte_knoepfe: await q.locator('.aktions-zeile button:disabled').count(),
+        urteil: (await q.locator('.urteil:not(.tipp-knopf):visible').allInnerTexts()).map((t) => t.trim()),
+      };
+      aus[g.name] = { dran, bild, tipp_knopf: tippKnopf, status_vorher: statusVorher, wahl, mehr, wieder_weniger: wiederWeniger, noch_nicht_gesetzt: nochDran, danach };
+    } finally {
+      await ctx.close();
+    }
+  }
+
+  // Nach dem eigenen Fold: „Hand zu Ende spielen", ohne Wartezeit.
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' });
+  await ctx.addInitScript(() => { localStorage.setItem('pokermentor-lang-v1', 'de'); });
+  const f = await ctx.newPage();
+  let fold = {};
+  try {
+    await f.goto(`${GRUND}/#/lernen/uebungstisch`, { waitUntil: 'domcontentloaded' });
+    await f.waitForTimeout(400);
+    await f.getByRole('radio', { name: /6-max/ }).click();
+    await f.getByRole('button', { name: /Hand austeilen/ }).click();
+    for (let i = 0; i < 60; i += 1) {
+      if (await f.locator('.aktions-zeile button:not(:disabled)').count() > 0) break;
+      await f.waitForTimeout(300);
+    }
+    await f.getByRole('button', { name: 'Fold', exact: true }).click();
+    await f.getByRole('button', { name: /Hand zu Ende spielen/ }).waitFor({ timeout: 4000 });
+    const statusNachFold = (await f.locator('.tisch-status').innerText()).trim();
+    const t0 = Date.now();
+    await f.getByRole('button', { name: /Hand zu Ende spielen/ }).click();
+    await f.getByRole('button', { name: /Nächste Hand/ }).waitFor({ timeout: 4000 });
+    fold = { status_nach_fold: statusNachFold, dauer_ms: Date.now() - t0 };
+  } finally {
+    await ctx.close();
+  }
+  return { geraete: aus, fold };
 });
 
 await browser.close();

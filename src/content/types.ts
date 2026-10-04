@@ -43,6 +43,9 @@ export interface LessonSection {
   /** Optional: Karten, die als Grafik gerendert werden, z. B. ["As", "Kh"].
    *  Format: Rang (2-9, T, J, Q, K, A) + Farbe (s=Pik, h=Herz, d=Karo, c=Kreuz). */
   cards?: string[];
+  /** Optional: ein Standbild statt Dekoration. `sitzplan` zeigt die sechs Plätze
+   *  am Tisch (Positionsschema, E-093) — der Text nennt sie, das Bild ordnet sie. */
+  schema?: 'sitzplan';
 }
 
 export interface Lesson {

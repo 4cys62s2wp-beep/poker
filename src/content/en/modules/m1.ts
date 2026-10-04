@@ -289,6 +289,7 @@ const m1: Module = {
       sections: [
         {
           heading: 'The Positions at a 6-Max Table',
+          schema: 'sitzplan',
           body:
             'At a 6-max table (up to six players), every seat has a name relative to the dealer button:\n\n- **UTG** (under the gun): acts first preflop — also called the lojack (LJ).\n- **HJ** (hijack): one seat before the cutoff.\n- **CO** (cutoff): one seat before the button.\n- **BTN** (button): the dealer — always acts last postflop.\n- **SB** (small blind): left of the button, posts the half forced bet.\n- **BB** (big blind): posts the full forced bet.\n\nSince the button moves on every hand, you rotate through all the positions in turn. Your position determines two things: when you have to act and how many players still hold cards after you.\n\nUTG speaks first preflop while five opponents are still waiting — so you should play correspondingly tight there. The button speaks third-from-last preflop and last postflop, with only the two blinds behind — by far the most hands can be played profitably from that seat. Broadly, we distinguish early position (UTG), middle position (HJ), late position (CO, BTN), and the **blinds** as a special case.',
           table: {

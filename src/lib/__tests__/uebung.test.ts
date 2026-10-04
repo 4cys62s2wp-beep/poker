@@ -1,7 +1,8 @@
 /* Lektion und Training verweisen aufeinander (FAHRPLAN 5.7). */
 
 import { describe, expect, it } from 'vitest';
-import { lektionenFuer, UEBUNG, uebungFuer, ZIEL_PFAD, type UebungsZiel } from '../lernen/uebung';
+import { lektionenFuer, SCHWACHSTELLE, UEBUNG, uebungFuer, ZIEL_PFAD, type UebungsZiel } from '../lernen/uebung';
+import { TARGETS } from '../poker/stats';
 import { TRAINER } from '../trainerliste';
 import { ALL_MODULES } from '../../content';
 import { istOrt } from '../orte';
@@ -44,5 +45,16 @@ describe('Die Zuordnung Lektion → Übung', () => {
   it('hat für jedes Ziel einen Pfad', () => {
     const ziele: UebungsZiel[] = [...TRAINER.map((t) => t.id), 'drill', 'uebungstisch'];
     for (const z of ziele) expect(ZIEL_PFAD[z]).toBeDefined();
+  });
+});
+
+describe('Zu jeder Kennzahl des Spielstils ein Weg weiter (FAHRPLAN 6.10)', () => {
+  it('kennt zu jeder Kennzahl mit Zielbereich eine Lektion und eine Übung', () => {
+    for (const k of Object.keys(TARGETS)) {
+      const w = SCHWACHSTELLE[k as keyof typeof SCHWACHSTELLE];
+      expect(w, k).toBeDefined();
+      expect(ALLE_LEKTIONEN.has(w.lektion), `${k}: ${w.lektion}`).toBe(true);
+      expect(istOrt(ZIEL_PFAD[w.ziel]), `${k}: ${w.ziel}`).toBe(true);
+    }
   });
 });

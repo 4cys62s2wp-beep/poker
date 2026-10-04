@@ -41,6 +41,7 @@ export type IconName =
   | 'trophy'
   | 'coin'
   | 'bolt'
+  | 'share'
   | 'info';
 
 interface Props {
@@ -293,6 +294,15 @@ function paths(name: IconName) {
       return (
         <g {...STROKE}>
           <path d="M5 12.6l4.4 4.4L19 7.4" />
+        </g>
+      );
+    // Teilen: ein Pfeil, der aus einer offenen Schale nach oben zeigt.
+    case 'share':
+      return (
+        <g {...STROKE}>
+          <path d="M12 15V4" />
+          <path d="M8 7.6L12 3.6l4 4" />
+          <path d="M5 12v6.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V12" />
         </g>
       );
     /* Das Gegenstück zum Haken. Es gibt ihn, weil Richtig und Falsch sich

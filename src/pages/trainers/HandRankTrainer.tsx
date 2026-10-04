@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CardsRow } from '../../components/PlayingCard';
-import { shuffledDeckWithout } from '../../lib/poker/cards';
+import { besteFuenf, ziehHandranking } from '../../lib/poker/aufgaben';
 import { categoryOf, evaluateBest } from '../../lib/poker/evaluator';
 import { useAppState } from '../../state/AppState';
 import { Entscheidung } from '../../components/Entscheidung';
@@ -17,9 +17,11 @@ interface Scenario {
   board: number[];
 }
 
+/** Die Kategorie wird gewählt und dann gezogen (E-093): Gleichverteilt waren
+ *  85 % der Aufgaben High Card, Paar oder zwei Paare. */
 function newScenario(): Scenario {
-  const deck = shuffledDeckWithout([]);
-  return { hole: deck.slice(0, 2), board: deck.slice(2, 7) };
+  const { hole, board } = ziehHandranking();
+  return { hole, board };
 }
 
 export function HandRankTrainer() {
@@ -35,6 +37,9 @@ export function HandRankTrainer() {
     () => categoryOf(evaluateBest([...scenario.hole, ...scenario.board])),
     [scenario],
   );
+
+  /* Die fünf Karten, die die Hand bilden — der Rest tritt nach der Antwort zurück. */
+  const beste = useMemo(() => besteFuenf([...scenario.hole, ...scenario.board]), [scenario]);
 
   const options = useMemo(() => {
     // Korrekte Kategorie + 3 benachbarte/plausible Distraktoren
@@ -81,14 +86,14 @@ export function HandRankTrainer() {
 
       <div className="card">
         <div className="stat-label" style={{ marginBottom: 6 }}>{L.yourHand}</div>
-        <CardsRow cards={scenario.hole} size="lg" />
+        <CardsRow cards={scenario.hole} size="lg" gedimmt={(k) => answered && !beste.includes(k as number)} />
         <div className="stat-label" style={{ margin: '16px 0 6px' }}>{L.board}</div>
-        <CardsRow cards={scenario.board} />
+        <CardsRow cards={scenario.board} gedimmt={(k) => answered && !beste.includes(k as number)} />
 
         {answered && (
           <>
             <Rueckmeldung urteil={selected === correctCategory ? 'richtig' : 'falsch'}>
-              {L.bestHandPrefix}<strong>{L.categories[correctCategory]}</strong>.
+              {L.bestHandPrefix}<strong>{L.categories[correctCategory]}</strong>. {L.fuenfBeste}
             </Rueckmeldung>
           </>
         )}

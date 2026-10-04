@@ -79,12 +79,13 @@ const HINTER_EINEM_KLICK = [
     id: '#/lernen/uebungstisch · Tisch mit sechs Plätzen',
     hash: '#/lernen/uebungstisch',
     async oeffnen(seite) {
-      await seite.locator('.card.clickable').filter({ hasText: /6-max/ }).first().click();
+      await seite.getByRole('radio', { name: /6-max/ }).click();
+  await seite.getByRole('button', { name: /Hand austeilen/ }).click();
       await seite.waitForSelector('.filz');
       /* Warten, bis der Held am Zug ist: Dann steht der Tisch vollständig,
          mit Einsätzen, Dealerknopf und einem Sitz, der gerade dran ist. */
       for (let i = 0; i < 40; i += 1) {
-        if (await seite.locator('.entscheidung button').count() > 0) break;
+        if (await seite.locator('.aktions-zeile button:not(:disabled)').count() > 0) break;
         await seite.waitForTimeout(300);
       }
       await seite.waitForTimeout(200);

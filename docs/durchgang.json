@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T12:50:06.705Z",
+  "geprueft_am": "2026-10-04T13:46:55.575Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 891,
+        "dauer_ms": 872,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -620,13 +620,13 @@
       "ergebnis": {
         "fehlschlag": {
           "urteil": "Noch nicht bestanden",
-          "punkte": "0 von 5 richtig",
+          "punkte": "2 von 5 richtig",
           "kacheln": [
-            "0/5dein Ergebnis",
+            "2/5dein Ergebnis",
             "4/5zum Bestehen"
           ],
-          "falsch_liste": 5,
-          "in_wiederholung": 5,
+          "falsch_liste": 3,
+          "in_wiederholung": 3,
           "knoepfe": [
             "Fehler nochmal üben",
             "Quiz noch einmal von vorn"
@@ -637,19 +637,19 @@
         "xp_nach_fehlschlag": 0,
         "lektion_fertig_nach_fehlschlag": false,
         "versucht_gemerkt": {
-          "bestScore": 0,
+          "bestScore": 2,
           "total": 5,
           "tries": 1,
-          "lastAt": "2026-10-04T12:49:44.671Z"
+          "lastAt": "2026-10-04T13:46:19.568Z"
         },
         "abzeichen_nach_fehlschlag": [],
-        "wiederholung_nach_fehlschlag": 5,
+        "wiederholung_nach_fehlschlag": 3,
         "modul_zeile": {
           "klassen": [
             "lektion",
             "dran"
           ],
-          "meta": "ca. 9 Min. · 5 Quizfragen · Quiz: 0/5",
+          "meta": "ca. 9 Min. · 5 Quizfragen · Quiz: 2/5",
           "hinweis": "Noch einmal"
         },
         "uebung": {
@@ -762,8 +762,9 @@
         "leiste_unten_px": 844,
         "leiste_im_daumenbereich": true,
         "knoepfe": [
+          "Tipp",
           "Fold",
-          "Call 2",
+          "Call 3,5",
           "Raise …"
         ]
       },
@@ -787,9 +788,9 @@
     {
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
-        "vorher": "0 | SERIE | – | TREFFER | 0 | BESTE",
-        "nach_zwei": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
-        "nach_neuladen": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
+        "vorher": "0 | Serie | – | Treffer | 0 | Beste",
+        "nach_zwei": "0 | Serie | 0 % | Treffer | 0 | Beste",
+        "nach_neuladen": "0 | Serie | 0 % | Treffer | 0 | Beste",
         "quote_bleibt": true,
         "quote_nach_zwei": "0 %",
         "ohne_versuche_kein_prozent": true,
@@ -800,9 +801,9 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 35,
+        "dauer_ms": 48,
         "knopf_bewegt_px": 0,
-        "oben": 704,
+        "oben": 749,
         "links": 16,
         "ergebnis_px": 78,
         "ergebnis_text": "54,1 %",
@@ -909,7 +910,7 @@
       "name": "Quer gehalten sieht man den ganzen Tisch",
       "ergebnis": {
         "fenster": "844x390",
-        "filz_hoehe": 231,
+        "filz_hoehe": 246,
         "sitze": 5,
         "sitze_ueber_der_leiste": 5,
         "board_ueber_der_leiste": true,
@@ -917,6 +918,171 @@
         "eigene_kartenbreite": 60,
         "boardkartenbreite": 40,
         "seitlicher_ueberlauf": 0
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Am Übungstisch liegt alles im Bild: Hand, Einsatzwahl, Urteil",
+      "ergebnis": {
+        "geraete": {
+          "klein": {
+            "dran": true,
+            "bild": {
+              "fenster": 667,
+              "leiste": {
+                "oben": 530,
+                "unten": 667
+              },
+              "schild": {
+                "oben": 455,
+                "unten": 500
+              },
+              "karten": {
+                "oben": 377,
+                "unten": 464
+              },
+              "board": {
+                "oben": 275,
+                "unten": 334
+              },
+              "leiste_am_rand": true
+            },
+            "tipp_knopf": 1,
+            "status_vorher": "Du bist dran",
+            "wahl": {
+              "vorgaben": [
+                "2,5",
+                "3",
+                "4",
+                "All-in100"
+              ],
+              "alle_im_bild": true,
+              "bestaetigen": "Raise auf 3",
+              "leiste": {
+                "oben": 466,
+                "unten": 667
+              },
+              "schild_unten": 475,
+              "karten_unten": 439
+            },
+            "mehr": "Raise auf 3,5",
+            "wieder_weniger": "Raise auf 3",
+            "noch_nicht_gesetzt": true,
+            "danach": {
+              "status": "Anna überlegt …",
+              "gesperrte_knoepfe": 3,
+              "urteil": [
+                "Fehler"
+              ]
+            }
+          },
+          "mittel": {
+            "dran": true,
+            "bild": {
+              "fenster": 844,
+              "leiste": {
+                "oben": 707,
+                "unten": 844
+              },
+              "schild": {
+                "oben": 612,
+                "unten": 657
+              },
+              "karten": {
+                "oben": 487,
+                "unten": 621
+              },
+              "board": {
+                "oben": 369,
+                "unten": 436
+              },
+              "leiste_am_rand": true
+            },
+            "tipp_knopf": 1,
+            "status_vorher": "Du bist dran",
+            "wahl": {
+              "vorgaben": [
+                "2,5×9",
+                "3×10,5",
+                "4×14",
+                "All-in100"
+              ],
+              "alle_im_bild": true,
+              "bestaetigen": "Raise auf 10,5",
+              "leiste": {
+                "oben": 643,
+                "unten": 844
+              },
+              "schild_unten": 632,
+              "karten_unten": 596
+            },
+            "mehr": "Raise auf 11,5",
+            "wieder_weniger": "Raise auf 10,5",
+            "noch_nicht_gesetzt": true,
+            "danach": {
+              "status": "Anna überlegt …",
+              "gesperrte_knoepfe": 3,
+              "urteil": [
+                "≈\nVertretbar"
+              ]
+            }
+          },
+          "breit": {
+            "dran": true,
+            "bild": {
+              "fenster": 860,
+              "leiste": {
+                "oben": 621,
+                "unten": 758
+              },
+              "schild": {
+                "oben": 519,
+                "unten": 564
+              },
+              "karten": {
+                "oben": 394,
+                "unten": 528
+              },
+              "board": {
+                "oben": 269,
+                "unten": 353
+              },
+              "leiste_am_rand": false
+            },
+            "tipp_knopf": 1,
+            "status_vorher": "Du bist dran",
+            "wahl": {
+              "vorgaben": [
+                "2,5×9",
+                "3×10,5",
+                "4×14",
+                "All-in100"
+              ],
+              "alle_im_bild": true,
+              "bestaetigen": "Raise auf 10,5",
+              "leiste": {
+                "oben": 621,
+                "unten": 822
+              },
+              "schild_unten": 564,
+              "karten_unten": 528
+            },
+            "mehr": "Raise auf 11,5",
+            "wieder_weniger": "Raise auf 10,5",
+            "noch_nicht_gesetzt": true,
+            "danach": {
+              "status": "Anna überlegt …",
+              "gesperrte_knoepfe": 3,
+              "urteil": [
+                "≈\nVertretbar"
+              ]
+            }
+          }
+        },
+        "fold": {
+          "status_nach_fold": "Du hast gefoldet",
+          "dauer_ms": 172
+        }
       },
       "uebersprungen": false
     }

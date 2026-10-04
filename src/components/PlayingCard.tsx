@@ -15,12 +15,14 @@ interface Props {
   /** Karte als Zahl (0–51) oder String ("As"). Ohne Angabe: Kartenrücken. */
   card?: Card | string;
   size?: Groesse;
+  /** Zurücktreten lassen: eine Karte, die nicht zur besten Hand gehört. */
+  gedimmt?: boolean;
 }
 
-export function PlayingCard({ card, size = 'md' }: Props) {
+export function PlayingCard({ card, size = 'md', gedimmt = false }: Props) {
   const { lang } = useLang();
   const T = STR[lang];
-  const sizeCls = size === 'md' ? '' : ` ${size}`;
+  const sizeCls = `${size === 'md' ? '' : ` ${size}`}${gedimmt ? ' dim' : ''}`;
   if (card === undefined) {
     // role="img" – auf einem <div> (Rolle "generic") ignorieren die meisten
     // Screenreader das aria-label.
@@ -58,11 +60,20 @@ export function PlayingCard({ card, size = 'md' }: Props) {
   );
 }
 
-export function CardsRow({ cards, size = 'md' }: { cards: Array<Card | string | undefined>; size?: Groesse }) {
+export function CardsRow({
+  cards,
+  size = 'md',
+  gedimmt,
+}: {
+  cards: Array<Card | string | undefined>;
+  size?: Groesse;
+  /** Welche Karten zurücktreten (nach Index). */
+  gedimmt?: (karte: Card | string | undefined, index: number) => boolean;
+}) {
   return (
     <div className="cards-row">
       {cards.map((c, i) => (
-        <PlayingCard key={i} card={c} size={size} />
+        <PlayingCard key={i} card={c} size={size} gedimmt={gedimmt ? gedimmt(c, i) : false} />
       ))}
     </div>
   );

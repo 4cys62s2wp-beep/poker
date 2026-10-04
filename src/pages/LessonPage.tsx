@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useNavigationType, useParams } from 'react-router-dom';
 import { MarkdownLite } from '../components/MarkdownLite';
 import { CardsRow } from '../components/PlayingCard';
+import { Positionsschema } from '../components/Positionsschema';
 import { useAppState } from '../state/AppState';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/lesson';
@@ -169,6 +170,11 @@ export function LessonPage() {
                 {sec.cards && sec.cards.length > 0 && (
                   <div style={{ margin: '4px 0 14px' }}>
                     <CardsRow cards={sec.cards} size={sec.cards.length > 5 ? 'sm' : 'md'} />
+                  </div>
+                )}
+                {sec.schema === 'sitzplan' && (
+                  <div style={{ margin: '4px 0 14px' }}>
+                    <Positionsschema />
                   </div>
                 )}
                 <MarkdownLite text={sec.body} />

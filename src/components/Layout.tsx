@@ -246,7 +246,7 @@ function ProfileBadge() {
       <span
         style={{
           width: 26, height: 26, borderRadius: '50%', display: 'inline-flex',
-          alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.75rem',
+          alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 'var(--fs-kleingedrucktes)',
           background: `${activeProfile.color}26`, color: activeProfile.color,
           border: `1.5px solid ${activeProfile.color}55`, flexShrink: 0,
         }}
@@ -270,7 +270,7 @@ function DueBubble() {
         background: 'var(--auszeichnung)',
         color: '#271e08',
         borderRadius: 99,
-        fontSize: '0.6875rem',
+        fontSize: 'var(--fs-kleingedrucktes)',
         fontWeight: 800,
         padding: '1px 7px',
       }}

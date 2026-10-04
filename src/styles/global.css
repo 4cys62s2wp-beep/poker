@@ -91,9 +91,9 @@
   /** Die eine Zahl, wegen der der Bildschirm existiert. Fett, nie dünn. */
   --fs-ergebnis: clamp(4rem, 20vw, 7.25rem);
   --fs-ueberschrift: clamp(1.1875rem, 2.4vw, 1.4375rem);
-  --fs-fliesstext: 0.9375rem;
-  --fs-beschriftung: 0.825rem;
-  --fs-kleingedrucktes: 0.71875rem;
+  --fs-fliesstext: 1rem;
+  --fs-beschriftung: 0.875rem;
+  --fs-kleingedrucktes: 0.75rem;
 
   /* Ziffern in gleicher Breite. Ohne das springt eine hochzählende Anzeige
      bei jedem Wechsel, weil die 1 schmaler ist als die 8 — am Tisch, wo der
@@ -452,7 +452,7 @@ body {
   background-attachment: fixed;
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: var(--fs-fliesstext);
   line-height: 1.6;
   min-height: 100vh;
   min-height: 100dvh; /* mobile Safari: ohne Toolbar-Ueberschuss */
@@ -559,7 +559,7 @@ table.data td {
   gap: 11px;
   padding: var(--sp-1) 10px var(--sp-5);
   font-family: var(--font-display);
-  font-size: 1.375rem;
+  font-size: var(--fs-ueberschrift);
   font-weight: 640;
 }
 
@@ -586,7 +586,7 @@ table.data td {
 
 .nav-group {
   margin: 14px 10px 6px;
-  font-size: 0.65625rem;
+  font-size: var(--fs-kleingedrucktes);
   font-weight: 800;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -602,7 +602,7 @@ table.data td {
   border-radius: var(--radius-sm);
   color: var(--text-dim);
   font-weight: 600;
-  font-size: 0.90625rem;
+  font-size: var(--fs-fliesstext);
   transition: background 0.15s, color 0.15s;
 }
 
@@ -636,7 +636,7 @@ table.data td {
 .sidebar-footer {
   margin-top: auto;
   padding: 14px 10px var(--sp-1);
-  font-size: 0.75rem;
+  font-size: var(--fs-kleingedrucktes);
   color: var(--text-faint);
 }
 
@@ -675,7 +675,7 @@ table.data td {
     padding-bottom: 0;
     padding-left: calc(clamp(16px, 4vw, 48px) + env(safe-area-inset-left, 0px));
     font-family: var(--font-display);
-    font-size: 1.1875rem;
+    font-size: var(--fs-ueberschrift);
     font-weight: 640;
   }
   .mobile-top .spade {
@@ -717,7 +717,7 @@ table.data td {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  font-size: 0.71875rem;
+  font-size: var(--fs-kleingedrucktes);
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -745,7 +745,7 @@ table.data td {
   color: var(--text-dim);
   margin-top: 9px;
   max-width: 660px;
-  font-size: 0.96875rem;
+  font-size: var(--fs-fliesstext);
 }
 
 /* Abschnittsueberschriften. Beide Schreibweisen sind identisch gestylt:
@@ -756,7 +756,7 @@ table.data td {
 .section-title,
 h2.section-title {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: var(--fs-ueberschrift);
   font-weight: 620;
   letter-spacing: normal;
   text-wrap: wrap;
@@ -776,7 +776,7 @@ h2.section-title::after {
 
 .muted { color: var(--text-dim); }
 .faint { color: var(--text-faint); }
-.small { font-size: 0.84375rem; }
+.small { font-size: var(--fs-beschriftung); }
 
 /* ==========================================================================
    Flächen & Grids
@@ -840,7 +840,7 @@ h2.section-title::after {
   border: 1px solid var(--border-strong);
   background: var(--veil-1);
   color: var(--text);
-  font-size: 0.90625rem;
+  font-size: var(--fs-fliesstext);
   font-weight: 700;
   cursor: pointer;
   transition: background 0.14s, border-color 0.14s, transform 0.09s, opacity 0.14s, filter 0.14s;
@@ -883,12 +883,12 @@ h2.section-title::after {
    breit. */
 .btn.sm {
   padding: 7px 13px;
-  font-size: 0.8125rem;
+  font-size: var(--fs-beschriftung);
   border-radius: 9px;
   min-height: var(--tipp-min);
   min-width: var(--tipp-min);
 }
-.btn.lg { padding: 14px 26px; font-size: 0.96875rem; border-radius: 13px; }
+.btn.lg { padding: 14px 26px; font-size: var(--fs-fliesstext); border-radius: 13px; }
 .btn.block { width: 100%; }
 
 .pill {
@@ -897,7 +897,7 @@ h2.section-title::after {
   gap: 6px;
   padding: 3.5px 11px;
   border-radius: 999px;
-  font-size: 0.78125rem;
+  font-size: var(--fs-kleingedrucktes);
   font-weight: 700;
   background: rgba(236, 233, 223, 0.055);
   border: 1px solid var(--border);
@@ -1091,7 +1091,6 @@ button.pill {
 }
 
 .handwahl-titel {
-  font-family: var(--font-display);
   font-size: var(--fs-fliesstext);
   font-weight: var(--fw-bold);
 }
@@ -1110,13 +1109,13 @@ button.pill {
 }
 
 .handwahl-knopf {
+  font-variant-numeric: var(--ziffern);
   min-height: var(--tipp-min);
   min-width: var(--tipp-min);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong);
   background: var(--bg-elev);
   color: var(--text);
-  font-family: var(--font-display);
   font-size: var(--fs-fliesstext);
   font-weight: var(--fw-bold);
   cursor: pointer;
@@ -1212,7 +1211,7 @@ button.pill {
    Lektionen (Prose)
    ========================================================================== */
 
-.prose { max-width: 730px; }
+.prose { max-width: 65ch; }
 
 .prose p { margin: 0 0 14px; color: var(--text-stark); }
 .prose ul { margin: 0 0 14px 20px; }
@@ -1222,7 +1221,7 @@ button.pill {
 .lesson-section { margin-bottom: 34px; }
 
 .lesson-section h2 {
-  font-size: 1.34375rem;
+  font-size: var(--fs-ueberschrift);
   margin-bottom: var(--sp-3);
   padding-bottom: var(--sp-2);
   border-bottom: 1px solid var(--border);
@@ -1232,7 +1231,7 @@ button.pill {
   border-radius: 12px;
   padding: 15px 17px;
   margin: var(--sp-4) 0;
-  font-size: 0.90625rem;
+  font-size: var(--fs-fliesstext);
   border: 1px solid;
   position: relative;
 }
@@ -1241,7 +1240,7 @@ button.pill {
 
 .callout .label {
   font-weight: 800;
-  font-size: 0.6875rem;
+  font-size: var(--fs-kleingedrucktes);
   text-transform: uppercase;
   letter-spacing: 1.4px;
   margin-bottom: 6px;
@@ -1265,12 +1264,12 @@ button.pill {
 table.data {
   border-collapse: collapse;
   width: 100%;
-  font-size: 0.875rem;
+  font-size: var(--fs-beschriftung);
   min-width: 400px;
 }
 
 /* Kompakte Variante (z. B. Chip-Rechner): passt auch aufs Handy ohne Scrollen */
-.table-wrap.compact table.data { min-width: 0; font-size: 0.84375rem; }
+.table-wrap.compact table.data { min-width: 0; font-size: var(--fs-beschriftung); }
 .table-wrap.compact th, .table-wrap.compact td { padding: 9px 10px; }
 
 table.data th {
@@ -1279,7 +1278,7 @@ table.data th {
   background: rgba(212, 175, 94, 0.08);
   color: var(--auszeichnung-lesbar);
   font-weight: 800;
-  font-size: 0.78125rem;
+  font-size: var(--fs-kleingedrucktes);
   letter-spacing: 0.4px;
   text-transform: uppercase;
   white-space: nowrap;
@@ -1308,7 +1307,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   background: var(--bg-elev);
   border: 1px solid var(--border);
   color: var(--text);
-  font-size: 0.9375rem;
+  font-size: var(--fs-fliesstext);
   font-family: inherit;
   font-weight: 550;
   cursor: pointer;
@@ -1332,7 +1331,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   border-radius: 12px;
   padding: 15px 17px;
   margin-top: 6px;
-  font-size: 0.90625rem;
+  font-size: var(--fs-fliesstext);
   border: 1px solid var(--border-strong);
   background: var(--bg-elev);
 }
@@ -1349,11 +1348,21 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .stat-label {
-  font-size: 0.71875rem;
+  font-size: var(--fs-kleingedrucktes);
   color: var(--text-faint);
   text-transform: uppercase;
   letter-spacing: 1.3px;
   font-weight: 800;
+}
+
+/* Versalien tragen höchstens drei Wörter. Eine Frage in Großbuchstaben liest
+   sich wie Schreien — und verändert die Schreibweise von Handnotation:
+   aus „AKs" wird „AKS" (DESIGN.md, Regel 10.14). */
+.stat-label.satz {
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: var(--fs-beschriftung);
+  font-weight: 700;
 }
 
 
@@ -1418,7 +1427,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .game-log {
   max-height: 215px;
   overflow-y: auto;
-  font-size: 0.8125rem;
+  font-size: var(--fs-beschriftung);
   color: var(--text-dim);
   display: flex;
   flex-direction: column;
@@ -1448,7 +1457,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .coach-verdict .v-action {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: var(--fs-ueberschrift);
   font-weight: 640;
   white-space: nowrap;
 }
@@ -1501,7 +1510,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   border-radius: 9px;
   background: transparent;
   color: var(--text-dim);
-  font-size: 0.84375rem;
+  font-size: var(--fs-beschriftung);
   font-weight: 750;
   cursor: pointer;
   transition: background 0.13s, color 0.13s;
@@ -1532,11 +1541,11 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .tell-item .t-ico { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
-.tell-item .t-name { font-weight: 800; font-size: 0.9375rem; }
-.tell-item .t-read { color: var(--auszeichnung-lesbar); font-size: 0.84375rem; font-weight: 700; margin-top: 2px; }
-.tell-item .t-desc { color: var(--text-dim); font-size: 0.875rem; margin-top: var(--sp-1); }
+.tell-item .t-name { font-weight: 800; font-size: var(--fs-fliesstext); }
+.tell-item .t-read { color: var(--auszeichnung-lesbar); font-size: var(--fs-beschriftung); font-weight: 700; margin-top: 2px; }
+.tell-item .t-desc { color: var(--text-dim); font-size: var(--fs-beschriftung); margin-top: var(--sp-1); }
 
-.stars { color: var(--auszeichnung); letter-spacing: 1.5px; font-size: 0.78125rem; white-space: nowrap; }
+.stars { color: var(--auszeichnung); letter-spacing: 1.5px; font-size: var(--fs-kleingedrucktes); white-space: nowrap; }
 .stars .off { color: rgba(236, 233, 223, 0.16); }
 
 /* Das Glossar als Wörterbuch (E-042).
@@ -1566,7 +1575,6 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   margin: 0 0 var(--sp-1);
   padding: var(--sp-1) 0;
   background: var(--bg-deep);
-  font-family: var(--font-display);
   font-size: var(--fs-fliesstext);
   font-weight: var(--fw-bold);
   color: var(--auszeichnung-lesbar);
@@ -1646,7 +1654,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   background: var(--feld);
   color: var(--text);
   /* 16px verhindert Auto-Zoom beim Fokussieren auf iOS */
-  font-size: 1rem;
+  font-size: var(--fs-fliesstext);
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -1677,7 +1685,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
   border: 1px solid var(--auszeichnung-a45);
   border-radius: 13px;
   padding: var(--sp-3) 18px;
-  font-size: 0.875rem;
+  font-size: var(--fs-beschriftung);
   font-weight: 700;
   box-shadow: var(--shadow);
   animation: toast-in 0.32s cubic-bezier(0.22, 1, 0.36, 1), toast-out 0.4s ease 3.4s forwards;
@@ -1685,7 +1693,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .toast .t-title { color: var(--auszeichnung-lesbar); }
-.toast .t-sub { color: var(--text-dim); font-weight: 550; font-size: 0.8125rem; }
+.toast .t-sub { color: var(--text-dim); font-weight: 550; font-size: var(--fs-beschriftung); }
 
 @keyframes toast-in {
   from { transform: translateX(36px); opacity: 0; }
@@ -1837,7 +1845,7 @@ input[type="radio"] {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
-  font-size: 0.8125rem;
+  font-size: var(--fs-beschriftung);
   color: var(--text-dim);
   font-weight: 600;
 }
@@ -1879,7 +1887,7 @@ input[type="radio"] {
   .pcard.sm .corner { font-size: 0.53125rem; top: 1px; left: 2px; }
   .pcard.sm .corner .c-suit { font-size: 0.4375rem; }
   .pcard.sm .center-suit { font-size: 0.8125rem; margin-top: var(--sp-2); }
-  .coach-verdict .v-action { font-size: 1.1875rem; }
+  .coach-verdict .v-action { font-size: var(--fs-ueberschrift); }
 }
 
 /* Die Regel für reduzierte Bewegung steht vollständig im Designfundament
@@ -3245,7 +3253,6 @@ input[type="radio"] {
 }
 
 .filz-du .sitz-name {
-  font-family: var(--font-display);
   font-size: var(--fs-fliesstext);
 }
 
@@ -3574,10 +3581,10 @@ input[type="radio"] {
 }
 
 .uebungsstand .zahl {
+  font-variant-numeric: var(--ziffern);
   display: flex;
   align-items: center;
   gap: var(--sp-1);
-  font-family: var(--font-display);
   font-size: var(--fs-ueberschrift);
   font-weight: var(--fw-bold);
   line-height: 1;
@@ -3759,7 +3766,6 @@ input[type="radio"] {
 }
 
 .lernpfad .stufe-text .titel {
-  font-family: var(--font-display);
   font-size: var(--fs-fliesstext);
   font-weight: var(--fw-bold);
   line-height: var(--lh-tight);
@@ -3825,7 +3831,6 @@ input[type="radio"] {
 }
 
 .modulstand .titel {
-  font-family: var(--font-display);
   font-size: var(--fs-fliesstext);
   font-weight: var(--fw-bold);
   font-variant-numeric: var(--ziffern);
@@ -3958,8 +3963,8 @@ input[type="radio"] {
 }
 
 .levelring .mitte {
+  font-variant-numeric: var(--ziffern);
   position: absolute;
-  font-family: var(--font-display);
   font-weight: var(--fw-bold);
   font-size: var(--fs-fliesstext);
   color: var(--text);
@@ -4074,8 +4079,8 @@ input[type="radio"] {
 }
 
 .heute-frage .lage {
-  font-size: var(--fs-kleingedrucktes);
-  color: var(--text-dim);
+  font-size: var(--fs-fliesstext);
+  color: var(--text);
   font-variant-numeric: var(--ziffern);
 }
 

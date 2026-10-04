@@ -102,7 +102,7 @@ export function PreflopTrainer() {
 
         <div className="row" style={{ marginBottom: 18 }}>
           <CardsRow cards={[scenario.cards[0], scenario.cards[1]]} size="lg" />
-          <span className="pill" style={{ fontSize: '0.875rem' }}>{scenario.label}</span>
+          <span className="pill" style={{ fontSize: 'var(--fs-beschriftung)' }}>{scenario.label}</span>
         </div>
 
         {answer && (

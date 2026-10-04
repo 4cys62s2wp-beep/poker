@@ -17,9 +17,9 @@ Die Werte leben an **einer** Stelle: im `:root`-Block von
 |-------|-------|------|
 | Ergebnis | `--fs-ergebnis` | `clamp(64px, 20vw, 116px)` |
 | Überschrift | `--fs-ueberschrift` | `clamp(19px, 2.4vw, 23px)` |
-| Fließtext | `--fs-fliesstext` | `15px` |
-| Beschriftung | `--fs-beschriftung` | `13.2px` |
-| Kleingedrucktes | `--fs-kleingedrucktes` | `11.5px` |
+| Fließtext | `--fs-fliesstext` | `16px` (bis E-074: 15 px) |
+| Beschriftung | `--fs-beschriftung` | `14px` (bis E-074: 13,2 px) |
+| Kleingedrucktes | `--fs-kleingedrucktes` | `12px` (bis E-074: 11,5 px) |
 
 **Warum nach Verwendung benannt und nicht nach Auszeichnungsebene.** Eine
 Stufe, die `--fs-h2` heißt, wird genommen, weil sie gerade passt. Eine Stufe,
@@ -1172,3 +1172,41 @@ dunklen sagt über ihn genau nichts.
 - `durchgang.test.ts`: drei Einträge mit vorausgewählter Systemvorgabe, unter
   dem Personensymbol statt auf der Startseite, Umschalten in beide Richtungen
   ohne Neustart, kein Aufblitzen, Live-Bereich dunkel bei heller Wahl.
+
+---
+
+## 12. Die Schrift im Detail
+
+Seit E-074. Der Abschnitt 1 beschreibt die Skala; dieser sagt, wo sie gilt.
+
+### Regel 12.1 — Nichts unter 12 Pixeln, außer die Geometrie verlangt es
+
+Fließtext steht bei 16, Beschriftung bei 14, Kleingedrucktes bei 12 Pixeln.
+Darunter liegen nur noch Kartenflächen, der Würfelknopf und die Zellen der
+Handmatrix — dort bestimmt die Fläche die Größe, nicht das Lesen. Jede andere
+Größe zwischen 12 und 24 Pixeln ist eines der Tokens; ein Test
+(`schriftskala.test.ts`) lässt keine Rohwerte mehr zu.
+
+Der Anlass: Das Kleingedruckte trug 39 Stellen, darunter die Angabe „Er setzt
+32 in 96" über der Frage „Lohnt der Call?". Wer sie nicht lesen kann, kann die
+Frage nicht beantworten. **Was für eine Entscheidung gebraucht wird, steht nie
+im Kleingedruckten.**
+
+### Regel 12.2 — Die Serife trägt Titel, keine Zahlen und keine Knöpfe
+
+Fraunces hat feine Kontraste, die unterhalb der Überschriftstufe zerfallen.
+„Du", der Rang im Ring, Zählerstände und Handwahlknöpfe stehen in Manrope mit
+Ziffern gleicher Breite. Der Test verbietet `--font-display` unterhalb der
+Überschriftstufe.
+
+### Regel 12.3 — Versalien tragen höchstens drei Wörter
+
+„WIE VIELE SPIELER SITZEN AM TISCH (MIT DIR)?" liest sich wie Schreien — und
+verändert die Schreibweise von Handnotation: Aus „AKs" wird „AKS". Lange
+Etiketten tragen `.satz` und bleiben in Satzschreibung.
+
+### Regel 12.4 — Eine Zeile hat höchstens 70 Zeichen
+
+`.prose` stand auf 730 Pixeln, das sind rund 95 Zeichen. Es steht jetzt auf
+`65ch`. Auf einem breiten Bildschirm bleibt die Spalte schmal; wer mehr
+Breite braucht, bekommt sie für Tabellen und Karten, nicht für Fließtext.

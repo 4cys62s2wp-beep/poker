@@ -1,5 +1,5 @@
 {
-  "erzeugt_am": "2026-09-07T04:19:01.773Z",
+  "erzeugt_am": "2026-10-04T07:28:14.348Z",
   "leseabstand": {
     "abstand_mm": 2000,
     "sehwinkel_grad": 0.3,
@@ -30,12 +30,12 @@
         {
           "text": "Blinds",
           "klasse": "tisch-marke",
-          "schriftgroesse_px": 13.2,
+          "schriftgroesse_px": 14,
           "fett": "400",
           "ziffern": "normal",
-          "oben_px": 238,
-          "hoehe_px": 21,
-          "breite_px": 55
+          "oben_px": 237,
+          "hoehe_px": 22,
+          "breite_px": 59
         },
         {
           "text": "25 / 50",
@@ -60,12 +60,12 @@
         {
           "text": "Danach",
           "klasse": "tisch-marke",
-          "schriftgroesse_px": 13.2,
+          "schriftgroesse_px": 14,
           "fett": "400",
           "ziffern": "normal",
           "oben_px": 488,
-          "hoehe_px": 21,
-          "breite_px": 63
+          "hoehe_px": 22,
+          "breite_px": 69
         },
         {
           "text": "50 / 100",
@@ -73,14 +73,14 @@
           "schriftgroesse_px": 58.5,
           "fett": "400",
           "ziffern": "tabular-nums",
-          "oben_px": 513,
+          "oben_px": 514,
           "hoehe_px": 67,
           "breite_px": 227
         },
         {
           "text": "Weiter",
           "klasse": "tisch-knopf haupt",
-          "schriftgroesse_px": 15,
+          "schriftgroesse_px": 16,
           "fett": "800",
           "ziffern": "normal",
           "oben_px": 760,
@@ -90,7 +90,7 @@
         {
           "text": "Stände",
           "klasse": "tisch-knopf",
-          "schriftgroesse_px": 15,
+          "schriftgroesse_px": 16,
           "fett": "800",
           "ziffern": "normal",
           "oben_px": 760,
@@ -100,7 +100,7 @@
         {
           "text": "Beenden",
           "klasse": "tisch-knopf",
-          "schriftgroesse_px": 15,
+          "schriftgroesse_px": 16,
           "fett": "800",
           "ziffern": "normal",
           "oben_px": 760,
@@ -135,7 +135,7 @@
           "schriftgroesse_px": 58.5,
           "fett": "400",
           "ziffern": "tabular-nums",
-          "oben_px": 513,
+          "oben_px": 514,
           "hoehe_px": 67,
           "breite_px": 227
         }
@@ -183,12 +183,12 @@
         {
           "text": "Blinds",
           "klasse": "tisch-marke",
-          "schriftgroesse_px": 13.2,
+          "schriftgroesse_px": 14,
           "fett": "400",
           "ziffern": "normal",
-          "oben_px": 88,
-          "hoehe_px": 21,
-          "breite_px": 55
+          "oben_px": 87,
+          "hoehe_px": 22,
+          "breite_px": 59
         },
         {
           "text": "25 / 50",
@@ -213,12 +213,12 @@
         {
           "text": "Danach",
           "klasse": "tisch-marke",
-          "schriftgroesse_px": 13.2,
+          "schriftgroesse_px": 14,
           "fett": "400",
           "ziffern": "normal",
           "oben_px": 525,
-          "hoehe_px": 21,
-          "breite_px": 63
+          "hoehe_px": 22,
+          "breite_px": 69
         },
         {
           "text": "50 / 100",
@@ -226,14 +226,14 @@
           "schriftgroesse_px": 96,
           "fett": "400",
           "ziffern": "tabular-nums",
-          "oben_px": 550,
+          "oben_px": 552,
           "hoehe_px": 110,
           "breite_px": 375
         },
         {
           "text": "Weiter",
           "klasse": "tisch-knopf haupt",
-          "schriftgroesse_px": 15,
+          "schriftgroesse_px": 16,
           "fett": "800",
           "ziffern": "normal",
           "oben_px": 684,
@@ -243,7 +243,7 @@
         {
           "text": "Stände",
           "klasse": "tisch-knopf",
-          "schriftgroesse_px": 15,
+          "schriftgroesse_px": 16,
           "fett": "800",
           "ziffern": "normal",
           "oben_px": 684,
@@ -253,7 +253,7 @@
         {
           "text": "Beenden",
           "klasse": "tisch-knopf",
-          "schriftgroesse_px": 15,
+          "schriftgroesse_px": 16,
           "fett": "800",
           "ziffern": "normal",
           "oben_px": 684,
@@ -288,7 +288,7 @@
           "schriftgroesse_px": 96,
           "fett": "400",
           "ziffern": "tabular-nums",
-          "oben_px": 550,
+          "oben_px": 552,
           "hoehe_px": 110,
           "breite_px": 375
         }

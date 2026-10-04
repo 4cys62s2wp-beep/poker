@@ -193,7 +193,7 @@ export function UpgradePage() {
                 <Icon name="check" size={17} />
               </span>
               <div>
-                <div style={{ fontWeight: 800, fontSize: '0.96875rem' }}>{b.t}</div>
+                <div style={{ fontWeight: 800, fontSize: 'var(--fs-fliesstext)' }}>{b.t}</div>
                 <div className="small muted" style={{ marginTop: 3 }}>{b.d}</div>
               </div>
             </div>

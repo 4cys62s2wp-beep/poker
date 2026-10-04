@@ -120,18 +120,18 @@ export function BankrollTracker() {
           <div className="grid cols-4" style={{ marginBottom: 18 }}>
             <div className="card">
               <div className="stat-label">{L.statTotal}</div>
-              <div className="big-stat" style={{ color: stats.profit >= 0 ? 'var(--ok)' : 'var(--danger)', fontSize: '1.5rem' }}>
+              <div className="big-stat" style={{ color: stats.profit >= 0 ? 'var(--ok)' : 'var(--danger)', fontSize: 'var(--fs-ueberschrift)' }}>
                 {euro(stats.profit)}
               </div>
             </div>
             <div className="card">
               <div className="stat-label">{L.statHourly}</div>
-              <div className="big-stat" style={{ fontSize: '1.5rem' }}>{euro(stats.hourly)}/h</div>
+              <div className="big-stat" style={{ fontSize: 'var(--fs-ueberschrift)' }}>{euro(stats.hourly)}/h</div>
               <div className="small faint">{L.hours(stats.hours)}</div>
             </div>
             <div className="card">
               <div className="stat-label">{L.statSessions}</div>
-              <div className="big-stat" style={{ fontSize: '1.5rem' }}>{filteredSessions.length}</div>
+              <div className="big-stat" style={{ fontSize: 'var(--fs-ueberschrift)' }}>{filteredSessions.length}</div>
               <div className="small faint">{L.winRate(stats.winRate)}</div>
             </div>
             <div className="card">

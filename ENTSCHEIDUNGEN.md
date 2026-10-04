@@ -4360,3 +4360,49 @@ Nebenbei: Der Hinweis lautete im Versuch „seit 5848 Stunden 28 Minuten".
 `grobeDauer` zählt ab einem Tag jetzt Tage und kennt den Fall — „seit
 243 Tagen", aber „3 Tage gespielt". Bei Minuten und Stunden sind beide Formen
 gleich, bei Tagen nicht.
+
+---
+
+## E-074 · 2026-10-04 · Die Schriftskala gilt jetzt auch dort, wo sie nicht bequem war
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 1.2).
+
+DESIGN.md §1 kannte seit E-032 fünf Stufen. Im Stylesheet daneben standen 73
+Schriftgrößen, die keine davon benutzten — 0,4375 rem, 0,5 rem, 0,53125 rem —,
+und die Stufe „Kleingedrucktes" mit 11,5 px trug 39 Stellen. Darunter die
+Zeile „Er setzt 32 in 96" über der Frage „Lohnt der Call?": die Angabe, ohne
+die man die Frage nicht beantworten kann.
+
+**Entschieden**, gegen die bisherige Festlegung (§1: Fließtext 15 px):
+
+| | vorher | jetzt |
+|---|---|---|
+| Fließtext | 15 px | **16 px** |
+| Beschriftung | 13,2 px | **14 px** |
+| Kleingedrucktes | 11,5 px | **12 px** |
+
+Die alte Festlegung war begründet (kompakte Bildschirme), der Nutzen der neuen
+überwiegt aber: Über 45 000 Wörter Lektionstext werden in dieser Größe
+gelesen, und 15 px sind auf einem Handy für lange Strecken zu klein.
+
+**Verworfene Alternative:** die Tokens bei 15/13,2/11,5 lassen und nur die
+Rohwerte darunter anheben. Das hätte die Lektionen so klein gelassen, wie sie
+waren, und die Skala trotzdem durchgesetzt — aber das Lesen war ja der Anlass.
+
+Dazu:
+
+- **35 Rohwerte** im Stylesheet und **37** in Komponenten auf die Stufen
+  zurückgeführt. Übrig bleiben Kartenflächen, Würfelknopf, Matrixzellen und
+  Anzeigeziffern — dort bestimmt die Fläche die Größe.
+- **Serife nur für Titel:** „Du", der Rang im Ring, Zählerstände und
+  Handwahlknöpfe stehen in Manrope mit Ziffern gleicher Breite.
+- **Zwölf lange Etiketten** in Satzschreibung statt in Versalien. Aus „AKs"
+  wurde in Großbuchstaben „AKS" — ein Bedeutungsfehler, kein Schönheitsfehler.
+- `.prose` von 730 px (rund 95 Zeichen je Zeile) auf `65ch`.
+
+**Gemessen** mit allen fünf betroffenen Läufen — Design (182 Messungen),
+Durchgang, Tisch, Daumen, Quer: null Befunde. Die Höhenbudgets der Startseite
+haben die größere Schrift ausgehalten.
+
+`schriftskala.test.ts` hält es fest (acht Prüfungen); drei davon mit
+Gegenprobe rot gesehen.

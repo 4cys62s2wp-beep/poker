@@ -70,7 +70,7 @@ export function QuizRunner({ questions, onFinish, onAnswer, onWrong }: Props) {
       <div className="progressbar" style={{ marginBottom: 18 }}>
         <div style={{ width: `${(100 * index) / questions.length}%` }} />
       </div>
-      <h3 style={{ marginBottom: 16, fontSize: '1.0625rem', lineHeight: 1.45 }}>{q.question}</h3>
+      <h3 style={{ marginBottom: 16, fontSize: 'var(--fs-fliesstext)', lineHeight: 1.45 }}>{q.question}</h3>
       {q.options.map((opt, i) => {
         let cls = 'quiz-option';
         if (answered) {

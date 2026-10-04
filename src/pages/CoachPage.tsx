@@ -147,7 +147,7 @@ export function CoachPage() {
 
       {step === 'setup' && (
         <div className="card" style={{ maxWidth: 640 }}>
-          <div className="stat-label" style={{ marginBottom: 8 }}>{L.playersQuestion}</div>
+          <div className="stat-label satz" style={{ marginBottom: 8 }}>{L.playersQuestion}</div>
           <div className="segmented" style={{ marginBottom: 20 }}>
             {[2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
               <button key={n} className={players === n ? 'on' : ''} onClick={() => setPlayers(n)}>
@@ -156,7 +156,7 @@ export function CoachPage() {
             ))}
           </div>
 
-          <div className="stat-label" style={{ marginBottom: 8 }}>{L.positionQuestion}</div>
+          <div className="stat-label satz" style={{ marginBottom: 8 }}>{L.positionQuestion}</div>
           <div className="segmented" style={{ marginBottom: 6 }}>
             {positions.map((p) => (
               <button key={p.id} className={position === p.id ? 'on' : ''} onClick={() => setPosition(p.id)}>
@@ -168,7 +168,7 @@ export function CoachPage() {
             {positions.find((p) => p.id === position)?.hint}
           </p>
 
-          <div className="stat-label" style={{ marginBottom: 8 }}>{L.beforeQuestion}</div>
+          <div className="stat-label satz" style={{ marginBottom: 8 }}>{L.beforeQuestion}</div>
           <div className="segmented" style={{ marginBottom: 14 }}>
             <button className={!raisedBefore ? 'on' : ''} onClick={() => setRaisedBefore(false)}>
               {L.noRaiseYet}
@@ -180,7 +180,7 @@ export function CoachPage() {
 
           {!raisedBefore && (
             <>
-              <div className="stat-label" style={{ marginBottom: 8 }}>{L.limpersQuestion}</div>
+              <div className="stat-label satz" style={{ marginBottom: 8 }}>{L.limpersQuestion}</div>
               <div className="segmented" style={{ marginBottom: 14 }}>
                 {[0, 1, 2, 3, 4].map((n) => (
                   <button key={n} className={limpers === n ? 'on' : ''} onClick={() => setLimpers(n)}>
@@ -353,7 +353,7 @@ export function CoachPage() {
 
           {step !== 'preflop' && (
             <div className="card" style={{ marginBottom: 14 }}>
-              <div className="stat-label" style={{ marginBottom: 8 }}>{L.facingBetQuestion}</div>
+              <div className="stat-label satz" style={{ marginBottom: 8 }}>{L.facingBetQuestion}</div>
               <div className="row wrap">
                 <input
                   className="text-input"

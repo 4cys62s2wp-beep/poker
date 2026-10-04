@@ -114,16 +114,16 @@ export function Onboarding() {
           <Icon name="spade" size={26} />
         </span>
         <h1 style={{ fontSize: '1.625rem', marginBottom: 8 }}>{T.welcome}</h1>
-        <p className="muted" style={{ marginBottom: 24, fontSize: '0.90625rem' }}>{T.tagline}</p>
+        <p className="muted" style={{ marginBottom: 24, fontSize: 'var(--fs-fliesstext)' }}>{T.tagline}</p>
 
         {step === 'lang' && (
           <>
             <div className="stat-label" style={{ marginBottom: 10 }}>{T.pickLang}</div>
             <div style={{ display: 'grid', gap: 10 }}>
-              <button className="btn primary" style={{ justifyContent: 'center', fontSize: '1rem' }} onClick={() => chooseLang('de')}>
+              <button className="btn primary" style={{ justifyContent: 'center', fontSize: 'var(--fs-fliesstext)' }} onClick={() => chooseLang('de')}>
                 <span aria-hidden="true">🇩🇪&nbsp;</span> Deutsch
               </button>
-              <button className="btn" style={{ justifyContent: 'center', fontSize: '1rem' }} onClick={() => chooseLang('en')}>
+              <button className="btn" style={{ justifyContent: 'center', fontSize: 'var(--fs-fliesstext)' }} onClick={() => chooseLang('en')}>
                 <span aria-hidden="true">🇬🇧&nbsp;</span> English
               </button>
             </div>

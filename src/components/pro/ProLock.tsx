@@ -39,7 +39,7 @@ export function ProLock({ text, title, compact }: Props) {
       >
         <Icon name="lock" size={22} />
       </span>
-      <div style={{ fontWeight: 800, fontSize: compact ? 15.5 : 17, marginBottom: 5 }}>
+      <div style={{ fontWeight: 800, fontSize: compact ? 'var(--fs-fliesstext)' : 'var(--fs-ueberschrift)', marginBottom: 5 }}>
         {title ?? L.lockedTitle}
       </div>
       <p className="small muted" style={{ marginBottom: 14, maxWidth: 420, marginInline: 'auto' }}>

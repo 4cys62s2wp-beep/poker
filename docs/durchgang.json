@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-03T19:11:53.832Z",
+  "geprueft_am": "2026-10-04T07:28:12.655Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -108,13 +108,13 @@
         },
         "mittel": {
           "oben": 214,
-          "unten": 459,
-          "hoehe": 245
+          "unten": 460,
+          "hoehe": 246
         },
         "gross": {
-          "oben": 467,
+          "oben": 468,
           "unten": 820,
-          "hoehe": 353
+          "hoehe": 352
         },
         "rest_unten_px": 24,
         "gestenstreifen_px": 24
@@ -134,8 +134,8 @@
     {
       "name": "Pause hält an",
       "ergebnis": {
-        "vorher": "19:54",
-        "nachher": "19:54",
+        "vorher": "19:55",
+        "nachher": "19:55",
         "steht_still": true,
         "marke_sichtbar": true
       },
@@ -144,8 +144,8 @@
     {
       "name": "Weiter läuft an derselben Stelle an",
       "ergebnis": {
-        "vorher": "19:54",
-        "gleich_danach": "19:54",
+        "vorher": "19:55",
+        "gleich_danach": "19:55",
         "spaeter": "19:53",
         "kein_sprung": true,
         "laeuft_wieder": true
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 908,
+        "dauer_ms": 884,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -192,7 +192,7 @@
       "name": "Der Abend steht in der Liste",
       "ergebnis": {
         "abende": 1,
-        "erste_karte": "Sa., 3. Oktober 2026 · Ada · gewonnen · 5 Personen · gerade eben",
+        "erste_karte": "So., 4. Oktober 2026 · Ada · gewonnen · 5 Personen · gerade eben",
         "namen_als_knoepfe": 5,
         "namen": [
           "Ada",
@@ -323,23 +323,23 @@
           "gross"
         ],
         "klein": {
-          "oben": 362,
-          "unten": 492,
+          "oben": 371,
+          "unten": 501,
           "hoehe": 130
         },
         "mittel": {
-          "oben": 500,
-          "unten": 732,
-          "hoehe": 232
+          "oben": 509,
+          "unten": 744,
+          "hoehe": 235
         },
         "gross": {
-          "oben": 740,
-          "unten": 963,
-          "hoehe": 223
+          "oben": 752,
+          "unten": 977,
+          "hoehe": 225
         },
-        "rest_unten_px": -119,
+        "rest_unten_px": -133,
         "gestenstreifen_px": 24,
-        "stand_oben_px": 681,
+        "stand_oben_px": 691,
         "lernen_text": "So funktioniert Texas Hold’em",
         "fuellung": [
           {
@@ -351,16 +351,16 @@
           },
           {
             "karte": "mittel",
-            "innen_px": 198,
-            "belegt_px": 198,
-            "anteil": 0.999,
+            "innen_px": 201,
+            "belegt_px": 201,
+            "anteil": 1,
             "ueberlauf_px": 0
           },
           {
             "karte": "gross",
-            "innen_px": 189,
-            "belegt_px": 189,
-            "anteil": 0.999,
+            "innen_px": 191,
+            "belegt_px": 191,
+            "anteil": 1.001,
             "ueberlauf_px": 0
           }
         ]
@@ -374,7 +374,7 @@
           {
             "geraet": "375x667",
             "scrollt": true,
-            "rest_unten_px": -296,
+            "rest_unten_px": -310,
             "heute_knoepfe_ohne_scrollen": true,
             "letzte_karte": "gross",
             "karten": [
@@ -388,18 +388,18 @@
               },
               {
                 "karte": "mittel",
-                "aussen_px": 232,
-                "innen_px": 198,
-                "belegt_px": 198,
-                "anteil": 0.999,
+                "aussen_px": 235,
+                "innen_px": 201,
+                "belegt_px": 201,
+                "anteil": 1,
                 "ueberlauf_px": 0
               },
               {
                 "karte": "gross",
-                "aussen_px": 223,
-                "innen_px": 189,
-                "belegt_px": 189,
-                "anteil": 0.999,
+                "aussen_px": 225,
+                "innen_px": 191,
+                "belegt_px": 191,
+                "anteil": 1.001,
                 "ueberlauf_px": 0
               }
             ]
@@ -407,7 +407,7 @@
           {
             "geraet": "390x844",
             "scrollt": true,
-            "rest_unten_px": -119,
+            "rest_unten_px": -133,
             "heute_knoepfe_ohne_scrollen": true,
             "letzte_karte": "gross",
             "karten": [
@@ -421,18 +421,18 @@
               },
               {
                 "karte": "mittel",
-                "aussen_px": 232,
-                "innen_px": 198,
-                "belegt_px": 198,
-                "anteil": 0.999,
+                "aussen_px": 235,
+                "innen_px": 201,
+                "belegt_px": 201,
+                "anteil": 1,
                 "ueberlauf_px": 0
               },
               {
                 "karte": "gross",
-                "aussen_px": 223,
-                "innen_px": 189,
-                "belegt_px": 189,
-                "anteil": 0.999,
+                "aussen_px": 225,
+                "innen_px": 191,
+                "belegt_px": 191,
+                "anteil": 1.001,
                 "ueberlauf_px": 0
               }
             ]
@@ -440,7 +440,7 @@
           {
             "geraet": "360x740",
             "scrollt": true,
-            "rest_unten_px": -223,
+            "rest_unten_px": -237,
             "heute_knoepfe_ohne_scrollen": true,
             "letzte_karte": "gross",
             "karten": [
@@ -454,18 +454,18 @@
               },
               {
                 "karte": "mittel",
-                "aussen_px": 232,
-                "innen_px": 198,
-                "belegt_px": 198,
-                "anteil": 0.999,
+                "aussen_px": 235,
+                "innen_px": 201,
+                "belegt_px": 201,
+                "anteil": 1,
                 "ueberlauf_px": 0
               },
               {
                 "karte": "gross",
-                "aussen_px": 223,
-                "innen_px": 189,
-                "belegt_px": 189,
-                "anteil": 0.999,
+                "aussen_px": 225,
+                "innen_px": 191,
+                "belegt_px": 191,
+                "anteil": 1.001,
                 "ueberlauf_px": 0
               }
             ]
@@ -479,16 +479,16 @@
       "ergebnis": {
         "frage": "Lohnt der Call?",
         "karten_vorher": [
-          "Kreuz Ass",
-          "Karo König",
+          "Kreuz Neun",
+          "Karo Neun",
           "Herz Neun",
           "Pik Sieben",
           "Kreuz Zwei"
         ],
         "punkte_offen_vorher": 1,
         "urteil": "Daneben",
-        "zahlen": "24,1 % gegen 28,6 % nötig",
-        "warum_ziel": "#/lernen/drill/3-3-b-npxu",
+        "zahlen": "27,8 % gegen 40,0 % nötig",
+        "warum_ziel": "#/lernen/drill/7-7-1g-npxu",
         "knoepfe_weg": 0,
         "punkt_gefuellt": 1,
         "urteil_nach_neuladen": "Daneben",
@@ -598,10 +598,10 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | SERIE | – | TREFFER | 0 | BESTE",
-        "nach_zwei": "2 | NEUE BESTSERIE | 100 % | TREFFER | 2 | BESTE",
-        "nach_neuladen": "2 | NEUE BESTSERIE | 100 % | TREFFER | 2 | BESTE",
+        "nach_zwei": "1 | NEUE BESTSERIE | 50 % | TREFFER | 1 | BESTE",
+        "nach_neuladen": "1 | NEUE BESTSERIE | 50 % | TREFFER | 1 | BESTE",
         "quote_bleibt": true,
-        "quote_nach_zwei": "100 %",
+        "quote_nach_zwei": "50 %",
         "ohne_versuche_kein_prozent": true,
         "felder": 3
       },
@@ -610,12 +610,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 67,
+        "dauer_ms": 43,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "24,1 %",
+        "ergebnis_text": "27,8 %",
         "uebergang": "0s",
         "belebung": "none"
       },
@@ -625,9 +625,9 @@
       "name": "Der Nachschlagen-Bereich ist eine Übersicht, keine Strecke",
       "ergebnis": {
         "kacheln": 7,
-        "unterkante_px": 804,
+        "unterkante_px": 822,
         "fenster": 844,
-        "seitenhoehe": 844,
+        "seitenhoehe": 846,
         "sichtbar_ohne_scrollen": 7,
         "mit_inhalt": 7,
         "mit_vorschau": 3,
@@ -647,13 +647,13 @@
     {
       "name": "Das Glossar ist ein Wörterbuch, keine Wand",
       "ergebnis": {
-        "seitenhoehe": 11425,
+        "seitenhoehe": 11842,
         "eintraege": 159,
-        "erste_hoehe": 61,
+        "erste_hoehe": 64,
         "buchstaben": 22,
         "aufgeklappt": 0,
         "nach_tipp": {
-          "erste_hoehe": 141,
+          "erste_hoehe": 147,
           "aufgeklappt": 1,
           "angesagt": "true"
         }
@@ -719,7 +719,7 @@
       "name": "Quer gehalten sieht man den ganzen Tisch",
       "ergebnis": {
         "fenster": "844x390",
-        "filz_hoehe": 228,
+        "filz_hoehe": 231,
         "sitze": 5,
         "sitze_ueber_der_leiste": 5,
         "board_ueber_der_leiste": true,

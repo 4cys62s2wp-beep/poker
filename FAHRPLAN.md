@@ -33,7 +33,7 @@ Zuerst in DESIGN.md den Widerspruch zwischen §2 (eine Akzentfarbe, Z. 86ff.) un
 
 </details>
 
-### [ ] 1.2 Schriftskala durchsetzen: keine Mini-Größen, lesbarer Fließtext, Serife nur für Titel, Versalien nur für kurze Etiketten  
+### [x] 1.2 Schriftskala durchsetzen: keine Mini-Größen, lesbarer Fließtext, Serife nur für Titel, Versalien nur für kurze Etiketten  
 *Wirkung 5 · Aufwand M*
 
 Die 34 festen font-size-Werte in global.css (darunter 0.4375rem, 0.5rem, 0.53125rem, 0.5625rem) und die 48 Inline-fontSize-Angaben in TSX auf die fünf Tokens zurückführen; die Sperrklinke npm run streuung lässt danach für font-size nur noch Tokens zu. Angaben, die für eine Entscheidung gebraucht werden, nie im Kleingedruckten: .heute-frage .lage („Er setzt 32 in 96“) in Fließtextgröße und --text. Fließtext von 15 auf 16 px (1rem) als neue E-Nummer zu DESIGN §1. Das widerspricht der bewussten Festlegung, der Nutzen überwiegt aber klar: 45.169 Wörter Lektionstext werden in dieser Größe gelesen. .prose auf max-width 65ch begrenzen, statt 730 px mit rund 95 Zeichen pro Zeile. Regel in DESIGN.md: Fraunces nur für Seiten- und Abschnittstitel ab --fs-ueberschrift; „Du“, .uebungsstand .zahl, Levelring, „50 %“ im Equity-Schätzer und .handwahl-knopf in Manrope mit tabular-nums. Ein Test verbietet --font-display unterhalb der Überschriftstufe. Versalien nur für Etiketten mit höchstens drei Wörtern; Fragen wie „WIE VIELE SPIELER SITZEN AM TISCH (MIT DIR)?“ in Satzschreibung. Handnotation im Starthand-Explorer (howToPlay „SO SPIELST DU AKS“) als span mit text-transform:none; das ist ein Bedeutungsfehler und kommt zuerst.

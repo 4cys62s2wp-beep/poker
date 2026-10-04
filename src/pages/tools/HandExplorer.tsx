@@ -209,7 +209,7 @@ export function HandExplorer() {
           </div>
           <p className="small muted" style={{ marginBottom: 16 }}>{cls.desc}</p>
 
-          <div className="stat-label" style={{ marginBottom: 8 }}>{L.winProb}</div>
+          <div className="stat-label satz" style={{ marginBottom: 8 }}>{L.winProb}</div>
           {[
             { n: 1, eq: detail?.eq1, label: L.vsOpponents(1) },
             { n: 3, eq: detail?.eq3, label: L.vsOpponents(3) },
@@ -229,7 +229,7 @@ export function HandExplorer() {
             {L.mcNote}
           </p>
 
-          <div className="stat-label" style={{ marginBottom: 6 }}>{L.howToPlay(selected)}</div>
+          <div className="stat-label satz" style={{ marginBottom: 6 }}>{L.howToPlay(selected)}</div>
           <ul className="list-plain">
             <li className="takeaway">
               <span className="tick">›</span>

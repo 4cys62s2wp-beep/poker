@@ -117,7 +117,7 @@ export function CancelPage() {
 
           {kind === 'extraordinary' && (
             <>
-              <label className="stat-label" htmlFor="c-reason" style={{ display: 'block', marginBottom: 5 }}>
+              <label className="stat-label satz" htmlFor="c-reason" style={{ display: 'block', marginBottom: 5 }}>
                 {L.cancelReason}
               </label>
               <input

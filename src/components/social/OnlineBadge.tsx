@@ -47,7 +47,7 @@ export function OnlineBadge({ className, style }: { className?: string; style?: 
             background: 'var(--auszeichnung)',
             color: '#271e08',
             borderRadius: 99,
-            fontSize: '0.6875rem',
+            fontSize: 'var(--fs-kleingedrucktes)',
             fontWeight: 800,
             padding: '0 6px',
           }}

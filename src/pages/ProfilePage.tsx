@@ -323,7 +323,7 @@ export function ProfilePage() {
             maxLength={40}
           />
         </div>
-        <label className="stat-label" htmlFor="profil-email" style={{ display: 'block', marginBottom: 5 }}>
+        <label className="stat-label satz" htmlFor="profil-email" style={{ display: 'block', marginBottom: 5 }}>
           {P.emailLabel}
         </label>
         <div className="row">

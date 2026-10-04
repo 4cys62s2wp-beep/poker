@@ -6926,3 +6926,15 @@ table.data.pro-vergleich th:first-child, table.data.pro-vergleich td:first-child
 .testende-hinweis { margin-bottom: var(--sp-4); }
 .testende-hinweis .titel { font-weight: var(--fw-bold); margin-bottom: var(--sp-1); }
 .testende-hinweis p { margin: 0 0 var(--sp-3); }
+
+/* ---- Range-Viewer: Entscheidung wählen (E-100) ---- */
+.range-modus { margin-bottom: var(--sp-4); }
+.range-wahl { margin-bottom: var(--sp-4); }
+.range-kopf { margin-bottom: var(--sp-2); }
+.range-titel { font-size: var(--fs-ueberschrift); font-weight: var(--fw-bold); }
+.range-text { margin: 0 0 var(--sp-4); }
+.range-legende { margin-bottom: var(--sp-3); }
+.range-fuss { margin-top: var(--sp-4); }
+.trainer-frage { margin-bottom: var(--sp-3); }
+.coach-frage { margin-bottom: var(--sp-2); }
+.coach-wahl { margin-bottom: var(--sp-3); }

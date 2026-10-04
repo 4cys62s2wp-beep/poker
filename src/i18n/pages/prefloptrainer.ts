@@ -29,7 +29,12 @@ export const STR = defineStrings(
     nextHand: 'Nächste Hand',
     spotGruppe: 'Spot wählen',
     spotBB: 'BB',
+    spotVs: 'vs. Open',
     spotNeu: 'neu',
+    vsIntro: (selbst: string, eroeffner: string) =>
+      `Du sitzt auf ${selbst}. ${eroeffner} eröffnet auf 2,5bb, alle dazwischen folden.`,
+    vsVerdict: (label: string, action: string, eroeffner: string) =>
+      `${label} gehört gegen das Open von ${eroeffner} in die ${action === '3bet' ? '3-Bet-Range' : action === 'call' ? 'Call-Range' : 'Fold-Range'}.`,
   },
   {
     title: 'Preflop Trainer',
@@ -56,6 +61,11 @@ export const STR = defineStrings(
     nextHand: 'Next Hand',
     spotGruppe: 'Choose a spot',
     spotBB: 'BB',
+    spotVs: 'vs. open',
     spotNeu: 'new',
+    vsIntro: (selbst: string, eroeffner: string) =>
+      `You’re on ${selbst}. ${eroeffner} opens to 2.5bb, everyone in between folds.`,
+    vsVerdict: (label: string, action: string, eroeffner: string) =>
+      `Against the open from ${eroeffner}, ${label} belongs in the ${action === '3bet' ? '3-bet range' : action === 'call' ? 'calling range' : 'folding range'}.`,
   },
 );

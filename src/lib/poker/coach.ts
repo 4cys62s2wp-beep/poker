@@ -5,6 +5,7 @@ import { expandRangeSpec } from './ranges';
 import { RFI_CHARTS, BB_DEFENSE_VS_BTN, type Position } from '../../content/ranges';
 import type { DrawInfo, MadeHandInfo } from './analysis';
 import { pairTypeName } from './analysis';
+import { gegenOpen } from './vsopen';
 
 /** Sprache der erzeugten Texte (Logik/Zahlen sind sprachneutral). */
 export type CoachLang = 'de' | 'en';
@@ -101,6 +102,24 @@ const TEXT_DE = {
 
   vsRaiseWeak: (label: string) => `Gegen einen Raise ist ${label} klar zu schwach.`,
   vsRaiseRule: 'Merksatz: Gegen einen Raise brauchst du eine deutlich stärkere Hand als zum selbst Erhöhen.',
+
+  // Gegen ein Open mit bekanntem Platzpaar (E-100)
+  vsThreeBetHeadline: 'Gegen das Open: 3-Bet auf ca. 3x den Raise',
+  vsThreeBetInRange: (label: string, eroeffner: string, selbst: string) =>
+    `${label} gehört auf ${selbst} gegen das Open von ${eroeffner} in die 3-Bet-Range.`,
+  vsThreeBetSize: 'Erhöhe auf etwa das Dreifache des Raises (ohne Position eher 4x).',
+  vsThreeBetWhy: 'Starke Hände wollen einen großen Pot; Hände wie A5s sind Bluffs mit einem Ass in der Hand, das die besten Hände des Gegners blockiert.',
+  vsCallHeadline: 'Gegen das Open: Call',
+  vsCallInRange: (label: string, eroeffner: string, selbst: string) =>
+    `${label} gehört auf ${selbst} gegen das Open von ${eroeffner} in die Call-Range.`,
+  vsCallIp: 'In Position bist du nach dem Flop zuletzt dran: Das macht auch mittlere Hände spielbar.',
+  vsCallSb: 'Aus dem Small Blind bist du nach dem Flop immer zuerst dran: Wenn du mitgehst, dann nur mit Händen, die auch ohne Position gut genug sind.',
+  vsCallBb: 'Im Big Blind ist 1 bb schon im Pot, und du schließt die Action: Der Preis für den Call ist niedrig.',
+  vsFoldHeadline: 'Gegen das Open: Fold',
+  vsFoldOutOfRange: (label: string, eroeffner: string, selbst: string) =>
+    `${label} ist auf ${selbst} gegen das Open von ${eroeffner} zu schwach.`,
+  vsFoldEarly: 'Ein Open aus früher Position ist stark: Die Hände, die du dagegen weiterspielst, sind eng.',
+  vsFoldLate: 'Auch gegen einen späten Eröffner gilt: Ohne Plan für den Flop ist jeder Call Geld, das fehlt.',
 
   // Postflop: sehr starke Hände
   monsterHeadline: 'Bet 70–100 % des Pots (Value)',
@@ -247,6 +266,24 @@ const TEXT_EN: typeof TEXT_DE = {
   vsRaiseWeak: (label: string) => `Against a raise, ${label} is clearly too weak.`,
   vsRaiseRule: 'Remember: you need a much stronger hand to face a raise than to make one yourself.',
 
+  // Facing an open from a known seat (E-100)
+  vsThreeBetHeadline: 'Facing the open: 3-bet to about 3x the raise',
+  vsThreeBetInRange: (label: string, eroeffner: string, selbst: string) =>
+    `${label} belongs in the 3-bet range on ${selbst} against the open from ${eroeffner}.`,
+  vsThreeBetSize: 'Raise to about three times the raise (closer to 4x without position).',
+  vsThreeBetWhy: 'Strong hands want a big pot; hands like A5s are bluffs that hold an ace, which blocks the opponent’s best hands.',
+  vsCallHeadline: 'Facing the open: call',
+  vsCallInRange: (label: string, eroeffner: string, selbst: string) =>
+    `${label} belongs in the calling range on ${selbst} against the open from ${eroeffner}.`,
+  vsCallIp: 'In position you act last after the flop, which makes even medium hands playable.',
+  vsCallSb: 'From the small blind you act first after the flop every time: if you call, only with hands that are good enough without position.',
+  vsCallBb: 'In the big blind 1 bb is already in the pot and you close the action: the price of the call is low.',
+  vsFoldHeadline: 'Facing the open: fold',
+  vsFoldOutOfRange: (label: string, eroeffner: string, selbst: string) =>
+    `${label} is too weak on ${selbst} against the open from ${eroeffner}.`,
+  vsFoldEarly: 'An open from early position is strong: the hands you continue with against it are tight.',
+  vsFoldLate: 'Even against a late opener: without a plan for the flop, every call is money you’re missing.',
+
   // Postflop: very strong hands
   monsterHeadline: 'Bet 70–100% of the pot (value)',
   monsterHolding: (name: string, eqPct: number) =>
@@ -387,6 +424,11 @@ export function preflopAdvice(
    *  eigene Range, sie ist weiter als die der Mitte und enger als die des
    *  Buttons. Ohne ihn gilt die grobe Einteilung aus `position`. */
   exakt?: Exclude<Position, 'BB'>,
+  /** Wer eröffnet hat und wo du sitzt, wenn beides bekannt ist (genau eine
+   *  Erhöhung vor dir): Dann antwortet die Tabelle „gegen ein Open“ statt der
+   *  groben Listen — AJo auf dem Button ist gegen UTG kein Call, gegen den
+   *  Cutoff schon (E-100). */
+  gegen?: { eroeffner: Position; selbst: Position },
 ): CoachAdvice {
   const t = TEXT[lang];
   const manyPlayers = playersAtTable >= 7;
@@ -424,6 +466,36 @@ export function preflopAdvice(
         manyPlayers ? t.openFoldManyPlayers : t.openFoldWait,
       ],
       lowStakes: t.openFoldLowStakes,
+    };
+  }
+
+  // Jemand hat bereits erhöht — und wir wissen, wer und von wo
+  const tabelle = gegen ? gegenOpen(label, gegen.eroeffner, gegen.selbst) : null;
+  if (gegen && tabelle) {
+    const { eroeffner, selbst } = gegen;
+    if (tabelle === 'threeBet') {
+      return {
+        action: 'raise',
+        headline: t.vsThreeBetHeadline,
+        reasons: [t.vsThreeBetInRange(label, eroeffner, selbst), t.vsThreeBetSize, t.vsThreeBetWhy],
+        lowStakes: t.premiumLowStakes,
+      };
+    }
+    if (tabelle === 'call') {
+      return {
+        action: 'call',
+        headline: t.vsCallHeadline,
+        reasons: [
+          t.vsCallInRange(label, eroeffner, selbst),
+          selbst === 'BB' ? t.vsCallBb : selbst === 'SB' ? t.vsCallSb : t.vsCallIp,
+        ],
+      };
+    }
+    const frueh = eroeffner === 'UTG' || eroeffner === 'HJ';
+    return {
+      action: 'fold',
+      headline: t.vsFoldHeadline,
+      reasons: [t.vsFoldOutOfRange(label, eroeffner, selbst), frueh ? t.vsFoldEarly : t.vsFoldLate],
     };
   }
 

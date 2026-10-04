@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T17:10:13.713Z",
+  "geprueft_am": "2026-10-04T19:05:25.771Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -44,7 +44,7 @@
         "letzte_stufe": "15 / 30",
         "zeitplan_mit_uhrzeit": true,
         "finale_satz": "Am Ende bleiben den letzten drei im Schnitt 21 Big Blinds — das trägt ein Finale.",
-        "plan_ende": "Ende gegen 20:08"
+        "plan_ende": "Ende gegen 22:03"
       },
       "uebersprungen": false
     },
@@ -179,7 +179,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 874,
+        "dauer_ms": 896,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -649,13 +649,13 @@
       "ergebnis": {
         "fehlschlag": {
           "urteil": "Noch nicht bestanden",
-          "punkte": "2 von 5 richtig",
+          "punkte": "0 von 5 richtig",
           "kacheln": [
-            "2/5dein Ergebnis",
+            "0/5dein Ergebnis",
             "4/5zum Bestehen"
           ],
-          "falsch_liste": 3,
-          "in_wiederholung": 3,
+          "falsch_liste": 5,
+          "in_wiederholung": 5,
           "knoepfe": [
             "Fehler nochmal üben",
             "Quiz noch einmal von vorn"
@@ -666,19 +666,19 @@
         "xp_nach_fehlschlag": 0,
         "lektion_fertig_nach_fehlschlag": false,
         "versucht_gemerkt": {
-          "bestScore": 2,
+          "bestScore": 0,
           "total": 5,
           "tries": 1,
-          "lastAt": "2026-10-04T17:09:08.315Z"
+          "lastAt": "2026-10-04T19:04:16.572Z"
         },
         "abzeichen_nach_fehlschlag": [],
-        "wiederholung_nach_fehlschlag": 3,
+        "wiederholung_nach_fehlschlag": 5,
         "modul_zeile": {
           "klassen": [
             "lektion",
             "dran"
           ],
-          "meta": "ca. 9 Min. · 5 Quizfragen · Quiz: 2/5",
+          "meta": "ca. 9 Min. · 5 Quizfragen · Quiz: 0/5",
           "hinweis": "Noch einmal"
         },
         "uebung": {
@@ -818,8 +818,8 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | Serie | – | Treffer | 0 | Beste",
-        "nach_zwei": "1 | Rekord! | 50 % | Treffer | 1 | Beste",
-        "nach_neuladen": "1 | Rekord! | 50 % | Treffer | 1 | Beste",
+        "nach_zwei": "0 | Serie | 50 % | Treffer | 1 | Beste",
+        "nach_neuladen": "0 | Serie | 50 % | Treffer | 1 | Beste",
         "quote_bleibt": true,
         "quote_nach_zwei": "50 %",
         "ohne_versuche_kein_prozent": true,
@@ -830,12 +830,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 41,
+        "dauer_ms": 33,
         "knopf_bewegt_px": 0,
         "oben": 749,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "24,1 %",
+        "ergebnis_text": "27,8 %",
         "uebergang": "0s",
         "belebung": "none"
       },
@@ -980,13 +980,13 @@
             "status_vorher": "Du bist dran",
             "wahl": {
               "vorgaben": [
-                "2,5×9",
-                "3×10,5",
-                "4×14",
+                "2,5",
+                "3",
+                "4",
                 "All-in100"
               ],
               "alle_im_bild": true,
-              "bestaetigen": "Raise auf 10,5",
+              "bestaetigen": "Raise auf 3",
               "leiste": {
                 "oben": 466,
                 "unten": 667
@@ -994,14 +994,14 @@
               "schild_unten": 475,
               "karten_unten": 439
             },
-            "mehr": "Raise auf 11,5",
-            "wieder_weniger": "Raise auf 10,5",
+            "mehr": "Raise auf 3,5",
+            "wieder_weniger": "Raise auf 3",
             "noch_nicht_gesetzt": true,
             "danach": {
               "status": "Anna überlegt …",
               "gesperrte_knoepfe": 3,
               "urteil": [
-                "≈\nVertretbar"
+                "Fehler"
               ]
             }
           },
@@ -1082,13 +1082,13 @@
             "status_vorher": "Du bist dran",
             "wahl": {
               "vorgaben": [
-                "2,5×9",
-                "3×10,5",
-                "4×14",
+                "2,5",
+                "3",
+                "4",
                 "All-in100"
               ],
               "alle_im_bild": true,
-              "bestaetigen": "Raise auf 10,5",
+              "bestaetigen": "Raise auf 3",
               "leiste": {
                 "oben": 621,
                 "unten": 822
@@ -1096,21 +1096,21 @@
               "schild_unten": 564,
               "karten_unten": 528
             },
-            "mehr": "Raise auf 11,5",
-            "wieder_weniger": "Raise auf 10,5",
+            "mehr": "Raise auf 3,5",
+            "wieder_weniger": "Raise auf 3",
             "noch_nicht_gesetzt": true,
             "danach": {
               "status": "Anna überlegt …",
               "gesperrte_knoepfe": 3,
               "urteil": [
-                "≈\nVertretbar"
+                "Fehler"
               ]
             }
           }
         },
         "fold": {
           "status_nach_fold": "Du hast gefoldet",
-          "dauer_ms": 44
+          "dauer_ms": 158
         }
       },
       "uebersprungen": false
@@ -1302,8 +1302,8 @@
         "ergebnis": {
           "balken": 2,
           "prozent": [
-            "27,2 %",
-            "72,8 %"
+            "26,7 %",
+            "73,3 %"
           ]
         },
         "hand3_aus_text": 2,
@@ -1515,6 +1515,95 @@
         },
         "nach_rueckgaengig": 1,
         "nach_ablauf_und_neuladen": 0
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Range-Viewer: gegen ein Open mit drei Farben, der Eröffner sitzt vor dir",
+      "ergebnis": {
+        "start": {
+          "titel": "BB gegen das Open von BTN",
+          "anteil": "3-Bet 6 % · Call 38 %",
+          "legende": [
+            "3-Bet",
+            "Call",
+            "Fold"
+          ],
+          "eroeffner": [
+            "UTG",
+            "HJ",
+            "CO",
+            "BTN",
+            "SB"
+          ],
+          "quelle": true,
+          "breit": 0
+        },
+        "button": {
+          "titel": "BTN gegen das Open von CO",
+          "anteil": "3-Bet 6 % · Call 12 %",
+          "legende": [
+            "3-Bet",
+            "Call",
+            "Fold"
+          ],
+          "eroeffner": [
+            "UTG",
+            "HJ",
+            "CO"
+          ],
+          "quelle": true,
+          "breit": 0
+        },
+        "ajo_gegen_co": "AJo · Call",
+        "ajo_gegen_utg": "AJo · Fold"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Preflop-Trainer: der Spot „vs. Open“ fragt nach Platz und Eröffner",
+      "ergebnis": {
+        "davor": {
+          "gedrueckt": "vs. Openneu",
+          "frage": "Du sitzt auf SB. UTG eröffnet auf 2,5bb, alle dazwischen folden.",
+          "knoepfe": [
+            "Fold",
+            "Call",
+            "3-Bet"
+          ],
+          "chips": 7,
+          "breit": 0
+        },
+        "danach": {
+          "urteil": "Richtig32o gehört gegen das Open von UTG in die Fold-Range. Aus dem Small Blind bist du nach dem Flop immer zuerst dran: Mitgehen ist teuer,",
+          "zellen_call": 6,
+          "zellen_3bet": 8,
+          "weiter": [
+            "Nächste Hand"
+          ]
+        }
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Live-Coach: nach dem Raise fragt er, von wo er kam",
+      "ergebnis": {
+        "ohne_raise": null,
+        "spaet": [
+          "Weiß ich nicht",
+          "UTG",
+          "HJ",
+          "CO"
+        ],
+        "blinds": [
+          "Weiß ich nicht",
+          "UTG",
+          "HJ",
+          "CO",
+          "BTN",
+          "SB"
+        ],
+        "frueh": null
       },
       "uebersprungen": false
     }

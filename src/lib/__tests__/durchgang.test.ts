@@ -1934,3 +1934,53 @@ describe('Modultest: „Kenne ich schon“ (E-097)', () => {
     expect(scheitern().wiederholt_bei).toBe('1/8');
   });
 });
+
+describe('Preflop gegen eine Erhöhung (E-100)', () => {
+  const viewer = () => schritt('Range-Viewer: gegen ein Open mit drei Farben, der Eröffner sitzt vor dir');
+  const trainer = () => schritt('Preflop-Trainer: der Spot „vs. Open“ fragt nach Platz und Eröffner');
+  const coach = () => schritt('Live-Coach: nach dem Raise fragt er, von wo er kam');
+
+  it('zeigt im Range-Viewer drei Farben: 3-Bet, Call, Fold', () => {
+    const s = viewer().start as Record<string, unknown>;
+    expect(s.legende).toEqual(['3-Bet', 'Call', 'Fold']);
+    expect(s.titel).toBe('BB gegen das Open von BTN');
+  });
+
+  it('bietet als Eröffner nur Plätze vor dir an', () => {
+    expect((viewer().start as Record<string, unknown>).eroeffner).toEqual(['UTG', 'HJ', 'CO', 'BTN', 'SB']);
+    expect((viewer().button as Record<string, unknown>).eroeffner).toEqual(['UTG', 'HJ', 'CO']);
+  });
+
+  it('sagt dazu, woher die Tabelle kommt, und läuft am Handy nicht über', () => {
+    expect((viewer().start as Record<string, unknown>).quelle).toBe(true);
+    expect((viewer().start as Record<string, unknown>).breit).toBeLessThanOrEqual(0);
+    expect((viewer().button as Record<string, unknown>).breit).toBeLessThanOrEqual(0);
+  });
+
+  it('antwortet auf AJo je nach Eröffner anders (das war der Fehler)', () => {
+    expect(viewer().ajo_gegen_co).toBe('AJo · Call');
+    expect(viewer().ajo_gegen_utg).toBe('AJo · Fold');
+  });
+
+  it('übt im Trainer „vs. Open“ mit Fold, Call und 3-Bet, ohne dass die Seite breiter wird', () => {
+    const d = trainer().davor as Record<string, unknown>;
+    expect(d.knoepfe).toEqual(['Fold', 'Call', '3-Bet']);
+    expect(d.chips).toBe(7);
+    expect(d.breit).toBeLessThanOrEqual(0);
+    expect(String(d.frage)).toMatch(/^Du sitzt auf (HJ|CO|BTN|SB|BB)\. (UTG|HJ|CO|BTN|SB) eröffnet auf 2,5bb/);
+  });
+
+  it('zeigt nach der Antwort die Range in drei Farben', () => {
+    const n = trainer().danach as Record<string, unknown>;
+    expect(Number(n.zellen_call)).toBeGreaterThan(0);
+    expect(Number(n.zellen_3bet)).toBeGreaterThan(0);
+    expect(String(n.urteil)).toMatch(/gehört gegen das Open von/);
+  });
+
+  it('fragt den Live-Coach nach dem Eröffner, sobald schon ein Raise da war — und nur dort, wo es einen geben kann', () => {
+    expect(coach().ohne_raise).toBeNull();
+    expect(coach().spaet).toEqual(['Weiß ich nicht', 'UTG', 'HJ', 'CO']);
+    expect(coach().blinds).toEqual(['Weiß ich nicht', 'UTG', 'HJ', 'CO', 'BTN', 'SB']);
+    expect(coach().frueh, 'wer früh sitzt, kann keinem früheren antworten').toBeNull();
+  });
+});

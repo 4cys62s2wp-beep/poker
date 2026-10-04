@@ -51,7 +51,7 @@ Kernaussagen → Quiz (4–6 Fragen). Abschluss bringt XP; das beste Quiz-Ergebn
 | Trainer | Trainiert | Mechanik |
 |---|---|---|
 | Szenario-Trainer | Komplette Spots | 24 handgeschriebene Situationen, jede Option einzeln bewertet und erklärt |
-| Preflop-Trainer | Ranges nach Position | Zufällige Hand + Situation (RFI / BB-Defense), Antwort vs. Chart, Matrix-Anzeige |
+| Preflop-Trainer | Ranges nach Position | Zufällige Hand + Situation (RFI / BB-Defense / gegen ein Open je Platzpaar), Antwort vs. Chart, Matrix-Anzeige |
 | Pot-Odds-Trainer | Benötigte Equity | Zufälliger Pot & Bet, Multiple Choice, Rechenweg als Erklärung |
 | Equity-Schätzer | Matchup-Gefühl | Hand vs. Hand (+Board), Schätzung per Slider, Monte-Carlo-Auflösung |
 | Handranking-Trainer | Handlesen | 7 Karten, beste Hand erkennen |

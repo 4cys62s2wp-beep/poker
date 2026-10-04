@@ -5617,3 +5617,54 @@ ausgeschaltete Monetarisierung (heutiger Zustand), die Hinweise bei 3, 1, 6 und 
   nur selbst irgendwohin schicken lassen; die Funktion ist noch nicht ausgeliefert (E-001), die Prüfung gehört zu ihrem Deploy.
 - **Der Hinweis auch im Profil oder in der Kopfzeile:** Die Kopfzeile trägt schon „Pro-Test: n Tage“; ein zweiter Ort für denselben
   Satz wäre der Lärm, den der Hinweis vermeiden will.
+
+## E-100 · 2026-10-04 · Preflop gegen eine Erhöhung: Fold, Call oder 3-Bet nach Platzpaar
+
+**Stand:** entschieden und umgesetzt (Lücke „Preflop gegen eine Erhöhung“).
+
+**Was fehlte.** Die häufigste und teuerste Preflop-Entscheidung von Anfängern ist die Antwort auf ein Open. Die App kannte nur
+Eröffnungs-Ranges und eine einzige Verteidigung (Big Blind gegen den Button). Hatte jemand erhöht, entschied `preflopAdvice` über
+positionsunabhängige Listen (`PREMIUM`, `STRONG`, `SETMINE`): AJo auf dem Button bekam gegen ein UTG-Open denselben Rat wie gegen
+ein Open aus dem Cutoff. Die Legendenfarbe „Call“ kam dadurch fast nirgends vor.
+
+**Die Tabelle.** `content/vsopen.ts` hat **15 Platzpaare**: jeder Platz gegen jeden Eröffner vor ihm (HJ gegen UTG; CO gegen UTG, HJ;
+BTN gegen UTG, HJ, CO; SB gegen UTG, HJ, CO, BTN; BB gegen UTG, HJ, CO, BTN, SB), je mit 3-Bet- und Call-Range (6-max, 100 bb,
+Open auf 2,5 bb, genau eine Erhöhung vor dir; bei Überschneidung gewinnt die 3-Bet). Gegen den Button verteidigt der Big Blind wie
+bisher (`BB_DEFENSE_VS_BTN`, ein Test hält die Gleichheit fest).
+
+**Herkunft, ehrlich — und warum nicht `npm run daten`.** Der Fahrplan wollte die Tabelle in `tools/poker-math` erzeugen und mit
+„Warum diese Zahl“ ausliefern (E-020). Das geht nicht ehrlich: Das Werkzeug zählt Dinge, die man zählen kann (Outs, Equity gegen
+eine Hand); ein Gleichgewicht für Ranges müsste ein Solver liefern, und den gibt es hier nicht. Eine Tabelle durch den Datenweg zu
+schicken, würde ihr eine Herkunft ausstellen, die sie nicht hat — genau der Fehler, gegen den die Herkunftsanzeige gebaut ist.
+Deshalb steht die Tabelle **als das, was sie ist**: von Hand aus gängigen Faustregeln zusammengestellt, vereinfacht, keine
+Solver-Lösung. Der Satz steht in der Datei (`VSOPEN_QUELLE`, beide Sprachen), im Range-Viewer unter der Matrix und im Test.
+
+**Was trotzdem prüfbar ist (`vsopen.test.ts`).** Eine von Hand geschriebene Tabelle kann nicht „stimmen“, aber sie kann in sich
+stimmig sein: (1) **Wer gegen einen späteren Eröffner verteidigt, spielt nie enger** — jede Hand, die gegen UTG weitergeht, geht
+gegen HJ, CO und BTN auch weiter, je Platz geprüft; (2) die **3-Bet-Range wächst** mit; (3) 3-Bet und Call **überschneiden sich
+nicht**; (4) die 3-Bet-Anteile liegen zwischen 2,5 und 10 %, kein Weiterspielen über 70 %; (5) in Position verteidigt niemand
+weiter, als der Eröffner öffnet. Beim ersten Lauf hielten alle Ketten; die Grenzen (2,5 statt 3 %) standen zu eng gesetzt und
+wurden an die Daten angepasst, nicht umgekehrt. **Regressionstest:** AJo auf dem Button ist gegen UTG ein Fold, gegen den Cutoff
+ein Call — in Tabelle, Trainer-Logik und Coach.
+
+**Wo es wirkt.**
+- **Range-Viewer:** Segment „Erstes Open | Gegen ein Open“; dort „Du sitzt auf“ (HJ bis BB) und „Eröffnet hat“ (nur Plätze vor dir
+  — wechselst du den Platz und der Eröffner passt nicht mehr, gilt der späteste mögliche); die Matrix in drei Farben (3-Bet, Call,
+  Fold, die Range-Token), darüber „3-Bet 6 % · Call 12 %“ und ein Satz, der Platz und Eröffner erklärt. Der Reiter „BB vs. BTN“ ist
+  darin aufgegangen.
+- **Preflop-Trainer:** ein Spot „vs. Open“ neben den sechs bisherigen (eigene Trefferquote). Ein zufälliges Paar, eine Hand aus der
+  Nähe der Grenze seiner Range (E-093), Fold · Call · 3-Bet; danach die Range in drei Farben und der Grund in einem Satz.
+- **Coach am Tisch:** `eroeffnerVorDir` liest aus dem Verlauf, wer vor dir eröffnet hat — **genau eine** Erhöhung; bei einer 3-Bet
+  gibt es keine Tabelle, und die groben Listen gelten weiter. Der Rat kommt aus der Tabelle (3-Bet / Call / Fold, mit Platz und
+  Eröffner in der Begründung). Er bleibt ein Rat und ist nicht „klar“: Eine Abweichung heißt nie „Fehler“ (E-093).
+- **Coach unter „Nachschlagen“:** nach „Schon ein Raise“ die Frage „Von wo kam der Raise?“ (Weiß ich nicht · die Plätze vor dir). Wer
+  „Früh“ sitzt, bekommt sie nicht: Er kann keinem früheren antworten. „Weiß ich nicht“ ist die Voreinstellung und ändert nichts am
+  bisherigen Rat — die alten Listen bleiben genau dafür.
+
+**Nicht umgesetzt, mit Grund:**
+- **Die Bots spielen nach der Tabelle:** Sie nutzen weiter ihre Eröffnungs-Ranges; ihr Verhalten ändert Tests und Spielgefühl, und die
+  Tabelle ist ein Lehrmittel, kein Gegner-Modell.
+- **Ranges gegen 3-Bets, Limper und Squeezes:** eigene Tabellen, eigene Herkunftsfrage; zwei Erhöhungen vor dir lassen den Coach
+  bei den groben Listen.
+- **Eine zweite Sprachfassung der Range-Namen („Hijack“ …):** Die Plätze stehen als UTG · HJ · CO · BTN · SB · BB, wie überall.
+- **Die Tabelle in `tools/poker-math` erzeugen:** siehe oben — sie bekäme eine Herkunft, die sie nicht hat.

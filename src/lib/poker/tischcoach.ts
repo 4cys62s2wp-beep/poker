@@ -65,6 +65,19 @@ export function limperVorDir(g: GameState, seat: number): number {
 }
 
 /**
+ * Wer hat vor dir eröffnet — wenn es genau eine Erhöhung gab? Bei zwei oder
+ * mehr (3-Bet, 4-Bet) gibt es keine Tabelle; dann bleibt es bei den groben Listen.
+ */
+export function eroeffnerVorDir(g: GameState): Position | null {
+  const erhoehungen = g.log.filter(
+    (e) => e.street === 'preflop' && (e.aktion?.art === 'raise' || e.aktion?.art === 'bet') && e.playerId !== undefined,
+  );
+  if (erhoehungen.length !== 1) return null;
+  const sitz = g.players.findIndex((p) => p.id === erhoehungen[0].playerId);
+  return sitz <= 0 ? null : positionOf(g, sitz);
+}
+
+/**
  * Der Rat für den Spieler am Zug (immer Sitz 0, der Mensch).
  * `equity` ist die geschätzte Equity gegen die verbliebenen Gegner (0–1) und
  * wird erst ab dem Flop gebraucht; fehlt sie dort, gibt es keinen Rat.
@@ -82,8 +95,10 @@ export function coachForTable(g: GameState, equity: number | null, lang: CoachLa
     const geoeffnet = g.currentBet > g.bigBlind;
     const label = handLabel(hero.cards[0], hero.cards[1]);
     const exakt = pos === 'BB' ? undefined : pos;
+    const eroeffner = geoeffnet ? eroeffnerVorDir(g) : null;
     const advice = preflopAdvice(
       label, coachPosition(pos), g.players.length, geoeffnet, geoeffnet ? 0 : limperVorDir(g, 0), lang, exakt,
+      eroeffner ? { eroeffner, selbst: pos } : undefined,
     );
     let empfehlung: TischAktion;
     switch (advice.action) {

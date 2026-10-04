@@ -2602,6 +2602,90 @@ await schritt('Bankroll: Liste vor dem Formular, Löschen mit Rückgängig', asy
   };
 });
 
+await schritt('Range-Viewer: gegen ein Open mit drei Farben, der Eröffner sitzt vor dir', async () => {
+  const k = await neuerKontext(390, 844);
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/nachschlagen/ranges`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.matrix .cell');
+  await p.getByRole('radio', { name: 'Gegen ein Open' }).click();
+  await p.waitForTimeout(250);
+  const lesen = () => p.evaluate(() => {
+    const gruppen = [...document.querySelectorAll('.range-wahl')];
+    return {
+      titel: document.querySelector('.range-titel')?.textContent?.trim(),
+      anteil: document.querySelector('main .card .pill.gold')?.textContent?.trim(),
+      legende: [...document.querySelectorAll('.range-legende > span')].map((e) => e.textContent.trim()),
+      eroeffner: gruppen[1] ? [...gruppen[1].querySelectorAll('button')].map((b) => b.textContent.trim()) : [],
+      quelle: document.body.innerText.includes('keine Solver-Lösung'),
+      breit: document.documentElement.scrollWidth - window.innerWidth,
+    };
+  });
+  const start = await lesen();
+  await p.locator('.range-wahl').first().getByRole('button', { name: 'BTN', exact: true }).click();
+  await p.waitForTimeout(150);
+  const button = await lesen();
+  const auskunft = async (eroeffner) => {
+    await p.locator('.range-wahl').nth(1).getByRole('button', { name: eroeffner, exact: true }).click();
+    await p.waitForTimeout(120);
+    await p.locator('.matrix button[title="AJo"]').click();
+    await p.waitForTimeout(120);
+    return (await p.locator('.auskunft-zeile').innerText()).trim();
+  };
+  const ajo_gegen_co = await auskunft('CO');
+  const ajo_gegen_utg = await auskunft('UTG');
+  await k.close();
+  return { start, button, ajo_gegen_co, ajo_gegen_utg };
+});
+
+await schritt('Preflop-Trainer: der Spot „vs. Open“ fragt nach Platz und Eröffner', async () => {
+  const k = await neuerKontext(390, 844);
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/lernen/trainer/preflop`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.spot-chip');
+  await p.locator('.spot-chip', { hasText: 'vs. Open' }).click();
+  await p.waitForTimeout(250);
+  const davor = await p.evaluate(() => ({
+    gedrueckt: document.querySelector('.spot-chip[aria-pressed="true"]')?.textContent?.trim(),
+    frage: document.querySelector('main .card p')?.textContent?.trim(),
+    knoepfe: [...document.querySelectorAll('.entscheidung button')].map((b) => b.textContent.trim()),
+    chips: document.querySelectorAll('.spot-chip').length,
+    breit: document.documentElement.scrollWidth - window.innerWidth,
+  }));
+  await p.locator('.entscheidung button', { hasText: 'Fold' }).click();
+  await p.waitForTimeout(250);
+  const danach = await p.evaluate(() => ({
+    urteil: document.querySelector('main .card .rueckmeldung, main .card [role="status"]')?.textContent?.replace(/\s+/g, ' ').trim().slice(0, 140),
+    zellen_call: document.querySelectorAll('.matrix .cell.call').length,
+    zellen_3bet: document.querySelectorAll('.matrix .cell.raise').length,
+    weiter: [...document.querySelectorAll('.entscheidung button')].map((b) => b.textContent.trim()),
+  }));
+  await k.close();
+  return { davor, danach };
+});
+
+await schritt('Live-Coach: nach dem Raise fragt er, von wo er kam', async () => {
+  const k = await neuerKontext(390, 844);
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/nachschlagen/coach`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.segmented.raster');
+  const wahl = () => p.evaluate(() => {
+    const gruppe = document.querySelector('.coach-wahl');
+    return gruppe ? [...gruppe.querySelectorAll('button')].map((b) => b.textContent.trim()) : null;
+  });
+  const ohne_raise = await wahl();
+  await p.getByRole('button', { name: 'Schon ein Raise' }).click();
+  await p.waitForTimeout(150);
+  const spaet = await wahl();
+  await p.getByRole('button', { name: 'Blinds', exact: true }).click();
+  await p.waitForTimeout(150);
+  const blinds = await wahl();
+  await p.getByRole('button', { name: 'Früh', exact: true }).click();
+  await p.waitForTimeout(150);
+  const frueh = await wahl();
+  await k.close();
+  return { ohne_raise, spaet, blinds, frueh };
+});
+
 await browser.close();
 
 const ergebnis = {

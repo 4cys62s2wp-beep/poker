@@ -14,6 +14,8 @@ export const STR = defineStrings(
     noRaiseYet: 'Noch kein Raise',
     someoneRaised: 'Schon ein Raise',
     limpersQuestion: 'Wie viele sind nur mitgegangen (Limper)?',
+    raiserQuestion: 'Von wo kam der Raise?',
+    raiserUnknown: 'Weiß ich nicht',
     toHand: 'Weiter: Hand eingeben',
     setupNote:
       'Hinweis: Gedacht für private Runden und fürs Training. In Casinos und Cardrooms ist Handy-Hilfe am Tisch nicht erlaubt – dort bleibt das Handy in der Tasche.',
@@ -77,6 +79,8 @@ export const STR = defineStrings(
     noRaiseYet: 'No raise yet',
     someoneRaised: 'Someone has raised',
     limpersQuestion: 'How many players just limped in?',
+    raiserQuestion: 'Where did the raise come from?',
+    raiserUnknown: 'Don’t know',
     toHand: 'Next: enter your hand',
     setupNote:
       'Note: Meant for home games and practice. Phone assistance at the table is not allowed in casinos and cardrooms – keep the app in your pocket there.',

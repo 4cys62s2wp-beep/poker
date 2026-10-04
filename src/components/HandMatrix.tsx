@@ -5,9 +5,9 @@ import { STR } from '../i18n/pages/handmatrix';
 
 interface Props {
   /** Labels, die als "Raise" markiert werden (Gold). */
-  raise?: Set<string>;
+  raise?: ReadonlySet<string>;
   /** Labels, die als "Call" markiert werden (Grün). */
-  call?: Set<string>;
+  call?: ReadonlySet<string>;
   /** Ein Label hervorheben (z. B. die aktuelle Trainingshand). */
   highlight?: string;
   onCellClick?: (label: string) => void;

@@ -14,7 +14,7 @@ export const STR = defineStrings(
       },
       preflop: {
         title: 'Preflop-Trainer',
-        desc: 'Raise oder Fold? Triff Preflop-Entscheidungen nach Position und vergleiche dich mit den Charts.',
+        desc: 'Raise oder Fold — und gegen ein Open: Fold, Call oder 3-Bet? Entscheide nach Position und vergleiche dich mit den Charts.',
       },
       potodds: {
         title: 'Pot-Odds-Trainer',
@@ -51,7 +51,7 @@ export const STR = defineStrings(
       },
       preflop: {
         title: 'Preflop Trainer',
-        desc: 'Raise or fold? Make preflop decisions by position and compare yourself against the charts.',
+        desc: 'Raise or fold — and facing an open: fold, call or 3-bet? Decide by position and compare yourself against the charts.',
       },
       potodds: {
         title: 'Pot Odds Trainer',

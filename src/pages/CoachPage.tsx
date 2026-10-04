@@ -18,6 +18,8 @@ import {
 } from '../lib/poker/coach';
 import { MC_ITERATIONS, runEquityJobs } from '../lib/poker/equityAsync';
 import { handLabel } from '../lib/poker/ranges';
+import { eroeffnerFuer } from '../lib/poker/vsopen';
+import type { Eroeffner, Verteidiger } from '../content/vsopen';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/coach';
 import { STR as PRO } from '../i18n/pages/pro';
@@ -42,6 +44,7 @@ export function CoachPage() {
   const [players, setPlayers] = useState(6);
   const [position, setPosition] = useState<CoachPosition>('spaet');
   const [raisedBefore, setRaisedBefore] = useState(false);
+  const [eroeffner, setEroeffner] = useState<Eroeffner | null>(null);
   const [limpers, setLimpers] = useState(0);
   const [hole, setHole] = useState<Card[]>([]);
   const [board, setBoard] = useState<Card[]>([]);
@@ -50,6 +53,15 @@ export function CoachPage() {
   const [betInput, setBetInput] = useState('');
 
   const used = useMemo(() => new Set<Card>([...hole, ...board]), [hole, board]);
+
+  /* Wo du sitzt, grob → welcher Platz am 6-max-Tisch gemeint ist (wie in der
+     Tabelle der Eröffnungen: Mitte = Hijack, Spät = Button, Blinds = Big Blind).
+     Wer „Früh“ sitzt, kann gegen keine frühere Erhöhung antworten. Mit dem
+     Platz des Eröffners antwortet der Coach nach der Tabelle „gegen ein Open“
+     (E-100) statt nach den groben Listen. */
+  const eigenerPlatz: Verteidiger | null = position === 'mitte' ? 'HJ' : position === 'spaet' ? 'BTN' : position === 'blinds' ? 'BB' : null;
+  const moegliche = eigenerPlatz ? eroeffnerFuer(eigenerPlatz) : [];
+  const eroeffnerAktiv = raisedBefore && eroeffner && moegliche.includes(eroeffner) ? eroeffner : null;
 
   /* Eine Nutzung = eine neue Hand, nicht jede Street. Ohne Monetarisierung
      liefert access() immer „allowed“ – dann verhält sich alles wie bisher. */
@@ -87,7 +99,10 @@ export function CoachPage() {
   const advice: CoachAdvice | null = useMemo(() => {
     if (hole.length < 2) return null;
     if (step === 'preflop') {
-      return preflopAdvice(handLabel(hole[0], hole[1]), position, players, raisedBefore, limpers, lang);
+      return preflopAdvice(
+        handLabel(hole[0], hole[1]), position, players, raisedBefore, limpers, lang, undefined,
+        eroeffnerAktiv && eigenerPlatz ? { eroeffner: eroeffnerAktiv, selbst: eigenerPlatz } : undefined,
+      );
     }
     if (step === 'flop' || step === 'turn' || step === 'river') {
       if (!equityReady) return null; // Empfehlung hängt an der Equity
@@ -96,7 +111,7 @@ export function CoachPage() {
       return postflopAdvice({ street: STREET_OF[step], made, draws, equity, opponents }, lang);
     }
     return null;
-  }, [step, hole, board, position, players, raisedBefore, limpers, equity, equityReady, opponents, lang]);
+  }, [step, hole, board, position, players, raisedBefore, limpers, eroeffnerAktiv, eigenerPlatz, equity, equityReady, opponents, lang]);
 
   const facing = useMemo(() => {
     const pot = zahlAusEingabe(potInput, lang);
@@ -177,6 +192,22 @@ export function CoachPage() {
               {L.someoneRaised}
             </button>
           </div>
+
+          {raisedBefore && moegliche.length > 0 && (
+            <>
+              <div className="stat-label satz coach-frage">{L.raiserQuestion}</div>
+              <div className="segmented coach-wahl" role="radiogroup" aria-label={L.raiserQuestion}>
+                <button type="button" role="radio" aria-checked={eroeffnerAktiv === null} className={eroeffnerAktiv === null ? 'on' : ''} onClick={() => setEroeffner(null)}>
+                  {L.raiserUnknown}
+                </button>
+                {moegliche.map((p) => (
+                  <button key={p} type="button" role="radio" aria-checked={eroeffnerAktiv === p} className={eroeffnerAktiv === p ? 'on' : ''} onClick={() => setEroeffner(p)}>
+                    {p}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
 
           {!raisedBefore && (
             <>

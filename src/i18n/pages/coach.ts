@@ -15,7 +15,7 @@ export const STR = defineStrings(
     noRaiseYet: 'Noch kein Raise',
     someoneRaised: 'Jemand hat erhöht',
     limpersQuestion: 'Wie viele sind nur mitgegangen (Limper)?',
-    toHand: 'Weiter: Hand eingeben →',
+    toHand: 'Weiter: Hand eingeben',
     setupNote:
       'Hinweis: Gedacht für private Runden und fürs Training. In Casinos und Cardrooms ist Handy-Hilfe am Tisch nicht erlaubt – dort bleibt die App in der Tasche.',
 
@@ -56,10 +56,10 @@ export const STR = defineStrings(
     betPlaceholder: 'Einsatz (z. B. 5)',
 
     // Buttons
-    playAnywayFlop: 'Ich spiele trotzdem – Flop eingeben →',
-    toFlop: 'Weiter: Flop eingeben →',
-    toTurn: 'Weiter: Turn →',
-    toRiver: 'Weiter: River →',
+    playAnywayFlop: 'Ich spiele trotzdem – Flop eingeben',
+    toFlop: 'Weiter: Flop eingeben',
+    toTurn: 'Weiter: Turn',
+    toRiver: 'Weiter: River',
     newHand: 'Neue Hand',
     changeSetup: 'Setup ändern',
 
@@ -79,7 +79,7 @@ export const STR = defineStrings(
     noRaiseYet: 'No raise yet',
     someoneRaised: 'Someone has raised',
     limpersQuestion: 'How many players just limped in?',
-    toHand: 'Next: enter your hand →',
+    toHand: 'Next: enter your hand',
     setupNote:
       'Note: Meant for home games and practice. Phone assistance at the table is not allowed in casinos and cardrooms – keep the app in your pocket there.',
 
@@ -120,10 +120,10 @@ export const STR = defineStrings(
     betPlaceholder: 'Bet (e.g. 5)',
 
     // Buttons
-    playAnywayFlop: "I’m playing anyway – enter the flop →",
-    toFlop: 'Next: enter the flop →',
-    toTurn: 'Next: Turn →',
-    toRiver: 'Next: River →',
+    playAnywayFlop: "I’m playing anyway – enter the flop",
+    toFlop: 'Next: enter the flop',
+    toTurn: 'Next: Turn',
+    toRiver: 'Next: River',
     newHand: 'New hand',
     changeSetup: 'Change setup',
 

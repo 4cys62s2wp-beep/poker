@@ -25,10 +25,8 @@ export const STR = defineStrings(
     turnLabel: 'Nur bis zum Turn',
     gapLabel: 'Abstand',
 
-    verdictYes: 'Der Call lohnt sich.',
-    verdictNo: 'Der Call lohnt sich nicht.',
-    right: 'Richtig',
-    wrong: 'Daneben',
+    verdictYes: 'Der Call lohnt sich',
+    verdictNo: 'Der Call lohnt sich nicht',
 
     closeNote: 'Hauchdünn. Wer hier anders entscheidet, entscheidet nicht falsch.',
     minOuts: (n: number) => `Ab ${n} Outs trägt sich dieser Einsatz.`,
@@ -87,10 +85,8 @@ export const STR = defineStrings(
     turnLabel: 'By the turn only',
     gapLabel: 'Margin',
 
-    verdictYes: 'The call is worth it.',
-    verdictNo: 'The call is not worth it.',
-    right: 'Right',
-    wrong: 'Missed',
+    verdictYes: 'The call is worth it',
+    verdictNo: 'The call is not worth it',
 
     closeNote: 'Wafer-thin. Deciding the other way here is not deciding wrongly.',
     minOuts: (n: number) => `From ${n} outs this bet pays for itself.`,

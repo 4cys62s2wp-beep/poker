@@ -81,6 +81,20 @@
   --breite-standard: 40rem;
   --breite-weit: 72rem;
 
+  /* ── Aktionsfarben ───────────────────────────────────────────────────
+     Raise, Call und Fold sehen in der Range-Matrix, in den Legenden der
+     Trainer und im Chart-Betrachter gleich aus — vorher standen dort drei
+     verschiedene Goldtöne und zwei Grüns, jede Legende mit ihrem eigenen.
+     In beiden Modi dieselben Werte: Die Matrix liegt auf einer eigenen
+     Fläche, und die Schrift darauf ist am dunklen Ende des Verlaufs
+     gerechnet (flaechen.test.ts). Fold ist keine Farbe, sondern die
+     Abwesenheit einer: die Fläche der leeren Zelle. */
+  --range-raise: linear-gradient(150deg, #d9b45b, #ac8734);
+  --range-raise-text: #1a1404;
+  --range-call: linear-gradient(150deg, #479a63, #3c8956);
+  --range-call-text: #000;
+  --range-fold: var(--veil-3);
+
   /* ── Schriftgrößen ───────────────────────────────────────────────────
      Eine Familie mit echten Gewichtsabstufungen statt drei Familien.
      --fs-stat ist bewusst groß UND leicht: Größe allein schlägt sonst in
@@ -966,6 +980,8 @@ button.pill {
    Fortschritt
    ========================================================================== */
 
+.platzhalter { color: var(--text-faint); font-variant-numeric: var(--ziffern); }
+
 .progressbar {
   height: 8px;
   border-radius: var(--radius-pill);
@@ -1209,7 +1225,7 @@ button.pill {
      dunkel, und das Ergebnis war dunkler Text auf dunklem Grund: 1,21 zu 1.
      Genau der Fehler aus E-034, an einer zweiten Stelle. Gefunden erst, als
      der Prüflauf auch Bildschirme außerhalb der Lektionen ansah (E-039). */
-  background: var(--veil-3);
+  background: var(--range-fold);
   color: var(--text-dim);
   border: 1px solid var(--border);
   /* Zellen sind <button> – Browser-Defaults zuruecksetzen, Optik bleibt gleich. */
@@ -1231,14 +1247,14 @@ button.pill {
    Ende des Verlaufs halten, nicht am hellen. Vorher 4,47 zu 1 — knapp
    darunter, und deshalb nie aufgefallen. */
 .matrix .cell.raise {
-  background: linear-gradient(150deg, #d9b45b, #ac8734);
-  color: #1a1404;
+  background: var(--range-raise);
+  color: var(--range-raise-text);
 }
 
 .matrix .cell.call {
   /* Dasselbe für Grün: am dunklen Ende gerechnet. */
-  background: linear-gradient(150deg, #479a63, #3c8956);
-  color: #000;
+  background: var(--range-call);
+  color: var(--range-call-text);
 }
 
 .matrix .cell.mark {
@@ -1389,6 +1405,31 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 
 .feedback-box.good { border-color: rgba(88, 179, 104, 0.5); background: var(--ok-dim); }
 .feedback-box.bad { border-color: rgba(224, 92, 85, 0.5); background: var(--danger-dim); }
+.feedback-box.warn { border-color: var(--auszeichnung-a40); background: var(--auszeichnung-schwach); }
+
+/* Das Urteil steht in einer eigenen Zeile über der Erklärung: Haken oder Kreuz
+   und das Wort. Die Form trägt die Aussage, die Farbe unterstützt sie (11.4). */
+.rueckmeldung-kopf {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-1);
+}
+
+/* Die Farbe hängt am Urteil, nicht am Umfeld — in der Karte, im Drill und im
+   Quiz dieselbe. */
+.rueckmeldung-kopf[data-urteil="richtig"] { color: var(--ok-lesbar); }
+.rueckmeldung-kopf[data-urteil="falsch"] { color: var(--danger-lesbar); }
+.rueckmeldung-kopf[data-urteil="knapp"] { color: var(--auszeichnung-lesbar); }
+
+.kachel-start {
+  display: inline-block;
+  margin-top: var(--sp-1);
+  color: var(--text);
+  font-weight: var(--fw-bold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 .big-stat {
   font-family: var(--font-display);
@@ -1519,8 +1560,10 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .coach-verdict.v-call .v-action { color: var(--ok-lesbar); }
 .coach-verdict.v-check { background: var(--info-dim); border-color: rgba(85, 144, 217, 0.4); }
 .coach-verdict.v-check .v-action { color: var(--info-lesbar); }
-.coach-verdict.v-fold { background: var(--danger-dim); border-color: rgba(224, 92, 85, 0.4); }
-.coach-verdict.v-fold .v-action { color: var(--danger-lesbar); }
+/* Fold ist keine Warnung: In der Matrix ist es die leere Zelle, hier die
+   leere Fläche. Rot bleibt dem vorbehalten, was falsch ist (Regel 12.8). */
+.coach-verdict.v-fold { background: var(--bg-elev); border-color: var(--border-strong); }
+.coach-verdict.v-fold .v-action { color: var(--text); }
 
 .step-dots {
   display: flex;
@@ -1909,6 +1952,11 @@ input[type="radio"] {
   margin-right: 5px;
 }
 
+/* Dieselben Werte wie die Zellen der Matrix — aus denselben Tokens. */
+.range-legend .sw.raise { background: var(--range-raise); }
+.range-legend .sw.call { background: var(--range-call); }
+.range-legend .sw.fold { background: var(--range-fold); border: 1px solid var(--border); }
+
 .sparkline { width: 100%; height: 130px; }
 
 .list-plain { list-style: none; }
@@ -2213,8 +2261,6 @@ input[type="radio"] {
 
 /* Eigene Töne für die Ergebnisstufe: --ok und --danger erreichen die
    geforderten 7 zu 1 nicht (siehe DESIGN.md, Abschnitt 2). */
-.drill-zahl.gut { color: var(--ergebnis-gut); }
-.drill-zahl.schlecht { color: var(--ergebnis-schlecht); }
 
 .drill-zahl-label {
   font-size: var(--fs-body);
@@ -2314,20 +2360,29 @@ input[type="radio"] {
   font-size: var(--fs-body);
 }
 
-.drill-urteil.gut strong { color: var(--ergebnis-gut); }
-.drill-urteil.schlecht strong { color: var(--ergebnis-schlecht); }
+/* Das Urteil über die Antwort: Zeichen und Wort stehen im Kopf, die Form trägt
+   die Aussage, die Farbe unterstützt sie (Regel 11.4, 12.7). */
 
-/* Zustand nicht nur an der Farbe: Rund jeder zwölfte Mann sieht Rot und Grün
-   nicht zuverlässig auseinander — ausgerechnet die beiden Farben, mit denen
-   man „richtig" und „falsch" gern anzeigt. Das Zeichen davor sagt es auch
-   ohne Farbe. */
-.drill-urteil strong::before {
-  margin-right: var(--sp-2);
+/* Was der Call wert ist, ist eine Aussage über die Lage und keine über die
+   Antwort — darum nie in Rot oder Grün des Urteils, sondern in den
+   Aktionsfarben: Call grün, Fold die leere Fläche (Regel 12.8). */
+.drill-lohnt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
   font-weight: var(--fw-bold);
+  font-size: var(--fs-beschriftung);
 }
 
-.drill-urteil.gut strong::before { content: '✓'; }
-.drill-urteil.schlecht strong::before { content: '✕'; }
+.drill-lohnt svg { width: 0.875rem; height: 0.875rem; }
+.drill-lohnt.ja { background: var(--range-call); color: var(--range-call-text); }
+.drill-lohnt.nein {
+  background: var(--range-fold);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+}
 
 /* Untereinander, nicht nebeneinander: Mit dem Herkunftszeichen passen beide
    Werte auf einem Handy nicht mehr in eine Zeile, und ein Umbruch mitten
@@ -2421,21 +2476,26 @@ input[type="radio"] {
   -webkit-tap-highlight-color: transparent;
 }
 
-.drill-knopf.ja {
-  border-color: rgba(88, 179, 104, 0.45);
-  color: var(--ok);
+/* Die Antwortknöpfe tragen die Aktionsfarben, nicht die des Urteils: „Lohnt
+   sich" ist ein Call (grün), „Lohnt nicht" ein Fold (die leere Fläche). Rot
+   hieße „falsch" — und das weiß man erst nach der Antwort (Regel 12.8). */
+.drill-knopf.ja,
+.heute-knopf.ja {
+  border-color: var(--ok);
+  color: var(--ok-lesbar);
 }
 
-.drill-knopf.nein {
-  border-color: rgba(224, 92, 85, 0.45);
-  color: var(--danger);
+.drill-knopf.nein,
+.heute-knopf.nein {
+  border-color: var(--border-strong);
+  color: var(--text);
 }
 
 .drill-knopf.weiter {
   width: 100%;
-  background: var(--auszeichnung);
-  border-color: var(--auszeichnung);
-  color: var(--auf-auszeichnung);
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
 }
 
 .drill-knopf:active {
@@ -2443,7 +2503,7 @@ input[type="radio"] {
 }
 
 .drill-knopf.weiter:active {
-  background: var(--auszeichnung-lesbar);
+  background: var(--text-dim);
 }
 
 .drill-stand {
@@ -4164,8 +4224,6 @@ input[type="radio"] {
 }
 
 .heute-knopf:active { background: var(--bg-card-hover); }
-.heute-knopf.ja { border-color: var(--ok); color: var(--ok-lesbar); }
-.heute-knopf.nein { border-color: var(--danger); color: var(--danger-lesbar); }
 
 /* ── Nach der Antwort ────────────────────────────────────────────────── */
 /* Die Auflösung kommt nicht einfach da hin, sie kommt an: ein kurzer
@@ -4775,21 +4833,6 @@ input[type="radio"] {
 }
 
 /* ── Frühere Abende ──────────────────────────────────────────────────── */
-
-.abende-leer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  align-items: flex-start;
-}
-
-.abende-knopf {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 var(--sp-5);
-  text-decoration: none;
-}
 
 .abende-namen {
   display: flex;

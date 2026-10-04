@@ -8,6 +8,7 @@ import { csvDatei } from '../../lib/export/csv';
 import { zahlAusEingabe } from '../../lib/eingabe/zahl';
 import { BackLink } from '../../components/ui';
 import { STR as NAV } from '../../i18n/pages/layout';
+import { Icon } from '../../components/Icon';
 
 function euro(n: number): string {
   return n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
@@ -214,7 +215,7 @@ export function BankrollTracker() {
                       {p >= 0 ? '+' : ''}{euro(p)}
                     </span>
                     <button className="btn sm ghost" onClick={() => deleteSession(s.id)} title={L.deleteTitle} aria-label={L.deleteAria}>
-                      ✕
+                      <Icon name="x" size={16} />
                     </button>
                   </div>
                 </div>

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { QuizQuestion } from '../content/types';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/quiz';
+import { Rueckmeldung } from './Rueckmeldung';
+import { Icon } from './Icon';
 
 interface Props {
   questions: QuizQuestion[];
@@ -65,7 +67,7 @@ export function QuizRunner({ questions, onFinish, onAnswer, onWrong }: Props) {
     <div>
       <div className="row between" style={{ marginBottom: 12 }}>
         <span className="pill gold">{L.question(index + 1, questions.length)}</span>
-        <span className="pill">{L.correctCount(score)}</span>
+        <span className="pill ok"><Icon name="check" size={14} /> {L.correctCount(score)}</span>
       </div>
       <div className="progressbar" style={{ marginBottom: 18 }}>
         <div style={{ width: `${(100 * index) / questions.length}%` }} />
@@ -92,10 +94,9 @@ export function QuizRunner({ questions, onFinish, onAnswer, onWrong }: Props) {
       })}
       {answered && (
         <>
-          <div className={`feedback-box ${selected === q.correctIndex ? 'good' : 'bad'}`} role="status" aria-live="polite">
-            <strong>{selected === q.correctIndex ? L.right : L.wrong}</strong>
+          <Rueckmeldung urteil={selected === q.correctIndex ? 'richtig' : 'falsch'}>
             {q.explanation}
-          </div>
+          </Rueckmeldung>
           <div style={{ marginTop: 14 }}>
             <button className="btn primary" onClick={next}>
               {isLast ? L.finish : L.next}

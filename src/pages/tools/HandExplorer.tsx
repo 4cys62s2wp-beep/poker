@@ -218,7 +218,16 @@ export function HandExplorer() {
             <div key={row.n} style={{ marginBottom: 10 }}>
               <div className="row between" style={{ marginBottom: 4 }}>
                 <span className="small muted">{row.label}</span>
-                <strong>{row.eq === undefined ? L.calculating : L.fmtPct(Math.round(row.eq * 100))}</strong>
+                {row.eq === undefined ? (
+                  /* Ein Platzhalter in Endhöhe statt eines Satzes: Die Zeile
+                     springt nicht, wenn die Zahl kommt. */
+                  <strong className="platzhalter" aria-busy="true">
+                    <span aria-hidden="true">–– %</span>
+                    <span className="sr-only">{L.calculating}</span>
+                  </strong>
+                ) : (
+                  <strong>{L.fmtPct(Math.round(row.eq * 100))}</strong>
+                )}
               </div>
               <div className="progressbar">
                 <div style={{ width: `${(row.eq ?? 0) * 100}%` }} />

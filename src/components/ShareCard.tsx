@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react';
 import qrcode from 'qrcode-generator';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/share';
+import { Icon } from './Icon';
 
 function appUrl(): string {
   return `${location.origin}${location.pathname}`;
@@ -78,7 +79,7 @@ export function ShareCard() {
             </button>
           )}
           <button className="btn sm" onClick={copy}>
-            {copied ? `✓ ${L.copied}` : L.copy}
+            {copied ? <><Icon name="check" size={14} /> {L.copied}</> : L.copy}
           </button>
         </div>
       </div>

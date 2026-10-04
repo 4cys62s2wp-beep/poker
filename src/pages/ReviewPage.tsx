@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
-import { BackLink } from '../components/ui';
+import { BackLink, EmptyState } from '../components/ui';
 import { Link } from 'react-router-dom';
 import type { QuizQuestion } from '../content/types';
 import { Icon } from '../components/Icon';
@@ -11,6 +11,7 @@ import { STR } from '../i18n/pages/review';
 import { STR as PRO_STR } from '../i18n/pages/pro';
 import { ProLock } from '../components/pro/ProLock';
 import { usePro } from '../lib/pro/ProProvider';
+import { Rueckmeldung } from '../components/Rueckmeldung';
 
 interface DueCard {
   item: ReviewItem;
@@ -93,30 +94,28 @@ export function ReviewPage() {
         </div>
       )}
 
-      {unlocked && !current && (
+      {unlocked && !current && data.reviews.length === 0 && (
+        <div style={{ maxWidth: 640 }}>
+          <EmptyState
+            icon={zeichenFuer('/lernen/wiederholen')}
+            title={L.emptyTitle}
+            body={L.emptyText}
+            actionLabel={L.toPath}
+            actionTo="/lernen"
+          />
+        </div>
+      )}
+
+      {unlocked && !current && data.reviews.length > 0 && (
         <div className="card" style={{ maxWidth: 640, textAlign: 'center', padding: 36 }}>
           <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
             <Icon name={zeichenFuer('/lernen/wiederholen')} size={38} />
           </div>
-          {data.reviews.length === 0 ? (
-            <>
-              <h2 style={{ fontSize: 'var(--fs-ueberschrift)', marginBottom: 8 }}>{L.emptyTitle}</h2>
-              <p className="muted small" style={{ maxWidth: 420, margin: '0 auto 16px' }}>
-                {L.emptyText}
-              </p>
-              <Link to="/lernen" className="btn primary">
-                {L.toPath}
-              </Link>
-            </>
-          ) : (
-            <>
-              <h2 style={{ fontSize: 'var(--fs-ueberschrift)', marginBottom: 8 }}>{L.allDoneTitle}</h2>
-              <p className="muted small">
-                {L.allDoneText}
-                {nextDue && <> {L.nextDueBefore} <strong>{nextDue}</strong>.</>}
-              </p>
-            </>
-          )}
+          <h2 style={{ fontSize: 'var(--fs-ueberschrift)', marginBottom: 8 }}>{L.allDoneTitle}</h2>
+          <p className="muted small">
+            {L.allDoneText}
+            {nextDue && <> {L.nextDueBefore} <strong>{nextDue}</strong>.</>}
+          </p>
         </div>
       )}
 
@@ -150,12 +149,9 @@ export function ReviewPage() {
             })}
             {answered && (
               <>
-                <div className={`feedback-box ${selected === current.question.correctIndex ? 'good' : 'bad'}`}>
-                  <strong>
-                    {selected === current.question.correctIndex ? L.correctLabel : L.wrongLabel}
-                  </strong>
+                <Rueckmeldung urteil={selected === current.question.correctIndex ? 'richtig' : 'falsch'}>
                   {current.question.explanation}
-                </div>
+                </Rueckmeldung>
                 <button className="btn primary" style={{ marginTop: 14 }} onClick={next}>
                   {dueCards.length > 1 ? L.nextCard : L.finish}
                 </button>

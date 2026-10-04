@@ -69,17 +69,17 @@ export function RangeViewer() {
 
         <div className="range-legend" style={{ marginBottom: 10 }}>
           <span>
-            <span className="sw" style={{ background: 'linear-gradient(150deg,#c9a44a,#a37f2e)' }} />
+            <span className="sw raise" />
             {view.raiseLabel}
           </span>
           {view.call && (
             <span>
-              <span className="sw" style={{ background: 'linear-gradient(150deg,#3f9a5c,#2e7a46)' }} />
+              <span className="sw call" />
               Call
             </span>
           )}
           <span>
-            <span className="sw" style={{ background: 'var(--bg-elev)', border: '1px solid var(--border)' }} />
+            <span className="sw fold" />
             Fold
           </span>
         </div>

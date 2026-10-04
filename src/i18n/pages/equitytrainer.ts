@@ -6,7 +6,6 @@ export const STR = defineStrings(
     title: 'Equity-Schätzer',
     sub: (tolerance: number) =>
       `Beide Hände offen · richtig ist alles innerhalb von ±${tolerance} Prozentpunkten`,
-    correctCount: (n: number) => `✓ ${n} richtig`,
     streak: (n: number) => `Serie: ${n}`,
     yourHand: 'Deine Hand',
     villain: 'Gegner',
@@ -17,19 +16,16 @@ export const STR = defineStrings(
     guessLabel: 'Deine Schätzung: Equity deiner Hand',
     pct: (n: number) => `${n} %`,
     reveal: 'Auflösen',
-    correctFb: '✓ Stark geschätzt! ',
-    wrongFb: '✗ Daneben. ',
     actualPrefix: 'Tatsächliche Equity: ',
     resultDetail: (guess: number, diff: number, villainEq: number) =>
       ` (deine Schätzung: ${guess} %, Abweichung ${diff} Punkte). Gegner: ${villainEq} %.`,
-    nextMatchup: 'Nächstes Matchup →',
+    nextMatchup: 'Nächstes Matchup',
   },
   {
     back: '← Trainers',
     title: 'Equity Estimator',
     sub: (tolerance: number) =>
       `Both hands face up · anything within ±${tolerance} percentage points counts`,
-    correctCount: (n: number) => `✓ ${n} correct`,
     streak: (n: number) => `Streak: ${n}`,
     yourHand: 'Your Hand',
     villain: 'Opponent',
@@ -40,11 +36,9 @@ export const STR = defineStrings(
     guessLabel: 'Your estimate: your hand’s equity',
     pct: (n: number) => `${n}%`,
     reveal: 'Reveal',
-    correctFb: '✓ Great read! ',
-    wrongFb: '✗ Off the mark. ',
     actualPrefix: 'Actual equity: ',
     resultDetail: (guess: number, diff: number, villainEq: number) =>
       ` (your estimate: ${guess}%, off by ${diff} points). Opponent: ${villainEq}%.`,
-    nextMatchup: 'Next Matchup →',
+    nextMatchup: 'Next Matchup',
   },
 );

@@ -216,7 +216,7 @@ export function StatPill({
  * dorthin. „Noch keine Daten" allein ist eine Sackgasse. (R7)
  */
 export function EmptyState({
-  icon, title, body, actionLabel, actionTo, onAction,
+  icon, title, body, actionLabel, actionTo, onAction, children,
 }: {
   icon: IconName;
   title: string;
@@ -224,6 +224,7 @@ export function EmptyState({
   actionLabel?: string;
   actionTo?: string;
   onAction?: () => void;
+  children?: ReactNode;
 }) {
   return (
     <div
@@ -239,6 +240,7 @@ export function EmptyState({
       </span>
       <div style={{ fontWeight: 'var(--fw-bold)', fontSize: 'var(--fs-h3)' }}>{title}</div>
       <p className="small muted" style={{ margin: 0, maxWidth: 380 }}>{body}</p>
+      {children}
       {actionLabel && actionTo && (
         <Link className="btn primary sm" to={actionTo} style={{ marginTop: 'var(--sp-2)' }}>
           {actionLabel}

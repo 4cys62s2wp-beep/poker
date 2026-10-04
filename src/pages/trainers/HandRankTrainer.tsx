@@ -8,6 +8,7 @@ import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/handranktrainer';
+import { Rueckmeldung } from '../../components/Rueckmeldung';
 
 interface Scenario {
   hole: number[];
@@ -86,10 +87,9 @@ export function HandRankTrainer() {
 
         {answered && (
           <>
-            <div className={`feedback-box ${selected === correctCategory ? 'good' : 'bad'}`}>
-              <strong>{selected === correctCategory ? L.correctFb : L.wrongFb}</strong>
+            <Rueckmeldung urteil={selected === correctCategory ? 'richtig' : 'falsch'}>
               {L.bestHandPrefix}<strong>{L.categories[correctCategory]}</strong>.
-            </div>
+            </Rueckmeldung>
           </>
         )}
       </div>

@@ -9,6 +9,7 @@ import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/prefloptrainer';
+import { Rueckmeldung } from '../../components/Rueckmeldung';
 
 type Scenario =
   | { kind: 'rfi'; position: (typeof RFI_CHARTS)[number]['position']; cards: [number, number]; label: string }
@@ -107,8 +108,7 @@ export function PreflopTrainer() {
 
         {answer && (
           <>
-            <div className={`feedback-box ${isCorrect ? 'good' : 'bad'}`} style={{ marginTop: 16 }}>
-              <strong>{isCorrect ? L.correctFb : L.wrongFb}</strong>
+            <Rueckmeldung urteil={isCorrect ? 'richtig' : 'falsch'} style={{ marginTop: 16 }}>
               {scenario.kind === 'rfi' ? (
                 <>
                   {L.rfiVerdict(scenario.label, correctAnswer === 'raise', scenario.position)} {L.rfiDesc[scenario.position]}
@@ -118,22 +118,22 @@ export function PreflopTrainer() {
                   {L.bbVerdict(scenario.label, correctAnswer)} {L.bbDefenseDesc}
                 </>
               )}
-            </div>
+            </Rueckmeldung>
 
             <div style={{ marginTop: 18 }}>
               <div className="range-legend" style={{ marginBottom: 10 }}>
                 <span>
-                  <span className="sw" style={{ background: 'linear-gradient(150deg,#c9a44a,#a37f2e)' }} />
+                  <span className="sw raise" />
                   {scenario.kind === 'rfi' ? 'Raise' : '3-Bet'}
                 </span>
                 {scenario.kind === 'bbdef' && (
                   <span>
-                    <span className="sw" style={{ background: 'linear-gradient(150deg,#3f9a5c,#2e7a46)' }} />
+                    <span className="sw call" />
                     Call
                   </span>
                 )}
                 <span>
-                  <span className="sw" style={{ background: 'var(--bg-elev)', border: '1px solid var(--border)' }} />
+                  <span className="sw fold" />
                   Fold
                 </span>
               </div>

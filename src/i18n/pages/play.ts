@@ -89,7 +89,7 @@ export const STR = defineStrings(
     foldedTag: 'Fold',
     winnerLine: (isHero: boolean, name: string, amount: number, handName?: string) =>
       `${isHero ? 'Du gewinnst' : `${name} gewinnt`} ${amount} Chips${handName ? ` mit ${handName}` : ''}`,
-    nextHand: 'Nächste Hand →',
+    nextHand: 'Nächste Hand',
 
     // Coach-Panel
     coachPill: 'Coach',
@@ -98,10 +98,10 @@ export const STR = defineStrings(
       `Pot Odds: ${call} in ${total} → brauchst ~${pct} %`,
     coachCurrent: (hand: string) => `Aktuell: ${hand}`,
     adviceCall:
-      '✓ Deine geschätzte Equity liegt über den benötigten Pot Odds – ein Call ist rechnerisch profitabel.',
+      'Deine geschätzte Equity liegt über den benötigten Pot Odds – ein Call ist rechnerisch profitabel.',
     adviceFold:
-      '✗ Deine geschätzte Equity liegt unter den Pot Odds – ohne zusätzliche Gründe (Implied Odds, Fold Equity) ist Folden besser.',
-    adviceClose: '≈ Knappe Entscheidung – hier entscheiden Reads, Position und Implied Odds.',
+      'Deine geschätzte Equity liegt unter den Pot Odds – ohne zusätzliche Gründe (Implied Odds, Fold Equity) ist Folden besser.',
+    adviceClose: 'Knappe Entscheidung – hier entscheiden Reads, Position und Implied Odds.',
     adviceNote: 'Hinweis: Equity vs. Zufallshände überschätzt dich gegen echte Ranges.',
 
     // Aktions-Buttons
@@ -179,7 +179,7 @@ export const STR = defineStrings(
     foldedTag: 'Fold',
     winnerLine: (isHero: boolean, name: string, amount: number, handName?: string) =>
       `${isHero ? 'You win' : `${name} wins`} ${amount} chips${handName ? ` with ${handName}` : ''}`,
-    nextHand: 'Next hand →',
+    nextHand: 'Next hand',
 
     // Coach panel
     coachPill: 'Coach',
@@ -189,9 +189,9 @@ export const STR = defineStrings(
       `Pot odds: ${call} into ${total} → you need ~${pct}%`,
     coachCurrent: (hand: string) => `Currently: ${hand}`,
     adviceCall:
-      '✓ Your estimated equity is above the required pot odds – a call is mathematically profitable.',
+      'Your estimated equity is above the required pot odds – a call is mathematically profitable.',
     adviceFold:
-      '✗ Your estimated equity is below the pot odds – without additional reasons (implied odds, fold equity) folding is better.',
+      'Your estimated equity is below the pot odds – without additional reasons (implied odds, fold equity) folding is better.',
     adviceClose: '≈ A close decision – reads, position and implied odds decide here.',
     adviceNote: 'Note: equity vs. random hands overestimates you against real ranges.',
 

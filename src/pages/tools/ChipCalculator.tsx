@@ -8,6 +8,7 @@ import { BackLink } from '../../components/ui';
 import { planChips, type ChipInput } from '../../lib/chips';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/chips';
+import { Icon } from '../../components/Icon';
 
 /* Die Anzeigenamen der Farben kommen sprachabhängig aus STR[lang].colorNames
    (gleiche Reihenfolge wie hier) – sie dienen nur als Vorbelegung neuer Zeilen. */
@@ -192,7 +193,7 @@ export function ChipCalculator() {
                   onClick={() => setRows((rs) => rs.filter((x) => x.id !== r.id))}
                   aria-label={L.removeAria(r.label)}
                 >
-                  ✕
+                  <Icon name="x" size={16} />
                 </button>
               )}
             </div>

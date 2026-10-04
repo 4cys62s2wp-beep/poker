@@ -26,6 +26,7 @@
 
 import { Link } from 'react-router-dom';
 import { CardsRow } from './PlayingCard';
+import { STR as URTEIL } from '../i18n/rueckmeldung';
 import { Icon } from './Icon';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/hub';
@@ -109,7 +110,7 @@ export function HeuteKarte({ hand, abdruck, antwort, woche, serie, onAntwort }: 
         <div className="heute-aufloesung" role="status">
           <p className={`urteil ${antwort.richtig ? 'gut' : 'schlecht'}`}>
             <Icon name={antwort.richtig ? 'check' : 'x'} size={18} />
-            {antwort.richtig ? L.heuteRichtig : L.heuteDaneben}
+            {URTEIL[lang][antwort.richtig ? 'richtig' : 'falsch']}
           </p>
           <p className="zahlen">
             {L.heuteGegen(alsProzent(aufloesung.equity, lang), alsProzent(aufloesung.noetig, lang))}

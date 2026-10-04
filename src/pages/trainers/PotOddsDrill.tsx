@@ -44,6 +44,8 @@ import { useAppState } from '../../state/AppState';
 import { Zahl } from '../../components/Herkunft';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/potoddsdrill';
+import { UrteilKopf } from '../../components/Rueckmeldung';
+import { Icon } from '../../components/Icon';
 import { ladeB1, ladeB2 } from '../../lib/pokermath/laden';
 import { t as sprachfassung, type B1Outs, type B2PotOdds } from '../../lib/pokermath/typen';
 import {
@@ -259,8 +261,12 @@ export function PotOddsDrill() {
             </>
           ) : (
             <>
+              {/* Die Zahl bleibt in der Textfarbe: Ihre Farbe sagte „lohnt sich“,
+                  das Urteil darunter sagt „richtig“ — ein rotes „27,8 %“ neben
+                  einem grünen „Richtig“ las sich wie ein Widerspruch. Was
+                  der Call wert ist, steht als Marke im Urteil. */}
               <Zahl
-                className={`drill-zahl${aufloesung.lohnt ? ' gut' : ' schlecht'}`}
+                className="drill-zahl"
                 wert={alsProzent(aufloesung.equity, lang)}
                 quelle={{ quellen: [{ pfad: aufloesung.pfade.equity, herkunft: daten.b1.herkunft }] }}
               />
@@ -317,9 +323,12 @@ export function PotOddsDrill() {
 
           {beantwortet && (
             <div className="drill-aufloesung">
-              <div className={`drill-urteil${richtig ? ' gut' : ' schlecht'}`}>
-                <strong>{richtig ? L.right : L.wrong}</strong>
-                <span>{aufloesung.lohnt ? L.verdictYes : L.verdictNo}</span>
+              <div className={`drill-urteil ${richtig ? 'gut' : aufloesung.grenzfall ? 'knapp' : 'schlecht'}`}>
+                <UrteilKopf urteil={richtig ? 'richtig' : aufloesung.grenzfall ? 'knapp' : 'falsch'} />
+                <span className={`drill-lohnt ${aufloesung.lohnt ? 'ja' : 'nein'}`}>
+                  <Icon name={aufloesung.lohnt ? 'check' : 'x'} />
+                  {aufloesung.lohnt ? L.verdictYes : L.verdictNo}
+                </span>
               </div>
               {/* Direkt unter das Urteil, nicht ans Ende: Wenn der Abstand
                   hauchdünn ist, gehört das zum Urteil dazu. Weiter unten

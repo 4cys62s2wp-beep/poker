@@ -12,7 +12,8 @@
 
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { PageHeader } from '../../components/ui';
+import { EmptyState, PageHeader } from '../../components/ui';
+import { zeichenFuer } from '../../lib/zeichen';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/abende';
 import { ladeAbende, spielerUebersicht } from '../../lib/session/abende';
@@ -32,13 +33,13 @@ export function AbendePage() {
       <div className="page">
         <PageHeader eyebrow={L.bereich} title={L.listeTitel} backTo="/session"
           backLabel={L.zurueckSession} />
-        <div className="abende-leer">
-          <p>{L.leerTitel}</p>
-          <p className="hinweis">{L.leerSub}</p>
-          <Link to="/session/live/einrichten" className="tisch-knopf haupt abende-knopf">
-            {L.abendEinrichten}
-          </Link>
-        </div>
+        <EmptyState
+          icon={zeichenFuer('/session/abende')}
+          title={L.leerTitel}
+          body={L.leerSub}
+          actionLabel={L.abendEinrichten}
+          actionTo="/session/live/einrichten"
+        />
       </div>
     );
   }

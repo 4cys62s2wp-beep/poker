@@ -17,7 +17,7 @@ export const STR = defineStrings(
     /* Kein Prozentwert ohne Versuche: „0 %" nach null Aufgaben ist keine
        Auskunft, sondern ein Vorwurf. */
     ohneQuote: '–',
-    neuerRekord: 'Neue Bestserie',
+    neuerRekord: 'Rekord',
   },
   {
     serie: 'Streak',
@@ -28,6 +28,6 @@ export const STR = defineStrings(
     besteRing: (n: number) => `Best streak: ${n}`,
     nochNichts: 'Nothing yet',
     ohneQuote: '–',
-    neuerRekord: 'New best streak',
+    neuerRekord: 'Record',
   },
 );

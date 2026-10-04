@@ -86,7 +86,7 @@ export function UpgradePage() {
       {pro ? (
         <div className="card" style={{ maxWidth: 560, marginBottom: 22, borderColor: 'rgba(88,179,104,0.32)' }}>
           <div className="row" style={{ marginBottom: 10 }}>
-            <span className="pill ok">✓ {L.proBadge}</span>
+            <span className="pill ok"><Icon name="check" size={13} /> {L.proBadge}</span>
           </div>
           <div className="row wrap">
             <button className="btn sm" type="button" disabled={busy} onClick={() => void manage()}>

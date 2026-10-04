@@ -4559,3 +4559,51 @@ Gemessen: Design (182), Bedienbar (180), Daumen, Durchgang — null Befunde.
 `zeichen.test.ts` hält es fest (11 Prüfungen); drei davon mit Gegenprobe rot
 gesehen (doppeltes Symbol, Symbol neben dem Ziel, 🎰).
 
+
+## E-079 · 2026-10-04 · Eine Rückmeldung, drei Aktionsfarben, ein Leerzustand
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 1.6).
+
+**Gefunden:**
+- Eine Antwort wurde auf sieben Arten bewertet, mit ✓ oder ✗ als Textzeichen;
+  in der Wiederholung und im Push/Fold-Trainer stand gar kein Zeichen, dort
+  unterschied nur die Farbe.
+- Im Drill stand ein lachsrotes „27,8 %" neben einem grünen „Richtig": Die Zahl
+  war nach „lohnt sich" gefärbt, das Urteil nach „richtig".
+- Raise gab es in drei Goldtönen, Call in zwei Grüns — Matrix und drei Legenden
+  mit je eigenem Wert. Fold war in der Matrix leer, am Tisch und im Coach rot.
+- Frühere Abende, Freunde und Wiederholen hatten je einen eigenen Leerzustand,
+  obwohl `EmptyState` existierte; im Starthand-Explorer stand „berechne …".
+
+**Entschieden:**
+- `<Rueckmeldung>` und `<UrteilKopf>` mit den Wörtern Richtig / Nicht ganz /
+  Hauchdünn (`src/i18n/rueckmeldung.ts`); Haken und Kreuz aus dem Symbolsatz;
+  alle ✓/✗/✕ als Textzeichen im Quelltext sind weg. Die Pfeile an den
+  Weiter-Knöpfen auch.
+- Drill: Die Equity steht in der Textfarbe. „Der Call lohnt sich (nicht)" ist
+  eine Marke in den Aktionsfarben — das ist eine Änderung an E-026.
+  Dasselbe gilt für die beiden Antwortknöpfe („Lohnt sich" grün, „Lohnt nicht"
+  neutral): Rot hieße „falsch", und das weiß man erst nach der Antwort. Der
+  „Nächste Aufgabe"-Knopf des Drills ist jetzt der neutrale Hauptknopf statt
+  Gold (Regel 12.5).
+- `--range-raise`, `--range-call`, `--range-fold`: Matrix und alle drei
+  Legenden lesen sie. Fold ist in Coach und am Übungstisch nicht mehr rot.
+- `EmptyState` für die drei Leerzustände; in den Profilkacheln bleibt der
+  Strich, darunter steht jetzt der Link zur ersten Handlung.
+- Explorer: Platzhalter „–– %" in Endhöhe statt „berechne …".
+- „Neue Bestserie" im Übungsstand hieß auf dem Handy „NEUE BESTSE…": jetzt
+  „Rekord".
+
+**Verworfene Alternative:** Das Drill-Urteil „lohnt nicht" rot lassen und nur
+die Zahl neutral färben. Das hätte das Widerspruchsbild verkleinert, aber
+nicht beseitigt: Rot neben „Richtig" las sich weiter wie ein Fehler.
+
+**Zweite verworfene Alternative:** Fold dunkelrot lassen, weil Online-
+Pokerräume es so tun. Dort ist Rot auch „Raise" oder „Fold" je nach Raum; die
+App hat mit Rot schon die Bedeutung „falsch" belegt, und eine Farbe trägt
+nur eine Bedeutung (E-076).
+
+Gemessen: Design (182), Bedienbar (180), Daumen, Quer, Durchgang — null
+Befunde. `bausteine.test.ts` hält es fest (9 Prüfungen); zwei davon mit
+Gegenprobe rot gesehen (eingeschmuggeltes ✓, Fold wieder rot).
+

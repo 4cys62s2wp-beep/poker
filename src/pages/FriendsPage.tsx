@@ -6,7 +6,8 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
-import { BackLink } from '../components/ui';
+import { BackLink, EmptyState } from '../components/ui';
+import { zeichenFuer } from '../lib/zeichen';
 import { Link } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { useCloud } from '../lib/cloud/CloudProvider';
@@ -175,14 +176,14 @@ export function FriendsPage() {
       </div>
 
       {social.friends.length === 0 ? (
-        <div className="card" style={{ maxWidth: 620, marginBottom: 22 }}>
-          <div style={{ fontWeight: 800, marginBottom: 6 }}>{F.emptyTitle}</div>
-          <p className="small muted" style={{ marginBottom: 12 }}>{F.emptyBody}</p>
-          <ol className="small muted" style={{ margin: 0, paddingLeft: 18, display: 'grid', gap: 4 }}>
-            <li>{F.emptyStep1}</li>
-            <li>{F.emptyStep2}</li>
-            <li>{F.emptyStep3}</li>
-          </ol>
+        <div style={{ maxWidth: 620, marginBottom: 22 }}>
+          <EmptyState icon={zeichenFuer('/freunde')} title={F.emptyTitle} body={F.emptyBody}>
+            <ol className="small muted" style={{ margin: 0, paddingLeft: 18, display: 'grid', gap: 4, textAlign: 'left' }}>
+              <li>{F.emptyStep1}</li>
+              <li>{F.emptyStep2}</li>
+              <li>{F.emptyStep3}</li>
+            </ol>
+          </EmptyState>
         </div>
       ) : (
         <div className="grid cols-2" style={{ marginBottom: 22 }}>

@@ -505,7 +505,7 @@ export function PlayPage() {
           )}
           <Entscheidung label={L.tableTitle}>
             {la.canFold && (
-              <button className="btn danger lg" onClick={() => heroAct({ type: 'fold' })}>
+              <button className="btn lg" onClick={() => heroAct({ type: 'fold' })}>
                 {L.fold}
               </button>
             )}

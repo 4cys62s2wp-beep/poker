@@ -1252,3 +1252,39 @@ Seit E-078.
 
 Test: `zeichen.test.ts`.
 
+### Regel 12.7 — Ein Urteil hat drei Wörter und ein Zeichen
+
+Seit E-079.
+
+1. **Richtig, Nicht ganz, Hauchdünn.** Mehr Urteile gibt es nicht, in
+   keinem Trainer und nicht im Quiz. „Daneben", „Leider nein", „Stark
+   geschätzt" sind weg; was ein Trainer Besonderes zu sagen hat, steht
+   *unter* dem Urteil.
+2. **Das Zeichen kommt aus `Icon`** (Haken oder Kreuz), nie als Textzeichen
+   aus der Schrift. Wo früher nur die Farbe unterschied (Wiederholung,
+   Push/Fold-Trainer), unterscheidet jetzt die Form (Regel 11.4).
+3. **Ein Baustein:** `<Rueckmeldung urteil="…">`, oder `<UrteilKopf>`, wo ein
+   Bildschirm sein eigenes Gehäuse hat. Die Farbe hängt am Urteil
+   (`data-urteil`), nicht am Umfeld.
+4. **Keine Pfeile in Weiter-Knöpfen.** „Nächste Hand", nicht „Nächste Hand →".
+   Der Knopf steht an der Stelle, an der man weitermacht.
+
+Test: `bausteine.test.ts`.
+
+### Regel 12.8 — Aktionen haben Farben, Urteile haben andere
+
+Seit E-079.
+
+1. **Raise, Call, Fold** haben je einen Token (`--range-raise`,
+   `--range-call`, `--range-fold`). Matrix, Legenden, Antwortknöpfe und
+   Coach-Urteil lesen sie; es gibt kein zweites Gold für „Raise" und kein
+   zweites Grün für „Call".
+2. **Fold ist keine Warnung.** Es ist die leere Fläche, in der Matrix wie im
+   Coach. Rot bleibt dem vorbehalten, was falsch ist.
+3. **Eine Zahl wird nicht nach ihrer Bedeutung für die Lage gefärbt**, wenn
+   daneben ein Urteil über die Antwort steht. Im Drill steht die Equity in der
+   Textfarbe; „Der Call lohnt sich (nicht)" ist eine Marke in den
+   Aktionsfarben.
+
+Test: `bausteine.test.ts`.
+

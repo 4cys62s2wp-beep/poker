@@ -7,6 +7,7 @@ import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR, type OutsTemplateKey } from '../../i18n/pages/outstrainer';
+import { Rueckmeldung } from '../../components/Rueckmeldung';
 
 interface Scenario {
   hole: number[];
@@ -171,13 +172,13 @@ export function OutsTrainer() {
 
         {answered && (
           <>
-            <div className={`feedback-box ${selected === scenario.outs ? 'good' : 'bad'}`} style={{ marginTop: 16 }}>
-              <strong>{selected === scenario.outs ? L.correctFb : L.wrongFb(scenario.outs)}</strong>
+            <Rueckmeldung urteil={selected === scenario.outs ? 'richtig' : 'falsch'} style={{ marginTop: 16 }}>
+              {selected !== scenario.outs && <>{L.outsAre(scenario.outs)}{' '}</>}
               {L.explanations[scenario.key]}{' '}
               <span className="muted">
                 {L.equityNote(Math.min(95, scenario.outs * 4))}
               </span>
-            </div>
+            </Rueckmeldung>
           </>
         )}
       </div>

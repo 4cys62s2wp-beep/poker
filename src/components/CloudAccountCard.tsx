@@ -5,6 +5,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { useCloud } from '../lib/cloud/CloudProvider';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/cloud';
+import { Icon } from './Icon';
 
 export function CloudAccountCard() {
   const cloud = useCloud();
@@ -57,7 +58,7 @@ export function CloudAccountCard() {
         <div className="row between wrap" style={{ marginBottom: 8 }}>
           <div style={{ fontWeight: 800 }}>{C.accountTitle}</div>
           {user.verified ? (
-            <span className="pill ok">{C.verifiedPill}</span>
+            <span className="pill ok"><Icon name="check" size={13} /> {C.verifiedPill}</span>
           ) : (
             <span className="pill warn">{C.unverifiedPill}</span>
           )}

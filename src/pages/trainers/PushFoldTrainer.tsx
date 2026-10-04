@@ -12,6 +12,7 @@ import { STR } from '../../i18n/pages/pushfoldtrainer';
 import { STR as PRO_STR } from '../../i18n/pages/pro';
 import { ProLock } from '../../components/pro/ProLock';
 import { usePro } from '../../lib/pro/ProProvider';
+import { Rueckmeldung } from '../../components/Rueckmeldung';
 
 interface Spot {
   chartIdx: number;
@@ -109,20 +110,19 @@ export function PushFoldTrainer() {
 
         {answer && (
           <>
-            <div className={`feedback-box ${isCorrect ? 'good' : 'bad'}`} style={{ marginTop: 16 }}>
-              <strong>{isCorrect ? L.correctFb : L.wrongFb}</strong>
+            <Rueckmeldung urteil={isCorrect ? 'richtig' : 'falsch'} style={{ marginTop: 16 }}>
               {L.verdict(spot.label, chart.stack, chart.position, correct === 'push', pct)}{' '}
               {content.pushStackInfo[chart.stack]}
-            </div>
+            </Rueckmeldung>
 
             <div style={{ marginTop: 18 }}>
               <div className="range-legend" style={{ marginBottom: 10 }}>
                 <span>
-                  <span className="sw" style={{ background: 'linear-gradient(150deg,#d9b45b,#a37f2e)' }} />
+                  <span className="sw raise" />
                   {L.legendAllIn}
                 </span>
                 <span>
-                  <span className="sw" style={{ background: 'rgba(9,13,11,0.7)', border: '1px solid var(--border)' }} />
+                  <span className="sw fold" />
                   {L.legendFold}
                 </span>
               </div>

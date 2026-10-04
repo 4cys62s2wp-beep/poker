@@ -10,6 +10,7 @@ import { STR as PRO } from '../i18n/pages/pro';
 import { ProLock } from '../components/pro/ProLock';
 import { usePro } from '../lib/pro/ProProvider';
 import { isFreeLesson } from '../lib/pro/plan';
+import { Icon } from '../components/Icon';
 
 export function LessonPage() {
   const { moduleId, lessonId } = useParams();
@@ -69,7 +70,7 @@ export function LessonPage() {
             {L.lessonOf(lessonIndex + 1, module.lessons.length)}
           </span>
           <span className="pill">{L.duration(lesson.duration)}</span>
-          {alreadyDone && <span className="pill ok">{L.completedPill}</span>}
+          {alreadyDone && <span className="pill ok"><Icon name="check" size={13} /> {L.completedPill}</span>}
         </div>
         <h1>{lesson.title}</h1>
         <p className="sub">{lesson.intro}</p>
@@ -135,7 +136,7 @@ export function LessonPage() {
               <ul className="list-plain">
                 {lesson.takeaways.map((t, i) => (
                   <li key={i} className="takeaway">
-                    <span className="tick">✓</span>
+                    <span className="tick"><Icon name="check" size={16} /></span>
                     <span>{t}</span>
                   </li>
                 ))}

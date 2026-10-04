@@ -13,7 +13,7 @@ export const STR = defineStrings(
     deviceBody3: 'im Projekt.',
 
     accountTitle: 'Dein Konto',
-    verifiedPill: '✓ E-Mail bestätigt',
+    verifiedPill: 'E-Mail bestätigt',
     unverifiedPill: 'E-Mail unbestätigt',
     signedInAs: 'Angemeldet als',
     verifiedInfo:
@@ -70,7 +70,7 @@ export const STR = defineStrings(
     deviceBody3: 'in the project.',
 
     accountTitle: 'Your Account',
-    verifiedPill: '✓ Email verified',
+    verifiedPill: 'Email verified',
     unverifiedPill: 'Email not verified',
     signedInAs: 'Signed in as',
     verifiedInfo:

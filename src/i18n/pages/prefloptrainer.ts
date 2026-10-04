@@ -8,15 +8,12 @@ export const STR = defineStrings(
     back: '← Trainer',
     title: 'Preflop-Trainer',
     sub: '6-max Cash Game · 100 bb effektiv',
-    correctCount: (n: number) => `✓ ${n} richtig`,
     streak: (n: number) => `Serie: ${n}`,
     rfiIntroBefore: 'Du sitzt ',
     rfiIntroAfter: '. Alle vor dir folden.',
     bbIntroBefore: 'Du sitzt im ',
     bbIntroStrong: 'Big Blind',
     bbIntroAfter: '. Der Button eröffnet auf 2,5bb, der Small Blind foldet.',
-    correctFb: '✓ Richtig! ',
-    wrongFb: '✗ Nicht ganz. ',
     rfiVerdict: (label: string, isOpen: boolean, position: string) =>
       `${label} ist ${isOpen ? 'ein Standard-Open' : 'kein Open'} aus ${position}.`,
     bbVerdict: (label: string, action: string) =>
@@ -30,21 +27,18 @@ export const STR = defineStrings(
     } as Record<RfiPosition, string>,
     bbDefenseDesc:
       'Gegen ein Button-Open von 2,5bb bekommst du im Big Blind hervorragende Pot Odds und schließt die Action: Du verteidigst breit. Die 3-Bet-Range ist polar aufgebaut – starke Value-Hände plus Bluffs mit guten Blockern. Bei Überschneidungen hat die 3-Bet Vorrang.',
-    nextHand: 'Nächste Hand →',
+    nextHand: 'Nächste Hand',
   },
   {
     back: '← Trainers',
     title: 'Preflop Trainer',
     sub: '6-max cash game · 100 bb effective',
-    correctCount: (n: number) => `✓ ${n} correct`,
     streak: (n: number) => `Streak: ${n}`,
     rfiIntroBefore: 'You’re in ',
     rfiIntroAfter: '. Everyone folds to you.',
     bbIntroBefore: 'You’re in the ',
     bbIntroStrong: 'Big Blind',
     bbIntroAfter: '. The Button opens to 2.5bb and the Small Blind folds.',
-    correctFb: '✓ Correct! ',
-    wrongFb: '✗ Not quite. ',
     rfiVerdict: (label: string, isOpen: boolean, position: string) =>
       `${label} is ${isOpen ? 'a standard open' : 'not an open'} from ${position}.`,
     bbVerdict: (label: string, action: string) =>
@@ -58,6 +52,6 @@ export const STR = defineStrings(
     } as Record<RfiPosition, string>,
     bbDefenseDesc:
       'Against a 2.5bb Button open you get excellent pot odds in the Big Blind and close the action, so you defend wide. The 3-bet range is built polar – strong value hands plus bluffs with good blockers. Where they overlap, the 3-bet takes priority.',
-    nextHand: 'Next Hand →',
+    nextHand: 'Next Hand',
   },
 );

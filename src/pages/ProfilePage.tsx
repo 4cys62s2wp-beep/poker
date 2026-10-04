@@ -135,16 +135,22 @@ export function ProfilePage() {
         <div className="card">
           <div className="stat-label">{P.statTrainerAnswers}</div>
           <div className="big-stat">{trainerTotals.attempts}</div>
-          <div className="small faint">
-            {trainerTotals.attempts > 0
-              ? P.pctCorrect(Math.round((100 * trainerTotals.correct) / trainerTotals.attempts))
-              : '–'}
-          </div>
+          {trainerTotals.attempts > 0 ? (
+            <div className="small faint">
+              {P.pctCorrect(Math.round((100 * trainerTotals.correct) / trainerTotals.attempts))}
+            </div>
+          ) : (
+            <Link className="kachel-start small" to="/lernen">{P.firstTask}</Link>
+          )}
         </div>
         <div className="card">
           <div className="stat-label">{P.statHandsPlayed}</div>
           <div className="big-stat">{data.handsPlayed}</div>
-          <div className="small faint">{P.handsWon(data.handsWon)}</div>
+          {data.handsPlayed > 0 ? (
+            <div className="small faint">{P.handsWon(data.handsWon)}</div>
+          ) : (
+            <Link className="kachel-start small" to="/lernen/uebungstisch">{P.firstHand}</Link>
+          )}
         </div>
         <div className="card">
           <div className="stat-label">{P.statStreak}</div>
@@ -154,7 +160,11 @@ export function ProfilePage() {
         <div className="card">
           <div className="stat-label">{P.statSessions}</div>
           <div className="big-stat">{data.sessions.length}</div>
-          <div className="small faint">{P.sessionsSub}</div>
+          {data.sessions.length > 0 ? (
+            <div className="small faint">{P.sessionsSub}</div>
+          ) : (
+            <Link className="kachel-start small" to="/session/bankroll">{P.firstSession}</Link>
+          )}
         </div>
       </div>
 
@@ -251,7 +261,7 @@ export function ProfilePage() {
                     </>
                   ) : (
                     <button className="btn sm ghost" onClick={() => setConfirmDeleteId(p.id)} aria-label={P.deleteAria(p.name)}>
-                      ✕
+                      <Icon name="x" size={16} />
                     </button>
                   )
                 )}

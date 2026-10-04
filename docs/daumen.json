@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T08:14:55.593Z",
+  "geprueft_am": "2026-10-04T08:30:55.104Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -82,7 +82,7 @@
     {
       "hash": "#/profil",
       "scrollt": true,
-      "ueberlauf_px": 4523,
+      "ueberlauf_px": 4578,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -282,15 +282,15 @@
     },
     {
       "hash": "#/lernen/trainer/outs",
-      "scrollt": false,
-      "ueberlauf_px": 0,
+      "scrollt": true,
+      "ueberlauf_px": 20,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 659,
-        "unten_px": 820,
-        "mitte_px": 740,
+        "oben_px": 679,
+        "unten_px": 840,
+        "mitte_px": 759,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -359,7 +359,7 @@
     {
       "hash": "#/lernen/trainer/szenario",
       "scrollt": true,
-      "ueberlauf_px": 186,
+      "ueberlauf_px": 60,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
@@ -531,7 +531,7 @@
     {
       "hash": "#/lernen/m2/m2-l4",
       "scrollt": true,
-      "ueberlauf_px": 4193,
+      "ueberlauf_px": 4218,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -594,7 +594,7 @@
     {
       "hash": "#/lernen/m3/m3-l6",
       "scrollt": true,
-      "ueberlauf_px": 5444,
+      "ueberlauf_px": 5469,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -603,7 +603,7 @@
     {
       "hash": "#/lernen/m4/m4-l1",
       "scrollt": true,
-      "ueberlauf_px": 5413,
+      "ueberlauf_px": 5438,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -783,7 +783,7 @@
     {
       "hash": "#/lernen/m7/m7-l4",
       "scrollt": true,
-      "ueberlauf_px": 5079,
+      "ueberlauf_px": 5105,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -792,7 +792,7 @@
     {
       "hash": "#/lernen/m7/m7-l5",
       "scrollt": true,
-      "ueberlauf_px": 7782,
+      "ueberlauf_px": 7834,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -828,7 +828,7 @@
     {
       "hash": "#/lernen/m8/m8-l4",
       "scrollt": true,
-      "ueberlauf_px": 5618,
+      "ueberlauf_px": 5644,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -846,7 +846,7 @@
     {
       "hash": "#/lernen/m8/m8-l6",
       "scrollt": true,
-      "ueberlauf_px": 6138,
+      "ueberlauf_px": 6164,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,

@@ -5,6 +5,7 @@ import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/potoddstrainer';
+import { Rueckmeldung } from '../../components/Rueckmeldung';
 
 interface Problem {
   pot: number;
@@ -121,11 +122,10 @@ export function PotOddsTrainer() {
 
         {answered && (
           <>
-            <div className={`feedback-box ${isCorrect ? 'good' : 'bad'}`}>
-              <strong>{isCorrect ? L.correctFb : L.wrongFb}</strong>
+            <Rueckmeldung urteil={isCorrect ? 'richtig' : 'falsch'}>
               {L.calc(bet, pot, totalAfterCall)}<strong>{L.requiredPct(problem.required)}</strong>.
               {' '}{L.mnemonic}
-            </div>
+            </Rueckmeldung>
           </>
         )}
       </div>

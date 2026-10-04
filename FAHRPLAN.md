@@ -82,7 +82,7 @@ Doppelvergaben in Icon.tsx auflösen, dafür 6–8 neue Symbole (Tisch, Ranglist
 
 </details>
 
-### [ ] 1.6 Gemeinsame Bausteine: Rückmeldung, Aktionsfarben, Leerzustand, Laden  
+### [x] 1.6 Gemeinsame Bausteine: Rückmeldung, Aktionsfarben, Leerzustand, Laden  
 *Wirkung 4 · Aufwand M*
 
 (1) Eine Komponente <Rueckmeldung> mit Icon aus Icon.tsx statt ✓/✗ als Textzeichen. Wörter festlegen: „Richtig“, „Nicht ganz“, „Hauchdünn“. Ersetzt die sieben Varianten in quiz.ts, review.ts, handranktrainer.ts, pushfoldtrainer.ts, equitytrainer.ts, Drill und Szenario. Damit gilt Regel 11.4 auch in ReviewPage.tsx:152 und PushFoldTrainer.tsx:112, wo heute nur die Farbe unterscheidet. Pfeile aus den Weiter-Strings entfernen. (2) Drill: Die Equity-Zahl in PotOddsDrill.tsx 263 in --text, das Urteil „lohnt nicht“ als farbige Marke mit Zeichen daneben. Das ist eine Änderung an E-026; der Nutzen überwiegt, weil heute ein lachsrotes „27,8 %“ neben „✓ Richtig“ steht. Keine Animation (DESIGN §4). (3) Aktions- und Range-Tokens --range-raise, --range-call und --range-fold, passend zur Legende der Range-Matrix, für Tisch, Trainer und Charts. (4) Die vorhandene EmptyState auf Frühere Abende, Freunde und Wiederholen einsetzen. In den Profilkacheln bleibt der Strich (E-038), darunter kommt der Link „Erste Aufgabe lösen →“. (5) Im Starthand-Explorer statt „berechne …“ ein Platzhalter in Endhöhe mit gedämpftem „–– %“.

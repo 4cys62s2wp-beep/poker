@@ -27,7 +27,7 @@ export const ACTION_STYLE: Record<CoachAction, { cls: string; icon: string }> = 
   check: { cls: 'v-check', icon: '○' },
   checkcall: { cls: 'v-check', icon: '◐' },
   checkfold: { cls: 'v-fold', icon: '◇' },
-  fold: { cls: 'v-fold', icon: '✕' },
+  fold: { cls: 'v-fold', icon: '▽' },
 };
 
 export const ACTION_LABEL: Record<CoachAction, string> = {

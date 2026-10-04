@@ -26,6 +26,9 @@ export const STR = defineStrings(
     streakDays: 'Tage in Folge',
     statSessions: 'Sessions erfasst',
     sessionsSub: 'im Bankroll-Tracker',
+    firstTask: 'Erste Aufgabe lösen',
+    firstHand: 'Erste Hand spielen',
+    firstSession: 'Ersten Abend erfassen',
 
     badgesTitle: 'Abzeichen',
     badgeSeit: (wann: string) => (wann ? `seit ${wann}` : 'verdient'),
@@ -108,6 +111,9 @@ export const STR = defineStrings(
     streakDays: 'days in a row',
     statSessions: 'Sessions Logged',
     sessionsSub: 'in the bankroll tracker',
+    firstTask: 'Solve your first task',
+    firstHand: 'Play your first hand',
+    firstSession: 'Record your first evening',
 
     badgesTitle: 'Badges',
     badgeSeit: (wann: string) => (wann ? `since ${wann}` : 'earned'),

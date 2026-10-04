@@ -8,6 +8,7 @@ import { Entscheidung } from '../../components/Entscheidung';
 import { Uebungsstand } from '../../components/Uebungsstand';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/equitytrainer';
+import { Rueckmeldung } from '../../components/Rueckmeldung';
 
 const TOLERANCE = 7; // Prozentpunkte
 
@@ -112,11 +113,10 @@ export function EquityTrainer() {
         </div>
 
         {revealed && (
-          <div className={`feedback-box ${good ? 'good' : 'bad'}`} style={{ marginTop: 12 }}>
-            <strong>{good ? L.correctFb : L.wrongFb}</strong>
+          <Rueckmeldung urteil={good ? 'richtig' : 'falsch'} style={{ marginTop: 12 }}>
             {L.actualPrefix}<strong>{L.pct(equity)}</strong>
             {L.resultDetail(guess, diff, 100 - equity)}
-          </div>
+          </Rueckmeldung>
         )}
       </div>
 

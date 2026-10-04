@@ -13,7 +13,7 @@ export const STR = defineStrings(
     positionQuestion: 'Wo sitzt du (relativ zum Dealer)?',
     beforeQuestion: 'Was ist vor dir passiert?',
     noRaiseYet: 'Noch kein Raise',
-    someoneRaised: 'Jemand hat erhöht',
+    someoneRaised: 'Schon ein Raise',
     limpersQuestion: 'Wie viele sind nur mitgegangen (Limper)?',
     toHand: 'Weiter: Hand eingeben',
     setupNote:

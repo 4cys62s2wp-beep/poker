@@ -100,7 +100,7 @@ export const STR = defineStrings(
         high: 'Du bist nach dem Flop sehr aggressiv. Das funktioniert gegen vorsichtige Gegner, wird aber teuer, wenn jemand mitgeht. Achte darauf, dass hinter deinen Bets auch etwas steckt.',
       },
       wtsd: {
-        low: 'Du gibst nach dem Flop oft auf. Manchmal richtig – aber wer zu häufig folded, wird berechenbar und wird angegriffen. Prüfe, ob du wirklich schlechter dran bist oder nur unsicher.',
+        low: 'Du gibst nach dem Flop oft auf. Manchmal richtig – aber wer zu häufig foldet, wird berechenbar und wird angegriffen. Prüfe, ob du wirklich schlechter dran bist oder nur unsicher.',
         high: 'Du gehst zu oft bis zum Aufdecken. Das ist meist ein Zeichen, dass du zu selten aufgibst, wenn die Hand nicht mehr gut ist. Ein Fold auf dem Turn spart mehr Chips als ein guter Call auf dem River einbringt.',
       },
       wsd: {

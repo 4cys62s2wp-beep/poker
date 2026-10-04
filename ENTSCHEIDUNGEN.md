@@ -4607,3 +4607,52 @@ Gemessen: Design (182), Bedienbar (180), Daumen, Quer, Durchgang — null
 Befunde. `bausteine.test.ts` hält es fest (9 Prüfungen); zwei davon mit
 Gegenprobe rot gesehen (eingeschmuggeltes ✓, Fold wieder rot).
 
+
+## E-080 · 2026-10-04 · Eine Aktion, ein Wort
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 1.7).
+
+**Gefunden:** Für dieselbe Sache zwei oder drei Wörter. Am Übungstisch-Knopf
+„Raise …", im Verlauf „erhöht auf 7"; im Coach „Noch kein Raise" neben „Jemand
+hat erhöht"; im Push/Fold-Trainer Shove, All-in, schieben und Push; im Drill
+„Topf", im Trainer daneben „Pot" (584 zu 19 in den Texten); Flushdraw in drei
+Schreibweisen (87, 15, 9); „KI-Gegner" und „Computergegner"; „Dealer-Knopf" und
+„Dealer-Button"; „Streak" und „Serie"; „folded" mitten im Fließtext. Dazu
+trug Modul 5 die Marke „Profi" — neben dem Abo „Pro". Und im Profil stand „Noch
+150 XP bis Level" — ein abgeschnittener Satz (im Englischen: „to the next
+level").
+
+**Entschieden:** `src/i18n/begriffe.ts` legt je Sache das eine Wort fest, mit
+Grund, Beispielsatz und Geltungsbereich; `begriffe.test.ts` liest alle
+deutschen Texte über den TypeScript-Parser und meldet verbotene Ausdrücke mit
+Fundstelle. Nach jeder Regel wurde gezählt, nicht geschätzt — die häufigste
+Form gewinnt, außer wo ein Wort schon etwas anderes besetzt.
+
+- **Raise** als Nomen und als Verb („raist auf") — passend zu callt, foldet,
+  checkt im Verlauf.
+- **Flushdraw**, **Overcards** (die Beispiele des Drills heißen jetzt „Zwei
+  Overcards"; erzeugt über `tools/poker-math` und `npm run daten`, nicht von
+  Hand, E-020).
+- Experte statt Profi als oberste Modulstufe.
+
+**Abweichung vom Fahrplan:** Der Fahrplan wollte „Stufe" für die Fortschrittszahl.
+Ich habe „Level" behalten: „Stufe" ist in der Live-Session die Blindstufe
+(41 Stellen, Blind-Uhr, Tisch), und „Stufe 3" hieße dann zwei Dinge — genau das,
+was die Liste beseitigen soll.
+
+**Verworfene Alternative:** Ein Wörterbuch, das jedes Wort der App erfasst. Es
+hätte tausende Zeilen und niemand pflegte es; die Liste hält nur die Fälle, in
+denen ein Bildschirm tatsächlich zwei Wörter benutzte.
+
+**Zweite verworfene Alternative:** „erhöhen" überall verbieten. Es ist auch ein
+gewöhnliches Verb („erhöht die Wahrscheinlichkeit"); verboten sind nur die
+Formen, in denen es die Aktion meint („hat erhöht", „erhöht auf", „Erhöhung").
+
+**Lektionen gegen Oberfläche:** In den Lektionen darf „Shove" als Fachwort mit
+Erklärung stehen, im Trainer nicht — die Regel gilt dort, wo man *benutzt*,
+nicht dort, wo man *lernt*.
+
+Gemessen: Design (182), Bedienbar (180), Daumen, Quer, Durchgang — null
+Befunde. `begriffe.test.ts` hält es fest (29 Prüfungen); die Topf-Regel mit
+Gegenprobe rot gesehen.
+

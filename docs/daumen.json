@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T08:30:55.104Z",
+  "geprueft_am": "2026-10-04T08:42:37.818Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -64,7 +64,7 @@
     {
       "hash": "#/nachschlagen/haende",
       "scrollt": true,
-      "ueberlauf_px": 1190,
+      "ueberlauf_px": 1241,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -282,15 +282,15 @@
     },
     {
       "hash": "#/lernen/trainer/outs",
-      "scrollt": true,
-      "ueberlauf_px": 20,
+      "scrollt": false,
+      "ueberlauf_px": 0,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 679,
-        "unten_px": 840,
-        "mitte_px": 759,
+        "oben_px": 659,
+        "unten_px": 820,
+        "mitte_px": 740,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -359,19 +359,19 @@
     {
       "hash": "#/lernen/trainer/szenario",
       "scrollt": true,
-      "ueberlauf_px": 60,
+      "ueberlauf_px": 76,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 619,
+        "oben_px": 641,
         "unten_px": 844,
-        "mitte_px": 732,
+        "mitte_px": 743,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 3,
         "klebt": true,
-        "kleinster_knopf_px": 74,
+        "kleinster_knopf_px": 52,
         "breitenanteil": 1.35
       }
     },

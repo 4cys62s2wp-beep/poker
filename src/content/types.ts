@@ -2,7 +2,7 @@
 // Diese Schemas werden von den Modul-Dateien (m1.ts – m8.ts), dem Glossar
 // und den Trainern verwendet.
 
-export type Level = 'Einsteiger' | 'Fortgeschritten' | 'Profi';
+export type Level = 'Einsteiger' | 'Fortgeschritten' | 'Experte';
 
 export interface QuizQuestion {
   /** Die Frage (Deutsch, du-Form). */

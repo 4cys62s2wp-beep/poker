@@ -112,7 +112,7 @@ const ENGINE_TEXT: Record<EngineLang, EngineText> = {
     checks: (name) => `${name} checkt`,
     calls: (name, amount, allIn) => `${name} callt ${amount}${allIn ? ' und ist all-in' : ''}`,
     betOrRaise: (name, isBet, to, allIn) =>
-      `${name} ${isBet ? 'setzt' : 'erhöht auf'} ${to}${allIn ? ' (all-in)' : ''}`,
+      `${name} ${isBet ? 'setzt' : 'raist auf'} ${to}${allIn ? ' (all-in)' : ''}`,
     boardDealt: (label, cards) => `${label}: ${cards}`,
     refund: (name, amount) => `${name} erhält ${amount} ungecallten Einsatz zurück`,
     winsByFold: (name, pot) => `${name} gewinnt ${pot} (alle anderen gefoldet)`,

@@ -78,7 +78,7 @@ const m9: Module = {
             'Der Nut-Flush',
             'Ein Set auf trockenem Board',
             'Nackte Asse ohne koordinierte Beikarten',
-            'Die Nut-Straße mit Flush-Draw',
+            'Die Nut-Straße mit Flushdraw',
           ],
           correctIndex: 2,
           explanation:
@@ -138,9 +138,9 @@ const m9: Module = {
         {
           heading: 'Strategie: Alles rückt zusammen',
           body:
-            'Mit 36 Karten triffst du alles öfter: Straßen-Draws kommen häufiger an (ein offener Straßendraw trifft bis zum River fast die Hälfte der Zeit), Paare und gepaarte Boards sind allgegenwärtig, und die Equities laufen ähnlich eng wie in PLO.\n\nDie wichtigsten Anpassungen:\n\n- **Suited und connected** gewinnt an Wert – A-K-suited und Verbindungshände wie J-T-9 spielen sich hervorragend.\n- **Einzelne Paare verlieren an Wert**: Bei so vielen möglichen Straßen und Full Houses ist Top Pair schneller geschlagen als in Hold’em.\n- **Flush-Draws sind Gold**, weil der Flush jetzt sogar Full Houses schlägt – aber sie kommen seltener an (nur noch 5 statt 9 Outs... genauer: 5 Karten deiner Farbe bleiben übrig).\n\nShort Deck belohnt Spieler, die neu rechnen, statt Hold’em-Instinkte zu recyceln.',
+            'Mit 36 Karten triffst du alles öfter: Straßen-Draws kommen häufiger an (ein offener Straßendraw trifft bis zum River fast die Hälfte der Zeit), Paare und gepaarte Boards sind allgegenwärtig, und die Equities laufen ähnlich eng wie in PLO.\n\nDie wichtigsten Anpassungen:\n\n- **Suited und connected** gewinnt an Wert – A-K-suited und Verbindungshände wie J-T-9 spielen sich hervorragend.\n- **Einzelne Paare verlieren an Wert**: Bei so vielen möglichen Straßen und Full Houses ist Top Pair schneller geschlagen als in Hold’em.\n- **Flushdraws sind Gold**, weil der Flush jetzt sogar Full Houses schlägt – aber sie kommen seltener an (nur noch 5 statt 9 Outs... genauer: 5 Karten deiner Farbe bleiben übrig).\n\nShort Deck belohnt Spieler, die neu rechnen, statt Hold’em-Instinkte zu recyceln.',
           tip:
-            'Die Regel von 2 und 4 gilt in Short Deck NICHT mehr – mit 36 Karten ist jedes Out ungefähr 3 % pro Karte wert. Ein Flush-Draw mit 5 Outs bringt bis zum River nur noch rund 30 %.',
+            'Die Regel von 2 und 4 gilt in Short Deck NICHT mehr – mit 36 Karten ist jedes Out ungefähr 3 % pro Karte wert. Ein Flushdraw mit 5 Outs bringt bis zum River nur noch rund 30 %.',
         },
       ],
       takeaways: [

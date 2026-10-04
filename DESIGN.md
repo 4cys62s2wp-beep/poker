@@ -1288,3 +1288,21 @@ Seit E-079.
 
 Test: `bausteine.test.ts`.
 
+### Regel 12.9 — Ein Wort je Sache
+
+Seit E-080.
+
+1. **Jede Pokeraktion und jeder Begriff hat genau ein Wort**, festgelegt in
+   `src/i18n/begriffe.ts` — mit dem Grund. Raise (Verb: „raist auf"), All-in,
+   Pot, Flushdraw, Overcards, Computergegner, Dealer-Button, Serie, „foldet".
+2. **Wer ein neues Wort einführt, trägt es dort ein.** Der Test liest alle
+   deutschen Texte (Oberfläche, Lektionen, Glossar, Szenarien) und meldet jeden
+   verbotenen Ausdruck mit Fundstelle.
+3. **Die Lektionen erklären Fachwörter, die Oberfläche benutzt sie.** In einer
+   Lektion darf „Shove" als Fachwort stehen, im Trainer nicht.
+4. **Fortschritt:** „Level" ist die Zahl, „Rang" der Titel, „Serie" die Folge,
+   „XP" die Punkte. „Stufe" gehört der Blindstufe, „Pro" nur dem Abo — die
+   Schwierigkeit ganz oben heißt „Experte".
+
+Test: `begriffe.test.ts`.
+

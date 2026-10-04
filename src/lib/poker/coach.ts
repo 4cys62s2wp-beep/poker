@@ -100,7 +100,7 @@ const TEXT_DE = {
   suitedCheap: 'Solche Hände willst du billig und in Position spielen, nicht gegen Stärke bezahlen.',
 
   vsRaiseWeak: (label: string) => `Gegen einen Raise ist ${label} klar zu schwach.`,
-  vsRaiseRule: 'Merksatz: Gegen eine Erhöhung brauchst du eine deutlich stärkere Hand als zum selbst Erhöhen.',
+  vsRaiseRule: 'Merksatz: Gegen einen Raise brauchst du eine deutlich stärkere Hand als zum selbst Erhöhen.',
 
   // Postflop: sehr starke Hände
   monsterHeadline: 'Bet 70–100 % des Pots (Value)',

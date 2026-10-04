@@ -13,14 +13,14 @@ export const STR = defineStrings(
     introAfterStack: ' übrig. Du sitzt ',
     introAfterPosition: '. Alle vor dir folden.',
     verdict: (label: string, stack: PushStack, position: string, isShove: boolean, pct: number) =>
-      `${label} ist mit ${stack} aus ${position} ${isShove ? 'ein Standard-Shove' : 'kein profitabler Shove'} (Shove-Range: ~${pct} % aller Hände).`,
+      `${label} ist mit ${stack} aus ${position} ${isShove ? 'ein Standard-All-in' : 'kein profitables All-in'} (All-in-Range: ~${pct} % aller Hände).`,
     legendAllIn: 'All-in',
     legendFold: 'Fold',
     allInBtn: 'All-in',
     foldBtn: 'Fold',
     nextHand: 'Nächste Hand',
     footnote:
-      'Vereinfachte Nash-Push-Ranges ohne Antes. Mit Antes wird noch breiter geschoben; gegen Spieler, die zu wenig callen, ebenfalls.',
+      'Vereinfachte Nash-Push-Ranges ohne Antes. Mit Antes wird die All-in-Range noch breiter; gegen Spieler, die zu wenig callen, ebenfalls.',
   },
   {
     back: '← Trainers',

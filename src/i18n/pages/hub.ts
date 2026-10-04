@@ -13,8 +13,8 @@ export const STR = defineStrings(
     // Kopfzeile
     levelLabel: 'Level',
     xpLabel: 'XP',
-    streakLabel: 'Tage-Streak',
-    streakNone: 'Streak',
+    streakLabel: 'Tage in Folge',
+    streakNone: 'Serie',
 
 
     // Die drei Karten

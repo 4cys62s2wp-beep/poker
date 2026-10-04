@@ -302,14 +302,14 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Draw',
     definition:
-      'Eine unfertige Hand, die noch passende Karten benötigt, um stark zu werden, etwa ein Flush Draw oder ein Straight Draw. Draws werden über Outs, Pot Odds und Implied Odds bewertet.',
+      'Eine unfertige Hand, die noch passende Karten benötigt, um stark zu werden, etwa ein Flushdraw oder ein Straight Draw. Draws werden über Outs, Pot Odds und Implied Odds bewertet.',
     category: 'Grundlagen',
-    related: ['Outs', 'Flush Draw', 'OESD'],
+    related: ['Outs', 'Flushdraw', 'OESD'],
   },
   {
     term: 'Dry Board',
     definition:
-      'Ein unkoordiniertes Board ohne Flush Draws und mit wenigen Straight-Möglichkeiten, etwa K-7-2 in drei Farben. Auf trockenen Boards sind kleine C-Bets mit hoher Frequenz üblich.',
+      'Ein unkoordiniertes Board ohne Flushdraws und mit wenigen Straight-Möglichkeiten, etwa K-7-2 in drei Farben. Auf trockenen Boards sind kleine C-Bets mit hoher Frequenz üblich.',
     category: 'Strategie',
     related: ['Boardtextur', 'Wet Board', 'C-Bet'],
   },
@@ -374,12 +374,12 @@ const glossary: GlossaryEntry[] = [
     definition:
       'Fünf Karten derselben Farbe, unabhängig von der Reihenfolge. Der Flush schlägt die Straße und verliert gegen ein Full House; halten mehrere Spieler einen Flush, entscheidet die höchste Karte.',
     category: 'Grundlagen',
-    related: ['Flush Draw', 'Full House', 'Straight'],
+    related: ['Flushdraw', 'Full House', 'Straight'],
   },
   {
-    term: 'Flush Draw',
+    term: 'Flushdraw',
     definition:
-      'Vier Karten einer Farbe mit neun Outs auf den Flush. Am Flop kommt ein Flush Draw bis zum River in etwa 35 Prozent der Fälle an und eignet sich hervorragend für Semi-Bluffs.',
+      'Vier Karten einer Farbe mit neun Outs auf den Flush. Am Flop kommt ein Flushdraw bis zum River in etwa 35 Prozent der Fälle an und eignet sich hervorragend für Semi-Bluffs.',
     category: 'Grundlagen',
     related: ['Draw', 'Outs', 'Semi-Bluff'],
   },
@@ -722,7 +722,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Rainbow',
     definition:
-      'Ein Flop mit drei verschiedenen Farben, auf dem kein direkter Flush Draw möglich ist. Rainbow-Boards sind tendenziell trocken und begünstigen häufig den Preflop-Aggressor.',
+      'Ein Flop mit drei verschiedenen Farben, auf dem kein direkter Flushdraw möglich ist. Rainbow-Boards sind tendenziell trocken und begünstigen häufig den Preflop-Aggressor.',
     category: 'Grundlagen',
     related: ['Dry Board', 'Boardtextur'],
   },
@@ -764,7 +764,7 @@ const glossary: GlossaryEntry[] = [
   {
     term: 'Reverse Implied Odds',
     definition:
-      'Das Risiko, in späteren Setzrunden zusätzlich zu verlieren, obwohl die eigene Hand trifft, weil der Gegner dann eine noch bessere Hand hält. Typisch für dominierte Draws wie kleine Flush Draws.',
+      'Das Risiko, in späteren Setzrunden zusätzlich zu verlieren, obwohl die eigene Hand trifft, weil der Gegner dann eine noch bessere Hand hält. Typisch für dominierte Draws wie kleine Flushdraws.',
     category: 'Mathematik',
     related: ['Implied Odds', 'Kicker', 'Draw'],
   },
@@ -836,7 +836,7 @@ const glossary: GlossaryEntry[] = [
     definition:
       'Ein Einsatz mit einem Draw, der aktuell noch hinten liegt, aber zur besten Hand werden kann. Semi-Bluffs gewinnen auf zwei Wegen: sofort durch Folds des Gegners oder später durch das Treffen des Draws.',
     category: 'Strategie',
-    related: ['Bluff', 'Fold Equity', 'Flush Draw'],
+    related: ['Bluff', 'Fold Equity', 'Flushdraw'],
   },
   {
     term: 'Set',
@@ -969,7 +969,7 @@ const glossary: GlossaryEntry[] = [
     definition:
       'Zwei Startkarten derselben Farbe, notiert mit einem s wie in AKs. Suited-Hände haben vier Combos und dank Flush-Potenzial mehr Equity und Spielbarkeit als Offsuit-Hände.',
     category: 'Grundlagen',
-    related: ['Offsuit', 'Suited Connectors', 'Flush Draw'],
+    related: ['Offsuit', 'Suited Connectors', 'Flushdraw'],
   },
   {
     term: 'Suited Connectors',

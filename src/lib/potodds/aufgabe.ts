@@ -125,7 +125,7 @@ export function potFaktorSpanne(nenner: number): { min: number; max: number } {
   const max = Math.floor(POT_MAX_BB / nenner);
   /* Kann nicht eintreten, solange die Spanne breiter als der größte Nenner
      ist — aber ein stiller leerer Bereich wäre schlimmer als ein Fehler. */
-  if (max < min) throw new Error(`Kein passender Topf für Nenner ${nenner}`);
+  if (max < min) throw new Error(`Kein passender Pot für Nenner ${nenner}`);
   return { min, max };
 }
 

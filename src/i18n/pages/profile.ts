@@ -12,7 +12,7 @@ export const STR = defineStrings(
     rangMarke: 'Dein Rang',
     rangRing: (level: number, titel: string) => `Level ${level}, ${titel}`,
     rangBis: (fehlt: number, titel: string) => `Noch ${fehlt} XP bis ${titel}`,
-    rangWeiter: (fehlt: number) => `Noch ${fehlt} XP bis Level`,
+    rangWeiter: (fehlt: number) => `Noch ${fehlt} XP bis zum nächsten Level`,
     rangGesamt: (xp: number) => `${xp} XP insgesamt`,
     rangSammlung: (verdient: number, gesamt: number) =>
       `${verdient} von ${gesamt} Abzeichen`,
@@ -22,7 +22,7 @@ export const STR = defineStrings(
     pctCorrect: (pct: number) => `${pct} % richtig`,
     statHandsPlayed: 'Hände gespielt',
     handsWon: (n: number) => `${n} gewonnen`,
-    statStreak: 'Lern-Streak',
+    statStreak: 'Lernserie',
     streakDays: 'Tage in Folge',
     statSessions: 'Sessions erfasst',
     sessionsSub: 'im Bankroll-Tracker',

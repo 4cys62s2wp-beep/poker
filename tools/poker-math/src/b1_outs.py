@@ -296,8 +296,8 @@ BEISPIELE = [
     ("Flushdraw",                      "Flush draw",                    "Ah 7h", "Kh 4h 2c", "Flush"),
     ("Offene Straße",                  "Open-ended straight draw",      "9c 8d", "7h 6s 2c", "Straße"),
     ("Gutshot",                        "Gutshot",                       "9c 8d", "7h 5s 2c", "Straße"),
-    ("Zwei Überkarten",                "Two overcards",                 "Ac Kd", "9h 7s 2c", "Ein Paar"),
-    ("Flushdraw plus zwei Überkarten", "Flush draw plus two overcards", "Ah Kh", "9h 7h 2c", "Ein Paar"),
+    ("Zwei Overcards",                "Two overcards",                 "Ac Kd", "9h 7s 2c", "Ein Paar"),
+    ("Flushdraw plus zwei Overcards", "Flush draw plus two overcards", "Ah Kh", "9h 7h 2c", "Ein Paar"),
     ("Flushdraw plus offene Straße",   "Flush draw plus open-ender",    "9h 8h", "7h 6h 2c", "Straße"),
     ("Unterpaar sucht das Set",        "Underpair looking for a set",   "5c 5d", "Ah 9s 2c", "Drilling"),
     ("Set sucht das Full House",       "Set looking for the full house","9c 9d", "9h 7s 2c", "Full House"),
@@ -584,7 +584,7 @@ def befunde_zu_b1(zeilen: list[dict], beispiele: list[dict], nach_flop: int) -> 
     river_spanne_bei = max(
         zeilen, key=lambda z: z["river_nach_fehlschlag"] - z["river_unbedingt"])["outs"]
 
-    ueberkarten = next(b for b in beispiele if b["name"]["de"] == "Zwei Überkarten")
+    ueberkarten = next(b for b in beispiele if b["name"]["de"] == "Zwei Overcards")
 
     verbunden = zaehle_gegner_die_schlagen(VERBUNDEN["hand"], VERBUNDEN["board"])
     unverbunden = zaehle_gegner_die_schlagen(UNVERBUNDEN["hand"], UNVERBUNDEN["board"])
@@ -693,7 +693,7 @@ def befunde_zu_b1(zeilen: list[dict], beispiele: list[dict], nach_flop: int) -> 
         ),
         befund(
             "boardtreffer",
-            f"Zwei Überkarten haben {ueberkarten['outs_bis_zielkategorie']} Outs. "
+            f"Zwei Overcards haben {ueberkarten['outs_bis_zielkategorie']} Outs. "
             f"Zählt man Paare mit, die nur auf dem Board liegen, sind es "
             f"{ueberkarten['outs_mit_boardtreffern']}.",
             f"Two overcards have {ueberkarten['outs_bis_zielkategorie']} outs. "

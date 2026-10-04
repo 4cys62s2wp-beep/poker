@@ -89,8 +89,8 @@
       "gegenprobe": "phevaluator 0.6.0",
       "nachweis": "Über alle 2 598 960 Fünfkartenblätter gegen einen unabhängigen Evaluator aus den Spielregeln geprüft; siehe output/evaluator_auswahl.json und ENTSCHEIDUNGEN.md, E-012."
     },
-    "erzeugt_am": "2026-08-26T19:08:19+00:00",
-    "laufzeit_s": 0.089,
+    "erzeugt_am": "2026-10-04T08:37:44+00:00",
+    "laufzeit_s": 0.08,
     "umgebung": {
       "python": "3.11.15",
       "system": "Linux",
@@ -547,7 +547,7 @@
     },
     {
       "name": {
-        "de": "Zwei Überkarten",
+        "de": "Zwei Overcards",
         "en": "Two overcards"
       },
       "hand": "Ac Kd",
@@ -562,7 +562,7 @@
     },
     {
       "name": {
-        "de": "Flushdraw plus zwei Überkarten",
+        "de": "Flushdraw plus zwei Overcards",
         "en": "Flush draw plus two overcards"
       },
       "hand": "Ah Kh",
@@ -806,7 +806,7 @@
     },
     {
       "schluessel": "boardtreffer",
-      "aussage": "Zwei Überkarten haben 6 Outs. Zählt man Paare mit, die nur auf dem Board liegen, sind es 15.",
+      "aussage": "Zwei Overcards haben 6 Outs. Zählt man Paare mit, die nur auf dem Board liegen, sind es 15.",
       "aussage_en": "Two overcards have 6 outs. Counting pairs that sit on the board alone, it is 15.",
       "beleg": {
         "richtig_gezaehlt": 6,

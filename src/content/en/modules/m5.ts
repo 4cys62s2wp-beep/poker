@@ -5,7 +5,7 @@ const m5: Module = {
   title: 'Advanced Concepts',
   subtitle: 'Ranges, GTO, blockers, and tournament strategy',
   icon: '🧠',
-  level: 'Profi',
+  level: 'Experte',
   lessons: [
     {
       id: 'm5-l1',

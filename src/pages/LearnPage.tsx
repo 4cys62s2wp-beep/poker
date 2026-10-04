@@ -19,7 +19,7 @@ import { isFreeModule } from '../lib/pro/plan';
 const LEVEL_PILL: Record<string, string> = {
   Einsteiger: 'ok',
   Fortgeschritten: 'info',
-  Profi: 'gold',
+  Experte: 'gold',
 };
 
 interface SearchHit {

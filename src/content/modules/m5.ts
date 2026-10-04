@@ -5,7 +5,7 @@ const m5: Module = {
   title: 'Fortgeschrittene Konzepte',
   subtitle: 'Ranges, GTO, Blocker und Turnierstrategie',
   icon: '🧠',
-  level: 'Profi',
+  level: 'Experte',
   lessons: [
     {
       id: 'm5-l1',
@@ -247,7 +247,7 @@ const m5: Module = {
         {
           heading: 'Der Klassiker: Das nackte A♠ auf dem Flush-Board',
           body:
-            'Das bekannteste Blocker-Beispiel: Auf einem Board mit drei Pik-Karten – etwa 9♠ 6♠ 2♠ – hältst du A♠ ohne zweite Pik-Karte, zum Beispiel A♠ K♦.\n\nZwei Effekte greifen gleichzeitig. Erstens: Der Gegner kann den **Nut Flush unmöglich halten**, denn die dafür nötige Karte liegt in deiner Hand. Seine Calling-Range gegen große Bets verliert damit ihre Spitze. Zweitens: Du kannst den Nut Flush glaubwürdig **repräsentieren** – aus Sicht des Gegners ist A♠ X♠ ein zentraler Teil deiner möglichen Value-Range.\n\nDeshalb sind Hände mit dem nackten Nut-Blocker erstklassige Bluff-Kandidaten auf monotonen Boards und auf Boards, auf denen der Flush-Draw am Turn oder River ankommt: Du bettest oder raist groß und setzt Hände wie kleine Flushes, Sets und Overpairs unter maximalen Druck.\n\nDie gleiche Logik funktioniert abgeschwächt mit dem K♠ als Second-Nut-Blocker. Wichtig bleibt aber die Range-Logik aus Lektion 1: Der Blocker macht den Bluff besser, nicht automatisch gut. Gegen einen Gegner, der ohnehin nie einen Flush foldet, hilft dir das schönste A♠ nichts – dann bettest du es lieber gar nicht erst als Bluff.',
+            'Das bekannteste Blocker-Beispiel: Auf einem Board mit drei Pik-Karten – etwa 9♠ 6♠ 2♠ – hältst du A♠ ohne zweite Pik-Karte, zum Beispiel A♠ K♦.\n\nZwei Effekte greifen gleichzeitig. Erstens: Der Gegner kann den **Nut Flush unmöglich halten**, denn die dafür nötige Karte liegt in deiner Hand. Seine Calling-Range gegen große Bets verliert damit ihre Spitze. Zweitens: Du kannst den Nut Flush glaubwürdig **repräsentieren** – aus Sicht des Gegners ist A♠ X♠ ein zentraler Teil deiner möglichen Value-Range.\n\nDeshalb sind Hände mit dem nackten Nut-Blocker erstklassige Bluff-Kandidaten auf monotonen Boards und auf Boards, auf denen der Flushdraw am Turn oder River ankommt: Du bettest oder raist groß und setzt Hände wie kleine Flushes, Sets und Overpairs unter maximalen Druck.\n\nDie gleiche Logik funktioniert abgeschwächt mit dem K♠ als Second-Nut-Blocker. Wichtig bleibt aber die Range-Logik aus Lektion 1: Der Blocker macht den Bluff besser, nicht automatisch gut. Gegen einen Gegner, der ohnehin nie einen Flush foldet, hilft dir das schönste A♠ nichts – dann bettest du es lieber gar nicht erst als Bluff.',
           cards: ['As', 'Kd', '9s', '6s', '2s'],
           tip: 'Merke dir die Hierarchie auf Flush-Boards: Der Nut-Blocker ist zum Bluffen wertvoll, weil er die stärkste Calling-Hand entfernt UND deine Story glaubwürdig macht. Beides zusammen gibt es bei kaum einem anderen Blocker-Typ.',
         },

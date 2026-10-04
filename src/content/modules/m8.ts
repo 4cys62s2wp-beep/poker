@@ -507,7 +507,7 @@ const m8: Module = {
         {
           question: 'Dein Gegner callt deine Turn-Bet ohne jede Denkzeit (Insta-Call). Welche Handklasse wird dadurch am unwahrscheinlichsten?',
           options: [
-            'Ein Flush Draw',
+            'Ein Flushdraw',
             'Ein mittleres Paar',
             'Ein Monster wie ein Set, das ein Raise erwogen hätte',
             'Ein schwacher Bluffcatcher',
@@ -582,7 +582,7 @@ const m8: Module = {
         {
           heading: 'Equity-Rechner richtig nutzen',
           body:
-            'Ein **Equity-Rechner** (wie der Trainer in dieser App) berechnet, wie oft eine Hand oder Range gegen eine andere gewinnt. Er ist das wichtigste Einsteiger-Study-Tool – wenn du ihn richtig einsetzt:\n\n- **Hand gegen Range, nicht Hand gegen Hand**: „Mein Top Pair gegen sein Set“ zu rechnen ist Ergebnis-Denken. Die richtige Frage lautet: „Mein Top Pair gegen alle Hände, die er hier plausibel spielt.“ Weise dem Gegner eine ehrliche Range zu und rechne dagegen.\n- **Standard-Matchups auswendig lernen**: Einige Zahlen solltest du im Schlaf kennen, z. B.: Flush Draw am Flop trifft bis zum River rund 35 %, ein offenes Straight Draw rund 31 %. Ein Overpair gegen ein kleineres Paar liegt vor dem Flop bei etwa 80 %, zwei Overcards gegen ein Paar (das klassische „Coinflip“ wie A♣ K♦ gegen 8♠ 8♥) bei etwa 45 zu 55.\n- **Mit Pot Odds verbinden**: Equity allein entscheidet nichts. Erst der Vergleich mit dem Preis (Pot Odds) macht daraus eine Entscheidung: 25 % Equity sind ein klarer Call, wenn du nur 15 % brauchst – und ein klarer Fold, wenn du 33 % brauchst.\n\nNutze den Rechner im Review für jede markierte Hand: Erst schätzen, dann rechnen. Die Differenz zwischen Schätzung und Ergebnis ist dein Lernfortschritt – mit der Zeit brauchst du den Rechner für Standardspots gar nicht mehr.',
+            'Ein **Equity-Rechner** (wie der Trainer in dieser App) berechnet, wie oft eine Hand oder Range gegen eine andere gewinnt. Er ist das wichtigste Einsteiger-Study-Tool – wenn du ihn richtig einsetzt:\n\n- **Hand gegen Range, nicht Hand gegen Hand**: „Mein Top Pair gegen sein Set“ zu rechnen ist Ergebnis-Denken. Die richtige Frage lautet: „Mein Top Pair gegen alle Hände, die er hier plausibel spielt.“ Weise dem Gegner eine ehrliche Range zu und rechne dagegen.\n- **Standard-Matchups auswendig lernen**: Einige Zahlen solltest du im Schlaf kennen, z. B.: Flushdraw am Flop trifft bis zum River rund 35 %, ein offenes Straight Draw rund 31 %. Ein Overpair gegen ein kleineres Paar liegt vor dem Flop bei etwa 80 %, zwei Overcards gegen ein Paar (das klassische „Coinflip“ wie A♣ K♦ gegen 8♠ 8♥) bei etwa 45 zu 55.\n- **Mit Pot Odds verbinden**: Equity allein entscheidet nichts. Erst der Vergleich mit dem Preis (Pot Odds) macht daraus eine Entscheidung: 25 % Equity sind ein klarer Call, wenn du nur 15 % brauchst – und ein klarer Fold, wenn du 33 % brauchst.\n\nNutze den Rechner im Review für jede markierte Hand: Erst schätzen, dann rechnen. Die Differenz zwischen Schätzung und Ergebnis ist dein Lernfortschritt – mit der Zeit brauchst du den Rechner für Standardspots gar nicht mehr.',
           cards: ['Ac', 'Kd', '8s', '8h'],
         },
         {

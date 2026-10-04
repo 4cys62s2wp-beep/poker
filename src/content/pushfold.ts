@@ -83,7 +83,7 @@ export const PUSH_CHARTS: PushChart[] = [
 
 export const PUSH_STACK_INFO: Record<PushStack, string> = {
   '10bb':
-    'Mit rund 10 Big Blinds ist das Standard-Raise-Spiel fast tot: Wer eröffnet, ist praktisch committed. Deshalb schiebst du deine spielbaren Hände direkt all-in – maximaler Fold-Druck, keine schwierigen Postflop-Spots.',
+    'Mit rund 10 Big Blinds ist das Standard-Raise-Spiel fast tot: Wer eröffnet, ist praktisch committed. Deshalb gehst du mit deinen spielbaren Händen direkt all-in – maximaler Fold-Druck, keine schwierigen Postflop-Spots.',
   '5bb':
-    'Mit 5 Big Blinds oder weniger ist jede Hand fast ein Münzwurf gegen die Blinds. Die Shove-Ranges werden extrem breit – vor allem im Small Blind, wo du gegen eine einzige Zufallshand oft einfach vorne bist.',
+    'Mit 5 Big Blinds oder weniger ist jede Hand fast ein Münzwurf gegen die Blinds. Die All-in-Ranges werden extrem breit – vor allem im Small Blind, wo du gegen eine einzige Zufallshand oft einfach vorne bist.',
 };

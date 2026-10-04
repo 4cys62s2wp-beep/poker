@@ -11,9 +11,9 @@ export const STR = defineStrings(
 
     handLabel: 'Deine Hand',
     flopLabel: 'Flop',
-    potLabel: 'Im Topf',
+    potLabel: 'Im Pot',
     betLabel: 'Er setzt',
-    endpotLabel: 'Topf danach',
+    endpotLabel: 'Pot danach',
     bb: 'BB',
 
     question: 'Lohnt der Call?',

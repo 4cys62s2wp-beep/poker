@@ -304,7 +304,7 @@ const glossary: GlossaryEntry[] = [
     definition:
       'An unfinished hand that still needs the right cards to become strong, such as a flush draw or a straight draw. Draws are evaluated using outs, pot odds, and implied odds.',
     category: 'Grundlagen',
-    related: ['Outs', 'Flush Draw', 'OESD'],
+    related: ['Outs', 'Flushdraw', 'OESD'],
   },
   {
     term: 'Dry Board',
@@ -374,10 +374,10 @@ const glossary: GlossaryEntry[] = [
     definition:
       'Five cards of the same suit, in any order. A flush beats a straight and loses to a full house; if several players hold a flush, the highest card decides.',
     category: 'Grundlagen',
-    related: ['Flush Draw', 'Full House', 'Straight'],
+    related: ['Flushdraw', 'Full House', 'Straight'],
   },
   {
-    term: 'Flush Draw',
+    term: 'Flushdraw',
     definition:
       'Four cards of one suit with nine outs to make the flush. On the flop, a flush draw completes by the river about 35 percent of the time and is excellent material for semi-bluffs.',
     category: 'Grundlagen',
@@ -836,7 +836,7 @@ const glossary: GlossaryEntry[] = [
     definition:
       'A bet with a draw that is currently behind but can become the best hand. Semi-bluffs win in two ways: immediately when the opponent folds, or later by hitting the draw.',
     category: 'Strategie',
-    related: ['Bluff', 'Fold Equity', 'Flush Draw'],
+    related: ['Bluff', 'Fold Equity', 'Flushdraw'],
   },
   {
     term: 'Set',
@@ -969,7 +969,7 @@ const glossary: GlossaryEntry[] = [
     definition:
       'Two starting cards of the same suit, written with an s as in AKs. Suited hands have four combos and, thanks to their flush potential, more equity and playability than offsuit hands.',
     category: 'Grundlagen',
-    related: ['Offsuit', 'Suited Connectors', 'Flush Draw'],
+    related: ['Offsuit', 'Suited Connectors', 'Flushdraw'],
   },
   {
     term: 'Suited Connectors',

@@ -98,7 +98,7 @@ Doppelvergaben in Icon.tsx auflösen, dafür 6–8 neue Symbole (Tisch, Ranglist
 
 </details>
 
-### [ ] 1.7 Eine Begriffsliste mit Test: jede Pokeraktion hat genau ein Wort  
+### [x] 1.7 Eine Begriffsliste mit Test: jede Pokeraktion hat genau ein Wort  
 *Wirkung 5 · Aufwand M*
 
 src/i18n/begriffe.ts mit bevorzugten und verbotenen Begriffen anlegen, dazu einen Test nach dem Muster von typografie.test.ts über alle de-Strings. Zuerst die Fälle, in denen ein Bildschirm zwei Wörter benutzt: Live-Coach-Umschalter „Noch kein Raise“ / „Jemand hat erhöht“ (coach.ts), Übungstisch-Knopf „Raise …“ gegen Verlauf „erhöht auf 7“ (play.ts, engine.ts:115), Push/All-in/Shove/schieben (pushfoldtrainer.ts), Topf/Pot (potoddsdrill.ts gegen potoddstrainer.ts). Danach Flushdraw (82/13/9 Schreibweisen), Überkarten/Overcards, KI-Gegner/Computergegner, Dealer-Button/Dealer-Knopf. Die Drill-Zugbilder in tools/poker-math umbenennen und npm run daten laufen lassen, nicht die JSON von Hand ändern (E-020). „folded“ zu „foldet“ (stats.ts hints.wtsd.low). Fortschrittswörter: „Stufe“ für die Zahl, „Rang“ für den Titel, „Serie“ statt „Streak“, „Pro“ nur für das Abo; die Marke „Profi“ an Modul 5 („Fortgeschrittene Konzepte“) in „Experte“ ändern oder das Modul umbenennen.

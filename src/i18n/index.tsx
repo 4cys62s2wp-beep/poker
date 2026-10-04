@@ -68,7 +68,7 @@ export function defineStrings<T>(de: T, en: T): Record<Lang, T> {
 /** Schwierigkeits-Label der Module (die Werte selbst bleiben als Schlüssel deutsch). */
 export function levelLabel(level: string, lang: Lang): string {
   if (lang === 'de') return level;
-  const map: Record<string, string> = { Einsteiger: 'Beginner', Fortgeschritten: 'Advanced', Profi: 'Pro' };
+  const map: Record<string, string> = { Einsteiger: 'Beginner', Fortgeschritten: 'Advanced', Experte: 'Expert' };
   return map[level] ?? level;
 }
 

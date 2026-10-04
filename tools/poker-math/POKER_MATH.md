@@ -163,7 +163,7 @@ dem Board und gehört jedem am Tisch.
 
 Zum Vergleich stehen in `b1_outs.json` beide Zählweisen nebeneinander:
 
-*Zwei Überkarten haben 6 Outs. Zählt man Paare mit, die nur auf dem Board
+*Zwei Overcards haben 6 Outs. Zählt man Paare mit, die nur auf dem Board
 liegen, sind es 15.*
 
 ---
@@ -294,7 +294,7 @@ abschreibt, ohne zu wissen welche, irrt um genau den Betrag oben.
 
 ### Was als Out zählt
 
-*Zwei Überkarten haben 6 Outs. Zählt man Paare mit, die nur auf dem Board
+*Zwei Overcards haben 6 Outs. Zählt man Paare mit, die nur auf dem Board
 liegen, sind es 15.*
 
 Die Definition dahinter steht oben im Abschnitt „Saubere Outs": Die Karte muss

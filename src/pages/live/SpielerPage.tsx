@@ -35,7 +35,6 @@ export function SpielerPage() {
   return (
     <div className="page">
       <PageHeader
-        eyebrow={L.bereich}
         title={L.spielerTitel(uebersicht?.name ?? name)}
         sub={uebersicht ? L.spielerSub(uebersicht.abende, uebersicht.siege) : undefined}
         backTo="/session/abende"

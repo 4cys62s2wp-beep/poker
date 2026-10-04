@@ -10,7 +10,7 @@ export const STR = defineStrings(
   {
     eyebrow: 'Nachschlagen',
     title: 'Schnell etwas wissen',
-    sub: 'Such oder tipp – zwei Schritte bis zur Antwort.',
+    sub: 'Hand, Begriff oder Werkzeug finden.',
     backHome: 'Start',
 
     searchLabel: 'Suchen',
@@ -49,7 +49,7 @@ export const STR = defineStrings(
   {
     eyebrow: 'Reference',
     title: 'Look something up',
-    sub: 'Search or tap – two steps to an answer.',
+    sub: 'Find a hand, a term or a tool.',
     backHome: 'Home',
 
     searchLabel: 'Search',

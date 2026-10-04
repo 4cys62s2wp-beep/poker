@@ -70,7 +70,6 @@ export function PushFoldTrainer() {
           {L.back}
         </Link>
         <div className="page-header">
-          <div className="eyebrow">{L.eyebrow}</div>
           <h1>{L.title}</h1>
           <p className="sub">{L.sub}</p>
         </div>
@@ -87,7 +86,6 @@ export function PushFoldTrainer() {
         {L.back}
       </Link>
       <div className="page-header">
-        <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>
       </div>

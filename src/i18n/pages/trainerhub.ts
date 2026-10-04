@@ -2,7 +2,6 @@ import { defineStrings } from '..';
 
 export const STR = defineStrings(
   {
-    eyebrow: 'Wissen wird Können',
     title: 'Trainer',
     sub: 'Wissen wird erst durch Wiederholung zur Fähigkeit. Jede richtige Antwort bringt 5 XP – und lange Serien bringen Abzeichen.',
     dailyQuiz: 'Tages-Quiz',
@@ -40,7 +39,6 @@ export const STR = defineStrings(
     },
   },
   {
-    eyebrow: 'Turn Knowledge into Skill',
     title: 'Trainers',
     sub: 'Knowledge only becomes skill through repetition. Every correct answer earns 5 XP – and long streaks earn badges.',
     dailyQuiz: 'Daily Quiz',

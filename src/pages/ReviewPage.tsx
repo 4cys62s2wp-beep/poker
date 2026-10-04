@@ -75,7 +75,6 @@ export function ReviewPage() {
     <div>
       <BackLink to="/lernen" label={NAV[lang].navLearn} />
       <div className="page-header">
-        <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>
         <p className="sub">
           {L.sub}

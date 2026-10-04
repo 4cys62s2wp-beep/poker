@@ -16,7 +16,7 @@ export const STR = defineStrings(
     chipsWhen: 'Bevor die erste Karte fällt',
 
     payoutTitle: 'Auszahlung',
-    payoutWhen: 'Bevor gespielt wird, nicht danach',
+    payoutWhen: 'Vorab festlegen, wer wie viel bekommt',
 
 
 
@@ -56,7 +56,7 @@ export const STR = defineStrings(
     chipsWhen: 'Before the first card',
 
     payoutTitle: 'Payouts',
-    payoutWhen: 'Before play starts, not after',
+    payoutWhen: 'Settle up front who gets what',
 
 
 

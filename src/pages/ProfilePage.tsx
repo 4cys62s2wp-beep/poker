@@ -93,7 +93,6 @@ export function ProfilePage() {
   return (
     <div>
       <div className="page-header">
-        <div className="eyebrow">{P.eyebrow}</div>
         <h1>{P.title}</h1>
         <p className="sub">
           {P.sub}

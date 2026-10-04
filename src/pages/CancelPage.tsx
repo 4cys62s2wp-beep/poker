@@ -57,7 +57,6 @@ export function CancelPage() {
   return (
     <div>
       <div className="page-header">
-        <div className="eyebrow">{L.navLegal}</div>
         <h1>{L.cancelTitle}</h1>
         <p className="sub">{L.cancelSub}</p>
       </div>

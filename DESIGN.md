@@ -1306,3 +1306,23 @@ Seit E-080.
 
 Test: `begriffe.test.ts`.
 
+### Regel 12.10 — Die Zeile über dem Titel nennt den Bereich oder entfällt
+
+Seit E-081.
+
+1. **Die Augenbraue nennt den Bereich** — Lernen, Nachschlagen, Live-Session —
+   und steht nur auf der obersten Seite eines Bereichs, deren Titel den Bereich
+   nicht selbst nennt („Lernpfad", „Schnell etwas wissen", „Der Abend läuft").
+2. **Auf jeder tieferen Seite entfällt sie.** Dort steht über dem Titel schon
+   „← Lernen"; die Zeile zu wiederholen kostet Höhe und sagt nichts.
+3. **Kein Englisch, keine Slogans, keine Beschreibung des Inhalts** — dafür
+   sind der Titel und der Untertitel da.
+4. **Der Untertitel sagt, was man hier tut oder bekommt**, nicht warum die
+   Oberfläche so gebaut ist. „Getippt wird auf einen Namen, nicht in ein
+   Suchfeld" erklärt dem Nutzer ein Entwurfsargument; „Tippe einen Namen an,
+   um alle Abende dieser Person zu sehen" sagt, was passiert.
+5. **Du statt „wir" und „die App".** Rechtstexte sprechen für den Betreiber
+   und bleiben ausgenommen.
+
+Test: `augenbraue.test.ts`.
+

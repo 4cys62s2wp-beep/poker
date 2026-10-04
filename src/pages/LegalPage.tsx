@@ -39,7 +39,6 @@ export function LegalPage() {
     <div>
       <BackLink to="/profil" label={NAV[lang].profile} />
       <div className="page-header">
-        <div className="eyebrow">{L.navLegal}</div>
         <h1>{L.title}</h1>
         <p className="sub">{L.sub}</p>
       </div>

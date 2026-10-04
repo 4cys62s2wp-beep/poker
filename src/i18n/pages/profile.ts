@@ -3,7 +3,6 @@ import { defineStrings } from '..';
 /* Texte der Profilseite (src/pages/ProfilePage.tsx). */
 export const STR = defineStrings(
   {
-    eyebrow: 'Dein Weg',
     title: 'Profil & Fortschritt',
     sub: 'Dein Fortschritt wird doppelt auf diesem Gerät gesichert – und mit Konto zusätzlich in der Cloud.',
 
@@ -88,7 +87,6 @@ export const STR = defineStrings(
       'Version 2.2 · Eine Lern- und Trainings-App für Poker – ohne Echtgeld und ohne Tracking. Poker ist ein Geschicklichkeitsspiel mit erheblichem Glücksanteil: Spiele verantwortungsvoll und setze dir Grenzen, bevor du an einen echten Tisch gehst (Modul „Psychologie & Bankroll“).',
   },
   {
-    eyebrow: 'Your Journey',
     title: 'Profile & Progress',
     sub: 'Your progress is saved twice on this device – and additionally in the cloud with an account.',
 

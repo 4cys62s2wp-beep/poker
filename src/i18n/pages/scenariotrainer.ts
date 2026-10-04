@@ -3,7 +3,6 @@ import { defineStrings } from '..';
 export const STR = defineStrings(
   {
     back: '← Trainer',
-    eyebrow: 'Komplette Spots analysieren',
     title: 'Szenario-Trainer',
     sub: '6-max Cash · 100 bb, falls nicht anders angegeben',
     streak: (n: number) => `Serie: ${n}`,
@@ -16,7 +15,6 @@ export const STR = defineStrings(
   },
   {
     back: '← Trainers',
-    eyebrow: 'Analyze Complete Spots',
     title: 'Scenario Trainer',
     sub: '6-max cash · 100 bb unless stated otherwise',
     streak: (n: number) => `Streak: ${n}`,

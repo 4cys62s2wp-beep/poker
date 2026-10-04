@@ -4,7 +4,6 @@ import { defineStrings } from '..';
    kommen sprachabhängig aus lib/poker/coach.ts bzw. lib/poker/analysis.ts. */
 export const STR = defineStrings(
   {
-    eyebrow: 'Dein Berater am Tisch',
     title: 'Live-Coach',
     sub: 'Gib deine Hand ein und erhalte Street für Street eine klare Empfehlung: setzen, callen oder aussteigen – zugeschnitten auf lockere Low-Stakes-Runden.',
 
@@ -17,7 +16,7 @@ export const STR = defineStrings(
     limpersQuestion: 'Wie viele sind nur mitgegangen (Limper)?',
     toHand: 'Weiter: Hand eingeben',
     setupNote:
-      'Hinweis: Gedacht für private Runden und fürs Training. In Casinos und Cardrooms ist Handy-Hilfe am Tisch nicht erlaubt – dort bleibt die App in der Tasche.',
+      'Hinweis: Gedacht für private Runden und fürs Training. In Casinos und Cardrooms ist Handy-Hilfe am Tisch nicht erlaubt – dort bleibt das Handy in der Tasche.',
 
     // Karteneingabe
     holeLabel: 'Deine beiden Karten',
@@ -68,7 +67,6 @@ export const STR = defineStrings(
     progressLine: 'Hand → Preflop → Flop → Turn → River',
   },
   {
-    eyebrow: 'Your advisor at the table',
     title: 'Live Coach',
     sub: 'Enter your hand and get a clear recommendation street by street: bet, call, or get out – tailored to loose low-stakes games.',
 

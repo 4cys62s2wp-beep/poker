@@ -25,7 +25,7 @@ export function AbendPage() {
   if (!abend) {
     return (
       <div className="page">
-        <PageHeader eyebrow={L.bereich} title={L.unbekannterAbend}
+        <PageHeader title={L.unbekannterAbend}
           backTo="/session/abende" backLabel={L.zurueckListe} />
       </div>
     );
@@ -39,7 +39,7 @@ export function AbendPage() {
 
   return (
     <div className="page">
-      <PageHeader eyebrow={L.bereich} title={datum}
+      <PageHeader title={datum}
         backTo="/session/abende" backLabel={L.zurueckListe} />
 
       <div className="abend-kopfzahlen">

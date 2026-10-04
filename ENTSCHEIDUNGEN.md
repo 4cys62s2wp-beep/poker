@@ -4656,3 +4656,45 @@ Gemessen: Design (182), Bedienbar (180), Daumen, Quer, Durchgang — null
 Befunde. `begriffe.test.ts` hält es fest (29 Prüfungen); die Topf-Regel mit
 Gegenprobe rot gesehen.
 
+
+## E-081 · 2026-10-04 · Die Zeile über dem Titel hat nur noch eine Aufgabe
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 1.8).
+
+**Gefunden:** Über fast jedem Titel stand ein Satz, der mit dem Ort nichts zu tun
+hatte: „SPACED REPETITION" (englisch), „DEIN CURRICULUM", „TURNIER-ENDGAME",
+„WISSEN WIRD KÖNNEN" (Slogan), „PokerMentor Pro", „Komplette Spots
+analysieren" (Beschreibung) — und auf Seiten mit „← Nachschlagen" darüber noch
+einmal „NACHSCHLAGEN". 17 Seiten, 16 verschiedene Gedanken. Dazu erklärten drei
+Untertitel das Design statt dem Nutzer etwas zu sagen („Getippt wird auf einen
+Namen, nicht in ein Suchfeld", „Such oder tipp – zwei Schritte bis zur
+Antwort", „Bevor gespielt wird, nicht danach"); der Bankroll-Tracker belehrte
+(„Wer seine Ergebnisse nicht kennt, kann sich nicht verbessern").
+
+**Entschieden:** Die Augenbraue nennt den Bereich und steht nur auf den drei
+obersten Bereichsseiten, deren Titel ihn nicht nennt; sonst entfällt sie. Die
+Untertitel sagen, was man tut oder bekommt. Die Linie vor der Augenbraue trug
+noch Gold (ein Rest aus der Zeit vor E-076) und läuft jetzt in der
+Bereichsfarbe.
+
+**Verworfene Alternative:** Die Augenbraue überall aus dem Bereich ableiten
+(`bereichVon(pfad)`) und auf jeder Seite zeigen. Das wäre einheitlich, aber auf
+dreißig Seiten stünde dann über dem Titel dasselbe Wort, das gleich darüber im
+Rückweg steht — Wiederholung als System.
+
+**Zweite verworfene Alternative:** Alle englischen Augenbrauen nur übersetzen.
+„Wiederholung" statt „Spaced Repetition" wäre besser, aber der Titel der Seite
+heißt schon „Wiederholen": Die Zeile hätte weiter nichts getragen.
+
+**Stimme:** „Wir" und „die App" sind aus den Texten der Oberfläche heraus
+(Konto-E-Mails, Statistik, Coach, Bezahlhinweis). Rechtstexte bleiben, wie sie
+sind: Dort spricht der Betreiber. Der Hinweis zum Drucken im Auszahlungs-Rechner
+bleibt ebenfalls, weil er eine Handlungsanweisung ist.
+
+Gemessen: Seite für Seite vorher/nachher angesehen (Nachschlagen,
+Wiederholen, Chip-Rechner). Der Durchgang fand eine Folge: Der erste Entwurf
+des neuen Untertitels der Nachschlagen-Seite brach auf dem Bezugsgerät in eine
+zweite Zeile um und schob den siebten Weg 26 Pixel unter die Kante (6 statt 7
+sichtbar). Jetzt eine Zeile: „Hand, Begriff oder Werkzeug finden." —
+Textlänge ist Layout. `augenbraue.test.ts` hält es fest (6 Prüfungen).
+

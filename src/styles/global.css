@@ -780,7 +780,7 @@ table.data td {
   content: '';
   width: 22px;
   height: 1px;
-  background: linear-gradient(90deg, var(--auszeichnung), transparent);
+  background: linear-gradient(90deg, var(--bereich), transparent);
 }
 
 .page-header {

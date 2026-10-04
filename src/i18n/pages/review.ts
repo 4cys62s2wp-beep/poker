@@ -3,7 +3,6 @@ import { defineStrings } from '..';
 /* Texte der Wiederholen-Seite (Spaced Repetition). */
 export const STR = defineStrings(
   {
-    eyebrow: 'Spaced Repetition',
     title: 'Wiederholen',
     sub: 'Fragen, die du in Lektions-Quizzen falsch beantwortet hast, landen automatisch in diesem Stapel und kommen in wachsenden Abständen wieder – bis du sie dreimal in Folge richtig hast. So bleibt Wissen wirklich hängen.',
     due: (n: number) => `${n} fällig`,
@@ -20,7 +19,6 @@ export const STR = defineStrings(
     finish: 'Fertig',
   },
   {
-    eyebrow: 'Spaced Repetition',
     title: 'Review',
     sub: 'Questions you got wrong in lesson quizzes land in this deck automatically and come back at growing intervals – until you get them right three times in a row. That is how knowledge really sticks.',
     due: (n: number) => `${n} due`,

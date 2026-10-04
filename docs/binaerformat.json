@@ -1,5 +1,5 @@
 {
-  "gemessen_am": "2026-09-07T04:01:09.566Z",
+  "gemessen_am": "2026-10-04T08:53:43.124Z",
   "laeufe": 9,
   "groesse": {
     "vorher": {
@@ -19,16 +19,16 @@
   },
   "ladezeit": {
     "json": {
-      "median_ms": 105.3,
-      "kleinste_ms": 101.4,
-      "groesste_ms": 161.6
+      "median_ms": 138.2,
+      "kleinste_ms": 111.6,
+      "groesste_ms": 254.7
     },
     "binaer": {
-      "median_ms": 5.3,
-      "kleinste_ms": 4.9,
-      "groesste_ms": 7.9
+      "median_ms": 6.5,
+      "kleinste_ms": 5,
+      "groesste_ms": 12.5
     },
-    "faktor": 19.9
+    "faktor": 21.3
   },
   "handpaare": 14365,
   "konfigurationen_ausgeliefert": 25473

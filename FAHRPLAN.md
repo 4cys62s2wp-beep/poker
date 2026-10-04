@@ -110,7 +110,7 @@ src/i18n/begriffe.ts mit bevorzugten und verbotenen Begriffen anlegen, dazu eine
 
 </details>
 
-### [ ] 1.8 Regeln für Augenbraue und Untertitel: Nutzen statt Designbegründung  
+### [x] 1.8 Regeln für Augenbraue und Untertitel: Nutzen statt Designbegründung  
 *Wirkung 3 · Aufwand S*
 
 Regel in DESIGN.md: Die Augenbraue nennt den Bereich oder entfällt; kein Englisch, keine Slogans. Weg fallen „SPACED REPETITION“, „DEIN CURRICULUM“, „TURNIER-ENDGAME“, „WISSEN WIRD KÖNNEN“, und dort, wo darüber schon „← Nachschlagen“ steht, entfällt die Wiederholung. Untertitel, die das Design begründen, ersetzen: nachschlagen.ts „Such oder tipp – zwei Schritte …“, abende.ts listeSub „Getippt wird auf einen Namen …“, Session-Karte „Bevor gespielt wird, nicht danach“. Die Belehrung im Bankroll („Wer seine Ergebnisse nicht kennt …“) ersetzen. Die Stimme durchgehend in der Du-Form statt „wir“ und „die App“. printHint in payout.ts bleibt, weil er eine Handlungsanweisung ist.

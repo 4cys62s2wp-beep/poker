@@ -3,7 +3,6 @@ import { defineStrings } from '..';
 export const STR = defineStrings(
   {
     // Upgrade-Seite
-    eyebrow: 'PokerMentor Pro',
     title: 'Hör auf zu raten. Fang an zu wissen.',
     sub: 'Die Gratis-Version bringt dir die Grundlagen bei. Pro macht dich zu dem Spieler, gegen den am Tisch keiner gern sitzt.',
     monthly: 'Monatlich',
@@ -73,7 +72,7 @@ export const STR = defineStrings(
       { q: 'Kann ich jederzeit kündigen?', a: 'Ja. Ein Klick im Kundenportal, keine Frist, keine Rückfragen. Du behältst Pro bis zum Ende des bezahlten Zeitraums.' },
       { q: 'Was passiert mit meinem Fortschritt, wenn ich kündige?', a: 'Nichts geht verloren. XP, Level, Abzeichen, Statistiken und deine Bankroll-Daten bleiben vollständig erhalten und lesbar – du siehst danach wieder die Gratis-Version.' },
       { q: 'Spiele ich hier um echtes Geld?', a: 'Nein, niemals. PokerMentor ist eine reine Lern-App mit Spielgeld. Es gibt kein Echtgeldspiel, keine Ein- oder Auszahlungen und keine Verbindung zu Glücksspielanbietern.' },
-      { q: 'Wie wird bezahlt?', a: 'Über Stripe – mit Apple Pay, Google Pay, Kreditkarte, PayPal oder SEPA-Lastschrift. Deine Zahlungsdaten sehen wir nie.' },
+      { q: 'Wie wird bezahlt?', a: 'Über Stripe – mit Apple Pay, Google Pay, Kreditkarte, PayPal oder SEPA-Lastschrift. Deine Zahlungsdaten bleiben bei Stripe – PokerMentor sieht sie nie.' },
       { q: 'Brauche ich ein Konto?', a: 'Für Pro ja, damit dein Abo auf allen Geräten funktioniert. Die Gratis-Version läuft auch komplett ohne Konto.' },
     ],
 
@@ -97,7 +96,6 @@ export const STR = defineStrings(
     upgradeNudge: 'Auf Pro upgraden',
   },
   {
-    eyebrow: 'PokerMentor Pro',
     title: 'Stop guessing. Start knowing.',
     sub: 'The free version teaches you the fundamentals. Pro turns you into the player nobody wants to sit next to.',
     monthly: 'Monthly',

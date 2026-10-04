@@ -3,7 +3,6 @@ import { defineStrings } from '..';
 /* Texte des Auszahlungs-Rechners (src/pages/session/PayoutPage.tsx). */
 export const STR = defineStrings(
   {
-    eyebrow: 'Live-Session',
     title: 'Auszahlung',
     sub: 'Wer bekommt am Ende wie viel? Diese Frage gehört an den Anfang des Abends – danach hat der Sieger die großzügigste Meinung.',
     back: 'Live-Session',
@@ -34,7 +33,6 @@ export const STR = defineStrings(
     printHint: 'Vor dem ersten Blatt zeigen, nicht nach dem letzten.',
   },
   {
-    eyebrow: 'Live session',
     title: 'Payouts',
     sub: 'Who gets what at the end? Settle it at the start of the night – afterwards the winner has the most generous opinion.',
     back: 'Live session',

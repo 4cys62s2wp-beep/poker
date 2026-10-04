@@ -7,7 +7,6 @@ export const STR = defineStrings(
   {
     navFriends: 'Freunde',
 
-    eyebrow: 'Gemeinsam',
     title: 'Freunde',
     sub: 'Sieh, wer gerade übt – und verabredet euch zum Trainieren.',
 
@@ -89,7 +88,6 @@ export const STR = defineStrings(
   {
     navFriends: 'Friends',
 
-    eyebrow: 'Together',
     title: 'Friends',
     sub: 'See who is practising right now – and meet up for a session.',
 

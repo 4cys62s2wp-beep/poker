@@ -43,7 +43,6 @@ export function PayoutPage() {
   return (
     <div>
       <PageHeader
-        eyebrow={L.eyebrow}
         title={L.title}
         sub={L.sub}
         backTo="/session"

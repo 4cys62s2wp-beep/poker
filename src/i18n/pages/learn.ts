@@ -3,7 +3,7 @@ import { defineStrings } from '..';
 /* Texte der Lernpfad-Übersicht. */
 export const STR = defineStrings(
   {
-    eyebrow: 'Dein Curriculum',
+    eyebrow: 'Lernen',
     title: 'Lernpfad',
     sub: 'Neun Module vom ersten Blatt bis zu Profi-Strategie und Varianten. Arbeite sie der Reihe nach durch – jede Lektion endet mit einem Quiz, das dein Verständnis prüft und XP bringt.',
     searchPlaceholder: 'Alle Lektionen durchsuchen … (z. B. „Pot Odds“, „Tilt“, „Squeeze“)',
@@ -45,7 +45,7 @@ export const STR = defineStrings(
     styleSub: 'Was deine Hände über dich verraten',
   },
   {
-    eyebrow: 'Your Curriculum',
+    eyebrow: 'Learn',
     title: 'Learning Path',
     sub: 'Nine modules from your first hand to pro strategy and variants. Work through them in order – every lesson ends with a quiz that checks your understanding and earns you XP.',
     searchPlaceholder: 'Search all lessons … (e.g. “Pot Odds”, “Tilt”, “Squeeze”)',

@@ -5,7 +5,6 @@ import { defineStrings } from '..';
    das Anzeige-Label über `categoryLabels`. */
 export const STR = defineStrings(
   {
-    eyebrow: 'Nachschlagen',
     title: 'Glossar',
     sub: (n: number) => `${n} Pokerbegriffe von A bis Z – damit du am Tisch jede Ansage verstehst.`,
     searchPlaceholder: 'Begriff suchen …',
@@ -26,7 +25,6 @@ export const STR = defineStrings(
     },
   },
   {
-    eyebrow: 'Look it up',
     title: 'Glossary',
     sub: (n: number) => `${n} poker terms from A to Z – so you understand every call-out at the table.`,
     searchPlaceholder: 'Search terms …',

@@ -3,9 +3,8 @@
 
 export const STR = {
   de: {
-    bereich: 'Live-Session',
     listeTitel: 'Frühere Abende',
-    listeSub: 'Getippt wird auf einen Namen, nicht in ein Suchfeld.',
+    listeSub: 'Tippe einen Namen an, um alle Abende dieser Person zu sehen.',
     leerTitel: 'Noch kein Abend aufgezeichnet.',
     leerSub: 'Der erste wird gespeichert, sobald ein Abend beendet wird.',
     abendEinrichten: 'Abend einrichten',
@@ -29,9 +28,8 @@ export const STR = {
     unbekannterAbend: 'Diesen Abend gibt es nicht mehr.',
   },
   en: {
-    bereich: 'Live session',
     listeTitel: 'Earlier evenings',
-    listeSub: 'You tap a name instead of typing into a search box.',
+    listeSub: 'Tap a name to see every evening with that person.',
     leerTitel: 'No evening recorded yet.',
     leerSub: 'The first one is kept as soon as an evening is finished.',
     abendEinrichten: 'Set up an evening',

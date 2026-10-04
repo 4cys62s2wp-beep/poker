@@ -49,7 +49,6 @@ export const STR = defineStrings(
     fixLogGrammar: fixDuGrammar,
 
     // Setup-Bildschirm
-    eyebrow: 'Am Tisch, ohne Risiko',
     title: 'Übungstisch',
     intro:
       "Spiele No-Limit Hold’em gegen Computergegner mit unterschiedlichen Spielstilen – mit Spielgeld und ohne Risiko. Der Coach-Modus zeigt dir live Equity und Pot Odds, damit du ein Gefühl für gute Entscheidungen entwickelst.",
@@ -139,7 +138,6 @@ export const STR = defineStrings(
     fixLogGrammar: fixYouGrammar,
 
     // Setup screen
-    eyebrow: 'At the table, risk-free',
     title: 'Practice Table',
     intro:
       "Play No-Limit Hold’em against AI opponents with different playing styles – with play money and no risk. Coach mode shows you live equity and pot odds so you develop a feel for good decisions.",

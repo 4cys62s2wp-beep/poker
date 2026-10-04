@@ -78,7 +78,6 @@ export function UpgradePage() {
   return (
     <div>
       <div className="page-header">
-        <div className="eyebrow">{L.eyebrow}</div>
         <h1>{pro ? L.activeTitle : L.title}</h1>
         <p className="sub">{pro ? L.activeSub : L.sub}</p>
       </div>

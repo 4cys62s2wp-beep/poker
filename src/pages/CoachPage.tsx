@@ -138,7 +138,6 @@ export function CoachPage() {
     <div>
       <BackLink to="/nachschlagen" label={NAV[lang].navLookup} />
       <div className="page-header">
-        <div className="eyebrow">{L.eyebrow}</div>
         <h1>{L.title}</h1>
         <p className="sub">
           {L.sub}

@@ -9,7 +9,6 @@ import type { ChipWarning } from '../../lib/chips';
      jede Funktion bekommt den Startstack in BB, auch wenn sie ihn nicht nutzt. */
 export const STR = defineStrings(
   {
-    eyebrow: 'Für den Pokerabend',
     title: 'Chip-Rechner',
     sub: 'Koffer aufmachen, Chips zählen, eintragen – und du bekommst sofort die faire Verteilung, den Startstack und passende Blinds. Auch wenn Chips fehlen oder ihr mehrere Koffer mischt.',
     playersQuestion: 'Wie viele Spieler seid ihr?',
@@ -53,7 +52,6 @@ export const STR = defineStrings(
     } as Record<ChipWarning, (stackBB: number) => string>,
   },
   {
-    eyebrow: 'For poker night',
     title: 'Chip Calculator',
     sub: 'Open the case, count your chips, type them in – and you instantly get a fair distribution, the starting stack and sensible blinds. Even if chips are missing or you’re mixing several sets.',
     playersQuestion: 'How many players are you?',

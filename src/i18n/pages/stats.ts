@@ -39,7 +39,7 @@ export const STR = defineStrings(
     axisPassiveSub: 'mehr Calls',
     styleUnknown: 'Noch nicht einzuordnen',
     styleUnknownBody: (need: number) =>
-      `Ab ${need} Händen zeigen wir dir hier, welcher Spielertyp du bist.`,
+      `Ab ${need} Händen siehst du hier, welcher Spielertyp du bist.`,
     styleNames: {
       rock: 'Rock',
       tag: 'TAG',

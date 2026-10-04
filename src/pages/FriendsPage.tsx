@@ -45,7 +45,6 @@ export function FriendsPage() {
     <>
       <BackLink to="/profil" label={NAV[lang].profile} />
       <div className="page-header">
-        <div className="eyebrow">{F.eyebrow}</div>
         <h1>{F.title}</h1>
         <p className="sub">{F.sub}</p>
       </div>

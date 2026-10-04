@@ -5,7 +5,7 @@ import { defineStrings } from '..';
 export const STR = defineStrings(
   {
     title: 'Bankroll-Tracker',
-    sub: 'Wer seine Ergebnisse nicht kennt, kann sich nicht verbessern. Erfasse jede Session ehrlich – live und online. Die Daten bleiben lokal auf deinem Gerät.',
+    sub: 'Halte jede Session ehrlich fest – live und online. Die Daten bleiben lokal auf deinem Gerät.',
     filterAll: 'Alle',
     filterOnline: 'Online',
     filterLive: 'Live',
@@ -47,7 +47,7 @@ export const STR = defineStrings(
   },
   {
     title: 'Bankroll Tracker',
-    sub: 'If you don’t know your results, you can’t improve. Log every session honestly – live and online. Your data stays local on your device.',
+    sub: 'Log every session honestly – live and online. Your data stays local on your device.',
     filterAll: 'All',
     filterOnline: 'Online',
     filterLive: 'Live',

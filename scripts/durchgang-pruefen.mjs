@@ -108,13 +108,15 @@ await schritt('Ergebnis erscheint, bevor irgendetwas beginnt', async () => {
   /* Der Auftrag verlangt keine Wartezeit zwischen Eingabe und Ergebnis: Die
      Vorschau steht schon da, während man noch tippt. */
   const gross = seite.locator('.einrichten-gross');
-  const stufen = seite.locator('.einrichten-stufen span');
+  const stufen = seite.locator('.einrichten-plan li');
   return {
     startchips: (await gross.innerText()).trim(),
     blindstufen: await stufen.count(),
-    erste_stufe: (await stufen.first().innerText()).trim(),
-    letzte_stufe: (await stufen.last().innerText()).trim(),
-    finale_satz: (await seite.locator('.einrichten-block p.hinweis').last().innerText()).trim(),
+    erste_stufe: (await stufen.first().locator('.plan-blinds').innerText()).trim(),
+    letzte_stufe: (await stufen.last().locator('.plan-blinds').innerText()).trim(),
+    zeitplan_mit_uhrzeit: /\d{1,2}[:.]\d{2}/.test((await stufen.first().locator('.plan-zeit').innerText())),
+    finale_satz: (await seite.locator('.einrichten-block').last().locator('p.hinweis').first().innerText()).trim(),
+    plan_ende: (await seite.locator('.einrichten-block').last().locator('p.hinweis').last().innerText()).trim(),
   };
 });
 
@@ -136,7 +138,21 @@ await schritt('Abend starten', async () => {
     gespeichert_spieler: gespeichert?.spieler?.length ?? null,
     gespeichert_startchips: gespeichert?.startchips ?? null,
     gespeichert_stufen: gespeichert?.stufen?.length ?? null,
+    /* Seit E-094 beginnt der Abend bereit und steht still: Die Uhr läuft erst,
+       wenn jemand „Uhr starten" tippt — sonst läuft die erste Stufe, während
+       noch Chips verteilt werden. */
+    startet_pausiert: gespeichert?.laeuft_seit === null,
+    marke: (await seite.locator('.tisch-pausiert').innerText()).trim(),
+  };
+});
+
+await schritt('Uhr starten setzt die Uhr in Gang', async () => {
+  await seite.getByRole('button', { name: 'Uhr starten' }).click();
+  await seite.waitForTimeout(400);
+  const gespeichert = await seite.evaluate((k) => JSON.parse(localStorage.getItem(k)), SCHLUESSEL);
+  return {
     laeuft: gespeichert?.laeuft_seit !== null,
+    marke_weg: await seite.locator('.tisch-pausiert').count() === 0,
   };
 });
 
@@ -339,22 +355,59 @@ await schritt('Ein Ereignis am Tisch erfassen', async () => {
   };
 });
 
+await schritt('Auszahlung übernimmt den laufenden Abend', async () => {
+  /* Wer den Abend in der App führt, tippt Spieler, Einsatz und Rebuys nicht
+     noch einmal ein (E-094). */
+  await seite.goto(`${GRUND}/#/session/auszahlung`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('#pa-spieler');
+  const knopf = seite.getByRole('button', { name: 'Aus dem laufenden Abend übernehmen' });
+  const angeboten = await knopf.count();
+  const hinweis = angeboten ? (await knopf.locator('xpath=preceding-sibling::span').innerText()).trim() : '';
+  if (angeboten) await knopf.click();
+  await seite.waitForTimeout(200);
+  const ergebnis = {
+    angeboten,
+    hinweis,
+    spieler: await seite.locator('#pa-spieler').inputValue(),
+    buyin: await seite.locator('#pa-buyin').inputValue(),
+    rebuys: await seite.locator('#pa-rebuys').inputValue(),
+    einheit_chips: await seite.getByRole('radio', { name: 'Chips' }).getAttribute('aria-checked'),
+  };
+  await seite.goto(`${GRUND}/#/session/live`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('.tisch-zeit');
+  return ergebnis;
+});
+
 await schritt('Beenden fragt nach und tut es dann', async () => {
-  await seite.getByRole('button', { name: 'Beenden', exact: true }).click();
+  /* Das Beenden liegt hinter „Mehr" (E-094): Neben „Pause" stand es vorher,
+     eine Handbreite entfernt von dem Knopf, den man am häufigsten drückt. */
+  await seite.getByRole('button', { name: 'Mehr', exact: true }).click();
+  await seite.waitForTimeout(300);
+  await seite.getByRole('button', { name: /^Abend beenden/ }).click();
   await seite.waitForTimeout(300);
   const gefragt = await seite.locator('.tisch-frage').count() > 0;
   const frage = (await seite.locator('.tisch-frage strong').innerText()).trim();
   await seite.locator('.tisch-frage button').first().click();
   await seite.waitForTimeout(500);
-  return {
+  const adresse = new URL(seite.url()).hash;
+  const abschluss = {
+    ueberschrift: (await seite.locator('h1').first().innerText()).trim(),
+    hat_pruefzeile: await seite.locator('.abend-pruefung').count() > 0,
+    hat_teilen: await seite.getByRole('button', { name: /Teilen/ }).count() > 0,
+  };
+  const ergebnis = {
     gefragt,
     frage,
-    adresse_danach: new URL(seite.url()).hash,
+    adresse_danach: adresse.replace(/\/abende\/[^?]+/, '/abende/ID'),
+    abschluss,
     abend_beendet: await seite.evaluate((k) => localStorage.getItem(k) === null, SCHLUESSEL),
     abende_gespeichert: await seite.evaluate(
       () => JSON.parse(localStorage.getItem('pokermentor-session-abende-v1') ?? '[]').length,
     ),
   };
+  await seite.goto(`${GRUND}/#/session/abende`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForTimeout(400);
+  return ergebnis;
 });
 
 await schritt('Der Abend steht in der Liste', async () => {
@@ -1876,6 +1929,92 @@ await schritt('Am Übungstisch liegt alles im Bild: Hand, Einsatzwahl, Urteil', 
     await ctx.close();
   }
   return { geraete: aus, fold };
+});
+
+/* ── Auszahlung und Bankroll (E-094) ──────────────────────────────────────
+   Beide Seiten rechnen mit Geld. Gemessen wird, was früher falsch war:
+   Ein Feld, das beim Tippen den Wert verändert, und eine Liste, die hinter
+   einem Formular verschwindet. */
+
+await schritt('Auszahlung: Tippen verfälscht nichts, der Text passt zur Tabelle', async () => {
+  await seite.goto(`${GRUND}/#/session/auszahlung`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('#pa-spieler');
+  const feld = seite.locator('#pa-spieler');
+  await feld.click();
+  await feld.press('Control+A');
+  await seite.keyboard.type('1');
+  const nach_eins = await feld.inputValue();
+  await seite.keyboard.type('2');
+  const nach_zwoelf = await feld.inputValue();
+  const buyin = seite.locator('#pa-buyin');
+  await buyin.click();
+  await buyin.press('Control+A');
+  await seite.keyboard.type('7,5');
+  await seite.waitForTimeout(150);
+  const text = await seite.locator('main').innerText();
+  const unlesbar = seite.locator('#pa-rebuys');
+  await unlesbar.click();
+  await unlesbar.press('Control+A');
+  await seite.keyboard.type('abc');
+  await seite.waitForTimeout(150);
+  const fehler_sichtbar = await seite.locator('#pa-rebuys-fehler').count();
+  await seite.getByRole('radio', { name: 'Chips' }).click();
+  await seite.waitForTimeout(150);
+  const chips_text = await seite.locator('main').innerText();
+  return {
+    nach_eins_getippt: nach_eins,
+    nach_zwoelf_getippt: nach_zwoelf,
+    plaetze_bei_12: /3 Plätze werden bezahlt/.test(text),
+    topf_in_euro: /90\s?€/.test(text),
+    alte_faustregel_da: /zehnte/.test(text),
+    staffel_genannt: /ab 10 Spielern 3 Plätze/.test(text),
+    fehler_bei_buchstaben: fehler_sichtbar,
+    einheit_chips: /Chips/.test(chips_text) && !/90\s?€/.test(chips_text),
+    spielerschutz_zeile: /check-dein-spiel\.de/.test(text),
+  };
+});
+
+await schritt('Bankroll: Liste vor dem Formular, Löschen mit Rückgängig', async () => {
+  await seite.goto(`${GRUND}/#/session/bankroll`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('text=Neue Session');
+  const erstes_formular_offen = await seite.locator('text=Neue Session').count() > 0;
+  const art_vorbelegt = await seite.getByRole('radio', { name: 'Live' }).last().getAttribute('aria-checked');
+  const spiel_leer = await seite.getByLabel('Spiel / Limit').inputValue();
+  await seite.getByLabel('Dauer (Minuten)').fill('90');
+  await seite.getByLabel('Buy-in (€)').fill('10');
+  await seite.getByLabel('Cash-out (€)').fill('25');
+  await seite.getByRole('button', { name: 'Session speichern' }).click();
+  await seite.waitForTimeout(300);
+  const nach_speichern = await seite.evaluate(() => ({
+    formular_zu: !document.body.innerText.includes('Neue Session'),
+    knopf: [...document.querySelectorAll('button')].some((b) => b.innerText.trim() === '+ Session'),
+    zeilen: document.querySelectorAll('.session-liste .card').length,
+    datum_iso: /\d{4}-\d{2}-\d{2}/.test(document.querySelector('.session-liste')?.innerText ?? ''),
+    betrag: document.querySelector('.session-zeile-betrag')?.innerText.trim(),
+  }));
+  await seite.getByRole('button', { name: 'Session löschen' }).click();
+  await seite.waitForTimeout(200);
+  const nach_loeschen = await seite.evaluate(() => ({
+    zeilen: document.querySelectorAll('.session-liste .card').length,
+    rueckgaengig: [...document.querySelectorAll('button')].some((b) => b.innerText.trim() === 'Rückgängig'),
+  }));
+  await seite.getByRole('button', { name: 'Rückgängig' }).click();
+  await seite.waitForTimeout(200);
+  const nach_rueckgaengig = await seite.locator('.session-liste .card').count();
+  await seite.getByRole('button', { name: 'Session löschen' }).click();
+  await seite.waitForTimeout(5600);
+  await seite.reload({ waitUntil: 'domcontentloaded' });
+  await seite.waitForTimeout(400);
+  const nach_ablauf = await seite.locator('.session-liste .card').count();
+  return {
+    erstes_formular_offen,
+    art_vorbelegt_live: art_vorbelegt,
+    spiel_leer: spiel_leer === '',
+    nach_speichern,
+    nach_loeschen,
+    nach_rueckgaengig,
+    nach_ablauf_und_neuladen: nach_ablauf,
+  };
 });
 
 await browser.close();

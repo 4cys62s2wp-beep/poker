@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T13:46:55.575Z",
+  "geprueft_am": "2026-10-04T14:44:18.491Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -42,7 +42,9 @@
         "blindstufen": 9,
         "erste_stufe": "1 / 2",
         "letzte_stufe": "15 / 30",
-        "finale_satz": "Am Ende bleiben den letzten drei im Schnitt 21 Big Blinds — das trägt ein Finale."
+        "zeitplan_mit_uhrzeit": true,
+        "finale_satz": "Am Ende bleiben den letzten drei im Schnitt 21 Big Blinds — das trägt ein Finale.",
+        "plan_ende": "Ende gegen 17:42"
       },
       "uebersprungen": false
     },
@@ -59,20 +61,29 @@
       "ergebnis": {
         "adresse": "#/session/live",
         "navigationsleiste": false,
-        "zeit": "19:59",
+        "zeit": "20:00",
         "blinds": "1 / 2",
         "danach": "2 / 4",
         "gespeichert_spieler": 5,
         "gespeichert_startchips": 380,
         "gespeichert_stufen": 9,
-        "laeuft": true
+        "startet_pausiert": true,
+        "marke": "BEREIT"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Uhr starten setzt die Uhr in Gang",
+      "ergebnis": {
+        "laeuft": true,
+        "marke_weg": true
       },
       "uebersprungen": false
     },
     {
       "name": "Die Uhr läuft wirklich",
       "ergebnis": {
-        "vorher": "19:59",
+        "vorher": "20:00",
         "nachher": "19:57",
         "hat_sich_bewegt": true
       },
@@ -81,7 +92,7 @@
     {
       "name": "Die laufende Runde steht in der großen Karte",
       "ergebnis": {
-        "text": "Läuft gerade · Läuft seit gerade eben · 5 Spieler · Blinds 1/2 · Zurück in die Runde · Chips, Auszahlung, frühere Abende",
+        "text": "Läuft gerade · Läuft seit gerade eben · 5 Spieler · Blinds 1/2 · noch 19:57 · Zurück in die Runde · Chips, Auszahlung, frühere Abende",
         "ziel": "#/session/live",
         "knopf_hoehe": 60,
         "fuehrt_an_den_tisch": true,
@@ -124,9 +135,9 @@
     {
       "name": "Neu laden setzt an derselben Stelle fort",
       "ergebnis": {
-        "vorher": "19:55",
+        "vorher": "19:56",
         "nachher": "19:55",
-        "abstand_s": 0,
+        "abstand_s": 1,
         "abend_noch_da": true
       },
       "uebersprungen": false
@@ -168,7 +179,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 872,
+        "dauer_ms": 875,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -178,11 +189,28 @@
       "uebersprungen": false
     },
     {
+      "name": "Auszahlung übernimmt den laufenden Abend",
+      "ergebnis": {
+        "angeboten": 1,
+        "hinweis": "5 Spieler, 1 zusätzliche Buy-ins",
+        "spieler": "5",
+        "buyin": "380",
+        "rebuys": "1",
+        "einheit_chips": "true"
+      },
+      "uebersprungen": false
+    },
+    {
       "name": "Beenden fragt nach und tut es dann",
       "ergebnis": {
         "gefragt": true,
         "frage": "Abend wirklich beenden?",
-        "adresse_danach": "#/session/abende",
+        "adresse_danach": "#/session/abende/ID?neu=1",
+        "abschluss": {
+          "ueberschrift": "Abend beendet",
+          "hat_pruefzeile": true,
+          "hat_teilen": true
+        },
         "abend_beendet": true,
         "abende_gespeichert": 1
       },
@@ -620,13 +648,13 @@
       "ergebnis": {
         "fehlschlag": {
           "urteil": "Noch nicht bestanden",
-          "punkte": "2 von 5 richtig",
+          "punkte": "0 von 5 richtig",
           "kacheln": [
-            "2/5dein Ergebnis",
+            "0/5dein Ergebnis",
             "4/5zum Bestehen"
           ],
-          "falsch_liste": 3,
-          "in_wiederholung": 3,
+          "falsch_liste": 5,
+          "in_wiederholung": 5,
           "knoepfe": [
             "Fehler nochmal üben",
             "Quiz noch einmal von vorn"
@@ -637,19 +665,19 @@
         "xp_nach_fehlschlag": 0,
         "lektion_fertig_nach_fehlschlag": false,
         "versucht_gemerkt": {
-          "bestScore": 2,
+          "bestScore": 0,
           "total": 5,
           "tries": 1,
-          "lastAt": "2026-10-04T13:46:19.568Z"
+          "lastAt": "2026-10-04T14:43:35.646Z"
         },
         "abzeichen_nach_fehlschlag": [],
-        "wiederholung_nach_fehlschlag": 3,
+        "wiederholung_nach_fehlschlag": 5,
         "modul_zeile": {
           "klassen": [
             "lektion",
             "dran"
           ],
-          "meta": "ca. 9 Min. · 5 Quizfragen · Quiz: 2/5",
+          "meta": "ca. 9 Min. · 5 Quizfragen · Quiz: 0/5",
           "hinweis": "Noch einmal"
         },
         "uebung": {
@@ -789,10 +817,10 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | Serie | – | Treffer | 0 | Beste",
-        "nach_zwei": "0 | Serie | 0 % | Treffer | 0 | Beste",
-        "nach_neuladen": "0 | Serie | 0 % | Treffer | 0 | Beste",
+        "nach_zwei": "2 | Rekord! | 100 % | Treffer | 2 | Beste",
+        "nach_neuladen": "2 | Rekord! | 100 % | Treffer | 2 | Beste",
         "quote_bleibt": true,
-        "quote_nach_zwei": "0 %",
+        "quote_nach_zwei": "100 %",
         "ohne_versuche_kein_prozent": true,
         "felder": 3
       },
@@ -801,12 +829,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 48,
+        "dauer_ms": 36,
         "knopf_bewegt_px": 0,
         "oben": 749,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "54,1 %",
+        "ergebnis_text": "24,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },
@@ -951,13 +979,13 @@
             "status_vorher": "Du bist dran",
             "wahl": {
               "vorgaben": [
-                "2,5",
-                "3",
-                "4",
+                "2,5×9",
+                "3×10,5",
+                "4×14",
                 "All-in100"
               ],
               "alle_im_bild": true,
-              "bestaetigen": "Raise auf 3",
+              "bestaetigen": "Raise auf 10,5",
               "leiste": {
                 "oben": 466,
                 "unten": 667
@@ -965,14 +993,14 @@
               "schild_unten": 475,
               "karten_unten": 439
             },
-            "mehr": "Raise auf 3,5",
-            "wieder_weniger": "Raise auf 3",
+            "mehr": "Raise auf 11,5",
+            "wieder_weniger": "Raise auf 10,5",
             "noch_nicht_gesetzt": true,
             "danach": {
               "status": "Anna überlegt …",
               "gesperrte_knoepfe": 3,
               "urteil": [
-                "Fehler"
+                "≈\nVertretbar"
               ]
             }
           },
@@ -1002,13 +1030,13 @@
             "status_vorher": "Du bist dran",
             "wahl": {
               "vorgaben": [
-                "2,5×9",
-                "3×10,5",
-                "4×14",
+                "2,5",
+                "3",
+                "4",
                 "All-in100"
               ],
               "alle_im_bild": true,
-              "bestaetigen": "Raise auf 10,5",
+              "bestaetigen": "Raise auf 3",
               "leiste": {
                 "oben": 643,
                 "unten": 844
@@ -1016,14 +1044,14 @@
               "schild_unten": 632,
               "karten_unten": 596
             },
-            "mehr": "Raise auf 11,5",
-            "wieder_weniger": "Raise auf 10,5",
+            "mehr": "Raise auf 3,5",
+            "wieder_weniger": "Raise auf 3",
             "noch_nicht_gesetzt": true,
             "danach": {
               "status": "Anna überlegt …",
               "gesperrte_knoepfe": 3,
               "urteil": [
-                "≈\nVertretbar"
+                "Fehler"
               ]
             }
           },
@@ -1081,8 +1109,45 @@
         },
         "fold": {
           "status_nach_fold": "Du hast gefoldet",
-          "dauer_ms": 172
+          "dauer_ms": 43
         }
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Auszahlung: Tippen verfälscht nichts, der Text passt zur Tabelle",
+      "ergebnis": {
+        "nach_eins_getippt": "1",
+        "nach_zwoelf_getippt": "12",
+        "plaetze_bei_12": true,
+        "topf_in_euro": true,
+        "alte_faustregel_da": false,
+        "staffel_genannt": true,
+        "fehler_bei_buchstaben": 1,
+        "einheit_chips": true,
+        "spielerschutz_zeile": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Bankroll: Liste vor dem Formular, Löschen mit Rückgängig",
+      "ergebnis": {
+        "erstes_formular_offen": true,
+        "art_vorbelegt_live": "true",
+        "spiel_leer": true,
+        "nach_speichern": {
+          "formular_zu": true,
+          "knopf": true,
+          "zeilen": 1,
+          "datum_iso": false,
+          "betrag": "+15,00 €"
+        },
+        "nach_loeschen": {
+          "zeilen": 0,
+          "rueckgaengig": true
+        },
+        "nach_rueckgaengig": 1,
+        "nach_ablauf_und_neuladen": 0
       },
       "uebersprungen": false
     }

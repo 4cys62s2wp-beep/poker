@@ -28,6 +28,8 @@ export interface Sorte {
   name: string;
   /** Wie viele davon insgesamt da sind. */
   anzahl: number;
+  /** Die Farbe des Punkts in der Oberfläche (`#rrggbb`) — gerechnet wird damit nicht. */
+  farbe?: string;
 }
 
 export interface Eingabe {

@@ -68,7 +68,7 @@ export const BEGRIFFE: Begriff[] = [
       + 'Topf: 584 zu 19. Wer „Pot Odds“ lernt, soll den Pot wiederfinden.',
     gilt: 'alles',
     /* Dort ist es der Preispool des Abends, nicht der Pot einer Hand. */
-    ausser: ['src/i18n/pages/payout.ts', 'src/lib/poker/payout.ts'],
+    ausser: ['src/i18n/pages/payout.ts', 'src/lib/poker/payout.ts', 'src/i18n/pages/abende.ts'],
   },
   {
     gegenstand: 'Flushdraw',

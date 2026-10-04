@@ -46,6 +46,10 @@ const GRUND = process.env.WEGE_GRUND ?? 'http://127.0.0.1:4173';
 const GERAETE = [
   { name: 'handy', breite: 390, hoehe: 844 },
   { name: 'tablet-quer', breite: 1024, hoehe: 768 },
+  /* Quer auf dem Handy (E-094): drei übliche Größen, von klein bis groß. */
+  { name: 'handy-quer', breite: 844, hoehe: 390 },
+  { name: 'handy-quer-gross', breite: 932, hoehe: 430 },
+  { name: 'handy-quer-klein', breite: 667, hoehe: 375 },
 ];
 
 /* --- Der Leseabstand, ausgerechnet statt hingeschrieben ------------------ */
@@ -76,10 +80,23 @@ const ABEND = {
   laeuft_seit: null,        // angehalten: sonst piept die Messung sich durch
 };
 
+/** Die Zustände, in denen der Tisch lesbar sein muss — nicht nur im ruhigen.
+ *  `jetztStart`: Die Uhr läuft ab dem Laden der Seite (sonst ginge der Zustand
+ *  vorbei, bevor gemessen wird). */
+const MIN = 60_000;
+const ZUSTAENDE = [
+  { name: 'bereit', ueber: {} },
+  { name: 'pausiert', ueber: { verbraucht_ms: 5 * MIN } },
+  { name: 'knapp', ueber: { verbraucht_ms: 19 * MIN + 10_000, jetztStart: true } },
+  { name: 'letzte-stufe', ueber: { verbraucht_ms: 5 * 20 * MIN + 12_000, jetztStart: true } },
+  { name: 'wechsel', ueber: { verbraucht_ms: 20 * MIN - 1500, jetztStart: true, warte_ms: 2800 } },
+  { name: 'cash', ueber: { modus: 'cash', stufen: [[25, 50]], verbraucht_ms: 83 * MIN, jetztStart: true } },
+];
+
 const browser = await chromium.launch();
 const messungen = [];
 
-for (const geraet of GERAETE) {
+for (const geraet of GERAETE) for (const zustand of ZUSTAENDE) {
   const kontext = await browser.newContext({
     viewport: { width: geraet.breite, height: geraet.hoehe },
     /* Ein deutsches Gerät. Ohne diese Angabe misst der Lauf die englische
@@ -89,14 +106,16 @@ for (const geraet of GERAETE) {
   /* Vor dem ersten Skript der Seite, nicht danach: Die App liest die Sprache
      beim Start einmal. Wer sie erst nach dem Laden hineinschreibt, misst den
      Bildschirm in der Sprache, die der Browser vorgeschlagen hat. */
-  await kontext.addInitScript(([abend]) => {
+  const { jetztStart, warte_ms, ...ueber } = zustand.ueber;
+  await kontext.addInitScript(([abend, laeuft]) => {
     localStorage.setItem('pokermentor-lang-v1', 'de');
+    if (laeuft) abend.laeuft_seit = Date.now();
     localStorage.setItem('pokermentor-session-laufend-v1', JSON.stringify(abend));
-  }, [ABEND]);
+  }, [{ ...ABEND, ...ueber }, Boolean(jetztStart)]);
   const seite = await kontext.newPage();
 
   await seite.goto(`${GRUND}/#/session/live`, { waitUntil: 'domcontentloaded' });
-  await seite.waitForTimeout(400);
+  await seite.waitForTimeout(warte_ms ?? 400);
 
   const messung = await seite.evaluate(() => {
     const sichtbar = (el) => {
@@ -123,6 +142,10 @@ for (const geraet of GERAETE) {
         text: el.textContent.trim(),
         klasse: el.className || el.tagName.toLowerCase(),
         schriftgroesse_px: Math.round(parseFloat(st.fontSize) * 10) / 10,
+        farbe: st.color,
+        links_px: Math.round(r.left),
+        rechts_px: Math.round(r.right),
+        unten_px: Math.round(r.bottom),
         fett: st.fontWeight,
         ziffern: st.fontVariantNumeric,
         oben_px: Math.round(r.top),
@@ -136,7 +159,9 @@ for (const geraet of GERAETE) {
        Beschriftungen wie „Blinds" sind Bezeichner, keine Angaben. */
     const mitZahl = alle.filter((e) => /\d/.test(e.text));
 
-    const knoepfe = [...document.querySelectorAll('.tisch button, .tisch a')]
+    /* Die Bedienung unten: höchstens drei Knöpfe (Regel 8.1). Der Weg aus dem
+       Tisch („‹ App") steht oben links und zählt nicht dazu. */
+    const knoepfe = [...document.querySelectorAll('.tisch-unten button')]
       .filter(sichtbar)
       .map((el) => {
         const r = el.getBoundingClientRect();
@@ -148,8 +173,20 @@ for (const geraet of GERAETE) {
         };
       });
 
+    const kopf = [...document.querySelectorAll('.tisch-kopf a, .tisch-kopf button')]
+      .filter(sichtbar)
+      .map((el) => {
+        const r = el.getBoundingClientRect();
+        return { text: el.textContent.trim(), breite_px: Math.round(r.width), hoehe_px: Math.round(r.height), oben_px: Math.round(r.top) };
+      });
+    const unten = document.querySelector('.tisch-unten')?.getBoundingClientRect();
+
     return {
       fensterhoehe_px: window.innerHeight,
+      fensterbreite_px: window.innerWidth,
+      kopf_bedienung: kopf,
+      bedienleiste_oben_px: unten ? Math.round(unten.top) : null,
+      tisch_farbe: getComputedStyle(document.querySelector('.tisch')).color,
       navigationsleiste_vorhanden: !!document.querySelector('nav'),
       grund_farbe: getComputedStyle(document.body).backgroundColor,
       alle_texte: alle,
@@ -167,7 +204,7 @@ for (const geraet of GERAETE) {
     };
   });
 
-  messungen.push({ geraet: geraet.name, breite: geraet.breite, ...messung });
+  messungen.push({ geraet: geraet.name, zustand: zustand.name, breite: geraet.breite, ...messung });
   await kontext.close();
 }
 
@@ -195,7 +232,7 @@ const ergebnis = {
 writeFileSync('docs/tisch.json', `${JSON.stringify(ergebnis, null, 2)}\n`, 'utf-8');
 
 for (const m of messungen) {
-  console.log(`${m.geraet} (${m.breite} px): ${m.angaben.length} Angaben mit Zahlen, `
+  console.log(`${m.geraet}/${m.zustand} (${m.breite} px): ${m.angaben.length} Angaben mit Zahlen, `
     + `größte Schrift ${Math.max(...m.angaben.map((a) => a.schriftgroesse_px))} px, `
     + `Navigationsleiste: ${m.navigationsleiste_vorhanden ? 'ja' : 'nein'}, `
     + `Überlauf ${m.mitte_ueberlauf_px} px seitlich ${m.seitlicher_ueberlauf_px} px`);
@@ -211,7 +248,18 @@ const maengel = [];
 for (const m of messungen) {
   if (m.seitlicher_ueberlauf_px > 1) maengel.push(`${m.geraet}: ${m.seitlicher_ueberlauf_px} px seitlicher Überlauf`);
   const groesste = Math.max(...m.angaben.map((a) => a.schriftgroesse_px));
-  if (groesste < noetig) maengel.push(`${m.geraet}: größte Angabe ${groesste} px, nötig ${noetig} px`);
+  if (groesste < noetig) maengel.push(`${m.geraet}/${m.zustand}: größte Angabe ${groesste} px, nötig ${noetig} px`);
+  /* Alle Angaben vollständig im Bild und über der Bedienleiste (E-094). */
+  for (const a of m.angaben) {
+    if (a.links_px < 0 || a.rechts_px > m.fensterbreite_px + 1) {
+      maengel.push(`${m.geraet}/${m.zustand}: „${a.text}" ragt seitlich aus dem Bild (${a.links_px}…${a.rechts_px} von ${m.fensterbreite_px})`);
+    }
+    if (m.bedienleiste_oben_px !== null && a.unten_px > m.bedienleiste_oben_px) {
+      maengel.push(`${m.geraet}/${m.zustand}: „${a.text}" liegt unter der Bedienleiste (${a.unten_px} > ${m.bedienleiste_oben_px})`);
+    }
+    if (a.oben_px < 0) maengel.push(`${m.geraet}/${m.zustand}: „${a.text}" beginnt über dem Bild (${a.oben_px})`);
+  }
+  if (m.mitte_ueberlauf_px > 0) maengel.push(`${m.geraet}/${m.zustand}: Mitte läuft ${m.mitte_ueberlauf_px} px über`);
 }
 if (maengel.length) {
   console.error(`\n${maengel.length} Befunde:\n  ${maengel.join('\n  ')}`);

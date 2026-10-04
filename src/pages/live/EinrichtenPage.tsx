@@ -21,18 +21,34 @@ import { STR } from '../../i18n/pages/live';
 import { VOREINSTELLUNG, baueStruktur, type Tempo } from '../../lib/live/blinds';
 import { verteile, type Sorte } from '../../lib/live/verteilung';
 import { ladeLaufende, speichereLaufende } from '../../lib/session/laufend';
-import { ladeAbende, sichereLaufendenAbend, speichereAbende } from '../../lib/session/abende';
+import { ladeAbende, sichereLaufendenAbend, speichereAbende, spielerUebersicht } from '../../lib/session/abende';
 import { grobeDauer } from '../../lib/session/dauer';
+import { FARBEN, kofferAlsSorten, ladeKoffer } from '../../lib/koffer';
+import { ladeVorlage, speichereVorlage } from '../../lib/session/vorlage';
 
 /** Ein üblicher Koffer als Vorschlag — man ändert ihn schneller, als man ihn
  *  von null einträgt. */
 const VORSCHLAG: Sorte[] = [
-  { name: 'weiß', anzahl: 150 },
-  { name: 'rot', anzahl: 100 },
-  { name: 'grün', anzahl: 50 },
+  { name: 'weiß', anzahl: 150, farbe: FARBEN[0] },
+  { name: 'rot', anzahl: 100, farbe: FARBEN[1] },
+  { name: 'grün', anzahl: 50, farbe: FARBEN[3] },
 ];
 
+/** Womit das Formular beginnt: der Koffer aus dem Chip-Rechner („Mein Koffer"),
+ *  sonst der vom letzten Abend, sonst ein üblicher Vorschlag — so schnell geändert
+ *  wie ein leeres Formular befüllt. */
+function startKoffer(): { sorten: Sorte[]; ausRechner: boolean } {
+  const k = ladeKoffer();
+  const aus = k ? kofferAlsSorten(k) : [];
+  if (aus.length > 0) return { sorten: aus, ausRechner: true };
+  return { sorten: ladeVorlage()?.sorten ?? VORSCHLAG, ausRechner: false };
+}
+
 const DAUERN = [90, 120, 150, 180, 240];
+
+function uhrzeit(ms: number, lang: string): string {
+  return new Date(ms).toLocaleTimeString(lang === 'de' ? 'de-DE' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
+}
 const TEMPI: Tempo[] = ['gemuetlich', 'normal', 'schnell'];
 
 export function EinrichtenPage() {
@@ -40,12 +56,19 @@ export function EinrichtenPage() {
   const L = STR[lang];
   const navigate = useNavigate();
 
-  const [sorten, setSorten] = useState<Sorte[]>(VORSCHLAG);
+  /* Einmal beim Öffnen gelesen, nicht bei jedem Zeichen. */
+  const [vorlage] = useState(ladeVorlage);
+  const [start] = useState(startKoffer);
+  const [bekannte] = useState(() => spielerUebersicht(ladeAbende()).slice(0, 12));
+  const [sorten, setSorten] = useState<Sorte[]>(start.sorten);
   const [namen, setNamen] = useState<string[]>(['', '']);
-  const [euro, setEuro] = useState('');
-  const [dauer, setDauer] = useState(DAUERN[2]);
-  const [tempo, setTempo] = useState<Tempo>('normal');
-  const [gleich, setGleich] = useState(false);
+  const [euro, setEuro] = useState(vorlage?.euro ?? '');
+  const [dauer, setDauer] = useState(vorlage?.dauer ?? DAUERN[2]);
+  const [tempo, setTempo] = useState<Tempo>(vorlage?.tempo ?? 'normal');
+  const [gleich, setGleich] = useState(vorlage?.gleich ?? false);
+  /* Der Zeitplan rechnet ab dem Öffnen dieses Bildschirms — der Abend beginnt
+     pausiert und startet mit dem Tipp auf „Uhr starten". */
+  const [geoeffnet] = useState(() => Date.now());
   /* Einmal beim Öffnen gelesen: Läuft schon ein Abend, steht das hier oben —
      und ein Neustart legt ihn ab, statt ihn zu überschreiben. */
   const [laufend] = useState(ladeLaufende);
@@ -74,6 +97,7 @@ export function EinrichtenPage() {
   }, [plan, dauer, spieler, tempo, gleich]);
 
   const bereit = plan !== null && plan.reicht && struktur !== null;
+  const euroNum = zahlAusEingabe(euro, lang) ?? undefined;
 
   function starte() {
     if (!bereit || !plan || !struktur) return;
@@ -82,6 +106,7 @@ export function EinrichtenPage() {
        wird hier frisch, nicht aus dem Zustand beim Öffnen: Ein zweiter Tab
        könnte inzwischen einen Abend gestartet haben. */
     speichereAbende(sichereLaufendenAbend(ladeAbende(), ladeLaufende(), jetzt));
+    speichereVorlage({ sorten, dauer, tempo, gleich, euro });
     speichereLaufende({
       begonnen: jetzt,
       spieler: namen
@@ -89,11 +114,18 @@ export function EinrichtenPage() {
         .filter((n) => n !== '')
         .map((name) => ({ name, eingekauft: plan.startchips, stand: plan.startchips })),
       startchips: plan.startchips,
-      stufen: struktur.stufen.map((s) => [s.sb, s.bb] as [number, number]),
+      /* Ohne Turnierende gibt es eine Stufe, die gilt (Cash): kein Countdown, kein
+         Danach, kein Ton (E-094). */
+      stufen: (gleich ? struktur.stufen.slice(0, 1) : struktur.stufen).map((s) => [s.sb, s.bb] as [number, number]),
       stufendauer_s: struktur.stufendauer_s,
       stufe: 0,
       verbraucht_ms: 0,
-      laeuft_seit: jetzt,
+      /* Pausiert: Wer einen Abend anlegt, sitzt noch nicht am Tisch. Die Uhr
+         läuft mit „Uhr starten" — dort, wo der Ton entsperrt werden kann. */
+      laeuft_seit: null,
+      modus: gleich ? 'cash' : 'turnier',
+      ...(euroNum ? { euroJeSpieler: euroNum } : {}),
+      ...(plan.punkteJeEuro ? { punkteJeEuro: plan.punkteJeEuro } : {}),
     });
     navigate('/session/live');
   }
@@ -125,8 +157,12 @@ export function EinrichtenPage() {
         <section className="einrichten-block">
           <h2>{L.kofferTitel}</h2>
           <p className="hinweis">{L.kofferSub}</p>
+          {start.ausRechner && (
+            <p className="hinweis">{L.kofferAusRechner} <Link to="/session/chips">{L.kofferAendern}</Link></p>
+          )}
           {sorten.map((s, i) => (
             <div key={i} className="einrichten-zeile">
+              {s.farbe && <span className="chip-punkt" style={{ background: s.farbe }} aria-hidden="true" />}
               <input
                 aria-label={L.farbe}
                 value={s.name}
@@ -156,7 +192,10 @@ export function EinrichtenPage() {
           <button
             type="button"
             className="einrichten-knopf"
-            onClick={() => setSorten([...sorten, { name: '', anzahl: 0 }])}
+            onClick={() => setSorten([
+              ...sorten,
+              { name: '', anzahl: 0, farbe: FARBEN.find((f) => !sorten.some((x) => x.farbe === f)) ?? FARBEN[0] },
+            ])}
           >
             {L.farbeHinzu}
           </button>
@@ -166,6 +205,31 @@ export function EinrichtenPage() {
         <section className="einrichten-block">
           <h2>{L.spielerNamen}</h2>
           <p className="hinweis">{L.spielerNamenSub}</p>
+          {/* Wer schon einmal dabei war, ist ein Tipp entfernt (E-094). */}
+          {bekannte.length > 0 && (
+            <div className="zuletzt-dabei" role="group" aria-label={L.zuletztDabei}>
+              <span className="hinweis">{L.zuletztDabei}</span>
+              <div className="abende-namen-reihe">
+                {bekannte.map((b) => {
+                  const schonDa = namen.some((n) => n.trim().toLocaleLowerCase('de') === b.name.toLocaleLowerCase('de'));
+                  return (
+                    <button
+                      key={b.name}
+                      type="button"
+                      className="abende-name"
+                      disabled={schonDa}
+                      onClick={() => setNamen((alt) => {
+                        const leer = alt.findIndex((x) => x.trim() === '');
+                        return leer >= 0 ? alt.map((x, j) => (j === leer ? b.name : x)) : [...alt, b.name];
+                      })}
+                    >
+                      {b.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           {namen.map((n, i) => (
             <div key={i} className="einrichten-zeile">
               <input
@@ -301,11 +365,26 @@ export function EinrichtenPage() {
                       ? L.finaleZuKurz(struktur.noetige_dauer_min)
                       : ''}
                 </p>
-                <div className="einrichten-stufen">
-                  {struktur.stufen.map((s) => (
-                    <span key={s.nummer}>{s.sb} / {s.bb}</span>
-                  ))}
-                </div>
+                {/* Ein Zeitplan, kein Feld voller Knöpfe: Welche Blinds, ab wann —
+                    gerechnet ab jetzt, weil die Uhr erst mit „Uhr starten" läuft. */}
+                {gleich ? (
+                  <p className="hinweis">{L.planCash(plan.smallBlind, plan.bigBlind)}</p>
+                ) : (
+                  <>
+                    <ol className="einrichten-plan">
+                      {struktur.stufen.map((s) => (
+                        <li key={s.nummer}>
+                          <span className="plan-stufe">{L.planStufe(s.nummer)}</span>
+                          <span className="plan-blinds">{s.sb.toLocaleString(lang)} / {s.bb.toLocaleString(lang)}</span>
+                          <span className="plan-zeit">{L.planAb(uhrzeit(geoeffnet + s.beginn_s * 1000, lang))}</span>
+                        </li>
+                      ))}
+                    </ol>
+                    <p className="hinweis">
+                      {L.planEnde(uhrzeit(geoeffnet + dauer * 60_000, lang))}
+                    </p>
+                  </>
+                )}
               </>
             )}
           </section>

@@ -10,6 +10,13 @@ export const STR = defineStrings(
     buyInLabel: 'Buy-in je Spieler',
     rebuysLabel: 'Zusätzliche Buy-ins',
     rebuysHint: 'Rebuys und Add-ons zusammen',
+    einheitLabel: 'Einheit',
+    einheitEuro: 'Euro',
+    einheitChips: 'Chips',
+    ausAbend: 'Aus dem laufenden Abend übernehmen',
+    ausAbendHinweis: (spieler: number, extra: number) =>
+      extra > 0 ? `${spieler} Spieler, ${extra} zusätzliche Buy-ins` : `${spieler} Spieler, keine Rebuys`,
+    zahlFehler: 'Das ist keine Zahl.',
     roundingLabel: 'Runden auf',
     roundingHint: 'Der kleinste Schein oder Chip, der am Tisch liegt',
     roundingNone: 'nicht runden',
@@ -24,8 +31,10 @@ export const STR = defineStrings(
     emptyBody: 'Ab zwei Spielern und einem Buy-in über null steht der Plan.',
 
     ruleTitle: 'Wonach sich das richtet',
-    ruleBody:
-      'Faustregel: etwa jeder zehnte Spieler wird bezahlt, mindestens einer. Je größer das Feld, desto mehr Plätze sehen Geld – und desto weniger bekommt der Sieger relativ.',
+    ruleBody: (staffel: string) =>
+      `Je größer das Feld, desto mehr Plätze sehen Geld – und desto weniger bekommt der Sieger relativ. Bezahlte Plätze nach Feldgröße: ${staffel}.`,
+    staffelTeil: (ab: number, plaetze: number) =>
+      `ab ${ab} Spielern ${plaetze} ${plaetze === 1 ? 'Platz' : 'Plätze'}`,
     smallFieldNote:
       'Unter sechs Spielern bekommt nur der Sieger etwas. Ein zweiter Platz bekäme sonst weniger zurück, als er eingezahlt hat.',
 
@@ -39,6 +48,13 @@ export const STR = defineStrings(
     buyInLabel: 'Buy-in per player',
     rebuysLabel: 'Extra buy-ins',
     rebuysHint: 'Rebuys and add-ons combined',
+    einheitLabel: 'Unit',
+    einheitEuro: 'Euro',
+    einheitChips: 'Chips',
+    ausAbend: 'Use the running evening',
+    ausAbendHinweis: (spieler: number, extra: number) =>
+      extra > 0 ? `${spieler} players, ${extra} extra buy-ins` : `${spieler} players, no rebuys`,
+    zahlFehler: 'That is not a number.',
     roundingLabel: 'Round to',
     roundingHint: 'The smallest note or chip on the table',
     roundingNone: 'no rounding',
@@ -53,8 +69,10 @@ export const STR = defineStrings(
     emptyBody: 'From two players and a buy-in above zero, the plan appears.',
 
     ruleTitle: 'What this is based on',
-    ruleBody:
-      'Rule of thumb: roughly one in ten players gets paid, at least one. The bigger the field, the more places see money – and the less the winner takes relatively.',
+    ruleBody: (staffel: string) =>
+      `The bigger the field, the more places see money – and the less the winner takes relatively. Places paid by field size: ${staffel}.`,
+    staffelTeil: (ab: number, plaetze: number) =>
+      `${plaetze} ${plaetze === 1 ? 'place' : 'places'} from ${ab} players`,
     smallFieldNote:
       'Below six players only the winner gets paid. Second place would otherwise get back less than they put in.',
 

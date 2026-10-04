@@ -62,6 +62,10 @@ export const STR = defineStrings(
     laeuftSeit: (dauer: string) => `Läuft seit ${dauer}`,
     laeuftMit: (spieler: number, sb: number, bb: number) =>
       `${spieler === 1 ? '1 Spieler' : `${spieler} Spieler`} · Blinds ${sb}/${bb}`,
+    laeuftRest: (zeit: string) => `noch ${zeit}`,
+    laeuftGespielt: (zeit: string) => `${zeit} gespielt`,
+    laeuftLetzte: 'letzte Stufe',
+    laeuftPausiert: 'pausiert',
 
     /* ── Die Hand des Tages (E-036) ─────────────────────────────────── */
     heuteMarke: 'Hand des Tages',
@@ -154,6 +158,10 @@ export const STR = defineStrings(
     laeuftSeit: (dauer: string) => `Running for ${dauer}`,
     laeuftMit: (spieler: number, sb: number, bb: number) =>
       `${spieler === 1 ? '1 player' : `${spieler} players`} · blinds ${sb}/${bb}`,
+    laeuftRest: (zeit: string) => `${zeit} left`,
+    laeuftGespielt: (zeit: string) => `${zeit} played`,
+    laeuftLetzte: 'final level',
+    laeuftPausiert: 'paused',
 
     /* ── Hand of the day (E-036) ────────────────────────────────────── */
     heuteMarke: 'Hand of the day',

@@ -35,6 +35,10 @@ export interface Spieler {
   raus_um?: number | null;
 }
 
+/** Turnier: Die Blinds steigen. Cash: Sie bleiben, wie sie sind — dann gibt es
+ *  keinen Countdown, kein „Danach" und keinen Ton (E-094). */
+export type Modus = 'turnier' | 'cash';
+
 export interface LaufendeSession {
   /** Beginn in Millisekunden seit 1970. Aus der Adresse der Session heraus
    *  unveränderlich — sie ist zugleich ihre Kennung. */
@@ -53,6 +57,14 @@ export interface LaufendeSession {
   verbraucht_ms: number;
   /** Wann zuletzt gestartet wurde, oder `null`, wenn pausiert. */
   laeuft_seit: number | null;
+  /** Ohne Angabe: Turnier (so waren alle Abende vor E-094). */
+  modus?: Modus;
+  /** Töne an? Ohne Angabe: ja. */
+  ton?: boolean;
+  /** Was jeder Spieler einzahlt, in Euro — für die Abrechnung am Ende. */
+  euroJeSpieler?: number;
+  /** Wie viele Chips ein Euro wert ist (aus der Chipverteilung). */
+  punkteJeEuro?: number;
 }
 
 function istSpieler(v: unknown): v is Spieler {
@@ -88,6 +100,10 @@ export function ladeLaufende(): LaufendeSession | null {
       stufe: typeof d.stufe === 'number' ? d.stufe : 0,
       verbraucht_ms: typeof d.verbraucht_ms === 'number' ? d.verbraucht_ms : 0,
       laeuft_seit: typeof d.laeuft_seit === 'number' ? d.laeuft_seit : null,
+      ...(d.modus === 'cash' || d.modus === 'turnier' ? { modus: d.modus } : {}),
+      ...(typeof d.ton === 'boolean' ? { ton: d.ton } : {}),
+      ...(typeof d.euroJeSpieler === 'number' && d.euroJeSpieler > 0 ? { euroJeSpieler: d.euroJeSpieler } : {}),
+      ...(typeof d.punkteJeEuro === 'number' && d.punkteJeEuro > 0 ? { punkteJeEuro: d.punkteJeEuro } : {}),
     };
   } catch {
     return null;

@@ -5230,3 +5230,104 @@ der eine Hinweis mit **„Jetzt üben"** und „Nachlesen" zur Übung und zur Le
 - **6.7** Das Scrollen zur Begründung (`scrollIntoView`) gibt es im Preflop-Trainer und im Drill; Handranking,
   Push/Fold und Szenario haben kurze Karten, bei denen es nichts brächte.
 - Auf dem **Desktop** (breit) steht die Leiste nicht am unteren Bildrand, sondern unter dem Tisch; das gehört zu Paket 9.
+
+## E-094 · 2026-10-04 · Live-Session: ein Tisch, der wartet, bis man ihn startet, eine Abrechnung, die aufgeht, Geldseiten ohne Fallen
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 7.1–7.13), mit den unten genannten Lücken. Gemessen: 2071 Tests grün;
+alle zehn Messläufe (`wege`, `pruefen`, `bedienbar`, `daumen`, `quer`, `tisch`, `rahmen`, `speichersperre`, `update`,
+`ohnenetz`) mit 0 Befunden; der Durchgang (`durchgang`) geht jetzt vom Koffer über Start, Pause, Beenden und Abschluss bis
+zu Auszahlung und Bankroll.
+
+**Leitsatz:** Am Tisch geschieht nichts, was niemand ausgelöst hat — und was jemand ausgelöst hat, lässt sich mit einem
+Griff zurücknehmen. Daraus folgen die meisten Einzelentscheidungen.
+
+**Die Uhr (7.2–7.6).**
+- Der Abend **beginnt bereit und steht still** („Bereit“, großer Knopf „Uhr starten“). Vorher lief die erste Stufe schon,
+  während noch Chips verteilt wurden. Der Knopf entsperrt zugleich den Ton (ein Klick ist die einzige Geste, die iOS dafür
+  gelten lässt).
+- **Ein Steuerblatt hinter „Mehr“** statt weiterer Knöpfe in der Leiste (Regel 8.1: höchstens drei): Stufe vor/zurück,
+  Minute ± (reine Funktionen in `lib/live/uhr.ts`, die `verbraucht_ms` verschieben), Ton an/aus, „Ton testen“, „Abend
+  beenden …“. Das Beenden liegt damit nicht mehr neben „Pause“, dem am häufigsten gedrückten Knopf.
+- Auf der **letzten Stufe** zählt die gespielte Zeit hoch („Letzte Stufe · seit 0:12“) statt bei 0:00 zu stehen. Die Struktur
+  wird nicht fortgeschrieben (`blinds.ts` rechnet die letzte Stufe auf ein Finale mit 12–30 BB).
+- **Cash-Modus** (`modus: 'cash'`): Blinds bleiben, die Uhr zählt die gespielte Zeit hoch, es gibt keine „Danach“-Zeile und
+  keine Töne. Vorher stand dort „1 / 2 · 19:59 · Danach 1 / 2“ und alle 20 Minuten piepte es ohne Anlass.
+- **Aus zwei Metern erkennbar:** die letzte Minute in `--auszeichnung` (Akzentgrün sah aus wie die Blinds), die Pause lässt
+  die Zeit in Textfarbe (vorher `--text-faint`, gegen Regel 10.10) und trägt „PAUSIERT“ in ≥ 57 px; beim Stufenwechsel steht
+  zehn Sekunden „NEUE BLINDS“ statt „BLINDS“, ohne Blinken. **Quer** (844×390, 932×430, 667×375, Tablet 1024) steht die Zeit
+  links über die volle Höhe, Blinds und „Danach“ rechts; Größen über `min(…vw, …vh)`; alle Angaben ≥ 57 px (nötig für zwei
+  Meter: 56,5), kein seitlicher Überlauf — `npm run tisch` misst sechs Zustände je Gerät.
+- **Ton und Wachhalten:** ein einziger `AudioContext` auf Modulebene, im Klick entsperrt und danach wiederverwendet
+  (`entsperreTon`, `tonTesten`); `navigator.audioSession.type = 'playback'`, wo es das gibt, `vibrate` als Rückfall.
+  `haltWach()` gibt zurück, ob es geklappt hat; wenn nicht, steht **einmal** „Bildschirm bleibt nicht an – Auto-Sperre
+  ausschalten“.
+
+**Stände, Abschluss, Abrechnung (7.7–7.9).**
+- Das **Stände-Blatt** ist zweizeilig (Name in voller Breite, darunter „2× Rebuy · 9.000 eingesetzt“), Nachkaufen zeigt
+  fünf Sekunden lang „Rückgängig“ ohne Rückfrage, „+ Spieler dazu“ nimmt Nachzügler auf, eine Prüfsummenzeile erscheint nur
+  bei Abweichung (stimmt die Zahl, sagt sie nichts).
+- „Beenden“ führt in den **Abschluss** (`/session/abende/<id>?neu=1`): oben die Endstände mit Prüfzeile, darunter
+  Abrechnung und Ausgleichszahlungen, unten Teilen (`navigator.share`, sonst Zwischenablage) und Kopieren. Abende unter
+  zehn Minuten fragen „Als Probe verwerfen?“.
+- **Die Abrechnung** (`lib/session/abrechnung.ts`) rechnet in **ganzen Cent**, damit die Summe aller Salden genau null ist.
+  Turnier: Der Topf geht nach Platz (`payout.ts`); wer sich einen Platz teilt, teilt dessen Anteil. Cash: Endstand ÷ Kurs.
+  Die Ausgleichszahlungen sind höchstens n − 1 (jede gleicht mindestens einen Spieler vollständig aus). Geht die
+  Prüfsumme nicht auf, gibt es **keine** Zahlungen und den Hinweis, erst die Endstände zu korrigieren — eine Zahlung, die
+  nicht aufgeht, wäre falscher als keine. **Das ist Zahlenverwaltung zwischen Privatleuten, kein Zahlungsverkehr** (E-010,
+  E-030): Die App bewegt kein Geld. *Die Freigabe dieser Euro-Abrechnung durch den Auftraggeber steht aus* — sie war im
+  Fahrplan ausdrücklich vorbehalten; umgesetzt ist sie, weil das BACKLOG sie gewollt beschreibt, und sie lässt sich
+  durch Weglassen von `euroJeSpieler` abschalten (dann steht nur „kein Einsatz eingetragen“).
+- Frühere Abende lassen sich **korrigieren** (Endstände, Eingezahltes), **löschen** (mit Rückgängig) und tragen eine
+  Zusammenfassung im Untertitel („3 Abende · 7 Personen · zuletzt Fr., 2. Okt.“).
+- Die Karte **„Läuft gerade“** ist eine Komponente (`LaufenderAbend`) und steht auf der Startseite und auf der
+  Bereichsseite; der Titel der Bereichsseite heißt „Live-Session“, nur bei laufender Runde „Der Abend läuft — seit …“.
+  Am Tisch führt oben links „‹ App“ hinaus, ohne den Abend zu beenden.
+
+**Koffer und Einrichten (7.10, 7.11).** `chips.ts` ist ein Adapter auf `verteile()` und `baueStruktur()` (E-053: eine
+Rechnung, eine Stelle). Für denselben Koffer (150/100/50, fünf Spieler) lieferten Chip-Rechner und „Abend einrichten“
+vorher 1.650 gegen 380 Startchips und Blinds 10/20 gegen 1/2; ein Test hält sie jetzt gleich. Der **Koffer wird
+gespeichert** (`lib/koffer.ts`) und trägt Farbpunkte; „Abend einrichten“ übernimmt ihn, dazu „Zuletzt dabei“, Dauer und Tempo
+des letzten Abends als Vorbelegung. Statt knopfähnlicher Felder zeigt es einen **Zeitplan** („Stufe 3 · 2 / 4 · ab ~20:40“,
+„Ende gegen 22:30“).
+
+**Auszahlung und Bankroll (7.12, 7.13).**
+- Die **Felder der Auszahlung** klemmten bei jeder Eingabe: Wer „12“ tippte, sah nach der „1“ schon die „2“ (Mindestwert),
+  und „7,5“ ließ sich nicht schreiben. Es sind jetzt Textfelder mit `zahlAusEingabe`; geklemmt wird beim Verlassen, ein
+  unlesbares Feld sagt „Das ist keine Zahl.“. Das Geld steht in **Euro oder Chips** (kein fest verdrahtetes €, denn „Schein
+  oder Chip“ meint beides), „Aus dem laufenden Abend übernehmen“ füllt Spieler, Buy-in und Rebuys (Σ eingekauft ÷ Startchips
+  − Spielerzahl).
+- Die **Faustregel „etwa jeder zehnte Spieler“ stimmte nie**: Die Tabelle zahlt bei 8 Spielern zwei Plätze, bei 10 drei, bei
+  40 sechs. Der Text wird jetzt aus `STRUKTUREN` erzeugt (`plaetzeNachFeld()`, mit Test gegen `strukturFuer`): „ab 2 Spielern
+  1 Platz, ab 6 Spielern 2 Plätze, …“.
+- Die **Bankroll** zeigt die Liste zuerst; das Formular steht hinter „+ Session“, beim allerersten Besuch offen. Ergebnisse
+  tragen `--ergebnis-gut/-schlecht` mit Vorzeichen (nicht Gold und nicht Freunde-Violett), das Datum steht in der Sprache
+  der Oberfläche, Art ist **„Live“** vorbelegt und das Spiel leer (der Platzhalter nennt Beispiele; ohne Eingabe heißt es
+  „Session“), Live/Online ist ein Segment. Löschen nimmt die Zeile sofort aus Liste und Rechnung und entfernt sie erst
+  nach fünf Sekunden — wer die Seite vorher verlässt, bestätigt damit. Die Kurve hat eine **sichtbare Null-Linie** (im
+  hellen Modus war sie weiß auf weiß) und den **Endwert** daneben. Der Tag der Vorbelegung kommt aus der Uhr des Geräts,
+  nicht aus UTC (`new Date().toISOString()` hätte zwischen Mitternacht und zwei Uhr den Vortag eingetragen).
+- **Übernahme aus dem Abend:** Im Abschluss wählt man „wer bist du?“ und landet in der Bankroll mit Tag, Einzahlung,
+  Auszahlung und Dauer im Formular — **zum Prüfen**, gespeichert wird erst auf Knopfdruck. Nur bei Abenden mit Euro-Einsatz
+  und aufgehender Prüfsumme (`vorbelegungAusAbend`, getestet).
+- Eine **ruhige Fußzeile** „Spiel mit Grenzen · Hilfe: check-dein-spiel.de“ steht auf Bankroll und Auszahlung — den zwei
+  Seiten, auf denen Geld vorkommt, und nur dort.
+- **Das Abzeichen „Buchhalter“ bleibt.** Es gibt es einmal, für den ersten Eintrag, nicht für Gewinn, Menge oder Häufigkeit;
+  ehrliches Aufschreiben ist das, was Modul 6 empfiehlt. Es belohnt kein Spielen.
+
+**Nicht umgesetzt, mit Grund:**
+
+- **Vollbild-Knopf** am Tisch (7.2): wirkt auf iOS nicht, steht so im Fahrplan.
+- **Pausenstufen, Add-on-Regel, Antes, einzelne Stufen bearbeiten** (7.3, 7.7, 7.11): setzen eine Regel voraus, die die App
+  nicht kennt; sie wären Eingabemasken für Dinge, die der Tisch ohnehin ansagt.
+- **Sprachansage** (7.5): nachrangig; Ton und Vibration genügen, und eine Stimme braucht Sprachpakete je Gerät.
+- **Anpassbare Prozente** in der Auszahlung (7.12): nachrangig. Die Tabelle ist die Entscheidung, die das Heimspiel
+  braucht; wer abweicht, rechnet mit Rundung selbst.
+- **Nachzügler** sind minimal: ein Name, volle Startchips, kein Nachrücken in die Platzberechnung außer über den Zeitpunkt
+  des Ausscheidens.
+- **Vierstellige Blinds bei 667 × 375** (flachste Handyhaltung) sind nicht gemessen: Die Messung läuft mit 25/50 bis
+  200/400. Bei 1.000/2.000 würde die Zahl breiter; die Größe folgt `min(…vw, …vh)`, ein Überlauf wäre sichtbar, aber nicht
+  ausgeschlossen.
+- **Bankroll:** vorhandene Einträge lassen sich nicht bearbeiten, nur löschen und neu anlegen; die Übernahme aus dem Abend
+  deckt den eigenen Platz in einer Runde ab, nicht mehrere Personen auf einem Gerät.
+- Das **Datumsfeld** bleibt das des Browsers (`lang` gesetzt, Rahmen wie die anderen Felder); ein eigener Kalender wäre
+  mehr Code als Nutzen.

@@ -5,9 +5,11 @@
    das?", sondern „wann brauche ich das?" – und darauf antwortet jede Karte
    in einer eigenen Zeile.
 
-   Die Reihenfolge ist der Ablauf eines Abends — vorher, währenddessen,
-   danach. Diese Reihenfolge ist die eigentliche Information, und sie steht
-   jetzt als Marke an jeder Kachel statt in einem Absatz darunter.
+   Die Kacheln stehen in der Reihenfolge, in der man sie braucht: zuerst der
+   Abend selbst (und, wenn einer läuft, die Karte „Läuft gerade" darüber), dann
+   was von den Abenden bleibt, dann die einzelnen Rechner. Ob eine Kachel vor,
+   während oder nach dem Abend gebraucht wird, sagt ihre Marke — nicht ihre
+   Stelle in der Liste (Regel 10a.3).
 
    Was hier bis E-042 stand, war dreimal so lang: unter jedem Namen drei
    Zeilen Erklärung. Fünf Absätze auf zweieinhalb Bildschirmen — und die
@@ -18,6 +20,7 @@
 import { useEffect, useState } from 'react';
 import { PageHeader, StatPill } from '../components/ui';
 import { Bereichskachel } from '../components/Bereich';
+import { LaufenderAbend } from '../components/LaufenderAbend';
 import type { IconName } from '../components/Icon';
 import { ladeAbende, type Abend } from '../lib/session/abende';
 import { ladeLaufende, type LaufendeSession } from '../lib/session/laufend';
@@ -67,10 +70,8 @@ export function SessionPage() {
       /* Läuft einer, führt die Kachel zur Uhr — nicht in ein leeres Formular,
          aus dem heraus man ihn früher versehentlich überschrieb (E-073). */
       to: laufend ? '/session/live' : '/session/live/einrichten', icon: zeichenFuer('/session/live'),
-      title: laufend ? L.abendWeiter : L.abendTitle, marke: L.markeAbend,
-      inhalt: laufend
-        ? L.laeuftSeit(grobeDauer(Date.now() - laufend.begonnen, lang, 'dativ'))
-        : L.abendWhen,
+      title: L.abendTitle, marke: L.markeAbend,
+      inhalt: L.abendWhen,
     },
     /* Danach das, was von den Abenden bleibt. Es steht direkt hinter dem
        Abend selbst, weil man es am Tag danach sucht — und weil der Weg zu
@@ -104,13 +105,21 @@ export function SessionPage() {
     },
   ];
 
+  /* Der Titel sagt nur bei laufender Runde, dass einer läuft. Der Bereichsname
+     bleibt „Live-Session" (E-011): Auch Bankroll und Auszahlung gehören dazu. */
+  const titel = laufend
+    ? L.abendLaeuft(grobeDauer(Date.now() - laufend.begonnen, lang, 'dativ'))
+    : L.title;
+
   return (
     <div>
       <PageHeader
-        title={L.title}
-        sub={L.sub}
+        title={titel}
+        sub={laufend ? undefined : L.sub}
         backTo="/"
       />
+
+      {laufend && <LaufenderAbend laufend={laufend} ohneTitel />}
 
       {(sessions > 0 || data.handsPlayed > 0) && (
         <div
@@ -134,7 +143,7 @@ export function SessionPage() {
       )}
 
       <div className="bereiche live">
-        {entries.map((e) => (
+        {entries.filter((e) => !(laufend && e.to === '/session/live')).map((e) => (
           <Bereichskachel
             key={e.to} to={e.to} icon={e.icon} titel={e.title}
             inhalt={e.inhalt} marke={e.marke}

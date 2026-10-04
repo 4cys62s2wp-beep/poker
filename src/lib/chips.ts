@@ -1,7 +1,18 @@
 /* Chip-Rechner: Teilt einen (oder mehrere) Pokerkoffer fair auf.
-   Eingabe: Spielerzahl + Chip-Sorten mit Anzahl (Werte optional).
-   Ausgabe: Wert-Vorschlag pro Sorte, Verteilung pro Spieler, Startstack,
-   passende Blinds und ein Blind-Fahrplan für Turnier-Abende. */
+   Eingabe: Spielerzahl + Chip-Sorten mit Anzahl.
+   Ausgabe: Wert je Sorte, Verteilung pro Spieler, Startstack, passende Blinds
+   und ein Blind-Fahrplan für Turnier-Abende.
+
+   Seit E-094 rechnet diese Datei nicht mehr selbst. Sie ist der Adapter auf
+   `verteile()` (Chipverteilung) und `baueStruktur()` (Blindstruktur), dieselben
+   Rechnungen wie bei „Abend einrichten" (E-053: eine Rechnung nur an einer
+   Stelle). Vorher gaben beide Bildschirme für denselben Koffer (150/100/50,
+   fünf Spieler) verschiedene Auskünfte: hier Weiß 5, Stack 1.650, Blinds 10/20 —
+   dort Weiß 1, Stack 380, Blinds 1/2. */
+
+import { verteile } from './live/verteilung';
+import { baueStruktur } from './live/blinds';
+
 
 export interface ChipInput {
   id: string;
@@ -10,8 +21,6 @@ export interface ChipInput {
   color: string;
   /** Wie viele Chips dieser Sorte insgesamt im Koffer sind. */
   count: number;
-  /** Optionaler fester Wert (leer = automatisch vergeben). */
-  value?: number;
 }
 
 export interface ChipAllocation {
@@ -32,7 +41,7 @@ export interface BlindLevel {
 
 /** Hinweis-Codes statt fertiger Texte: Die Übersetzung passiert in der UI
     (src/i18n/pages/chips.ts) – so bleibt die Rechenlogik sprachfrei. */
-export type ChipWarning = 'fewSmallChips' | 'shortStacks' | 'chipsBelowPlayers';
+export type ChipWarning = 'fewSmallChips' | 'shortStacks' | 'chipsBelowPlayers' | 'unusedChips';
 
 export interface ChipPlan {
   chips: ChipAllocation[];
@@ -47,93 +56,61 @@ export interface ChipPlan {
   warnings: ChipWarning[];
 }
 
-/* Bewährte Heimspiel-Wertleitern: Die häufigste Chipsorte bekommt den
-   kleinsten Wert (in echten Koffern gibt es die kleinen Chips am öftesten). */
-const VALUE_LADDERS: Record<number, number[]> = {
-  1: [1],
-  2: [5, 25],
-  3: [5, 25, 100],
-  4: [5, 25, 100, 500],
-  5: [5, 25, 100, 500, 1000],
-  6: [5, 25, 100, 500, 1000, 5000],
-  7: [1, 5, 25, 100, 500, 1000, 5000],
-  8: [1, 5, 25, 100, 500, 1000, 5000, 10000],
-};
-
-/** „Schöne“ BB-Vielfache des kleinsten Chips – gerade, damit der Small Blind
-    (= BB/2) immer mit ganzen Chips bezahlbar bleibt. */
-const BB_MULTIPLIERS = [2, 4, 10, 20, 40, 100, 200, 400, 1000, 2000, 4000, 10000];
+/** Dauer und Tempo, mit denen der Fahrplan gerechnet wird: ein Abend von zweieinhalb
+ *  Stunden bei normalem Tempo — dieselbe Vorgabe wie bei „Abend einrichten". */
+export const FAHRPLAN_DAUER_MIN = 150;
 
 export function planChips(players: number, input: ChipInput[]): ChipPlan | null {
   const chips = input.filter((c) => c.count > 0);
   if (players < 2 || chips.length === 0) return null;
 
-  // Werte vergeben: manuelle Werte respektieren, Rest automatisch nach Häufigkeit.
-  const ladder = VALUE_LADDERS[Math.min(chips.length, 8)];
-  const usedValues = new Set(chips.filter((c) => c.value && c.value > 0).map((c) => c.value));
-  const autoValues = ladder.filter((v) => !usedValues.has(v));
-  const byCount = [...chips].sort((a, b) => b.count - a.count);
-  const valueOf = new Map<string, number>();
-  let autoIdx = 0;
-  for (const c of byCount) {
-    if (c.value && c.value > 0) {
-      valueOf.set(c.id, Math.floor(c.value));
-    } else {
-      valueOf.set(c.id, autoValues[Math.min(autoIdx++, autoValues.length - 1)] ?? 1);
-    }
-  }
+  /* Die Kennung dient als Name, damit jede Sorte wieder ihrer Farbe zugeordnet
+     werden kann — zwei Sorten dürfen im Koffer gleich heißen. */
+  const v = verteile({ sorten: chips.map((c) => ({ name: c.id, anzahl: c.count })), spieler: players });
+  if (!v || v.startchips <= 0) return null;
+  /* Reicht der Koffer nicht, hat der Chip-Rechner bisher trotzdem eine
+     Verteilung gezeigt (Sorten mit weniger Chips als Spielern bleiben in der
+     Bank). Wo gar nichts auszuteilen ist, gibt es nichts zu zeigen. */
+  if (v.sorten.every((s) => s.jeSpieler === 0)) return null;
 
-  // Verteilung: jede Sorte gleichmäßig aufteilen, Rest bleibt in der Bank.
-  const allocations: ChipAllocation[] = chips
-    .map((c) => {
-      const value = valueOf.get(c.id)!;
-      const perPlayer = Math.floor(c.count / players);
+  const nachId = new Map(chips.map((c) => [c.id, c]));
+  const allocations: ChipAllocation[] = v.sorten
+    .map((s) => {
+      const c = nachId.get(s.name)!;
       return {
         id: c.id,
         label: c.label,
         color: c.color,
-        value,
-        perPlayer,
-        perPlayerValue: perPlayer * value,
-        leftover: c.count - perPlayer * players,
+        value: s.wert,
+        perPlayer: s.jeSpieler,
+        perPlayerValue: s.jeSpieler * s.wert,
+        leftover: s.uebrig,
       };
     })
     .sort((a, b) => a.value - b.value);
 
-  const stackValue = allocations.reduce((s, a) => s + a.perPlayerValue, 0);
-  if (stackValue <= 0) return null;
-
-  const smallest = allocations[0].value;
-
-  // Blinds: Ziel ~100 BB Startstack, BB als gerades Vielfaches des kleinsten Chips.
-  let bigBlind = smallest * 2;
-  let bestScore = Infinity;
-  for (const m of BB_MULTIPLIERS) {
-    const bb = smallest * m;
-    if (bb * 20 > stackValue && bb !== smallest * 2) break; // unter 20 BB macht kein Setup Sinn
-    const score = Math.abs(stackValue / bb - 100);
-    if (score < bestScore) {
-      bestScore = score;
-      bigBlind = bb;
-    }
-  }
-  const smallBlind = bigBlind / 2;
-  const stackBB = Math.round(stackValue / bigBlind);
-
-  // Turnier-Fahrplan: von den Start-Blinds die Leiter hoch, bis die Blinds
-  // etwa ein Drittel des Startstacks erreichen.
-  const levels: BlindLevel[] = [];
-  const startIdx = BB_MULTIPLIERS.findIndex((m) => smallest * m === bigBlind);
-  for (let i = Math.max(0, startIdx), lvl = 1; i < BB_MULTIPLIERS.length && lvl <= 12; i++, lvl++) {
-    const bb = smallest * BB_MULTIPLIERS[i];
-    levels.push({ level: lvl, sb: bb / 2, bb });
-    if (bb >= stackValue / 3) break;
-  }
+  const struktur = baueStruktur({
+    dauer_min: FAHRPLAN_DAUER_MIN,
+    startchips: v.startchips,
+    spieler: players,
+    kleinsterChip: v.smallBlind,
+    tempo: 'normal',
+  });
+  const stackBB = Math.round(v.startchips / v.bigBlind);
 
   const warnings: ChipWarning[] = [];
-  if (allocations[0].perPlayer < 8) warnings.push('fewSmallChips');
+  if (v.hinweise.includes('wenige-kleine-chips') || allocations[0].perPlayer < 8) warnings.push('fewSmallChips');
   if (stackBB < 40) warnings.push('shortStacks');
-  if (chips.some((c) => c.count < players)) warnings.push('chipsBelowPlayers');
+  if (v.hinweise.includes('material-reicht-nicht') || chips.some((c) => c.count < players)) warnings.push('chipsBelowPlayers');
+  if (v.hinweise.includes('eine-sorte-bleibt-liegen')) warnings.push('unusedChips');
 
-  return { chips: allocations, stackValue, stackBB, smallBlind, bigBlind, levels, warnings };
+  return {
+    chips: allocations,
+    stackValue: v.startchips,
+    stackBB,
+    smallBlind: v.smallBlind,
+    bigBlind: v.bigBlind,
+    levels: struktur.stufen.map((s) => ({ level: s.nummer, sb: s.sb, bb: s.bb })),
+    warnings,
+  };
 }

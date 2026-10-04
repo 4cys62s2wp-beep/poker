@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAppState, type SessionEntry } from '../../state/AppState';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/bankroll';
@@ -7,32 +7,83 @@ import { downloadBlob } from '../../lib/download';
 import { csvDatei } from '../../lib/export/csv';
 import { zahlAusEingabe } from '../../lib/eingabe/zahl';
 import { Zurueck } from '../../components/ui';
-import { STR as NAV } from '../../i18n/pages/layout';
 import { Icon } from '../../components/Icon';
-
-function euro(n: number): string {
-  return n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
-}
+import { Spielerschutz } from '../../components/Spielerschutz';
+import { datumAnzeigen, heuteIso, type Vorbelegung } from '../../lib/bankroll';
 
 export function BankrollTracker() {
   const { data, addSession, deleteSession } = useAppState();
   const { lang } = useLang();
   const L = STR[lang];
+  const nf = lang === 'de' ? 'de-DE' : 'en-GB';
+  const euro = (n: number) => n.toLocaleString(nf, { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
+  const vorz = (n: number) => `${n > 0 ? '+' : n < 0 ? '−' : ''}${euro(Math.abs(n))}`;
+  const klasse = (n: number) => (n >= 0 ? 'ergebnis-plus' : 'ergebnis-minus');
+
+  const { state } = useLocation();
+  /* Kommt jemand aus dem Abschluss eines Abends, steht die Zeile schon da —
+     zum Prüfen, nicht zum Abnicken: Gespeichert wird erst auf Knopfdruck. */
+  const vorlage = (state as { vorbelegung?: Vorbelegung } | null)?.vorbelegung;
+
   const [filter, setFilter] = useState<'alle' | 'online' | 'live'>('alle');
+  const [offen, setOffen] = useState(() => data.sessions.length === 0 || !!vorlage);
   const [form, setForm] = useState({
-    date: new Date().toISOString().slice(0, 10),
-    type: 'online' as 'online' | 'live',
-    game: 'NL2 Cash',
-    buyIn: '',
-    cashOut: '',
-    minutes: '',
+    date: vorlage?.date ?? heuteIso(),
+    type: (vorlage?.type ?? 'live') as 'online' | 'live',
+    game: '',
+    buyIn: vorlage ? String(vorlage.buyIn).replace('.', lang === 'de' ? ',' : '.') : '',
+    cashOut: vorlage ? String(vorlage.cashOut).replace('.', lang === 'de' ? ',' : '.') : '',
+    minutes: vorlage ? String(vorlage.minutes) : '',
     notes: '',
   });
   const [formError, setFormError] = useState<string | null>(null);
 
+  /* Löschen mit fünf Sekunden Rückweg. Die Session verschwindet sofort aus
+     Liste und Rechnung, wird aber erst danach wirklich entfernt. Wer die Seite
+     vorher verlässt, löscht damit bestätigend: Sonst bliebe etwas stehen, das
+     der Mensch schon weggeschickt hat. */
+  const [ausstehend, setAusstehend] = useState<SessionEntry | null>(null);
+  const timer = useRef<number | null>(null);
+  const ausstehendRef = useRef<SessionEntry | null>(null);
+  ausstehendRef.current = ausstehend;
+  /* Die Löschfunktion steht in einem Ref: Ihr Aufräumen beim Verlassen der
+     Seite darf nicht schon laufen, nur weil sich ihre Identität ändert. */
+  const loeschRef = useRef(deleteSession);
+  loeschRef.current = deleteSession;
+  const endgueltig = useCallback(() => {
+    if (timer.current) window.clearTimeout(timer.current);
+    timer.current = null;
+    const a = ausstehendRef.current;
+    if (a) loeschRef.current(a.id);
+    ausstehendRef.current = null;
+    setAusstehend(null);
+  }, []);
+  useEffect(() => () => {
+    if (timer.current) window.clearTimeout(timer.current);
+    if (ausstehendRef.current) loeschRef.current(ausstehendRef.current.id);
+  }, []);
+
+  function loesche(s: SessionEntry) {
+    endgueltig();
+    ausstehendRef.current = s;
+    setAusstehend(s);
+    timer.current = window.setTimeout(endgueltig, 5000);
+  }
+
+  function zurueck() {
+    if (timer.current) window.clearTimeout(timer.current);
+    timer.current = null;
+    ausstehendRef.current = null;
+    setAusstehend(null);
+  }
+
+  const sichtbar = useMemo(
+    () => data.sessions.filter((s) => s.id !== ausstehend?.id),
+    [data.sessions, ausstehend],
+  );
   const filteredSessions = useMemo(
-    () => data.sessions.filter((s) => filter === 'alle' || s.type === filter),
-    [data.sessions, filter],
+    () => sichtbar.filter((s) => filter === 'alle' || s.type === filter),
+    [sichtbar, filter],
   );
 
   const stats = useMemo(() => {
@@ -86,13 +137,14 @@ export function BankrollTracker() {
     addSession({
       date: form.date,
       type: form.type,
-      game: form.game.trim() || 'Session',
+      game: form.game.trim() || L.gameFallback,
       buyIn,
       cashOut,
       minutes: Math.round(minutes),
       notes: form.notes.trim() || undefined,
     });
     setForm((f) => ({ ...f, buyIn: '', cashOut: '', minutes: '', notes: '' }));
+    setOffen(false);
   }
 
   return (
@@ -104,12 +156,21 @@ export function BankrollTracker() {
       </div>
 
       <div className="row wrap between" style={{ marginBottom: 16 }}>
-        <div className="segmented">
-          <button className={filter === 'alle' ? 'on' : ''} onClick={() => setFilter('alle')}>{L.filterAll}</button>
-          <button className={filter === 'online' ? 'on' : ''} onClick={() => setFilter('online')}>{L.filterOnline}</button>
-          <button className={filter === 'live' ? 'on' : ''} onClick={() => setFilter('live')}>{L.filterLive}</button>
+        <div className="segmented" role="radiogroup" aria-label={L.labelType}>
+          {([['alle', L.filterAll], ['online', L.filterOnline], ['live', L.filterLive]] as const).map(([wert, text]) => (
+            <button
+              key={wert}
+              type="button"
+              role="radio"
+              aria-checked={filter === wert}
+              className={filter === wert ? 'on' : ''}
+              onClick={() => setFilter(wert)}
+            >
+              {text}
+            </button>
+          ))}
         </div>
-        {data.sessions.length > 0 && (
+        {sichtbar.length > 0 && (
           <button className="btn sm ghost" onClick={exportCsv}>
             {L.exportCsv}
           </button>
@@ -121,7 +182,7 @@ export function BankrollTracker() {
           <div className="grid cols-4" style={{ marginBottom: 18 }}>
             <div className="card">
               <div className="stat-label">{L.statTotal}</div>
-              <div className="big-stat" style={{ color: stats.profit >= 0 ? 'var(--ok)' : 'var(--danger)', fontSize: 'var(--fs-ueberschrift)' }}>
+              <div className={`big-stat ${klasse(stats.profit)}`} style={{ fontSize: 'var(--fs-ueberschrift)' }}>
                 {euro(stats.profit)}
               </div>
             </div>
@@ -137,93 +198,143 @@ export function BankrollTracker() {
             </div>
             <div className="card">
               <div className="stat-label">{L.statBestWorst}</div>
-              <div style={{ fontWeight: 700, color: 'var(--ok)' }}>{euro(stats.best)}</div>
-              <div style={{ fontWeight: 700, color: 'var(--danger-lesbar)' }}>{euro(stats.worst)}</div>
+              <div className={klasse(stats.best)} style={{ fontWeight: 700 }}>{euro(stats.best)}</div>
+              <div className={klasse(stats.worst)} style={{ fontWeight: 700 }}>{euro(stats.worst)}</div>
             </div>
           </div>
 
           {stats.cumulative.length >= 2 && (
             <div className="card" style={{ marginBottom: 18 }}>
-              <div className="stat-label" style={{ marginBottom: 8 }}>{L.chartTitle}</div>
-              <ProfitChart values={stats.cumulative} ariaLabel={L.chartAria} />
+              <div className="verlauf-kopf">
+                <div className="stat-label">{L.chartTitle}</div>
+                <div className={`verlauf-stand ${klasse(stats.profit)}`}>
+                  <span className="small faint">{L.verlaufStand} </span>{vorz(stats.profit)}
+                </div>
+              </div>
+              <ProfitChart values={stats.cumulative} ariaLabel={L.verlaufAria(vorz(stats.profit))} />
             </div>
           )}
         </>
       )}
 
-      <div className="card" style={{ marginBottom: 18 }}>
-        <div className="section-title" style={{ marginTop: 0 }}>{L.newSession}</div>
-        <div className="grid cols-2" style={{ gap: 12 }}>
-          <label>
-            <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelDate}</div>
-            <input type="date" className="text-input" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
-          </label>
-          <label>
-            <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelType}</div>
-            <select className="text-input" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'online' | 'live' })}>
-              <option value="online">{L.optionOnline}</option>
-              <option value="live">{L.optionLive}</option>
-            </select>
-          </label>
-          <label>
-            <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelGame}</div>
-            <input className="text-input" value={form.game} onChange={(e) => setForm({ ...form, game: e.target.value })} placeholder={L.gamePlaceholder} />
-          </label>
-          <label>
-            <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelDuration}</div>
-            <input className="text-input" inputMode="numeric" value={form.minutes} onChange={(e) => setForm({ ...form, minutes: e.target.value })} placeholder={L.durationPlaceholder} />
-          </label>
-          <label>
-            <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelBuyIn}</div>
-            <input className="text-input" inputMode="decimal" value={form.buyIn} onChange={(e) => setForm({ ...form, buyIn: e.target.value })} placeholder={L.buyInPlaceholder} />
-          </label>
-          <label>
-            <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelCashOut}</div>
-            <input className="text-input" inputMode="decimal" value={form.cashOut} onChange={(e) => setForm({ ...form, cashOut: e.target.value })} placeholder={L.cashOutPlaceholder} />
-          </label>
+      {/* Die Liste zuerst: Wer wiederkommt, will sehen, was da ist — nicht ein
+          Formular mit sieben Feldern. Das Formular steht hinter „+ Session",
+          beim allerersten Besuch aber offen. */}
+      {sichtbar.length > 0 && (
+        <div className="session-liste-kopf">
+          <div className="section-title" style={{ margin: 0 }}>{L.sessionsTitle}</div>
+          {!offen && (
+            <button type="button" className="btn sm primary" onClick={() => setOffen(true)}>
+              {L.neueSessionKnopf}
+            </button>
+          )}
         </div>
-        <label style={{ display: 'block', marginTop: 12 }}>
-          <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelNotes}</div>
-          <input className="text-input" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder={L.notesPlaceholder} />
-        </label>
-        {formError && <div className="feedback-box bad" style={{ marginTop: 12 }}>{formError}</div>}
-        <button className="btn primary" style={{ marginTop: 14 }} onClick={submit}>
-          {L.save}
-        </button>
-      </div>
+      )}
+
+      {ausstehend && (
+        <div className="rueckgaengig-zeile" role="status">
+          <span>{L.geloescht}</span>
+          <button type="button" className="btn sm" onClick={zurueck}>{L.rueckgaengig}</button>
+        </div>
+      )}
 
       {filteredSessions.length > 0 && (
-        <>
-          <div className="section-title">{L.sessionsTitle}</div>
-          <div className="grid">
-            {[...filteredSessions].reverse().map((s: SessionEntry) => {
-              const p = s.cashOut - s.buyIn;
-              return (
-                <div key={s.id} className="card row between wrap">
-                  <div>
-                    <div className="row" style={{ fontWeight: 700, gap: 8 }}>
-                      <span className={`pill ${s.type === 'live' ? 'violet' : 'info'}`}>{s.type === 'live' ? L.pillLive : L.pillOnline}</span>
-                      {s.game}
-                    </div>
-                    <div className="small faint">
-                      {s.date} · {L.minutes(s.minutes)}
-                      {s.notes && ` · ${s.notes}`}
-                    </div>
+        <div className="session-liste">
+          {[...filteredSessions].reverse().map((s: SessionEntry) => {
+            const p = s.cashOut - s.buyIn;
+            return (
+              <div key={s.id} className="card row between wrap">
+                <div>
+                  <div className="row" style={{ fontWeight: 700, gap: 8 }}>
+                    <span className="pill">{s.type === 'live' ? L.pillLive : L.pillOnline}</span>
+                    {s.game}
                   </div>
-                  <div className="row">
-                    <span style={{ fontWeight: 800, color: p >= 0 ? 'var(--ok)' : 'var(--danger)' }}>
-                      {p >= 0 ? '+' : ''}{euro(p)}
-                    </span>
-                    <button className="btn sm ghost" onClick={() => deleteSession(s.id)} title={L.deleteTitle} aria-label={L.deleteAria}>
-                      <Icon name="x" size={16} />
-                    </button>
+                  <div className="small faint">
+                    {datumAnzeigen(s.date, lang)} · {L.minutes(s.minutes)}
+                    {s.notes && ` · ${s.notes}`}
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </>
+                <div className="row">
+                  <span className={`session-zeile-betrag ${klasse(p)}`}>{vorz(p)}</span>
+                  <button className="btn sm ghost" onClick={() => loesche(s)} title={L.deleteTitle} aria-label={L.deleteAria}>
+                    <Icon name="x" size={16} />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
+
+      {sichtbar.length === 0 && !offen && <p className="hinweis">{L.leerListe}</p>}
+
+      {offen && (
+        <div className="card" style={{ marginBottom: 18 }}>
+          <div className="section-title" style={{ marginTop: 0 }}>{L.newSession}</div>
+          {vorlage && <p className="small muted" style={{ marginTop: 0 }}>{L.ausAbend}</p>}
+          <div className="grid cols-2" style={{ gap: 12 }}>
+            <label>
+              <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelDate}</div>
+              <input
+                type="date"
+                lang={lang}
+                className="text-input"
+                value={form.date}
+                max={heuteIso()}
+                onChange={(e) => setForm({ ...form, date: e.target.value })}
+              />
+            </label>
+            <div>
+              <div className="stat-label" id="bk-art" style={{ marginBottom: 5 }}>{L.labelType}</div>
+              <div className="segmented" role="radiogroup" aria-labelledby="bk-art">
+                {([['live', L.optionLive], ['online', L.optionOnline]] as const).map(([wert, text]) => (
+                  <button
+                    key={wert}
+                    type="button"
+                    role="radio"
+                    aria-checked={form.type === wert}
+                    className={form.type === wert ? 'on' : ''}
+                    onClick={() => setForm({ ...form, type: wert })}
+                  >
+                    {text}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <label>
+              <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelGame}</div>
+              <input className="text-input" value={form.game} onChange={(e) => setForm({ ...form, game: e.target.value })} placeholder={L.gamePlaceholder} />
+            </label>
+            <label>
+              <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelDuration}</div>
+              <input className="text-input" inputMode="numeric" value={form.minutes} onChange={(e) => setForm({ ...form, minutes: e.target.value })} placeholder={L.durationPlaceholder} />
+            </label>
+            <label>
+              <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelBuyIn}</div>
+              <input className="text-input" inputMode="decimal" value={form.buyIn} onChange={(e) => setForm({ ...form, buyIn: e.target.value })} placeholder={L.buyInPlaceholder} />
+            </label>
+            <label>
+              <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelCashOut}</div>
+              <input className="text-input" inputMode="decimal" value={form.cashOut} onChange={(e) => setForm({ ...form, cashOut: e.target.value })} placeholder={L.cashOutPlaceholder} />
+            </label>
+          </div>
+          <label style={{ display: 'block', marginTop: 12 }}>
+            <div className="stat-label" style={{ marginBottom: 5 }}>{L.labelNotes}</div>
+            <input className="text-input" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder={L.notesPlaceholder} />
+          </label>
+          {formError && <div className="feedback-box bad" role="alert" style={{ marginTop: 12 }}>{formError}</div>}
+          <div className="row wrap" style={{ marginTop: 14 }}>
+            <button className="btn primary" onClick={submit}>
+              {L.save}
+            </button>
+            {sichtbar.length > 0 && (
+              <button type="button" className="btn" onClick={() => setOffen(false)}>{L.formSchliessen}</button>
+            )}
+          </div>
+        </div>
+      )}
+
+      <Spielerschutz />
     </div>
   );
 }
@@ -243,11 +354,11 @@ function ProfitChart({ values, ariaLabel }: { values: number[]; ariaLabel: strin
 
   return (
     <svg viewBox={`0 0 ${w} ${h}`} className="sparkline" preserveAspectRatio="none" role="img" aria-label={ariaLabel}>
-      <line x1={pad} y1={zeroY} x2={w - pad} y2={zeroY} stroke="rgba(255,255,255,0.15)" strokeDasharray="4 4" />
+      <line className="nulllinie" x1={pad} y1={zeroY} x2={w - pad} y2={zeroY} strokeDasharray="4 4" />
       <polyline
         points={points}
         fill="none"
-        stroke={last >= 0 ? 'var(--ok)' : 'var(--danger)'}
+        stroke={last >= 0 ? 'var(--ergebnis-gut)' : 'var(--ergebnis-schlecht)'}
         strokeWidth={2.5}
         strokeLinejoin="round"
         strokeLinecap="round"

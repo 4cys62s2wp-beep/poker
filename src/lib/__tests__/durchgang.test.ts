@@ -111,7 +111,21 @@ describe('Der Übergang an den Tisch', () => {
     expect(e.gespeichert_spieler).toBe(5);
     expect(e.gespeichert_startchips as number).toBeGreaterThan(0);
     expect(e.gespeichert_stufen as number).toBeGreaterThanOrEqual(2);
-    expect(e.laeuft).toBe(true);
+  });
+
+  it('beginnt bereit und stehend — die Uhr läuft erst mit „Uhr starten"', () => {
+    /* Sonst läuft die erste Blindstufe, während noch Chips verteilt werden. */
+    const e = schritt('Abend starten');
+    expect(e.startet_pausiert).toBe(true);
+    expect(String(e.marke)).toMatch(/bereit/i);
+    const start = schritt('Uhr starten setzt die Uhr in Gang');
+    expect(start.laeuft).toBe(true);
+    expect(start.marke_weg).toBe(true);
+  });
+
+  it('zeigt vor dem Start einen Zeitplan mit Uhrzeiten', () => {
+    const e = schritt('Ergebnis erscheint, bevor irgendetwas beginnt');
+    expect(e.zeitplan_mit_uhrzeit).toBe(true);
   });
 
   it('landet im Vollbild ohne Navigationsleiste', () => {
@@ -255,7 +269,14 @@ describe('Was vom Abend bleibt', () => {
   it('legt den beendeten Abend in die Liste', () => {
     const e = schritt('Beenden fragt nach und tut es dann');
     expect(e.abende_gespeichert).toBe(1);
-    expect(e.adresse_danach).toBe('#/session/abende');
+    expect(e.adresse_danach).toBe('#/session/abende/ID?neu=1');
+  });
+
+  it('endet im Abschluss mit Prüfzeile und Teilen, nicht in einer Liste', () => {
+    const a = (schritt('Beenden fragt nach und tut es dann').abschluss) as Record<string, unknown>;
+    expect(a.ueberschrift).toBe('Abend beendet');
+    expect(a.hat_pruefzeile).toBe(true);
+    expect(a.hat_teilen).toBe(true);
   });
 
   it('zeigt Datum, Sieger und Umfang in einer Zeile', () => {
@@ -1364,7 +1385,7 @@ describe('Beenden', () => {
        ist zugleich der Beweis, dass er nicht verloren ist. */
     const e = schritt('Beenden fragt nach und tut es dann');
     expect(e.abend_beendet).toBe(true);
-    expect(e.adresse_danach).toBe('#/session/abende');
+    expect(e.adresse_danach).toBe('#/session/abende/ID?neu=1');
   });
 });
 
@@ -1515,5 +1536,72 @@ describe('Quer gehalten sieht man den ganzen Tisch', () => {
   it('macht den Tisch quer flacher, nicht nur schmaler', () => {
     /* Vorher 564 Pixel bei 390 Pixeln Bildhöhe. */
     expect(Number(e().filz_hoehe)).toBeLessThan(280);
+  });
+});
+
+describe('Auszahlung und Bankroll (E-094)', () => {
+  const a = () => schritt('Auszahlung: Tippen verfälscht nichts, der Text passt zur Tabelle');
+  const b = () => schritt('Bankroll: Liste vor dem Formular, Löschen mit Rückgängig');
+
+  it('lässt beim Tippen stehen, was getippt wurde', () => {
+    /* Das Feld klemmte vorher bei jeder Eingabe: Wer „12" tippte, sah nach der
+       „1" schon die „2" (Mindestwert). */
+    expect(a().nach_eins_getippt).toBe('1');
+    expect(a().nach_zwoelf_getippt).toBe('12');
+  });
+
+  it('rechnet mit Komma und zeigt das Geld in der gewählten Einheit', () => {
+    expect(a().topf_in_euro).toBe(true);
+    expect(a().einheit_chips).toBe(true);
+  });
+
+  it('nennt die Staffel aus der Tabelle statt einer Faustregel, die nicht stimmt', () => {
+    expect(a().plaetze_bei_12).toBe(true);
+    expect(a().staffel_genannt).toBe(true);
+    expect(a().alte_faustregel_da).toBe(false);
+  });
+
+  it('sagt es, wenn ein Feld keine Zahl enthält', () => {
+    expect(a().fehler_bei_buchstaben).toBe(1);
+  });
+
+  it('übernimmt Spieler, Einsatz und Rebuys aus dem laufenden Abend', () => {
+    const e = schritt('Auszahlung übernimmt den laufenden Abend');
+    expect(e.angeboten).toBe(1);
+    expect(e.spieler).toBe('5');
+    expect(Number(e.buyin)).toBeGreaterThan(0);
+    // Im Durchgang kauft eine Person einmal nach.
+    expect(e.rebuys).toBe('1');
+    // Ohne Euro-Einsatz im Abend rechnet der Rechner in Chips.
+    expect(e.einheit_chips).toBe('true');
+  });
+
+  it('trägt die ruhige Spielerschutz-Zeile', () => {
+    expect(a().spielerschutz_zeile).toBe(true);
+  });
+
+  it('zeigt beim ersten Besuch das Formular, danach zuerst die Liste', () => {
+    expect(b().erstes_formular_offen).toBe(true);
+    const n = b().nach_speichern as Record<string, unknown>;
+    expect(n.formular_zu).toBe(true);
+    expect(n.knopf).toBe(true);
+    expect(n.zeilen).toBe(1);
+  });
+
+  it('beginnt mit Art „Live" und ohne erfundenes Spiel', () => {
+    expect(b().art_vorbelegt_live).toBe('true');
+    expect(b().spiel_leer).toBe(true);
+  });
+
+  it('schreibt das Datum in der Sprache, nicht als 2026-10-02', () => {
+    expect((b().nach_speichern as Record<string, unknown>).datum_iso).toBe(false);
+  });
+
+  it('löscht mit fünf Sekunden Rückweg — und danach wirklich', () => {
+    const l = b().nach_loeschen as Record<string, unknown>;
+    expect(l.zeilen).toBe(0);
+    expect(l.rueckgaengig).toBe(true);
+    expect(b().nach_rueckgaengig).toBe(1);
+    expect(b().nach_ablauf_und_neuladen).toBe(0);
   });
 });

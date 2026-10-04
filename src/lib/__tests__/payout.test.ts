@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { berechneAuszahlung, strukturFuer } from '../poker/payout';
+import { berechneAuszahlung, plaetzeNachFeld, strukturFuer } from '../poker/payout';
 
 const summe = (xs: number[]) => xs.reduce((s, x) => s + x, 0);
 
@@ -115,6 +115,26 @@ describe('Auszahlung rechnen', () => {
     for (const rundung of [0, -5, NaN]) {
       const p = berechneAuszahlung({ spieler: 10, buyIn: 20, rundung });
       expect(summe(p.auszahlungen.map((a) => a.betrag))).toBeCloseTo(200, 10);
+    }
+  });
+});
+
+describe('Erklärung der Staffel', () => {
+  it('gibt für jede Feldgröße dieselben Plätze an wie die Rechnung', () => {
+    for (const z of plaetzeNachFeld()) {
+      expect(strukturFuer(z.abSpieler).length).toBe(z.plaetze);
+      expect(strukturFuer(z.abSpieler)[0]).toBe(z.sieger);
+      // Und noch bei der letzten Feldgröße vor der nächsten Stufe.
+      expect(strukturFuer(z.abSpieler + 1).length).toBeGreaterThanOrEqual(z.plaetze);
+    }
+  });
+
+  it('beginnt bei zwei Spielern und wächst mit dem Feld', () => {
+    const z = plaetzeNachFeld();
+    expect(z[0].abSpieler).toBe(2);
+    for (let i = 1; i < z.length; i++) {
+      expect(z[i].abSpieler).toBeGreaterThan(z[i - 1].abSpieler);
+      expect(z[i].plaetze).toBeGreaterThan(z[i - 1].plaetze);
     }
   });
 });

@@ -1,59 +1,84 @@
 import { describe, expect, it } from 'vitest';
 import { planChips, type ChipInput } from '../chips';
+import { verteile, type Sorte } from '../live/verteilung';
+import { baueStruktur } from '../live/blinds';
 
-function chip(id: string, count: number, value?: number): ChipInput {
-  return { id, label: id, color: '#fff', count, value };
+function chip(id: string, count: number): ChipInput {
+  return { id, label: id, color: '#ffffff', count };
 }
 
-describe('planChips', () => {
-  const KOFFER_300 = [chip('weiss', 100), chip('rot', 100), chip('blau', 50), chip('gruen', 25), chip('schwarz', 25)];
+describe('planChips — ein Adapter auf dieselbe Rechnung wie „Abend einrichten" (FAHRPLAN 7.10)', () => {
+  const KOFFER = [chip('weiss', 150), chip('rot', 100), chip('gruen', 50)];
+  const SORTEN: Sorte[] = [
+    { name: 'weiss', anzahl: 150 }, { name: 'rot', anzahl: 100 }, { name: 'gruen', anzahl: 50 },
+  ];
 
-  it('häufigste Sorte bekommt den kleinsten Wert', () => {
-    const plan = planChips(4, KOFFER_300)!;
-    const weiss = plan.chips.find((c) => c.id === 'weiss')!;
-    const schwarz = plan.chips.find((c) => c.id === 'schwarz')!;
-    expect(weiss.value).toBe(5);
-    expect(schwarz.value).toBeGreaterThan(weiss.value);
-    // Ausgabe ist aufsteigend nach Wert sortiert
-    const values = plan.chips.map((c) => c.value);
-    expect([...values].sort((a, b) => a - b)).toEqual(values);
+  it('liefert für denselben Koffer dieselben Werte wie verteile() und baueStruktur()', () => {
+    /* Der gemessene Fehler: Weiß 5, Stack 1.650, Blinds 10/20 hier — Weiß 1,
+       Stack 380, Blinds 1/2 dort. */
+    const plan = planChips(5, KOFFER)!;
+    const v = verteile({ sorten: SORTEN, spieler: 5 })!;
+    expect(plan.stackValue).toBe(v.startchips);
+    expect(plan.smallBlind).toBe(v.smallBlind);
+    expect(plan.bigBlind).toBe(v.bigBlind);
+    for (const s of v.sorten) {
+      const a = plan.chips.find((c) => c.id === s.name)!;
+      expect(a.value, s.name).toBe(s.wert);
+      expect(a.perPlayer, s.name).toBe(s.jeSpieler);
+      expect(a.leftover, s.name).toBe(s.uebrig);
+    }
+    const struktur = baueStruktur({
+      dauer_min: 150, startchips: v.startchips, spieler: 5, kleinsterChip: v.smallBlind, tempo: 'normal',
+    });
+    expect(plan.levels.map((l) => [l.sb, l.bb])).toEqual(struktur.stufen.map((s) => [s.sb, s.bb]));
+  });
+
+  it('beginnt bei Weiß 1, Stack 380 und Blinds 1/2 — nicht bei 10/20', () => {
+    const plan = planChips(5, KOFFER)!;
+    expect(plan.chips.find((c) => c.id === 'weiss')!.value).toBe(1);
+    expect(plan.stackValue).toBe(380);
+    expect([plan.smallBlind, plan.bigBlind]).toEqual([1, 2]);
+  });
+
+  it('die häufigste Sorte bekommt den kleinsten Wert, die Ausgabe steigt', () => {
+    const plan = planChips(4, [chip('rot', 100), chip('weiss', 200), chip('blau', 50)])!;
+    expect(plan.chips[0].id).toBe('weiss');
+    const werte = plan.chips.map((c) => c.value);
+    expect([...werte].sort((a, b) => a - b)).toEqual(werte);
   });
 
   it('teilt gleichmäßig auf und legt den Rest in die Bank', () => {
-    const plan = planChips(4, KOFFER_300)!;
+    const plan = planChips(4, KOFFER)!;
     for (const a of plan.chips) {
-      const original = KOFFER_300.find((c) => c.id === a.id)!;
+      const original = KOFFER.find((c) => c.id === a.id)!;
       expect(a.perPlayer * 4 + a.leftover).toBe(original.count);
       expect(a.leftover).toBeLessThan(4);
     }
-    // 25er-Sorten: 6 pro Spieler, 1 übrig
-    expect(plan.chips.find((c) => c.id === 'gruen')!.perPlayer).toBe(6);
-    expect(plan.chips.find((c) => c.id === 'gruen')!.leftover).toBe(1);
   });
 
-  it('Blinds: BB ist gerades Vielfaches des kleinsten Chips, SB = BB/2, Stack 40–150 BB', () => {
-    for (const players of [2, 4, 6, 9]) {
-      const plan = planChips(players, KOFFER_300)!;
-      const smallest = plan.chips[0].value;
-      expect(plan.bigBlind % (smallest * 2)).toBe(0);
-      expect(plan.smallBlind * 2).toBe(plan.bigBlind);
-      expect(plan.stackBB).toBeGreaterThanOrEqual(40);
-      expect(plan.stackBB).toBeLessThanOrEqual(150);
-    }
-  });
-
-  it('Blind-Fahrplan beginnt bei den Start-Blinds und steigt monoton', () => {
-    const plan = planChips(5, KOFFER_300)!;
+  it('der kleinste Chip ist der Small Blind, der Fahrplan steigt', () => {
+    const plan = planChips(5, KOFFER)!;
     expect(plan.levels[0].bb).toBe(plan.bigBlind);
-    for (let i = 1; i < plan.levels.length; i++) {
+    for (let i = 1; i < plan.levels.length; i += 1) {
       expect(plan.levels[i].bb).toBeGreaterThan(plan.levels[i - 1].bb);
     }
-    expect(plan.levels[plan.levels.length - 1].bb).toBeGreaterThanOrEqual(plan.stackValue / 3);
+    for (const l of plan.levels) expect(l.sb * 2).toBe(l.bb);
   });
 
-  it('manuelle Werte werden respektiert', () => {
-    const plan = planChips(3, [chip('a', 90, 10), chip('b', 60), chip('c', 30)])!;
-    expect(plan.chips.find((c) => c.id === 'a')!.value).toBe(10);
+  it('behält Namen und Farbe der Sorte', () => {
+    const plan = planChips(4, [
+      { id: 'a', label: 'Weiß', color: '#e8e4d8', count: 200 },
+      { id: 'b', label: 'Rot', color: '#c94f44', count: 100 },
+    ])!;
+    expect(plan.chips.find((c) => c.id === 'b')).toMatchObject({ label: 'Rot', color: '#c94f44' });
+  });
+
+  it('zwei Sorten dürfen gleich heißen', () => {
+    const plan = planChips(4, [
+      { id: 'a', label: 'Rot', color: '#c94f44', count: 200 },
+      { id: 'b', label: 'Rot', color: '#c94f44', count: 100 },
+    ])!;
+    expect(plan.chips).toHaveLength(2);
   });
 
   it('eine einzige Chipsorte funktioniert (Wert 1, BB 2)', () => {
@@ -65,19 +90,17 @@ describe('planChips', () => {
   });
 
   it('ungültige Eingaben ergeben null statt Absturz', () => {
-    expect(planChips(1, KOFFER_300)).toBeNull();
+    expect(planChips(1, KOFFER)).toBeNull();
     expect(planChips(4, [])).toBeNull();
     expect(planChips(4, [chip('leer', 0)])).toBeNull();
     expect(planChips(10, [chip('mini', 5)])).toBeNull();
   });
 
-  it('warnt bei wenigen kleinen Chips und kurzen Stacks (als Codes)', () => {
+  it('warnt bei wenigen kleinen Chips (als Codes)', () => {
     const plan = planChips(8, [chip('weiss', 40), chip('rot', 40)])!;
-    expect(plan.warnings.length).toBeGreaterThan(0);
     expect(plan.warnings).toContain('fewSmallChips');
-    // Codes statt Texte: keine übersetzten Sätze mehr in der Rechenlogik
     for (const w of plan.warnings) {
-      expect(['fewSmallChips', 'shortStacks', 'chipsBelowPlayers']).toContain(w);
+      expect(['fewSmallChips', 'shortStacks', 'chipsBelowPlayers', 'unusedChips']).toContain(w);
     }
   });
 
@@ -86,8 +109,14 @@ describe('planChips', () => {
     expect(plan.warnings).toContain('chipsBelowPlayers');
   });
 
+  it('meldet Sorten, die liegen bleiben (mehr als fünf)', () => {
+    const plan = planChips(4, ['a', 'b', 'c', 'd', 'e', 'f'].map((id, i) => chip(id, 400 - i * 40)))!;
+    expect(plan.warnings).toContain('unusedChips');
+    expect(plan.chips).toHaveLength(5);
+  });
+
   it('ein großzügiger Koffer erzeugt keine Warnungen', () => {
-    const plan = planChips(4, [chip('weiss', 200), chip('rot', 100), chip('blau', 60)])!;
+    const plan = planChips(4, [chip('weiss', 400), chip('rot', 200), chip('blau', 120)])!;
     expect(plan.warnings).toEqual([]);
   });
 });

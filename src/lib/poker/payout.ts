@@ -15,9 +15,12 @@
    -------------------
    Die Prozentsätze folgen dem, was sich in Heimspielen bewährt hat und was
    auch große Turniere näherungsweise verwenden: Je größer das Feld, desto
-   mehr Plätze werden bezahlt, aber der Sieger bekommt relativ weniger. Eine
-   Faustregel, die überall gilt: **etwa jeder zehnte Spieler wird bezahlt,
-   mindestens aber einer.**
+   mehr Plätze werden bezahlt, aber der Sieger bekommt relativ weniger. Wie
+   viele Plätze ab welcher Feldgröße, steht in der Tabelle unten — und nur
+   dort. Die Oberfläche liest sie über `plaetzeNachFeld()`, statt eine
+   Faustregel daneben zu schreiben: Die frühere „etwa jeder zehnte Spieler"
+   stimmte mit der Tabelle nie überein (bei 10 Spielern sind es drei Plätze,
+   bei 40 sechs).
 
    Bewusst NICHT enthalten: Deals, ICM-Rechnungen, Bounty-Strukturen. Das sind
    Turnierthemen, keine Heimspielthemen – und ICM ohne laufende Stacks wäre
@@ -79,6 +82,12 @@ export function strukturFuer(spieler: number): number[] {
     if (spieler >= s.abSpieler) gewaehlt = s.anteile;
   }
   return gewaehlt;
+}
+
+/** Wie viele Plätze ab welcher Feldgröße bezahlt werden — aus derselben
+ *  Tabelle wie die Rechnung, damit der erklärende Text nie davon abweicht. */
+export function plaetzeNachFeld(): Array<{ abSpieler: number; plaetze: number; sieger: number }> {
+  return STRUKTUREN.map((s) => ({ abSpieler: s.abSpieler, plaetze: s.anteile.length, sieger: s.anteile[0] }));
 }
 
 function istEndlich(n: unknown): n is number {

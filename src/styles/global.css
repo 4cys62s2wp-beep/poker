@@ -5763,7 +5763,7 @@ input[type="radio"] {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--sp-5);
+  gap: var(--sp-4);
   text-align: center;
   min-height: 0;
 }
@@ -5784,7 +5784,7 @@ input[type="radio"] {
      Browserschrift vergrößert, braucht den Fließtext größer — eine Zahl,
      die schon 72 bis 220 Pixel misst, ist nicht das Problem, und sie
      mitwachsen zu lassen sprengte ihren Platz. */
-  font-size: clamp(72px, 27vw, 220px);
+  font-size: clamp(72px, min(27vw, 27vh), 220px);
   font-weight: var(--fw-bold);
   line-height: 0.9;
   letter-spacing: -0.03em;
@@ -5792,7 +5792,10 @@ input[type="radio"] {
   color: var(--text);
 }
 
-.tisch-zeit.knapp { color: var(--akzent); }
+.tisch-zeit.knapp { color: var(--auszeichnung); }
+/* Sieben Zeichen („1:23:00", im Cash-Abend ab der ersten Stunde) brauchen eine
+   Stufe weniger als fünf, damit sie in die Breite passen. */
+.tisch-zeit.lang { font-size: clamp(57px, min(22vw, 19vh), 156px); }
 
 /* Eine Angabe: die Beschriftung dicht über ihrer Zahl, damit die Abstände
    zwischen den drei Angaben größer sind als die innerhalb einer. */
@@ -5809,7 +5812,7 @@ input[type="radio"] {
    Nachgemessen mit `npm run tisch`; die nötige Größe rechnet das Skript aus
    Leseabstand und Sehwinkel aus, sie steht in docs/tisch.json. */
 .tisch-blinds {
-  font-size: clamp(64px, 19vw, 148px);
+  font-size: clamp(64px, min(19vw, 15vh), 148px);
   font-weight: var(--fw-bold);
   line-height: var(--lh-tight);
   font-variant-numeric: var(--ziffern);
@@ -5817,7 +5820,7 @@ input[type="radio"] {
 }
 
 .tisch-naechste {
-  font-size: clamp(58px, 15vw, 96px);
+  font-size: clamp(58px, min(15vw, 11vh), 96px);
   line-height: var(--lh-tight);
   color: var(--text-dim);
   font-variant-numeric: var(--ziffern);
@@ -5850,15 +5853,34 @@ input[type="radio"] {
 
 .tisch-knopf:active { background: var(--bg-card-hover); }
 
-/* Pausiert: der ganze Bildschirm sagt es, nicht nur ein kleines Zeichen. */
-.tisch.pausiert .tisch-zeit { color: var(--text-faint); }
-
+/* Pausiert: der Zustand steht als Wort über der Zeit, aus zwei Metern lesbar
+   (Regel 11.4). Die Zeit selbst bleibt in der Textfarbe: Zurücktreten heißt
+   nicht verblassen (Regel 10.10) — gerade in der Pause will jemand wissen, wo
+   die Uhr stehen geblieben ist. */
 .tisch-pausiert {
-  font-size: var(--fs-ueberschrift);
+  font-size: clamp(57px, min(14vw, 7vh), 96px);
+  line-height: var(--lh-tight);
   font-weight: var(--fw-bold);
   color: var(--auszeichnung);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.tisch-zurueck {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tipp-min);
+  padding-right: var(--sp-3);
+  color: var(--text-dim);
+  text-decoration: none;
+  font-weight: var(--fw-bold);
+}
+
+.tisch-wach {
+  margin-left: auto;
+  text-align: right;
+  font-size: var(--fs-beschriftung);
+  color: var(--auszeichnung);
 }
 
 /* ── Bewusste Bestätigung vor dem Verlassen ──────────────────────────── */
@@ -5890,8 +5912,58 @@ input[type="radio"] {
    halbe Minute kosten. Deshalb eine Zeile je Person und ein Griff je
    Ereignis: kein Auswählen, kein Bestätigen, kein zweiter Bildschirm. */
 .tisch-frage-blatt.staende {
-  max-height: 80vh;
+  /* Nicht höher als 60 % des Bildes: Die Restzeit oben bleibt sichtbar, wenn man
+     Stände einträgt (E-094). */
+  max-height: 60vh;
   overflow-y: auto;
+}
+
+.steuer-raster {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tipp-abstand);
+}
+
+.stand-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.stand-meta {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+.stand-block.raus .stand-meta { color: var(--text-dim); }
+
+.stand-name-feld {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--tipp-min);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-fliesstext);
+  padding: 0 var(--sp-3);
+}
+
+.stand-pruefung { color: var(--auszeichnung); }
+
+.stand-rueckgaengig {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
 }
 
 .stand-zeile {
@@ -5905,14 +5977,14 @@ input[type="radio"] {
   font-size: var(--fs-ueberschrift);
   font-weight: var(--fw-bold);
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  /* Der Name in voller Breite (vorher „Bene…", „Charl…"): lieber zwei Zeilen
+     als ein abgeschnittener Name. */
+  overflow-wrap: anywhere;
 }
 
 /* Ausgeschieden wird nicht nur an der Farbe erkennbar gemacht: Die Zeile
    verliert ihr Gewicht, und an die Stelle der Knöpfe tritt ein einziger. */
-.stand-zeile.raus .stand-name {
+.stand-block.raus .stand-name {
   color: var(--text-faint);
   font-weight: var(--fw-normal);
   text-decoration: line-through;
@@ -6234,22 +6306,6 @@ input[type="radio"] {
   gap: var(--sp-3);
 }
 
-.einrichten-stufen {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(7em, 1fr));
-  gap: var(--sp-2);
-  font-size: var(--fs-beschriftung);
-  font-variant-numeric: var(--ziffern);
-}
-
-.einrichten-stufen span {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: var(--sp-2);
-  text-align: center;
-  color: var(--text-dim);
-}
-
 /* ── Das Positionsschema (E-093) ──────────────────────────────────────── */
 .schema { display: block; width: 100%; max-width: 340px; margin: 0 auto; }
 .schema-tisch { fill: var(--veil-2); stroke: var(--border); stroke-width: 1.5; }
@@ -6312,3 +6368,155 @@ input[type="radio"] {
   -webkit-tap-highlight-color: transparent;
 }
 .uebung-teilen:hover { color: var(--text); background: var(--veil-3); }
+
+/* ── Der Tisch quer (E-094) ────────────────────────────────────────────────
+   Ein Gerät, das flach auf einem Tisch liegt, liegt oft quer. Bei 844 × 390
+   standen die Blinds 98 Pixel über dem Bildrand und „Danach" halb unter dem
+   Knopf — hochkant gerechnet, quer nicht.
+
+   Quer hat man Breite und keine Höhe: Die Zeit steht links über die volle Höhe,
+   Blinds und „Danach" rechts untereinander, die Knöpfe als flache Zeile
+   darunter. Die Größen folgen der Breite *und* der Höhe (`min(…vw, …vh)`), nicht
+   nur der Breite wie hochkant, und bleiben nie unter 57 Pixeln — der Grenze
+   für zwei Meter Abstand. Links und rechts bleibt Platz für die Aussparung. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .tisch {
+    padding:
+      max(var(--sp-3), var(--safe-top))
+      max(var(--sp-4), var(--safe-right))
+      max(var(--sp-3), var(--safe-bottom))
+      max(var(--sp-4), var(--safe-left));
+  }
+
+  .tisch-mitte {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: 'zeit blinds' 'zeit danach';
+    gap: var(--sp-2) var(--sp-4);
+    align-items: center;
+    justify-items: center;
+  }
+
+  .tisch-angabe-zeit { grid-area: zeit; }
+  .tisch-angabe-blinds { grid-area: blinds; }
+  .tisch-angabe-danach { grid-area: danach; }
+  .tisch.cash .tisch-mitte { grid-template-areas: 'zeit blinds' 'zeit blinds'; }
+
+  .tisch-zeit { font-size: min(15vw, 44vh); }
+  .tisch-zeit.lang { font-size: min(10.5vw, 32vh); }
+  .tisch-blinds,
+  .tisch-naechste { font-size: max(57px, min(7.4vw, 19vh)); }
+  .tisch-pausiert { font-size: max(57px, min(8vw, 17vh)); }
+
+  .tisch-unten { gap: var(--tipp-abstand); }
+  .tisch-knopf { min-height: var(--tipp-min); }
+}
+
+/* ── Koffer, Farbpunkte und Zeitplan (E-094) ──────────────────────────── */
+.chip-punkt {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 3px dashed rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 1.5px var(--border-strong);
+}
+
+.koffer-karten { list-style: none; margin: 0 0 var(--sp-3); padding: 0; display: grid; gap: var(--sp-2); }
+.koffer-karte {
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+}
+.koffer-name { display: flex; align-items: center; gap: var(--sp-2); font-weight: var(--fw-bold); margin-bottom: var(--sp-2); }
+.koffer-karte dl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-2); margin: 0; }
+.koffer-karte dt { font-size: var(--fs-kleingedrucktes); color: var(--text-dim); }
+.koffer-karte dd { margin: 0; font-variant-numeric: var(--ziffern); }
+.koffer-karte dd.fett { font-weight: var(--fw-bold); }
+.koffer-karte dd.leise { color: var(--text-dim); }
+
+.zuletzt-dabei { display: flex; flex-direction: column; gap: var(--sp-2); margin-bottom: var(--sp-3); }
+.zuletzt-dabei .abende-name:disabled { opacity: var(--gedimmt); cursor: default; }
+
+.einrichten-plan { list-style: none; margin: 0 0 var(--sp-2); padding: 0; }
+.einrichten-plan li {
+  display: grid;
+  grid-template-columns: minmax(4.5rem, auto) 1fr auto;
+  gap: var(--sp-3);
+  align-items: baseline;
+  padding: var(--sp-1) 0;
+  border-bottom: 1px solid var(--border);
+  font-variant-numeric: var(--ziffern);
+}
+.einrichten-plan .plan-stufe { color: var(--text-dim); }
+.einrichten-plan .plan-blinds { font-weight: var(--fw-bold); }
+.einrichten-plan .plan-zeit { color: var(--text-dim); }
+
+/* ── Abschluss und gepflegte Abende (E-094) ───────────────────────────── */
+.abend-zeile { flex-wrap: wrap; }
+.abend-netto {
+  min-width: 5em;
+  text-align: right;
+  font-weight: var(--fw-bold);
+  font-variant-numeric: var(--ziffern);
+}
+/* Gewinn und Verlust tragen Vorzeichen und Farbe — die Form sagt es, die Farbe
+   unterstützt (Regel 11.4). */
+.abend-netto.plus { color: var(--ergebnis-gut); }
+.abend-netto.minus { color: var(--ergebnis-schlecht); }
+
+.abend-pruefung { margin: var(--sp-3) 0 var(--sp-5); }
+.abend-pruefung.warn { color: var(--auszeichnung-lesbar); font-weight: var(--fw-bold); }
+
+.abend-abrechnung { margin-bottom: var(--sp-4); }
+.abend-zahlungen li { padding: var(--sp-2) 0; border-bottom: 1px solid var(--border); font-weight: var(--fw-bold); }
+.abend-aktionen { margin: var(--sp-5) 0; }
+
+.abend-bearbeiten { display: flex; flex-direction: column; gap: var(--sp-4); }
+.abend-bearbeiten-zeile {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-2) var(--sp-3);
+  align-items: end;
+}
+.abend-bearbeiten-zeile > strong { grid-column: 1 / -1; }
+.abend-bearbeiten-zeile label { display: flex; flex-direction: column; gap: var(--sp-1); }
+.abend-bearbeiten-zeile input {
+  min-height: var(--tipp-min);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-card);
+  color: var(--text);
+  font: inherit;
+  font-variant-numeric: var(--ziffern);
+  padding: 0 var(--sp-3);
+}
+
+.rueckgaengig-zeile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  margin: var(--sp-4) 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-card);
+}
+
+/* ── Bankroll und Auszahlung (E-094) ─────────────────────────────────── */
+.spielerschutz { margin: var(--sp-6) 0 var(--sp-2); text-align: center; }
+.spielerschutz a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.ergebnis-plus { color: var(--ergebnis-gut); }
+.ergebnis-minus { color: var(--ergebnis-schlecht); }
+.verlauf-kopf { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-3); margin-bottom: var(--sp-2); }
+.verlauf-stand { font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; }
+.sparkline .nulllinie { stroke: var(--border-strong); }
+.session-liste-kopf { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-3); }
+.session-liste { display: flex; flex-direction: column; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.session-zeile-betrag { font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; }
+.abend-bankroll { margin-top: var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-2); }
+.abend-bankroll select { min-width: 12rem; }

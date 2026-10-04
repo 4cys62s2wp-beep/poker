@@ -16,7 +16,7 @@ import { EmptyState, PageHeader } from '../../components/ui';
 import { zeichenFuer } from '../../lib/zeichen';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/abende';
-import { ladeAbende, spielerUebersicht } from '../../lib/session/abende';
+import { ladeAbende, spielerUebersicht, zusammenfassung } from '../../lib/session/abende';
 import { grobeDauer } from '../../lib/session/dauer';
 
 export function AbendePage() {
@@ -24,6 +24,10 @@ export function AbendePage() {
   const L = STR[lang];
   const abende = useMemo(() => ladeAbende(), []);
   const namen = useMemo(() => spielerUebersicht(abende), [abende]);
+  const z = useMemo(() => zusammenfassung(abende), [abende]);
+  const kurz = (ms: number) => new Date(ms).toLocaleDateString(lang === 'de' ? 'de-DE' : 'en-GB', {
+    weekday: 'short', day: 'numeric', month: 'short',
+  });
   const datum = (ms: number) => new Date(ms).toLocaleDateString(lang === 'de' ? 'de-DE' : 'en-GB', {
     weekday: 'short', day: 'numeric', month: 'long', year: 'numeric',
   });
@@ -46,8 +50,9 @@ export function AbendePage() {
 
   return (
     <div className="page">
-      <PageHeader title={L.listeTitel} sub={L.listeSub}
+      <PageHeader title={L.listeTitel} sub={L.zusammenfassung(z.abende, z.personen, kurz(z.zuletzt ?? 0))}
         backTo="/session" />
+      <p className="hinweis">{L.listeSub}</p>
 
       {/* Die Namen zuerst: Sie sind der Weg, nicht die Datumsliste. */}
       <section className="abende-namen">

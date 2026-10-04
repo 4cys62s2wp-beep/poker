@@ -52,6 +52,7 @@ import { STR } from '../i18n/pages/hub';
 import { usePro } from '../lib/pro/ProProvider';
 import { grobeDauer } from '../lib/session/dauer';
 import { standDerUhr } from '../lib/live/uhr';
+import { LaufenderAbend } from '../components/LaufenderAbend';
 import { ladeAbende, type Abend } from '../lib/session/abende';
 import { ladeLaufende, nochDabei, type LaufendeSession } from '../lib/session/laufend';
 import { handDesTages, tagesschluessel, type TagesHand } from '../lib/heute/hand';
@@ -352,40 +353,28 @@ export function HubPage() {
       </div>
 
       {/* ── Groß, unten, im Daumenbereich: Live-Session ────────────────── */}
-      <div className="start-einstieg gross">
-        {laufend && uhr ? (
-          <>
-            <span className="marke">{L.fortsetzenMarke}</span>
-            {/* Ein Abend hat keinen Namen — die App hat nie einen erfragt.
-                Was ihn benennt, ist sein Beginn; er ist auch anderswo seine
-                Kennung. */}
-            <span className="titel">{L.laeuftSeit(grobeDauer(Date.now() - laufend.begonnen, lang, 'dativ'))}</span>
-            <span className="unter">
-              {L.laeuftMit(nochDabei(laufend).length, uhr.blinds[0], uhr.blinds[1])}
-            </span>
-            <Link to="/session/live" className="start-knopf haupt">{L.zurueckInDieRunde}</Link>
-          </>
-        ) : (
-          <>
-            <span className="titel">{L.sessionTitle}</span>
-            <span className="unter">{L.sessionSub}</span>
-            {/* Der letzte Abend, wenn es einen gibt: Inhalt, den die Karte
-                ohnehin hat, und zugleich der kurze Weg dorthin. */}
-            {letzter && sieger && (
-              <Link to={`/session/abende/${letzter.id}`} className="start-abend">
-                <span className="marke">{L.letzterAbendMarke}</span>
-                <span className="name">{L.letzterAbend(datum(letzter.begonnen), sieger)}</span>
-              </Link>
-            )}
-            {/* Am Tisch ist das das eigentliche Ziel — ohne Zwischenschritt
-                über die Bereichsübersicht. */}
-            <Link to="/session/live/einrichten" className="start-knopf haupt">
-              {L.abendStarten}
+      {laufend ? (
+        <LaufenderAbend laufend={laufend} mehr />
+      ) : (
+        <div className="start-einstieg gross">
+          <span className="titel">{L.sessionTitle}</span>
+          <span className="unter">{L.sessionSub}</span>
+          {/* Der letzte Abend, wenn es einen gibt: Inhalt, den die Karte
+              ohnehin hat, und zugleich der kurze Weg dorthin. */}
+          {letzter && sieger && (
+            <Link to={`/session/abende/${letzter.id}`} className="start-abend">
+              <span className="marke">{L.letzterAbendMarke}</span>
+              <span className="name">{L.letzterAbend(datum(letzter.begonnen), sieger)}</span>
             </Link>
-          </>
-        )}
-        <Link to="/session" className="start-mehr">{L.sessionAlles}</Link>
-      </div>
+          )}
+          {/* Am Tisch ist das das eigentliche Ziel — ohne Zwischenschritt
+              über die Bereichsübersicht. */}
+          <Link to="/session/live/einrichten" className="start-knopf haupt">
+            {L.abendStarten}
+          </Link>
+          <Link to="/session" className="start-mehr">{L.sessionAlles}</Link>
+        </div>
+      )}
     </div>
   );
 }

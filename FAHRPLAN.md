@@ -703,8 +703,10 @@ SessionPage.tsx:66 verlinkt bei laufender Runde auf /session/live; die Kachel ze
 
 </details>
 
-### [ ] 7.2 Blind-Uhr im Querformat  
+### [x] 7.2 Blind-Uhr im Querformat  
 *Wirkung 5 · Aufwand S*
+
+**Stand:** Umgesetzt. Quer (844×390, 932×430, 667×375, Tablet 1024) stehen Zeit, Blinds und „Danach“ im Bild, alle ≥ 57 px; gemessen mit `npm run tisch` (0 Befunde). Kein Vollbild-Knopf, wie vorgesehen.
 
 Für .tisch einen Block @media (orientation: landscape) and (max-height: 500px): zweispaltiges Raster (Zeit über die volle Höhe, Blinds und „Danach“ daneben), Größen über min(…vw, …vh) statt clamp(72px, 27vw, 220px) (global.css 4564ff.). Polster links und rechts max(var(--sp-4), var(--safe-left/right)), damit Pause nicht unter der Notch liegt. Die Knöpfe quer als flache Zeile mit min-height var(--tipp-min). npm run tisch um 844×390, 932×430 und 667×375 mit laufendem Abend erweitern: alle drei Angaben vollständig im Bild, ≥ 56,5 px, keine Überlappung mit .tisch-unten. Kein Vollbild-Knopf (auf iOS wirkungslos).
 
@@ -715,8 +717,10 @@ Für .tisch einen Block @media (orientation: landscape) and (max-height: 500px):
 
 </details>
 
-### [ ] 7.3 Uhr steuerbar: Stufe vor/zurück, Minute dazu, pausiert starten  
+### [x] 7.3 Uhr steuerbar: Stufe vor/zurück, Minute dazu, pausiert starten  
 *Wirkung 5 · Aufwand M*
+
+**Stand:** Umgesetzt: Stufe ±, Minute ±, Start pausiert („Bereit“, „Uhr starten“), letzte Stufe zählt hoch. Pausenstufen nicht gebaut.
 
 In lib/live/uhr.ts reine Funktionen Stufe ± und ±1 Minute, die verbraucht_ms verschieben; Bedienung über ein Steuerblatt, die Daueranzeige bleibt bei drei Angaben (E-027). Der Abend startet pausiert (laeuft_seit: null statt Date.now() in EinrichtenPage.tsx:86), mit großem Knopf „Uhr starten“. Auf der letzten Stufe zählt die gespielte Zeit hoch („Letzte Stufe · seit 0:12“) statt bei 0:00 stehen zu bleiben. Die Struktur wird nicht fortgeschrieben, weil blinds.ts die letzte Stufe auf ein Finale mit 12–30 BB rechnet und der uhr.ts-Kommentar sie bis zum Ende gelten lässt. Pausenstufen sind nachrangig.
 
@@ -726,8 +730,10 @@ In lib/live/uhr.ts reine Funktionen Stufe ± und ±1 Minute, die verbraucht_ms v
 
 </details>
 
-### [ ] 7.4 Warnung, Wechsel und Pause aus 2 m erkennbar  
+### [x] 7.4 Warnung, Wechsel und Pause aus 2 m erkennbar  
 *Wirkung 4 · Aufwand S*
+
+**Stand:** Umgesetzt: knapp in `--auszeichnung`, Pause ≥ 57 px mit Zeit in Textfarbe, „Neue Blinds“ 10 s; `tisch` misst bereit, pausiert, knapp, letzte Stufe, Wechsel und Cash.
 
 In der letzten Minute steht die Restzeit (.tisch-zeit.knapp, global.css:4572) in --auszeichnung statt in Akzentgrün, das wie die Blinds aussieht. In der Pause bleibt die Zeit in --text (global.css:4631 macht sie --text-faint und verstößt damit gegen Regel 10.10 „Zurücktreten heißt nicht verblassen“); „PAUSIERT“ steht in ≥ 56,5 px über der Zeit, an der Stelle des Kopf-Etiketts (Regel 11.4). Beim Stufenwechsel wird die Marke „BLINDS“ 10 s lang zu „NEUE BLINDS“, ohne Blinken und ohne Vollbild-Band (E-027). npm run tisch um die Zustände knapp und pausiert erweitern.
 
@@ -737,8 +743,10 @@ In der letzten Minute steht die Restzeit (.tisch-zeit.knapp, global.css:4572) in
 
 </details>
 
-### [ ] 7.5 Ton und Wachhalten zuverlässig und prüfbar  
+### [x] 7.5 Ton und Wachhalten zuverlässig und prüfbar  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt: ein gemeinsamer AudioContext, entsperrt im Klick; „Ton testen“, Ton an/aus, `haltWach()` meldet Misserfolg einmal. Sprachansage nicht gebaut.
 
 signal.ts erzeugt heute für jeden Ton einen neuen AudioContext aus dem Sekundentakt; auf iOS bleibt er ohne Nutzergeste „suspended“. Neu: ein einziger AudioContext auf Modulebene, angelegt und entsperrt im Klick-Handler von „Uhr starten“ bzw. „Weiter“ (kurzer Bestätigungston), danach wiederverwendet. navigator.audioSession.type = 'playback', wo vorhanden, navigator.vibrate als Rückfall. Im Steuerblatt aus Punkt 7.3 [Ton testen] und Ton an/aus. haltWach() gibt seinen Erfolg zurück; bei Misserfolg erscheint einmal „Bildschirm bleibt nicht an – Auto-Sperre ausschalten“. Eine Sprachansage ist nachrangig.
 
@@ -748,8 +756,10 @@ signal.ts erzeugt heute für jeden Ton einen neuen AudioContext aus dem Sekunden
 
 </details>
 
-### [ ] 7.6 Cash-Abend ohne sinnlosen Countdown  
+### [x] 7.6 Cash-Abend ohne sinnlosen Countdown  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt: `modus: 'cash'`, hochzählende Zeit, keine „Danach“-Zeile, keine Töne.
 
 Bei „Blinds bleiben, wie sie sind“ baut baueStruktur() heute N gleiche Stufen; die Uhr zeigt „1 / 2 · 19:59 · Danach 1 / 2“ und piept alle 20 Minuten. Neu: das Feld modus: 'cash' in LaufendeSession; standDerUhr liefert dann naechste = null und knapp = false. Der Tisch zeigt Blinds und die hochzählende gespielte Zeit, ohne „Danach“-Zeile und ohne Töne. Einkauf und Cash-out in Euro gehören in den Abschluss aus Punkt 7.8.
 
@@ -759,8 +769,10 @@ Bei „Blinds bleiben, wie sie sind“ baut baueStruktur() heute N gleiche Stufe
 
 </details>
 
-### [ ] 7.7 Stände-Blatt: volle Namen, Rebuy-Zähler, Rückgängig, Nachzügler  
+### [x] 7.7 Stände-Blatt: volle Namen, Rebuy-Zähler, Rückgängig, Nachzügler  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt: zweizeilige Zeilen, Rebuy-Zähler, Rückgängig 5 s, „+ Spieler dazu“, Prüfsumme nur bei Abweichung. Add-on nicht gebaut.
 
 Zweizeilige Zeile: der Name in voller Breite (heute „Bene…“, „Charl…“), darunter klein „2× Rebuy · 9.000 eingesetzt“. Nach „Nachgekauft“ (TischPage.tsx:212) erscheint 5 s lang ein Rückgängig-Hinweis, aber keine Rückfrage (CSS-Kommentar: ein Griff je Ereignis). „+ Spieler dazu“ für Nachzügler. Eine Prüfsummenzeile nur bei Abweichung (BACKLOG „Prüfsumme“). Zahlen mit toLocaleString („3.000“). Das Blatt bekommt max-height 60vh, damit die Restzeit sichtbar bleibt. Add-on nur, wenn eine Add-on-Regel eingeführt wird.
 
@@ -770,8 +782,10 @@ Zweizeilige Zeile: der Name in voller Breite (heute „Bene…“, „Charl…�
 
 </details>
 
-### [ ] 7.8 Abschlussbildschirm mit Abrechnung und Teilen, frühere Abende korrigierbar  
+### [x] 7.8 Abschlussbildschirm mit Abrechnung und Teilen, frühere Abende korrigierbar  
 *Wirkung 5 · Aufwand L*
+
+**Stand:** Umgesetzt: Abschluss mit Prüfzeile, Abrechnung (Cent, höchstens n−1 Zahlungen), Teilen/Kopieren, Probe-Abende, Korrigieren, Löschen mit Rückgängig, Zusammenfassung. Die Freigabe der Euro-Abrechnung durch den Auftraggeber steht aus (siehe E-094).
 
 „Beenden“ (TischPage.tsx:136) führt auf einen Abschlussbildschirm, ohne Assistenten mit Schritten (EinrichtenPage: „Ein Bildschirm, kein Assistent“). Oben die Endstände mit Prüfzeile, darunter das berechnete Ergebnis und die Ausgleichszahlungen aus einer reinen Funktion lib/session/abrechnung.ts (Test: höchstens n−1 Zahlungen, Summe 0). Im Turniermodus kommt das Geld aus payout.ts nach Platz, im Cash-Modus aus Chips × Kurs. Unten [Teilen] über navigator.share({text}), sonst Zwischenablage mit Toast, und [Kopieren]. euroJeSpieler und punkteJeEuro werden in LaufendeSession und Abend gespeichert; alte Einträge bleiben lesbar. Frühere Abende: „Abend löschen“ mit Rückgängig, „Als Probe verwerfen?“ bei Abenden unter 10 Minuten, die Spalte „eingesetzt“ bzw. Netto, Endstände und Rebuys korrigierbar. Der Untertitel abende.ts:8 wird eine Zusammenfassung („3 Abende · 7 Personen · zuletzt Fr., 2. Okt.“). Die Knopf-Optik der Namen bleibt (bewusst). Vom Auftraggeber freizugeben: die Euro-Abrechnung zwischen Privatleuten, wegen E-010 (kein Echtgeld) und E-030 (reine Zahlenverwaltung). BACKLOG beschreibt sie gewollt.
 
@@ -783,8 +797,10 @@ Zweizeilige Zeile: der Name in voller Breite (heute „Bene…“, „Charl…�
 
 </details>
 
-### [ ] 7.9 Bereichsseite zeigt den laufenden Abend, Titel nach Zustand, Ausgang am Tisch  
+### [x] 7.9 Bereichsseite zeigt den laufenden Abend, Titel nach Zustand, Ausgang am Tisch  
 *Wirkung 4 · Aufwand S*
+
+**Stand:** Umgesetzt: gemeinsame Karte „Läuft gerade“ auf Start und Bereichsseite, Titel nach Zustand, „‹ App“ am Tisch.
 
 Die Live-Karte aus HubPage.tsx (297ff.) wird eine gemeinsame Komponente und steht auch auf #/session. Der Titel (session.ts:11, SessionPage.tsx:108) heißt „Live-Session“ und nur bei laufender Runde „Der Abend läuft – seit 1:20 h“. Der Bereichsname bleibt nach E-011, weil auch der Bankroll dazugehört. Der Tisch bekommt oben links „‹ App“; unten sind nach Regel 8.1 höchstens drei Knöpfe erlaubt. Heute führt bei laufender Runde kein Weg aus TischPage außer „Beenden“. Den Kopfkommentar „vorher, währenddessen, danach“ in SessionPage korrigieren; die Reihenfolge der Kacheln bleibt (10a.3). Leerzustände einheitlich „Noch kein Abend gespeichert“.
 
@@ -796,8 +812,10 @@ Die Live-Karte aus HubPage.tsx (297ff.) wird eine gemeinsame Komponente und steh
 
 </details>
 
-### [ ] 7.10 Ein Chip-Rechner für beide Bildschirme  
+### [x] 7.10 Ein Chip-Rechner für beide Bildschirme  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt: `chips.ts` ist ein Adapter auf `verteile()` und `baueStruktur()`, gespeicherter Koffer mit Farbpunkten, Karten je Farbe, „Mit diesem Koffer Abend einrichten“.
 
 Für denselben Koffer (150/100/50, 5 Spieler) liefert src/lib/chips.ts heute weiß 5, Stack 1.650, Blinds 10/20, Einrichten (verteilung.ts + blinds.ts) dagegen weiß 1, Stack 380, Blinds 1/2. chips.ts wird ein Adapter auf verteile() und baueStruktur() (E-053: eine Rechnung nur an einer Stelle; blinds.ts lehnt die ×2,5-Sprünge ab). Ein Test prüft gleiche Werte. Ein gespeicherter „Mein Koffer“ mit Farbpunkten aus dem Chip-Rechner, auch in „Abend einrichten“ statt Freitext „weiß“. Am Ende „Mit diesem Koffer Abend einrichten →“. Auf dem Handy die Tabelle als Karten je Farbe (heute ist „ÜB…“ abgeschnitten), das Namensfeld breiter (heute „Schwa“).
 
@@ -809,8 +827,10 @@ Für denselben Koffer (150/100/50, 5 Spieler) liefert src/lib/chips.ts heute wei
 
 </details>
 
-### [ ] 7.11 „Abend einrichten“ merkt sich die Runde und zeigt einen Zeitplan  
+### [x] 7.11 „Abend einrichten“ merkt sich die Runde und zeigt einen Zeitplan  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt: „Zuletzt dabei“, Vorlage vom letzten Abend, Zeitplan mit Uhrzeiten und „Ende gegen …“. Einzelne Stufen bearbeiten, Antes und Rebuy-Regeln bewusst nicht.
 
 (1) Namens-Chips „Zuletzt dabei“ aus spielerUebersicht() (lib/session/abende.ts), ein Tipp fügt hinzu. (2) Koffer, Dauer und Tempo vom letzten Abend als Vorbelegung statt des festen VORSCHLAG (EinrichtenPage.tsx:26), beim Start in einem eigenen Schlüssel abgelegt. (3) Die Struktur als schlichte Liste „Stufe · Blinds · ab ~20:40“ plus „Ende gegen 22:30“ statt knopfähnlicher Felder „1 / 2“, beim pausierten Start ab dem Startzeitpunkt gerechnet. Einzelne Stufen bearbeiten, Antes und Rebuy-Regeln werden nicht gebaut.
 
@@ -820,8 +840,10 @@ Für denselben Koffer (150/100/50, 5 Spieler) liefert src/lib/chips.ts heute wei
 
 </details>
 
-### [ ] 7.12 Auszahlung: Eingabe, die nicht verfälscht, und ein Text, der zur Zahl passt  
+### [x] 7.12 Auszahlung: Eingabe, die nicht verfälscht, und ein Text, der zur Zahl passt  
 *Wirkung 4 · Aufwand S*
+
+**Stand:** Umgesetzt: Textfelder mit `zahlAusEingabe`, Klemmen erst beim Verlassen, Einheit Euro/Chips, Übernahme aus dem laufenden Abend, Staffel-Text aus `STRUKTUREN` (Test). Anpassbare Prozente nicht gebaut.
 
 Feld() in PayoutPage.tsx klemmt heute bei jeder Eingabe; aus „10“ wird über „210“ der Wert 200. Künftig ein Textfeld mit zahlAusEingabe() (E-048): leer erlaubt, geklemmt wird erst bei onBlur. Einheit: Umschaltung Euro/Chips oder Übernahme aus dem laufenden Abend; kein fest verdrahtetes €, weil roundingHint „Schein oder Chip“ meint. Vorbelegung aus dem laufenden Abend (Spielerzahl, Rebuys × Buy-in). Die Faustregel „etwa jeder zehnte“ widerspricht der Tabelle in payout.ts (8 Spieler → 2 Plätze); den Text aus STRUKTUREN erzeugen und mit einem Test absichern. Anpassbare Prozente sind nachrangig.
 
@@ -832,8 +854,10 @@ Feld() in PayoutPage.tsx klemmt heute bei jeder Eingabe; aus „10“ wird über
 
 </details>
 
-### [ ] 7.13 Bankroll: Liste zuerst, regelkonforme Farben, Löschen mit Rückgängig, Spielerschutz  
+### [x] 7.13 Bankroll: Liste zuerst, regelkonforme Farben, Löschen mit Rückgängig, Spielerschutz  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt: Liste vor dem Formular, `--ergebnis-gut/-schlecht`, Datum in der Sprache, Löschen mit 5 s Rückgängig, Kurve mit Null-Linie und Endwert, Art „Live“ vorbelegt, Segment statt Auswahlfeld, Spielerschutz-Zeile, Übernahme aus dem Abend-Abschluss. Das Abzeichen „Buchhalter“ bleibt (siehe E-094).
 
 Farben auf Bereichsgrün statt Gold und Freunde-Violett (Regel 10.9); Ergebniszahlen in --ergebnis-gut/-schlecht statt --ok/--danger (DESIGN Z. 79–84, E-026). Datum deutsch statt „2026-10-02“ ({s.date} in BankrollTracker.tsx). Die Liste kommt vor das 7-Felder-Formular, „+ Session“ öffnet es. ✕ löscht mit 5-s-Rückgängig. Die Kurve bekommt Null-Linie und Endwert. Vorbelegung Art „Live“ und leeres Spiel statt „Online“/„NL2 Cash“ (BankrollTracker.tsx 22–23). Live/Online als Segment statt <select>; das Datumsfeld bleibt nativ, wird gestaltet und bekommt lang='de'. Eine ruhige Fußzeile „Spiel mit Grenzen · Hilfe: check-dein-spiel.de“ nur auf Bankroll und Auszahlung. Das Abzeichen „Buchhalter“ überprüfen. Die Übernahme von Abenden kommt erst nach Punkt 7.8.
 

@@ -41,9 +41,16 @@ const CSS = readFileSync('src/styles/global.css', 'utf8');
  * vergrößert, braucht den Fließtext größer, nicht diese Zahl.
  */
 const ERLAUBT_IN_PX = [
-  'clamp(72px, 27vw, 220px)',
-  'clamp(64px, 19vw, 148px)',
-  'clamp(58px, 15vw, 96px)',
+  // Die Blind-Uhr im Querformat (E-094): Breite und Höhe begrenzen gemeinsam,
+  // damit auch ein flaches Telefon (667 × 375) die Ziffern nicht über den
+  // Rand schiebt. Mindestgröße 57 px, weil die Uhr aus 2 m lesbar sein soll.
+  'clamp(72px, min(27vw, 27vh), 220px)',
+  'clamp(57px, min(22vw, 19vh), 156px)',
+  'clamp(64px, min(19vw, 15vh), 148px)',
+  'clamp(58px, min(15vw, 11vh), 96px)',
+  'clamp(57px, min(14vw, 7vh), 96px)',
+  'max(57px, min(7.4vw, 19vh))',
+  'max(57px, min(8vw, 17vh))',
 ];
 
 function dateien(ordner: string, aus: string[] = []): string[] {

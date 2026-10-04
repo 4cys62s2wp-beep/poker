@@ -23,7 +23,7 @@
    dritte Angabe, die den beiden anderen widersprechen kann. */
 
 import { durableSet } from '../storage';
-import type { LaufendeSession, Spieler } from './laufend';
+import type { LaufendeSession, Modus, Spieler } from './laufend';
 import { verbraucht } from './laufend';
 
 export const SCHLUESSEL_ABENDE = 'pokermentor-session-abende-v1';
@@ -61,6 +61,12 @@ export interface Abend {
   /** Wie weit die Blinds gekommen sind, 1-basiert. */
   erreichte_stufe: number;
   spieler: AbendSpieler[];
+  /** Ohne Angabe: Turnier — so sind alle Abende vor E-094 gespeichert. */
+  modus?: Modus;
+  /** Was jeder eingezahlt hat, in Euro — Grundlage der Abrechnung. */
+  euroJeSpieler?: number;
+  /** Wie viele Chips ein Euro wert waren. */
+  punkteJeEuro?: number;
 }
 
 /** Die Plätze aus Endstand und Ausscheidezeit.
@@ -129,6 +135,9 @@ export function archiviere(s: LaufendeSession, beendet: number): Abend {
     stufen: s.stufen,
     erreichte_stufe,
     spieler: platziere(s.spieler),
+    ...(s.modus ? { modus: s.modus } : {}),
+    ...(s.euroJeSpieler ? { euroJeSpieler: s.euroJeSpieler } : {}),
+    ...(s.punkteJeEuro ? { punkteJeEuro: s.punkteJeEuro } : {}),
   };
 }
 
@@ -244,4 +253,58 @@ export function spielerUebersicht(abende: Abend[]): SpielerUebersicht[] {
     }
   }
   return [...nach.values()].sort((a, b) => b.zuletzt - a.zuletzt);
+}
+
+
+/* ── Frühere Abende pflegen (E-094) ──────────────────────────────────────── */
+
+/** Unter zehn Minuten Spielzeit ist ein Abend eine Probe: Wer die Uhr ausprobiert
+ *  hat, will sie nicht in der Liste der Abende wiederfinden. */
+export const PROBE_MS = 10 * 60_000;
+
+export function istProbe(gespielt_ms: number): boolean {
+  return gespielt_ms < PROBE_MS;
+}
+
+export function loescheAbend(abende: Abend[], id: string): Abend[] {
+  return abende.filter((a) => a.id !== id);
+}
+
+export interface Korrektur {
+  /** Endstand in Chips; `null` heißt ausgeschieden. */
+  stand?: number | null;
+  /** Insgesamt eingezahlt, in Chips (Rebuys eingerechnet). */
+  eingekauft?: number;
+}
+
+/** Endstände und Rebuys eines gespeicherten Abends ändern; die Plätze werden neu
+ *  gerechnet. Wer wieder Chips hat, ist nicht mehr ausgeschieden. */
+export function korrigiere(abend: Abend, aenderungen: Record<string, Korrektur>): Abend {
+  const spieler: Spieler[] = abend.spieler.map((s) => {
+    const k = aenderungen[s.name];
+    const stand = k && 'stand' in k ? (k.stand ?? null) : s.stand;
+    return {
+      name: s.name,
+      eingekauft: k?.eingekauft !== undefined ? Math.max(0, Math.round(k.eingekauft)) : s.eingekauft,
+      stand: stand === null ? null : Math.max(0, Math.round(stand)),
+      raus_um: stand === null ? (s.raus_um ?? abend.beendet) : null,
+    };
+  });
+  return { ...abend, spieler: platziere(spieler) };
+}
+
+export interface Zusammenfassung {
+  abende: number;
+  personen: number;
+  /** Beginn des letzten Abends oder `null`. */
+  zuletzt: number | null;
+}
+
+/** „3 Abende · 7 Personen · zuletzt Fr., 2. Okt." — der Untertitel der Liste. */
+export function zusammenfassung(abende: Abend[]): Zusammenfassung {
+  return {
+    abende: abende.length,
+    personen: spielerUebersicht(abende).length,
+    zuletzt: abende.length === 0 ? null : Math.max(...abende.map((a) => a.begonnen)),
+  };
 }

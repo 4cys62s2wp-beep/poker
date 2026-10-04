@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T13:42:27.240Z",
+  "geprueft_am": "2026-10-04T14:49:20.470Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -472,15 +472,15 @@
     },
     {
       "hash": "#/lernen/trainer/outs",
-      "scrollt": true,
-      "ueberlauf_px": 5,
+      "scrollt": false,
+      "ueberlauf_px": 0,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 664,
-        "unten_px": 825,
-        "mitte_px": 745,
+        "oben_px": 659,
+        "unten_px": 820,
+        "mitte_px": 740,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -549,14 +549,14 @@
     {
       "hash": "#/lernen/trainer/szenario",
       "scrollt": true,
-      "ueberlauf_px": 85,
+      "ueberlauf_px": 8,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 641,
-        "unten_px": 844,
-        "mitte_px": 743,
+        "oben_px": 625,
+        "unten_px": 828,
+        "mitte_px": 727,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 3,
@@ -632,7 +632,7 @@
     {
       "hash": "#/session/auszahlung",
       "scrollt": true,
-      "ueberlauf_px": 216,
+      "ueberlauf_px": 416,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -641,7 +641,7 @@
     {
       "hash": "#/session/bankroll",
       "scrollt": true,
-      "ueberlauf_px": 239,
+      "ueberlauf_px": 283,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -650,7 +650,7 @@
     {
       "hash": "#/session/chips",
       "scrollt": true,
-      "ueberlauf_px": 1319,
+      "ueberlauf_px": 1746,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,

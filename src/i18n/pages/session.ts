@@ -19,7 +19,6 @@ export const STR = defineStrings(
 
 
     abendTitle: 'Abend führen',
-    abendWeiter: 'Zum laufenden Abend',
     abendWhen: 'Vom ersten bis zum letzten Blatt',
 
     abendeTitle: 'Frühere Abende',
@@ -33,10 +32,10 @@ export const STR = defineStrings(
     markeDanach: 'Danach',
 
     /* Und der eigene Stand, wo es einen gibt. */
-    laeuftSeit: (dauer: string) => `Läuft seit ${dauer}`,
+    abendLaeuft: (dauer: string) => `Der Abend läuft — seit ${dauer}`,
     abendeStand: (n: number, wann: string) =>
       `${n === 1 ? '1 Abend' : `${n} Abende`} · zuletzt ${wann}`,
-    abendeLeer: 'Noch kein Abend erfasst',
+    abendeLeer: 'Noch kein Abend gespeichert',
     bankrollStand: (n: number, bilanz: string) =>
       `${n === 1 ? '1 Session' : `${n} Sessions`} · Bilanz ${bilanz}`,
 
@@ -57,7 +56,6 @@ export const STR = defineStrings(
 
 
     abendTitle: 'Run the evening',
-    abendWeiter: 'Back to the evening',
     abendWhen: 'From the first hand to the last',
 
     abendeTitle: 'Earlier evenings',
@@ -69,10 +67,10 @@ export const STR = defineStrings(
     markeAbend: 'During',
     markeDanach: 'After',
 
-    laeuftSeit: (dauer: string) => `Running for ${dauer}`,
+    abendLaeuft: (dauer: string) => `The evening is running — for ${dauer}`,
     abendeStand: (n: number, wann: string) =>
       `${n === 1 ? '1 night' : `${n} nights`} · last ${wann}`,
-    abendeLeer: 'No night recorded yet',
+    abendeLeer: 'No night saved yet',
     bankrollStand: (n: number, bilanz: string) =>
       `${n === 1 ? '1 session' : `${n} sessions`} · result ${bilanz}`,
 

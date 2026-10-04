@@ -17,12 +17,15 @@ interface Props {
   schliessenLabel: string;
   onClose: () => void;
   children: ReactNode;
+  /** Startfokus auf „Schließen“ setzen? Aus, wenn ein Feld im Blatt `autoFocus`
+   *  trägt (die Suche). */
+  startfokus?: boolean;
 }
 
-export function Blatt({ kopf, titel, schliessenLabel, onClose, children }: Props) {
+export function Blatt({ kopf, titel, schliessenLabel, onClose, children, startfokus = true }: Props) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const zuRef = useRef<HTMLButtonElement>(null);
-  useDialogTastatur(dialogRef, { schliessen: onClose, zuerst: zuRef });
+  useDialogTastatur(dialogRef, { schliessen: onClose, zuerst: zuRef, startfokus });
 
   return createPortal(
     <div ref={dialogRef} className="herkunft-grund" role="dialog" aria-modal="true" aria-label={titel} onClick={onClose}>

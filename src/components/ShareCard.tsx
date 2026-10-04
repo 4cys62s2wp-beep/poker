@@ -7,10 +7,7 @@ import qrcode from 'qrcode-generator';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/share';
 import { Icon } from './Icon';
-
-function appUrl(): string {
-  return `${location.origin}${location.pathname}`;
-}
+import { appUrl } from '../lib/teilen';
 
 /** QR-Code als React-SVG (ein Pfad aus allen dunklen Modulen – kein innerHTML).
     Wird auch vom Online-Tisch benutzt (Beitritts-Code als QR). */

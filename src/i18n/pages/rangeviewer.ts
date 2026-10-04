@@ -18,7 +18,8 @@ export const STR = defineStrings(
       BBDEF:
         'Gegen ein Button-Open von 2,5bb bekommst du im Big Blind hervorragende Pot Odds und schließt die Action: Du verteidigst breit. Die 3-Bet-Range ist polar aufgebaut – starke Value-Hände plus Bluffs mit guten Blockern. Bei Überschneidungen hat die 3-Bet Vorrang.',
     } as Record<string, string>,
-    readingHelp: 'Lesehilfe: Diagonale = Paare, oberhalb = suited (s), unterhalb = offsuit (o).',
+    readingHelp: 'Lesehilfe: Diagonale = Paare, oberhalb = suited (s), unterhalb = offsuit (o). Tipp auf ein Feld nennt die Hand.',
+    auskunft: (hand: string, aktion: string) => `${hand} · ${aktion}`,
   },
   {
     title: 'Range Charts',
@@ -35,6 +36,7 @@ export const STR = defineStrings(
       BBDEF:
         'Against a 2.5bb button open you get excellent pot odds in the big blind and close the action: you defend wide. The 3-bet range is polarized – strong value hands plus bluffs with good blockers. Where ranges overlap, the 3-bet takes priority.',
     } as Record<string, string>,
-    readingHelp: 'How to read it: diagonal = pairs, above = suited (s), below = offsuit (o).',
+    readingHelp: 'How to read it: diagonal = pairs, above = suited (s), below = offsuit (o). Tap a cell to see the hand.',
+    auskunft: (hand: string, aktion: string) => `${hand} · ${aktion}`,
   },
 );

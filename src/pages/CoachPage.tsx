@@ -148,9 +148,9 @@ export function CoachPage() {
       {step === 'setup' && (
         <div className="card">
           <div className="stat-label satz" style={{ marginBottom: 8 }}>{L.playersQuestion}</div>
-          <div className="segmented" style={{ marginBottom: 20 }}>
+          <div className="segmented raster" role="radiogroup" aria-label={L.playersQuestion} style={{ marginBottom: 20 }}>
             {[2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
-              <button key={n} className={players === n ? 'on' : ''} onClick={() => setPlayers(n)}>
+              <button key={n} type="button" role="radio" aria-checked={players === n} className={players === n ? 'on' : ''} onClick={() => setPlayers(n)}>
                 {n}
               </button>
             ))}

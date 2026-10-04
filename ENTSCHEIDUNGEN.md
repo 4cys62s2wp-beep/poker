@@ -5397,3 +5397,69 @@ Mailprogramm auf „Senden“ drückt. Der Freunde-Eintrag erscheint in Seitenle
 - **Der Kontoplatzhalter ist eine Fläche ohne Skelett:** keine Animation, damit `prefers-reduced-motion` nichts ändern muss.
 - Die **Datumsangabe der Backup-Datei** steht jetzt nach der Uhr des Geräts statt in UTC (`heuteIso`), bei den Sicherungen
   der Einstellungen; die Notsicherung im Absturzbildschirm trägt noch UTC.
+
+## E-096 · 2026-10-04 · Nachschlagen und Schreibtisch: eine Suche für alles, Karten wählen, Tasten, eine Matrix, die passt
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 9.1–9.6), mit den unten genannten Lücken.
+
+**Eine Suche (9.3).** Es gab zwei Felder, und jedes kannte einen Teil: „Nachschlagen“ fand Bereiche und Glossarbegriffe,
+„Lernen“ nur Lektionen. Wer „Bankroll“ tippte, fand je nach Feld das Werkzeug oder die Lektion — nie beides. Jetzt führt
+`lib/suche/index.ts` die drei Quellen zusammen (Werkzeuge und Trainer samt Stichworten in beiden Sprachen, Lektionen mit
+Titel, Einleitung, Überschriften und Text, Glossar) und liefert **immer dieselben drei Gruppen in derselben Reihenfolge:
+Werkzeuge · Lektionen · Begriffe**. Ab zwei Zeichen wird gesucht, im Fließtext der Lektionen ab drei; Treffer im Namen stehen
+vor Treffern im Text; Enter führt auf den besten Treffer. Ein Test hält fest, dass „Bankroll“ den Tracker, eine Lektion aus M6
+und den Begriff findet. Die Felder auf „Nachschlagen“ und „Lernen“ und ein **Suchdialog von überall** (Lupe in der
+Kopfzeile am Handy, Eintrag in der Seitenleiste, die Tasten **„/“ und Strg + K** am Schreibtisch) fragen denselben Index.
+Die Kacheln auf „Nachschlagen“ tragen dafür keine eigenen Stichworte mehr.
+
+**Tasten am Schreibtisch (9.4).** Drei Regeln gelten für jede Taste (`lib/tasten.ts`, getestet): in einem Eingabefeld
+schweigen die Kürzel; mit Strg, Befehl oder Alt wird nichts abgefangen, außer die Taste verlangt es (Strg + K); hinter einem
+Dialog gelten die Kürzel der Seite nicht. Belegt sind: **Quiz** 1–4 oder A–D antworten, Enter geht weiter (die Buchstaben
+standen schon da, ohne Wirkung); **Drill** J/N (englisch Y/N) oder ←/→, Enter oder Leertaste weiter; **Übungstisch** F, C, R
+(R öffnet die Einsatzwahl und bestätigt dort den gewählten Betrag — dasselbe wie der Knopf, nie mehr), Enter oder N für die
+nächste Hand, Escape zurück. Die Tasten stehen als kleine Marke am Knopf, **nur dort, wo es eine Tastatur gibt** (Maus und
+Fenster ab 921 Pixel), und nicht im Text des Knopfes (Attribut statt Inhalt). Der **Drill** hat am Schreibtisch keinen leeren
+Streifen von 170 Pixel mehr über den Knöpfen: Sie stehen unter der Situationskarte, die Auflösung folgt darunter — die Knöpfe
+bleiben dabei vor und nach der Antwort an derselben Stelle (gemessen), und die Seite scrollt nicht von selbst. Eine
+„?“-Übersicht der Tasten gibt es nicht; die Marken an den Knöpfen sind sie.
+
+**Range-Matrix am Handy (9.1).** Ein Mindestwert von 400 Pixel in einer 318 Pixel breiten Karte ließ rechts zweieinhalb
+Spalten fehlen. Jetzt passt sie ohne Scrollen (316 Pixel, Zelle 22): die Zelle zeigt **„AK“ statt „AKs“** — suited und offsuit
+sagt die Lage zur Diagonale —, und ein **Tipp auf ein Feld nennt die Hand und die Aktion** („AKs · Raise“) in einer Zeile
+darunter, ohne etwas umzuschalten (`nurAuskunft`, kein `aria-pressed`). Breite Fenster zeigen weiter „AKs“. **Der Live-Coach**
+stellt die Spielerzahl 2–9 in **vier mal zwei gleich breite Spalten** (jede 44 Pixel hoch); die Positionswahl bricht nicht mehr
+mitten im Namen um („BB vs. BTN“).
+
+**Equity-Rechner (9.2).** Hand 1, Hand 2, die optionale Hand 3 und das Board sind vier **Ziele**; ein Tipp wählt das Ziel, der
+vorhandene Kartenwähler (erst Rang, dann Farbe) füllt es, bereits vergebene Karten sind gesperrt, eine volle Hand springt
+zur nächsten (die dritte wird übersprungen), eine gewählte Karte lässt sich antippen und entfernt sich. Die **Schnelleingabe als
+Text** („As Kh“) steht eingeklappt darunter und wird zur Auswahl (`lib/poker/kartentext.ts`, getestet); Unlesbares und Doppeltes
+meldet sie, ohne die Auswahl zu verändern. Der Untertitel ist ein Nutzensatz statt einer Anleitung zu s/h/d/c.
+
+**Tages-Quiz teilen (9.5).** Am Ende (und auf der Karte „Heute schon erledigt“) „Ergebnis teilen“: **eine Zeile Text** mit
+Stand, Serie ab zwei Tagen und Link, über `navigator.share`, sonst die Zwischenablage — gesagt wird es („In die Zwischenablage
+kopiert“). Nur Zahlen und Tage, kein Geld (`lib/teilen.ts`, getestet).
+
+**Feinschliff (9.6).**
+- **Abgeschnittenes ist ein Befund.** `npm run bedienbar` zählt jeden Text, der mit „…“ gekürzt gemalt wird (`text-overflow:
+  ellipsis` bei zu breitem Inhalt, `line-clamp` bei zu hohem). Ausgenommen: was zugeklappt ist und den ganzen Text einen Tipp
+  entfernt hält (`aria-expanded="false"` — die Vorschau eines Glossareintrags) und die Kopfzeile am Handy. Die vier Fälle aus
+  dem Fahrplan („NEUE BESTSE…“, „Carla Callst…“, „Pot O“, die Chip-Tabelle) fand der Lauf **nicht mehr** — die Pakete 5–7 hatten
+  sie beseitigt; er hält es jetzt fest.
+- **Doppelt Gesagtes:** Der Push/Fold-Trainer sagte „Vereinfachte Nash-Ranges … ohne Antes“ im Untertitel und in der Fußnote;
+  der Untertitel ist jetzt die Frage („Mit welchen Händen gehst du bei 10 bb und 5 bb All-in?“), die Einschränkung steht einmal
+  in der Fußnote.
+- **Ladetexte:** drei Wörter für drei Dinge — „Rechne …“ für eine Rechnung (Coach, Hand-Explorer, Equity), „Lädt …“ für Daten
+  (Drill, Konto), „Einen Moment …“ für das Warten auf einen Server (Konto, Pro).
+- **Modulkarten am Handy:** schon mit E-092 einheitlich (jede Karte eine Zeile, Fortschritt rechts); es blieb nichts zu tun.
+
+**Nicht umgesetzt, mit Grund:**
+- **Die Spielerzahl im Coach als eine Zeile mit acht Spalten** (9.1): Acht Felder à 44 Pixel brauchen 373 Pixel, die Karte
+  bietet 318. Die Mindestgröße des Tippens (44 × 44) steht über dem Wunsch nach einer Zeile; vier mal zwei gleiche Spalten
+  nehmen dem Umbruch das Zufällige.
+- **Eine „?“-Übersicht der Tasten** (9.4): ausdrücklich entbehrlich; die Marken an den Knöpfen sagen es dort, wo man es braucht.
+- **Tasten für Pot-Odds-Trainer, Szenario-Trainer, Push/Fold-Trainer:** nur Quiz, Drill und Übungstisch, wie im Fahrplan; die
+  Trainer haben mehr als zwei Antworten pro Aufgabe und noch keine Reihenfolge, die man sich merken kann.
+- **Teilbilder** (Canvas 1080 × 1350) fürs Tages-Quiz: „erst, wenn sich das Teilen von Text bewährt“ (9.5).
+- **Die Zellen der Matrix am Handy bleiben bei 22 Pixel:** Die Matrix ist ein Diagramm (die Tippprüfung nimmt sie aus, wie
+  schon vorher), ihr Zweck ist das Bild als Ganzes; die Auskunft kommt über den Tipp, den man auch ungenau setzen darf.

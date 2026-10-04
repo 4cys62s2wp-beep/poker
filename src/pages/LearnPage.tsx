@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { suchbar } from '../lib/eingabe/suche';
+import { SuchFeld } from '../components/SuchFeld';
+import { SuchTreffer } from '../components/SuchTreffer';
+import { MIN_ZEICHEN, suche } from '../lib/suche';
+import { useSuchquellen } from '../lib/suche/nutzen';
 import { STR as NAV } from '../i18n/pages/layout';
 import { Zurueck } from '../components/ui';
 import { Link } from 'react-router-dom';
@@ -23,23 +26,6 @@ const LEVEL_PILL: Record<string, string> = {
   Experte: 'gold',
 };
 
-interface SearchHit {
-  moduleId: string;
-  moduleTitle: string;
-  lessonId: string;
-  lessonTitle: string;
-  /** Textauszug rund um den Treffer. */
-  snippet: string;
-}
-
-function makeSnippet(text: string, query: string): string {
-  const idx = suchbar(text).indexOf(query);
-  if (idx < 0) return '';
-  const start = Math.max(0, idx - 40);
-  const end = Math.min(text.length, idx + query.length + 60);
-  return `${start > 0 ? '…' : ''}${text.slice(start, end).replace(/\n/g, ' ')}${end < text.length ? '…' : ''}`;
-}
-
 export function LearnPage() {
   const { data, dueReviewCount } = useAppState();
   const { lang, content } = useLang();
@@ -55,45 +41,12 @@ export function LearnPage() {
   const [neuPros] = useState(() => !wurdeGesehen('pros'));
   useEffect(() => { markiereGesehen('drill'); markiereGesehen('pros'); }, []);
 
-  const hits = useMemo<SearchHit[]>(() => {
-    const q = suchbar(query.trim());
-    if (q.length < 3) return [];
-    const results: SearchHit[] = [];
-    for (const m of content.modules) {
-      for (const l of m.lessons) {
-        let snippet = '';
-        if (suchbar(l.title).includes(q)) {
-          snippet = l.intro;
-        } else if (suchbar(l.intro).includes(q)) {
-          snippet = makeSnippet(l.intro, q);
-        } else {
-          for (const sec of l.sections) {
-            if (suchbar(sec.heading).includes(q)) {
-              snippet = L.sectionSnippet(sec.heading);
-              break;
-            }
-            if (suchbar(sec.body).includes(q)) {
-              snippet = makeSnippet(sec.body.replace(/\*\*/g, ''), q);
-              break;
-            }
-          }
-        }
-        if (snippet) {
-          results.push({
-            moduleId: m.id,
-            moduleTitle: m.title,
-            lessonId: l.id,
-            lessonTitle: l.title,
-            snippet,
-          });
-        }
-        if (results.length >= 12) return results;
-      }
-    }
-    return results;
-  }, [query, content.modules, L]);
+  /* Dieselbe Suche wie auf „Nachschlagen“ und im Suchdialog (E-096): Wer hier
+     „Bankroll“ tippt, findet die Lektion — und das Werkzeug und den Begriff. */
+  const quellen = useSuchquellen();
+  const ergebnis = useMemo(() => suche(query, quellen), [query, quellen]);
 
-  const searching = query.trim().length >= 3;
+  const searching = query.trim().length >= MIN_ZEICHEN;
 
   const heute = new Date().toISOString().slice(0, 10);
   const quizOffen = data.daily?.date !== heute;
@@ -282,30 +235,13 @@ export function LearnPage() {
           schon, wonach — das ist der seltenere Fall. Es steht außerhalb der
           Verzweigung darunter, weil ein Feld, das beim dritten Zeichen an
           eine andere Stelle im Baum wandert, den Fokus verliert. */}
-      <input
-        className="search-input"
-        type="search"
-        /* Ein Platzhalter ist kein Name: Er verschwindet beim ersten
-           Zeichen, und dann heißt das Feld „Eingabefeld" (E-043). */
-        aria-label={L.searchLabel}
-        style={{ margin: 'var(--sp-5) 0 var(--sp-5)' }}
-        placeholder={L.searchPlaceholder}
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
+      <div style={{ margin: 'var(--sp-5) 0' }}>
+        <SuchFeld id="lernen-suche" value={query} onChange={setQuery} />
+      </div>
 
       {searching && (
-        <div style={{ marginBottom: 24 }}>
-          {hits.length === 0 && <p className="muted">{L.noHits}</p>}
-          {hits.map((h) => (
-            <Link key={h.lessonId} to={`/lernen/${h.moduleId}/${h.lessonId}`} className="card clickable" style={{ display: 'block', marginBottom: 10, padding: 14 }}>
-              <div className="row between wrap">
-                <span style={{ fontWeight: 800 }}>{h.lessonTitle}</span>
-                <span className="pill">{h.moduleTitle}</span>
-              </div>
-              <p className="small muted" style={{ marginTop: 4 }}>{h.snippet}</p>
-            </Link>
-          ))}
+        <div style={{ marginBottom: 'var(--sp-5)' }}>
+          <SuchTreffer ergebnis={ergebnis} abfrage={query} />
         </div>
       )}
 

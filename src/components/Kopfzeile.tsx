@@ -27,6 +27,7 @@ import { Icon } from './Icon';
 import { Marke } from './Marke';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/layout';
+import { STR as SUCHE } from '../i18n/pages/suche';
 import { useAppState } from '../state/AppState';
 
 /** Ab dieser Scrolltiefe (px) zeigt die Zeile den Ort. */
@@ -48,7 +49,7 @@ function lies(haupt: HTMLElement | null): Ort {
   };
 }
 
-export function Kopfzeile({ mainRef }: { mainRef: RefObject<HTMLElement> }) {
+export function Kopfzeile({ mainRef, onSuche }: { mainRef: RefObject<HTMLElement>; onSuche: () => void }) {
   const { lang } = useLang();
   const L = STR[lang];
   const { data } = useAppState();
@@ -134,6 +135,11 @@ export function Kopfzeile({ mainRef }: { mainRef: RefObject<HTMLElement> }) {
           <span className="seitentitel">{stand.titel}</span>
         </button>
       )}
+
+      {/* Die Lupe: die Suche von überall (E-096). */}
+      <button type="button" className="mobile-top-suche" onClick={onSuche} aria-label={SUCHE[lang].oeffnen}>
+        <Icon name="search" size={20} />
+      </button>
 
       {/* Der Weg zum Profil auf dem Handy. Er stand vorher in der unteren
           Leiste; dort ist mit drei Bereichen kein Platz mehr für einen

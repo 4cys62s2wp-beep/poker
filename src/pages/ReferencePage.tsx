@@ -23,10 +23,13 @@
    eigene Seite. */
 
 import { useMemo, useState } from 'react';
-import { suchbar } from '../lib/eingabe/suche';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import type { ReactNode } from 'react';
-import { Icon, type IconName } from '../components/Icon';
+import type { IconName } from '../components/Icon';
+import { SuchFeld } from '../components/SuchFeld';
+import { SuchTreffer } from '../components/SuchTreffer';
+import { MIN_ZEICHEN, bestesZiel, suche } from '../lib/suche';
+import { useSuchquellen } from '../lib/suche/nutzen';
 import { Bereichskachel, MiniRaster } from '../components/Bereich';
 import { CardsRow } from '../components/PlayingCard';
 import { PageHeader } from '../components/ui';
@@ -47,10 +50,6 @@ interface Eintrag {
   inhalt: ReactNode;
   /** Der Gegenstand selbst, klein. Nur wo es einen gibt. */
   vorschau?: ReactNode;
-  /** Wonach in der Suche gefunden wird — auch das, was nicht auf der Kachel steht. */
-  keywords: string[];
-  /** Für die Trefferliste: der alte, erklärende Satz. Dort ist er richtig. */
-  desc: string;
 }
 
 export function ReferencePage() {
@@ -78,82 +77,55 @@ export function ReferencePage() {
   const eintraege: Eintrag[] = [
     {
       to: '/nachschlagen/coach', icon: zeichenFuer('/nachschlagen/coach'),
-      title: L.coachTitle, desc: L.coachDesc,
+      title: L.coachTitle,
       inhalt: L.coachInhalt,
       vorschau: <CardsRow cards={['As', 'Kh']} size="sm" />,
-      keywords: ['coach', 'hand', 'empfehlung', 'advice', 'was tun', 'spot'],
     },
     {
       to: '/nachschlagen/glossar', icon: zeichenFuer('/nachschlagen/glossar'),
-      title: L.glossaryTitle, desc: L.glossaryDesc,
+      title: L.glossaryTitle,
       inhalt: L.glossaryInhalt(content.glossary.length),
-      keywords: ['glossar', 'glossary', 'begriff', 'term', 'bedeutung', 'wort'],
     },
     {
       to: '/nachschlagen/haende', icon: zeichenFuer('/nachschlagen/haende'),
-      title: L.handsTitle, desc: L.handsDesc,
+      title: L.handsTitle,
       inhalt: L.handsInhalt(btn.anteil),
       vorschau: <MiniRaster range={btn.range} />,
-      keywords: ['starthand', 'starting hand', 'hände', 'hands', 'position', 'ak', 'aa'],
     },
     {
       to: '/nachschlagen/ranges', icon: zeichenFuer('/nachschlagen/ranges'),
-      title: L.rangesTitle, desc: L.rangesDesc,
+      title: L.rangesTitle,
       inhalt: L.rangesInhalt(RFI_CHARTS.length),
       vorschau: <MiniRaster range={utg} />,
-      keywords: ['range', 'chart', 'raster', 'open', 'eröffnen', '3bet', '3-bet'],
     },
     {
       to: '/nachschlagen/odds', icon: zeichenFuer('/nachschlagen/odds'),
-      title: L.oddsTitle, desc: L.oddsDesc,
+      title: L.oddsTitle,
       inhalt: L.oddsInhalt(flushdraw, gutshot),
-      keywords: ['odds', 'outs', 'pot odds', 'wahrscheinlichkeit', 'chance', 'prozent'],
     },
     {
       to: '/nachschlagen/equity', icon: zeichenFuer('/nachschlagen/equity'),
-      title: L.equityTitle, desc: L.equityDesc,
+      title: L.equityTitle,
       inhalt: L.equityInhalt,
-      keywords: ['equity', 'rechner', 'calculator', 'gegen', 'versus', 'ausrechnen'],
     },
     {
       to: '/nachschlagen/tells', icon: zeichenFuer('/nachschlagen/tells'),
-      title: L.tellsTitle, desc: L.tellsDesc,
+      title: L.tellsTitle,
       inhalt: L.tellsInhalt(content.tells.length),
-      keywords: ['tell', 'tells', 'read', 'gegner', 'körpersprache', 'verhalten'],
     },
   ];
 
-  const q = suchbar(query.trim());
-
-  /* Zwei Trefferarten, bewusst getrennt dargestellt: Bereiche zuerst (ein Tipp
-     ist man am Ziel), Glossarbegriffe darunter (zwei Tipps, aber mit dem Wort
-     schon eingesetzt – deshalb der ?q=-Parameter). */
-  const treffer = useMemo(() => {
-    if (q.length < 2) return null;
-
-    const bereiche = eintraege.filter(
-      (e) =>
-        suchbar(e.title).includes(q) ||
-        suchbar(e.desc).includes(q) ||
-        e.keywords.some((k) => k.includes(q)),
-    );
-
-    const begriffe = content.glossary
-      .filter((g) => suchbar(g.term).includes(q))
-      .slice(0, 6);
-
-    return { bereiche, begriffe };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q, content.glossary, lang]);
+  /* Eine Suche für alles (E-096): Werkzeuge, Lektionen, Begriffe — in
+     derselben Reihenfolge wie auf „Lernen“ und im Suchdialog. */
+  const quellen = useSuchquellen();
+  const ergebnis = useMemo(() => suche(query, quellen), [query, quellen]);
+  const sucht = query.trim().length >= MIN_ZEICHEN;
 
   /* Enter springt auf den besten Treffer. Wer tippt und Enter drückt, will
      ankommen, nicht noch einmal zielen. */
   const springen = (e: React.FormEvent) => {
     e.preventDefault();
-    const ziel = treffer?.bereiche[0]?.to
-      ?? (treffer?.begriffe[0]
-        ? `/nachschlagen/glossar?q=${encodeURIComponent(treffer.begriffe[0].term)}`
-        : null);
+    const ziel = bestesZiel(ergebnis);
     if (ziel) navigate(ziel);
   };
 
@@ -166,74 +138,17 @@ export function ReferencePage() {
       />
 
       <form onSubmit={springen} role="search" style={{ marginBottom: 'var(--sp-4)' }}>
-        <label htmlFor="nachschlagen-suche" className="sr-only">{L.searchLabel}</label>
-        <div style={{ position: 'relative' }}>
-          <span
-            aria-hidden="true"
-            style={{
-              position: 'absolute', left: 'var(--sp-3)', top: '50%',
-              transform: 'translateY(-50%)', color: 'var(--text-faint)',
-              display: 'flex', pointerEvents: 'none',
-            }}
-          >
-            <Icon name="search" size={17} />
-          </span>
-          <input
-            id="nachschlagen-suche"
-            className="search-input"
-            type="search"
-            value={query}
-            onChange={(ev) => setQuery(ev.target.value)}
-            placeholder={L.searchPlaceholder}
-            autoComplete="off"
-            style={{ paddingLeft: 'calc(var(--sp-3) + 17px + var(--sp-2))' }}
-          />
-        </div>
+        <SuchFeld id="nachschlagen-suche" value={query} onChange={setQuery} />
       </form>
 
-      {treffer && (
+      {sucht && (
         <div style={{ marginBottom: 'var(--sp-5)' }}>
-          {treffer.bereiche.length === 0 && treffer.begriffe.length === 0 && (
-            <p className="small muted" style={{ margin: 0 }}>{L.searchNothing(query.trim())}</p>
-          )}
-
-          {treffer.bereiche.length > 0 && (
-            <>
-              <div className="eyebrow">{L.searchHintTool}</div>
-              <div className="bereiche nachschlagen" style={{ marginTop: 'var(--sp-2)' }}>
-                {treffer.bereiche.map((e) => (
-                  <Bereichskachel
-                    key={e.to} to={e.to} icon={e.icon} titel={e.title}
-                    /* In der Trefferliste steht der erklärende Satz: Wer
-                       sucht, will wissen, ob das das Gesuchte ist. */
-                    inhalt={e.desc}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-
-          {treffer.begriffe.length > 0 && (
-            <>
-              <div className="eyebrow" style={{ marginTop: 'var(--sp-4)' }}>{L.searchHintGlossary}</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--sp-2)', marginTop: 'var(--sp-2)' }}>
-                {treffer.begriffe.map((g) => (
-                  <Link
-                    key={g.term}
-                    to={`/nachschlagen/glossar?q=${encodeURIComponent(g.term)}`}
-                    className="chip-link"
-                  >
-                    {g.term}
-                  </Link>
-                ))}
-              </div>
-            </>
-          )}
+          <SuchTreffer ergebnis={ergebnis} abfrage={query} />
         </div>
       )}
 
       {/* Ohne Suchbegriff: alles, dicht und mit Inhalt. */}
-      {!treffer && (
+      {!sucht && (
         <div className="bereiche nachschlagen">
           {eintraege.map((e) => (
             <Bereichskachel

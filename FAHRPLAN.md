@@ -951,8 +951,10 @@ Eine Gruppe „Über“ in den Einstellungen mit den vier Versprechen (kein Echt
 **Ziel:** Nachschlagen funktioniert auf jeder Breite ohne Abschneiden, Karten werden gewählt statt getippt, eine Suche findet alles, auf dem Desktop geht die Bedienung per Tastatur, und nirgends steht mehr ein abgeschnittenes Wort.  
 **Baut auf:** 1, 2
 
-### [ ] 9.1 Range-Matrix auf dem Handy vollständig sichtbar  
+### [x] 9.1 Range-Matrix auf dem Handy vollständig sichtbar  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt: Matrix passt am Handy (316 Pixel, ohne Scrollen, „AK“ statt „AKs“), Tipp nennt die Hand und die Aktion; Spielerzahl im Coach als vier mal zwei gleiche Spalten (eine Zeile mit acht Spalten wäre unter 44 Pixel), Positionswahl ohne Umbruch im Namen. Siehe E-096.
 
 `.matrix { min-width: 400px }` (global.css 1144) läuft heute in einem ~318 px breiten Container über, rechts fehlen zweieinhalb Spalten. Unter 430 px die Zellen ohne min-width auf 1fr (etwa 23 px), die Beschriftung bei Pocket Pairs und Ecken verkleinern oder weglassen; den Namen zeigt Tippen in der vorhandenen Detailkarte (E-039 verlangt den zweiten Zugang, der Befund erfüllt E-039, statt ihm zu widersprechen). Die Zellen bekommen die Range-Tokens aus Paket 1. Die Spielerzahl 2–9 im Live-Coach wird ein einzeiliges Segment mit 8 gleichen Spalten, die Positions-Chips umbrechen nicht mehr („BB vs. BTN“).
 
@@ -962,8 +964,10 @@ Eine Gruppe „Über“ in den Einstellungen mit den vier Versprechen (kein Echt
 
 </details>
 
-### [ ] 9.2 Equity-Rechner mit Kartenauswahl statt Kürzel-Syntax  
+### [x] 9.2 Equity-Rechner mit Kartenauswahl statt Kürzel-Syntax  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt: Kartenwähler für Hand 1–3 und Board, Sperre vergebener Karten, Schnelleingabe als Text darunter, Untertitel als Nutzensatz.
 
 Den vorhandenen CardPicker (cardpicker.ts, deutsche Texte) für Hand 1, Hand 2, die optionale Hand 3 und das Board einsetzen; bereits gewählte Karten sind gesperrt. Die Texteingabe („As Kh“) bleibt als Schnelleingabe. Der Untertitel in equitycalc.ts mit Anleitung zu s/h/d/c und „T“ wird ein Nutzensatz.
 
@@ -974,8 +978,10 @@ Den vorhandenen CardPicker (cardpicker.ts, deutsche Texte) für Hand 1, Hand 2, 
 
 </details>
 
-### [ ] 9.3 Eine Suche für Werkzeuge, Lektionen und Begriffe  
+### [x] 9.3 Eine Suche für Werkzeuge, Lektionen und Begriffe  
 *Wirkung 3 · Aufwand M*
+
+**Stand:** Umgesetzt: `lib/suche` führt Werkzeuge, Lektionen und Begriffe zusammen (Test „Bankroll“); beide Felder, ein Suchdialog mit Lupe, „/“ und Strg + K.
 
 Zuerst den Index zusammenführen: lib/suche/index.ts aus Lektionen (aus der Lernsuche), Glossar, allen Werkzeugen und Trainern samt keywords und den Live-Session-Seiten. Beide Felder (ReferencePage.tsx Z. 130ff., LearnPage.tsx) nutzen ihn, mit Gruppen „Werkzeuge · Lektionen · Begriffe“. Ein Test: „Bankroll“ findet Bankroll-Tracker, die Lektion aus M6 und den Glossarbegriff. Danach eine Lupe in der klebenden Kopfzeile und „/“ bzw. Strg+K auf dem Desktop.
 
@@ -986,8 +992,10 @@ Zuerst den Index zusammenführen: lib/suche/index.ts aus Lektionen (aus der Lern
 
 </details>
 
-### [ ] 9.4 Tastenkürzel am Desktop, kein Loch über den Drill-Knöpfen  
+### [x] 9.4 Tastenkürzel am Desktop, kein Loch über den Drill-Knöpfen  
 *Wirkung 3 · Aufwand M*
+
+**Stand:** Umgesetzt: `lib/tasten` mit drei Regeln; Quiz 1–4/A–D, Drill J/N und Pfeile, Übungstisch F/C/R; Hinweise nur am Schreibtisch; Drill ohne Loch über den Knöpfen. Keine „?“-Übersicht, wie vorgesehen.
 
 Ein Hook useTasten, der in Eingabefeldern schweigt: Quiz 1–4 bzw. A–D und Enter (QuizRunner.tsx 82–88 beschriftet heute mit A–D ohne Wirkung), Drill J/N bzw. ←/→, Übungstisch F/C/R, global „/“ für die Suche. Kbd-Hinweise an den Knöpfen und das Hochziehen der Drill-Knöpfe direkt unter die Situationskarte nur unter (hover:hover) and (pointer:fine); heute klafft dort ein ~170 px leerer Streifen. Eine „?“-Übersicht ist entbehrlich.
 
@@ -997,8 +1005,10 @@ Ein Hook useTasten, der in Eingabefeldern schweigt: Quiz 1–4 bzw. A–D und En
 
 </details>
 
-### [ ] 9.5 Tages-Quiz-Ergebnis teilen  
+### [x] 9.5 Tages-Quiz-Ergebnis teilen  
 *Wirkung 3 · Aufwand S*
+
+**Stand:** Umgesetzt: „Ergebnis teilen“ als Textzeile mit Link (Teilen-Dialog, sonst Zwischenablage), auch auf der Karte „schon erledigt“. Teilbilder bleiben aus.
 
 Am Ende des Tages-Quiz eine Ergebniszeile als Text über navigator.share({text, url}), sonst Zwischenablage mit Toast. Teilbilder (Canvas 1080×1350) und Abzeichen erst, wenn sich das Teilen von Text bewährt. Das Teilen des Abends steckt in Punkt 7.8. In Ergebnistexten Chips nennen, kein Geld.
 
@@ -1008,8 +1018,10 @@ Am Ende des Tages-Quiz eine Ergebniszeile als Text über navigator.share({text, 
 
 </details>
 
-### [ ] 9.6 Nichts Abgeschnittenes, nichts Doppeltes, gleiche Ladetexte  
+### [x] 9.6 Nichts Abgeschnittenes, nichts Doppeltes, gleiche Ladetexte  
 *Wirkung 3 · Aufwand S*
+
+**Stand:** Umgesetzt: `bedienbar` zählt Abgeschnittenes als Befund (0 Befunde; die Fälle der Prüfung waren schon behoben), Dopplung im Push/Fold-Trainer entfernt, drei Ladewörter für drei Dinge, Modulkarten seit E-092 einheitlich.
 
 Den Durchgang (npm run daumen bzw. bedienbar) so erweitern, dass Abschneiden mit Ellipse als Fehler zählt; das deckt „NEUE BESTSE…“, „Carla Callst…“, „„Pot O“ und die Chip-Tabelle künftig automatisch auf. Dopplungen entfernen: Push/Fold sagt „Vereinfachte Nash-Ranges … ohne Antes“ in Untertitel und Fußnote. Ladetexte vereinheitlichen („berechne …“, „Rechne …“, „Daten werden geladen …“, „Einen Moment …“), soweit Punkt 1.6 sie nicht durch Platzhalter ersetzt. Die Modulkarten auf dem Handy einheitlich umbrechen lassen.
 

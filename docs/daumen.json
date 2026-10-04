@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T15:21:11.574Z",
+  "geprueft_am": "2026-10-04T16:15:57.906Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -102,7 +102,7 @@
     {
       "hash": "#/nachschlagen/haende",
       "scrollt": true,
-      "ueberlauf_px": 1204,
+      "ueberlauf_px": 1120,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -472,15 +472,15 @@
     },
     {
       "hash": "#/lernen/trainer/outs",
-      "scrollt": false,
-      "ueberlauf_px": 0,
+      "scrollt": true,
+      "ueberlauf_px": 31,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 659,
-        "unten_px": 820,
-        "mitte_px": 740,
+        "oben_px": 683,
+        "unten_px": 844,
+        "mitte_px": 764,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -554,9 +554,9 @@
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 639,
+        "oben_px": 617,
         "unten_px": 820,
-        "mitte_px": 730,
+        "mitte_px": 719,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 3,
@@ -586,8 +586,8 @@
     },
     {
       "hash": "#/nachschlagen/equity",
-      "scrollt": false,
-      "ueberlauf_px": 0,
+      "scrollt": true,
+      "ueberlauf_px": 402,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -596,7 +596,7 @@
     {
       "hash": "#/nachschlagen/ranges",
       "scrollt": true,
-      "ueberlauf_px": 258,
+      "ueberlauf_px": 232,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,

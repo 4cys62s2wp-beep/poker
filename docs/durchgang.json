@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T15:14:53.022Z",
+  "geprueft_am": "2026-10-04T15:59:56.843Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -44,7 +44,7 @@
         "letzte_stufe": "15 / 30",
         "zeitplan_mit_uhrzeit": true,
         "finale_satz": "Am Ende bleiben den letzten drei im Schnitt 21 Big Blinds — das trägt ein Finale.",
-        "plan_ende": "Ende gegen 18:13"
+        "plan_ende": "Ende gegen 18:58"
       },
       "uebersprungen": false
     },
@@ -179,7 +179,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 900,
+        "dauer_ms": 897,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -648,13 +648,13 @@
       "ergebnis": {
         "fehlschlag": {
           "urteil": "Noch nicht bestanden",
-          "punkte": "2 von 5 richtig",
+          "punkte": "1 von 5 richtig",
           "kacheln": [
-            "2/5dein Ergebnis",
+            "1/5dein Ergebnis",
             "4/5zum Bestehen"
           ],
-          "falsch_liste": 3,
-          "in_wiederholung": 3,
+          "falsch_liste": 4,
+          "in_wiederholung": 4,
           "knoepfe": [
             "Fehler nochmal üben",
             "Quiz noch einmal von vorn"
@@ -665,19 +665,19 @@
         "xp_nach_fehlschlag": 0,
         "lektion_fertig_nach_fehlschlag": false,
         "versucht_gemerkt": {
-          "bestScore": 2,
+          "bestScore": 1,
           "total": 5,
           "tries": 1,
-          "lastAt": "2026-10-04T15:14:03.631Z"
+          "lastAt": "2026-10-04T15:58:54.518Z"
         },
         "abzeichen_nach_fehlschlag": [],
-        "wiederholung_nach_fehlschlag": 3,
+        "wiederholung_nach_fehlschlag": 4,
         "modul_zeile": {
           "klassen": [
             "lektion",
             "dran"
           ],
-          "meta": "ca. 9 Min. · 5 Quizfragen · Quiz: 2/5",
+          "meta": "ca. 9 Min. · 5 Quizfragen · Quiz: 1/5",
           "hinweis": "Noch einmal"
         },
         "uebung": {
@@ -792,7 +792,7 @@
         "knoepfe": [
           "Tipp",
           "Fold",
-          "Call 3,5",
+          "Call 1",
           "Raise …"
         ]
       },
@@ -817,10 +817,10 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | Serie | – | Treffer | 0 | Beste",
-        "nach_zwei": "2 | Rekord! | 100 % | Treffer | 2 | Beste",
-        "nach_neuladen": "2 | Rekord! | 100 % | Treffer | 2 | Beste",
+        "nach_zwei": "0 | Serie | 50 % | Treffer | 1 | Beste",
+        "nach_neuladen": "0 | Serie | 50 % | Treffer | 1 | Beste",
         "quote_bleibt": true,
-        "quote_nach_zwei": "100 %",
+        "quote_nach_zwei": "50 %",
         "ohne_versuche_kein_prozent": true,
         "felder": 3
       },
@@ -829,12 +829,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 42,
+        "dauer_ms": 45,
         "knopf_bewegt_px": 0,
         "oben": 749,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "31,5 %",
+        "ergebnis_text": "54,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },
@@ -1000,7 +1000,7 @@
               "status": "Anna überlegt …",
               "gesperrte_knoepfe": 3,
               "urteil": [
-                "Gut"
+                "Fehler"
               ]
             }
           },
@@ -1081,13 +1081,13 @@
             "status_vorher": "Du bist dran",
             "wahl": {
               "vorgaben": [
-                "2,5×9",
-                "3×10,5",
-                "4×14",
+                "2,5",
+                "3",
+                "4",
                 "All-in100"
               ],
               "alle_im_bild": true,
-              "bestaetigen": "Raise auf 10,5",
+              "bestaetigen": "Raise auf 3",
               "leiste": {
                 "oben": 621,
                 "unten": 822
@@ -1095,21 +1095,21 @@
               "schild_unten": 564,
               "karten_unten": 528
             },
-            "mehr": "Raise auf 11,5",
-            "wieder_weniger": "Raise auf 10,5",
+            "mehr": "Raise auf 3,5",
+            "wieder_weniger": "Raise auf 3",
             "noch_nicht_gesetzt": true,
             "danach": {
               "status": "Anna überlegt …",
               "gesperrte_knoepfe": 3,
               "urteil": [
-                "≈\nVertretbar"
+                "Gut"
               ]
             }
           }
         },
         "fold": {
           "status_nach_fold": "Du hast gefoldet",
-          "dauer_ms": 40
+          "dauer_ms": 253
         }
       },
       "uebersprungen": false
@@ -1205,6 +1205,147 @@
           "umschalter": 0,
           "feedback": 0
         }
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Suche: eine für Werkzeuge, Lektionen und Begriffe",
+      "ergebnis": {
+        "fokus_im_feld": true,
+        "gruppen": [
+          {
+            "name": "Werkzeuge",
+            "treffer": 1
+          },
+          {
+            "name": "Lektionen",
+            "treffer": 6
+          },
+          {
+            "name": "Begriffe",
+            "treffer": 2
+          }
+        ],
+        "nach_enter": {
+          "adresse": "#/session/bankroll",
+          "dialog_zu": true
+        },
+        "nachschlagen": [
+          "Werkzeuge",
+          "Lektionen",
+          "Begriffe"
+        ],
+        "lernen": [
+          "Dein Rang",
+          "Werkzeuge",
+          "Lektionen",
+          "Begriffe"
+        ],
+        "leer": "Nichts zu „qqqxyz“ gefunden."
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Suche: Tasten „/“ und Strg + K am Schreibtisch",
+      "ergebnis": {
+        "mit_slash": 1,
+        "mit_strg_k": 1,
+        "wert_im_feld": "a/b",
+        "dialog_im_feld": 0,
+        "mit_klick": 1
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Range-Matrix: am Handy ganz im Bild, ein Tipp nennt die Hand",
+      "ergebnis": {
+        "matrix_breite": 316,
+        "rechts_im_bild": true,
+        "scrollt_seitlich": false,
+        "zelle_px": 22,
+        "zellen": 169,
+        "erste_zelle_text": "AA",
+        "suited_zelle_text": "AKs",
+        "zusatz_sichtbar": false,
+        "auskunft": "AKs · Raise",
+        "aria_pressed": null
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Live-Coach: Spielerzahl als gleiche Spalten",
+      "ergebnis": {
+        "anzahl": 8,
+        "breiten": [
+          75
+        ],
+        "zeilen": 2,
+        "hoehe_min": 44,
+        "hohe_knoepfe": []
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Equity-Rechner: Karten wählen statt Kürzel tippen",
+      "ergebnis": {
+        "start": {
+          "ziele": 4,
+          "aktiv": "Board0, 3, 4 oder 5 Karten",
+          "belegt": 4
+        },
+        "nach_flop": {
+          "board_karten": 3,
+          "gesperrt": 0
+        },
+        "spaten_gesperrt": true,
+        "ergebnis": {
+          "balken": 2,
+          "prozent": [
+            "27,2 %",
+            "72,8 %"
+          ]
+        },
+        "hand3_aus_text": 2,
+        "doppelt_meldung": "Doppelte Karte gefunden – jede Karte gibt es nur einmal"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Tastatur am Desktop: Quiz, Drill und Übungstisch",
+      "ergebnis": {
+        "kbd_sichtbar_quiz": true,
+        "quiz_beantwortet": true,
+        "zaehler_vorher": "1/5",
+        "zaehler_nachher": "2/5",
+        "buchstabe_wirkt": true,
+        "drill_lage": {
+          "luecke_px": 22,
+          "knoepfe_oben_vor": 586
+        },
+        "drill_nachher": {
+          "knoepfe_oben_nach": 586,
+          "aufloesung_unter_knopf": true
+        },
+        "drill_weiter": true,
+        "kbd_tisch": [
+          "F",
+          "C",
+          "R"
+        ],
+        "gefoldet": true,
+        "kbd_handy": 0
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Tages-Quiz: das Ergebnis lässt sich teilen",
+      "ergebnis": {
+        "knoepfe": [
+          "Ergebnis teilen",
+          "Zum Lernpfad"
+        ],
+        "text": "PokerMentor Tages-Quiz, 4. Okt. 2026: 1 von 5 richtig\nhttp://127.0.0.1:4173/",
+        "bestaetigung": "In die Zwischenablage kopiert"
       },
       "uebersprungen": false
     },

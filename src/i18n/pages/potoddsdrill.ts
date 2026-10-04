@@ -17,6 +17,8 @@ export const STR = defineStrings(
 
     question: 'Lohnt der Call?',
     yes: 'Lohnt sich',
+    tasteJa: 'j',
+    tasteNein: 'n',
     no: 'Lohnt nicht',
 
     equityLabel: 'So oft triffst du bis zum River',
@@ -57,7 +59,7 @@ export const STR = defineStrings(
       + 'Hand.',
     addressNew: 'Neue Aufgabe',
 
-    loading: 'Daten werden geladen …',
+    loading: 'Lädt …',
     errorTitle: 'Die Aufgaben konnten nicht geladen werden',
     errorBody: 'Prüfe deine Verbindung und versuche es noch einmal.',
     retry: 'Erneut versuchen',
@@ -78,6 +80,8 @@ export const STR = defineStrings(
 
     question: 'Is the call worth it?',
     yes: 'Worth it',
+    tasteJa: 'y',
+    tasteNein: 'n',
     no: 'Not worth it',
 
     equityLabel: 'How often you get there by the river',
@@ -111,7 +115,7 @@ export const STR = defineStrings(
       + 'app would rather show nothing than accidentally show a different hand.',
     addressNew: 'New spot',
 
-    loading: 'Loading the computed data …',
+    loading: 'Loading …',
     errorTitle: 'The tasks could not be loaded',
     errorBody: 'Check your connection and try again.',
     retry: 'Try again',

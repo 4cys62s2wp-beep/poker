@@ -2080,6 +2080,276 @@ await schritt('Kontokarte: kein Sprung, Google-Knopf nach Vorgabe, gleichwertige
   return { platzhalter_hoehe, karte, neu, feedback_mit_adresse: feedback, ohne_anbieter: ohne };
 });
 
+/* ── Nachschlagen, Desktop und Feinschliff (E-096) ────────────────────────
+   Gemessen wird, was früher fehlte: eine Suche für alles, eine Range-Matrix, die
+   am Handy ganz im Bild liegt, ein Equity-Rechner mit Kartenwahl, Tasten am
+   Schreibtisch, ein Drill ohne Loch über den Knöpfen, ein Tages-Quiz zum
+   Teilen. */
+
+async function neuerKontext(breite, hoehe, sprache = 'de', extra = {}) {
+  const k = await browser.newContext({ viewport: { width: breite, height: hoehe }, locale: sprache === 'de' ? 'de-DE' : 'en-GB', ...extra });
+  await k.addInitScript(([sp]) => {
+    localStorage.setItem('pokermentor-lang-v1', sp);
+    localStorage.setItem('pokermentor-farbmodus-v1', 'dunkel');
+  }, [sprache]);
+  return k;
+}
+
+await schritt('Suche: eine für Werkzeuge, Lektionen und Begriffe', async () => {
+  const k = await neuerKontext(390, 844);
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.mobile-top-suche');
+  await p.locator('.mobile-top-suche').click();
+  await p.waitForSelector('#suche-dialog');
+  const fokus_im_feld = await p.evaluate(() => document.activeElement?.id === 'suche-dialog');
+  await p.locator('#suche-dialog').fill('Bankroll');
+  await p.waitForTimeout(200);
+  const gruppen = await p.locator('[role="dialog"] section').evaluateAll((els) => els.map((e) => ({
+    name: e.getAttribute('aria-label'),
+    treffer: e.querySelectorAll('a').length,
+  })));
+  await p.locator('#suche-dialog').press('Enter');
+  await p.waitForTimeout(400);
+  const nach_enter = { adresse: new URL(p.url()).hash, dialog_zu: await p.locator('[role="dialog"]').count() === 0 };
+  /* Auf „Nachschlagen“ und „Lernen“ dieselben Gruppen. */
+  await p.goto(`${GRUND}/#/nachschlagen`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('#nachschlagen-suche');
+  await p.locator('#nachschlagen-suche').fill('Bankroll');
+  await p.waitForTimeout(200);
+  const nachschlagen = await p.locator('main section[aria-label]').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')));
+  await p.goto(`${GRUND}/#/lernen`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('#lernen-suche');
+  await p.locator('#lernen-suche').fill('Bankroll');
+  await p.waitForTimeout(200);
+  const lernen = await p.locator('main section[aria-label]').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')));
+  await p.locator('#lernen-suche').fill('qqqxyz');
+  await p.waitForTimeout(200);
+  const leer = (await p.locator('.such-leer').innerText()).trim();
+  await k.close();
+  return { fokus_im_feld, gruppen, nach_enter, nachschlagen, lernen, leer };
+});
+
+await schritt('Suche: Tasten „/“ und Strg + K am Schreibtisch', async () => {
+  const k = await neuerKontext(1280, 800);
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/lernen`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.sidebar-suche');
+  await p.keyboard.press('/');
+  const mit_slash = await p.locator('#suche-dialog').count();
+  await p.keyboard.press('Escape');
+  await p.waitForTimeout(200);
+  await p.keyboard.press('Control+k');
+  const mit_strg_k = await p.locator('#suche-dialog').count();
+  await p.keyboard.press('Escape');
+  await p.waitForTimeout(200);
+  /* In einem Eingabefeld schweigt „/“. */
+  await p.locator('#lernen-suche').click();
+  await p.keyboard.type('a/b');
+  const wert = await p.locator('#lernen-suche').inputValue();
+  const dialog_im_feld = await p.locator('#suche-dialog').count();
+  /* Der Eintrag in der Seitenleiste öffnet sie auch. */
+  await p.locator('.sidebar-suche').click();
+  const mit_klick = await p.locator('#suche-dialog').count();
+  await k.close();
+  return { mit_slash, mit_strg_k, wert_im_feld: wert, dialog_im_feld, mit_klick };
+});
+
+await schritt('Range-Matrix: am Handy ganz im Bild, ein Tipp nennt die Hand', async () => {
+  const k = await neuerKontext(390, 844);
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/nachschlagen/ranges`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.matrix .cell');
+  await p.waitForTimeout(300);
+  const mass = await p.evaluate(() => {
+    const m = document.querySelector('.matrix');
+    const scroll = document.querySelector('.matrix-scroll');
+    const zellen = [...m.querySelectorAll('.cell')];
+    const letzte = zellen[12].getBoundingClientRect();
+    const r = m.getBoundingClientRect();
+    return {
+      matrix_breite: Math.round(r.width),
+      rechts_im_bild: Math.round(letzte.right) <= window.innerWidth,
+      scrollt_seitlich: scroll.scrollWidth > scroll.clientWidth + 1,
+      zelle_px: Math.round(zellen[0].getBoundingClientRect().width),
+      zellen: zellen.length,
+      erste_zelle_text: zellen[0].textContent.trim(),
+      suited_zelle_text: zellen[1].textContent.trim(),
+      zusatz_sichtbar: getComputedStyle(zellen[1].querySelector('.art')).display !== 'none',
+    };
+  });
+  await p.locator('.matrix .cell').nth(1).click();
+  await p.waitForTimeout(150);
+  const auskunft = (await p.locator('.auskunft-zeile').innerText()).trim();
+  const druckzustand = await p.locator('.matrix .cell').nth(1).getAttribute('aria-pressed');
+  await k.close();
+  return { ...mass, auskunft, aria_pressed: druckzustand };
+});
+
+await schritt('Live-Coach: Spielerzahl als gleiche Spalten', async () => {
+  const k = await neuerKontext(390, 844);
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/nachschlagen/coach`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.segmented.raster');
+  const raster = await p.evaluate(() => {
+    const knoepfe = [...document.querySelector('.segmented.raster').querySelectorAll('button')];
+    const b = knoepfe.map((e) => Math.round(e.getBoundingClientRect().width));
+    const zeilen = new Set(knoepfe.map((e) => Math.round(e.getBoundingClientRect().top))).size;
+    return { anzahl: knoepfe.length, breiten: [...new Set(b)], zeilen, hoehe_min: Math.min(...knoepfe.map((e) => Math.round(e.getBoundingClientRect().height))) };
+  });
+  const umbruch = await p.evaluate(() => [...document.querySelectorAll('.segmented button')]
+    .filter((b) => b.getBoundingClientRect().height > 60).map((b) => b.textContent.trim()));
+  await k.close();
+  return { ...raster, hohe_knoepfe: umbruch };
+});
+
+await schritt('Equity-Rechner: Karten wählen statt Kürzel tippen', async () => {
+  const k = await neuerKontext(390, 844);
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/nachschlagen/equity`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.karten-ziel');
+  const start = await p.evaluate(() => ({
+    ziele: document.querySelectorAll('.karten-ziel').length,
+    aktiv: document.querySelector('.karten-ziel.aktiv .karten-ziel-name')?.textContent?.trim(),
+    belegt: document.querySelectorAll('.karten-slot:not(.leer)').length,
+  }));
+  /* Flop wählen: 9♥ 2♥ J♣. */
+  for (const [rang, farbe] of [['9', '♥'], ['2', '♥'], ['J', '♣']]) {
+    await p.locator('.picker-key', { hasText: new RegExp(`^${rang}$`) }).click();
+    await p.locator('.picker-key.suit', { hasText: farbe }).click();
+  }
+  const nach_flop = await p.evaluate(() => ({
+    board_karten: document.querySelectorAll('.karten-ziel.aktiv .karten-slot:not(.leer)').length,
+    gesperrt: [...document.querySelectorAll('.picker-key')].filter((e) => e.disabled).length,
+  }));
+  /* Eine schon vergebene Karte ist gesperrt: A♠ liegt in Hand 1. */
+  await p.locator('.picker-key', { hasText: /^A$/ }).click();
+  const spaten_gesperrt = await p.locator('.picker-key.suit.s').isDisabled();
+  await p.getByRole('button', { name: /Anderer Rang|anderer Rang/ }).click();
+  await p.getByRole('button', { name: 'Equity berechnen' }).click();
+  await p.waitForSelector('main .progressbar', { timeout: 8000 });
+  const ergebnis = await p.evaluate(() => ({
+    balken: document.querySelectorAll('main .progressbar').length,
+    prozent: [...document.querySelectorAll('main .big-stat')].map((e) => e.textContent.trim()),
+  }));
+  /* Schnelleingabe: Text wird zur Auswahl. */
+  await p.locator('details.schnelleingabe summary').click();
+  await p.locator('details.schnelleingabe input').nth(2).fill('Td 9d');
+  await p.waitForTimeout(150);
+  const aus_text = await p.evaluate(() => document.querySelectorAll('.karten-ziel:nth-child(3) .karten-slot:not(.leer)').length);
+  await p.locator('details.schnelleingabe input').nth(2).fill('As 9d');
+  await p.waitForTimeout(150);
+  const doppelt = (await p.locator('details.schnelleingabe .feedback-box').innerText().catch(() => '')).trim();
+  await k.close();
+  return { start, nach_flop, spaten_gesperrt, ergebnis, hand3_aus_text: aus_text, doppelt_meldung: doppelt };
+});
+
+await schritt('Tastatur am Desktop: Quiz, Drill und Übungstisch', async () => {
+  const k = await neuerKontext(1280, 800);
+  const p = await k.newPage();
+  /* Quiz: 2 antwortet, Enter geht weiter. */
+  await p.goto(`${GRUND}/#/lernen/m1/m1-l1/quiz`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.quiz-option');
+  await p.keyboard.press('2');
+  await p.waitForTimeout(200);
+  const kbd_sichtbar_quiz = await p.evaluate(() => {
+    const e = document.querySelector('.quiz-weiter .kbd-hinweis');
+    return e ? getComputedStyle(e).display !== 'none' : null;
+  });
+  const quiz_beantwortet = await p.locator('.quiz-option.correct, .quiz-option.wrong').count() > 0;
+  const zaehler_vorher = (await p.locator('.quiz-zaehler').innerText()).trim();
+  await p.keyboard.press('Enter');
+  await p.waitForTimeout(250);
+  const zaehler_nachher = (await p.locator('.quiz-zaehler').innerText()).trim();
+  await p.keyboard.press('b');
+  await p.waitForTimeout(200);
+  const buchstabe_wirkt = await p.locator('.quiz-option.correct, .quiz-option.wrong').count() > 0;
+
+  /* Drill: J antwortet, Enter geht weiter; die Knöpfe stehen unter der Karte. */
+  await p.goto(`${GRUND}/#/lernen/drill`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.drill-knopf.ja');
+  await p.waitForTimeout(600);
+  const drill_lage = await p.evaluate(() => {
+    const karte = document.querySelector('.drill-lage').getBoundingClientRect();
+    const knoepfe = document.querySelector('.drill-unten').getBoundingClientRect();
+    return { luecke_px: Math.round(knoepfe.top - karte.bottom), knoepfe_oben_vor: Math.round(knoepfe.top) };
+  });
+  await p.keyboard.press('j');
+  await p.waitForSelector('.drill-knopf.weiter');
+  await p.waitForTimeout(200);
+  const drill_nachher = await p.evaluate(() => ({
+    knoepfe_oben_nach: Math.round(document.querySelector('.drill-unten').getBoundingClientRect().top),
+    aufloesung_unter_knopf: document.querySelector('.drill-aufloesung').getBoundingClientRect().top
+      >= document.querySelector('.drill-unten').getBoundingClientRect().bottom - 1,
+  }));
+  await p.keyboard.press('Enter');
+  await p.waitForSelector('.drill-knopf.ja');
+  const drill_weiter = true;
+
+  /* Übungstisch: F foldet. */
+  await p.goto(`${GRUND}/#/lernen/uebungstisch`, { waitUntil: 'domcontentloaded' });
+  await p.waitForTimeout(400);
+  await p.getByRole('radio', { name: /6-max/ }).click();
+  await p.getByRole('button', { name: /Hand austeilen/ }).click();
+  for (let i = 0; i < 60; i += 1) {
+    if (await p.locator('.aktions-zeile button:not(:disabled)').count() > 0) break;
+    await p.waitForTimeout(300);
+  }
+  const kbd_tisch = await p.$$eval('.aktions-zeile .kbd-hinweis', (els) => els.map((e) => e.dataset.taste));
+  await p.keyboard.press('f');
+  const gefoldet = await p.getByRole('button', { name: /Hand zu Ende spielen/ }).waitFor({ timeout: 4000 }).then(() => true).catch(() => false);
+  await k.close();
+
+  /* Am Handy: kein Hinweis, kein Eingriff in die Seite. */
+  const m = await neuerKontext(390, 844);
+  const mp = await m.newPage();
+  await mp.goto(`${GRUND}/#/lernen/m1/m1-l1/quiz`, { waitUntil: 'domcontentloaded' });
+  await mp.waitForSelector('.quiz-option');
+  const kbd_handy = await mp.evaluate(() => [...document.querySelectorAll('.kbd-hinweis')].filter((e) => getComputedStyle(e).display !== 'none').length);
+  await m.close();
+  return {
+    kbd_sichtbar_quiz, quiz_beantwortet, zaehler_vorher, zaehler_nachher, buchstabe_wirkt,
+    drill_lage, drill_nachher, drill_weiter, kbd_tisch, gefoldet, kbd_handy,
+  };
+});
+
+await schritt('Tages-Quiz: das Ergebnis lässt sich teilen', async () => {
+  const k = await neuerKontext(390, 844, 'de', { permissions: ['clipboard-read', 'clipboard-write'] });
+  await k.addInitScript(() => {
+    /* Ohne Teilen-Dialog des Geräts: die Zwischenablage ist der Weg. */
+    try { delete Navigator.prototype.share; } catch { /* nichts */ }
+    Object.defineProperty(navigator, 'share', { value: undefined, configurable: true });
+  });
+  const p = await k.newPage();
+  /* Einen Lernstand mit abgeschlossener Lektion herstellen, damit es ein Quiz gibt. */
+  await p.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await p.waitForTimeout(400);
+  await p.evaluate(() => {
+    const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+    const key = `pokermentor-data-${idx.activeId}`;
+    const d = JSON.parse(localStorage.getItem(key));
+    d.completedLessons = { 'm1-l1': { completedAt: new Date().toISOString(), quizScore: 5, quizTotal: 5 } };
+    localStorage.setItem(key, JSON.stringify(d));
+  });
+  await p.goto(`${GRUND}/#/lernen/tagesquiz`, { waitUntil: 'domcontentloaded' });
+  await p.reload({ waitUntil: 'domcontentloaded' });
+  await p.getByRole('button', { name: 'Tages-Quiz starten' }).click();
+  for (let i = 0; i < 12; i += 1) {
+    if (await p.locator('.quiz-ergebnis').count() > 0) break;
+    await p.locator('.quiz-option').first().click();
+    await p.locator('.quiz-weiter:not(:disabled)').click();
+    await p.waitForTimeout(120);
+  }
+  await p.waitForSelector('.quiz-ergebnis');
+  const knoepfe = await p.locator('.quiz-ergebnis .entscheidung button, .quiz-ergebnis .entscheidung a').allInnerTexts();
+  await p.getByRole('button', { name: 'Ergebnis teilen' }).click();
+  await p.waitForTimeout(300);
+  const text = await p.evaluate(() => navigator.clipboard.readText());
+  const nach = (await p.locator('.quiz-ergebnis .entscheidung button').first().innerText()).trim();
+  await k.close();
+  return { knoepfe: knoepfe.map((t) => t.trim()), text, bestaetigung: nach };
+});
+
 /* ── Auszahlung und Bankroll (E-094) ──────────────────────────────────────
    Beide Seiten rechnen mit Geld. Gemessen wird, was früher falsch war:
    Ein Feld, das beim Tippen den Wert verändert, und eine Liste, die hinter

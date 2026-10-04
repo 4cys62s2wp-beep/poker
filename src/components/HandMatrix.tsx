@@ -14,6 +14,10 @@ interface Props {
   /** Nur zum Ansehen, in die Breite des Bildschirms gepasst: keine Beschriftung
    *  außer der markierten Hand. */
   kompakt?: boolean;
+  /** Ein Tipp auf eine Zelle gibt Auskunft (Name und Aktion), schaltet aber
+   *  nichts um: kein `aria-pressed`. Für die Range-Charts am Handy, wo die
+   *  Zellen für „AKs“ zu schmal sind und den Namen erst der Tipp zeigt (E-096). */
+  nurAuskunft?: boolean;
 }
 
 const SIZE = 13;
@@ -24,12 +28,12 @@ const SIZE = 13;
  *  Damit die Matrix nicht 169 Tab-Stopps erzeugt, wandert der Tab-Stopp mit dem
  *  Fokus („roving tabindex“): Tab springt in die Matrix, die Pfeiltasten bewegen
  *  sich darin, Tab springt wieder heraus. */
-export function HandMatrix({ raise, call, highlight, onCellClick, kompakt = false }: Props) {
+export function HandMatrix({ raise, call, highlight, onCellClick, kompakt = false, nurAuskunft = false }: Props) {
   const { lang } = useLang();
   const T = STR[lang];
   const gridRef = useRef<HTMLDivElement>(null);
   const [cursor, setCursor] = useState<number | null>(null);
-  const interactive = Boolean(onCellClick);
+  const interactive = Boolean(onCellClick) && !nurAuskunft;
 
   const cells: Array<{ idx: number; label: string; isRaise: boolean; isCall: boolean; marked: boolean }> = [];
   let highlightIdx = -1;
@@ -98,7 +102,7 @@ export function HandMatrix({ raise, call, highlight, onCellClick, kompakt = fals
           if (isRaise) cls += ' raise';
           else if (isCall) cls += ' call';
           if (marked) cls += ' mark';
-          if (interactive) cls += ' interactive';
+          if (onCellClick) cls += ' interactive';
           // Reine Anzeige-Matrizen (Range-Charts) nennen die Aktion mit, weil sie
           // sonst nur farbig – und damit für Screenreader unsichtbar – wäre.
           const action = isRaise ? T.raise : isCall ? T.call : T.fold;
@@ -115,7 +119,9 @@ export function HandMatrix({ raise, call, highlight, onCellClick, kompakt = fals
               onFocus={() => setCursor(idx)}
               onKeyDown={(e) => onKeyDown(e, idx)}
             >
-              {label}
+              {/* Am Handy ist die Zelle 22 Pixel breit: „AK“ passt, „AKs“ nicht.
+                  Die Lage zur Diagonale sagt ohnehin, ob suited oder offsuit. */}
+              {label.slice(0, 2)}<span className="art">{label.slice(2)}</span>
             </button>
           );
         })}

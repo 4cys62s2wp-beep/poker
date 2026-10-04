@@ -4,7 +4,7 @@ import type { PushStack } from '../../content/pushfold';
 export const STR = defineStrings(
   {
     title: 'Push/Fold-Trainer',
-    sub: 'Vereinfachte Nash-Ranges für 10 bb und 5 bb · ohne Antes',
+    sub: 'All-in oder Fold: Mit welchen Händen gehst du bei 10 bb und 5 bb All-in?',
     streak: (n: number) => `Serie: ${n}`,
     introBefore: 'Turnier, ',
     stackApprox: (stack: PushStack) => (stack === '10bb' ? '≈ 10 Big Blinds' : '≈ 5 Big Blinds'),
@@ -22,7 +22,7 @@ export const STR = defineStrings(
   },
   {
     title: 'Push/Fold Trainer',
-    sub: 'Simplified Nash ranges for 10 bb and 5 bb · no antes',
+    sub: 'All-in or fold: which hands go all-in at 10 bb and 5 bb?',
     streak: (n: number) => `Streak: ${n}`,
     introBefore: 'Tournament, ',
     stackApprox: (stack: PushStack) => (stack === '10bb' ? '≈ 10 big blinds' : '≈ 5 big blinds'),

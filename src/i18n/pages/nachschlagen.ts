@@ -11,11 +11,6 @@ export const STR = defineStrings(
     title: 'Nachschlagen',
     sub: 'Hand, Begriff oder Werkzeug finden.',
 
-    searchLabel: 'Suchen',
-    searchPlaceholder: 'Begriff, Hand oder Thema …',
-    searchNothing: (q: string) => `Nichts zu „${q}“ gefunden.`,
-    searchHintGlossary: 'Im Glossar',
-    searchHintTool: 'Bereich',
 
     coachTitle: 'Live-Coach',
     coachDesc: 'Deine Hand eingeben, Empfehlung mit Begründung bekommen',
@@ -48,11 +43,6 @@ export const STR = defineStrings(
     title: 'Reference',
     sub: 'Find a hand, a term or a tool.',
 
-    searchLabel: 'Search',
-    searchPlaceholder: 'Term, hand or topic …',
-    searchNothing: (q: string) => `Nothing found for “${q}”.`,
-    searchHintGlossary: 'In the glossary',
-    searchHintTool: 'Section',
 
     coachTitle: 'Live coach',
     coachDesc: 'Enter your hand, get a recommendation with reasoning',

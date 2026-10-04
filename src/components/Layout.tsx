@@ -11,6 +11,9 @@ import { usePro } from '../lib/pro/ProProvider';
 import { OnlineBadge } from './social/OnlineBadge';
 import { useCloud } from '../lib/cloud/CloudProvider';
 import { Kopfzeile } from './Kopfzeile';
+import { SucheDialog } from './SucheDialog';
+import { useTasten } from '../lib/useTasten';
+import { STR as SUCHE } from '../i18n/pages/suche';
 import { Marke } from './Marke';
 import { Medaille } from './Medaille';
 import { UpdateBand } from './UpdateBand';
@@ -35,6 +38,13 @@ export function Layout() {
   const location = useLocation();
   const mainRef = useRef<HTMLElement>(null);
   useSectionHeadings(mainRef);
+
+  /* Die Suche von überall: Lupe, Eintrag in der Seitenleiste, „/“ und Strg + K. */
+  const [sucheOffen, setSucheOffen] = useState(false);
+  useTasten([
+    { tasten: ['/'], aktion: () => setSucheOffen(true) },
+    { tasten: ['k'], strg: true, inFeldern: true, aktion: () => setSucheOffen(true) },
+  ]);
 
   /* Läuft ein Abend? Der Eintrag „Abend führen" führt dann zur Uhr statt in ein
      leeres Formular (E-073), und „Live-Session" zeigt, was gerade gilt. Der
@@ -138,6 +148,11 @@ export function Layout() {
           <Marke groesse={34} />
           <span className="grad">PokerMentor</span>
         </div>
+        <button type="button" className="sidebar-suche" onClick={() => setSucheOffen(true)}>
+          <Icon name="search" size={16} />
+          <span>{SUCHE[lang].label}</span>
+          <kbd aria-hidden="true">/</kbd>
+        </button>
         <nav className="sidebar-nav" aria-label={L.navOverview}>
           {navGroups.map((group) => (
             <div key={group.label}>
@@ -186,12 +201,14 @@ export function Layout() {
       </aside>
 
       <div className="inhalt">
-        <Kopfzeile mainRef={mainRef} />
+        <Kopfzeile mainRef={mainRef} onSuche={() => setSucheOffen(true)} />
         <UpdateBand />
         <main className="main" ref={mainRef} data-breite={breiteVon(location.pathname)}>
           <Outlet />
         </main>
       </div>
+
+      {sucheOffen && <SucheDialog onClose={() => setSucheOffen(false)} />}
 
       {/* Level-Ups und Badges tauchen ohne Nutzeraktion auf – ohne Live-Region
           bekommt ein Screenreader davon nichts mit. „polite“ statt „assertive“:

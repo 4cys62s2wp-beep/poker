@@ -1705,3 +1705,125 @@ describe('Profil, Einstellungen und Konto (E-095)', () => {
     expect(o.feedback).toBe(0);
   });
 });
+
+describe('Nachschlagen, Desktop und Feinschliff (E-096)', () => {
+  const suche = () => schritt('Suche: eine für Werkzeuge, Lektionen und Begriffe');
+  const tasten = () => schritt('Suche: Tasten „/“ und Strg + K am Schreibtisch');
+  const matrix = () => schritt('Range-Matrix: am Handy ganz im Bild, ein Tipp nennt die Hand');
+  const coach = () => schritt('Live-Coach: Spielerzahl als gleiche Spalten');
+  const equity = () => schritt('Equity-Rechner: Karten wählen statt Kürzel tippen');
+  const tastatur = () => schritt('Tastatur am Desktop: Quiz, Drill und Übungstisch');
+  const quiz = () => schritt('Tages-Quiz: das Ergebnis lässt sich teilen');
+
+  it('findet „Bankroll“ als Werkzeug, Lektion und Begriff — im Dialog', () => {
+    const g = suche().gruppen as Array<{ name: string; treffer: number }>;
+    expect(g.map((x) => x.name)).toEqual(['Werkzeuge', 'Lektionen', 'Begriffe']);
+    for (const x of g) expect(x.treffer, x.name).toBeGreaterThan(0);
+    expect(suche().fokus_im_feld).toBe(true);
+  });
+
+  it('führt mit Enter auf den besten Treffer und schließt sich', () => {
+    const n = suche().nach_enter as Record<string, unknown>;
+    expect(n.adresse).toBe('#/session/bankroll');
+    expect(n.dialog_zu).toBe(true);
+  });
+
+  it('zeigt auf „Nachschlagen“ und „Lernen“ dieselben drei Gruppen', () => {
+    const drei = ['Werkzeuge', 'Lektionen', 'Begriffe'];
+    expect(suche().nachschlagen).toEqual(drei);
+    expect((suche().lernen as string[]).filter((x) => drei.includes(x))).toEqual(drei);
+  });
+
+  it('sagt, wenn nichts gefunden wurde', () => {
+    expect(String(suche().leer)).toMatch(/^Nichts zu „qqqxyz“ gefunden\.$/);
+  });
+
+  it('öffnet die Suche mit „/“, Strg + K und dem Eintrag der Seitenleiste', () => {
+    expect(tasten().mit_slash).toBe(1);
+    expect(tasten().mit_strg_k).toBe(1);
+    expect(tasten().mit_klick).toBe(1);
+  });
+
+  it('lässt „/“ in einem Eingabefeld ein Zeichen sein', () => {
+    expect(tasten().wert_im_feld).toBe('a/b');
+    expect(tasten().dialog_im_feld).toBe(0);
+  });
+
+  it('zeigt die Range-Matrix am Handy vollständig, ohne seitliches Scrollen', () => {
+    const m = matrix();
+    expect(m.zellen).toBe(169);
+    expect(m.rechts_im_bild).toBe(true);
+    expect(m.scrollt_seitlich).toBe(false);
+    expect(Number(m.zelle_px)).toBeGreaterThanOrEqual(20);
+  });
+
+  it('kürzt die Zellen auf zwei Zeichen und nennt den vollen Namen auf Tipp', () => {
+    expect(matrix().erste_zelle_text).toBe('AA');
+    expect(matrix().zusatz_sichtbar).toBe(false);
+    expect(matrix().auskunft).toBe('AKs · Raise');
+    expect(matrix().aria_pressed, 'eine Auskunft schaltet nichts um').toBeNull();
+  });
+
+  it('stellt die Spielerzahl im Coach in gleich breite Spalten, jede mindestens 44 hoch', () => {
+    expect(coach().anzahl).toBe(8);
+    expect((coach().breiten as number[]).length).toBe(1);
+    expect(Number(coach().hoehe_min)).toBeGreaterThanOrEqual(44);
+    expect(coach().hohe_knoepfe, 'kein Knopf bricht mitten im Namen um').toEqual([]);
+  });
+
+  it('wählt im Equity-Rechner Karten statt Kürzel zu tippen', () => {
+    expect(equity().start).toEqual({ ziele: 4, aktiv: 'Board0, 3, 4 oder 5 Karten', belegt: 4 });
+    expect((equity().nach_flop as Record<string, unknown>).board_karten).toBe(3);
+    const e = equity().ergebnis as { balken: number; prozent: string[] };
+    expect(e.balken).toBe(2);
+    expect(e.prozent).toHaveLength(2);
+  });
+
+  it('sperrt Karten, die schon vergeben sind', () => {
+    expect(equity().spaten_gesperrt).toBe(true);
+  });
+
+  it('nimmt die Schnelleingabe als Text und meldet Doppeltes', () => {
+    expect(equity().hand3_aus_text).toBe(2);
+    expect(String(equity().doppelt_meldung)).toMatch(/Doppelte Karte/);
+  });
+
+  it('antwortet im Quiz mit 1–4 und A–D und geht mit Enter weiter', () => {
+    expect(tastatur().quiz_beantwortet).toBe(true);
+    expect(tastatur().zaehler_vorher).toBe('1/5');
+    expect(tastatur().zaehler_nachher).toBe('2/5');
+    expect(tastatur().buchstabe_wirkt).toBe(true);
+    expect(tastatur().kbd_sichtbar_quiz).toBe(true);
+  });
+
+  it('stellt die Drill-Knöpfe am Schreibtisch direkt unter die Karte', () => {
+    const l = tastatur().drill_lage as Record<string, unknown>;
+    expect(Number(l.luecke_px), 'vorher klaffte dort ein Streifen von 170 Pixel').toBeLessThan(60);
+  });
+
+  it('lässt die Drill-Knöpfe zwischen Antwort und Auflösung stehen, wo sie sind', () => {
+    const l = tastatur().drill_lage as Record<string, unknown>;
+    const n = tastatur().drill_nachher as Record<string, unknown>;
+    expect(n.knoepfe_oben_nach).toBe(l.knoepfe_oben_vor);
+    expect(n.aufloesung_unter_knopf).toBe(true);
+  });
+
+  it('foldet am Übungstisch mit F und zeigt die Tasten an den Knöpfen', () => {
+    expect(tastatur().gefoldet).toBe(true);
+    expect(tastatur().kbd_tisch).toEqual(['F', 'C', 'R']);
+  });
+
+  it('zeigt am Handy keine Tastenhinweise', () => {
+    expect(tastatur().kbd_handy).toBe(0);
+  });
+
+  it('teilt das Ergebnis des Tages-Quiz als eine Textzeile mit Link', () => {
+    expect(String(quiz().text)).toMatch(/^PokerMentor Tages-Quiz, .+: \d von 5 richtig\nhttp/);
+    expect(quiz().knoepfe).toEqual(['Ergebnis teilen', 'Zum Lernpfad']);
+    expect(quiz().bestaetigung).toBe('In die Zwischenablage kopiert');
+  });
+
+  it('nennt im Ergebnistext kein Geld', () => {
+    expect(String(quiz().text)).not.toMatch(/[€$£]|Euro|Gewinn/);
+  });
+});

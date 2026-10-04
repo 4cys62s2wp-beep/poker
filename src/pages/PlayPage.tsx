@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Zurueck } from '../components/ui';
+import { Kbd, Tasten } from '../components/Tasten';
 import { Blatt } from '../components/Blatt';
 import { Icon } from '../components/Icon';
 import { Schalter } from '../components/Schalter';
@@ -697,6 +698,33 @@ export function PlayPage() {
           Wer dran ist, steht in der Zeile darüber. Sie trägt auch den Tipp,
           die Einsatzwahl und den Weg zur nächsten Hand — ein Ort für alles,
           was der Daumen braucht. */}
+      {/* Am Schreibtisch (E-096): F, C und R wie die Knöpfe, Enter für die
+          nächste Hand, Escape zurück aus der Einsatzwahl. R öffnet die
+          Einsatzwahl und bestätigt dort den gewählten Betrag — dasselbe wie der
+          Knopf, nie mehr: ein Tastendruck setzt nie mehr als ein Tipp. */}
+      <Tasten
+        belegungen={[
+          ...(g.handOver
+            ? [{ tasten: ['Enter', 'n'], aktion: () => startHand() }]
+            : heroGefoldet
+              ? [{ tasten: ['Enter', 'n'], aktion: handZuEnde }]
+              : heroTurn && la
+                ? [
+                  ...(raiseTo === null && la.canFold ? [{ tasten: ['f'], aktion: () => heroAct({ type: 'fold' }) }] : []),
+                  ...(raiseTo === null
+                    ? [{ tasten: ['c'], aktion: () => heroAct(la.canCheck ? { type: 'check' } : { type: 'call' }) }]
+                    : []),
+                  ...(la.canBetOrRaise
+                    ? [{
+                      tasten: ['r'],
+                      aktion: () => (raiseTo === null ? oeffneEinsatz() : heroAct({ type: 'raise', to: raiseTo })),
+                    }]
+                    : []),
+                  ...(raiseTo !== null ? [{ tasten: ['Escape'], aktion: () => setRaiseTo(null) }] : []),
+                ]
+                : [])]}
+      />
+
       <div className="entscheidung entscheidung-leiste tisch-leiste" role="group" aria-label={L.tableTitle}>
         <div className="entscheidung-innen stapel">
           <div className="tisch-status" aria-live="polite">
@@ -714,9 +742,9 @@ export function PlayPage() {
           <div className="coach-zeile">{coachKnopf('in-leiste')}</div>
 
           {g.handOver ? (
-            <button type="button" className="btn primary lg" onClick={() => startHand()}>{L.nextHand}</button>
+            <button type="button" className="btn primary lg" onClick={() => startHand()}>{L.nextHand}<Kbd>↵</Kbd></button>
           ) : heroGefoldet ? (
-            <button type="button" className="btn primary lg" onClick={handZuEnde}>{L.playOut}</button>
+            <button type="button" className="btn primary lg" onClick={handZuEnde}>{L.playOut}<Kbd>↵</Kbd></button>
           ) : heroTurn && la && raiseTo !== null ? (
             <>
               <div className="vorgaben" role="group" aria-label={L.vorgabeGruppe}>
@@ -759,7 +787,7 @@ export function PlayPage() {
                   className="btn primary lg betrag-bestaetigen"
                   onClick={() => heroAct({ type: 'raise', to: raiseTo })}
                 >
-                  {L.raiseAuf(istBet, bbText(raiseTo))}
+                  {L.raiseAuf(istBet, bbText(raiseTo))}<Kbd>R</Kbd>
                 </button>
                 <button
                   type="button"
@@ -780,7 +808,7 @@ export function PlayPage() {
                 disabled={!heroTurn || !la?.canFold}
                 onClick={() => heroAct({ type: 'fold' })}
               >
-                {L.fold}
+                {L.fold}<Kbd>F</Kbd>
               </button>
               {la?.canCheck || !heroTurn ? (
                 <button
@@ -790,11 +818,11 @@ export function PlayPage() {
                   disabled={!heroTurn}
                   onClick={() => heroAct({ type: 'check' })}
                 >
-                  {L.check}
+                  {L.check}<Kbd>C</Kbd>
                 </button>
               ) : (
                 <button ref={mitteKnopfRef} type="button" className="btn lg" onClick={() => heroAct({ type: 'call' })}>
-                  {L.call(bbText(la?.callAmount ?? 0))}
+                  {L.call(bbText(la?.callAmount ?? 0))}<Kbd>C</Kbd>
                 </button>
               )}
               <button
@@ -804,7 +832,7 @@ export function PlayPage() {
                 disabled={!heroTurn || !la?.canBetOrRaise}
                 onClick={oeffneEinsatz}
               >
-                {L.raiseOeffnen(istBet ? L.bet : L.raise)}
+                {L.raiseOeffnen(istBet ? L.bet : L.raise)}<Kbd>R</Kbd>
               </button>
             </div>
           )}

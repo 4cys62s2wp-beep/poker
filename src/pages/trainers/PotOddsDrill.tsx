@@ -37,6 +37,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Kbd, Tasten } from '../../components/Tasten';
+import { istSchreibtisch } from '../../lib/schreibtisch';
 import { Zurueck } from '../../components/ui';
 import { CardsRow } from '../../components/PlayingCard';
 import { Uebungsstand } from '../../components/Uebungsstand';
@@ -96,7 +98,9 @@ export function PotOddsDrill() {
   /* Nach der Antwort rückt die Auflösung — samt dem Platz, den die Leiste
      braucht — ins Bild, ohne zu animieren (E-064). */
   useEffect(() => {
-    if (antwort !== null) aufloesungRef.current?.scrollIntoView({ block: 'nearest' });
+    /* Am Schreibtisch steht das Urteil gleich unter den Knöpfen; ein Scrollen
+       schöbe sie weg (E-096). Am Handy holt es die Erklärung ins Bild. */
+    if (antwort !== null && !istSchreibtisch()) aufloesungRef.current?.scrollIntoView({ block: 'nearest' });
   }, [antwort]);
   /** Ein Eintrag je beantworteter Aufgabe: richtig oder nicht. Nur in dieser
    *  Sitzung, nichts wird gespeichert — kein Konto, keine Ablage. */
@@ -408,18 +412,29 @@ export function PotOddsDrill() {
             misst (E-039). Der Drill hatte seine Knöpfe schon unten — er
             sagt es jetzt auch. */}
         <div className="drill-unten entscheidung">
+          {/* Am Schreibtisch (E-096): J/N bzw. ←/→ antworten, Enter oder
+              Leertaste geht weiter. Die Pfeile folgen der Reihenfolge der
+              Knöpfe. */}
+          <Tasten
+            belegungen={!beantwortet
+              ? [
+                { tasten: [L.tasteJa, 'ArrowLeft'], aktion: () => antworte(true) },
+                { tasten: [L.tasteNein, 'ArrowRight'], aktion: () => antworte(false) },
+              ]
+              : [{ tasten: ['Enter', ' '], aktion: neueAufgabe }]}
+          />
           {!beantwortet ? (
             <div className="drill-knoepfe">
               <button type="button" className="drill-knopf ja" onClick={() => antworte(true)}>
-                {L.yes}
+                {L.yes}<Kbd>{L.tasteJa.toUpperCase()}</Kbd>
               </button>
               <button type="button" className="drill-knopf nein" onClick={() => antworte(false)}>
-                {L.no}
+                {L.no}<Kbd>{L.tasteNein.toUpperCase()}</Kbd>
               </button>
             </div>
           ) : (
             <button type="button" className="drill-knopf weiter" onClick={neueAufgabe}>
-              {L.next}
+              {L.next}<Kbd>↵</Kbd>
             </button>
           )}
         </div>

@@ -14,6 +14,7 @@ export function RangeViewer() {
   const { lang } = useLang();
   const L = STR[lang];
   const [tab, setTab] = useState<Tab>('UTG');
+  const [zelle, setZelle] = useState<string | null>(null);
 
   const view = useMemo(() => {
     if (tab === 'BBDEF') {
@@ -51,11 +52,11 @@ export function RangeViewer() {
 
       <div className="row wrap" style={{ marginBottom: 18 }}>
         {(['UTG', 'HJ', 'CO', 'BTN', 'SB'] as Tab[]).map((p) => (
-          <button key={p} className={`btn sm${tab === p ? ' primary' : ''}`} onClick={() => setTab(p)}>
+          <button key={p} className={`btn sm${tab === p ? ' primary' : ''}`} onClick={() => { setTab(p); setZelle(null); }}>
             {p}
           </button>
         ))}
-        <button className={`btn sm${tab === 'BBDEF' ? ' primary' : ''}`} onClick={() => setTab('BBDEF')}>
+        <button className={`btn sm${tab === 'BBDEF' ? ' primary' : ''}`} onClick={() => { setTab('BBDEF'); setZelle(null); }}>
           BB vs. BTN
         </button>
       </div>
@@ -84,7 +85,10 @@ export function RangeViewer() {
           </span>
         </div>
 
-        <HandMatrix raise={view.raise} call={view.call} />
+        <HandMatrix raise={view.raise} call={view.call} highlight={zelle ?? undefined} onCellClick={setZelle} nurAuskunft />
+        <p className="auskunft-zeile" role="status">
+          {zelle ? L.auskunft(zelle, view.raise.has(zelle) ? view.raiseLabel : view.call?.has(zelle) ? 'Call' : 'Fold') : ''}
+        </p>
 
         <p className="small faint" style={{ marginTop: 14 }}>
           {L.readingHelp}

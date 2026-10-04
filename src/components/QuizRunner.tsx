@@ -25,6 +25,7 @@ import { mischeAlle } from '../lib/lernen/quiz';
 import { Rueckmeldung } from './Rueckmeldung';
 import { CardsRow } from './PlayingCard';
 import { Icon } from './Icon';
+import { Kbd, Tasten } from './Tasten';
 
 /** Eine falsch beantwortete Frage, in der Reihenfolge des Originals. */
 export interface FalscheAntwort {
@@ -177,6 +178,19 @@ export function QuizRunner({
 
   return (
     <div className="quiz-fokus">
+      {/* Am Schreibtisch: 1–4 oder A–D antworten, Enter geht weiter (E-096).
+          Während die Rückfrage offen ist, schweigen die Tasten. */}
+      {!rueckfrage && (
+        <Tasten
+          belegungen={[
+            ...g.frage.options.map((_, i) => ({
+              tasten: [String(i + 1), String.fromCharCode(97 + i)],
+              aktion: () => waehle(i),
+            })),
+            { tasten: ['Enter'], aktion: () => weiter() },
+          ]}
+        />
+      )}
       {titel && <h1 className="sr-only">{titel}</h1>}
       <div className="quiz-kopf">
         {onSchliessen && (
@@ -267,6 +281,7 @@ export function QuizRunner({
             disabled={!beantwortet}
           >
             {!beantwortet ? L.hint : letzte ? L.finish : L.next}
+            {beantwortet && <Kbd>↵</Kbd>}
           </button>
         </div>
       </div>

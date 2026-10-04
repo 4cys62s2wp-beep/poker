@@ -35,7 +35,7 @@ export const STR = defineStrings(
 
     // Empfehlungsbox
     recommendation: 'Empfehlung:',
-    calculating: 'Berechne …',
+    calculating: 'Rechne …',
     calculatingNote: 'Die Gewinnwahrscheinlichkeit wird simuliert – gleich da.',
     calculatingShort: '…',
     homegameTip: 'Homegame-Tipp',

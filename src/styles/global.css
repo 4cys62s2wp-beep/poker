@@ -1281,11 +1281,19 @@ button.pill {
   align-items: center;
 }
 
-/* Karten-Picker */
+/* Karten-Picker.
+   Sieben Ränge je Zeile brauchen 356 Pixel (sieben Felder à 44 Pixel plus
+   Abstand); die Karte am Handy bietet 318. Dort fünf je Zeile — der Wähler
+   stand bis E-096 nur hinter einem Klick im Live-Coach und wurde deshalb nie
+   gemessen, im Equity-Rechner steht er sofort da: 39 × 48 Pixel, 7 Pixel
+   Abstand. */
 .picker-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 7px;
+  gap: var(--tipp-abstand);
+}
+@media (max-width: 480px) {
+  .picker-grid { grid-template-columns: repeat(5, 1fr); }
 }
 
 .picker-key {
@@ -1409,6 +1417,17 @@ button.pill {
   -webkit-tap-highlight-color: transparent;
 }
 
+
+/* Am Handy passt die ganze Matrix in die Breite (E-096): Vorher stand ein
+   Mindestwert von 400 Pixel in einer 318 Pixel breiten Karte, und rechts
+   fehlten zweieinhalb Spalten. Die Zelle misst dann gut 22 Pixel; „AK“ passt
+   noch hinein, „AKs“ nicht — den Zusatz sagt die Lage zur Diagonale und, für den
+   vollen Namen, ein Tipp. */
+@media (max-width: 430px) {
+  .matrix { min-width: 0; gap: 2px; }
+  .matrix .cell { font-size: var(--fs-kleingedrucktes); letter-spacing: -0.04em; }
+  .matrix .cell .art { display: none; }
+}
 
 /* Nur zum Ansehen: in die Breite gepasst statt seitlich zu scrollen. Nur die
    markierte Hand trägt ihr Label — die Matrix zeigt, wo sie liegt. */
@@ -2158,6 +2177,7 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 }
 
 .segmented button {
+  white-space: nowrap;
   /* Mindestgröße wie jede andere Bedienfläche. Vorher 40 × 34 Pixel — das
      bestand die Tippprüfung nie, fiel aber nie auf, weil der Lauf diese
      Bildschirme nicht ansah (E-039). */
@@ -6608,3 +6628,171 @@ input[type="radio"] {
 .naechste-liste li { display: flex; align-items: center; gap: var(--sp-3); }
 .naechste-liste li > span:last-child { display: grid; }
 .abzeichen-fuss { margin-top: var(--sp-3); gap: var(--sp-3); }
+
+/* Gleiche Spalten statt Umbruch ohne Muster: Acht Zahlen in einer Reihe
+   brächten Felder unter 44 Pixel, also vier mal zwei (E-096). */
+.segmented.raster { display: grid; grid-template-columns: repeat(var(--spalten, 4), 1fr); }
+.segmented.raster button { min-width: 0; padding-inline: 0; }
+.auskunft-zeile { margin: var(--sp-3) 0 0; min-height: 1.5em; font-weight: var(--fw-bold); }
+
+/* ── Equity-Rechner: Karten wählen statt tippen (E-096) ───────────────── */
+.karten-ziele { display: grid; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.karten-ziel {
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+/* Das gewählte Ziel in der Textfarbe umrandet, nicht in Gold (Regel 12.5). */
+.karten-ziel.aktiv { border-color: var(--text); box-shadow: inset 0 0 0 1px var(--text); }
+.karten-ziel-kopf { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.karten-ziel-name {
+  min-height: var(--tipp-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-weight: var(--fw-bold);
+  text-align: left;
+  cursor: pointer;
+}
+.karten-ziel-hinweis { display: block; font-weight: var(--fw-medium); }
+.karten-slots { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.karten-slot {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  min-width: var(--tipp-min);
+  min-height: var(--tipp-min);
+}
+.karten-slot.leer {
+  width: 48px;
+  height: 68px;
+  border-radius: 7px;
+  border: 2px dashed var(--border-strong);
+}
+.schnelleingabe { margin-top: var(--sp-4); }
+.schnelleingabe summary { cursor: pointer; min-height: var(--tipp-min); display: flex; align-items: center; font-weight: var(--fw-medium); }
+
+/* ── Die Suche (E-096) ────────────────────────────────────────────────── */
+.such-feld { position: relative; }
+.such-lupe {
+  position: absolute;
+  left: var(--sp-3);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+.such-feld .search-input { padding-left: calc(var(--sp-3) + 17px + var(--sp-2)); }
+.such-treffer { display: grid; gap: var(--sp-4); }
+.such-liste { display: grid; gap: var(--sp-2); margin-top: var(--sp-2); }
+.such-zeile {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--tipp-min);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: inherit;
+  text-decoration: none;
+}
+.such-zeile:hover { background: var(--bg-card-hover); }
+.such-zeile .zeichen { display: flex; width: 20px; color: var(--bereich, var(--text-dim)); flex: none; }
+.such-zeile .text { display: grid; flex: 1; min-width: 0; }
+.such-zeile .pill { flex: none; }
+.such-begriffe { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-2); }
+.such-leer { margin: 0; }
+
+/* Die Lupe in der Kopfzeile (Handy) und der Sucheintrag in der Seitenleiste. */
+.mobile-top-suche { display: none; }
+@media (max-width: 920px) {
+  .mobile-top-suche {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    width: var(--tipp-min);
+    height: var(--tipp-min);
+    border: 0;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-top-suche + .mobile-top-you { margin-left: 0; }
+}
+.sidebar-suche {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: calc(100% - var(--sp-4));
+  min-height: var(--tipp-min);
+  margin: 0 var(--sp-2) var(--sp-3);
+  padding: 0 var(--sp-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: var(--fs-beschriftung);
+  cursor: pointer;
+}
+.sidebar-suche:hover { background: var(--veil-2); color: var(--text); }
+.sidebar-suche span { flex: 1; text-align: left; }
+.sidebar-suche kbd {
+  padding: 0 var(--sp-2);
+  border-radius: 4px;
+  border: 1px solid var(--border-strong);
+  font-family: inherit;
+  font-size: var(--fs-kleingedrucktes);
+}
+.such-dialog-treffer { margin-top: var(--sp-4); }
+
+/* ── Tastenkürzel am Desktop (E-096) ──────────────────────────────────── */
+/* Der Hinweis an einem Knopf steht nur dort, wo es eine Tastatur gibt: Maus und
+   ein Fenster, das die Seitenleiste zeigt. Am Handy wäre er Rauschen. */
+.kbd-hinweis { display: none; }
+@media (hover: hover) and (pointer: fine) and (min-width: 921px) {
+  .kbd-hinweis {
+    display: inline-block;
+    margin-left: var(--sp-2);
+    padding: 0 var(--sp-2);
+    border-radius: 4px;
+    border: 1px solid currentColor;
+    font-family: inherit;
+    font-size: var(--fs-kleingedrucktes);
+    font-weight: var(--fw-medium);
+    line-height: 1.5;
+    vertical-align: middle;
+  }
+  .kbd-hinweis::after { content: attr(data-taste); }
+
+  /* Der Drill am Schreibtisch: Die Knöpfe stehen direkt unter der Situationskarte
+     statt am Fensterboden, und die Auflösung folgt darunter. Am Handy hält die
+     Leiste unten den Daumen; hier klaffte über den Knöpfen ein 170 Pixel hoher
+     leerer Streifen. Die Reihenfolge der Auflösung unter den Knöpfen hält
+     zugleich die Zusage ein, dass sich zwischen Antwort und Ergebnis nichts
+     bewegt: Die Knöpfe stehen vor und nach der Antwort an derselben Stelle. */
+  .drill { min-height: 0; }
+  /* Die obere Zone fasst Frage und Ergebniszahl in derselben Höhe: Stünde sie nur
+     auf 20svh, wüchse sie mit der Zahl um 38 Pixel und schöbe die Knöpfe weg. */
+  .drill-oben { min-height: 14rem; }
+  .drill-mitte { display: contents; }
+  .drill-lage { order: 1; }
+  .drill-unten {
+    order: 2;
+    position: static;
+    margin: var(--sp-5) 0 0;
+    padding: 0;
+    min-height: 0;
+    background: none;
+    border-top: 0;
+  }
+  .drill-unten::after { display: none; }
+  .drill-aufloesung { order: 3; margin-top: var(--sp-5); padding-bottom: 0; }
+}

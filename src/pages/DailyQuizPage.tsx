@@ -9,6 +9,8 @@ import { STR } from '../i18n/pages/dailyquiz';
 import { Zurueck } from '../components/ui';
 import { tagesschluessel } from '../lib/heute/hand';
 import { quizPool, ziehe } from '../lib/tagesquiz';
+import { appUrl, quizErgebnisText, teileText, type Teilergebnis } from '../lib/teilen';
+import { aktuelleSerie } from '../lib/serie';
 
 export function DailyQuizPage() {
   const { data, completeDailyQuiz, addReviewItem } = useAppState();
@@ -18,6 +20,31 @@ export function DailyQuizPage() {
   const [started, setStarted] = useState(false);
   const today = tagesschluessel();
   const alreadyDone = data.daily?.date === today;
+  const [geteilt, setGeteilt] = useState<Teilergebnis | null>(null);
+
+  /* Das Ergebnis als eine Zeile Text (E-096): Teilen-Dialog, sonst Zwischenablage.
+     Nur Zahlen und Tage — kein Geld, kein Bild, das erst fertig sein muss. */
+  async function teile(score: number, total: number) {
+    const datum = new Date().toLocaleDateString(lang === 'de' ? 'de-DE' : 'en-GB', {
+      day: 'numeric', month: 'short', year: 'numeric',
+    });
+    const text = quizErgebnisText(
+      { datum, score, total, serie: aktuelleSerie(data.streak, today) },
+      lang,
+    );
+    const r = await teileText(text, appUrl());
+    setGeteilt(r);
+    if (r !== 'geteilt') window.setTimeout(() => setGeteilt(null), 2400);
+  }
+  const teilenKnopf = (score: number, total: number) => (
+    <>
+      <button type="button" className="btn" onClick={() => void teile(score, total)}>
+        <Icon name={geteilt === 'kopiert' ? 'check' : 'share'} size={18} />
+        {geteilt === 'kopiert' ? L.kopiert : L.teilen}
+      </button>
+      <span className="sr-only" role="status">{geteilt === 'kopiert' ? L.kopiert : ''}</span>
+    </>
+  );
 
   /* Nur Fragen aus abgeschlossenen Lektionen (siehe `lib/tagesquiz.ts`).
      Der Pool hängt am Lernstand, nicht nur am Datum: Wer heute Morgen noch
@@ -59,6 +86,7 @@ export function DailyQuizPage() {
             </div>
             <div className="entscheidung-leiste entscheidung">
               <div className="entscheidung-innen stapel">
+                {teilenKnopf(e.score, e.total)}
                 <Link className="btn primary" to="/lernen">{L.toPath}</Link>
               </div>
             </div>
@@ -87,6 +115,7 @@ export function DailyQuizPage() {
           <p className="muted small">
             {L.resultPrefix} <strong>{data.daily?.score} / {data.daily?.total}</strong>{L.resultSuffix}
           </p>
+          <div style={{ marginTop: 'var(--sp-4)' }}>{teilenKnopf(data.daily?.score ?? 0, data.daily?.total ?? 0)}</div>
         </div>
       )}
 

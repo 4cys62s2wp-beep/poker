@@ -60,6 +60,11 @@ export const ZEICHEN = {
 
 export type ZeichenPfad = keyof typeof ZEICHEN;
 
+/** Das Symbol zu einem Pfad, der als Text vorliegt (Suchtreffer) — oder `null`. */
+export function zeichenFuerPfad(pfad: string): IconName | null {
+  return (ZEICHEN as Record<string, IconName>)[pfad] ?? null;
+}
+
 /** Das Symbol einer Seite. Ein Pfad ohne Eintrag ist ein Tippfehler und
  *  fällt beim Übersetzen auf. */
 export function zeichenFuer(pfad: ZeichenPfad): IconName {

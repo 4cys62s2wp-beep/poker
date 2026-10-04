@@ -5,12 +5,19 @@ import { defineStrings } from '..';
    describeCloudError() in src/lib/cloud/cloud.ts – die kennen nur Firebase-Codes. */
 export const STR = defineStrings(
   {
-    deviceTitle: 'Geräte-Modus aktiv',
-    deviceBody1: 'Diese Installation läuft im',
-    deviceStrong: 'Geräte-Modus',
-    deviceBody2:
-      ': Alle Profile und Fortschritte werden doppelt auf diesem Gerät gesichert (localStorage + IndexedDB) und überleben Neuladen, Abstürze und das Schließen des Browsers. Geräteübergreifende Konten mit E-Mail-Verifizierung lassen sich mit einem kostenlosen Firebase-Projekt freischalten – die Anleitung steht in',
-    deviceBody3: 'im Projekt.',
+    offlineBand: 'Konto offline – wird synchronisiert, sobald wieder Netz da ist.',
+
+    changePassword: 'Passwort ändern',
+    deleteOpen: 'Konto löschen',
+    deleteTitle: 'Konto und Cloud-Daten löschen',
+    deleteBody:
+      'Dein Konto, dein Fortschritt in der Cloud und deine Freundesliste werden endgültig gelöscht. Dein Fortschritt auf diesem Gerät bleibt.',
+    deleteConfirmLabel: 'Zur Bestätigung deine E-Mail-Adresse eintippen',
+    deletePasswordLabel: 'Dein Passwort',
+    deleteGoogleHint: 'Du meldest dich dafür noch einmal bei Google an — damit niemand außer dir dein Konto löschen kann.',
+    deleteGo: 'Konto endgültig löschen',
+    deleteCancel: 'Abbrechen',
+    infoAccountDeleted: 'Konto und Cloud-Daten gelöscht – dein Fortschritt auf diesem Gerät bleibt.',
 
     accountTitle: 'Dein Konto',
     verifiedPill: 'E-Mail bestätigt',
@@ -35,6 +42,7 @@ export const STR = defineStrings(
       'Mit einem Konto (E-Mail + Verifizierung) wird dein Fortschritt in der Cloud gesichert und auf all deinen Geräten synchronisiert.',
     introReset: 'Du bekommst einen Link zum Zurücksetzen deines Passworts.',
     introLogin: 'Melde dich an, um deinen Fortschritt geräteübergreifend zu synchronisieren.',
+    introLoginNur: 'Du hast schon ein Konto? Melde dich an, um deinen Fortschritt zu synchronisieren.',
     namePlaceholder: 'Dein Name',
     emailPlaceholder: 'E-Mail-Adresse',
     nameLabel: 'Dein Name',
@@ -62,12 +70,19 @@ export const STR = defineStrings(
     infoSynced: 'Synchronisiert.',
   },
   {
-    deviceTitle: 'Device mode active',
-    deviceBody1: 'This installation runs in',
-    deviceStrong: 'device mode',
-    deviceBody2:
-      ': all profiles and progress are saved twice on this device (localStorage + IndexedDB) and survive reloads, crashes and closing the browser. Cross-device accounts with email verification can be enabled with a free Firebase project – the guide is in',
-    deviceBody3: 'in the project.',
+    offlineBand: 'Account offline – syncs as soon as you are back online.',
+
+    changePassword: 'Change password',
+    deleteOpen: 'Delete account',
+    deleteTitle: 'Delete account and cloud data',
+    deleteBody:
+      'Your account, your progress in the cloud and your friend list will be deleted permanently. Your progress on this device stays.',
+    deleteConfirmLabel: 'To confirm, type your email address',
+    deletePasswordLabel: 'Your password',
+    deleteGoogleHint: 'You will sign in with Google once more — so that nobody but you can delete your account.',
+    deleteGo: 'Delete account permanently',
+    deleteCancel: 'Cancel',
+    infoAccountDeleted: 'Account and cloud data deleted – your progress on this device stays.',
 
     accountTitle: 'Your Account',
     verifiedPill: 'Email verified',
@@ -92,6 +107,7 @@ export const STR = defineStrings(
       'With an account (email + verification) your progress is backed up in the cloud and synced across all your devices.',
     introReset: 'We will send you a link to reset your password.',
     introLogin: 'Sign in to sync your progress across all your devices.',
+    introLoginNur: 'Already have an account? Sign in to sync your progress.',
     namePlaceholder: 'Your name',
     emailPlaceholder: 'Email address',
     nameLabel: 'Your name',

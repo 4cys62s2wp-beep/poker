@@ -70,3 +70,17 @@ async function fetchLegal(): Promise<LegalConfig | null> {
     return null;
   }
 }
+
+/**
+ * Darf die App ein Konto anbieten? Nur mit vollständigen Anbieterangaben.
+ *
+ * Wer Name und E-Mail-Adresse erfasst und Daten bei einem Dienstleister
+ * ablegt, muss vorher sagen, wer er ist und wie man ihn erreicht (Art. 13
+ * DSGVO). Solange `legal.json` leer ist, bleibt die App im Gerätemodus:
+ * Registrierung und Anmeldung mit Google stehen nicht da. Wer schon ein Konto
+ * hat, behält Anmelden, Abmelden und Löschen — diese Rechte hängen nicht an
+ * der Neuanmeldung.
+ */
+export function kontoAnbieten(legal: LegalConfig | null | undefined): boolean {
+  return legal != null && legal.email.includes('@');
+}

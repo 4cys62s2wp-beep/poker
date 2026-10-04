@@ -9,7 +9,7 @@ export const STR = defineStrings(
     imprintTitle: 'Impressum',
     imprintNote: 'Angaben gemäß § 5 DDG.',
     imprintMissing:
-      'Die Anbieterangaben sind für diese Installation noch nicht hinterlegt. Solange die App nichts kostet und privat betrieben wird, ist das unkritisch – vor der ersten Bezahlfunktion muss hier ein vollständiges Impressum stehen.',
+      'Die Anbieterangaben sind noch nicht hinterlegt. Solange das so ist, kannst du in der App kein neues Konto anlegen; dein Fortschritt bleibt auf diesem Gerät.',
     contact: 'Kontakt',
     vatId: 'Umsatzsteuer-Identifikationsnummer',
     register: 'Registereintrag',
@@ -25,13 +25,15 @@ export const STR = defineStrings(
       'Dein gesamter Lernfortschritt – XP, Level, abgeschlossene Lektionen, Quiz-Ergebnisse, Trainer-Statistiken, Abzeichen, Handhistorie, Bankroll-Sessions und Profilnamen – wird ausschließlich lokal in deinem Browser gespeichert (localStorage und IndexedDB). Ohne Konto verlässt davon nichts dein Gerät. Du kannst diese Daten jederzeit im Profil exportieren oder vollständig löschen.',
     privacyAccountTitle: 'Wenn du ein Konto anlegst',
     privacyAccount:
-      'Für die geräteübergreifende Synchronisation werden deine E-Mail-Adresse, ein verschlüsselt gespeichertes Passwort und dein Lernfortschritt bei unserem Dienstleister Google Firebase (Google Ireland Limited) gespeichert. Rechtsgrundlage ist die Erfüllung des Nutzungsvertrags (Art. 6 Abs. 1 lit. b DSGVO). Du kannst dein Konto jederzeit löschen lassen – schreib uns dazu eine kurze E-Mail.',
+      'Für die geräteübergreifende Synchronisation werden deine E-Mail-Adresse, ein verschlüsselt gespeichertes Passwort und dein Lernfortschritt bei unserem Dienstleister Google Firebase (Google Ireland Limited) gespeichert. Rechtsgrundlage ist die Erfüllung des Nutzungsvertrags (Art. 6 Abs. 1 lit. b DSGVO). Du kannst dein Konto jederzeit selbst löschen: im Profil unter „Konto löschen“. Dabei werden dein Konto, dein Fortschritt in der Cloud und deine Freundesliste entfernt; dein Fortschritt auf diesem Gerät bleibt.',
     privacyPaymentTitle: 'Bei einem Pro-Abo',
     privacyPayment:
       'Die Zahlungsabwicklung übernimmt Stripe. Zahlungsdaten wie Kartennummern werden ausschließlich von Stripe verarbeitet und sind für uns nicht einsehbar. Wir erhalten lediglich die Information, ob dein Abo aktiv ist, sowie die für die Rechnungsstellung nötigen Angaben.',
     privacyRightsTitle: 'Deine Rechte',
     privacyRights:
-      'Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Eine formlose E-Mail an die oben genannte Adresse genügt.',
+      'Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren.',
+    privacyRightsMail1: 'Eine formlose E-Mail an',
+    privacyRightsMail2: 'genügt.',
     privacyHostingTitle: 'Hosting',
     privacyHosting:
       'Die Seite wird über GitHub Pages ausgeliefert. Dabei verarbeitet GitHub technisch notwendige Server-Logdaten wie deine IP-Adresse, um die Seite überhaupt ausliefern zu können.',
@@ -52,8 +54,10 @@ export const STR = defineStrings(
       'Alle Lerninhalte werden sorgfältig erstellt, ersetzen aber keine individuelle Beratung und garantieren keinen Spielerfolg. Poker enthält einen erheblichen Glücksanteil; für Entscheidungen am Tisch und deren finanzielle Folgen bist du selbst verantwortlich.',
 
     responsibleTitle: 'Verantwortungsvoll spielen',
-    responsible:
-      'Poker kann süchtig machen. Spiele nur mit Geld, dessen Verlust du verkraften kannst, setze dir feste Grenzen für Zeit und Einsätze und mach Pausen. Wenn du das Gefühl hast, die Kontrolle zu verlieren, findest du in Deutschland kostenlose und anonyme Hilfe bei der Bundeszentrale für gesundheitliche Aufklärung unter 0800 1 37 27 00 sowie auf check-dein-spiel.de. Diese App richtet sich ausschließlich an Erwachsene.',
+    responsibleA:
+      'Poker kann süchtig machen. Spiele nur mit Geld, dessen Verlust du verkraften kannst, setze dir feste Grenzen für Zeit und Einsätze und mach Pausen. Wenn du das Gefühl hast, die Kontrolle zu verlieren, findest du in Deutschland kostenlose und anonyme Hilfe beim Bundesinstitut für Öffentliche Gesundheit (bis 2025 Bundeszentrale für gesundheitliche Aufklärung) unter',
+    responsibleB: 'sowie auf',
+    responsibleC: 'Diese App richtet sich ausschließlich an Erwachsene.',
 
 
     // Kündigungsseite (§ 312k BGB)
@@ -85,7 +89,7 @@ export const STR = defineStrings(
     imprintTitle: 'Provider identification',
     imprintNote: 'Information pursuant to § 5 DDG (German Digital Services Act).',
     imprintMissing:
-      'Provider details have not been configured for this installation yet. While the app is free and privately operated this is uncritical – but a complete imprint must be in place before any paid feature goes live.',
+      'Provider details have not been entered yet. Until they are, you cannot create a new account in the app; your progress stays on this device.',
     contact: 'Contact',
     vatId: 'VAT identification number',
     register: 'Register entry',
@@ -101,13 +105,15 @@ export const STR = defineStrings(
       'Your entire learning progress – XP, levels, completed lessons, quiz results, trainer statistics, badges, hand history, bankroll sessions and profile names – is stored exclusively in your browser (localStorage and IndexedDB). Without an account none of it ever leaves your device. You can export or completely delete this data at any time from your profile.',
     privacyAccountTitle: 'If you create an account',
     privacyAccount:
-      'For cross-device sync, your email address, an encrypted password and your learning progress are stored with our processor Google Firebase (Google Ireland Limited). The legal basis is performance of the user agreement (Art. 6(1)(b) GDPR). You can have your account deleted at any time – just send us a short email.',
+      'For cross-device sync, your email address, an encrypted password and your learning progress are stored with our processor Google Firebase (Google Ireland Limited). The legal basis is performance of the user agreement (Art. 6(1)(b) GDPR). You can delete your account yourself at any time: in your profile under “Delete account”. This removes your account, your progress in the cloud and your friend list; your progress on this device stays.',
     privacyPaymentTitle: 'With a Pro subscription',
     privacyPayment:
       'Payments are processed by Stripe. Payment details such as card numbers are handled solely by Stripe and are never visible to us. We only receive whether your subscription is active, plus the information required for invoicing.',
     privacyRightsTitle: 'Your rights',
     privacyRights:
-      'You have the right to access, rectification, erasure, restriction of processing, data portability and objection, as well as the right to lodge a complaint with a data protection authority. An informal email to the address above is enough.',
+      'You have the right to access, rectification, erasure, restriction of processing, data portability and objection, as well as the right to lodge a complaint with a data protection authority.',
+    privacyRightsMail1: 'An informal email to',
+    privacyRightsMail2: 'is enough.',
     privacyHostingTitle: 'Hosting',
     privacyHosting:
       'The site is served via GitHub Pages. In doing so, GitHub processes technically necessary server log data such as your IP address in order to deliver the site at all.',
@@ -128,8 +134,10 @@ export const STR = defineStrings(
       'All learning content is produced carefully, but it does not replace individual advice and guarantees no winnings. Poker involves a substantial element of chance; you remain responsible for your decisions at the table and their financial consequences.',
 
     responsibleTitle: 'Play responsibly',
-    responsible:
-      'Poker can be addictive. Only play with money you can afford to lose, set firm limits for time and stakes, and take breaks. If you feel you are losing control, free and anonymous help is available in Germany from the BZgA on 0800 1 37 27 00 and at check-dein-spiel.de; in other countries look for your national helpline. This app is intended for adults only.',
+    responsibleA:
+      'Poker can be addictive. Only play with money you can afford to lose, set firm limits for time and stakes, and take breaks. If you feel you are losing control, free and anonymous help is available in Germany from the Federal Institute for Public Health (until 2025 the BZgA) on',
+    responsibleB: 'and at',
+    responsibleC: 'In other countries look for your national helpline. This app is intended for adults only.',
 
 
     cancelNav: 'Cancel your contract here',

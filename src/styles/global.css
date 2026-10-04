@@ -95,6 +95,17 @@
   --range-call-text: #000;
   --range-fold: var(--veil-3);
 
+  /* ── Die Marke ───────────────────────────────────────────────────────
+     Ein Pik auf grüner Kachel — in beiden Modi, auf dem Home-Bildschirm und im
+     Browser-Tab gleich. Die Marke hing an `--auszeichnung-lesbar`, und der ist
+     im hellen Modus dunkelbraun (#5f4810): Pik auf Grün 1,4 bis 1,6 zu 1, also
+     unsichtbar. Marken sind keine Textfarbe, sondern Bild; sie stehen darum
+     außerhalb der Modusblöcke (nach dem Muster aus E-034). Dieselben Werte
+     stehen in `public/icons/icon.svg`; `marke.test.ts` hält beide zusammen. */
+  --marke-pik: #edcf87;
+  --marke-grund-hell: #2f7f5e;
+  --marke-grund-tief: #123a2b;
+
   /* Höhe der klebenden Kopfzeile am Handy ohne Statusleiste: 14 px Abstand und
      eine Zeile von 44 px. `rahmen.test` misst nach, dass sie stimmt — Toasts und
      Sprungziele rechnen damit. */
@@ -599,18 +610,47 @@ table.data td {
   font-weight: 640;
 }
 
-.brand .spade {
+/* Die Markenkachel: Pik auf grünem Grund, überall dieselbe. Die Größe kommt aus
+   `--kachel`, damit Seitenleiste, Kopfzeile und Willkommensdialog nicht je ihre
+   eigene Kachel malen. */
+/* Das erste Bild beim Kaltstart (index.html). Es steht in #root, bis React die
+   Seite übernimmt — Marke und Name, mittig, ohne Bewegung. */
+.kaltstart {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  text-align: center;
+  padding: var(--sp-5);
+}
+
+.kaltstart-name {
+  font-family: var(--font-display);
+  font-size: var(--fs-ueberschrift);
+  font-weight: 640;
+  color: var(--text);
+}
+
+.kaltstart-hinweis {
+  max-width: 28ch;
+  font-size: var(--fs-fliesstext);
+  color: var(--text-dim);
+}
+
+.marke-kachel {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(150deg, var(--flaeche-tisch-verlauf-hell), var(--flaeche-tisch-verlauf-tief));
-  border: 1px solid var(--auszeichnung-lesbar-a35);
-  color: var(--auszeichnung-lesbar);
-  font-size: 1.0625rem;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), var(--shadow-soft);
+  flex-shrink: 0;
+  width: var(--kachel, 34px);
+  height: var(--kachel, 34px);
+  border-radius: calc(var(--kachel, 34px) * 0.3);
+  background: radial-gradient(120% 120% at 50% 38%, var(--marke-grund-hell), var(--marke-grund-tief));
+  color: var(--marke-pik);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .brand .grad {
@@ -779,18 +819,6 @@ table.data td {
     font-family: var(--font-display);
     font-size: var(--fs-ueberschrift);
     font-weight: 640;
-  }
-  .mobile-top .spade {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: var(--radius-xs);
-    background: linear-gradient(150deg, var(--flaeche-tisch-verlauf-hell), var(--flaeche-tisch-verlauf-tief));
-    border: 1px solid var(--auszeichnung-lesbar-a35);
-    color: var(--auszeichnung-lesbar);
-    font-size: 0.9375rem;
   }
   .mobile-top .grad {
     background: linear-gradient(115deg, var(--auszeichnung-verlauf-hell), var(--auszeichnung) 55%, var(--auszeichnung-verlauf-tief));
@@ -1555,6 +1583,40 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .rueckmeldung-kopf[data-urteil="richtig"] { color: var(--ok-lesbar); }
 .rueckmeldung-kopf[data-urteil="falsch"] { color: var(--danger-lesbar); }
 .rueckmeldung-kopf[data-urteil="knapp"] { color: var(--auszeichnung-lesbar); }
+
+.hilfe-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  color: var(--text);
+  font-weight: var(--fw-bold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* „Neue Version bereit": ein Band über dem Inhalt, nicht darüber gelegt. */
+.update-band {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border-strong);
+  font-size: var(--fs-beschriftung);
+  font-weight: var(--fw-bold);
+}
+
+.installieren-karte { margin-top: var(--sp-4); margin-bottom: var(--sp-4); }
+.installieren-karte .titel { font-weight: 700; margin-bottom: var(--sp-2); }
+.installieren-karte p { margin-bottom: var(--sp-3); }
+
+.konto-loeschen { margin-top: var(--sp-4); }
+.konto-loeschen form { border-top: 1px solid var(--border); padding-top: var(--sp-3); }
+.konto-loeschen .titel { font-weight: 700; margin-bottom: var(--sp-2); }
+.konto-loeschen p { margin-bottom: var(--sp-3); }
+.konto-loeschen .text-input { width: 100%; margin-bottom: var(--sp-3); }
 
 .kachel-start {
   display: inline-block;
@@ -2955,7 +3017,9 @@ input[type="radio"] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: var(--sp-5);
     row-gap: var(--tipp-abstand);
-    align-items: start;
+    /* Zwei gleich hohe Kacheln je Reihe statt zweier Spalten verschiedener
+       Länge: Eine Lücke unter der kürzeren sähe nach einem Fehler aus. */
+    align-items: stretch;
     max-width: var(--breite-weit);
   }
   .start > .start-erklaerung { grid-column: 1 / -1; }

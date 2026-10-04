@@ -38,7 +38,7 @@ const ZAHLWORT: Record<number, string> = {
 function messlaeufe(): string[] {
   return Object.entries(PAKET.scripts)
     .filter(([, befehl]) => befehl.startsWith('node scripts/'))
-    .filter(([, befehl]) => !/gen-icons|pokermath-app-daten/.test(befehl))
+    .filter(([, befehl]) => !/gen-icons|gen-screenshots|pokermath-app-daten/.test(befehl))
     .map(([name]) => name);
 }
 

@@ -1,0 +1,29 @@
+{
+  "geprueft_am": "2026-10-04T10:21:36.241Z",
+  "befunde_gesamt": 0,
+  "messwerte": {
+    "start": {
+      "steuert": true,
+      "aktiv": "activated",
+      "wartend": false,
+      "band": false
+    },
+    "wartet": {
+      "wartend": true,
+      "aktiv": "activated",
+      "marke": "unverändert",
+      "band": true,
+      "text": "Neue Version bereitNeu laden"
+    },
+    "danach": {
+      "marke": null,
+      "band": false,
+      "wartend": false,
+      "steuert": true
+    },
+    "preloadFehler": {
+      "neuladungen": 1
+    }
+  },
+  "befunde": []
+}

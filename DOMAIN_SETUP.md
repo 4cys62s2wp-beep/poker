@@ -36,7 +36,11 @@ Optional zusätzlich `www` als CNAME auf `4cys62s2wp-beep.github.io` zeigen lass
 
 ## 4. Danach in der App anpassen (kann Claude übernehmen)
 
-- In `index.html` die `og:url`- und `og:image`-Meta-Tags auf die neue Domain ändern.
+- Die Adresse der Link-Vorschau (`og:url`, `og:image`) kommt beim Bauen aus der Variable
+  `VITE_PUBLIC_URL` (z. B. `https://pokermentor.app/`). In GitHub: **Settings → Secrets and
+  variables → Actions → Variables → New repository variable**, Name `VITE_PUBLIC_URL`. Der
+  Quelltext bleibt unverändert; ohne die Variable gilt die github.io-Adresse
+  (`src/lib/oeffentlicheAdresse.ts`).
 - Falls Cloud-Konten aktiv sind: in der Firebase-Konsole unter
   **Authentication → Settings → Autorisierte Domains** die neue Domain hinzufügen.
 - Der QR-Code in der App zeigt automatisch auf die neue Domain (er nutzt die

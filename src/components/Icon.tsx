@@ -75,11 +75,14 @@ export function Icon({ name, size = 20, style, className }: Props) {
 
 function paths(name: IconName) {
   switch (name) {
+    /* Der Pik der Marke — derselbe Pfad wie `public/icons/icon.svg`, auf die
+       24er Fläche gebracht (`marke.test.ts` prüft, dass er derselbe ist). */
     case 'spade':
       return (
         <path
           fill="currentColor"
-          d="M12 2.6c-1.6 3.4-6.6 6-6.6 9.6a3.2 3.2 0 0 0 5.6 2.1c-.2 1.9-.8 3.3-1.9 4.3v1.7h5.8v-1.7c-1.1-1-1.7-2.4-1.9-4.3a3.2 3.2 0 0 0 5.6-2.1c0-3.6-5-6.2-6.6-9.6z"
+          transform="translate(12 12) scale(0.0677) translate(-256 -229)"
+          d="M256 96c-14 44-120 118-120 186 0 38 30 66 66 66 20 0 38-8 50-22-4 32-16 58-38 76v14h84v-14c-22-18-34-44-38-76 12 14 30 22 50 22 36 0 66-28 66-66 0-68-106-142-120-186z"
         />
       );
     case 'learn':

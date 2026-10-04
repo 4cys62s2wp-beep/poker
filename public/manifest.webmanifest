@@ -2,7 +2,7 @@
   "id": "./",
   "name": "PokerMentor – Die Poker-Lern-App",
   "short_name": "PokerMentor",
-  "description": "Poker lernen und trainieren: Strategie-Module, Live-Coach, Trainer und Tools – ohne Echtgeld. · Learn and train poker: strategy modules, live coach, trainers and tools – no real money. Deutsch & English.",
+  "description": "Poker lernen und trainieren: Strategie-Module, Live-Coach, Trainer und Tools – ohne Echtgeld.",
   "lang": "de",
   "dir": "ltr",
   "start_url": "./",
@@ -12,8 +12,8 @@
     "standalone",
     "minimal-ui"
   ],
-  "background_color": "#0b100d",
-  "theme_color": "#0b100d",
+  "background_color": "#0c110e",
+  "theme_color": "#0c110e",
   "categories": [
     "education",
     "games"
@@ -32,10 +32,10 @@
       ]
     },
     {
-      "name": "Pokerabend",
-      "short_name": "Tisch",
-      "description": "Die App übernimmt Karten, Chips und Blinds",
-      "url": "./#/session/tisch",
+      "name": "Abend starten",
+      "short_name": "Abend",
+      "description": "Blind-Uhr und Chips für euren Abend",
+      "url": "./#/session/live/einrichten",
       "icons": [
         {
           "src": "./icons/icon-192.png",
@@ -92,6 +92,43 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./screenshots/start-schmal.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Die Hand des Tages: eine Aufgabe, ein Tipp"
+    },
+    {
+      "src": "./screenshots/lernpfad-schmal.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Der Lernpfad: neun Module vom ersten Blatt bis zur Strategie"
+    },
+    {
+      "src": "./screenshots/drill-schmal.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Der Pot-Odds-Drill: lohnt der Call?"
+    },
+    {
+      "src": "./screenshots/start-weit.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "PokerMentor am Rechner"
+    },
+    {
+      "src": "./screenshots/lernpfad-weit.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Der Lernpfad am Rechner"
     }
   ]
 }

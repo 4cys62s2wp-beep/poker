@@ -21,9 +21,10 @@ export const STR = defineStrings(
     offlineBody:
       'Diese App speichert deinen Fortschritt zuerst auf dem Gerät. Für Freunde und den Online-Status wird ein kostenloses Cloud-Konto gebraucht – lege es im Profil an oder melde dich dort an.',
     offlineCta: 'Zum Profil',
-    unconfiguredTitle: 'Freunde sind hier nicht eingerichtet',
-    unconfiguredBody:
-      'Diese Installation läuft ohne Cloud-Anbindung. Sobald eine firebase-config.json hinterlegt ist (siehe FIREBASE_SETUP.md), erscheinen hier Freundesliste, Anfragen und der Online-Status.',
+    unconfiguredTitle: 'Freunde gibt es hier nicht',
+    unconfiguredBody: 'In dieser Fassung der App sind Freundesliste und Online-Status nicht verfügbar.',
+    noNetTitle: 'Freunde brauchen Netz',
+    noNetBody: 'Sobald du wieder online bist, erscheinen hier deine Freunde und wer gerade übt.',
     unverifiedTitle: 'Bitte bestätige zuerst deine E-Mail',
     unverifiedBody:
       'Freundschaftsanfragen sind erst nach dem Klick auf den Bestätigungslink möglich. Das schützt alle vor Anfragen aus Wegwerf-Konten.',
@@ -99,9 +100,10 @@ export const STR = defineStrings(
     offlineBody:
       'This app keeps your progress on the device first. Friends and the online status need a free cloud account – create one or sign in from your profile.',
     offlineCta: 'Go to profile',
-    unconfiguredTitle: 'Friends are not set up here',
-    unconfiguredBody:
-      'This installation runs without a cloud backend. As soon as a firebase-config.json is in place (see FIREBASE_SETUP.md), the friend list, requests and online status appear here.',
+    unconfiguredTitle: 'No friends here',
+    unconfiguredBody: 'This version of the app has no friend list or online status.',
+    noNetTitle: 'Friends need a connection',
+    noNetBody: 'As soon as you are back online, your friends and who is practising right now appear here.',
     unverifiedTitle: 'Please confirm your email first',
     unverifiedBody:
       'Friend requests work once you have clicked the confirmation link. That keeps everyone safe from throwaway accounts.',

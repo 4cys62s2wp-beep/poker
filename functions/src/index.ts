@@ -24,12 +24,14 @@
    Abhängigkeit lauffähig. */
 
 import { onRequest, onCall, HttpsError } from 'firebase-functions/v2/https';
+import * as functionsV1 from 'firebase-functions/v1';
 import { defineSecret } from 'firebase-functions/params';
 import * as admin from 'firebase-admin';
 import Stripe from 'stripe';
 
 import { applyEvent, type IdempotencyStore, type NormalizedEvent } from './entitlement';
 import { grantsAccess, type Entitlement, type PlanId } from './types';
+import { loescheKonto, type KontoSpeicher } from './konto';
 import { verifyStripeSignature } from './webhooks/stripeVerify';
 import { verifyAppleNotification } from './webhooks/appleVerify';
 import { normalizeStripeEvent, normalizeAppleEvent } from './webhooks/map';
@@ -345,4 +347,29 @@ export const linkAppleTransaction = onCall({ region: REGION }, async (req) => {
   }
   await ref.set({ uid, provider: 'apple', originalTransactionId: otx });
   return { ok: true };
+});
+
+
+/* ---------------- Konto gelöscht ---------------- *
+   Räumt auf, was der Client nach den Firestore-Regeln nicht löschen darf
+   (Code-Verzeichnis, Abo-Berechtigung) — und alles, was bei einem Abbruch der
+   App hängen geblieben sein könnte. Die Logik steht in konto.ts. */
+export const kontoGeloescht = functionsV1.auth.user().onDelete(async (user) => {
+  const db = admin.firestore();
+  const speicher: KontoSpeicher = {
+    liste: async (sammlung) => (await db.collection(sammlung).listDocuments()).map((d) => d.id),
+    findeCodes: async (uid) => {
+      const snap = await db.collection('friendCodes').where('uid', '==', uid).get();
+      return snap.docs.map((d) => d.id);
+    },
+    loesche: async (pfade) => {
+      /* Ein Schreibvorgang fasst höchstens 500 Dokumente. */
+      for (let i = 0; i < pfade.length; i += 400) {
+        const batch = db.batch();
+        for (const p of pfade.slice(i, i + 400)) batch.delete(db.doc(p));
+        await batch.commit();
+      }
+    },
+  };
+  await loescheKonto(user.uid, speicher);
 });

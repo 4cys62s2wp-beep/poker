@@ -35,8 +35,17 @@ const BAU_STAND = 'entwicklung';
 const CACHE = `pokermentor-v9-${DATEN_STAND}-${BAU_STAND}`;
 const CORE = ['./', './index.html', './manifest.webmanifest', ...DATEN_DATEIEN, ...GEBAUTE_DATEIEN];
 
+/* Eine neue Fassung wartet, bis die App sie ausdrücklich übernimmt.
+   Vorher rief der Worker beim Installieren sofort `skipWaiting()`: Mitten in
+   einer Lektion oder an einem laufenden Pokerabend tauschte sich der
+   Zwischenspeicher unter der Seite aus, und der nächste Dateiabruf holte eine
+   Datei aus der neuen Fassung zur alten Seite. Jetzt sagt die App „Neue Version
+   bereit" und schickt die Nachricht, wenn der Nutzer es will (E-085). */
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
 self.addEventListener('install', (event) => {
-  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE).then((cache) =>
       /* Einzeln statt `addAll`: Das scheitert vollständig, sobald eine
@@ -60,9 +69,29 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
-  // Konfigurationsdateien nie cachen: Sie entscheiden live über Konten,
-  // Preise und Anbieterangaben – ein veralteter Stand wäre hier fatal.
-  if (/\/(firebase-config|monetization|legal)\.json$/.test(url.pathname)) return;
+  /* Konfigurationsdateien: erst das Netz, dann der Zwischenspeicher.
+
+     Sie entscheiden über Konten, Preise und Anbieterangaben — online muss der
+     Stand deshalb **live** sein, und er ist es: Das Netz kommt zuerst. Nur wenn
+     es fehlt, gilt der letzte bekannte Stand. Vorher gab es gar keinen
+     Rückfall: Ohne Netz fehlte `firebase-config.json`, die App hielt die Cloud
+     für nicht eingerichtet und zeigte einem angemeldeten Nutzer „Geräte-Modus
+     aktiv" statt seines Kontos (E-084). Eine nicht erreichbare Datei ist nicht
+     dasselbe wie eine nicht vorhandene. */
+  if (/\/(firebase-config|monetization|legal)\.json$/.test(url.pathname)) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE).then((cache) => cache.put(req, copy)).catch(() => {});
+          }
+          return res;
+        })
+        .catch(() => caches.match(req, { ignoreVary: true }).then((c) => c || Response.error())),
+    );
+    return;
+  }
 
   if (req.mode === 'navigate') {
     // Network-first für die Seite selbst

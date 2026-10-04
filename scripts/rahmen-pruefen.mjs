@@ -336,6 +336,36 @@ const gehe = async (seite, adresse, warte = 700) => {
   await t.close();
 }
 
+/* ── Statusleiste in der Farbe der Seite ───────────────────────────────── */
+{
+  const hex = (rgb) => `#${rgb.match(/\d+/g).slice(0, 3).map((n) => Number(n).toString(16).padStart(2, '0')).join('')}`;
+  const leiste = async (seite) => seite.evaluate(() => ({
+    meta: document.querySelector('meta[name="theme-color"]')?.getAttribute('content') ?? null,
+    grund: getComputedStyle(document.body).backgroundColor,
+  }));
+  const mess = {};
+  for (const modus of ['dunkel', 'hell']) {
+    const k = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' });
+    await k.addInitScript(([m]) => { localStorage.setItem('pokermentor-lang-v1', 'de'); localStorage.setItem('pokermentor-farbmodus-v1', m); }, [modus]);
+    const seite = await k.newPage();
+    await gehe(seite, '#/', 600);
+    const l = await leiste(seite);
+    if (!l.meta || l.meta.toLowerCase() !== hex(l.grund)) befund('Statusleiste', modus, `theme-color ${l.meta}, Seitengrund ${hex(l.grund)}`);
+    mess[modus] = { meta: l.meta, grund: hex(l.grund) };
+    if (modus === 'dunkel') {
+      /* Umschalten in der App zieht die Leiste nach. */
+      await gehe(seite, '#/profil', 600);
+      await seite.getByRole('radio', { name: 'Hell' }).click();
+      await seite.waitForTimeout(300);
+      const nach = await leiste(seite);
+      if (!nach.meta || nach.meta.toLowerCase() !== hex(nach.grund)) befund('Statusleiste', 'Umschalten', `theme-color ${nach.meta}, Seitengrund ${hex(nach.grund)}`);
+      mess.umgeschaltet = { meta: nach.meta, grund: hex(nach.grund) };
+    }
+    await k.close();
+  }
+  messwerte.statusleiste = mess;
+}
+
 await browser.close();
 
 const bericht = {

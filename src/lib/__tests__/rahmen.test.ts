@@ -23,6 +23,7 @@ interface Rahmen {
     fussleiste: Array<{ hoehe: number; unten: number; legalUnten: number; duOben: number }>;
     zentrierung: Array<{ adresse: string; rand: { links: number; rechts: number } }>;
     startseite: { linksX: number; rechtsX: number };
+    statusleiste: Record<string, { meta: string; grund: string }>;
   };
 }
 
@@ -82,5 +83,13 @@ describe('Rahmen', () => {
       expect(Math.abs(z.rand.links - z.rand.rechts), z.adresse).toBeLessThanOrEqual(3);
     }
     expect(M.startseite.rechtsX).toBeGreaterThan(M.startseite.linksX + 100);
+  });
+
+  it('färbt die Statusleiste wie die Seite — in beiden Modi und nach dem Umschalten', () => {
+    for (const [wann, l] of Object.entries(M.statusleiste)) {
+      expect(l.meta.toLowerCase(), wann).toBe(l.grund);
+    }
+    expect(M.statusleiste.dunkel.meta).not.toBe(M.statusleiste.hell.meta);
+    expect(M.statusleiste.umgeschaltet.meta).toBe(M.statusleiste.hell.meta);
   });
 });

@@ -58,10 +58,12 @@ export const STR = defineStrings(
     addressNew: 'Neue Aufgabe',
 
     loading: 'Daten werden geladen …',
-    errorTitle: 'Die gerechneten Daten fehlen',
-    errorHint: 'Im Projekt neu erzeugen: npm run daten',
+    errorTitle: 'Die Aufgaben konnten nicht geladen werden',
+    errorBody: 'Prüfe deine Verbindung und versuche es noch einmal.',
+    retry: 'Erneut versuchen',
+    details: 'Technische Einzelheiten',
     /* Der Einzeldatei-Build liegt oft allein irgendwo — dort ist
-       „npm run daten“ kein Rat, sondern eine Zumutung. */
+       eine Verbindungsprüfung kein Rat, sondern eine Zumutung. */
     errorHintSingle: 'Diese Einzeldatei braucht den Ordner „pokermath“ neben sich.',
   },
   {
@@ -110,8 +112,10 @@ export const STR = defineStrings(
     addressNew: 'New spot',
 
     loading: 'Loading the computed data …',
-    errorTitle: 'The computed data is missing',
-    errorHint: 'Regenerate it in the project: npm run daten',
+    errorTitle: 'The tasks could not be loaded',
+    errorBody: 'Check your connection and try again.',
+    retry: 'Try again',
+    details: 'Technical details',
     errorHintSingle: 'This single file needs the “pokermath” folder next to it.',
   },
 );

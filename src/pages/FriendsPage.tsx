@@ -64,6 +64,15 @@ export function FriendsPage() {
     );
   }
 
+  if (cloud.phase === 'offline') {
+    return (
+      <div>
+        {header}
+        <InfoCard title={F.noNetTitle} body={F.noNetBody} />
+      </div>
+    );
+  }
+
   if (!cloud.user) {
     return (
       <div>

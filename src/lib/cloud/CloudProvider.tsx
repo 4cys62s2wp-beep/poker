@@ -7,10 +7,13 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { sanitizeAppData, useAppState, type AppData } from '../../state/AppState';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/cloud';
-import { describeCloudError, getCloud, type CloudHandle, type CloudUser } from './cloud';
+import { cloudAusfall, describeCloudError, getCloud, setzeCloudZurueck, type CloudHandle, type CloudUser } from './cloud';
 import { kontoGemerkt, merkeKonto } from './anmeldung';
+import { adresseStimmt } from './konto';
 
-export type CloudPhase = 'checking' | 'unavailable' | 'ready';
+/** `unavailable`: hier gibt es keine Cloud (nicht eingerichtet). `offline`: es gibt
+ *  sie, aber die Konfiguration ließ sich ohne Netz nicht holen — das geht vorbei. */
+export type CloudPhase = 'checking' | 'unavailable' | 'offline' | 'ready';
 
 interface CloudValue {
   phase: CloudPhase;
@@ -25,6 +28,8 @@ interface CloudValue {
   loginWithGoogle: () => Promise<boolean>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<boolean>;
+  /** Konto und Cloud-Daten löschen; `bestaetigung` ist die getippte E-Mail-Adresse. */
+  deleteAccount: (bestaetigung: string, passwort?: string) => Promise<boolean>;
   resendVerification: () => Promise<void>;
   /** Prüft nach dem Klick auf den Bestätigungslink, ob die E-Mail jetzt verifiziert ist. */
   checkVerification: () => Promise<void>;
@@ -77,6 +82,8 @@ export function CloudProvider({ children }: { children: ReactNode }) {
     () => kontoGemerkt() || activeProfile.cloudUid != null,
   );
   const aktiviere = useCallback(() => setAktiv(true), []);
+  /** Zählt Neuversuche nach einem Ausfall wegen fehlenden Netzes. */
+  const [versuch, setVersuch] = useState(0);
 
   // Initialisierung + Auth-Listener
   useEffect(() => {
@@ -88,7 +95,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
       if (cancelled) return;
       cloudRef.current = handle;
       if (!handle) {
-        setPhase('unavailable');
+        setPhase(cloudAusfall() === 'offline' ? 'offline' : 'unavailable');
         return;
       }
       setPhase('ready');
@@ -114,7 +121,20 @@ export function CloudProvider({ children }: { children: ReactNode }) {
       unsub?.();
       unsubRedirectError?.();
     };
-  }, [aktiv]);
+  }, [aktiv, versuch]);
+
+  /* Ohne Netz gestartet: Sobald es wieder da ist, noch einmal versuchen — ein
+     Konto soll nicht bis zum nächsten Neustart verschwunden bleiben. */
+  useEffect(() => {
+    if (phase !== 'offline') return undefined;
+    const nochmal = () => {
+      setzeCloudZurueck();
+      setPhase('checking');
+      setVersuch((v) => v + 1);
+    };
+    window.addEventListener('online', nochmal);
+    return () => window.removeEventListener('online', nochmal);
+  }, [phase]);
 
   // Sprachwechsel im laufenden Betrieb an Firebase weiterreichen.
   useEffect(() => {
@@ -257,6 +277,21 @@ export function CloudProvider({ children }: { children: ReactNode }) {
     [wrap],
   );
 
+  const deleteAccount = useCallback(
+    (bestaetigung: string, passwort?: string) => {
+      const u = userRef.current;
+      if (!u || !adresseStimmt(bestaetigung, u.email)) return Promise.resolve(false);
+      return wrap(
+        async () => {
+          await cloudRef.current!.deleteAccount(passwort);
+          syncedUidRef.current = null;
+        },
+        () => strRef.current.infoAccountDeleted,
+      );
+    },
+    [wrap],
+  );
+
   const resendVerification = useCallback(async () => {
     await wrap(
       async () => {
@@ -309,6 +344,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
     loginWithGoogle,
     logout,
     resetPassword,
+    deleteAccount,
     resendVerification,
     checkVerification,
     syncNow,

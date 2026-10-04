@@ -24,6 +24,7 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from './Icon';
+import { Marke } from './Marke';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/layout';
 
@@ -106,9 +107,7 @@ export function Kopfzeile({ mainRef }: { mainRef: RefObject<HTMLElement> }) {
           derselben Stelle — genau das, was eine Marke oben links seit
           jeher bedeutet, und was ein Nutzer dort ohnehin antippt. */}
       <Link to="/" className="mobile-top-marke" aria-label={L.start}>
-        <span className="spade">
-          <Icon name="spade" size={15} />
-        </span>
+        <Marke groesse={30} />
         <span className="grad">PokerMentor</span>
       </Link>
 

@@ -43,9 +43,10 @@ function istEnglisch(n: ts.Node): boolean {
   return false;
 }
 
-/** Alle deutschen Zeichenketten einer Datei. */
-export function deutscheTexteAus(datei: string): Text[] {
-  if (datei.includes('/en/')) return [];
+/** Alle Zeichenketten einer Datei in der gewünschten Sprache. */
+export function texteAus(datei: string, sprache: 'de' | 'en'): Text[] {
+  const pfadEnglisch = datei.includes('/en/');
+  if (pfadEnglisch !== (sprache === 'en') && sprache === 'de') return [];
   const quelle = readFileSync(datei, 'utf8');
   const baum = ts.createSourceFile(datei, quelle, ts.ScriptTarget.Latest, true,
     datei.endsWith('x') ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
@@ -53,8 +54,9 @@ export function deutscheTexteAus(datei: string): Text[] {
   const zeile = (n: ts.Node) => baum.getLineAndCharacterOfPosition(n.getStart(baum)).line + 1;
   const lauf = (n: ts.Node): void => {
     if (ts.isImportDeclaration(n) || ts.isImportEqualsDeclaration(n)) return;
+    const passt = (k: ts.Node) => (sprache === 'en' ? pfadEnglisch || istEnglisch(k) : !istEnglisch(k));
     if (ts.isTemplateExpression(n)) {
-      if (!istEnglisch(n)) {
+      if (passt(n)) {
         raus.push({
           text: n.head.text + n.templateSpans.map((s) => s.literal.text).join(''),
           wo: `${datei}:${zeile(n)}`, datei,
@@ -63,7 +65,7 @@ export function deutscheTexteAus(datei: string): Text[] {
       for (const s of n.templateSpans) s.expression.forEachChild(lauf);
       return;
     }
-    if ((ts.isStringLiteral(n) || ts.isNoSubstitutionTemplateLiteral(n)) && !istEnglisch(n)) {
+    if ((ts.isStringLiteral(n) || ts.isNoSubstitutionTemplateLiteral(n)) && passt(n)) {
       /* Bezeichner in Typen und Schlüsseln sind kein Wortlaut. */
       const p = n.parent;
       const istSchluessel = ts.isPropertyAssignment(p) && p.name === n;
@@ -76,7 +78,17 @@ export function deutscheTexteAus(datei: string): Text[] {
   return raus;
 }
 
+/** Alle deutschen Zeichenketten einer Datei. */
+export function deutscheTexteAus(datei: string): Text[] {
+  return texteAus(datei, 'de');
+}
+
 /** Alles Deutsche unter `src` außer Tests. */
 export function alleDeutschenTexte(): Text[] {
   return dateien('src').flatMap(deutscheTexteAus);
+}
+
+/** Alles Englische unter `src` außer Tests. */
+export function alleEnglischenTexte(): Text[] {
+  return dateien('src').flatMap((d) => texteAus(d, 'en'));
 }

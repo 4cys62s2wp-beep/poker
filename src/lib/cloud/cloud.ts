@@ -4,6 +4,7 @@
    bleibt die App im reinen Geräte-Modus – der komplette Firebase-Code wird
    dann gar nicht erst geladen (dynamischer Import). */
 
+import { pfadeZumLoeschen } from './konto';
 import type { Lang } from '../../i18n';
 import { sanitizeEntitlement, type Entitlement } from '../payments/provider';
 
@@ -12,6 +13,9 @@ export interface CloudUser {
   email: string;
   name: string;
   verified: boolean;
+  /** Hat das Konto ein Passwort (und nicht nur Google)? Davon hängt ab, wie man sich
+   *  erneut anmeldet und ob „Passwort ändern“ etwas bedeutet. */
+  passwort: boolean;
 }
 
 export interface CloudHandle {
@@ -49,6 +53,9 @@ export interface CloudHandle {
       ist. Der Server prüft es und liest die uid daraus; sie darf niemals aus
       der Anfrage selbst kommen. */
   getIdToken: () => Promise<string | null>;
+  /** Konto und Cloud-Daten löschen. Meldet sich dafür erneut an — mit dem Passwort
+   *  bei Konten mit Passwort, über Google sonst. */
+  deleteAccount: (passwort?: string) => Promise<void>;
   /** Rohdaten aus der Cloud – der Aufrufer muss sie sanitisieren. */
   pull: (uid: string) => Promise<unknown | null>;
   push: (uid: string, name: string, email: string, data: unknown) => Promise<void>;
@@ -63,11 +70,44 @@ interface FirebaseConfigFile {
   messagingSenderId?: string;
 }
 
+/**
+ * Warum es keine Cloud gibt — zwei Gründe, die sich anders anfühlen:
+ * - `nicht-eingerichtet`: Die Konfigurationsdatei gibt es nicht (404, kein JSON,
+ *   Einzeldatei-Build). Das ist eine Eigenschaft dieser Installation.
+ * - `offline`: Die Datei ließ sich nicht holen (kein Netz, Serverfehler). Das
+ *   ist ein Zustand, der vorbeigeht.
+ */
+export type CloudAusfall = 'nicht-eingerichtet' | 'offline';
+let ausfall: CloudAusfall | null = null;
+
+export function cloudAusfall(): CloudAusfall | null {
+  return ausfall;
+}
+
+/** Nach einem Ausfall wegen fehlenden Netzes den nächsten Versuch zulassen. */
+export function setzeCloudZurueck(): void {
+  if (ausfall === 'offline') handlePromise = null;
+}
+
 async function loadConfig(): Promise<FirebaseConfigFile | null> {
+  ausfall = null;
+  let res: Response;
   try {
     const url = new URL('firebase-config.json', document.baseURI).toString();
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) return null;
+    res = await fetch(url, { cache: 'no-store' });
+  } catch {
+    ausfall = 'offline';
+    return null;
+  }
+  if (res.status === 404) {
+    ausfall = 'nicht-eingerichtet';
+    return null;
+  }
+  if (!res.ok) {
+    ausfall = 'offline';
+    return null;
+  }
+  try {
     const json: unknown = await res.json();
     const cfg = json as Partial<FirebaseConfigFile> | null;
     if (
@@ -79,10 +119,12 @@ async function loadConfig(): Promise<FirebaseConfigFile | null> {
     ) {
       return cfg as FirebaseConfigFile;
     }
-    return null;
   } catch {
-    return null;
+    /* Kein JSON — der Entwicklungsserver liefert für eine fehlende Datei die
+       Startseite. Das ist „nicht eingerichtet", nicht „kein Netz". */
   }
+  ausfall = 'nicht-eingerichtet';
+  return null;
 }
 
 /* Firebase-Fehlercodes in verständlichen Text übersetzen – in beiden Sprachen.
@@ -107,7 +149,7 @@ const ERROR_MESSAGES: Record<Lang, Record<string, string>> = {
     'auth/account-exists-with-different-credential':
       'Für diese E-Mail existiert bereits ein Konto mit Passwort – melde dich damit an.',
     'auth/operation-not-allowed': 'Diese Anmeldeart ist noch nicht aktiviert.',
-    'auth/unauthorized-domain': 'Diese Website ist in Firebase noch nicht freigeschaltet.',
+    'auth/unauthorized-domain': 'Die Anmeldung ist auf dieser Adresse noch nicht freigeschaltet.',
     'auth/popup-closed-by-user': 'Anmeldung abgebrochen.',
     'permission-denied': 'Zugriff verweigert – ist deine E-Mail-Adresse schon bestätigt?',
     unavailable: 'Der Sync-Dienst ist gerade nicht erreichbar – deine Daten bleiben lokal gesichert.',
@@ -125,7 +167,7 @@ const ERROR_MESSAGES: Record<Lang, Record<string, string>> = {
     'auth/account-exists-with-different-credential':
       'An account with a password already exists for this email – please sign in with that instead.',
     'auth/operation-not-allowed': 'This sign-in method is not enabled yet.',
-    'auth/unauthorized-domain': 'This website is not authorized in Firebase yet.',
+    'auth/unauthorized-domain': 'Sign-in is not enabled for this address yet.',
     'auth/popup-closed-by-user': 'Sign-in cancelled.',
     'permission-denied': 'Access denied – has your email address been confirmed yet?',
     unavailable: 'The sync service is unreachable right now – your data stays saved on this device.',
@@ -148,7 +190,7 @@ export function getCloud(): Promise<CloudHandle | null> {
 
 async function init(): Promise<CloudHandle | null> {
   // Einzeldatei-Build (Vorschau-Artefakt): kein Cloud-Code einbinden.
-  if (__SINGLE__) return null;
+  if (__SINGLE__) { ausfall = 'nicht-eingerichtet'; return null; }
   const cfg = await loadConfig();
   if (!cfg) return null;
 
@@ -180,6 +222,7 @@ async function init(): Promise<CloudHandle | null> {
             email: u.email,
             name: u.displayName ?? '',
             verified: u.emailVerified,
+            passwort: u.providerData.some((p) => p.providerId === 'password'),
           }
         : null;
 
@@ -227,6 +270,47 @@ async function init(): Promise<CloudHandle | null> {
       },
       async logout() {
         await authMod.signOut(auth);
+      },
+      /* Konto löschen (E-084). Reihenfolge mit Grund:
+         1. **Erneut anmelden.** Firebase verlangt für das Löschen eine frische
+            Anmeldung; ohne sie scheitert der letzte Schritt mit
+            `auth/requires-recent-login`, nachdem die Daten schon weg sind.
+         2. **Daten zuerst**, solange die Anmeldung gilt — danach hat der Client
+            keine Rechte mehr an ihnen.
+         3. **Zuletzt das Konto.** Scheitert Schritt 2 halb, ist das Konto noch
+            da und der Versuch wiederholbar; der Server räumt Reste beim
+            Löschen auf (`functions/src/konto.ts`). */
+      async deleteAccount(passwort) {
+        const user = auth.currentUser;
+        if (!user || !user.email) {
+          throw Object.assign(new Error('Kein Konto'), { code: 'auth/user-not-found' });
+        }
+        if (user.providerData.some((p) => p.providerId === 'password')) {
+          if (!passwort) throw Object.assign(new Error('Passwort fehlt'), { code: 'auth/wrong-password' });
+          await authMod.reauthenticateWithCredential(
+            user,
+            authMod.EmailAuthProvider.credential(user.email, passwort),
+          );
+        } else {
+          await authMod.reauthenticateWithPopup(user, new authMod.GoogleAuthProvider());
+        }
+        /* Ohne bestätigte Adresse darf der Client nichts in Firestore (Regeln);
+           dann gibt es dort auch nichts zu löschen. */
+        if (user.emailVerified) {
+          const uid = user.uid;
+          const ids = async (sammlung: string) =>
+            (await fsMod.getDocs(fsMod.collection(db, 'social', uid, sammlung))).docs.map((d) => d.id);
+          const [freunde, anfragen, gesendet] = await Promise.all([
+            ids('friends'), ids('requests'), ids('outgoing'),
+          ]);
+          const pfade = pfadeZumLoeschen(uid, { freunde, anfragen, gesendet });
+          for (let i = 0; i < pfade.length; i += 400) {
+            const batch = fsMod.writeBatch(db);
+            for (const p of pfade.slice(i, i + 400)) batch.delete(fsMod.doc(db, p));
+            await batch.commit();
+          }
+        }
+        await authMod.deleteUser(user);
       },
       async resetPassword(email) {
         await authMod.sendPasswordResetEmail(auth, email);

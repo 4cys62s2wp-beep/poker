@@ -51,9 +51,9 @@ export const STR = defineStrings(
 
     settingsSection: 'Einstellungen',
     profileNameLabel: 'Name dieses Profils',
-    profileNamePlaceholder: 'z. B. Lorenz',
+    profileNamePlaceholder: 'Dein Name',
     emailLabel: 'E-Mail (optional, für die Profil-Zuordnung)',
-    emailPlaceholder: 'du@example.de',
+    emailPlaceholder: 'name@beispiel.de',
     save: 'Speichern',
     languageLabel: 'Sprache / Language',
     modusLabel: 'Farben',
@@ -76,13 +76,9 @@ export const STR = defineStrings(
     importOk: 'Backup erfolgreich eingespielt – dein Fortschritt wurde übernommen.',
     importError: 'Das war keine gültige PokerMentor-Backup-Datei.',
 
-    installTitle: 'Als App installieren',
-    installBody1: 'PokerMentor ist eine PWA: Öffne die Website auf dem Handy und wähle im Browser-Menü',
-    installStrong: '„Zum Startbildschirm hinzufügen“',
-    installBody2:
-      '(iOS: Teilen-Symbol → „Zum Home-Bildschirm“). Danach startet die App wie eine native App und funktioniert auch offline.',
 
     aboutTitle: 'Über PokerMentor',
+    bauStand: (stand: string) => `Stand: ${stand}.`,
     aboutBody:
       'Version 2.2 · Eine Lern- und Trainings-App für Poker – ohne Echtgeld und ohne Tracking. Poker ist ein Geschicklichkeitsspiel mit erheblichem Glücksanteil: Spiele verantwortungsvoll und setze dir Grenzen, bevor du an einen echten Tisch gehst (Modul „Psychologie & Bankroll“).',
   },
@@ -135,7 +131,7 @@ export const STR = defineStrings(
 
     settingsSection: 'Settings',
     profileNameLabel: 'Name of this profile',
-    profileNamePlaceholder: 'e.g. Lorenz',
+    profileNamePlaceholder: 'Your name',
     emailLabel: 'Email (optional, to identify the profile)',
     emailPlaceholder: 'you@example.com',
     save: 'Save',
@@ -159,13 +155,9 @@ export const STR = defineStrings(
     importOk: 'Backup imported successfully – your progress has been restored.',
     importError: 'That was not a valid PokerMentor backup file.',
 
-    installTitle: 'Install as an App',
-    installBody1: 'PokerMentor is a PWA: open the website on your phone and choose',
-    installStrong: '“Add to Home Screen”',
-    installBody2:
-      'in the browser menu (iOS: share icon → “Add to Home Screen”). After that the app launches like a native app and also works offline.',
 
     aboutTitle: 'About PokerMentor',
+    bauStand: (stand: string) => `Build: ${stand}.`,
     aboutBody:
       'Version 2.2 · A learning and training app for poker – no real money, no tracking. Poker is a game of skill with a significant element of luck: play responsibly and set yourself limits before you sit down at a real table (module “Psychology & Bankroll”).',
   },

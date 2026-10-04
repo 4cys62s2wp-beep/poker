@@ -267,3 +267,29 @@ describe('Der Live-Bereich erzwingt den dunklen Satz', () => {
     expect(CSS).toContain('[data-modus="dunkel"] {');
   });
 });
+
+describe('Die Statusleiste hat die Farbe der Seite', () => {
+  it('führt je Satz den Grund der Seite (--bg)', async () => {
+    const { STATUSLEISTE } = await import('../design/modus');
+    expect(STATUSLEISTE.dunkel).toBe(SAETZE.dunkel['--bg']);
+    expect(STATUSLEISTE.hell).toBe(SAETZE.hell['--bg']);
+  });
+
+  it('steht in index.html und im Manifest wörtlich gleich', async () => {
+    const { STATUSLEISTE } = await import('../design/modus');
+    const html = readFileSync('index.html', 'utf8');
+    expect(html).toContain(`content="${STATUSLEISTE.dunkel}"`);
+    expect(html).toContain(`'${STATUSLEISTE.hell}'`);
+    expect(html).toContain(`'${STATUSLEISTE.dunkel}'`);
+    const manifest = JSON.parse(readFileSync('public/manifest.webmanifest', 'utf8'));
+    expect(manifest.theme_color).toBe(STATUSLEISTE.dunkel);
+    expect(manifest.background_color).toBe(STATUSLEISTE.dunkel);
+  });
+
+  it('wird beim Umschalten nachgezogen — auch am Tisch, der dunkel erzwingt', () => {
+    const modus = readFileSync('src/lib/design/modus.ts', 'utf8');
+    expect(modus).toMatch(/export function wendeAn[\s\S]*setzeStatusleiste\(satz\)/);
+    const app = readFileSync('src/App.tsx', 'utf8');
+    expect(app).toMatch(/setzeStatusleiste\(erzwingtDunkel\(ort\.pathname\) \? 'dunkel' : satz\)/);
+  });
+});

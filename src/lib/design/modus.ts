@@ -67,9 +67,31 @@ export function tokensatzFuer(modus: Modus): Tokensatz {
   return modus === 'system' ? systemvorgabe() : modus;
 }
 
+/**
+ * Die Farbe der Statusleiste je Satz — der Grund der Seite, damit Leiste und
+ * Seite eine Fläche sind. Vorher stand sie fest auf dem dunklen Wert, auch im
+ * hellen Modus: ein schwarzer Balken über einer cremefarbenen App. Die Werte
+ * stehen als `--bg` in global.css; `farbmodi.test.ts` hält beide zusammen.
+ * Auch in `index.html` stehen sie wörtlich (das Skript läuft vor allem).
+ */
+export const STATUSLEISTE: Record<Tokensatz, string> = { dunkel: '#0c110e', hell: '#ece9e0' };
+
+/** `<meta name="theme-color">` auf den Satz stellen (und anlegen, falls es fehlt). */
+export function setzeStatusleiste(satz: Tokensatz): void {
+  if (typeof document === 'undefined') return;
+  let tag = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  if (!tag) {
+    tag = document.createElement('meta');
+    tag.name = 'theme-color';
+    document.head.appendChild(tag);
+  }
+  tag.content = STATUSLEISTE[satz];
+}
+
 /** Den Satz auf das Dokument schreiben. */
 export function wendeAn(modus: Modus): Tokensatz {
   const satz = tokensatzFuer(modus);
+  setzeStatusleiste(satz);
   if (typeof document !== 'undefined') {
     document.documentElement.setAttribute('data-modus', satz);
     /* Damit Formularfelder, Scrollbalken und die Auswahlmarkierung des

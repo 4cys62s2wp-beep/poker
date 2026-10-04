@@ -96,6 +96,8 @@ export function PotOddsDrill() {
    *  Sitzung, nichts wird gespeichert — kein Konto, keine Ablage. */
   const [verlauf, setVerlauf] = useState<boolean[]>([]);
   const letztesZugbild = useRef<number | undefined>(undefined);
+  /** Zählt die Neuversuche nach einem Ladefehler. */
+  const [neuVersuch, setNeuVersuch] = useState({});
 
   useEffect(() => {
     let lebt = true;
@@ -107,7 +109,7 @@ export function PotOddsDrill() {
         if (lebt) setFehler(f instanceof Error ? f.message : String(f));
       });
     return () => { lebt = false; };
-  }, []);
+  }, [neuVersuch]);
 
   /* Setzt eine neue Adresse. Angezeigt wird erst, was der Effekt darunter
      wieder daraus liest – ein Umweg mit Absicht (siehe Kopf der Datei). */
@@ -197,10 +199,27 @@ export function PotOddsDrill() {
         <Zurueck to="/lernen" />
         <div className="card" style={{ borderColor: 'var(--danger)' }}>
           <div className="drill-fehler-titel">{L.errorTitle}</div>
-          <p className="small" style={{ marginTop: 'var(--sp-2)' }}>{schlimm}</p>
-          {/* Im Einzeldatei-Build fehlen die Daten immer — dort ist „npm run
-              daten" kein Rat für den, der die Datei bekommen hat. */}
-          <p className="small muted">{__SINGLE__ ? L.errorHintSingle : L.errorHint}</p>
+          <p className="small" style={{ marginTop: 'var(--sp-2)' }}>
+            {__SINGLE__ ? L.errorHintSingle : L.errorBody}
+          </p>
+          {/* Was wirklich schiefging, steht eine Ebene tiefer: für den, der es
+              weitergeben will, nicht für den, der nur weiterüben möchte. Ein
+              Befehl für den Betreiber („npm run daten") gehört nicht in den
+              Text eines Nutzers. */}
+          {!__SINGLE__ && (
+            <button
+              type="button"
+              className="btn primary"
+              style={{ marginTop: 'var(--sp-3)' }}
+              onClick={() => { setFehler(null); setDaten(null); setNeuVersuch({}); }}
+            >
+              {L.retry}
+            </button>
+          )}
+          <details className="small muted" style={{ marginTop: 'var(--sp-3)' }}>
+            <summary>{L.details}</summary>
+            <p>{schlimm}</p>
+          </details>
         </div>
       </div>
     );

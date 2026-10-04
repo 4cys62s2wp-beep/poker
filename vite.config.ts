@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto';
+import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { buildCsp, isValidAuthDomain } from './src/lib/csp';
+import { setzeAdresse } from './src/lib/oeffentlicheAdresse';
 import { defineConfig, type Plugin } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 
@@ -38,6 +40,16 @@ function inlineSkriptHashes(html: string): string[] {
     .map((m) => `'sha256-${createHash('sha256').update(m[1], 'utf8').digest('base64')}'`);
 }
 
+function adressPlugin(): Plugin {
+  return {
+    name: 'oeffentliche-adresse',
+    transformIndexHtml: {
+      order: 'pre',
+      handler: (html) => setzeAdresse(html, process.env.VITE_PUBLIC_URL),
+    },
+  };
+}
+
 function cspPlugin(): Plugin {
   return {
     name: 'inject-csp',
@@ -55,11 +67,25 @@ function cspPlugin(): Plugin {
   };
 }
 
+/* Welcher Stand ist das? Datum und Kurzfassung der Version — damit „Ich habe die
+   neue Fassung" eine Auskunft ist und kein Gefühl. Ohne Git (Tarball-Build)
+   bleibt nur das Datum. */
+function bauStand(): string {
+  const datum = new Date().toISOString().slice(0, 10);
+  try {
+    const sha = (process.env.GITHUB_SHA ?? execSync('git rev-parse HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString()).trim().slice(0, 7);
+    return sha ? `${datum} · ${sha}` : datum;
+  } catch {
+    return datum;
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), cspPlugin()],
+  plugins: [react(), adressPlugin(), cspPlugin()],
   base: './',
   define: {
     __SINGLE__: 'false',
+    __BAU__: JSON.stringify(bauStand()),
   },
   build: {
     outDir: 'dist',

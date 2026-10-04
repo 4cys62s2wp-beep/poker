@@ -68,4 +68,17 @@ describe('Service Worker', () => {
     const bau = readFileSync('package.json', 'utf8');
     expect(bau).toContain('node scripts/sw-dateien.mjs');
   });
+
+  it('hat für die Konfigurationsdateien einen Rückfall — online live, offline der letzte Stand', () => {
+    /* Ohne Netz fehlte `firebase-config.json`; die App hielt die Cloud für nicht
+       eingerichtet und zeigte einem angemeldeten Nutzer „Geräte-Modus aktiv"
+       statt seines Kontos (E-084). Nicht erreichbar ist nicht nicht vorhanden. */
+    const zweig = SW.slice(SW.indexOf('firebase-config|monetization|legal'));
+    const bis = zweig.indexOf("if (req.mode === 'navigate')");
+    const block = zweig.slice(0, bis);
+    expect(block).toContain('fetch(req)');
+    expect(block).toContain('caches.match(req, { ignoreVary: true })');
+    expect(block).toContain('res.ok');
+    expect(SW).not.toMatch(/nie cachen/);
+  });
 });

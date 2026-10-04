@@ -9,6 +9,7 @@ import { ProProvider } from './lib/pro/ProProvider';
 import { SocialProvider } from './lib/social/SocialProvider';
 import { LanguageProvider } from './i18n';
 import { restoreFromMirrorIfNeeded } from './lib/storage';
+import { registriereWorker } from './lib/aktualisierung';
 import '@fontsource-variable/fraunces';
 import '@fontsource-variable/manrope';
 import './styles/global.css';
@@ -48,11 +49,6 @@ restoreFromMirrorIfNeeded()
   .catch(() => false)
   .finally(render);
 
-// PWA: Service Worker nur im normalen Build registrieren
-if (!__SINGLE__ && 'serviceWorker' in navigator && !location.hostname.includes('localhost')) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {
-      // Offline-Modus optional – Fehler still ignorieren
-    });
-  });
-}
+// PWA: Service Worker nur im normalen Build registrieren; neue Fassungen warten
+// auf die Übernahme durch den Nutzer (siehe src/lib/aktualisierung.ts).
+registriereWorker();

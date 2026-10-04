@@ -18,7 +18,9 @@ import { STR as LEGAL } from '../i18n/pages/legal';
 import { STR as PRO_STR } from '../i18n/pages/pro';
 import { zeichenFuer } from '../lib/zeichen';
 import { usePro } from '../lib/pro/ProProvider';
+import { InstallierenKarte } from '../components/InstallierenKarte';
 import { Zurueck } from '../components/ui';
+import { useCloud } from '../lib/cloud/CloudProvider';
 
 export function ProfilePage() {
   const {
@@ -29,6 +31,7 @@ export function ProfilePage() {
   const proCtx = usePro();
   const P = STR[lang];
   const { modus, setzeModus } = useFarbmodus();
+  const cloud = useCloud();
   const [nameInput, setNameInput] = useState(data.name);
   const [emailInput, setEmailInput] = useState(activeProfile.email ?? '');
   const [confirmReset, setConfirmReset] = useState(false);
@@ -204,7 +207,9 @@ export function ProfilePage() {
           nicht erreichbar, obwohl die alte Erreichbarkeitstabelle „über
           Profil" behauptete. Diese Zeilen sind die Korrektur. */}
       <div style={{ display: 'grid', gap: 'var(--sp-2)', marginTop: 'var(--sp-3)' }}>
-        <ProfilLink to="/freunde" icon={zeichenFuer('/freunde')} label={FRIENDS[lang].navFriends} />
+        {cloud.phase !== 'unavailable' && (
+          <ProfilLink to="/freunde" icon={zeichenFuer('/freunde')} label={FRIENDS[lang].navFriends} />
+        )}
         {proCtx.enabled && <ProfilLink to="/pro" icon={zeichenFuer('/pro')} label={PRO_STR[lang].navPro} />}
         <ProfilLink to="/rechtliches" icon={zeichenFuer('/rechtliches')} label={LEGAL[lang].navLegal} />
         {/* § 312k BGB: ohne Anmeldung erreichbar, deshalb dauerhaft sichtbar,
@@ -456,17 +461,13 @@ export function ProfilePage() {
 
       <ShareCard />
 
-      <div className="card" style={{ marginTop: 14 }}>
-        <div style={{ fontWeight: 700, marginBottom: 6 }}>{P.installTitle}</div>
-        <p className="small muted">
-          {P.installBody1} <strong>{P.installStrong}</strong> {P.installBody2}
-        </p>
-      </div>
+      <InstallierenKarte />
 
       <div className="card" style={{ marginTop: 14 }}>
         <div style={{ fontWeight: 700, marginBottom: 6 }}>{P.aboutTitle}</div>
         <p className="small muted">
           {P.aboutBody}
+          {' '}{P.bauStand(__BAU__)}
         </p>
       </div>
 

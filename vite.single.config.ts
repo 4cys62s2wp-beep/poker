@@ -8,6 +8,7 @@ export default defineConfig({
   base: './',
   define: {
     __SINGLE__: 'true',
+    __BAU__: JSON.stringify('Einzeldatei'),
   },
   build: {
     outDir: 'dist-single',

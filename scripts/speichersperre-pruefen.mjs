@@ -164,7 +164,7 @@ let vollErgebnis = null;
 try {
   await vollSeite.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
   await vollSeite.waitForTimeout(1800);
-  const feld = vollSeite.locator('input[placeholder="z. B. Lorenz"]').first();
+  const feld = vollSeite.locator('#profil-name').first();
   const speichern = vollSeite.locator('button', { hasText: 'Speichern' }).first();
 
   await feld.fill(NAME_ALT);

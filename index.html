@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0b100d" />
+    <meta name="theme-color" content="#0c110e" />
     <!-- Farbmodus vor dem ersten Zeichnen setzen.
          Ohne dieses Skript sieht man beim Start kurz den dunklen Satz und
          dann den hellen — ein Aufblitzen, das sich nachher nicht mehr
@@ -19,19 +19,22 @@
           }
           document.documentElement.setAttribute('data-modus', wahl);
           document.documentElement.style.colorScheme = wahl === 'hell' ? 'light' : 'dark';
+          /* Statusleiste in der Farbe der Seite (Werte: STATUSLEISTE in modus.ts). */
+          var leiste = document.querySelector('meta[name="theme-color"]');
+          if (leiste) leiste.setAttribute('content', wahl === 'hell' ? '#ece9e0' : '#0c110e');
         } catch (e) {
           document.documentElement.setAttribute('data-modus', 'dunkel');
         }
       })();
     </script>
     <meta name="description" content="PokerMentor – Deine Poker-Schule: Lerne Strategien, trainiere Skills und werde ein besserer Spieler. Für Online- und Live-Poker. Auch auf Englisch verfügbar." />
-    <!-- Link-Vorschau (WhatsApp, Instagram, iMessage, X): og:url/og:image nach Domain-Umzug anpassen, siehe DOMAIN_SETUP.md -->
+    <!-- Link-Vorschau (WhatsApp, Instagram, iMessage, X): og:url/og:image kommen beim Bauen aus VITE_PUBLIC_URL (src/lib/oeffentlicheAdresse.ts), siehe DOMAIN_SETUP.md -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="PokerMentor" />
     <meta property="og:title" content="PokerMentor – Lerne Poker wie ein Pro" />
     <meta property="og:description" content="Poker-Schule als App: 9 Module, Live-Coach für den Pokerabend, Trainer, Übungstisch, Chip-Rechner. Deutsch & Englisch, ohne Echtgeld." />
-    <meta property="og:url" content="https://4cys62s2wp-beep.github.io/poker/" />
-    <meta property="og:image" content="https://4cys62s2wp-beep.github.io/poker/og.png" />
+    <meta property="og:url" content="%OEFFENTLICHE_ADRESSE%" />
+    <meta property="og:image" content="%OEFFENTLICHE_ADRESSE%og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="PokerMentor – Poker lernen ohne Echtgeld" />
@@ -53,7 +56,28 @@
     <title>PokerMentor</title>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Das erste Bild: Marke und Name, noch bevor ein Byte JavaScript gelaufen ist.
+         React ersetzt den Inhalt von #root beim Start. Der Pfad und die Farben sind
+         die der Marke (public/icons/icon.svg, Tokens --marke-*); ein Test hält sie
+         zusammen. Vorher stand hier ein leerer Kasten, und auf einem langsamen
+         Gerät sah man eine halbe Sekunde lang nichts — und ohne JavaScript für
+         immer nichts. -->
+    <div id="root">
+      <div class="kaltstart" role="status">
+        <svg class="kaltstart-marke" viewBox="0 0 512 512" width="72" height="72" aria-hidden="true">
+          <defs>
+            <radialGradient id="kaltstart-grund" cx="50%" cy="38%" r="80%">
+              <stop offset="0%" stop-color="#2f7f5e" />
+              <stop offset="100%" stop-color="#123a2b" />
+            </radialGradient>
+          </defs>
+          <rect width="512" height="512" rx="104" fill="url(#kaltstart-grund)" />
+          <path fill="#edcf87" transform="translate(256 256) scale(1.2) translate(-256 -229)" d="M256 96c-14 44-120 118-120 186 0 38 30 66 66 66 20 0 38-8 50-22-4 32-16 58-38 76v14h84v-14c-22-18-34-44-38-76 12 14 30 22 50 22 36 0 66-28 66-66 0-68-106-142-120-186z" />
+        </svg>
+        <span class="kaltstart-name">PokerMentor</span>
+        <noscript><span class="kaltstart-hinweis">PokerMentor braucht JavaScript. Bitte schalte es im Browser ein.</span></noscript>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

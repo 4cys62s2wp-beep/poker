@@ -14,6 +14,7 @@
 import { useMemo, useState } from 'react';
 import { zahlAusEingabe } from '../../lib/eingabe/zahl';
 import { Link, useNavigate } from 'react-router-dom';
+import { InstallierenKarte } from '../../components/InstallierenKarte';
 import { Zurueck } from '../../components/ui';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/live';
@@ -114,6 +115,10 @@ export function EinrichtenPage() {
           <Link to="/session/live" className="btn primary">{L.zurUhr}</Link>
         </section>
       )}
+
+      {/* Hier, nicht beim Lernen: Wer einen Abend einrichtet, will Vollbild und
+          einen Bildschirm, der anbleibt — das ist der Grund, die App zu installieren. */}
+      <InstallierenKarte />
 
       <div className="einrichten">
         {/* ── Koffer ───────────────────────────────────────────────────── */}

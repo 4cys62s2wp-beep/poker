@@ -1,6 +1,9 @@
 import { bereichVon } from './lib/design/bereich';
 import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
+import { useFarbmodus } from './lib/design/FarbmodusProvider';
+import { setzeStatusleiste } from './lib/design/modus';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { Scrollverwaltung } from './components/Scrollverwaltung';
 import { Layout } from './components/Layout';
 import { horcheAufBedienung } from './lib/design/haptik';
@@ -103,6 +106,13 @@ export function App() {
      angemeldet. In jeden Bildschirm einzeln geschrieben, fehlte sie beim
      nächsten neuen Knopf, und niemandem fiele es auf. */
   useEffect(() => horcheAufBedienung(document), []);
+
+  /* Die Statusleiste folgt dem Satz, der gerade gilt — und der Tisch erzwingt
+     dunkel (Regel 11.1), also auch seine Leiste. */
+  const { satz } = useFarbmodus();
+  useEffect(() => {
+    setzeStatusleiste(erzwingtDunkel(ort.pathname) ? 'dunkel' : satz);
+  }, [ort.pathname, satz]);
 
   /* Die App ist gestartet — ein früherer Absturz war also kein Muster.
      Der Fehlerbildschirm bietet den Notausgang erst beim zweiten Mal an. */
@@ -233,7 +243,7 @@ export function App() {
           <Route path="/tools/tells" element={<Navigate to="/nachschlagen/tells" replace />} />
           <Route path="/tools" element={<Navigate to="/" replace />} />
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
       </div>

@@ -10,6 +10,10 @@ import { STR } from '../i18n/pages/legal';
 import { loadLegalConfig, type LegalConfig } from '../lib/legal';
 import { usePro } from '../lib/pro/ProProvider';
 
+/** Die Beratungsstelle für Glücksspielsucht (kostenlos, anonym). */
+const HILFE_TELEFON = '0800 1 37 27 00';
+const HILFE_ADRESSE = 'check-dein-spiel.de';
+
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="card" style={{ marginBottom: 14 }}>
@@ -96,7 +100,10 @@ export function LegalPage() {
         <p className="small muted" style={{ marginBottom: 12 }}>{L.privacyHosting}</p>
 
         <div style={{ fontWeight: 700, marginBottom: 4 }}>{L.privacyRightsTitle}</div>
-        <p className="small muted">{L.privacyRights}</p>
+        <p className="small muted">
+          {L.privacyRights}
+          {legal && <> {L.privacyRightsMail1} <a href={`mailto:${legal.email}`}>{legal.email}</a> {L.privacyRightsMail2}</>}
+        </p>
       </Section>
 
       <Section title={L.termsTitle}>
@@ -116,7 +123,15 @@ export function LegalPage() {
       </Section>
 
       <Section title={L.responsibleTitle}>
-        <p className="small muted">{L.responsible}</p>
+        {/* Telefonnummer und Adresse sind Links mit voller Tippfläche: Wer die
+            Kontrolle verliert, soll die Hilfe antippen können, nicht abtippen. */}
+        <p className="small muted">
+          {L.responsibleA}{' '}
+          <a className="hilfe-link" href={`tel:${HILFE_TELEFON.replace(/\s/g, '')}`}>{HILFE_TELEFON}</a>{' '}
+          {L.responsibleB}{' '}
+          <a className="hilfe-link" href={`https://${HILFE_ADRESSE}`} target="_blank" rel="noopener noreferrer">{HILFE_ADRESSE}</a>.{' '}
+          {L.responsibleC}
+        </p>
       </Section>
 
       <div className="suit-deco">♠ ♥ ♦ ♣</div>

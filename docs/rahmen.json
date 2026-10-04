@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T09:36:25.252Z",
+  "geprueft_am": "2026-10-04T10:14:33.475Z",
   "befunde_gesamt": 0,
   "je_bereich": {},
   "messwerte": {
@@ -31,7 +31,7 @@
       {
         "seite": "Profil",
         "adresse": "profil",
-        "seitenhoehe": 5437,
+        "seitenhoehe": 5025,
         "gescrollt": 1800,
         "titel": "Profil",
         "rueckweg": "Start"
@@ -250,6 +250,20 @@
       "links": 33,
       "rechts": 33,
       "breite": 754
+    },
+    "statusleiste": {
+      "dunkel": {
+        "meta": "#0c110e",
+        "grund": "#0c110e"
+      },
+      "umgeschaltet": {
+        "meta": "#ece9e0",
+        "grund": "#ece9e0"
+      },
+      "hell": {
+        "meta": "#ece9e0",
+        "grund": "#ece9e0"
+      }
     }
   },
   "befunde": []

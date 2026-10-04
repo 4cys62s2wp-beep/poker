@@ -9,7 +9,10 @@ import { zeichenFuer, type ZeichenPfad } from '../lib/zeichen';
 import { STR as LEGAL } from '../i18n/pages/legal';
 import { usePro } from '../lib/pro/ProProvider';
 import { OnlineBadge } from './social/OnlineBadge';
+import { useCloud } from '../lib/cloud/CloudProvider';
 import { Kopfzeile } from './Kopfzeile';
+import { Marke } from './Marke';
+import { UpdateBand } from './UpdateBand';
 import { breiteVon, findeOrt, ortName, waehleAktiv, type NavZiel, type OrtPfad } from '../lib/orte';
 import { ladeLaufende, type LaufendeSession } from '../lib/session/laufend';
 import { standDerUhr } from '../lib/live/uhr';
@@ -85,7 +88,13 @@ export function Layout() {
       ],
     },
   ];
-  const fussEintraege: NavEintrag[] = [eintrag('/profil'), eintrag('/freunde')];
+  /* Freunde gibt es nur mit Cloud. Wo es sie nicht gibt, steht der Eintrag nicht
+     da — ein Weg in eine Seite, die „nicht eingerichtet" sagt, ist keiner. */
+  const cloud = useCloud();
+  const fussEintraege: NavEintrag[] = [
+    eintrag('/profil'),
+    ...(cloud.phase === 'unavailable' ? [] : [eintrag('/freunde')]),
+  ];
   const aktiv = waehleAktiv(
     [...navGroups.flatMap((g) => g.items), ...fussEintraege, eintrag('/pro')],
     location.pathname,
@@ -124,9 +133,7 @@ export function Layout() {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand">
-          <span className="spade">
-            <Icon name="spade" size={18} />
-          </span>
+          <Marke groesse={34} />
           <span className="grad">PokerMentor</span>
         </div>
         <nav className="sidebar-nav" aria-label={L.navOverview}>
@@ -178,6 +185,7 @@ export function Layout() {
 
       <div className="inhalt">
         <Kopfzeile mainRef={mainRef} />
+        <UpdateBand />
         <main className="main" ref={mainRef} data-breite={breiteVon(location.pathname)}>
           <Outlet />
         </main>

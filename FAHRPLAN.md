@@ -213,7 +213,7 @@ In Layout.tsx (Z. 35–57) die Aktiv-Logik so bauen, dass der längste passende 
 **Ziel:** Wer die App über einen Link öffnet oder installiert, sieht in beiden Modi dieselbe klare Marke, keine Entwickleranweisungen, funktionierende Verknüpfungen, und kann sein Konto selbst verwalten und löschen.  
 **Baut auf:** 1
 
-### [ ] 3.1 Eine Marke, in hell und dunkel sichtbar, gleich auf Favicon, Home-Bildschirm und in der App  
+### [x] 3.1 Eine Marke, in hell und dunkel sichtbar, gleich auf Favicon, Home-Bildschirm und in der App  
 *Wirkung 4 · Aufwand S*
 
 Die Tokens --marke-pik (#edcf87) und --marke-grund (#2f7f5e → #123a2b) außerhalb der Modusblöcke anlegen, nach dem Muster aus E-034, statt --auszeichnung-lesbar (heute #5f4810 auf Grün: 1,4–1,6:1). Icon.tsx:74 übernimmt den Pfad aus public/icons/icon.svg, der Pik füllt etwa 55–60 % der Kachel. scripts/gen-icons.mjs rendert die PNGs (180/192/512, maskable) per Playwright aus icon.svg statt aus der Herzformel insideSpade; apple-touch-icon und maskable als volle Quadrate ohne Alpha-Ecken. Ein Test in farbmodi.test.ts bzw. design.test.ts prüft ≥ 3:1. og.png mit eingebetteter Fraunces und Manrope neu erzeugen (nachrangig).
@@ -226,7 +226,7 @@ Die Tokens --marke-pik (#edcf87) und --marke-grund (#2f7f5e → #123a2b) außerh
 
 </details>
 
-### [ ] 3.2 Statusleiste passt zum Farbmodus  
+### [x] 3.2 Statusleiste passt zum Farbmodus  
 *Wirkung 4 · Aufwand S*
 
 Das Inline-Skript in index.html setzt theme-color passend zur gespeicherten Wahl (heute fest #0b100d, auch im Manifest), der FarbmodusProvider zieht beim Umschalten nach. Zwei media-Tags allein reichen nicht, weil die Nutzerwahl die Systemeinstellung überschreibt. Für iOS apple-mobile-web-app-status-bar-style im hellen Modus erst nach einem Test auf dem Gerät ändern; das Tag lässt sich nicht live umschalten.
@@ -238,7 +238,7 @@ Das Inline-Skript in index.html setzt theme-color passend zur gespeicherten Wahl
 
 </details>
 
-### [ ] 3.3 Manifest reparieren: tote Verknüpfung, zweisprachige Beschreibung, Vorschaubilder  
+### [x] 3.3 Manifest reparieren: tote Verknüpfung, zweisprachige Beschreibung, Vorschaubilder  
 *Wirkung 3 · Aufwand S*
 
 Die Verknüpfung „Pokerabend“ in public/manifest.webmanifest:38 zeigt auf ./#/session/tisch, eine Route, die es seit E-030 nicht mehr gibt; „*“ leitet zur Startseite um. Ihr Text „Die App übernimmt Karten, Chips und Blinds“ beschreibt den entfernten Tisch. Neu: Name „Abend starten“, Text „Blind-Uhr und Chips für euren Abend“, Ziel ./#/session/live/einrichten. Das erst ausliefern, wenn Punkt 7.1 verhindert, dass Einrichten einen laufenden Abend überschreibt; bis dahin ./#/session/live (B21). description nur auf Deutsch. Ein Test prüft, dass jede shortcuts[].url auf eine Route aus App.tsx zeigt. screenshots (narrow/wide) aus dem vorhandenen Playwright-Lauf erzeugen. Eine gestaltete 404-Seite statt stiller Umleitung und die Zeile „Modul nicht gefunden“ sind nachrangig.
@@ -251,7 +251,7 @@ Die Verknüpfung „Pokerabend“ in public/manifest.webmanifest:38 zeigt auf ./
 
 </details>
 
-### [ ] 3.4 Marke ab dem ersten Bild beim Kaltstart  
+### [x] 3.4 Marke ab dem ersten Bild beim Kaltstart  
 *Wirkung 3 · Aufwand S*
 
 In index.html ein Inline-SVG mit Markenkachel und Schriftzug in #root (React ersetzt es); die Farben kommen über das vorhandene Farbmodus-Skript, dazu ein <noscript>-Hinweis. Das Paket bleibt unverändert (E-043/E-067). apple-touch-startup-image weglassen, weil es über 20 Gerätegrößen mal 2 Modi verlangt.
@@ -263,7 +263,7 @@ In index.html ein Inline-SVG mit Markenkachel und Schriftzug in #root (React ers
 
 </details>
 
-### [ ] 3.5 Keine Entwicklersprache in der Oberfläche, Konto bleibt offline sichtbar  
+### [x] 3.5 Keine Entwicklersprache in der Oberfläche, Konto bleibt offline sichtbar  
 *Wirkung 5 · Aufwand S*
 
 Pot-Odds-Drill-Fehler (PotOddsDrill.tsx 191–203, potoddsdrill.ts errorHint): „Die Aufgaben konnten nicht geladen werden.“, Knopf „Erneut versuchen“ und der technische Text in einem einklappbaren „Details“ statt „npm run daten“. public/sw.js holt firebase-config.json zuerst aus dem Netz und fällt auf den Cache zurück; die Begründung im Kommentar sw.js:63–65 trifft auf diese Datei kaum zu, monetization.json und legal.json bleiben ungecacht. loadConfig (cloud.ts 66–87) unterscheidet Netzfehler von 404, daraus wird eine Phase 'offline' mit dem Band „offline – wird synchronisiert, sobald Netz da ist“. In der Phase 'unavailable' Kontokarte und Freunde-Eintrag ausblenden, Betreiberanleitungen nur bei import.meta.env.DEV. Texte ersetzen: cloud.ts deviceBody2/3 („localStorage + IndexedDB“, „FIREBASE_SETUP.md“), friends.ts unconfiguredBody, „für diese Installation“, „PokerMentor ist eine PWA“, die Firebase-Fehlertexte, die Platzhalter „z. B. Lorenz“ und „du@example.de“ („Dein Name“, „name@beispiel.de“). Der Prüflauf sucht in der sichtbaren Oberfläche nach „.json“, „.md“, „Firebase“ und „Installation“. Die Versionszeile bleibt, sie ist per readme.test.ts abgesichert (E-065).
@@ -275,7 +275,7 @@ Pot-Odds-Drill-Fehler (PotOddsDrill.tsx 191–203, potoddsdrill.ts errorHint): �
 
 </details>
 
-### [ ] 3.6 Rechtsseite ehrlich machen und die Kontofunktion an die Rechtsangaben koppeln  
+### [x] 3.6 Rechtsseite ehrlich machen und die Kontofunktion an die Rechtsangaben koppeln  
 *Wirkung 5 · Aufwand S*
 
 Solange legal.email in public/legal.json leer ist, zeigt CloudAccountCard weder Registrierung noch Google-Login; angemeldete Nutzer behalten Abmelden und Löschen. Ein Test prüft das. privacyRights und privacyAccount (legal.ts) bekommen zwei Fassungen: mit mailto auf legal.email, oder ohne Adresse ganz ohne Verweis auf eine „oben genannte Adresse“. Den Satz „… ist das unkritisch“ (legal.ts:12) streichen. Hotline und check-dein-spiel.de (LegalPage.tsx:120) als tel:- und https-Links mit 44-px-Tippfläche; den Behördennamen BZgA auf BIÖG prüfen. Beim Auftraggeber liegen, nicht im Code entscheidbar: die Anbieterangaben (TODO_MANUELL Nr. 1/2, Art. 13 DSGVO verlangt sie schon für Konten) und die Aussage „richtet sich ausschließlich an Erwachsene“ gegen die niedrige Altersfreigabe aus E-010.
@@ -287,7 +287,7 @@ Solange legal.email in public/legal.json leer ist, zeigt CloudAccountCard weder 
 
 </details>
 
-### [ ] 3.7 Konto in der App löschen können  
+### [x] 3.7 Konto in der App löschen können  
 *Wirkung 5 · Aufwand M*
 
 In functions/src einen auth.user().onDelete-Trigger anlegen, der mit dem Admin-SDK users/{uid}, den friendCodes-Eintrag, Freundschaften und Anfragen löscht. Der Client ruft nach erneuter Anmeldung deleteUser() auf (auch bei auth/requires-recent-login). Bestätigung durch Eintippen der E-Mail, Ergebnis „Konto und Cloud-Daten gelöscht – dein Fortschritt auf diesem Gerät bleibt“. Den Datenschutztext auf diesen Weg umschreiben. „Passwort ändern“ über sendPasswordResetEmail. Einen Download der Cloud-Daten nicht bauen, weil backupDownload denselben Fortschritt exportiert.
@@ -298,7 +298,7 @@ In functions/src einen auth.user().onDelete-Trigger anlegen, der mit dem Admin-S
 
 </details>
 
-### [ ] 3.8 Updates sichtbar machen statt still auszutauschen  
+### [x] 3.8 Updates sichtbar machen statt still auszutauschen  
 *Wirkung 4 · Aufwand M*
 
 In public/sw.js das automatische self.skipWaiting() entfernen. main.tsx hört auf updatefound und waiting und zeigt die Leiste „Neue Version bereit · Neu laden“ (postMessage SKIP_WAITING, Neuladen nach controllerchange), nie während #/session/live. Ein globaler Fang für vite:preloadError lädt einmal neu. Den Baustand per Vite-define in der Über-Karte zeigen. Das Blatt „Neu in dieser Version“ ist optional.
@@ -310,7 +310,7 @@ In public/sw.js das automatische self.skipWaiting() entfernen. main.tsx hört au
 
 </details>
 
-### [ ] 3.9 Installieren im passenden Moment statt als Fließtext  
+### [x] 3.9 Installieren im passenden Moment statt als Fließtext  
 *Wirkung 4 · Aufwand M*
 
 Ein Hook useInstallieren(): unter Chromium beforeinstallprompt abfangen und einen echten Knopf zeigen, auf iOS ein Anleitungsblatt; bei matchMedia('(display-mode: standalone)') bzw. navigator.standalone alles ausblenden. Angeboten wird es an einer Stelle, beim Einrichten des Live-Abends (Vollbild, Bildschirm bleibt an), dazu die gekürzte Profilkarte (ProfilePage.tsx 446–452) ohne „PWA“. Keine Auslöser nach dem dritten Besuch oder nach der ersten Lektion.
@@ -322,7 +322,7 @@ Ein Hook useInstallieren(): unter Chromium beforeinstallprompt abfangen und eine
 
 </details>
 
-### [ ] 3.10 Eigene Domain statt 4cys62s2wp-beep.github.io  
+### [x] 3.10 Eigene Domain statt 4cys62s2wp-beep.github.io  
 *Wirkung 4 · Aufwand S*
 
 Die Domain kauft der Mensch, danach DOMAIN_SETUP.md abarbeiten. og:url und og:image in index.html (Z. 28) beim Build aus einer Variable erzeugen (VITE_PUBLIC_URL), damit sie nicht wieder veralten. Zuerst Adresszeile, QR-Code und Link-kopieren in ShareCard.tsx:11 umstellen; authDomain (pokermentor-9ac7f.firebaseapp.com) kann später folgen.

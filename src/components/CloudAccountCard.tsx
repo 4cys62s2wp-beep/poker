@@ -6,6 +6,8 @@ import { useCloud } from '../lib/cloud/CloudProvider';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/cloud';
 import { Icon } from './Icon';
+import { adresseStimmt } from '../lib/cloud/konto';
+import { kontoAnbieten, loadLegalConfig, type LegalConfig } from '../lib/legal';
 
 export function CloudAccountCard() {
   const cloud = useCloud();
@@ -17,20 +19,48 @@ export function CloudAccountCard() {
   const { lang } = useLang();
   const C = STR[lang];
   const [mode, setMode] = useState<'login' | 'register' | 'reset'>('login');
+  /* Anbieterangaben: Ohne sie gibt es keine Neuanmeldung (siehe `kontoAnbieten`).
+     Solange sie laden, gilt „nein" — ein Formular, das nach dem Laden wieder
+     verschwindet, wäre schlimmer als eines, das später erscheint. */
+  const [legal, setLegal] = useState<LegalConfig | null | undefined>(undefined);
+  useEffect(() => {
+    let lebt = true;
+    loadLegalConfig().then((c) => { if (lebt) setLegal(c); });
+    return () => { lebt = false; };
+  }, []);
+  const neuanmeldung = kontoAnbieten(legal);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loeschen, setLoeschen] = useState(false);
+  const [bestaetigung, setBestaetigung] = useState('');
+  const [loeschPasswort, setLoeschPasswort] = useState('');
 
   if (cloud.phase === 'checking') return null;
 
+  /* Gibt es hier keine Cloud, gibt es auch keine Karte: Eine Anleitung für den,
+     der die App betreibt, hat in der Oberfläche eines Nutzers nichts zu suchen
+     („localStorage + IndexedDB", „FIREBASE_SETUP.md"). Der Betreiber sieht sie
+     im Entwicklungsbetrieb. */
   if (cloud.phase === 'unavailable') {
+    if (!import.meta.env.DEV) return null;
     return (
-      <div className="card" style={{ maxWidth: 560 }}>
-        <div style={{ fontWeight: 800, marginBottom: 6 }}>{C.deviceTitle}</div>
+      <div className="card">
+        <div style={{ fontWeight: 800, marginBottom: 6 }}>Cloud not configured (development only)</div>
         <p className="small muted">
-          {C.deviceBody1} <strong>{C.deviceStrong}</strong>{C.deviceBody2}{' '}
-          <code>FIREBASE_SETUP.md</code> {C.deviceBody3}
+          Without <code>public/firebase-config.json</code> the app runs in device mode. See{' '}
+          <code>FIREBASE_SETUP.md</code>.
         </p>
+      </div>
+    );
+  }
+
+  /* Kein Netz beim Start: nicht „nicht eingerichtet", sondern ein Band, das
+     sagt, dass es weitergeht, sobald das Netz da ist. */
+  if (cloud.phase === 'offline') {
+    return (
+      <div className="card" role="status">
+        <p className="small muted" style={{ margin: 0 }}>{C.offlineBand}</p>
       </div>
     );
   }
@@ -54,7 +84,7 @@ export function CloudAccountCard() {
 
   if (user) {
     return (
-      <div className="card" style={{ maxWidth: 560 }}>
+      <div className="card">
         <div className="row between wrap" style={{ marginBottom: 8 }}>
           <div style={{ fontWeight: 800 }}>{C.accountTitle}</div>
           {user.verified ? (
@@ -89,9 +119,73 @@ export function CloudAccountCard() {
               </button>
             </>
           )}
+          {user.passwort && (
+            <button className="btn sm ghost" disabled={cloud.busy} onClick={() => void cloud.resetPassword(user.email)}>
+              {C.changePassword}
+            </button>
+          )}
           <button className="btn sm ghost" disabled={cloud.busy} onClick={() => void cloud.logout()}>
             {C.logout}
           </button>
+        </div>
+
+        {/* Löschen steht zuletzt und hinter einem zweiten Schritt: Wer es sucht,
+            findet es; wer es nicht sucht, trifft es nicht. Bestätigt wird mit der
+            eigenen Adresse — ein Haken wäre zu schnell gesetzt. */}
+        <div className="konto-loeschen">
+          {!loeschen ? (
+            <button className="btn sm ghost" type="button" onClick={() => setLoeschen(true)}>
+              {C.deleteOpen}
+            </button>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                void cloud.deleteAccount(bestaetigung, user.passwort ? loeschPasswort : undefined).then((ok) => {
+                  if (ok) { setLoeschen(false); setBestaetigung(''); setLoeschPasswort(''); }
+                });
+              }}
+            >
+              <div className="titel">{C.deleteTitle}</div>
+              <p className="small muted">{C.deleteBody}</p>
+              <input
+                className="text-input"
+                type="email"
+                value={bestaetigung}
+                onChange={(e) => setBestaetigung(e.target.value)}
+                placeholder={user.email}
+                aria-label={C.deleteConfirmLabel}
+                autoComplete="off"
+                required
+              />
+              {user.passwort ? (
+                <input
+                  className="text-input"
+                  type="password"
+                  value={loeschPasswort}
+                  onChange={(e) => setLoeschPasswort(e.target.value)}
+                  placeholder={C.deletePasswordLabel}
+                  aria-label={C.deletePasswordLabel}
+                  autoComplete="current-password"
+                  required
+                />
+              ) : (
+                <p className="small faint">{C.deleteGoogleHint}</p>
+              )}
+              <div className="row wrap">
+                <button
+                  className="btn sm danger"
+                  type="submit"
+                  disabled={cloud.busy || !adresseStimmt(bestaetigung, user.email) || (user.passwort && loeschPasswort === '')}
+                >
+                  {C.deleteGo}
+                </button>
+                <button className="btn sm ghost" type="button" onClick={() => { setLoeschen(false); setBestaetigung(''); setLoeschPasswort(''); }}>
+                  {C.deleteCancel}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
 
         {/* Die Bestätigungsmail ist die einzige Stelle, an der ein Nutzer
@@ -108,7 +202,7 @@ export function CloudAccountCard() {
   }
 
   return (
-    <div className="card" style={{ maxWidth: 560 }}>
+    <div className="card">
       <div style={{ fontWeight: 800, marginBottom: 6 }}>
         {mode === 'register' ? C.titleRegister : mode === 'reset' ? C.titleReset : C.titleLogin}
       </div>
@@ -117,13 +211,13 @@ export function CloudAccountCard() {
           ? C.introRegister
           : mode === 'reset'
             ? C.introReset
-            : C.introLogin}
+            : neuanmeldung ? C.introLogin : C.introLoginNur}
       </p>
 
       {/* Google steht bewusst VOR dem Formular: Es ist der einzige Weg ohne
           Bestätigungsmail (Google liefert die Adresse bereits verifiziert) und
           damit der einzige, der nicht an einem Spamfilter scheitern kann. */}
-      {mode !== 'reset' && (
+      {mode !== 'reset' && neuanmeldung && (
         <>
           <button
             className="btn primary"
@@ -197,9 +291,11 @@ export function CloudAccountCard() {
           )}
           {mode === 'login' && (
             <>
-              <button className="btn sm ghost" type="button" onClick={() => { setMode('register'); cloud.clearMessages(); }}>
-                {C.newAccount}
-              </button>
+              {neuanmeldung && (
+                <button className="btn sm ghost" type="button" onClick={() => { setMode('register'); cloud.clearMessages(); }}>
+                  {C.newAccount}
+                </button>
+              )}
               <button className="btn sm ghost" type="button" onClick={() => { setMode('reset'); cloud.clearMessages(); }}>
                 {C.forgotPassword}
               </button>

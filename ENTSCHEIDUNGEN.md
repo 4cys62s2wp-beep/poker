@@ -4772,3 +4772,166 @@ gleichen Rand, Startseite zweispaltig, Tablet; Gegenprobe (Kopfzeile `static`,
 Scrollverwaltung entfernt) rot. Design (182), Bedienbar (180), Daumen, Quer, Wege,
 Durchgang — null Befunde.
 
+
+## E-083 · 2026-10-04 · Eine Marke, eine Hülle: Pik auf Grün, Statusleiste, Manifest, erstes Bild
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 3.1–3.4).
+
+**Gefunden:**
+- Die Markenkachel hing an `--auszeichnung-lesbar`, im hellen Modus dunkelbraun (#5f4810):
+  Pik auf Grün 1,4 bis 1,6 zu 1 — unsichtbar. Dazu zeichnete `gen-icons.mjs` den Pik
+  per Herzformel, und das Ergebnis sah anders aus als das SVG im Tab: zwei Marken.
+- Die Statusleiste stand fest auf `#0b100d`, auch im hellen Modus: ein schwarzer Balken über
+  einer cremefarbenen App.
+- Die Verknüpfung „Pokerabend" führte auf `./#/session/tisch` — eine Route, die seit E-030
+  nicht mehr existiert; `*` leitete still zur Startseite, der Text beschrieb den entfernten
+  Tisch. Die Beschreibung war zweisprachig in einem Satz, Vorschaubilder gab es keine.
+- Beim Kaltstart stand in `#root` nichts; ohne JavaScript für immer nichts.
+
+**Entschieden:**
+- `--marke-pik` (#edcf87) und `--marke-grund-hell/-tief` (#2f7f5e → #123a2b) **außerhalb** der
+  Modusblöcke, nach dem Muster aus E-034: Eine Marke ist Bild, keine Textfarbe. 3,2 und 8,3 zu 1.
+  Eine Quelle: `public/icons/icon.svg`; die Oberfläche (`<Marke>`, `Icon spade`), das erste
+  Bild in `index.html` und die PNGs (`gen-icons.mjs` rendert sie jetzt per Browser aus dem SVG)
+  kommen daraus. apple-touch-icon und maskable sind volle Quadrate ohne Alpha, der Pik des
+  maskable-Icons liegt in der Sicherheitszone.
+- Statusleiste in der Farbe der Seite (`STATUSLEISTE` in `modus.ts`, = `--bg`): `index.html`
+  setzt sie vor dem ersten Bild, die App beim Umschalten und am Tisch (erzwingt dunkel).
+- Manifest: „Abend starten" → `./#/session/live/einrichten` (seit 7.1 ist das sicher: Einrichten
+  überschreibt keinen laufenden Abend mehr), Beschreibung nur deutsch, fünf Vorschaubilder
+  (`npm run screenshots`, aus der gebauten App). Unbekannte Adressen zeigen eine eigene Seite
+  statt still auf die Startseite zu führen.
+- Erstes Bild: Pik-Kachel und Name im Inline-SVG in `#root`, `<noscript>`-Hinweis.
+
+**Verworfene Alternative:** `apple-touch-startup-image` für den iOS-Startbildschirm. Es
+verlangt etwa zwanzig Gerätegrößen mal zwei Modi, und jede neue Größe ist ein leeres Bild.
+Das Inline-SVG deckt denselben Moment für alle Geräte ab.
+
+**Zweite verworfene Alternative:** zwei `theme-color`-Metatags mit `media`. Sie folgen der
+Systemvorgabe, nicht der Wahl in der App: Wer „Hell" gewählt hat, während sein Gerät dunkel
+ist, bekäme wieder den falschen Balken.
+
+**Nicht gemacht:** `og.png` mit eingebetteten Schriften neu rendern (nachrangig im Fahrplan).
+
+Gemessen: `rahmen` prüft nun, dass `theme-color` in beiden Modi und nach dem Umschalten dem
+Seitengrund entspricht; `marke.test.ts` rechnet Kontrast, vergleicht SVG, Tokens und PNG-Pixel
+(Mitte = Pik-Farbe, Ecken mit/ohne Alpha, Pik in der Sicherheitszone).
+
+---
+
+## E-084 · 2026-10-04 · Keine Entwicklersprache, Konto nur mit Anbieterangaben, Konto löschen
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 3.5–3.7). **Beim Auftraggeber offen:** die
+Anbieterangaben selbst und die Altersaussage (siehe unten).
+
+**Gefunden:**
+- Der Drill sagte bei einem Ladefehler „Im Projekt neu erzeugen: npm run daten"; das Profil
+  „localStorage + IndexedDB" und „FIREBASE_SETUP.md"; die Freunde-Seite „sobald eine
+  firebase-config.json hinterlegt ist"; ein Fehlertext „in Firebase noch nicht freigeschaltet";
+  das Namensfeld „z. B. Lorenz".
+- Ohne Netz fehlte `firebase-config.json` (der Worker holte sie nie aus dem Zwischenspeicher):
+  Ein angemeldeter Nutzer sah „Geräte-Modus aktiv" statt seines Kontos.
+- Die Rechtsseite sagte bei fehlenden Anbieterangaben „… ist das unkritisch", obwohl die App
+  Konten mit E-Mail und Passwort anbot (Art. 13 DSGVO); die Datenschutzerklärung verwies auf
+  „die oben genannte Adresse", die es nicht gab; Hilfenummer und Adresse waren Text.
+- Ein Konto ließ sich in der App nicht löschen; kein `deleteUser` im Quelltext.
+
+**Entschieden:**
+- Nutzertexte ohne Betreiberwörter (`oberflaeche.test.ts` sucht .json, .md, Firebase,
+  „Installation", npm, localStorage, PWA, Platzhalter). Der Drill zeigt „Die Aufgaben konnten
+  nicht geladen werden", „Erneut versuchen" und die technischen Einzelheiten ausgeklappt.
+- Eine nicht erreichbare Datei ist nicht dasselbe wie eine nicht vorhandene: Phase `offline`
+  (Band „Konto offline – wird synchronisiert, sobald wieder Netz da ist"), Neuversuch bei
+  `online`; der Worker holt die Konfigurationsdateien zuerst aus dem Netz und fällt auf den
+  letzten Stand zurück. Wo es keine Cloud gibt, entfallen die Kontokarte und der Freunde-Eintrag.
+- **Konto nur mit Anbieterangaben:** Solange `legal.email` leer ist, gibt es weder Registrierung
+  noch „Mit Google anmelden"; wer ein Konto hat, behält Anmelden, Abmelden, Passwort ändern,
+  Löschen. Die Texte kennen zwei Fassungen (mit Verweis auf die Adresse oder ganz ohne).
+  Telefonnummer und check-dein-spiel.de sind Links mit voller Tippfläche; die Behörde heißt
+  jetzt Bundesinstitut für Öffentliche Gesundheit (früher BZgA) — die Rufnummer ist
+  unverändert, den Namen bitte beim Auftraggeber gegenprüfen.
+- **Konto löschen in der App:** erneute Anmeldung (Passwort oder Google), dann Daten
+  (Fortschritt, Freundschaften beider Seiten, Anfragen, Anwesenheit), zuletzt das Konto;
+  bestätigt durch Eintippen der eigenen Adresse; „Passwort ändern" über die Reset-Mail.
+  `functions/src/konto.ts` räumt per `auth.user().onDelete` zusätzlich Code-Eintrag und
+  Abo-Vermerk weg — **noch nicht deployt** (Blaze-Tarif, B-001). Bis dahin bleiben dort ein
+  Verweis auf die gelöschte Nutzer-ID und der Abo-Vermerk stehen, beide ohne Namen und E-Mail.
+
+**Verworfene Alternative:** Dem Client erlauben, den Code-Eintrag selbst zu löschen
+(`allow delete` auf `friendCodes`). Das würde die Aufräumarbeit ohne Server erledigen, öffnet
+aber, was die Regeln bewusst schließen: Ein freigewordener Code ließe sich von jedem anderen
+belegen (`create` prüft nur die eigene UID, nicht die Herkunft des Codes).
+
+**Zweite verworfene Alternative:** Die Registrierung nur mit einem Hinweis versehen („Anbieter
+noch nicht hinterlegt"). Ein Hinweis neben einem funktionierenden Formular ist kein Ersatz für
+die Angabe, die davor stehen muss.
+
+**Beim Auftraggeber (aus dem Code nicht entscheidbar):**
+1. **Anbieterangaben** (`public/legal.json`: Name, Anschrift, E-Mail): Bis sie eingetragen sind,
+   bietet die App **keine neue Registrierung** und keine Google-Anmeldung an (bestehende Konten
+   bleiben). Das ist gewollt, nicht kaputt.
+2. Die Aussage „richtet sich ausschließlich an Erwachsene" gegen die niedrige Altersfreigabe
+   aus E-010.
+
+Gemessen: Alle Läufe ohne Befund; `rechtliches.test.ts`, `kontoLoeschen.test.ts` (Client und
+Server nennen dieselben Dokumente, das Löschen ist nach den Firestore-Regeln erlaubt, erst
+erneut anmelden, dann Daten, dann Konto), `serviceworker.test.ts` (Rückfall für die Konfiguration).
+
+---
+
+## E-085 · 2026-10-04 · Neue Versionen werden angekündigt
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 3.8).
+
+**Gefunden:** Der Worker übernahm jede neue Fassung beim Installieren sofort (`skipWaiting`):
+Mitten in einer Lektion oder am Tisch tauschte sich der Zwischenspeicher unter der Seite aus,
+und der nächste Abruf holte eine Datei der neuen Fassung zur alten Seite. Eine Versionsangabe
+stand fest im Text; ein Weg zu erfahren, welche Fassung man hat, gab es nicht.
+
+**Entschieden:** Die neue Fassung wartet. Ein Band „Neue Version bereit · Neu laden" über dem
+Inhalt (nie am Tisch, der außerhalb des Rahmens liegt); ein Tipp schickt `SKIP_WAITING` und lädt
+nach dem Wechsel neu. Fehlt ein Seitenpaket, weil der Server schon die neue Fassung ausliefert,
+lädt die App **einmal** neu (`vite:preloadError`) — nicht in einer Schleife. Im Profil steht der
+Stand des Baus (Datum und Kurz-Hash, beim Bauen gesetzt).
+
+**Verworfene Alternative:** Die neue Fassung stumm übernehmen und nur beim nächsten Start
+aktivieren. Das ist das bisherige Verhalten mit anderem Zeitpunkt: Der Nutzer erfährt nie, dass
+sich etwas geändert hat, und eine Fehlerbehebung erreicht ihn nicht, solange er die App offen lässt.
+
+**Was die Messung gefunden hat, das der Entwurf nicht kannte** (`npm run update`, eigener Server,
+dessen `sw.js` sich ändert):
+- Das erste Gerüst lud bei der **allerersten** Installation sofort neu, weil `clients.claim()`
+  auch dort einen Wechsel des Workers meldet. Neu geladen wird jetzt nur nach einer Übernahme.
+- `useSyncExternalStore` bekam bei jedem Aufruf eine neue Funktion als Schnappschuss; die Komponente
+  zeigte nie ein Band. Die Funktion ist jetzt eine feste.
+- Gegenprobe: `skipWaiting()` in `install` eingefügt → vier Befunde.
+
+---
+
+## E-086 · 2026-10-04 · Installieren im passenden Moment; die Adresse kommt aus einer Variable
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 3.9, 3.10 soweit es Code ist).
+
+**Gefunden:** Im Profil stand ein Fließtext „PokerMentor ist eine PWA: …", im Code kein
+`beforeinstallprompt`. `og:url` und `og:image` standen fest auf der github.io-Adresse; nach einem
+Umzug auf eine eigene Domain blieben geteilte Vorschauen auf der alten stehen, während
+QR-Code und „Link kopieren" längst die neue benutzten.
+
+**Entschieden:** `useInstallieren()`: unter Chromium ein echter Knopf (der Browser meldet das
+Angebot früh und einmal, deshalb hört das Modul schon beim Laden zu), auf iOS die Anleitung
+„Teilen → Zum Home-Bildschirm", in der installierten App nichts. Angeboten wird es an zwei
+Stellen: beim Einrichten eines Abends (dort will man Vollbild und einen Bildschirm, der anbleibt)
+und als kurze Karte im Profil. Die Adresse der Link-Vorschau kommt beim Bauen aus
+`VITE_PUBLIC_URL` (Variable des Repositorys, sonst github.io); der Umzug ist eine Einstellung, keine
+Änderung im Quelltext.
+
+**Verworfene Alternative:** Nach dem dritten Besuch oder der ersten Lektion zur Installation
+auffordern. Wer gerade lernt, wird beim Lernen unterbrochen, und die Aufforderung kommt nie zu dem
+Zeitpunkt, an dem die Installation etwas bringt.
+
+**Zweite verworfene Alternative:** `og:url` im Quelltext lassen und DOMAIN_SETUP.md anweisen, ihn
+von Hand zu ändern. Das ist genau der Weg, auf dem die Adresse veraltet.
+
+**Beim Auftraggeber:** Die Domain selbst (Kauf, DNS, Pages-Einstellung, Autorisierte Domain in der
+Firebase-Konsole) bleibt Handarbeit — Schritte in `DOMAIN_SETUP.md`.
+

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDialogTastatur } from '../lib/dialog/tastatur';
 import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
+import { Marke } from './Marke';
 import { useAppState } from '../state/AppState';
 import { useLang, type Lang } from '../i18n';
 
@@ -103,16 +104,7 @@ export function Onboarding() {
       }}
     >
       <div className="card" style={{ maxWidth: 460, width: '100%', textAlign: 'center', padding: '34px 26px' }}>
-        <span
-          className="spade"
-          style={{
-            width: 52, height: 52, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            borderRadius: 16, background: 'linear-gradient(135deg, #1d5a43, #123527)',
-            border: '1px solid rgba(212,175,94,0.35)', marginBottom: 14, color: 'var(--auszeichnung)',
-          }}
-        >
-          <Icon name="spade" size={26} />
-        </span>
+        <div style={{ marginBottom: 14 }}><Marke groesse={52} /></div>
         <h1 style={{ fontSize: '1.625rem', marginBottom: 8 }}>{T.welcome}</h1>
         <p className="muted" style={{ marginBottom: 24, fontSize: 'var(--fs-fliesstext)' }}>{T.tagline}</p>
 

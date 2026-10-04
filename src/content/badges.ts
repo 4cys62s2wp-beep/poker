@@ -20,7 +20,7 @@ export const BADGES: BadgeDef[] = [
   { id: 'trainer-100', icon: '🏋️', title: 'Trainingsfleiß', description: '100 richtige Trainer-Antworten insgesamt' },
   { id: 'first-hand', icon: '🃏', title: 'Erste Hand', description: 'Erste Hand am Übungstisch gespielt' },
   { id: 'first-win', icon: '💰', title: 'Erster Pot', description: 'Erste Hand am Übungstisch gewonnen' },
-  { id: 'hands-100', icon: '🎰', title: 'Grinder', description: '100 Hände am Übungstisch gespielt' },
+  { id: 'hands-100', icon: '⚙️', title: 'Grinder', description: '100 Hände am Übungstisch gespielt' },
   { id: 'bankroll-start', icon: '📒', title: 'Buchhalter', description: 'Erste Session im Bankroll-Tracker erfasst' },
   { id: 'daily-quiz', icon: '☀️', title: 'Tagesform', description: 'Erstes Tages-Quiz absolviert' },
   { id: 'scenario-10', icon: '🎬', title: 'Spot-Analyst', description: '10 Szenarien richtig gelöst' },

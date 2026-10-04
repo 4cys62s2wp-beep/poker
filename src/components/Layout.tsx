@@ -5,6 +5,7 @@ import { useAppState, levelForXp, xpThreshold } from '../state/AppState';
 import { useLang, levelTitleFor } from '../i18n';
 import { STR } from '../i18n/pages/layout';
 import { STR as PRO } from '../i18n/pages/pro';
+import { zeichenFuer } from '../lib/zeichen';
 import { STR as LEGAL } from '../i18n/pages/legal';
 import { usePro } from '../lib/pro/ProProvider';
 import { STR as FRIENDS } from '../i18n/pages/friends';
@@ -29,39 +30,39 @@ export function Layout() {
      nach der ART der Sache („Anwenden“) statt nach der ABSICHT.
      (docs/SCREEN_STRUKTUR.md, ENTSCHEIDUNGEN.md E-011) */
   const navGroups: Array<{ label: string; items: Array<{ to: string; icon: IconName; label: string; end?: boolean }> }> = [
-    { label: L.navOverview, items: [{ to: '/', icon: 'spade', label: L.start, end: true }] },
+    { label: L.navOverview, items: [{ to: '/', icon: zeichenFuer('/'), label: L.start, end: true }] },
     {
       label: L.navLearn,
       items: [
-        { to: '/lernen', icon: 'learn', label: L.learnPath },
-        { to: '/lernen/wiederholen', icon: 'repeat', label: L.review },
-        { to: '/lernen/uebungstisch', icon: 'play', label: L.practiceTable },
-        { to: '/lernen/statistik', icon: 'chart', label: L.playStyle },
-        { to: '/lernen/pros', icon: 'chip', label: L.proInsights },
+        { to: '/lernen', icon: zeichenFuer('/lernen'), label: L.learnPath },
+        { to: '/lernen/wiederholen', icon: zeichenFuer('/lernen/wiederholen'), label: L.review },
+        { to: '/lernen/uebungstisch', icon: zeichenFuer('/lernen/uebungstisch'), label: L.practiceTable },
+        { to: '/lernen/statistik', icon: zeichenFuer('/lernen/statistik'), label: L.playStyle },
+        { to: '/lernen/pros', icon: zeichenFuer('/lernen/pros'), label: L.proInsights },
       ],
     },
     {
       label: L.navLookup,
       items: [
-        { to: '/nachschlagen', icon: 'search', label: L.lookupAll },
-        { to: '/nachschlagen/coach', icon: 'coach', label: L.liveCoach },
-        { to: '/nachschlagen/glossar', icon: 'glossary', label: L.glossary },
+        { to: '/nachschlagen', icon: zeichenFuer('/nachschlagen'), label: L.lookupAll },
+        { to: '/nachschlagen/coach', icon: zeichenFuer('/nachschlagen/coach'), label: L.liveCoach },
+        { to: '/nachschlagen/glossar', icon: zeichenFuer('/nachschlagen/glossar'), label: L.glossary },
       ],
     },
     {
       label: L.navSession,
       items: [
-        { to: '/session/chips', icon: 'chip', label: L.chipCalc },
-        { to: '/session/auszahlung', icon: 'crown', label: L.payout },
-        { to: '/session/bankroll', icon: 'notes', label: L.bankroll },
+        { to: '/session/chips', icon: zeichenFuer('/session/chips'), label: L.chipCalc },
+        { to: '/session/auszahlung', icon: zeichenFuer('/session/auszahlung'), label: L.payout },
+        { to: '/session/bankroll', icon: zeichenFuer('/session/bankroll'), label: L.bankroll },
       ],
     },
     {
       label: L.navYou,
       items: [
-        { to: '/profil', icon: 'profile', label: L.profile },
-        { to: '/freunde', icon: 'friends', label: FR.navFriends },
-        ...(proCtx.enabled ? [{ to: '/pro', icon: 'crown' as IconName, label: P.navPro }] : []),
+        { to: '/profil', icon: zeichenFuer('/profil'), label: L.profile },
+        { to: '/freunde', icon: zeichenFuer('/freunde'), label: FR.navFriends },
+        ...(proCtx.enabled ? [{ to: '/pro', icon: zeichenFuer('/pro'), label: P.navPro }] : []),
       ],
     },
   ];

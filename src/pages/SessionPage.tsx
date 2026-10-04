@@ -23,6 +23,7 @@ import { ladeAbende, type Abend } from '../lib/session/abende';
 import { ladeLaufende, type LaufendeSession } from '../lib/session/laufend';
 import { grobeDauer } from '../lib/session/dauer';
 import { useAppState } from '../state/AppState';
+import { zeichenFuer } from '../lib/zeichen';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/session';
 
@@ -65,7 +66,7 @@ export function SessionPage() {
     {
       /* Läuft einer, führt die Kachel zur Uhr — nicht in ein leeres Formular,
          aus dem heraus man ihn früher versehentlich überschrieb (E-073). */
-      to: laufend ? '/session/live' : '/session/live/einrichten', icon: 'table',
+      to: laufend ? '/session/live' : '/session/live/einrichten', icon: zeichenFuer('/session/live'),
       title: laufend ? L.abendWeiter : L.abendTitle, marke: L.markeAbend,
       inhalt: laufend
         ? L.laeuftSeit(grobeDauer(Date.now() - laufend.begonnen, lang, 'dativ'))
@@ -75,18 +76,18 @@ export function SessionPage() {
        Abend selbst, weil man es am Tag danach sucht — und weil der Weg zu
        einer Person nur über diese Liste führt. */
     {
-      to: '/session/abende', icon: 'crown',
+      to: '/session/abende', icon: zeichenFuer('/session/abende'),
       title: L.abendeTitle, marke: L.markeDanach,
       inhalt: letzter
         ? L.abendeStand(abende.length, datum(letzter.begonnen))
         : L.abendeLeer,
     },
     {
-      to: '/session/chips', icon: 'chip',
+      to: '/session/chips', icon: zeichenFuer('/session/chips'),
       title: L.chipsTitle, marke: L.markeVorher, inhalt: L.chipsWhen,
     },
     {
-      to: '/session/auszahlung', icon: 'crown',
+      to: '/session/auszahlung', icon: zeichenFuer('/session/auszahlung'),
       title: L.payoutTitle, marke: L.markeVorher, inhalt: L.payoutWhen,
     },
     /* Hier standen der Ein-Geräte-Tisch und der Online-Tisch. Beide sind
@@ -95,7 +96,7 @@ export function SessionPage() {
        nur über eine ausdrückliche Entscheidung über die Altersstufe zurück,
        nicht nebenbei. */
     {
-      to: '/session/bankroll', icon: 'notes',
+      to: '/session/bankroll', icon: zeichenFuer('/session/bankroll'),
       title: L.bankrollTitle, marke: L.markeDanach,
       inhalt: sessions > 0
         ? L.bankrollStand(sessions, bilanz.toLocaleString(nf, { maximumFractionDigits: 0 }))

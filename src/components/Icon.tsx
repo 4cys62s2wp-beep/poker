@@ -33,6 +33,14 @@ export type IconName =
   | 'x'
   | 'crown'
   | 'table'
+  | 'star'
+  | 'cards'
+  | 'pie'
+  | 'podium'
+  | 'calendar'
+  | 'trophy'
+  | 'coin'
+  | 'bolt'
   | 'info';
 
 interface Props {
@@ -302,6 +310,69 @@ function paths(name: IconName) {
           <ellipse cx="12" cy="12" rx="6.2" ry="3.6" />
           <circle cx="12" cy="6.6" r="0.9" fill="currentColor" stroke="none" />
           <circle cx="12" cy="17.4" r="0.9" fill="currentColor" stroke="none" />
+        </g>
+      );
+    /* Die folgenden sieben kamen mit E-078 dazu. Vorher teilten sich
+       Handranking-Trainer und Übungstisch ein Symbol, ebenso Odds, Equity und
+       Spielstil, „Frühere Abende“ und „Auszahlung“: Wer eine Kachel suchte,
+       fand zwei gleiche. */
+    case 'star':
+      return (
+        <g {...STROKE}>
+          <path d="M12 4l2.5 5.1 5.6.8-4.05 3.95.95 5.6L12 16.8 7 19.45l.95-5.6L3.9 9.9l5.6-.8z" />
+        </g>
+      );
+    // Eine einzelne Karte mit Raute — anders als 'play' (zwei gekippte Karten).
+    case 'cards':
+      return (
+        <g {...STROKE}>
+          <rect x="5.5" y="3.5" width="13" height="17" rx="2" />
+          <path d="M12 8.6l3 3.4-3 3.4-3-3.4z" />
+        </g>
+      );
+    case 'pie':
+      return (
+        <g {...STROKE}>
+          <circle cx="12" cy="12" r="8.4" />
+          <path d="M12 12V3.6A8.4 8.4 0 0 1 20.4 12z" fill="currentColor" fillOpacity=".22" />
+        </g>
+      );
+    case 'podium':
+      return (
+        <g {...STROKE}>
+          <path d="M3.5 20.5h17" />
+          <path d="M9.2 20.5v-13h5.6v13M3.5 20.5v-8h5.7M14.8 20.5v-5.5h5.7v5.5" />
+        </g>
+      );
+    case 'calendar':
+      return (
+        <g {...STROKE}>
+          <rect x="4" y="5.4" width="16" height="14.6" rx="2" />
+          <path d="M4 10h16M8.5 3.6v3.4M15.5 3.6v3.4" />
+          <path d="M8.5 14.2h.1M12 14.2h.1M15.5 14.2h.1" />
+        </g>
+      );
+    case 'trophy':
+      return (
+        <g {...STROKE}>
+          <path d="M8 4h8v5a4 4 0 0 1-8 0z" />
+          <path d="M8 6H5.2c0 3 1 4.6 3 5M16 6h2.8c0 3-1 4.6-3 5" />
+          <path d="M12 13v4M9.5 17h5M8.5 20h7" />
+        </g>
+      );
+    // Euro-Zeichen: Die App ist deutsch, und eine Münze ohne Währung ist ein
+    // Kreis.
+    case 'coin':
+      return (
+        <g {...STROKE}>
+          <circle cx="12" cy="12" r="8.4" />
+          <path d="M15.4 9A3.9 3.9 0 0 0 9 10.6v2.8A3.9 3.9 0 0 0 15.4 15M7.9 11.1h5M7.9 12.9h5" />
+        </g>
+      );
+    case 'bolt':
+      return (
+        <g {...STROKE}>
+          <path d="M13.2 3.4L6 13.2h5.2l-.6 7.4 7.4-9.8h-5.2z" />
         </g>
       );
     case 'crown':

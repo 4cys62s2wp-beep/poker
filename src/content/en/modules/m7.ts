@@ -4,7 +4,7 @@ const m7: Module = {
   id: 'm7',
   title: 'Live Poker',
   subtitle: 'Tells, etiquette, and strategy at a real table',
-  icon: '🎰',
+  icon: '♠️',
   level: 'Fortgeschritten',
   lessons: [
     {

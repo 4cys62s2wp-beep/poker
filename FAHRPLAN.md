@@ -70,7 +70,7 @@ In PlayingCard.tsx 46–53 und global.css 985–991 den gedrehten Unterindex dor
 
 </details>
 
-### [ ] 1.5 Ein Symbol pro Ziel, kein Spielautomat  
+### [x] 1.5 Ein Symbol pro Ziel, kein Spielautomat  
 *Wirkung 4 · Aufwand M*
 
 Doppelvergaben in Icon.tsx auflösen, dafür 6–8 neue Symbole (Tisch, Rangliste, Verlauf, Pokal, Münze, Kalender): 'play'/red bei Handranking-Trainer und Übungstisch; 'chart' bei Equity-Schätzer, Spielstil und Odds; 'crown' bei Frühere Abende und Auszahlung (SessionPage.tsx 76/87); 'chip' bei Pro-Insights und Chip-Rechner (Layout.tsx 40/54); 'scale' dreifach. Ein Test verbietet gleiche Paare aus Icon und Ton in Layout.tsx, trainerliste.ts und LearnPage.tsx. 🎰 bei „Grinder“ und Modul Live-Poker sofort ersetzen, weil es dem Glücksspiel-Verzicht widerspricht. Die SVG-Medaillen für Abzeichen folgen in Paket 8.

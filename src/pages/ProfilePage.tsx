@@ -16,6 +16,7 @@ import { Icon, type IconName } from '../components/Icon';
 import { STR as FRIENDS } from '../i18n/pages/friends';
 import { STR as LEGAL } from '../i18n/pages/legal';
 import { STR as PRO_STR } from '../i18n/pages/pro';
+import { zeichenFuer } from '../lib/zeichen';
 import { usePro } from '../lib/pro/ProProvider';
 
 export function ProfilePage() {
@@ -192,12 +193,12 @@ export function ProfilePage() {
           nicht erreichbar, obwohl die alte Erreichbarkeitstabelle „über
           Profil" behauptete. Diese Zeilen sind die Korrektur. */}
       <div style={{ display: 'grid', gap: 'var(--sp-2)', maxWidth: 560, marginTop: 'var(--sp-3)' }}>
-        <ProfilLink to="/freunde" icon="friends" label={FRIENDS[lang].navFriends} />
-        {proCtx.enabled && <ProfilLink to="/pro" icon="crown" label={PRO_STR[lang].navPro} />}
-        <ProfilLink to="/rechtliches" icon="notes" label={LEGAL[lang].navLegal} />
+        <ProfilLink to="/freunde" icon={zeichenFuer('/freunde')} label={FRIENDS[lang].navFriends} />
+        {proCtx.enabled && <ProfilLink to="/pro" icon={zeichenFuer('/pro')} label={PRO_STR[lang].navPro} />}
+        <ProfilLink to="/rechtliches" icon={zeichenFuer('/rechtliches')} label={LEGAL[lang].navLegal} />
         {/* § 312k BGB: ohne Anmeldung erreichbar, deshalb dauerhaft sichtbar,
             sobald es überhaupt etwas zu kündigen gibt. */}
-        {proCtx.enabled && <ProfilLink to="/kuendigen" icon="trash" label={LEGAL[lang].cancelNav} />}
+        {proCtx.enabled && <ProfilLink to="/kuendigen" icon={zeichenFuer('/kuendigen')} label={LEGAL[lang].cancelNav} />}
       </div>
 
       <div className="section-title">{P.profilesSection}</div>

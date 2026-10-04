@@ -12,6 +12,7 @@ import { TRAINER } from '../lib/trainerliste';
 import { Icon, IconTile, type IconName } from '../components/Icon';
 import { Levelring } from '../components/Levelring';
 import { rangstand } from '../lib/rang/stand';
+import { zeichenFuer } from '../lib/zeichen';
 import { usePro } from '../lib/pro/ProProvider';
 import { isFreeModule } from '../lib/pro/plan';
 
@@ -116,17 +117,17 @@ export function LearnPage() {
       };
     }),
     {
-      to: '/lernen/wiederholen', icon: 'repeat', tone: 'blue',
+      to: '/lernen/wiederholen', icon: zeichenFuer('/lernen/wiederholen'), tone: 'blue',
       title: L.reviewTitle, sub: L.reviewSub,
       badge: dueReviewCount > 0 ? L.reviewDue(dueReviewCount) : undefined,
     },
     {
-      to: '/lernen/tagesquiz', icon: 'check', tone: 'green',
+      to: '/lernen/tagesquiz', icon: zeichenFuer('/lernen/tagesquiz'), tone: 'green',
       title: L.quizTitle, sub: L.quizSub,
       badge: quizOffen ? L.quizOpen : undefined,
     },
-    { to: '/lernen/uebungstisch', icon: 'play', tone: 'red', title: L.practiceTitle, sub: L.practiceSub },
-    { to: '/lernen/statistik', icon: 'chart', tone: 'violet', title: L.styleTitle, sub: L.styleSub },
+    { to: '/lernen/uebungstisch', icon: zeichenFuer('/lernen/uebungstisch'), tone: 'red', title: L.practiceTitle, sub: L.practiceSub },
+    { to: '/lernen/statistik', icon: zeichenFuer('/lernen/statistik'), tone: 'violet', title: L.styleTitle, sub: L.styleSub },
   ];
 
   const rang = rangstand(data.xp, rangnamen(lang));
@@ -265,7 +266,7 @@ export function LearnPage() {
         >
           <div className="row between wrap">
             <div className="row" style={{ alignItems: 'flex-start' }}>
-              <IconTile name="scale" tone="gold" />
+              <IconTile name={zeichenFuer('/lernen/drill')} tone="gold" />
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontWeight: 'var(--fw-bold)', fontSize: 'var(--fs-h3)' }}>{L.drillTitle}</div>
                 <div className="small muted" style={{ marginTop: 3 }}>{L.drillSub}</div>

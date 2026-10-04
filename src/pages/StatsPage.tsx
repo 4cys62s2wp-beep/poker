@@ -12,6 +12,7 @@
 import { Link } from 'react-router-dom';
 import { EmptyState, PageHeader, StatPill } from '../components/ui';
 import { useAppState } from '../state/AppState';
+import { zeichenFuer } from '../lib/zeichen';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/stats';
 import { STR as NAV } from '../i18n/pages/layout';
@@ -52,7 +53,7 @@ export function StatsPage() {
       <div>
         <PageHeader title={L.title} backTo="/lernen" backLabel={NV.navLearn} />
         <EmptyState
-          icon="chart"
+          icon={zeichenFuer('/lernen/statistik')}
           title={L.emptyTitle}
           body={L.emptyBody}
           actionLabel={L.emptyCta}

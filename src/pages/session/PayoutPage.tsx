@@ -11,6 +11,7 @@
 
 import { useMemo, useState } from 'react';
 import { PageHeader, EmptyState } from '../../components/ui';
+import { zeichenFuer } from '../../lib/zeichen';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/payout';
 import { berechneAuszahlung, strukturFuer } from '../../lib/poker/payout';
@@ -90,7 +91,7 @@ export function PayoutPage() {
       </div>
 
       {plan.auszahlungen.length === 0 ? (
-        <EmptyState icon="chip" title={L.emptyTitle} body={L.emptyBody} />
+        <EmptyState icon={zeichenFuer('/session/auszahlung')} title={L.emptyTitle} body={L.emptyBody} />
       ) : (
         <>
           <div

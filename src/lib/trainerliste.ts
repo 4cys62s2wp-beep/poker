@@ -9,6 +9,7 @@
    es gibt, in welcher Reihenfolge und mit welchem Zeichen. */
 
 import type { IconName } from '../components/Icon';
+import { zeichenFuer } from './zeichen';
 
 export type TrainerId =
   | 'szenario' | 'preflop' | 'potodds' | 'equity'
@@ -23,11 +24,11 @@ export interface TrainerEintrag {
 
 /** Reihenfolge nach Einstiegshöhe: Wer neu ist, fängt oben an. */
 export const TRAINER: TrainerEintrag[] = [
-  { id: 'szenario', zu: '/lernen/trainer/szenario', zeichen: 'scene', ton: 'gold' },
-  { id: 'preflop', zu: '/lernen/trainer/preflop', zeichen: 'grid', ton: 'green' },
-  { id: 'potodds', zu: '/lernen/trainer/potodds', zeichen: 'scale', ton: 'blue' },
-  { id: 'equity', zu: '/lernen/trainer/equity', zeichen: 'chart', ton: 'violet' },
-  { id: 'handranking', zu: '/lernen/trainer/handranking', zeichen: 'play', ton: 'red' },
-  { id: 'outs', zu: '/lernen/trainer/outs', zeichen: 'eye', ton: 'blue' },
-  { id: 'pushfold', zu: '/lernen/trainer/pushfold', zeichen: 'push', ton: 'gold' },
+  { id: 'szenario', zu: '/lernen/trainer/szenario', zeichen: zeichenFuer('/lernen/trainer/szenario'), ton: 'gold' },
+  { id: 'preflop', zu: '/lernen/trainer/preflop', zeichen: zeichenFuer('/lernen/trainer/preflop'), ton: 'green' },
+  { id: 'potodds', zu: '/lernen/trainer/potodds', zeichen: zeichenFuer('/lernen/trainer/potodds'), ton: 'blue' },
+  { id: 'equity', zu: '/lernen/trainer/equity', zeichen: zeichenFuer('/lernen/trainer/equity'), ton: 'violet' },
+  { id: 'handranking', zu: '/lernen/trainer/handranking', zeichen: zeichenFuer('/lernen/trainer/handranking'), ton: 'red' },
+  { id: 'outs', zu: '/lernen/trainer/outs', zeichen: zeichenFuer('/lernen/trainer/outs'), ton: 'blue' },
+  { id: 'pushfold', zu: '/lernen/trainer/pushfold', zeichen: zeichenFuer('/lernen/trainer/pushfold'), ton: 'gold' },
 ];

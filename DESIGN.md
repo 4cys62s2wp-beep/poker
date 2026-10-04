@@ -1233,3 +1233,22 @@ Seit E-076.
 6. **Nichts glüht.** Weder Fortschrittsbalken noch Schrittpunkte.
 
 Test: `farbrollen.test.ts`.
+
+### Regel 12.6 — Ein Symbol je Ziel
+
+Seit E-078.
+
+1. **Das Symbol steht am Ziel, nicht an der Liste.** `src/lib/zeichen.ts`
+   ordnet jedem Pfad genau ein Symbol zu; Seitenleiste, Kacheln, Trainerliste
+   und Leerzustände fragen dort. Dieselbe Seite hat überall dasselbe Zeichen.
+2. **Auf einem Bildschirm kommt kein Symbol zweimal vor.** Wer eine Kachel
+   nach der Form sucht, findet sonst zwei.
+3. **Zwei verschiedene Seiten teilen ein Symbol nur ausdrücklich** — der
+   Trainer und das Nachschlagewerk zum selben Gegenstand (Preflop und
+   Ranges, Pot-Odds und Odds, Equity und Equity). Sie stehen nie zusammen auf
+   einem Bildschirm.
+4. **Kein Glücksspiel-Zeichen.** Kein 🎰, keine Würfel, keine Spielautomaten:
+   Die App spielt nicht um Geld (E-030).
+
+Test: `zeichen.test.ts`.
+

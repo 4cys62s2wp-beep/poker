@@ -35,6 +35,7 @@ import { expandRangeSpec, rangePercent } from '../lib/poker/ranges';
 import {
   OUTS_FLUSHDRAW, OUTS_GUTSHOT, chanceZweiKarten,
 } from '../lib/poker/outs';
+import { zeichenFuer } from '../lib/zeichen';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/nachschlagen';
 
@@ -76,46 +77,46 @@ export function ReferencePage() {
 
   const eintraege: Eintrag[] = [
     {
-      to: '/nachschlagen/coach', icon: 'coach',
+      to: '/nachschlagen/coach', icon: zeichenFuer('/nachschlagen/coach'),
       title: L.coachTitle, desc: L.coachDesc,
       inhalt: L.coachInhalt,
       vorschau: <CardsRow cards={['As', 'Kh']} size="sm" />,
       keywords: ['coach', 'hand', 'empfehlung', 'advice', 'was tun', 'spot'],
     },
     {
-      to: '/nachschlagen/glossar', icon: 'glossary',
+      to: '/nachschlagen/glossar', icon: zeichenFuer('/nachschlagen/glossar'),
       title: L.glossaryTitle, desc: L.glossaryDesc,
       inhalt: L.glossaryInhalt(content.glossary.length),
       keywords: ['glossar', 'glossary', 'begriff', 'term', 'bedeutung', 'wort'],
     },
     {
-      to: '/nachschlagen/haende', icon: 'search',
+      to: '/nachschlagen/haende', icon: zeichenFuer('/nachschlagen/haende'),
       title: L.handsTitle, desc: L.handsDesc,
       inhalt: L.handsInhalt(btn.anteil),
       vorschau: <MiniRaster range={btn.range} />,
       keywords: ['starthand', 'starting hand', 'hände', 'hands', 'position', 'ak', 'aa'],
     },
     {
-      to: '/nachschlagen/ranges', icon: 'grid',
+      to: '/nachschlagen/ranges', icon: zeichenFuer('/nachschlagen/ranges'),
       title: L.rangesTitle, desc: L.rangesDesc,
       inhalt: L.rangesInhalt(RFI_CHARTS.length),
       vorschau: <MiniRaster range={utg} />,
       keywords: ['range', 'chart', 'raster', 'open', 'eröffnen', '3bet', '3-bet'],
     },
     {
-      to: '/nachschlagen/odds', icon: 'chart',
+      to: '/nachschlagen/odds', icon: zeichenFuer('/nachschlagen/odds'),
       title: L.oddsTitle, desc: L.oddsDesc,
       inhalt: L.oddsInhalt(flushdraw, gutshot),
       keywords: ['odds', 'outs', 'pot odds', 'wahrscheinlichkeit', 'chance', 'prozent'],
     },
     {
-      to: '/nachschlagen/equity', icon: 'scale',
+      to: '/nachschlagen/equity', icon: zeichenFuer('/nachschlagen/equity'),
       title: L.equityTitle, desc: L.equityDesc,
       inhalt: L.equityInhalt,
       keywords: ['equity', 'rechner', 'calculator', 'gegen', 'versus', 'ausrechnen'],
     },
     {
-      to: '/nachschlagen/tells', icon: 'eye',
+      to: '/nachschlagen/tells', icon: zeichenFuer('/nachschlagen/tells'),
       title: L.tellsTitle, desc: L.tellsDesc,
       inhalt: L.tellsInhalt(content.tells.length),
       keywords: ['tell', 'tells', 'read', 'gegner', 'körpersprache', 'verhalten'],

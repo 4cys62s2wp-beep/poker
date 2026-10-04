@@ -4,7 +4,7 @@ const m7: Module = {
   id: 'm7',
   title: 'Live-Poker',
   subtitle: 'Tells, Etikette und Strategie am echten Tisch',
-  icon: '🎰',
+  icon: '♠️',
   level: 'Fortgeschritten',
   lessons: [
     {

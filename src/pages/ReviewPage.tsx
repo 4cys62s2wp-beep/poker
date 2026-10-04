@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import type { QuizQuestion } from '../content/types';
 import { Icon } from '../components/Icon';
 import { useAppState, type ReviewItem } from '../state/AppState';
+import { zeichenFuer } from '../lib/zeichen';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/review';
 import { STR as PRO_STR } from '../i18n/pages/pro';
@@ -95,7 +96,7 @@ export function ReviewPage() {
       {unlocked && !current && (
         <div className="card" style={{ maxWidth: 640, textAlign: 'center', padding: 36 }}>
           <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
-            <Icon name="repeat" size={38} />
+            <Icon name={zeichenFuer('/lernen/wiederholen')} size={38} />
           </div>
           {data.reviews.length === 0 ? (
             <>

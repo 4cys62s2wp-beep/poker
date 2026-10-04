@@ -4527,3 +4527,35 @@ nur umrandet, und in der Sonne bleibt ein Rand die schwächste Unterscheidung.
 Gemessen: Design (182), Bedienbar (180), Daumen, Quer, Tisch, Durchgang — null
 Befunde. `flaechen.test.ts` hält es fest (8 Prüfungen); die Abhebung mit
 Gegenprobe rot gesehen.
+
+
+## E-078 · 2026-10-04 · Ein Symbol je Ziel, und kein Spielautomat
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 1.5).
+
+**Gefunden:** Handranking-Trainer und Übungstisch trugen beide die roten
+Karten, Odds, Equity und Spielstil dasselbe Säulendiagramm, „Frühere Abende"
+und „Auszahlung" dieselbe Krone, Pro-Einblicke und Chip-Rechner dasselbe Chip-
+Zeichen, die Waage stand dreimal. Jede Liste trug ihre Symbole selbst — drei
+Listen, drei Meinungen. Dazu stand ein 🎰 beim Modul „Live-Poker" und beim
+Abzeichen „Grinder", in einer App, die nicht um Geld spielt (E-030).
+
+**Entschieden:** Das Symbol hängt am Pfad (`src/lib/zeichen.ts`); jede Liste
+fragt dort. Acht neue Zeichen (Stern, Karte, Kreisanteil, Siegerpodest,
+Kalender, Pokal, Euro-Münze, Blitz), damit jede Seite ihr eigenes bekommt.
+Ersatz für das 🎰: ♠️ beim Modul, ⚙️ beim Grinder — die Abzeichen werden in
+Paket 8 ohnehin zu eigenen Medaillen.
+
+**Verworfene Alternative:** nur die Doppelungen einzeln umbiegen. Das hätte
+heute geholfen und in der nächsten Kachel dasselbe Problem neu erzeugt; ein
+Register mit Test macht das Doppelte unmöglich, statt es einmal zu beheben.
+
+**Zweite verworfene Alternative:** jede Seite global eindeutig. Trainer und
+Nachschlagewerk zum selben Gegenstand sind absichtlich ein Paar (drei
+Stück, im Register aufgeführt); das gleiche Zeichen sagt „das gehört
+zusammen", und sie stehen nie auf demselben Bildschirm.
+
+Gemessen: Design (182), Bedienbar (180), Daumen, Durchgang — null Befunde.
+`zeichen.test.ts` hält es fest (11 Prüfungen); drei davon mit Gegenprobe rot
+gesehen (doppeltes Symbol, Symbol neben dem Ziel, 🎰).
+

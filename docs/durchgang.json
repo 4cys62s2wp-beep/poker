@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T08:06:02.042Z",
+  "geprueft_am": "2026-10-04T08:15:33.789Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 894,
+        "dauer_ms": 869,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -573,7 +573,7 @@
         "leiste_im_daumenbereich": true,
         "knoepfe": [
           "Fold",
-          "Call 7",
+          "Call 2",
           "Raise …"
         ]
       },
@@ -610,12 +610,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 34,
+        "dauer_ms": 45,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "8,4 %",
+        "ergebnis_text": "16,5 %",
         "uebergang": "0s",
         "belebung": "none"
       },

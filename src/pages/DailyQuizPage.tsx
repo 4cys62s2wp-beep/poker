@@ -4,6 +4,7 @@ import type { QuizQuestion } from '../content/types';
 import { QuizRunner } from '../components/QuizRunner';
 import { Icon } from '../components/Icon';
 import { useAppState } from '../state/AppState';
+import { zeichenFuer } from '../lib/zeichen';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/dailyquiz';
 
@@ -70,7 +71,7 @@ export function DailyQuizPage() {
       {alreadyDone && !started && (
         <div className="card" style={{ maxWidth: 640, textAlign: 'center', padding: 36 }}>
           <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
-            <Icon name="sun" size={38} />
+            <Icon name={zeichenFuer('/lernen/tagesquiz')} size={38} />
           </div>
           <h2 style={{ fontSize: 'var(--fs-ueberschrift)', marginBottom: 8 }}>{L.doneTitle}</h2>
           <p className="muted small">
@@ -82,7 +83,7 @@ export function DailyQuizPage() {
       {!alreadyDone && !started && (
         <div className="card" style={{ maxWidth: 640, textAlign: 'center', padding: 36 }}>
           <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
-            <Icon name="sun" size={38} />
+            <Icon name={zeichenFuer('/lernen/tagesquiz')} size={38} />
           </div>
           <h2 style={{ fontSize: 'var(--fs-ueberschrift)', marginBottom: 8 }}>{L.readyTitle}</h2>
           <p className="muted small" style={{ marginBottom: 18 }}>

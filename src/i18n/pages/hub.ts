@@ -13,8 +13,13 @@ export const STR = defineStrings(
     // Kopfzeile
     levelLabel: 'Level',
     xpLabel: 'XP',
-    streakLabel: 'Tage in Folge',
+    /* Mit Zahl, damit der Singular stimmt: „1 Tage in Folge" stand hier
+       einen Durchlauf lang. */
+    streakLabel: (n: number) => (n === 1 ? 'Tag in Folge' : 'Tage in Folge'),
     streakNone: 'Serie',
+    /* Die Serie lebt, aber heute ist noch nichts getan: ab Mitternacht wäre
+       sie weg. Ein Satz, der das sagt, ohne zu drängen. */
+    serieHalten: 'heute halten',
 
 
     // Die drei Karten
@@ -57,19 +62,43 @@ export const STR = defineStrings(
       `${spieler === 1 ? '1 Spieler' : `${spieler} Spieler`} · Blinds ${sb}/${bb}`,
 
     /* ── Die Hand des Tages (E-036) ─────────────────────────────────── */
-    heuteMarke: 'Heute',
+    heuteMarke: 'Hand des Tages',
     heuteHand: 'Deine Hand',
     heuteFlop: 'Flop',
     heuteFrage: 'Lohnt der Call?',
     heuteJa: 'Lohnt sich',
     heuteNein: 'Lohnt nicht',
-    heuteSetzt: (einsatz: string, topf: string) => `Er setzt ${einsatz} in ${topf}.`,
+    /* Ein vollständiger Satz mit Einheit: „Er setzt 32 in 96" ließ offen,
+       wer er ist und was gezählt wird. */
+    heuteSetzt: (einsatz: string, topf: string) =>
+      `Dein Gegner setzt ${einsatz} BB in einen Pot von ${topf} BB.`,
+    /* Die Rechnung, die hinter der Frage steht — für den, der noch nicht
+       weiß, was „mitgehen" kostet und bringt. */
+    heuteRechnung: (zahlt: string, gewinnt: string) => `Du zahlst ${zahlt}, um ${gewinnt} zu gewinnen.`,
+    /* Solange die erste Lektion offen ist, wird „Call" erklärt statt
+       vorausgesetzt. Der Begriff in der Mitte ist ein Link ins Glossar. */
+    heuteFrageEinsteiger: ['Mitgehen (', 'Call', ') – lohnt sich das?'] as const,
+    heuteErklaerung:
+      'Die App rechnet dir vor, was sich lohnt – und zeigt zu jeder Zahl, wie sie entstanden ist.',
     heuteGegen: (equity: string, noetig: string) => `${equity} gegen ${noetig} nötig`,
     heuteKnapp: 'Hauchdünn — hier entscheidet niemand falsch.',
     heuteWarum: 'Warum? Ganze Rechnung ansehen',
     heuteSerie: (tage: number) => (tage === 1 ? '1 Tag in Folge' : `${tage} Tage in Folge`),
     heuteErsterTag: 'Erster Tag',
     heuteMorgen: 'Morgen wartet die nächste Hand',
+
+    /* ── „Heute noch": was nach der Antwort offen ist (E-088) ───────── */
+    zielMarke: 'Heute:',
+    zielHand: 'Hand',
+    zielFragen: (n: number) => `${n} Fragen`,
+    zielErledigt: 'erledigt',
+    zielOffen: 'offen',
+    heuteNoch: 'Heute noch',
+    wiederholen: (n: number) => (n === 1 ? '1 Frage wiederholen' : `${n} Fragen wiederholen`),
+    tagesquizPunkt: 'Tages-Quiz machen',
+    lektionPunkt: (titel: string) => `Weiter mit „${titel}“`,
+    ersteLektionPunkt: (titel: string) => `Erste Lektion: „${titel}“`,
+    heuteFertig: 'Für heute ist alles erledigt.',
     heuteWoche: 'Die letzten sieben Tage',
     heuteTagOffen: 'noch offen',
     heuteTagRichtig: 'richtig',
@@ -86,8 +115,9 @@ export const STR = defineStrings(
 
     levelLabel: 'Level',
     xpLabel: 'XP',
-    streakLabel: 'day streak',
+    streakLabel: (_n: number) => 'day streak',
     streakNone: 'Streak',
+    serieHalten: 'keep it going',
 
 
     learnTitle: 'Learn',
@@ -123,19 +153,36 @@ export const STR = defineStrings(
       `${spieler === 1 ? '1 player' : `${spieler} players`} · blinds ${sb}/${bb}`,
 
     /* ── Hand of the day (E-036) ────────────────────────────────────── */
-    heuteMarke: 'Today',
+    heuteMarke: 'Hand of the day',
     heuteHand: 'Your hand',
     heuteFlop: 'Flop',
     heuteFrage: 'Is the call worth it?',
     heuteJa: 'Worth it',
     heuteNein: 'Not worth it',
-    heuteSetzt: (einsatz: string, topf: string) => `He bets ${einsatz} into ${topf}.`,
+    heuteSetzt: (einsatz: string, topf: string) =>
+      `Your opponent bets ${einsatz} BB into a pot of ${topf} BB.`,
+    heuteRechnung: (zahlt: string, gewinnt: string) => `You pay ${zahlt} to win ${gewinnt}.`,
+    heuteFrageEinsteiger: ['Matching the bet (', 'call', ') – is it worth it?'] as const,
+    heuteErklaerung:
+      'The app works out what is worth it – and shows how every number came about.',
     heuteGegen: (equity: string, noetig: string) => `${equity} against ${noetig} needed`,
     heuteKnapp: 'Razor thin — nobody decides wrong here.',
     heuteWarum: 'Why? See the full calculation',
     heuteSerie: (tage: number) => (tage === 1 ? '1 day in a row' : `${tage} days in a row`),
     heuteErsterTag: 'Day one',
     heuteMorgen: 'Tomorrow brings the next hand',
+
+    zielMarke: 'Today:',
+    zielHand: 'Hand',
+    zielFragen: (n: number) => `${n} questions`,
+    zielErledigt: 'done',
+    zielOffen: 'open',
+    heuteNoch: 'Still to do today',
+    wiederholen: (n: number) => (n === 1 ? 'Review 1 question' : `Review ${n} questions`),
+    tagesquizPunkt: 'Take the daily quiz',
+    lektionPunkt: (titel: string) => `Continue with “${titel}”`,
+    ersteLektionPunkt: (titel: string) => `First lesson: “${titel}”`,
+    heuteFertig: 'Everything is done for today.',
     heuteWoche: 'The last seven days',
     heuteTagOffen: 'still open',
     heuteTagRichtig: 'correct',

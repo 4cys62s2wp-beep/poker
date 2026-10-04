@@ -9,7 +9,7 @@ import { STR } from '../i18n/pages/profile';
 import { CloudAccountCard } from '../components/CloudAccountCard';
 import { ShareCard } from '../components/ShareCard';
 import { downloadBlob } from '../lib/download';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Levelring } from '../components/Levelring';
 import { rangstand } from '../lib/rang/stand';
 import { Icon, type IconName } from '../components/Icon';
@@ -19,7 +19,10 @@ import { STR as PRO_STR } from '../i18n/pages/pro';
 import { zeichenFuer } from '../lib/zeichen';
 import { usePro } from '../lib/pro/ProProvider';
 import { InstallierenKarte } from '../components/InstallierenKarte';
+import { ErinnerungKarte } from '../components/ErinnerungKarte';
 import { Zurueck } from '../components/ui';
+import { aktuelleSerie } from '../lib/serie';
+import { tagesschluessel } from '../lib/heute/hand';
 import { useCloud } from '../lib/cloud/CloudProvider';
 
 export function ProfilePage() {
@@ -32,6 +35,25 @@ export function ProfilePage() {
   const P = STR[lang];
   const { modus, setzeModus } = useFarbmodus();
   const cloud = useCloud();
+  /* `?konto=1` kommt aus dem Willkommensdialog („Ich habe schon ein Konto"):
+     Die Seite springt zur Kontokarte und setzt den Fokus dorthin. Zwei Bilder
+     warten, weil die Scrollverwaltung nach einem Seitenwechsel selbst nach
+     oben scrollt und die Überschrift fokussiert — danach erst gilt unser Ziel. */
+  const [suche] = useSearchParams();
+  const zumKonto = suche.has('konto');
+  useEffect(() => {
+    if (!zumKonto) return undefined;
+    let zweites = 0;
+    const erstes = requestAnimationFrame(() => {
+      zweites = requestAnimationFrame(() => {
+        const ziel = document.getElementById('konto');
+        ziel?.scrollIntoView({ block: 'start' });
+        ziel?.focus({ preventScroll: true });
+      });
+    });
+    return () => { cancelAnimationFrame(erstes); cancelAnimationFrame(zweites); };
+  }, [zumKonto]);
+  const serieZahl = aktuelleSerie(data.streak, tagesschluessel());
   const [nameInput, setNameInput] = useState(data.name);
   const [emailInput, setEmailInput] = useState(activeProfile.email ?? '');
   const [confirmReset, setConfirmReset] = useState(false);
@@ -158,8 +180,8 @@ export function ProfilePage() {
         </div>
         <div className="card">
           <div className="stat-label">{P.statStreak}</div>
-          <div className="big-stat">{data.streak.count > 0 ? data.streak.count : '–'}</div>
-          <div className="small faint">{P.streakDays}</div>
+          <div className="big-stat">{serieZahl > 0 ? serieZahl : '–'}</div>
+          <div className="small faint">{P.streakDays(serieZahl)}</div>
         </div>
         <div className="card">
           <div className="stat-label">{P.statSessions}</div>
@@ -199,7 +221,7 @@ export function ProfilePage() {
         })}
       </div>
 
-      <div className="section-title">{P.accountSection}</div>
+      <div className="section-title" id="konto" tabIndex={-1}>{P.accountSection}</div>
       <CloudAccountCard />
 
       {/* Freunde und Rechtliches standen nur in der Seitenleiste – die unter
@@ -460,6 +482,8 @@ export function ProfilePage() {
       </div>
 
       <ShareCard />
+
+      <ErinnerungKarte />
 
       <InstallierenKarte />
 

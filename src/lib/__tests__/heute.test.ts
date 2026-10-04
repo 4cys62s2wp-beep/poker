@@ -9,7 +9,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { handDesTages, startwert, stromAus, tagesschluessel } from '../heute/hand';
 import {
-  antwortVon, ergaenze, serie, woche, type TagesAntwort,
+  antwortVon, ergaenze, woche, type TagesAntwort,
 } from '../heute/stand';
 import { baueAufgabe, loese } from '../potodds/aufgabe';
 import { pruefeB1, pruefeB2 } from '../pokermath/laden';
@@ -158,30 +158,5 @@ describe('Was von der Hand des Tages bleibt', () => {
   it('kommt über den 29. Februar eines Schaltjahres hinweg', () => {
     const w = woche([], '2028-03-01');
     expect(w.map((x) => x.tag)).toContain('2028-02-29');
-  });
-
-  it('zählt eine Serie bis heute', () => {
-    const liste = ['2026-03-12', '2026-03-13', '2026-03-14'].map((t) => a(t));
-    expect(serie(liste, '2026-03-14')).toBe(3);
-  });
-
-  it('bricht die Serie nicht, solange heute noch offen ist', () => {
-    /* Der Tag ist noch nicht vorbei. Wer morgens auf die Startseite schaut,
-       soll nicht lesen, dass seine Serie schon gerissen ist. */
-    const liste = ['2026-03-12', '2026-03-13'].map((t) => a(t));
-    expect(serie(liste, '2026-03-14')).toBe(2);
-  });
-
-  it('bricht die Serie, wenn ein Tag dazwischen fehlt', () => {
-    const liste = ['2026-03-11', '2026-03-13', '2026-03-14'].map((t) => a(t));
-    expect(serie(liste, '2026-03-14')).toBe(2);
-  });
-
-  it('zählt eine falsche Antwort für die Serie mit', () => {
-    /* Die Serie misst das Auftauchen, nicht das Können. Wer eine Woche lang
-       jeden Tag danebenliegt, hat trotzdem eine Woche lang geübt — und
-       genau das ist es, was die Serie belohnen soll. */
-    const liste = ['2026-03-13', '2026-03-14'].map((t) => a(t, false));
-    expect(serie(liste, '2026-03-14')).toBe(2);
   });
 });

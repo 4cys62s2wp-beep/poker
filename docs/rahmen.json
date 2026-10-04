@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T10:14:33.475Z",
+  "geprueft_am": "2026-10-04T10:50:08.630Z",
   "befunde_gesamt": 0,
   "je_bereich": {},
   "messwerte": {
@@ -31,7 +31,7 @@
       {
         "seite": "Profil",
         "adresse": "profil",
-        "seitenhoehe": 5025,
+        "seitenhoehe": 5482,
         "gescrollt": 1800,
         "titel": "Profil",
         "rueckweg": "Start"

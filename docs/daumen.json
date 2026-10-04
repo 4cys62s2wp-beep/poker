@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T10:17:24.895Z",
+  "geprueft_am": "2026-10-04T10:46:41.687Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
@@ -10,7 +10,7 @@
     {
       "hash": "#/",
       "scrollt": true,
-      "ueberlauf_px": 85,
+      "ueberlauf_px": 181,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -82,7 +82,7 @@
     {
       "hash": "#/profil",
       "scrollt": true,
-      "ueberlauf_px": 4181,
+      "ueberlauf_px": 4638,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -283,14 +283,14 @@
     {
       "hash": "#/lernen/trainer/outs",
       "scrollt": true,
-      "ueberlauf_px": 14,
+      "ueberlauf_px": 39,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 673,
-        "unten_px": 834,
-        "mitte_px": 753,
+        "oben_px": 683,
+        "unten_px": 844,
+        "mitte_px": 764,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 4,
@@ -331,10 +331,10 @@
         "mitte_px": 768,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
-        "knoepfe": 2,
+        "knoepfe": 3,
         "klebt": true,
         "kleinster_knopf_px": 56,
-        "breitenanteil": 0.9
+        "breitenanteil": 0.88
       }
     },
     {
@@ -359,7 +359,7 @@
     {
       "hash": "#/lernen/trainer/szenario",
       "scrollt": true,
-      "ueberlauf_px": 33,
+      "ueberlauf_px": 211,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,

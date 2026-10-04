@@ -89,23 +89,19 @@ export function setzeCloudZurueck(): void {
   if (ausfall === 'offline') handlePromise = null;
 }
 
-async function loadConfig(): Promise<FirebaseConfigFile | null> {
-  ausfall = null;
+async function leseConfig(): Promise<{ cfg: FirebaseConfigFile | null; ausfall: CloudAusfall | null }> {
   let res: Response;
   try {
     const url = new URL('firebase-config.json', document.baseURI).toString();
     res = await fetch(url, { cache: 'no-store' });
   } catch {
-    ausfall = 'offline';
-    return null;
+    return { cfg: null, ausfall: 'offline' };
   }
   if (res.status === 404) {
-    ausfall = 'nicht-eingerichtet';
-    return null;
+    return { cfg: null, ausfall: 'nicht-eingerichtet' };
   }
   if (!res.ok) {
-    ausfall = 'offline';
-    return null;
+    return { cfg: null, ausfall: 'offline' };
   }
   try {
     const json: unknown = await res.json();
@@ -117,14 +113,28 @@ async function loadConfig(): Promise<FirebaseConfigFile | null> {
       typeof cfg.projectId === 'string' &&
       typeof cfg.appId === 'string'
     ) {
-      return cfg as FirebaseConfigFile;
+      return { cfg: cfg as FirebaseConfigFile, ausfall: null };
     }
   } catch {
     /* Kein JSON — der Entwicklungsserver liefert für eine fehlende Datei die
        Startseite. Das ist „nicht eingerichtet", nicht „kein Netz". */
   }
-  ausfall = 'nicht-eingerichtet';
-  return null;
+  return { cfg: null, ausfall: 'nicht-eingerichtet' };
+}
+
+async function loadConfig(): Promise<FirebaseConfigFile | null> {
+  const r = await leseConfig();
+  ausfall = r.ausfall;
+  return r.cfg;
+}
+
+/** Gibt es hier überhaupt eine Cloud? Ohne Nebenwirkung — der Willkommensdialog
+ *  fragt das, bevor irgendetwas geladen wird: „Ich habe schon ein Konto" hat
+ *  nur dort einen Sinn, wo es ein Konto geben kann. Offline gilt als „ja":
+ *  Das Netz kommt wieder, die Installation bleibt eine mit Cloud. */
+export async function cloudKonfiguriert(): Promise<boolean> {
+  if (__SINGLE__) return false;
+  return (await leseConfig()).ausfall !== 'nicht-eingerichtet';
 }
 
 /* Firebase-Fehlercodes in verständlichen Text übersetzen – in beiden Sprachen.

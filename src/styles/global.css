@@ -1612,6 +1612,11 @@ table.data tr:nth-child(even) td { background: rgba(236, 233, 223, 0.017); }
 .installieren-karte .titel { font-weight: 700; margin-bottom: var(--sp-2); }
 .installieren-karte p { margin-bottom: var(--sp-3); }
 
+.erinnerung-karte { margin-top: var(--sp-4); margin-bottom: var(--sp-4); }
+.erinnerung-karte .titel { font-weight: 700; margin-bottom: var(--sp-2); }
+.erinnerung-karte p { margin-bottom: var(--sp-3); }
+.erinnerung-karte .row { align-items: center; margin-bottom: var(--sp-3); }
+
 .konto-loeschen { margin-top: var(--sp-4); }
 .konto-loeschen form { border-top: 1px solid var(--border); padding-top: var(--sp-3); }
 .konto-loeschen .titel { font-weight: 700; margin-bottom: var(--sp-2); }
@@ -2359,6 +2364,20 @@ input[type="radio"] {
     color: var(--text);
     font-weight: var(--fw-bold);
   }
+
+  /* Ein langer Name kürzt sich, er schiebt die Marke nicht weg. */
+  .mobile-top-you .name {
+    max-width: 9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* Anspringziel der Kontokarte („Ich habe schon ein Konto"): Die klebende
+   Kopfzeile darf die Überschrift nicht verdecken. */
+#konto {
+  scroll-margin-top: calc(var(--kopf-h) + var(--sp-3));
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -4425,6 +4444,24 @@ input[type="radio"] {
   font-variant-numeric: var(--ziffern);
 }
 
+.heute-erklaerung {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+}
+
+.heute-frage .rechnung {
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+.heute-frage strong a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .heute-frage strong {
   font-family: var(--font-display);
   font-size: var(--fs-ueberschrift);
@@ -4533,6 +4570,90 @@ input[type="radio"] {
   font-weight: var(--fw-medium);
   color: var(--text-faint);
 }
+
+.heute-noch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+/* Das Tagesziel: „Heute: Hand ✓ · 5 Fragen ○". Ein Haken ist erledigt, ein
+   leerer Kreis offen — Form, nicht Farbe. */
+.heute-noch .ziel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+  font-variant-numeric: var(--ziffern);
+}
+
+.heute-noch .ziel .marke {
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  margin-right: var(--sp-1);
+}
+
+.heute-noch .ziel-punkt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.heute-noch .ziel-punkt.erledigt { color: var(--ergebnis-gut); }
+
+.heute-noch .ziel-punkt .kreis {
+  width: var(--sp-3);
+  height: var(--sp-3);
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 2px var(--border-strong);
+}
+
+.heute-noch .fertig {
+  margin: 0;
+  font-size: var(--fs-kleingedrucktes);
+  color: var(--text-dim);
+}
+
+/* Die Schritte sind Bedienflächen: die volle Breite, eine Fingerbreite hoch.
+   Der erste ist der Hauptknopf der beantworteten Karte. */
+.heute-schritt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tipp-min);
+  padding: 0 var(--sp-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-size: var(--fs-fliesstext);
+  font-weight: var(--fw-bold);
+  text-align: center;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.heute-schritt:active { background: var(--bg-card-hover); }
+
+.heute-schritt.haupt {
+  border-color: var(--akzent);
+  color: var(--akzent);
+}
+
+.heute-warum {
+  /* Nach dem Tagesplan ist „Warum?" ein Weg unter mehreren und kein Knopf. */
+  margin-top: var(--sp-1);
+  border-color: transparent;
+  color: var(--text-dim);
+}
+
+.heute-noch ~
 
 .heute-warum {
   margin-top: var(--sp-3);
@@ -4667,6 +4788,24 @@ input[type="radio"] {
   border-color: var(--akzent);
   color: var(--akzent);
 }
+
+.start-faellig {
+  display: flex;
+  align-items: center;
+  min-height: var(--tipp-min);
+  margin-top: var(--sp-2);
+  padding: 0 var(--sp-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--auszeichnung-schwach);
+  background: var(--bg-elev);
+  color: var(--auszeichnung-lesbar);
+  font-size: var(--fs-beschriftung);
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.start-faellig:active { background: var(--bg-card-hover); }
 
 /* Der Knopf darf die übrige Höhe aufnehmen — aber nur bis zu der Höhe, die
    ein großer Knopf in dieser App hat (`.tisch-knopf`, Abschnitt
@@ -4828,6 +4967,15 @@ input[type="radio"] {
   font-weight: var(--fw-bold);
   color: var(--text);
   font-variant-numeric: var(--ziffern);
+}
+
+.start-stand .wert .halten {
+  font-size: var(--fs-kleingedrucktes);
+  font-weight: var(--fw-bold);
+  color: var(--akzent-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .start-stand .wert .marke {

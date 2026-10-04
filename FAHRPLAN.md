@@ -338,7 +338,7 @@ Die Domain kauft der Mensch, danach DOMAIN_SETUP.md abarbeiten. og:url und og:im
 **Ziel:** Die Startseite sagt Neulingen und Wiederkehrern, was heute zu tun ist, erklärt die erste Frage verständlich, und jede Lernhandlung, auch die Hand des Tages, zählt für dieselbe Serie.  
 **Baut auf:** 1, 2
 
-### [ ] 4.1 Die Hand des Tages zählt, und es gibt nur eine Serie  
+### [x] 4.1 Die Hand des Tages zählt, und es gibt nur eine Serie  
 *Wirkung 5 · Aufwand M*
 
 HubPage.beantworte ruft heute nur speichereAntworten (pokermentor-heute-v1) auf. Künftig ruft es zusätzlich touchStreak auf und vergibt kleine XP. Die Wochenpunkte lesen data.streak. Die Liste der Tage nach lib/heute/stand.ts bleibt, weil E-036 „Sieben Punkte statt einer Zahl“ festlegt; deshalb keine große Flammenzahl und kein Streak Freeze. Die Bezeichnung überall „Tage in Folge“ mit korrektem Singular (hub.ts streakLabel ergibt heute „1 Tage-Streak“; das Profil sagt „LERN-STREAK“). Ein Test prüft nach der Antwort streak.count ≥ 1 und erstesMal = false. Der Hinweis „Halte deine Serie“ ist sinnvoll.
@@ -350,7 +350,7 @@ HubPage.beantworte ruft heute nur speichereAntworten (pokermentor-heute-v1) auf.
 
 </details>
 
-### [ ] 4.2 „Heute noch“ nach der Antwort: fällige Wiederholungen und nächster Schritt  
+### [x] 4.2 „Heute noch“ nach der Antwort: fällige Wiederholungen und nächster Schritt  
 *Wirkung 5 · Aufwand M*
 
 Erst nach der Antwort klappt unter der Hand des Tages ein schmaler Block mit höchstens zwei Zeilen auf: „n Fragen wiederholen“ (nur bei n > 0) und Tages-Quiz bzw. nächste Lektion. Der Hauptknopf der beantworteten Karte führt zum ersten offenen Punkt; heute gibt es nach der Antwort nur „Warum? Ganze Rechnung ansehen“. Die Lernen-Karte zeigt bei fälligen Fragen „X Fragen wiederholen“ vor „Weiterlernen“. Heute steht die Zahl nur in der DueBubble der Desktop-Leiste (Layout.tsx Z. 126/263, unter 920 px ausgeblendet) und auf der Kachel „Wiederholen“ etwa 2900 px tief. Das Tagesziel als Zeile „Heute: Hand ✓ · 5 Fragen ○“; der Nenner zählt Fertiges und ist nach 10a.4 erlaubt. Die Hand des Tages bleibt ohne Scrollen beantwortbar (E-036, 10.7); mit npm run daumen nachmessen.
@@ -364,7 +364,7 @@ Erst nach der Antwort klappt unter der Hand des Tages ein schmaler Block mit hö
 
 </details>
 
-### [ ] 4.3 Die erste Frage verständlich machen, ohne das Höhenbudget zu sprengen  
+### [x] 4.3 Die erste Frage verständlich machen, ohne das Höhenbudget zu sprengen  
 *Wirkung 5 · Aufwand S*
 
 Die Erklärung kommt in die Karte, nicht als Absatz darüber; das `!heute` in HubPage.tsx:194 hält das Höhenbudget aus E-036. Die Marke heißt „Hand des Tages“ statt „Heute“. Die Aufgabe wird ein vollständiger Satz mit Einheit, alsBB (lib/potodds/aufgabe.ts:286) mit „BB“: „Dein Gegner setzt 32 BB in einen Pot von 96 BB.“ Solange m1-l1 offen ist, lautet die Frage „Mitgehen (Call) – lohnt sich das?“, mit Glossar-Verknüpfung auf „Call“ und der Rechenzeile „Du zahlst 32, um 128 zu gewinnen“. Den Kern von wasDieAppTut in die Karte übernehmen. Die Tagline im Willkommensdialog (Onboarding.tsx:17) ohne „Skills“ und ohne „besser gewinnen“ neu schreiben. Auf 667 px mit npm run daumen nachmessen.
@@ -376,7 +376,7 @@ Die Erklärung kommt in die Karte, nicht als Absatz darüber; das `!heute` in Hu
 
 </details>
 
-### [ ] 4.4 Onboarding: Ziel optional, Name sichtbar, Einstieg für Bestandsnutzer  
+### [x] 4.4 Onboarding: Ziel optional, Name sichtbar, Einstieg für Bestandsnutzer  
 *Wirkung 4 · Aufwand M*
 
 Optionaler dritter Schritt in Onboarding.tsx: „Was hast du vor?“ (Poker lernen / Pokerabende leiten). Er setzt nur Gewichte, die Reihenfolge der Startseite bleibt (E-036: Aufgabe oben; 10.2: Live im Daumenbereich). Bei „Pokerabende leiten“ bekommt der Lernteil keine Erklärung. Der eingegebene Name erscheint statt „Du“ in .mobile-top-you. Ein Link „Ich habe schon ein Konto“ springt zur Kontokarte (Anker plus Fokus); er erscheint nur, wenn die Kontofunktion nach Punkt 3.6 aktiv ist. Kein Tagesziel-Schritt mit drei Stufen.
@@ -389,7 +389,7 @@ Optionaler dritter Schritt in Onboarding.tsx: „Was hast du vor?“ (Poker lern
 
 </details>
 
-### [ ] 4.5 Tages-Quiz nur aus Gelerntem  
+### [x] 4.5 Tages-Quiz nur aus Gelerntem  
 *Wirkung 4 · Aufwand S*
 
 DailyQuizPage zieht heute 5 aus allen 248 Fragen; am 2026-10-02 stammen vier aus nie gesehenen Modulen, darunter m5 „Profi“, das für Gratisnutzer gesperrt ist. Der Pool besteht künftig nur aus bestandenen Lektionen (Bestehensgrenze aus Punkt 5.1); ist er leer, folgt der Hinweis, zuerst eine Lektion abzuschließen. Falsche Antworten kommen nur bei abgeschlossenen Lektionen in den Wiederholstapel (addReviewItem). Der Rücklink läuft über die Namenstabelle aus Paket 2. „Fünf Fragen“ nur einmal nennen statt viermal.
@@ -401,7 +401,7 @@ DailyQuizPage zieht heute 5 aus allen 248 Fragen; am 2026-10-02 stammen vier aus
 
 </details>
 
-### [ ] 4.6 Erinnern ohne Server  
+### [x] 4.6 Erinnern ohne Server  
 *Wirkung 3 · Aufwand M*
 
 Eine .ics-Erinnerung über das vorhandene downloadBlob (lib/download.ts). setAppBadge mit dueReviewCount nur dort, wo die Funktion vorhanden ist (Desktop-Chromium, installierte Apps); auf iOS keine Mitteilungserlaubnis ungefragt anfordern. Web-Push über FCM nicht bauen: Das steht quer zu E-036 („keine Zeile Serverkode“) und zum Versprechen „ohne Tracking“.

@@ -28,8 +28,10 @@ Trainings-App als Website und installierbare PWA. **Komplett zweisprachig
 - **🧰 Tools:** Monte-Carlo-Equity-Rechner, Range-Charts, Odds-Spickzettel,
   Bankroll-Tracker mit Verlaufs-Chart
 - **📖 Glossar:** 150+ Begriffe mit Suche und Kategorien
-- **🏆 Gamification:** XP, 15 Level, 22 Abzeichen, Lern-Streaks, Tages-Quiz,
-  Spaced-Repetition-Wiederholung
+- **🏆 Gamification:** XP, 15 Level, 22 Abzeichen, eine Serie „Tage in Folge"
+  (die Hand des Tages zählt mit), Tages-Quiz nur aus Gelerntem,
+  Spaced-Repetition-Wiederholung; Erinnerung als Kalendereintrag (.ics) ohne
+  Server und ohne Mitteilungen
 - **👥 Profile & Konten:** mehrere Profile pro Gerät (parallel trainieren),
   Fortschritt doppelt gesichert (localStorage + IndexedDB); optional echte
   Cloud-Konten mit E-Mail-Verifizierung und Geräte-Sync via Firebase –

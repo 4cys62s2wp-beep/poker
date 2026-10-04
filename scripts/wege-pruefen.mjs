@@ -61,7 +61,10 @@ async function sichtbareZiele() {
       return r.width > 0 && r.height > 0 && st.visibility !== 'hidden' && st.display !== 'none';
     })
     .map((a) => a.getAttribute('href') ?? '')
-    .filter((h) => h.startsWith('#/')));
+    .filter((h) => h.startsWith('#/'))
+    /* Ein Suchteil macht keinen neuen Bildschirm: `#/nachschlagen/glossar?q=Call`
+       ist das Glossar, mit einem Begriff eingesetzt. Gezählt wird der Bildschirm. */
+    .map((h) => h.split('?')[0]));
 }
 
 async function oeffne(hash) {

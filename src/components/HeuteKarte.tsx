@@ -34,6 +34,8 @@ import { alsBB, alsProzent } from '../lib/potodds/aufgabe';
 import { kodiere } from '../lib/potodds/adresse';
 import type { TagesHand } from '../lib/heute/hand';
 import type { TagesAntwort } from '../lib/heute/stand';
+import type { Punkt, Tagesziel } from '../lib/tagesplan';
+import { FRAGEN_PRO_TAG } from '../lib/tagesquiz';
 
 interface Props {
   hand: TagesHand;
@@ -42,10 +44,19 @@ interface Props {
   antwort: TagesAntwort | null;
   woche: Array<{ tag: string; antwort: TagesAntwort | null; istHeute: boolean }>;
   serie: number;
+  /** Was heute noch offen ist, dringlichstes zuerst (siehe `lib/tagesplan.ts`). */
+  punkte: Punkt[];
+  ziel: Tagesziel;
+  /** Wie viele Fragen das Tages-Quiz heute stellt. */
+  quizFragen: number;
+  /** Solange die erste Lektion offen ist, wird die Frage erklärt. */
+  einsteiger: boolean;
+  /** Allererster Besuch: Die Karte sagt in einem Satz, was die App tut. */
+  erstmals: boolean;
   onAntwort: (gewaehlt: 'lohnt' | 'lohnt-nicht') => void;
 }
 
-export function HeuteKarte({ hand, abdruck, antwort, woche, serie, onAntwort }: Props) {
+export function HeuteKarte({ hand, abdruck, antwort, woche, serie, punkte, ziel, quizFragen, einsteiger, erstmals, onAntwort }: Props) {
   const { lang } = useLang();
   const L = STR[lang];
   const { aufgabe, aufloesung } = hand;
@@ -54,6 +65,24 @@ export function HeuteKarte({ hand, abdruck, antwort, woche, serie, onAntwort }: 
      Sonst wäre „Warum?" eine Themaverfehlung: Wer die Rechnung zu seiner
      Hand sehen will, bekäme eine fremde. */
   const drillWeg = `/lernen/drill/${kodiere(hand.zustand, abdruck)}`;
+
+  /* Die ersten zwei offenen Punkte, nicht alle: Der Block ist ein Hinweis
+     auf den nächsten Schritt, keine Aufgabenliste. */
+  const zeige = punkte.slice(0, 2);
+  const text = (p: Punkt) => {
+    if (p.art === 'wiederholen') return L.wiederholen(p.zahl ?? 0);
+    if (p.art === 'tagesquiz') return L.tagesquizPunkt;
+    return p.erste ? L.ersteLektionPunkt(p.titel ?? '') : L.lektionPunkt(p.titel ?? '');
+  };
+  /* Haken und leerer Kreis tragen die Auskunft, nicht die Farbe — dazu das
+     Wort für Bildschirmleser (DESIGN.md 11). */
+  const zielPunkt = (name: string, fertig: boolean) => (
+    <span className={`ziel-punkt ${fertig ? 'erledigt' : 'offen'}`}>
+      {name}{' '}
+      {fertig ? <Icon name="check" size={13} /> : <span className="kreis" aria-hidden="true" />}
+      <span className="sr-only">{fertig ? L.zielErledigt : L.zielOffen}</span>
+    </span>
+  );
 
   return (
     <section className={`heute${antwort ? ' beantwortet' : ''}`} aria-label={L.heuteMarke}>
@@ -76,6 +105,11 @@ export function HeuteKarte({ hand, abdruck, antwort, woche, serie, onAntwort }: 
         </ol>
       </header>
 
+      {/* Der Kern dessen, was beim allerersten Öffnen als eigener Absatz über
+          der Karte stand: in der Karte statt darüber, damit die Aufgabe nicht
+          nach unten rutscht (E-036). */}
+      {erstmals && antwort === null && <p className="heute-erklaerung">{L.heuteErklaerung}</p>}
+
       {/* Hand und Flop in einer Reihe, durch einen Strich getrennt — so wird
           eine Hand am Tisch gelesen und so passt sie auf ein kurzes Gerät. */}
       <div className="heute-blatt">
@@ -95,7 +129,22 @@ export function HeuteKarte({ hand, abdruck, antwort, woche, serie, onAntwort }: 
             <span className="lage">
               {L.heuteSetzt(alsBB(aufgabe.einsatzBetrag, lang), alsBB(aufgabe.pot, lang))}
             </span>
-            <strong>{L.heuteFrage}</strong>
+            {einsteiger && (
+              <span className="rechnung">
+                {L.heuteRechnung(alsBB(aufgabe.einsatzBetrag, lang), alsBB(aufgabe.pot + aufgabe.einsatzBetrag, lang))}
+              </span>
+            )}
+            {einsteiger ? (
+              <strong>
+                {L.heuteFrageEinsteiger[0]}
+                <Link to={`/nachschlagen/glossar?q=${encodeURIComponent(L.heuteFrageEinsteiger[1])}`}>
+                  {L.heuteFrageEinsteiger[1]}
+                </Link>
+                {L.heuteFrageEinsteiger[2]}
+              </strong>
+            ) : (
+              <strong>{L.heuteFrage}</strong>
+            )}
           </p>
           <div className="heute-wahl">
             <button type="button" className="heute-knopf ja" onClick={() => onAntwort('lohnt')}>
@@ -120,6 +169,26 @@ export function HeuteKarte({ hand, abdruck, antwort, woche, serie, onAntwort }: 
             {serie > 0 ? L.heuteSerie(serie) : L.heuteErsterTag}
             <span className="morgen">{L.heuteMorgen}</span>
           </p>
+
+          {/* Und jetzt? Das Tagesziel in einer Zeile, darunter höchstens zwei
+              Schritte. Der erste ist der Hauptknopf der Karte; „Warum?" ist
+              danach nur noch ein Weg unter mehreren. */}
+          <div className="heute-noch" role="group" aria-label={L.heuteNoch}>
+            <p className="ziel">
+              <span className="marke">{L.zielMarke}</span>
+              {zielPunkt(L.zielHand, ziel.hand)}
+              {ziel.fragen !== null && <>{' · '}{zielPunkt(L.zielFragen(quizFragen), ziel.fragen)}</>}
+            </p>
+            {zeige.length === 0 ? (
+              <p className="fertig">{L.heuteFertig}</p>
+            ) : (
+              zeige.map((p, i) => (
+                <Link key={p.art} to={p.zu} className={`heute-schritt${i === 0 ? ' haupt' : ''}`}>
+                  {text(p)}
+                </Link>
+              ))
+            )}
+          </div>
           <Link to={drillWeg} className="heute-warum">{L.heuteWarum}</Link>
         </div>
       )}

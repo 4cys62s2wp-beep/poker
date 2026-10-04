@@ -27,6 +27,7 @@ import { Icon } from './Icon';
 import { Marke } from './Marke';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/layout';
+import { useAppState } from '../state/AppState';
 
 /** Ab dieser Scrolltiefe (px) zeigt die Zeile den Ort. */
 const AB = 24;
@@ -50,6 +51,11 @@ function lies(haupt: HTMLElement | null): Ort {
 export function Kopfzeile({ mainRef }: { mainRef: RefObject<HTMLElement> }) {
   const { lang } = useLang();
   const L = STR[lang];
+  const { data } = useAppState();
+  /* Der Name, den jemand eingegeben hat, statt „Du": Die Stelle ist die Antwort
+     auf „Wer bin ich in dieser App?" und soll sie geben. Ohne Namen bleibt es
+     bei „Du". */
+  const eigenerName = data.name.trim();
   const ort = useLocation();
   const navigate = useNavigate();
   const [gescrollt, setGescrollt] = useState(false);
@@ -139,7 +145,14 @@ export function Kopfzeile({ mainRef }: { mainRef: RefObject<HTMLElement> }) {
         aria-current={ort.pathname === '/profil' ? 'page' : undefined}
       >
         <Icon name="profile" size={16} />
-        <span>{L.mobileYou}</span>
+        {eigenerName ? (
+          <>
+            <span className="sr-only">{L.profile}: </span>
+            <span className="name">{eigenerName}</span>
+          </>
+        ) : (
+          <span>{L.mobileYou}</span>
+        )}
       </Link>
 
       {istLektion && <div className="lesefortschritt" ref={balken} aria-hidden="true" />}

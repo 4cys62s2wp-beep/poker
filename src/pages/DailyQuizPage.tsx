@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import type { QuizQuestion } from '../content/types';
 import { QuizRunner } from '../components/QuizRunner';
 import { Icon } from '../components/Icon';
 import { useAppState } from '../state/AppState';
@@ -8,53 +7,32 @@ import { zeichenFuer } from '../lib/zeichen';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/dailyquiz';
 import { Zurueck } from '../components/ui';
-
-const QUESTIONS_PER_DAY = 5;
-
-function todayStr(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-/** Deterministischer RNG aus dem Datum – alle bekommen am selben Tag dieselben Fragen. */
-function seededRng(seedStr: string): () => number {
-  let s = 0;
-  for (let i = 0; i < seedStr.length; i++) s = (s * 31 + seedStr.charCodeAt(i)) >>> 0;
-  return () => {
-    s = (s * 1664525 + 1013904223) >>> 0;
-    return s / 4294967296;
-  };
-}
-
-interface DailyQuestion extends QuizQuestion {
-  source: string;
-}
+import { tagesschluessel } from '../lib/heute/hand';
+import { quizPool, ziehe } from '../lib/tagesquiz';
 
 export function DailyQuizPage() {
   const { data, completeDailyQuiz, addReviewItem } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
   const [started, setStarted] = useState(false);
-  const today = todayStr();
+  const today = tagesschluessel();
   const alreadyDone = data.daily?.date === today;
 
-  const questions = useMemo<DailyQuestion[]>(() => {
-    const pool: Array<DailyQuestion & { moduleId: string; lessonId: string; qi: number }> = [];
+  /* Nur Fragen aus abgeschlossenen Lektionen (siehe `lib/tagesquiz.ts`).
+     Der Pool hängt am Lernstand, nicht nur am Datum: Wer heute Morgen noch
+     nichts gelernt hatte und mittags die erste Lektion abschließt, soll das
+     Quiz dann auch bekommen. */
+  const pool = useMemo(
+    () => quizPool(content.modules, data.completedLessons),
+    [content.modules, data.completedLessons],
+  );
+  const questions = useMemo(() => ziehe(pool, today), [pool, today]);
+  const naechste = useMemo(() => {
     for (const m of content.modules) {
-      for (const l of m.lessons) {
-        l.quiz.forEach((q, qi) => {
-          pool.push({ ...q, source: `${m.title} · ${l.title}`, moduleId: m.id, lessonId: l.id, qi });
-        });
-      }
+      for (const l of m.lessons) if (!data.completedLessons[l.id]) return { modul: m.id, lektion: l.id };
     }
-    const rng = seededRng(today);
-    // Fisher-Yates mit Datums-Seed, dann die ersten N
-    for (let i = pool.length - 1; i > 0; i--) {
-      const j = Math.floor(rng() * (i + 1));
-      [pool[i], pool[j]] = [pool[j], pool[i]];
-    }
-    return pool.slice(0, QUESTIONS_PER_DAY);
-  }, [today, content.modules]);
+    return null;
+  }, [content.modules, data.completedLessons]);
 
   return (
     <div>
@@ -78,14 +56,30 @@ export function DailyQuizPage() {
         </div>
       )}
 
-      {!alreadyDone && !started && (
+      {!alreadyDone && !started && questions.length === 0 && (
+        <div className="card" style={{ textAlign: 'center', padding: 36 }}>
+          <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
+            <Icon name={zeichenFuer('/lernen/tagesquiz')} size={38} />
+          </div>
+          <h2 style={{ fontSize: 'var(--fs-ueberschrift)', marginBottom: 8 }}>{L.emptyTitle}</h2>
+          <p className="muted small" style={{ marginBottom: 18 }}>{L.emptyText}</p>
+          <Link
+            className="btn primary lg"
+            to={naechste ? `/lernen/${naechste.modul}/${naechste.lektion}` : '/lernen'}
+          >
+            {L.emptyGo}
+          </Link>
+        </div>
+      )}
+
+      {!alreadyDone && !started && questions.length > 0 && (
         <div className="card" style={{ textAlign: 'center', padding: 36 }}>
           <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
             <Icon name={zeichenFuer('/lernen/tagesquiz')} size={38} />
           </div>
           <h2 style={{ fontSize: 'var(--fs-ueberschrift)', marginBottom: 8 }}>{L.readyTitle}</h2>
           <p className="muted small" style={{ marginBottom: 18 }}>
-            {L.readyText(QUESTIONS_PER_DAY)}
+            {L.readyText(questions.length)}
           </p>
           <button className="btn primary lg" onClick={() => setStarted(true)}>
             {L.start}
@@ -98,11 +92,12 @@ export function DailyQuizPage() {
           <QuizRunner
             questions={questions}
             onFinish={(score, total) => completeDailyQuiz(score, total)}
-            onWrong={(qi) => {
-              const q = questions[qi] as DailyQuestion & { moduleId?: string; lessonId?: string; qi?: number };
-              if (q.moduleId && q.lessonId !== undefined && q.qi !== undefined) {
-                addReviewItem(q.moduleId, q.lessonId!, q.qi!);
-              }
+            /* Jede Frage stammt aus einer abgeschlossenen Lektion — eine falsche
+               Antwort ist hier also tatsächlich etwas, das man wiederholen
+               sollte. */
+            onWrong={(i) => {
+              const q = questions[i];
+              addReviewItem(q.moduleId, q.lessonId, q.qi);
             }}
           />
         </div>

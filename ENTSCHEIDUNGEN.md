@@ -4935,3 +4935,111 @@ von Hand zu ändern. Das ist genau der Weg, auf dem die Adresse veraltet.
 **Beim Auftraggeber:** Die Domain selbst (Kauf, DNS, Pages-Einstellung, Autorisierte Domain in der
 Firebase-Konsole) bleibt Handarbeit — Schritte in `DOMAIN_SETUP.md`.
 
+
+---
+
+## E-087 · 2026-10-04 · Es gibt eine Serie, und die Hand des Tages füttert sie
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 4.1).
+
+**Gefunden:** Die Hand des Tages führte eine eigene Reihe (`pokermentor-heute-v1`), die nur sie
+kannte. Wer sie beantwortete, bekam keine XP und keinen Tag für `data.streak`; die Startseite zeigte
+„1 Tag in Folge" neben „3 Tage-Streak", und danach hielt sie den Nutzer noch für einen Erstnutzer
+(`erstesMal` bleibt wahr, solange `xp` null ist). Dazu stand der gespeicherte Zähler weiter da, wenn
+die Reihe längst gerissen war: Wer drei Tage nichts getan hatte, las „5 Tage in Folge".
+
+**Entschieden:**
+- `recordDailyHand(richtig)` im App-Zustand: 5 XP für eine richtige, 2 für eine falsche Antwort
+  (wie bei der gespielten Hand: Auftauchen zählt) und `touchStreak`. Die Startseite ruft es genau
+  einmal je Tag auf; ein Merker fängt den doppelten Tipp ab, bevor die Karte umgeschaltet hat.
+- `lib/serie.ts` sagt, was **heute** gilt: `aktuelleSerie` (lebt, wenn heute oder gestern etwas
+  getan wurde, sonst 0) und `serieGefaehrdet` (lebt, aber heute noch nichts getan). Karte, Lernkarte
+  und Profil lesen beide, nie den rohen Zähler.
+- Die Liste der Tage (`lib/heute/stand.ts`) bleibt für die sieben Punkte (E-036: Punkte statt Zahl),
+  zählt aber nichts mehr. `serie()` dort ist entfernt: Zwei Funktionen für dieselbe Zahl sind der
+  Weg, auf dem es wieder zwei Serien gibt.
+- „Tag in Folge" / „Tage in Folge" überall mit Numerus (`streakLabel(n)`, `streakDays(n)`). Ist die
+  Reihe gefährdet, steht in der Lernkarte „heute halten" — ein Wort, kein Alarm.
+
+**Verworfene Alternative:** Eine große Flammenzahl und ein „Streak Freeze". Die Zahl würde die
+sieben Punkte verdrängen (E-036), und ein Freeze belohnt, nicht zu üben.
+
+**Gemessen:** `npm run durchgang`, Schritt „Die Hand des Tages wird auf der Startseite beantwortet":
+`streak` 0 → 1, `xp` +2 (Antwort falsch), nach dem Neuladen unverändert, Lernkarte und Karte nennen
+dieselbe Zahl im richtigen Numerus. Gegenprobe: `recordDailyHand` ohne `touchStreak` → der Test
+schlägt auf `streak_nachher` an.
+
+---
+
+## E-088 · 2026-10-04 · „Heute noch", ein Tagesziel, und ein Quiz nur aus Gelerntem
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 4.2, 4.3, 4.5).
+
+**Gefunden:** Nach der Antwort sagte die Karte nur „Warum?". Fällige Wiederholungen standen in einer
+Blase der Desktop-Leiste (unter 920 px ausgeblendet) und auf einer Kachel 2900 px tief; das
+Tages-Quiz wurde nirgends erwähnt. Das Tages-Quiz zog fünf Fragen aus allen 248 — am 2. Oktober vier
+aus Modulen, die der Nutzer nie geöffnet hatte, darunter dem für Gratis gesperrten „Profi". Die
+erste Frage („Er setzt 32 in 96. Lohnt der Call?") setzte „Call" und „BB" voraus.
+
+**Entschieden:**
+- `lib/tagesplan.ts`: `offenePunkte` ordnet nach Dringlichkeit — Wiederholungen (sie verfallen),
+  Tages-Quiz (läuft heute ab), nächste Lektion (läuft nicht weg). Die Karte zeigt nach der Antwort
+  das Tagesziel („Heute: Hand ✓ · 5 Fragen ○", Haken und leerer Kreis statt Farbe) und die ersten
+  **zwei** Schritte; der erste ist der Hauptknopf, „Warum?" danach ein Weg unter mehreren. Ist alles
+  getan, steht „Für heute ist alles erledigt." Das Tagesziel kennt kein Quiz-Ziel, solange es kein
+  Quiz geben kann.
+- Die Lernen-Karte zeigt „n Fragen wiederholen" vor „Weiterlernen" — nicht am Tisch (E-035).
+- `lib/tagesquiz.ts`: Der Pool besteht aus den Fragen **abgeschlossener** Lektionen; weniger als
+  fünf, wenn es weniger gibt, nie aufgefüllt aus Ungelerntem; leer → „Erst eine Lektion
+  abschließen" mit Weg zur nächsten. Falsche Antworten gehen damit nur für Gelerntes in den
+  Wiederholstapel. „Fünf Fragen" steht auf der Seite einmal. Mit Paket 5.1 heißt „abgeschlossen"
+  dort „bestanden"; `abgeschlossen` ist das Einzige, was sich ändert.
+- Erste Frage: Marke „Hand des Tages"; der Satz „Dein Gegner setzt 104 BB in einen Pot von 52 BB.";
+  solange `m1-l1` offen ist „Mitgehen (Call) – lohnt sich das?" mit Link ins Glossar (öffnet den
+  Begriff `Call` von selbst, auch bei mehreren Treffern) und der Rechenzeile „Du zahlst 104, um 156
+  zu gewinnen." (Pot + Einsatz — **nicht** der Endpot; die erste Fassung nannte 260 und war falsch,
+  aufgefallen am Bildschirmfoto). Beim allerersten Besuch steht der Kern von „Was die App tut" in der
+  Karte statt darüber.
+
+**Höhenbudget (E-036):** gemessen mit `npm run daumen` und im Durchgang: Die Knöpfe der Hand des
+Tages bleiben auf 375 × 667, 390 × 844 und 360 × 740 ohne Scrollen erreichbar, auch im Zustand mit
+Erklärung, Rechenzeile und Glossarlink.
+
+---
+
+## E-089 · 2026-10-04 · Willkommensdialog: Name sichtbar, Ziel freiwillig, Konto nur wo möglich
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 4.4).
+
+**Entschieden:** Dritter Schritt „Was hast du vor?" — **Poker lernen** / **Pokerabende leiten**, mit
+„Überspringen" und „Zurück", ohne vorbelegte Wahl. Die Antwort (`lib/ziel.ts`) ändert nur, was die
+Startseite **erklärt**: Wer Abende leiten will, bekommt die Einführung in den Lernteil nicht (kein
+„Mitgehen (Call)", kein erklärender Satz). Reihenfolge und Größen bleiben (E-036, Regel 10.2). Kein
+Tagesziel mit drei Stufen: Die App stellt keine Mahnung in Aussicht, die sie nicht hält. Der Name
+steht in der Kopfzeile statt „Du" (gekürzt, mit unsichtbarem „Profil:" für Bildschirmleser).
+„Ich habe schon ein Konto" erscheint auf dem ersten Bildschirm nur mit Anbieterangaben **und**
+Cloud (`kontoAnbieten(legal)` + `cloudKonfiguriert()`), springt nach `#/profil?konto=1` und setzt
+den Fokus auf die Kontoüberschrift (zwei Bilder Wartezeit, weil die Scrollverwaltung nach einem
+Seitenwechsel selbst scrollt und die h1 fokussiert).
+
+**Ehrlich:** Solange `public/legal.json` leer ist, erscheint der Link im Netz **nicht** — gemessen
+wird er mit untergeschobener `legal.json`. Das Ziel lässt sich später nicht ändern; weil es nur
+Erklärungen steuert, ist das folgenlos. Eine Einstellung dafür gehört in Paket 8.
+
+---
+
+## E-090 · 2026-10-04 · Erinnern ohne Server
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 4.6).
+
+**Entschieden:** Im Profil eine Karte „Täglich erinnern": Uhrzeit wählen, eine `.ics`-Datei laden
+(`lib/erinnerung.ts`: tägliche Wiederholung, schwebende Ortszeit, Anzeige-Erinnerung zur Startzeit,
+„frei" statt „beschäftigt", feste `UID` — ein zweiter Download ersetzt den Eintrag). Zusätzlich
+`setAppBadge(dueReviewCount)` dort, wo der Browser es kann (`lib/appmarke.ts`); sonst passiert nichts.
+**Keine** Mitteilungserlaubnis wird angefordert (auf dem iPhone verlangt das Symbol-Abzeichen sie),
+**kein** Web-Push über FCM: Das stünde quer zu „keine Zeile Serverkode" (E-036) und zum
+Versprechen „ohne Tracking".
+
+**Gemessen:** Der Durchgang lädt die Datei in einem echten Browser, prüft Inhalt und Uhrzeit und
+zählt die Aufrufe von `Notification.requestPermission` (0). Ein Test sucht den Quelltext nach
+`requestPermission`, `pushManager` und `firebase/messaging` ab.

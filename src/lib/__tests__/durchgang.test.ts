@@ -52,7 +52,7 @@ describe('Der Durchgang kommt überhaupt durch', () => {
   });
 
   it('geht jeden Schritt wirklich, statt welche zu überspringen', () => {
-    expect(D.schritte.length).toBeGreaterThanOrEqual(33);
+    expect(D.schritte.length).toBeGreaterThanOrEqual(37);
     for (const s of D.schritte) {
       expect(s.uebersprungen, s.name).toBe(false);
       expect(s.ergebnis, s.name).not.toBeNull();
@@ -597,6 +597,34 @@ describe('Die Hand des Tages', () => {
     expect(geometrie()!.wochenpunkte).toBe(7);
   });
 
+  it('zählt für die eine Serie und gibt kleine XP (E-087)', () => {
+    /* Die Hand des Tages führte eine eigene Reihe, die nur sie kannte: Die
+       Startseite zeigte „1 Tag in Folge" neben „3 Tage-Streak". Jetzt füttert
+       die Antwort `data.streak` wie jede Lernhandlung — und ein
+       Neuladen verbucht den Tag nicht noch einmal. */
+    const a = ablauf();
+    expect(a.streak_nachher as number).toBeGreaterThanOrEqual(1);
+    expect(a.streak_nachher).toBeGreaterThanOrEqual((a.streak_vorher as number) ?? 0);
+    expect(a.xp_dazu as number).toBeGreaterThan(0);
+    expect(a.xp_nach_neuladen_unveraendert).toBe(true);
+  });
+
+  it('nennt die Serie in der Karte und in der Lernkarte gleich, im richtigen Numerus', () => {
+    const a = ablauf();
+    const n = a.streak_nachher as number;
+    const wort = n === 1 ? 'Tag in Folge' : 'Tage in Folge';
+    expect(String(a.serie_in_der_karte)).toBe(`${n} ${wort}`);
+    expect(String(a.serie_in_der_lernkarte)).toContain(`${n} ${wort}`);
+    /* Kein „Tage-Streak" mehr, kein „1 Tage". */
+    expect(String(a.serie_in_der_lernkarte)).not.toMatch(/Streak|1 Tage/);
+  });
+
+  it('hält die Startseite danach nicht mehr für die eines Erstnutzers', () => {
+    const a = ablauf();
+    expect(a.lernkarte_zeigt_stand).toBe(true);
+    expect(a.erklaerung_nach_antwort_weg).toBe(true);
+  });
+
   it('stellt eine Frage und nennt die Karten beim Namen', () => {
     const a = ablauf();
     expect(String(a.frage)).toMatch(/\?$/);
@@ -721,6 +749,102 @@ describe('Die Karten sind innen gefüllt, nicht nur außen groß', () => {
       expect(k.anteil, `Karte „${k.karte}"`).toBeGreaterThanOrEqual(MINDESTFUELLUNG);
       expect(k.ueberlauf_px).toBe(0);
     }
+  });
+});
+
+describe('Der Willkommensdialog (FAHRPLAN 4.4)', () => {
+  const w = () => schritt('Der Willkommensdialog führt durch Name und Ziel');
+
+  it('sagt in einem Satz, was die App tut — ohne „Skills" und „besser gewinnen"', () => {
+    const t = String(w().tagline);
+    expect(t).not.toMatch(/Skills|besser gewinnen|Strategien/);
+    expect(t).toMatch(/Echtgeld/);
+  });
+
+  it('fragt nach dem Ziel, freiwillig und mit zwei gleichwertigen Wegen', () => {
+    expect(w().ziel_frage).toMatch(/Was hast du vor/i);
+    expect(w().ziel_knoepfe).toEqual(['Poker lernen', 'Pokerabende leiten', 'Zurück', 'Überspringen']);
+  });
+
+  it('passt auch auf ein 667 Pixel hohes Gerät', () => {
+    expect(w().dialog_passt_auf_667).toBe(true);
+  });
+
+  it('zeigt den eingegebenen Namen statt „Du" und merkt sich das Ziel', () => {
+    expect(String(w().oben_rechts)).toContain('Mira');
+    expect(String(w().oben_rechts)).not.toMatch(/\bDu\b/);
+    expect(w().ziel_gespeichert).toBe('abend');
+    expect(w().dialog_weg).toBe(true);
+  });
+
+  it('erklärt dem, der Abende leiten will, den Lernteil nicht', () => {
+    expect(w().erklaerung_da).toBe(0);
+    expect(w().frage).toBe('Lohnt der Call?');
+  });
+
+  it('nennt die Marke der Karte „Hand des Tages"', () => {
+    expect(w().marke).toBe('Hand des Tages');
+  });
+
+  it('bietet „Ich habe schon ein Konto" nur an, wo es eine Anmeldung gibt', () => {
+    expect(w().konto_link_ohne_anbieter).toBe(0);
+  });
+
+  it('springt von dort zur Kontokarte, setzt den Fokus und verdeckt sie nicht', () => {
+    const k = schritt('„Ich habe schon ein Konto“ springt zur Kontokarte');
+    expect(k.adresse).toBe('#/profil?konto=1');
+    expect(k.fokus_auf_konto).toBe(true);
+    expect(k.sichtbar).toBe(true);
+    expect(k.unter_der_kopfzeile).toBe(true);
+    expect(k.dialog_weg).toBe(true);
+  });
+});
+
+describe('Das Tages-Quiz fragt nur, was man gelernt hat (FAHRPLAN 4.5)', () => {
+  const q = () => schritt('Das Tages-Quiz fragt nur, was man gelernt hat');
+
+  it('gibt ohne abgeschlossene Lektion kein Quiz, sondern einen Weg zur Lektion', () => {
+    expect(q().ohne_fortschritt_titel).toBe('Erst eine Lektion abschließen');
+    expect(q().ohne_fortschritt_start_knopf).toBe(0);
+    expect(String(q().ohne_fortschritt_weg)).toMatch(/^#\/lernen\/m1\/m1-l1$/);
+  });
+
+  it('gibt mit einer abgeschlossenen Lektion eins, aus abgeschlossenen Lektionen', () => {
+    expect(q().mit_lektion_start_knopf).toBe(1);
+    expect(String(q().mit_lektion_text)).toMatch(/abgeschlossenen Lektionen/);
+  });
+
+  it('nennt die Zahl der Fragen genau einmal', () => {
+    expect(q().fuenf_fragen_genannt).toBe(1);
+  });
+});
+
+describe('Das Tagesziel auf der Startseite (FAHRPLAN 4.2)', () => {
+  it('zeigt Hand erledigt und die Fragen offen, sobald es ein Quiz geben kann', () => {
+    const ziel = String(schritt('Das Tages-Quiz fragt nur, was man gelernt hat').tagesziel_auf_start);
+    expect(ziel).toMatch(/^Heute: Hand/);
+    expect(ziel).toMatch(/5 Fragen/);
+  });
+});
+
+describe('Erinnern ohne Server (FAHRPLAN 4.6)', () => {
+  const e = () => schritt('Erinnern ohne Server: Kalendereintrag und Glossar-Sprung');
+
+  it('liefert einen täglichen Kalendereintrag zur gewählten Uhrzeit', () => {
+    expect(e().dateiname).toBe('pokermentor-erinnerung.ics');
+    expect(e().beginnt_richtig).toBe(true);
+    expect(e().taeglich).toBe(true);
+    expect(e().uhrzeit_im_termin).toBe(true);
+    expect(e().mit_erinnerung).toBe(true);
+  });
+
+  it('fragt dabei keine Mitteilungserlaubnis an', () => {
+    expect(e().mitteilungsanfragen).toBe(0);
+  });
+
+  it('öffnet im Glossar den Begriff, mit dem man kommt', () => {
+    expect(e().glossar_offen).toEqual(['Call']);
+    expect(e().glossar_treffer_mehr_als_einer).toBe(true);
   });
 });
 

@@ -42,7 +42,7 @@
    Größen und Abstände stehen vollständig in `global.css`, Abschnitt
    „Startseite". In dieser Datei steht keine Gestaltungszahl. */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HeuteKarte } from '../components/HeuteKarte';
 import { Icon } from '../components/Icon';
@@ -56,9 +56,13 @@ import { ladeAbende, type Abend } from '../lib/session/abende';
 import { ladeLaufende, nochDabei, type LaufendeSession } from '../lib/session/laufend';
 import { handDesTages, tagesschluessel, type TagesHand } from '../lib/heute/hand';
 import {
-  antwortVon, ergaenze, ladeAntworten, serie, speichereAntworten, woche,
+  antwortVon, ergaenze, ladeAntworten, speichereAntworten, woche,
   type TagesAntwort,
 } from '../lib/heute/stand';
+import { aktuelleSerie, serieGefaehrdet } from '../lib/serie';
+import { useZiel } from '../lib/ziel';
+import { offenePunkte, tagesziel } from '../lib/tagesplan';
+import { FRAGEN_PRO_TAG, quizPool } from '../lib/tagesquiz';
 import { ladeB1, ladeB2 } from '../lib/pokermath/laden';
 import { fingerabdruck } from '../lib/potodds/adresse';
 
@@ -75,7 +79,7 @@ const NACHSCHLAGEN = [
 ] as const;
 
 export function HubPage() {
-  const { data, level } = useAppState();
+  const { data, level, recordDailyHand, dueReviewCount } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
   const { enabled: proEnabled } = usePro();
@@ -84,6 +88,9 @@ export function HubPage() {
      Serverrendern nicht zur Verfügung, und ein Fehler dort würde die
      Startseite kosten. */
   const [laufend, setLaufend] = useState<LaufendeSession | null>(null);
+  /* Wer Pokerabende leiten will, bekommt den Lernteil nicht erklärt
+     (lib/ziel.ts). Die Reihenfolge der Startseite ändert das nicht. */
+  const abendZiel = useZiel() === 'abend';
   const [abende, setAbende] = useState<Abend[]>([]);
   useEffect(() => {
     setLaufend(ladeLaufende());
@@ -119,15 +126,27 @@ export function HubPage() {
   const heuteTag = heute?.hand.tag ?? tagesschluessel();
   const heuteAntwort = antwortVon(antworten, heuteTag);
 
+  /* Die Serie ist eine einzige: `data.streak`. Die Antwort auf die Hand des
+     Tages füttert sie wie jede andere Lernhandlung (E-087) — vorher stand
+     hier eine zweite, die niemand sonst kannte. Der Merker verhindert, dass
+     ein doppelter Tipp den Tag zweimal verbucht, bevor die Karte
+     umgeschaltet hat. */
+  const verbucht = useRef<string | null>(null);
   const beantworte = useCallback((gewaehlt: 'lohnt' | 'lohnt-nicht') => {
-    if (!heute) return;
+    if (!heute || verbucht.current === heute.hand.tag) return;
+    if (antwortVon(antworten, heute.hand.tag)) return;
+    verbucht.current = heute.hand.tag;
     const richtig = (gewaehlt === 'lohnt') === heute.hand.aufloesung.lohnt;
-    setAntworten((bisher) => {
-      const neu = ergaenze(bisher, { tag: heute.hand.tag, gewaehlt, richtig });
-      speichereAntworten(neu);
-      return neu;
-    });
-  }, [heute]);
+    const neu = ergaenze(antworten, { tag: heute.hand.tag, gewaehlt, richtig });
+    setAntworten(neu);
+    speichereAntworten(neu);
+    recordDailyHand(richtig);
+  }, [heute, antworten, recordDailyHand]);
+
+  /* Was heute gilt, nicht was zuletzt gespeichert wurde: Wer drei Tage nichts
+     getan hat, hat keine Serie mehr, auch wenn der Zähler noch dasteht. */
+  const serieZahl = aktuelleSerie(data.streak, heuteTag);
+  const serieOffen = serieGefaehrdet(data.streak, heuteTag);
 
   /* Nur, was wirklich abgeschlossen wurde — ohne Nenner. Eine Gesamtzahl ist
      eine Zusage über den Inhalt, und die deckt der vorhandene nicht: Sie
@@ -149,6 +168,23 @@ export function HubPage() {
     }
     return null;
   }, [content.modules, data.completedLessons]);
+
+  /* Das Tages-Quiz zieht nur aus abgeschlossenen Lektionen (E-088). Wer noch
+     keine gemacht hat, hat auch kein Tagesziel „Fragen": Ein Ziel, das man
+     nicht erfüllen kann, ist keins. */
+  const quizFragen = useMemo(
+    () => Math.min(FRAGEN_PRO_TAG, quizPool(content.modules, data.completedLessons).length),
+    [content.modules, data.completedLessons],
+  );
+  const quizErledigt = data.daily?.date === heuteTag;
+  const punkte = offenePunkte({
+    faellig: dueReviewCount,
+    quizOffen: quizFragen > 0 && !quizErledigt,
+    naechste: naechste && {
+      modul: naechste.modul.id, lektion: naechste.lektion.id,
+      titel: naechste.lektion.title, erste: doneLessons === 0,
+    },
+  });
 
   const gesamtLektionen = content.modules.reduce((s, m) => s + m.lessons.length, 0);
   const anteil = gesamtLektionen === 0 ? 0
@@ -191,7 +227,7 @@ export function HubPage() {
           eine Runde, steht sie unten in ihrer eigenen Karte — dort ist sie
           größer und im Daumenbereich, und zweimal dasselbe auf einem
           Bildschirm ist einmal zu viel (E-035). */}
-      {erstesMal && !laufend && !heute && <p className="start-erklaerung">{L.wasDieAppTut}</p>}
+      {erstesMal && !abendZiel && !laufend && !heute && <p className="start-erklaerung">{L.wasDieAppTut}</p>}
 
       {/* Ganz oben und am größten: das Einzige auf dieser Seite, das man
           tun kann, ohne irgendwohin zu gehen (E-036). */}
@@ -201,7 +237,12 @@ export function HubPage() {
           abdruck={heute.abdruck}
           antwort={heuteAntwort}
           woche={woche(antworten, heuteTag)}
-          serie={serie(antworten, heuteTag)}
+          serie={serieZahl}
+          punkte={punkte}
+          ziel={tagesziel(!!heuteAntwort, quizFragen > 0, quizErledigt)}
+          quizFragen={quizFragen}
+          einsteiger={!data.completedLessons['m1-l1'] && !abendZiel}
+          erstmals={erstesMal && !abendZiel}
           onAntwort={beantworte}
         />
       )}
@@ -230,6 +271,14 @@ export function HubPage() {
               <span className="marke">{erstesMal ? L.ersteLektion : L.weiterMit}</span>
               <span className="name">{naechste.lektion.title}</span>
             </div>
+            {/* Fällige Fragen stehen vor „Weiterlernen": Sie verfallen, die
+                Lektion nicht. Am Tisch entfällt die Zeile — dort gilt die
+                Höhenregel der Live-Session (E-035). */}
+            {dueReviewCount > 0 && !laufend && (
+              <Link to="/lernen/wiederholen" className="start-faellig">
+                {L.wiederholen(dueReviewCount)}
+              </Link>
+            )}
             <Link
               to={`/lernen/${naechste.modul.id}/${naechste.lektion.id}`}
               className="start-knopf"
@@ -276,13 +325,14 @@ export function HubPage() {
               Regel 10.2 auf den Kopf. Gemessen: 235 gegen 209 Pixel. */}
           <span className="wert">
             <Icon name="flame" size={13} />
-            {data.streak.count}
+            {serieZahl}{' '}
             <span className="marke">
-              {data.streak.count > 0 ? L.streakLabel : L.streakNone}
+              {serieZahl > 0 ? L.streakLabel(serieZahl) : L.streakNone}
             </span>
+            {serieOffen && <span className="halten">{L.serieHalten}</span>}
           </span>
-          <span className="wert">{level}<span className="marke">{L.levelLabel}</span></span>
-          <span className="wert">{data.xp}<span className="marke">{L.xpLabel}</span></span>
+          <span className="wert">{level}{' '}<span className="marke">{L.levelLabel}</span></span>
+          <span className="wert">{data.xp}{' '}<span className="marke">{L.xpLabel}</span></span>
           {proEnabled && (
             <Link to="/pro" className="small faint">
               <Icon name="crown" size={13} /> Pro

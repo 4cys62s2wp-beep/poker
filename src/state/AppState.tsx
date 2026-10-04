@@ -8,6 +8,7 @@ import { RANGNAMEN } from '../lib/rang/titel';
 import { ALL_MODULES } from '../content';
 import { BADGES } from '../content/badges';
 import { durableDelete, durableSet, requestPersistentStorage } from '../lib/storage';
+import { setzeAppMarke } from '../lib/appmarke';
 import { useLang, levelTitleFor } from '../i18n';
 import { MAX_TRACKED_HANDS, sanitizeHandFacts, type HandFacts } from '../lib/poker/stats';
 
@@ -157,6 +158,9 @@ interface AppStateValue {
   activeProfile: ProfileMeta;
   completeLesson: (lessonId: string, quizScore: number, quizTotal: number) => void;
   recordTrainer: (trainerId: string, correct: boolean) => void;
+  /** Die Antwort auf die Hand des Tages verbuchen: kleine XP und der Tag für
+      die Serie. Einmal je Tag ruft die Startseite es auf (E-087). */
+  recordDailyHand: (richtig: boolean) => void;
   /** Eine gespielte Hand verbuchen. `facts` sind die Rohdaten für die
       Spielstil-Analyse – ohne sie zählt nur die Hand selbst. */
   recordHand: (won: boolean, facts?: HandFacts) => void;
@@ -648,6 +652,16 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     [mutate],
   );
 
+  const recordDailyHand = useCallback(
+    (richtig: boolean) => {
+      mutate((d) => {
+        d.xp += richtig ? 5 : 2;
+        touchStreak(d);
+      });
+    },
+    [mutate],
+  );
+
   const recordHand = useCallback(
     (won: boolean, facts?: HandFacts) => {
       mutate((d) => {
@@ -938,6 +952,10 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return data.reviews.filter((r) => r.due <= today).length;
   }, [data.reviews]);
 
+  /* Die Zahl fälliger Wiederholungen am App-Symbol, wo der Browser es kann
+     (lib/appmarke.ts). */
+  useEffect(() => { setzeAppMarke(dueReviewCount); }, [dueReviewCount]);
+
   const activeProfile = index.profiles.find((p) => p.id === index.activeId) ?? index.profiles[0];
 
   const value = useMemo<AppStateValue>(
@@ -950,6 +968,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       activeProfile,
       completeLesson,
       recordTrainer,
+      recordDailyHand,
       recordHand,
       addSession,
       deleteSession,
@@ -971,7 +990,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       consumeFeature,
       startTrial,
     }),
-    [data, toasts, level, dueReviewCount, index.profiles, activeProfile, completeLesson, recordTrainer, recordHand,
+    [data, toasts, level, dueReviewCount, index.profiles, activeProfile, completeLesson, recordTrainer, recordDailyHand, recordHand,
      addSession, deleteSession, setName, resetAll, addReviewItem, answerReview, completeDailyQuiz, addHandRecord,
      exportJson, importJson, createProfile, switchProfile, deleteProfile, updateProfile, replaceData, linkCloudProfile,
      todayUsage, consumeFeature, startTrial],

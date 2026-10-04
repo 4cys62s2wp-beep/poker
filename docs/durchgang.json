@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T10:19:07.342Z",
+  "geprueft_am": "2026-10-04T10:43:27.501Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -168,7 +168,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 904,
+        "dauer_ms": 885,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -323,23 +323,23 @@
           "gross"
         ],
         "klein": {
-          "oben": 371,
-          "unten": 501,
+          "oben": 420,
+          "unten": 550,
           "hoehe": 130
         },
         "mittel": {
-          "oben": 509,
-          "unten": 744,
+          "oben": 558,
+          "unten": 793,
           "hoehe": 235
         },
         "gross": {
-          "oben": 752,
-          "unten": 977,
+          "oben": 801,
+          "unten": 1026,
           "hoehe": 225
         },
-        "rest_unten_px": -133,
+        "rest_unten_px": -182,
         "gestenstreifen_px": 24,
-        "stand_oben_px": 691,
+        "stand_oben_px": 740,
         "lernen_text": "So funktioniert Texas Hold’em",
         "fuellung": [
           {
@@ -374,7 +374,7 @@
           {
             "geraet": "375x667",
             "scrollt": true,
-            "rest_unten_px": -310,
+            "rest_unten_px": -381,
             "heute_knoepfe_ohne_scrollen": true,
             "letzte_karte": "gross",
             "karten": [
@@ -407,7 +407,7 @@
           {
             "geraet": "390x844",
             "scrollt": true,
-            "rest_unten_px": -133,
+            "rest_unten_px": -182,
             "heute_knoepfe_ohne_scrollen": true,
             "letzte_karte": "gross",
             "karten": [
@@ -440,7 +440,7 @@
           {
             "geraet": "360x740",
             "scrollt": true,
-            "rest_unten_px": -237,
+            "rest_unten_px": -308,
             "heute_knoepfe_ohne_scrollen": true,
             "letzte_karte": "gross",
             "karten": [
@@ -477,7 +477,16 @@
     {
       "name": "Die Hand des Tages wird auf der Startseite beantwortet",
       "ergebnis": {
-        "frage": "Lohnt der Call?",
+        "frage": "Mitgehen (Call) – lohnt sich das?",
+        "streak_vorher": 0,
+        "streak_nachher": 1,
+        "streak_tag": "2026-10-04",
+        "xp_dazu": 2,
+        "xp_nach_neuladen_unveraendert": true,
+        "serie_in_der_karte": "1 Tag in Folge",
+        "serie_in_der_lernkarte": "1 Tag in Folge",
+        "lernkarte_zeigt_stand": true,
+        "erklaerung_nach_antwort_weg": true,
         "karten_vorher": [
           "Kreuz Neun",
           "Karo Neun",
@@ -494,6 +503,70 @@
         "urteil_nach_neuladen": "Nicht ganz",
         "frage_wieder_da": 0,
         "hand_bleibt": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Der Willkommensdialog führt durch Name und Ziel",
+      "ergebnis": {
+        "tagline": "Poker lernen, ganz ohne Echtgeld: Die App rechnet vor, was sich lohnt, und führt am Pokerabend Blinds, Uhr und Chips.",
+        "konto_link_ohne_anbieter": 0,
+        "ziel_frage": "WAS HAST DU VOR?",
+        "ziel_knoepfe": [
+          "Poker lernen",
+          "Pokerabende leiten",
+          "Zurück",
+          "Überspringen"
+        ],
+        "dialog_passt_auf_667": true,
+        "dialog_weg": true,
+        "oben_rechts": "Profil: Mira",
+        "ziel_gespeichert": "abend",
+        "erklaerung_da": 0,
+        "frage": "Lohnt der Call?",
+        "marke": "Hand des Tages"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "„Ich habe schon ein Konto“ springt zur Kontokarte",
+      "ergebnis": {
+        "adresse": "#/profil?konto=1",
+        "fokus_auf_konto": true,
+        "oben_px": 128,
+        "sichtbar": true,
+        "unter_der_kopfzeile": true,
+        "dialog_weg": true
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Das Tages-Quiz fragt nur, was man gelernt hat",
+      "ergebnis": {
+        "ohne_fortschritt_titel": "Erst eine Lektion abschließen",
+        "ohne_fortschritt_start_knopf": 0,
+        "ohne_fortschritt_weg": "#/lernen/m1/m1-l1",
+        "mit_lektion_titel": "Bereit für heute?",
+        "mit_lektion_text": "5 Fragen aus deinen abgeschlossenen Lektionen. Falsche Antworten wandern in deinen Wiederholungsstapel.",
+        "mit_lektion_start_knopf": 1,
+        "fuenf_fragen_genannt": 1,
+        "tagesziel_auf_start": "Heute: Hand erledigt · 5 Fragen offen"
+      },
+      "uebersprungen": false
+    },
+    {
+      "name": "Erinnern ohne Server: Kalendereintrag und Glossar-Sprung",
+      "ergebnis": {
+        "dateiname": "pokermentor-erinnerung.ics",
+        "beginnt_richtig": true,
+        "taeglich": true,
+        "uhrzeit_im_termin": true,
+        "mit_erinnerung": true,
+        "mitteilungsanfragen": 0,
+        "glossar_offen": [
+          "Call"
+        ],
+        "glossar_treffer_mehr_als_einer": true
       },
       "uebersprungen": false
     },
@@ -598,10 +671,10 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | SERIE | – | TREFFER | 0 | BESTE",
-        "nach_zwei": "0 | SERIE | 50 % | TREFFER | 1 | BESTE",
-        "nach_neuladen": "0 | SERIE | 50 % | TREFFER | 1 | BESTE",
+        "nach_zwei": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
+        "nach_neuladen": "0 | SERIE | 0 % | TREFFER | 0 | BESTE",
         "quote_bleibt": true,
-        "quote_nach_zwei": "50 %",
+        "quote_nach_zwei": "0 %",
         "ohne_versuche_kein_prozent": true,
         "felder": 3
       },
@@ -610,12 +683,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 43,
+        "dauer_ms": 37,
         "knopf_bewegt_px": 0,
         "oben": 704,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "31,5 %",
+        "ergebnis_text": "24,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },

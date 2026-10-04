@@ -728,9 +728,27 @@ await schritt('Die Hand des Tages wird auf der Startseite beantwortet', async ()
     karten: [...document.querySelectorAll('.heute .pcard')].map((k) => k.getAttribute('aria-label')),
     punkte_offen: document.querySelectorAll('.heute-woche .punkt.offen').length,
   }));
+  /* Der gespeicherte Lernstand des aktiven Profils — dort steht die eine
+     Serie (E-087). Aus dem Speicher gelesen, nicht von der Oberfläche: Die
+     Oberfläche könnte eine Zahl zeigen, die nirgends gezählt wurde. */
+  const lernstand = () => seite.evaluate(() => {
+    try {
+      const index = JSON.parse(localStorage.getItem('pokermentor-profiles-v1') ?? 'null');
+      const d = JSON.parse(localStorage.getItem(`pokermentor-data-${index.activeId}`) ?? 'null');
+      return { streak: d.streak.count, tag: d.streak.lastDay, xp: d.xp };
+    } catch { return null; }
+  });
+  const stand0 = await lernstand();
   await seite.locator('.heute-knopf').first().click();
   await seite.waitForSelector('.heute-aufloesung');
   await seite.waitForTimeout(300);
+  const stand1 = await lernstand();
+  const serieAngezeigt = await seite.evaluate(() => ({
+    karte: document.querySelector('.heute-aufloesung .serie')?.firstChild?.textContent?.trim(),
+    lernkarte: document.querySelector('.start-stand .wert')?.textContent?.replace(/\s+/g, ' ').trim() ?? null,
+    stand_sichtbar: document.querySelectorAll('.start-stand').length,
+    erklaerung_da: document.querySelectorAll('.start-erklaerung').length,
+  }));
   const danach = await seite.evaluate(() => ({
     urteil: document.querySelector('.heute-aufloesung .urteil')?.textContent.trim(),
     zahlen: document.querySelector('.heute-aufloesung .zahlen')?.textContent.trim(),
@@ -748,8 +766,21 @@ await schritt('Die Hand des Tages wird auf der Startseite beantwortet', async ()
     frage_wieder_da: document.querySelectorAll('.heute-knopf').length,
     karten: [...document.querySelectorAll('.heute .pcard')].map((k) => k.getAttribute('aria-label')),
   }));
+  const stand2 = await lernstand();
   return {
     frage: vorher.frage,
+    /* Die Antwort zählt für die Serie und gibt kleine XP — und nach dem
+       Neuladen nicht ein zweites Mal. */
+    streak_vorher: stand0?.streak ?? null,
+    streak_nachher: stand1?.streak ?? null,
+    streak_tag: stand1?.tag ?? null,
+    xp_dazu: stand0 && stand1 ? stand1.xp - stand0.xp : null,
+    xp_nach_neuladen_unveraendert: !!stand1 && !!stand2 && stand1.xp === stand2.xp
+      && stand1.streak === stand2.streak,
+    serie_in_der_karte: serieAngezeigt.karte,
+    serie_in_der_lernkarte: serieAngezeigt.lernkarte,
+    lernkarte_zeigt_stand: serieAngezeigt.stand_sichtbar === 1,
+    erklaerung_nach_antwort_weg: serieAngezeigt.erklaerung_da === 0,
     karten_vorher: vorher.karten,
     punkte_offen_vorher: vorher.punkte_offen,
     ...danach,
@@ -757,6 +788,184 @@ await schritt('Die Hand des Tages wird auf der Startseite beantwortet', async ()
     frage_wieder_da: nachNeuladen.frage_wieder_da,
     /* Dieselbe Hand nach dem Neuladen — nicht irgendeine. */
     hand_bleibt: JSON.stringify(nachNeuladen.karten) === JSON.stringify(vorher.karten),
+  };
+});
+
+/* ── Der Willkommensdialog führt durch Sprache, Name und Ziel ─────────────
+   Er erscheint nur beim allerersten Öffnen — dieser Lauf braucht deshalb
+   einen eigenen Kontext ohne gespeicherte Sprache. Geprüft wird der Weg, den
+   jemand wirklich geht: Name eintippen, das optionale Ziel wählen, auf der
+   Startseite ankommen — mit dem Namen oben und ohne Erklärung, die der Wahl
+   widerspricht. Dazu der Sprung zum Konto, der nur dort erscheint, wo es
+   eines geben kann (`kontoAnbieten`, FAHRPLAN 3.6). */
+
+const ANBIETER = JSON.stringify({
+  provider: 'Test', street: 'Weg 1', city: '10115 Berlin', country: 'Deutschland', email: 'test@beispiel.de',
+});
+
+async function frischerStart({ mitAnbieter }) {
+  const k = await browser.newContext({ viewport: { width: 375, height: 667 }, locale: 'de-DE' });
+  if (mitAnbieter) {
+    await k.route('**/legal.json', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: ANBIETER }));
+  }
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('[role="dialog"]');
+  await p.waitForTimeout(400);
+  return { k, p };
+}
+
+await schritt('Der Willkommensdialog führt durch Name und Ziel', async () => {
+  const { k, p } = await frischerStart({ mitAnbieter: false });
+  const dialog = p.locator('[role="dialog"]');
+  const tagline = (await dialog.locator('p').first().innerText()).trim();
+  const kontoLinkOhne = await dialog.getByRole('button', { name: 'Ich habe schon ein Konto' }).count();
+  await dialog.getByRole('button', { name: 'Deutsch' }).click();
+  await dialog.getByPlaceholder('Dein Name (optional)').fill('Mira');
+  await dialog.getByRole('button', { name: 'Weiter' }).click();
+  await p.waitForTimeout(200);
+  const zielFrage = (await dialog.locator('.stat-label').innerText()).trim();
+  const zielKnoepfe = await dialog.locator('button').allInnerTexts();
+  const karte = await dialog.locator('.card').boundingBox();
+  await dialog.getByRole('button', { name: 'Pokerabende leiten' }).click();
+  await p.waitForSelector('.heute-knopf');
+  await p.waitForTimeout(300);
+  const danach = await p.evaluate(() => ({
+    dialog_weg: document.querySelectorAll('[role="dialog"]').length === 0,
+    oben_rechts: document.querySelector('.mobile-top-you')?.textContent.replace(/\s+/g, ' ').trim(),
+    ziel_gespeichert: localStorage.getItem('pokermentor-ziel-v1'),
+    erklaerung_da: document.querySelectorAll('.heute-erklaerung').length,
+    frage: document.querySelector('.heute-frage strong')?.textContent.trim(),
+    marke: document.querySelector('.heute-kopf .marke')?.textContent.trim(),
+  }));
+  await k.close();
+  return {
+    tagline,
+    konto_link_ohne_anbieter: kontoLinkOhne,
+    ziel_frage: zielFrage,
+    ziel_knoepfe: zielKnoepfe.map((t) => t.trim()),
+    dialog_passt_auf_667: !!karte && karte.y + karte.height <= 667,
+    ...danach,
+  };
+});
+
+await schritt('„Ich habe schon ein Konto“ springt zur Kontokarte', async () => {
+  const { k, p } = await frischerStart({ mitAnbieter: true });
+  const dialog = p.locator('[role="dialog"]');
+  await p.waitForSelector('[role="dialog"] button:has-text("Ich habe schon ein Konto")');
+  await dialog.getByRole('button', { name: 'Ich habe schon ein Konto' }).click();
+  await p.waitForSelector('#konto');
+  await p.waitForTimeout(900);
+  const befund = await p.evaluate(() => {
+    const ziel = document.getElementById('konto');
+    const r = ziel.getBoundingClientRect();
+    return {
+      adresse: location.hash,
+      fokus_auf_konto: document.activeElement === ziel,
+      oben_px: Math.round(r.top),
+      sichtbar: r.top >= 0 && r.bottom <= window.innerHeight,
+      unter_der_kopfzeile: r.top >= (document.querySelector('.mobile-top')?.getBoundingClientRect().bottom ?? 0) - 1,
+      dialog_weg: document.querySelectorAll('[role="dialog"]').length === 0,
+    };
+  });
+  await k.close();
+  return befund;
+});
+
+/* ── Das Tages-Quiz fragt nur, was man gelernt hat ───────────────────────
+   Es zog fünf Fragen aus allen 248 — vier davon aus Modulen, die der Nutzer
+   nie geöffnet hatte. Geprüft wird an einem Gerät ohne Fortschritt (es gibt
+   kein Quiz, sondern den Hinweis) und an einem mit einer abgeschlossenen
+   Lektion (es gibt eins, und es nennt seine Herkunft). */
+
+await schritt('Das Tages-Quiz fragt nur, was man gelernt hat', async () => {
+  const k = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' });
+  await k.addInitScript(() => localStorage.setItem('pokermentor-lang-v1', 'de'));
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/lernen/tagesquiz`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('main h1');
+  await p.waitForTimeout(500);
+  const leer = await p.evaluate(() => ({
+    titel: document.querySelector('main h2')?.textContent.trim(),
+    start_knopf: [...document.querySelectorAll('main button')].filter((b) => /starten/.test(b.textContent)).length,
+    weg: document.querySelector('main a.btn.primary')?.getAttribute('href'),
+  }));
+  await p.evaluate(() => {
+    const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+    const key = `pokermentor-data-${idx.activeId}`;
+    const d = JSON.parse(localStorage.getItem(key));
+    d.completedLessons = { 'm1-l1': { completedAt: new Date().toISOString(), quizScore: 5, quizTotal: 5 } };
+    localStorage.setItem(key, JSON.stringify(d));
+  });
+  await p.reload({ waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('main h1');
+  await p.waitForTimeout(500);
+  const bereit = await p.evaluate(() => ({
+    titel: document.querySelector('main h2')?.textContent.trim(),
+    text: document.querySelector('main .card p')?.textContent.trim(),
+    start_knopf: [...document.querySelectorAll('main button')].filter((b) => /starten/.test(b.textContent)).length,
+    seite: document.querySelector('main')?.textContent ?? '',
+  }));
+  /* Das Tagesziel auf der Startseite kennt das Quiz erst jetzt. */
+  await p.goto(`${GRUND}/#/`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.heute-knopf');
+  await p.locator('.heute-knopf').first().click();
+  await p.waitForSelector('.heute-noch');
+  const ziel = (await p.locator('.heute-noch .ziel').innerText()).replace(/\s+/g, ' ').trim();
+  await k.close();
+  return {
+    ohne_fortschritt_titel: leer.titel,
+    ohne_fortschritt_start_knopf: leer.start_knopf,
+    ohne_fortschritt_weg: leer.weg,
+    mit_lektion_titel: bereit.titel,
+    mit_lektion_text: bereit.text,
+    mit_lektion_start_knopf: bereit.start_knopf,
+    fuenf_fragen_genannt: (bereit.seite.match(/[Ff]ünf|\b5 Fragen/g) ?? []).length,
+    tagesziel_auf_start: ziel,
+  };
+});
+
+await schritt('Erinnern ohne Server: Kalendereintrag und Glossar-Sprung', async () => {
+  const k = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', acceptDownloads: true });
+  await k.addInitScript(() => {
+    localStorage.setItem('pokermentor-lang-v1', 'de');
+    /* Gezählt wird, ob die App um Mitteilungen bittet — nicht, wie der Browser
+       voreingestellt ist (der Kopflose sagt „denied", ein normaler „default"). */
+    window.__mitteilungsanfragen = 0;
+    if (window.Notification) {
+      const echt = Notification.requestPermission.bind(Notification);
+      Notification.requestPermission = (...a) => { window.__mitteilungsanfragen += 1; return echt(...a); };
+    }
+  });
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.erinnerung-karte');
+  await p.locator('#erinnerung-uhrzeit').fill('07:30');
+  const [download] = await Promise.all([
+    p.waitForEvent('download'),
+    p.getByRole('button', { name: 'Kalendereintrag laden' }).click(),
+  ]);
+  const pfad = await download.path();
+  const { readFileSync } = await import('node:fs');
+  const ics = readFileSync(pfad, 'utf8');
+  const anfragen = await p.evaluate(() => window.__mitteilungsanfragen);
+  await p.goto(`${GRUND}/#/nachschlagen/glossar?q=Call`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.glossar-eintrag');
+  await p.waitForTimeout(300);
+  const glossar = await p.evaluate(() => ({
+    offen: [...document.querySelectorAll('.glossar-eintrag.auf .glossar-begriff')].map((e) => e.textContent.trim()),
+    treffer: document.querySelectorAll('.glossar-eintrag').length,
+  }));
+  await k.close();
+  return {
+    dateiname: download.suggestedFilename(),
+    beginnt_richtig: ics.startsWith('BEGIN:VCALENDAR\r\n'),
+    taeglich: ics.includes('RRULE:FREQ=DAILY'),
+    uhrzeit_im_termin: /DTSTART:\d{8}T073000/.test(ics),
+    mit_erinnerung: ics.includes('BEGIN:VALARM'),
+    mitteilungsanfragen: anfragen,
+    glossar_offen: glossar.offen,
+    glossar_treffer_mehr_als_einer: glossar.treffer > 1,
   };
 });
 

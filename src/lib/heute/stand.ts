@@ -104,24 +104,3 @@ export function woche(
   }
   return aus;
 }
-
-/** Wie viele Tage in Folge bis heute beantwortet wurden.
- *
- *  „Bis heute" heißt: Ein noch unbeantwortetes Heute bricht die Serie nicht —
- *  der Tag ist ja noch nicht vorbei. Gezählt wird dann ab gestern. */
-export function serie(antworten: TagesAntwort[], heute: string): number {
-  const gesehen = new Set(antworten.map((a) => a.tag));
-  const [j, m, t] = heute.split('-').map(Number);
-  const zwei = (n: number) => String(n).padStart(2, '0');
-  const tagVor = (zurueck: number) => {
-    const d = new Date(j, m - 1, t - zurueck);
-    return `${d.getFullYear()}-${zwei(d.getMonth() + 1)}-${zwei(d.getDate())}`;
-  };
-  let zurueck = gesehen.has(heute) ? 0 : 1;
-  let zahl = 0;
-  while (gesehen.has(tagVor(zurueck))) {
-    zahl += 1;
-    zurueck += 1;
-  }
-  return zahl;
-}

@@ -47,7 +47,15 @@ export function GlossaryPage() {
   const [params] = useSearchParams();
   const [query, setQuery] = useState(() => (params.get('q') ?? '').slice(0, 60));
   const [category, setCategory] = useState<GlossaryCategory | 'Alle'>('Alle');
-  const [offen, setOffen] = useState<ReadonlySet<string>>(() => new Set());
+  /* Wer mit einem Begriff herkommt (`?q=Call`), findet ihn aufgeklappt vor —
+     auch wenn die Suche mehr als einen Treffer hat („Call", „Cold Call", …).
+     Ein genau passender Begriff ist die Antwort auf die Frage, mit der man
+     kam. */
+  const [offen, setOffen] = useState<ReadonlySet<string>>(() => {
+    const q = suchbar((params.get('q') ?? '').slice(0, 60).trim());
+    if (!q) return new Set();
+    return new Set(content.glossary.filter((e) => suchbar(e.term) === q).map((e) => e.term));
+  });
 
   const umschalten = (term: string) => setOffen((alt2) => {
     const neu2 = new Set(alt2);

@@ -144,6 +144,12 @@ jobs:
         # Klebende Kopfzeile, Scrollposition, Seitenleiste, Zentrierung bei
         # 1920 Pixeln, Meldungen — was nur ein echter Browser sieht (E-082).
         run: npm run rahmen
+      - name: Gratis und Pro
+        if: '!cancelled()'
+        # Die ausgelieferte Konfiguration hat die Monetarisierung aus, deshalb
+        # sah kein Lauf je ein Schloss. Dieser schaltet sie im Fenster ein und
+        # prüft, dass jede gesperrte Seite ihr Schloss an der Kachel trägt (E-098).
+        run: npm run sperren
       - name: Neue Fassung
         if: '!cancelled()'
         # Eigener Server, dessen sw.js sich zwischen zwei Besuchen ändert:

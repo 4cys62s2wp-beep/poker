@@ -84,9 +84,22 @@ export function ScenarioTrainer() {
           <h1>{L.title}</h1>
           <p className="sub">{L.sub}</p>
         </div>
-        <div>
-          <ProLock text={P.lockedTrainer} />
-        </div>
+        <ProLock
+          text={P.lockedScenario(content.scenarios.length)}
+          vorschau={
+            <ul className="list-plain vorschau-liste">
+              {queue.slice(0, 2).map((sc) => (
+                <li key={sc.id} className="card">
+                  <div className="vorschau-kopf">
+                    <strong className="vorschau-titel">{sc.title}</strong>
+                    <span className="pill info">{L.street(sc.street)}</span>
+                  </div>
+                  <p className="muted vorschau-text">{sc.situation}</p>
+                </li>
+              ))}
+            </ul>
+          }
+        />
       </div>
     );
   }

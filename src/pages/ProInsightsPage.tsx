@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { STR as NAV } from '../i18n/pages/layout';
 import { Zurueck } from '../components/ui';
 import { Icon } from '../components/Icon';
@@ -8,6 +8,18 @@ import { STR as PRO_STR } from '../i18n/pages/pro';
 import { ProLock } from '../components/pro/ProLock';
 import { usePro } from '../lib/pro/ProProvider';
 
+/* Die Kennfarbe der Person tönt die Fläche und zeichnet den Rand — die
+   Buchstaben stehen im Textton. Als Schriftfarbe verfehlten diese Farben den
+   Kontrast: im hellen Modus 1,85 zu 1. Eine Kennfarbe ist keine Textfarbe. */
+function Initialen({ name, farbe }: { name: string; farbe: string }) {
+  const buchstaben = name.split(' ').map((w) => w[0]).join('').slice(0, 2);
+  return (
+    <span className="initialen" style={{ '--kennfarbe': farbe } as CSSProperties}>
+      {buchstaben}
+    </span>
+  );
+}
+
 export function ProInsightsPage() {
   const { lang, content } = useLang();
   const L = STR[lang];
@@ -16,46 +28,33 @@ export function ProInsightsPage() {
   const unlocked = fullAccess;
   const [openId, setOpenId] = useState<string | null>(content.proProfiles[0].id);
 
-  // Gesperrt: Kopf und ein echter Vorgeschmack (erster Kopf) bleiben sichtbar –
-  // eine reine Wand überzeugt niemanden.
+  // Gesperrt: Kopf, zwei echte Köpfe als Vorschau und die Sperr-Karte —
+  // eine reine Wand überzeugt niemanden (E-098).
   if (!unlocked) {
-    const teaser = content.proProfiles[0];
-    const teaserInitials = teaser.name.split(' ').map((w) => w[0]).join('').slice(0, 2);
     return (
       <div>
         <Zurueck to="/lernen" />
-      <div className="page-header">
+        <div className="page-header">
           <h1>{L.title}</h1>
           <p className="sub">{L.sub}</p>
         </div>
 
-        <div className="section-title">{L.headsTitle}</div>
-        <div className="grid">
-          <div className="card">
-            <div className="row">
-              <span
-                style={{
-                  width: 46, height: 46, borderRadius: 14, display: 'inline-flex', alignItems: 'center',
-                  justifyContent: 'center', fontWeight: 800, fontSize: 'var(--fs-fliesstext)', flexShrink: 0,
-                  fontFamily: 'var(--font-display)',
-                  /* Die Farbe der Person tönt die Fläche und zeichnet den
-                     Rand — die Buchstaben stehen im Textton. Als Schriftfarbe
-                     verfehlten diese Farben den Kontrast: im hellen Modus
-                     1,85 zu 1. Eine Kennfarbe ist keine Textfarbe. */
-                  background: `${teaser.color}22`, color: 'var(--text)', border: `1.5px solid ${teaser.color}55`,
-                }}
-              >
-                {teaserInitials}
-              </span>
-              <span style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ display: 'block', fontWeight: 800, fontSize: 'var(--fs-fliesstext)' }}>{teaser.name}</span>
-                <span className="small muted" style={{ display: 'block' }}>{teaser.tagline}</span>
-              </span>
-            </div>
-          </div>
-
-          <ProLock text={P.lockedGeneric} />
-        </div>
+        <ProLock
+          text={P.lockedInsights(content.proProfiles.length)}
+          vorschau={
+            <ul className="list-plain vorschau-liste">
+              {content.proProfiles.slice(0, 2).map((pro) => (
+                <li key={pro.id} className="card row">
+                  <Initialen name={pro.name} farbe={pro.color} />
+                  <span className="insight-text">
+                    <span className="insight-name">{pro.name}</span>
+                    <span className="small muted">{pro.tagline}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          }
+        />
 
         <div className="suit-deco">♠ ♥ ♦ ♣</div>
       </div>
@@ -74,7 +73,6 @@ export function ProInsightsPage() {
       <div className="grid">
         {content.proProfiles.map((pro) => {
           const open = openId === pro.id;
-          const initials = pro.name.split(' ').map((w) => w[0]).join('').slice(0, 2);
           return (
             <div key={pro.id} className="card" style={{ padding: 0, overflow: 'hidden' }}>
               <button
@@ -85,20 +83,10 @@ export function ProInsightsPage() {
                 }}
                 aria-expanded={open}
               >
-                <span
-                  style={{
-                    width: 46, height: 46, borderRadius: 14, display: 'inline-flex', alignItems: 'center',
-                    justifyContent: 'center', fontWeight: 800, fontSize: 'var(--fs-fliesstext)', flexShrink: 0,
-                    fontFamily: 'var(--font-display)',
-                    /* Siehe oben: Kennfarbe tönt, Textton schreibt. */
-                    background: `${pro.color}22`, color: 'var(--text)', border: `1.5px solid ${pro.color}55`,
-                  }}
-                >
-                  {initials}
-                </span>
-                <span style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ display: 'block', fontWeight: 800, fontSize: 'var(--fs-fliesstext)' }}>{pro.name}</span>
-                  <span className="small muted" style={{ display: 'block' }}>{pro.tagline}</span>
+                <Initialen name={pro.name} farbe={pro.color} />
+                <span className="insight-text">
+                  <span className="insight-name">{pro.name}</span>
+                  <span className="small muted">{pro.tagline}</span>
                 </span>
                 <span className="faint" style={{ fontSize: '1.125rem' }}>{open ? '▾' : '▸'}</span>
               </button>

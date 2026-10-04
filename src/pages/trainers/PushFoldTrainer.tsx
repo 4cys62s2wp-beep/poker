@@ -49,6 +49,14 @@ export function PushFoldTrainer() {
     () => content.pushCharts.map((c) => ({ ...c, set: expandRangeSpec(c.push) })),
     [content],
   );
+  /* Die Vorschau zeigt zwei echte Ranges — Button bei zehn und bei fünf
+     großen Blinds —, nicht den Aufgabentext. */
+  const vorschauKarten = useMemo(
+    () => (['10bb', '5bb'] as const)
+      .map((stack) => chartSets.find((c) => c.stack === stack && c.position === 'BTN'))
+      .filter((c): c is NonNullable<typeof c> => !!c),
+    [chartSets],
+  );
   const [spot, setSpot] = useState<Spot>(() => newSpot(chartSets.length));
   const [answer, setAnswer] = useState<string | null>(null);
 
@@ -79,9 +87,25 @@ export function PushFoldTrainer() {
           <h1>{L.title}</h1>
           <p className="sub">{L.sub}</p>
         </div>
-        <div>
-          <ProLock text={P.lockedTrainer} />
-        </div>
+        <ProLock
+          text={P.lockedPushFold}
+          vorschau={
+            <ul className="list-plain vorschau-liste">
+              {vorschauKarten.map((c) => (
+                <li key={`${c.stack}-${c.position}`} className="card">
+                  <Positionsschema
+                    eigen={c.position}
+                    gefoldet={REIHENFOLGE.slice(0, Math.max(0, REIHENFOLGE.indexOf(c.position)))}
+                    einsaetze={{ SB: 0.5, BB: 1 }}
+                  />
+                  <p className="muted vorschau-text">
+                    {P.previewPush(c.position, L.stackApprox(c.stack), Math.round(rangePercent(c.set) * 100))}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          }
+        />
       </div>
     );
   }

@@ -9,6 +9,7 @@ import { STR } from '../i18n/pages/lesson';
 import { STR as PRO } from '../i18n/pages/pro';
 import { ProLock } from '../components/pro/ProLock';
 import { usePro } from '../lib/pro/ProProvider';
+import { FREE_MODULE_IDS } from '../lib/pro/plan';
 import { isFreeLesson } from '../lib/pro/plan';
 import { Icon } from '../components/Icon';
 import { Zurueck } from '../components/ui';
@@ -157,7 +158,7 @@ export function LessonPage() {
 
       {locked && (
         <div>
-          <ProLock text={P.lockedModule} />
+          <ProLock text={P.lockedLesson(FREE_MODULE_IDS.length)} />
         </div>
       )}
 

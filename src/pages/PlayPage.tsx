@@ -74,7 +74,7 @@ export function PlayPage() {
   const { lang } = useLang();
   const L = STR[lang];
   const P = PRO[lang];
-  const { access, can, consume, openPaywall } = usePro();
+  const { access, consume, openPaywall } = usePro();
   const [numOpponents, setNumOpponents] = useState<number | null>(null);
   const [einst, setEinst] = useState<TischEinstellung>(ladeTischEinstellung);
   const gameRef = useRef<GameState | null>(null);
@@ -100,10 +100,10 @@ export function PlayPage() {
   const mitteKnopfRef = useRef<HTMLButtonElement>(null);
   const einsatzWarOffen = useRef(false);
 
-  /* Der Coach ist eine Pro-Funktion, der Tisch selbst ist gratis mit
-     Tageslimit. Ohne Monetarisierung sind can()/access() immer offen. */
-  const coachAllowed = can('play-coach');
-  const coachAn = einst.coach && coachAllowed;
+  /* Der Tisch ist gratis mit Tageslimit; der Coach daran ist es ohne Limit:
+     Die Bewertung nach der Aktion gehört zur Lernschleife (E-098). Ohne
+     Monetarisierung sind access() und can() immer offen. */
+  const coachAn = einst.coach;
   const playAccess = access('play-hands');
   const freeLeft =
     playAccess.state === 'allowed' && playAccess.remaining !== undefined && playAccess.limit !== undefined
@@ -364,14 +364,10 @@ export function PlayPage() {
           <hr className="divider" />
           <Schalter
             an={coachAn}
-            onChange={(v) => {
-              if (!coachAllowed) { openPaywall(); return; }
-              aendere({ coach: v });
-            }}
+            onChange={(v) => aendere({ coach: v })}
             label={L.coachMode}
             beschreibung={L.coachModeDesc}
             zustand={{ an: L.switchOn, aus: L.switchOff }}
-            marke={!coachAllowed ? <span className="pill gold" title={P.lockedTitle}>{P.proBadge}</span> : undefined}
           />
           {coachAn && (
             <Schalter

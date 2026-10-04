@@ -9,7 +9,9 @@ import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/module';
 import { STR as PRO } from '../i18n/pages/pro';
 import { ProLock } from '../components/pro/ProLock';
+import { Schloss } from '../components/pro/Schloss';
 import { usePro } from '../lib/pro/ProProvider';
+import { FREE_MODULE_IDS } from '../lib/pro/plan';
 import { isFreeLesson } from '../lib/pro/plan';
 import { Icon } from '../components/Icon';
 import { Levelring } from '../components/Levelring';
@@ -175,9 +177,7 @@ function ModulInhalt() {
                   </span>
                 </div>
                 {lessonLocked ? (
-                  <span className="pill gold" title={P.lockedTitle} aria-label={P.lockedTitle}>
-                    <Icon name="lock" size={14} />
-                  </span>
+                  <Schloss pfad={`/lernen/${module.id}/${lesson.id}`} />
                 ) : result ? (
                   <span className="hinweis fertig">{result.perTest ? L.perTest : L.lektionFertig}</span>
                 ) : versucht ? (
@@ -198,7 +198,7 @@ function ModulInhalt() {
 
       {hasLocked && (
         <div style={{ marginTop: 16 }}>
-          <ProLock text={P.lockedModule} compact />
+          <ProLock text={P.lockedLesson(FREE_MODULE_IDS.length)} compact />
         </div>
       )}
     </div>

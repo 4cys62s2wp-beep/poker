@@ -4,12 +4,18 @@
 
    Grundsatz (Fair-Freemium): Die kostenlose Version ist für sich genommen
    nützlich – ein Anfänger kann damit ernsthaft Poker lernen. Pro entfernt
-   Limits und öffnet die Tiefe (Fortgeschrittenen-Module, unbegrenzter Coach,
-   Analyse, Synchronisation). Nichts, was gratis war, wird nachträglich
-   weggesperrt: Bestandsdaten bleiben immer lesbar. */
+   Limits und öffnet die Tiefe (Fortgeschrittene Module, Szenario- und
+   Push/Fold-Trainer, Pro-Insights, unbegrenzter Coach und Übungstisch).
+   Nichts, was gratis war, wird nachträglich weggesperrt: Bestandsdaten
+   bleiben immer lesbar.
+
+   Die Lernschleife bleibt gratis (E-098): Üben, Wiederholen und die
+   Bewertung nach der Aktion. Ebenso Konto und Sicherung, Bankroll und Export –
+   das sind die eigenen Daten, und Spielerschutz gehört nicht hinter eine
+   Bezahlschranke. Pro verkauft Tiefe, keine Grundversorgung. */
 
 export type FeatureKey =
-  /** Module ab „Postflop" aufwärts (m4–m9). */
+  /** Module ab „Postflop" aufwärts (m4, m5, m7–m9). */
   | 'modules-advanced'
   /** Live-Coach: gratis mit Tageslimit. */
   | 'coach'
@@ -17,40 +23,23 @@ export type FeatureKey =
   | 'trainers-advanced'
   /** Pro-Insights (Fedor Holz & Co.). */
   | 'pro-insights'
-  /** Spaced-Repetition-Wiederholung. */
-  | 'review'
   /** Übungstisch: gratis mit Tageslimit an Händen. */
-  | 'play-hands'
-  /** Coach-Overlay am Übungstisch (Equity, Pot Odds live). */
-  | 'play-coach'
-  /** Bankroll-Tracker über die Gratis-Anzahl Sessions hinaus. */
-  | 'bankroll-unlimited'
-  /** CSV-/Backup-Export. */
-  | 'export'
-  /** Geräteübergreifende Cloud-Synchronisation. */
-  | 'cloud-sync';
+  | 'play-hands';
 
 /** Ein Feature ist entweder ganz Pro oder gratis mit Tageslimit. */
 export interface FeatureRule {
   key: FeatureKey;
   /** Tageslimit in der Gratis-Version. 0 = gar nicht nutzbar, undefined = unbegrenzt gratis. */
   freeDailyLimit?: number;
-  /** Gesamtlimit statt Tageslimit (z. B. gespeicherte Sessions). */
-  freeTotalLimit?: number;
 }
 
 export const FEATURE_RULES: Record<FeatureKey, FeatureRule> = {
   'modules-advanced': { key: 'modules-advanced', freeDailyLimit: 0 },
   'trainers-advanced': { key: 'trainers-advanced', freeDailyLimit: 0 },
   'pro-insights': { key: 'pro-insights', freeDailyLimit: 0 },
-  'review': { key: 'review', freeDailyLimit: 0 },
-  'play-coach': { key: 'play-coach', freeDailyLimit: 0 },
-  'cloud-sync': { key: 'cloud-sync', freeDailyLimit: 0 },
   // Metered: gratis antesten, dann Limit
   'coach': { key: 'coach', freeDailyLimit: 3 },
   'play-hands': { key: 'play-hands', freeDailyLimit: 25 },
-  'bankroll-unlimited': { key: 'bankroll-unlimited', freeTotalLimit: 15 },
-  'export': { key: 'export', freeDailyLimit: 0 },
 };
 
 /**
@@ -74,12 +63,45 @@ export function isFreeLesson(moduleId: string, lessonId: string): boolean {
   return isFreeModule(moduleId) || lessonId === `${moduleId}-l1`;
 }
 
-/** Trainer, die in der Gratis-Version offen sind. */
+/** Trainer, die in der Gratis-Version offen sind (der Pot-Odds-Drill gehört
+ *  dazu und steht nicht in der Trainerliste). */
 export const FREE_TRAINER_PATHS = ['preflop', 'potodds', 'equity', 'handranking', 'outs'] as const;
+
+/** Wie viele Trainer gratis sind: die fünf der Liste plus der Pot-Odds-Drill. */
+export const GRATIS_TRAINER_ANZAHL = FREE_TRAINER_PATHS.length + 1;
+
+/** Trainer hinter Pro. */
+export const PRO_TRAINER_IDS = ['szenario', 'pushfold'] as const;
 
 export function isFreeTrainer(trainerId: string): boolean {
   return (FREE_TRAINER_PATHS as readonly string[]).includes(trainerId);
 }
+
+/* Welche Adresse liegt hinter welchem Feature?
+   Eine Tabelle, aus der Kacheln, Suche und Seiten ihr Schloss lesen — vorher
+   trugen nur die Module eines, und die Seiten dahinter sperrten trotzdem. Ein
+   Test (sperren.test.ts) hält fest, dass jede Seite mit `ProLock` hier steht. */
+const PRO_ADRESSEN: Record<string, FeatureKey> = {
+  ...Object.fromEntries(PRO_TRAINER_IDS.map((id) => [`/lernen/trainer/${id}`, 'trainers-advanced' as const])),
+  '/lernen/pros': 'pro-insights',
+};
+
+/** Das Feature, das eine Adresse ganz oder teilweise sperrt — oder `null`.
+ *  Module und Lektionen: gesperrt, was nicht in `isFreeModule` / `isFreeLesson`
+ *  steht (die erste Lektion jedes Moduls bleibt offen). */
+export function proZiel(pfad: string): FeatureKey | null {
+  const sauber = pfad.split(/[?#]/)[0].replace(/\/+$/, '');
+  const fest = PRO_ADRESSEN[sauber];
+  if (fest) return fest;
+  const m = /^\/lernen\/(m\d+)(?:\/(m\d+-l\d+)(?:\/quiz)?)?$/.exec(sauber);
+  if (!m) return null;
+  const [, modul, lektion] = m;
+  const frei = lektion ? isFreeLesson(modul, lektion) : isFreeModule(modul);
+  return frei ? null : 'modules-advanced';
+}
+
+/** Alle Adressen mit fester Sperre (für Tests und Vorschau). */
+export const PRO_ADRESSEN_LISTE: readonly string[] = Object.keys(PRO_ADRESSEN);
 
 // ---------- Zugriffsentscheidung ----------
 
@@ -105,8 +127,7 @@ export interface EntitlementContext {
 export function checkAccess(ctx: EntitlementContext, key: FeatureKey): Access {
   if (!ctx.enabled || ctx.pro || ctx.trialActive) return { state: 'allowed' };
 
-  const rule = FEATURE_RULES[key];
-  const limit = rule.freeDailyLimit ?? rule.freeTotalLimit;
+  const limit = FEATURE_RULES[key].freeDailyLimit;
   if (limit === undefined) return { state: 'allowed' };
   if (limit <= 0) return { state: 'pro-only' };
 
@@ -117,6 +138,13 @@ export function checkAccess(ctx: EntitlementContext, key: FeatureKey): Access {
 
 export function isUsable(access: Access): boolean {
   return access.state === 'allowed';
+}
+
+/** Trägt die Kachel zu dieser Adresse ein Schloss? Genau dann, wenn die
+ *  Adresse hinter Pro liegt und der Nutzer es (noch) nicht hat. */
+export function istGesperrt(ctx: EntitlementContext, pfad: string): boolean {
+  const key = proZiel(pfad);
+  return key !== null && checkAccess(ctx, key).state === 'pro-only';
 }
 
 // ---------- Testphase ----------

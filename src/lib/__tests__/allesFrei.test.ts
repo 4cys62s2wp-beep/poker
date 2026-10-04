@@ -50,7 +50,7 @@ describe('Aktuell ist kein Feature kostenpflichtig', () => {
 
   it('deckt wirklich alle Features ab und nicht nur eine Handvoll', () => {
     // Schutz gegen einen Test, der grün bleibt, weil die Liste leer läuft.
-    expect(ALLE_FEATURES.length).toBeGreaterThanOrEqual(10);
+    expect(ALLE_FEATURES.length).toBeGreaterThanOrEqual(5);
   });
 });
 

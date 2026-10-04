@@ -6833,3 +6833,57 @@ input[type="radio"] {
 /* ── Modultest (E-097) ────────────────────────────────────────────────── */
 .modultest-angebot { display: grid; gap: var(--sp-3); margin-bottom: var(--sp-4); }
 .modultest-angebot p { margin: 0; }
+
+/* ---- Sperren: ein Schloss, eine Sperr-Karte, eine Vorschau (E-098) ---- */
+.pro-sperre {
+  text-align: center;
+  padding: var(--sp-6) var(--sp-5);
+  border-color: var(--auszeichnung-a30);
+  background: linear-gradient(160deg, var(--auszeichnung-schwach), var(--veil-1));
+}
+.pro-sperre.kompakt { padding: var(--sp-4); }
+.sperre-zeichen {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: var(--sp-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--auszeichnung-a30);
+  background: var(--auszeichnung-schwach);
+  color: var(--auszeichnung-lesbar);
+}
+.sperre-titel {
+  margin-bottom: var(--sp-1);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-ueberschrift);
+}
+.pro-sperre.kompakt .sperre-titel { font-size: var(--fs-fliesstext); }
+.sperre-text { margin: 0 auto var(--sp-3); max-width: 26rem; }
+.sperre-gratis { margin: 0 auto var(--sp-4); max-width: 26rem; }
+.pro-sperre.kompakt .sperre-text { margin-bottom: var(--sp-3); }
+.sperre-vorschau { margin-bottom: var(--sp-5); }
+.sperre-vorschau .vorschau-liste { display: grid; gap: var(--sp-3); }
+.sperre-vorschau .vorschau-kopf { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-2); margin-bottom: var(--sp-2); }
+.sperre-vorschau .vorschau-titel { font-size: var(--fs-fliesstext); font-weight: var(--fw-bold); }
+.sperre-vorschau .vorschau-text { margin: 0; }
+.schloss { white-space: nowrap; }
+.paywall-text { margin-bottom: var(--sp-4); }
+.initialen {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-fliesstext);
+  color: var(--text);
+  background: color-mix(in srgb, var(--kennfarbe) 13%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--kennfarbe) 33%, transparent);
+}
+.insight-text { display: grid; min-width: 0; flex: 1; }
+.insight-name { font-weight: var(--fw-bold); font-size: var(--fs-fliesstext); }
+.kachel-marken { display: inline-flex; flex-wrap: wrap; gap: var(--sp-2); }

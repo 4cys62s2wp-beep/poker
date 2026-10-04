@@ -79,13 +79,22 @@ export const STR = defineStrings(
     // Sperren & Limits
     lockedTitle: 'Pro-Funktion',
     lockedGeneric: 'Diese Funktion gehört zu PokerMentor Pro.',
-    lockedModule: 'Diese Lektion gehört zu Pro. Vier Module sind komplett gratis – und die erste Lektion jedes Moduls ebenfalls.',
-    lockedTrainer: 'Dieser Trainer gehört zu Pro. Fünf weitere Trainer sind gratis.',
+    lockedLesson: (module: number) =>
+      `Diese Lektion gehört zu Pro. ${module} Module sind komplett gratis – und die erste Lektion jedes Moduls ebenfalls.`,
+    lockedScenario: (n: number) => `${n} handgeschriebene Spots – zu jeder Antwort die Begründung, warum sie trägt oder nicht.`,
+    lockedPushFold: 'Mit welchen Händen du bei 10 bb und 5 bb von welcher Position All-in gehst – zum Üben und zum Nachsehen.',
+    lockedInsights: (n: number) => `Die Prinzipien von ${n} Profis – verdichtet, geprüft, anwendbar.`,
+    previewTitle: 'So sieht es aus',
+    previewPush: (position: string, stack: string, pct: number) =>
+      `${position} bei ${stack}: ${pct} % der Hände gehen All-in`,
+    staysFree: (module: number, trainer: number) =>
+      `Gratis bleiben: ${module} Module, ${trainer} Trainer, Wiederholen, Tages-Quiz, der Übungstisch samt Coach und alle Werkzeuge zum Nachschlagen.`,
+    lockedTile: 'Nur mit Pro',
+    lockedTileModule: 'Ab Lektion 2 nur mit Pro',
     unlock: 'Pro ansehen',
     limitTitle: 'Tageslimit erreicht',
     limitCoach: 'Du hast deine 3 Gratis-Coach-Hände für heute genutzt. Morgen gibt es wieder drei – oder du schaltest Pro frei und rechnest jede Hand durch.',
     limitPlay: 'Du hast deine 25 Gratis-Hände für heute gespielt. Morgen geht es weiter – mit Pro sofort und unbegrenzt.',
-    limitBankroll: 'Der Gratis-Tracker fasst 15 Sessions. Mit Pro erfasst du unbegrenzt viele und exportierst sie als CSV.',
     remaining: (n: number, total: number) => `Noch ${n} von ${total} heute gratis`,
     later: 'Später',
 
@@ -165,13 +174,22 @@ export const STR = defineStrings(
 
     lockedTitle: 'Pro feature',
     lockedGeneric: 'This feature is part of PokerMentor Pro.',
-    lockedModule: 'This lesson is part of Pro. Four modules are completely free – and so is the first lesson of every module.',
-    lockedTrainer: 'This trainer is part of Pro. Five other trainers are free.',
+    lockedLesson: (module: number) =>
+      `This lesson is part of Pro. ${module} modules are completely free – and so is the first lesson of every module.`,
+    lockedScenario: (n: number) => `${n} hand-written spots – with the reasoning behind every answer, why it holds or doesn’t.`,
+    lockedPushFold: 'Which hands go all-in at 10 bb and 5 bb from which position – to practise and to look up.',
+    lockedInsights: (n: number) => `The principles of ${n} pros – condensed, verified, applicable.`,
+    previewTitle: 'What it looks like',
+    previewPush: (position: string, stack: string, pct: number) =>
+      `${position} at ${stack}: ${pct}% of hands go all-in`,
+    staysFree: (module: number, trainer: number) =>
+      `Staying free: ${module} modules, ${trainer} trainers, Review, Daily Quiz, the practice table with its coach and every lookup tool.`,
+    lockedTile: 'Pro only',
+    lockedTileModule: 'Pro from lesson 2',
     unlock: 'See Pro',
     limitTitle: 'Daily limit reached',
     limitCoach: 'You’ve used your 3 free coach hands for today. Three more tomorrow – or unlock Pro and run every single hand.',
     limitPlay: 'You’ve played your 25 free hands for today. More tomorrow – with Pro, right now and without limits.',
-    limitBankroll: 'The free tracker holds 15 sessions. With Pro you track unlimited sessions and export them as CSV.',
     remaining: (n: number, total: number) => `${n} of ${total} free left today`,
     later: 'Later',
 

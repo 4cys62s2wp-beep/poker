@@ -5503,3 +5503,58 @@ weiter), sondern ein Hinweis — die Startseite bietet dann für die Module 1 bi
 - **Ein Test, der Lektionen einzeln überspringt:** Er gilt für ganze Module; wer nur eine Lektion überspringen will, macht ihr
   Quiz (5.1).
 - **Der Test für Module mit gesperrten Lektionen (Gratis):** Er fehlt dort mit Absicht, siehe oben.
+
+## E-098 · 2026-10-04 · Die Grenze zwischen gratis und Pro: Lernschleife offen, ein Schloss überall
+
+**Stand:** entschieden und umgesetzt (Lücke „Gratis-/Pro-Grenze mit dem Fahrplan abgleichen“).
+
+**Was gesperrt war, obwohl der Fahrplan davon ausgeht.** Das Wiederholen lag hinter Pro (`'review'`, Tageslimit 0), die Startseite
+bot „n Fragen wiederholen“ an, das Quiz-Ergebnis sagte „kommt in deine Wiederholung“, Trainerfehler wanderten in den Stapel — und
+ein Gratisnutzer sammelte Fragen, die er nie wiederholen durfte. Dasselbe beim Coach am Übungstisch (`'play-coach'`): Der Coach
+bewertet *nach* der Aktion, das ist die Lernschleife (Üben → Bewertung → Wiederholen). Beides ist jetzt **gratis, ohne Limit**.
+
+**Was Pro verkauft, steht an einer Stelle (`lib/pro/plan.ts`):** Tiefe, nicht Grundversorgung — die Module m4, m5, m7–m9 (ab
+Lektion 2, die erste bleibt offen), den Szenario- und den Push/Fold-Trainer, Pro-Insights, mehr als 3 Coach-Hände und mehr als
+25 Tischhände am Tag. Fünf Features statt zehn.
+
+**Drei Versprechen, die die App nie hielt, sind keine mehr.** Die Pro-Seite nannte „Bankroll 15 Sessions / unbegrenzt + CSV“ und
+„Sync auf allen Geräten“ als Pro-Nutzen. Durchgesetzt wurde keins von beiden: Der Bankroll-Tracker kennt kein Limit (`git log -S`
+findet nie einen `openPaywall('bankroll')`), der Export und die Sicherung im Konto stehen jedem offen — und die Konto-Karte,
+das Willkommen und die Einstellungen versprechen jedem mit Konto genau das. Es gab zwei Wege: durchsetzen oder streichen.
+**Gestrichen**, aus drei Gründen: (1) Wer ein Konto hat und seinen Stand auf zwei Geräten sieht, bekäme ihn mit der Sperre
+nachträglich weggenommen — das widerspricht dem Grundsatz in `plan.ts` („Nichts, was gratis war, wird nachträglich weggesperrt“).
+(2) Der Export der eigenen Daten ist nach Art. 20 DSGVO kostenfrei zu geben, und Sicherung gegen Geräteverlust ist keine Zusatzleistung.
+(3) Bankroll-Buchführung ist Spielerschutz; sie gehört in dieselbe Reihe wie das Modul „Psychologie & Bankroll“ (m6), das aus
+demselben Grund dauerhaft frei ist. Die Schlüssel `bankroll-unlimited`, `export`, `cloud-sync`, `review` und `play-coach` gibt es
+nicht mehr; ein Test (`plan.test.ts`) hält die fünf übrigen fest.
+**Das ist eine Produktentscheidung, die zurückzunehmen bleibt:** Wer Sync doch als Pro verkaufen will, muss ihn *durchsetzen*
+(CloudProvider) und die Konto-Karte ändern, nicht nur die Tabelle.
+
+**Ein Schloss, überall dasselbe.** Vorher trugen nur die Modulzeilen eines — als Zeichen ohne Wort —, während Push/Fold, Szenario
+und Pro-Insights (sogar mit „Neu“) keins zeigten und die Seiten dahinter sperrten. Jetzt gibt es `proZiel(adresse)` in `plan.ts`
+(welche Adresse hängt an welchem Feature; Module und Lektionen aus `isFreeModule`/`isFreeLesson`) und `usePro().gesperrt(adresse)`;
+die Komponente `Schloss` zeigt **Zeichen und Wort „Pro“** (Screenreader: „Nur mit Pro“ bzw. „Ab Lektion 2 nur mit Pro“) an den
+Trainerkacheln, der Pro-Insights-Kachel, den Modulen im Lernpfad, den Lektionen auf der Modulseite und in der Suche. Wer Pro
+hat, in der Testphase ist oder wo es keine Monetarisierung gibt, sieht nichts davon.
+
+**Die gesperrte Seite zeigt, was dahinter ist.** Statt Einleitung und leerer Sperre: eine **Vorschau** (Szenario: zwei Spots mit
+Situation, ohne Antworten; Push/Fold: zwei echte Ranges — Button bei 10 und bei 5 bb, mit Prozentzahl; Pro-Insights: zwei
+Profile), der Nutzen in einem Satz mit **Zahlen aus den Inhalten** (`content.scenarios.length`, nicht „24“ im Text) und der Satz
+**„Gratis bleiben: 4 Module, 6 Trainer, Wiederholen, Tages-Quiz, der Übungstisch samt Coach und alle Werkzeuge zum Nachschlagen“**
+(Zahlen aus `FREE_MODULE_IDS` und `GRATIS_TRAINER_ANZAHL`). Der Hinweis am Tageslimit ist jetzt ein `Blatt` wie alle anderen
+Blätter der App, kein eigener Dialog mit festem Gold.
+
+**Wie es geprüft wird.** `sperren.test.ts` liest die Quellen: Jede Seite mit `ProLock` muss in `App.tsx` an einer Adresse hängen,
+für die `proZiel` etwas liefert; jede feste Pro-Adresse braucht eine Kachel mit `Schloss`; jeder Trainer ist gratis *oder* Pro;
+Wiederholen und der Tisch fragen den Pro-Status nicht ab. Dazu `npm run sperren`: Er schaltet die Monetarisierung im Fenster ein
+(die Datei wird abgefangen) und prüft 49 Dinge im Browser — Schloss an gesperrten, keins an offenen Kacheln, Vorschau, Satz,
+kein waagerechtes Scrollen, Tippflächen, Coach schaltbar ohne Blatt, Suche, Testphase und „Monetarisierung aus“. **Gegenprobe:**
+Das Schloss an den Trainerkacheln entfernt → der Lauf meldet genau diese zwei Kacheln. Bis hierher sah kein Messlauf je ein
+Schloss, weil die ausgelieferte Konfiguration `enabled: false` hat — deshalb blieben die Lücken unbemerkt.
+
+**Nicht umgesetzt, mit Grund:**
+- **Ein Schloss in der Seitenleiste:** Dort steht keine gesperrte Seite (Spielstil und Pro-Insights sind von der Lernseite aus
+  erreichbar). Ein Schloss ohne Ziel wäre Schmuck.
+- **Pro-Insights als Suchtreffer:** Die Seite ist nicht Teil der Suche (sie ist ein Lesetext, kein Werkzeug); das Schloss steht
+  dort, wo sie auftaucht.
+- **`addReviewItem` für Gratisnutzer abstellen:** Entfällt — Wiederholen ist gratis, es soll sammeln.

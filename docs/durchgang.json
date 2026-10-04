@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T16:38:52.255Z",
+  "geprueft_am": "2026-10-04T17:10:13.713Z",
   "breite": 390,
   "seitenfehler": [],
   "abgebrochen_bei": null,
@@ -44,7 +44,7 @@
         "letzte_stufe": "15 / 30",
         "zeitplan_mit_uhrzeit": true,
         "finale_satz": "Am Ende bleiben den letzten drei im Schnitt 21 Big Blinds — das trägt ein Finale.",
-        "plan_ende": "Ende gegen 19:37"
+        "plan_ende": "Ende gegen 20:08"
       },
       "uebersprungen": false
     },
@@ -179,7 +179,7 @@
       "ergebnis": {
         "zeilen": 5,
         "griffe": 4,
-        "dauer_ms": 894,
+        "dauer_ms": 874,
         "noch_dabei_text": "4 noch dabei",
         "ausgeschieden": 1,
         "raus_um_gesetzt": true,
@@ -649,13 +649,13 @@
       "ergebnis": {
         "fehlschlag": {
           "urteil": "Noch nicht bestanden",
-          "punkte": "1 von 5 richtig",
+          "punkte": "2 von 5 richtig",
           "kacheln": [
-            "1/5dein Ergebnis",
+            "2/5dein Ergebnis",
             "4/5zum Bestehen"
           ],
-          "falsch_liste": 4,
-          "in_wiederholung": 4,
+          "falsch_liste": 3,
+          "in_wiederholung": 3,
           "knoepfe": [
             "Fehler nochmal üben",
             "Quiz noch einmal von vorn"
@@ -666,19 +666,19 @@
         "xp_nach_fehlschlag": 0,
         "lektion_fertig_nach_fehlschlag": false,
         "versucht_gemerkt": {
-          "bestScore": 1,
+          "bestScore": 2,
           "total": 5,
           "tries": 1,
-          "lastAt": "2026-10-04T16:37:46.092Z"
+          "lastAt": "2026-10-04T17:09:08.315Z"
         },
         "abzeichen_nach_fehlschlag": [],
-        "wiederholung_nach_fehlschlag": 4,
+        "wiederholung_nach_fehlschlag": 3,
         "modul_zeile": {
           "klassen": [
             "lektion",
             "dran"
           ],
-          "meta": "ca. 9 Min. · 5 Quizfragen · Quiz: 1/5",
+          "meta": "ca. 9 Min. · 5 Quizfragen · Quiz: 2/5",
           "hinweis": "Noch einmal"
         },
         "uebung": {
@@ -818,10 +818,10 @@
       "name": "Die Serie im Drill überlebt das Schließen",
       "ergebnis": {
         "vorher": "0 | Serie | – | Treffer | 0 | Beste",
-        "nach_zwei": "2 | Rekord! | 100 % | Treffer | 2 | Beste",
-        "nach_neuladen": "2 | Rekord! | 100 % | Treffer | 2 | Beste",
+        "nach_zwei": "1 | Rekord! | 50 % | Treffer | 1 | Beste",
+        "nach_neuladen": "1 | Rekord! | 50 % | Treffer | 1 | Beste",
         "quote_bleibt": true,
-        "quote_nach_zwei": "100 %",
+        "quote_nach_zwei": "50 %",
         "ohne_versuche_kein_prozent": true,
         "felder": 3
       },
@@ -830,12 +830,12 @@
     {
       "name": "Zwischen Eingabe und Ergebnis liegt nichts",
       "ergebnis": {
-        "dauer_ms": 32,
+        "dauer_ms": 41,
         "knopf_bewegt_px": 0,
         "oben": 749,
         "links": 16,
         "ergebnis_px": 78,
-        "ergebnis_text": "8,4 %",
+        "ergebnis_text": "24,1 %",
         "uebergang": "0s",
         "belebung": "none"
       },
@@ -980,13 +980,13 @@
             "status_vorher": "Du bist dran",
             "wahl": {
               "vorgaben": [
-                "2,5",
-                "3",
-                "4",
+                "2,5×9",
+                "3×10,5",
+                "4×14",
                 "All-in100"
               ],
               "alle_im_bild": true,
-              "bestaetigen": "Raise auf 3",
+              "bestaetigen": "Raise auf 10,5",
               "leiste": {
                 "oben": 466,
                 "unten": 667
@@ -994,14 +994,14 @@
               "schild_unten": 475,
               "karten_unten": 439
             },
-            "mehr": "Raise auf 3,5",
-            "wieder_weniger": "Raise auf 3",
+            "mehr": "Raise auf 11,5",
+            "wieder_weniger": "Raise auf 10,5",
             "noch_nicht_gesetzt": true,
             "danach": {
               "status": "Anna überlegt …",
               "gesperrte_knoepfe": 3,
               "urteil": [
-                "Fehler"
+                "≈\nVertretbar"
               ]
             }
           },
@@ -1082,13 +1082,13 @@
             "status_vorher": "Du bist dran",
             "wahl": {
               "vorgaben": [
-                "2,5",
-                "3",
-                "4",
+                "2,5×9",
+                "3×10,5",
+                "4×14",
                 "All-in100"
               ],
               "alle_im_bild": true,
-              "bestaetigen": "Raise auf 3",
+              "bestaetigen": "Raise auf 10,5",
               "leiste": {
                 "oben": 621,
                 "unten": 822
@@ -1096,21 +1096,21 @@
               "schild_unten": 564,
               "karten_unten": 528
             },
-            "mehr": "Raise auf 3,5",
-            "wieder_weniger": "Raise auf 3",
+            "mehr": "Raise auf 11,5",
+            "wieder_weniger": "Raise auf 10,5",
             "noch_nicht_gesetzt": true,
             "danach": {
               "status": "Anna überlegt …",
               "gesperrte_knoepfe": 3,
               "urteil": [
-                "Fehler"
+                "≈\nVertretbar"
               ]
             }
           }
         },
         "fold": {
           "status_nach_fold": "Du hast gefoldet",
-          "dauer_ms": 87
+          "dauer_ms": 44
         }
       },
       "uebersprungen": false
@@ -1119,7 +1119,7 @@
       "name": "Profil: Identität und Fortschritt, Einstellungen hinter dem Zahnrad",
       "ergebnis": {
         "leer": {
-          "hoehe": 1668,
+          "hoehe": 1685,
           "avatar": "P",
           "name": "Profil 1",
           "medaillen_verdient": 0,
@@ -1302,8 +1302,8 @@
         "ergebnis": {
           "balken": 2,
           "prozent": [
-            "26,6 %",
-            "73,4 %"
+            "27,2 %",
+            "72,8 %"
           ]
         },
         "hand3_aus_text": 2,
@@ -1474,7 +1474,7 @@
         },
         "gespeichert": {
           "lektionen": 0,
-          "wiederholung": 6,
+          "wiederholung": 5,
           "xp": 0
         },
         "wiederholt_bei": "1/8"

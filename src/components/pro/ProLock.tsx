@@ -1,11 +1,14 @@
 /* Sperr-Karte: erscheint anstelle eines Pro-Inhalts.
    Zeigt immer, WAS dahinter steckt – eine Sperre ohne Nutzenversprechen
-   verärgert nur, statt zu überzeugen. */
+   verärgert nur, statt zu überzeugen – und, was gratis bleibt (E-098). Eine
+   Vorschau (ein, zwei echte Beispiele) steht davor, wo es sie gibt. */
 
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../Icon';
 import { useLang } from '../../i18n';
 import { STR } from '../../i18n/pages/pro';
+import { FREE_MODULE_IDS, GRATIS_TRAINER_ANZAHL } from '../../lib/pro/plan';
 
 interface Props {
   /** Kurzer Text, der den konkreten Nutzen benennt. */
@@ -13,41 +16,35 @@ interface Props {
   /** Überschrift, z. B. der Name des gesperrten Inhalts. */
   title?: string;
   compact?: boolean;
+  /** Echte Beispiele aus dem gesperrten Inhalt. */
+  vorschau?: ReactNode;
 }
 
-export function ProLock({ text, title, compact }: Props) {
+export function ProLock({ text, title, compact, vorschau }: Props) {
   const { lang } = useLang();
   const L = STR[lang];
 
   return (
-    <div
-      className="card"
-      style={{
-        borderColor: 'rgba(212,175,94,0.3)',
-        background: 'linear-gradient(160deg, rgba(212,175,94,0.07), rgba(236,233,223,0.02))',
-        textAlign: 'center',
-        padding: compact ? '18px 16px' : '30px 22px',
-      }}
-    >
-      <span
-        style={{
-          width: 44, height: 44, borderRadius: 14, display: 'inline-flex',
-          alignItems: 'center', justifyContent: 'center', marginBottom: 12,
-          background: 'var(--auszeichnung-schwach)', color: 'var(--auszeichnung-lesbar)',
-          border: '1px solid rgba(212,175,94,0.34)',
-        }}
-      >
-        <Icon name="lock" size={22} />
-      </span>
-      <div style={{ fontWeight: 800, fontSize: compact ? 'var(--fs-fliesstext)' : 'var(--fs-ueberschrift)', marginBottom: 5 }}>
-        {title ?? L.lockedTitle}
+    <>
+      {vorschau && (
+        <section className="sperre-vorschau" aria-label={L.previewTitle}>
+          <h2 className="section-title">{L.previewTitle}</h2>
+          {vorschau}
+        </section>
+      )}
+      <div className={`card pro-sperre${compact ? ' kompakt' : ''}`}>
+        <span className="sperre-zeichen">
+          <Icon name="lock" size={22} />
+        </span>
+        <div className="sperre-titel">{title ?? L.lockedTitle}</div>
+        <p className="small muted sperre-text">{text ?? L.lockedGeneric}</p>
+        {!compact && (
+          <p className="small faint sperre-gratis">{L.staysFree(FREE_MODULE_IDS.length, GRATIS_TRAINER_ANZAHL)}</p>
+        )}
+        <Link to="/pro" className="btn primary sm">
+          {L.unlock}
+        </Link>
       </div>
-      <p className="small muted" style={{ marginBottom: 14, maxWidth: 420, marginInline: 'auto' }}>
-        {text ?? L.lockedGeneric}
-      </p>
-      <Link to="/pro" className="btn primary sm">
-        {L.unlock}
-      </Link>
-    </div>
+    </>
   );
 }

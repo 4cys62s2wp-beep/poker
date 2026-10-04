@@ -17,6 +17,7 @@ import { Levelring } from '../components/Levelring';
 import { rangstand } from '../lib/rang/stand';
 import { zeichenFuer } from '../lib/zeichen';
 import { usePro } from '../lib/pro/ProProvider';
+import { Schloss } from '../components/pro/Schloss';
 import { isFreeModule } from '../lib/pro/plan';
 import { markiereGesehen, wurdeGesehen } from '../lib/gesehen';
 
@@ -216,9 +217,7 @@ export function LearnPage() {
                 />
                 <span className="titel">{m.title}</span>
                 {locked ? (
-                  <span className="pill gold" title={L.lockedHint} aria-label={L.lockedHint}>
-                    <Icon name="lock" size={13} />
-                  </span>
+                  <Schloss pfad={`/lernen/${m.id}`} />
                 ) : fertig ? (
                   <span className="stufe-hinweis fertig">{L.stufeFertig}</span>
                 ) : (
@@ -283,6 +282,7 @@ export function LearnPage() {
                 <div style={{ minWidth: 0 }}>
                   <div className="row" style={{ gap: 'var(--sp-2)', flexWrap: 'wrap' }}>
                     <span style={{ fontWeight: 'var(--fw-bold)' }}>{u.title}</span>
+                    <Schloss pfad={u.to} />
                     {u.badge && <span className="pill gold">{u.badge}</span>}
                   </div>
                   <div className="small muted" style={{ marginTop: 3 }}>{u.sub}</div>
@@ -300,7 +300,10 @@ export function LearnPage() {
                 {L.proSub}
               </div>
             </div>
-            {neuPros && <span className="pill gold">{L.newPill}</span>}
+            <span className="kachel-marken">
+              <Schloss pfad="/lernen/pros" />
+              {neuPros && <span className="pill gold">{L.newPill}</span>}
+            </span>
           </div>
         </Link>
         </>

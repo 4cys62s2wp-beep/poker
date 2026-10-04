@@ -21,7 +21,6 @@ export const STR = defineStrings(
     stufeOffen: 'Hier weiter',
     stufeFertig: 'Fertig',
     stufeRing: (done: number, gesamt: number) => `${done} von ${gesamt} Lektionen`,
-    lockedHint: 'Nur mit Pro freigeschaltet',
     doneLine: (done: number, total: number) => `${done} / ${total} Lektionen abgeschlossen`,
 
     // Übungsblock: alles, was zum Kurs gehört, aber keine Lektion ist.
@@ -61,7 +60,6 @@ export const STR = defineStrings(
     stufeOffen: 'Continue here',
     stufeFertig: 'Done',
     stufeRing: (done: number, gesamt: number) => `${done} of ${gesamt} lessons`,
-    lockedHint: 'Unlocked with Pro',
     doneLine: (done: number, total: number) => `${done} / ${total} lessons completed`,
 
     trainerQuote: (p: number) => `${p} % correct`,

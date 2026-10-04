@@ -9,9 +9,6 @@ import { zeichenFuer } from '../lib/zeichen';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/review';
 import { STR as QUIZ } from '../i18n/pages/quiz';
-import { STR as PRO_STR } from '../i18n/pages/pro';
-import { ProLock } from '../components/pro/ProLock';
-import { usePro } from '../lib/pro/ProProvider';
 import { Rueckmeldung } from '../components/Rueckmeldung';
 import { CardsRow } from '../components/PlayingCard';
 import { frischerStartwert } from '../lib/zufall';
@@ -34,9 +31,6 @@ export function ReviewPage() {
   const { data, answerReview } = useAppState();
   const { lang, content } = useLang();
   const L = STR[lang];
-  const P = PRO_STR[lang];
-  const { fullAccess } = usePro();
-  const unlocked = fullAccess;
   const [selected, setSelected] = useState<number | null>(null);
   const [sessionDone, setSessionDone] = useState(0);
   /* Die Optionen stehen bei jeder Anzeige anders (E-091); der Startwert wechselt
@@ -109,13 +103,7 @@ export function ReviewPage() {
         </div>
       )}
 
-      {!unlocked && (
-        <div>
-          <ProLock text={P.lockedGeneric} />
-        </div>
-      )}
-
-      {unlocked && !current && data.reviews.length === 0 && (
+      {!current && data.reviews.length === 0 && (
         <div>
           <EmptyState
             icon={zeichenFuer('/lernen/wiederholen')}
@@ -127,7 +115,7 @@ export function ReviewPage() {
         </div>
       )}
 
-      {unlocked && !current && data.reviews.length > 0 && (
+      {!current && data.reviews.length > 0 && (
         <div className="card" style={{ textAlign: 'center', padding: 36 }}>
           <div style={{ color: 'var(--auszeichnung-lesbar)', marginBottom: 10 }}>
             <Icon name={zeichenFuer('/lernen/wiederholen')} size={38} />
@@ -140,7 +128,7 @@ export function ReviewPage() {
         </div>
       )}
 
-      {unlocked && current && gemischt && (
+      {current && gemischt && (
         <div className="quiz-fokus">
           <div className="row between wrap" style={{ marginBottom: 14 }}>
             <span className="small faint">

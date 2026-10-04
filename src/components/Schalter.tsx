@@ -6,23 +6,19 @@
    und Bildschirmleser sagen „Schalter, an". Daneben steht das Wort „An" oder
    „Aus", damit der Zustand nicht nur an einer Farbe hängt. */
 
-import type { ReactNode } from 'react';
-
 interface Props {
   an: boolean;
   onChange: (an: boolean) => void;
   label: string;
   beschreibung?: string;
   zustand: { an: string; aus: string };
-  /** Etwas hinter dem Namen, z. B. die Pro-Marke. */
-  marke?: ReactNode;
 }
 
-export function Schalter({ an, onChange, label, beschreibung, zustand, marke }: Props) {
+export function Schalter({ an, onChange, label, beschreibung, zustand }: Props) {
   return (
     <div className="schalter-zeile">
       <div className="schalter-text">
-        <div className="schalter-label">{label} {marke}</div>
+        <div className="schalter-label">{label}</div>
         {beschreibung && <div className="small muted">{beschreibung}</div>}
       </div>
       <button

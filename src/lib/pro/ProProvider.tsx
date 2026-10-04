@@ -14,7 +14,7 @@ import { useAppState } from '../../state/AppState';
 import { useCloud } from '../cloud/CloudProvider';
 import { getCloud } from '../cloud/cloud';
 import { loadMonetizationConfig, MONETIZATION_OFF, type MonetizationConfig } from './config';
-import { checkAccess, trialDaysLeft, type Access, type FeatureKey } from './plan';
+import { checkAccess, istGesperrt, trialDaysLeft, type Access, type FeatureKey } from './plan';
 import { readTrialAnchor, reconcileTrialStart, writeTrialAnchor } from './trialAnchor';
 import { cancelRouteFor, grantsAccess, type Entitlement } from '../payments/provider';
 import {
@@ -61,8 +61,9 @@ interface ProValue {
   startTrial: () => void;
   /** Zugriff auf ein Feature prüfen. */
   access: (key: FeatureKey) => Access;
-  /** Kurzform: darf der Nutzer das Feature jetzt benutzen? */
-  can: (key: FeatureKey) => boolean;
+  /** Liegt die Adresse hinter Pro, und hat der Nutzer es nicht? Daraus liest
+      jede Kachel, jeder Suchtreffer und jede Seite dasselbe Schloss. */
+  gesperrt: (pfad: string) => boolean;
   /** Eine Nutzung verbuchen (nur nötig bei limitierten Gratis-Features). */
   consume: (key: FeatureKey, amount?: number) => void;
   /**
@@ -144,15 +145,13 @@ export function ProProvider({ children }: { children: ReactNode }) {
       enabled: config.enabled,
       pro,
       trialActive,
-      // Tageszähler plus Gesamtstände, die direkt aus den Daten ablesbar sind
-      // (robuster als ein eigener Zähler, der beim Tageswechsel verloren ginge).
-      used: { ...todayUsage, 'bankroll-unlimited': data.sessions.length },
+      used: todayUsage,
     }),
-    [config.enabled, pro, trialActive, todayUsage, data.sessions.length],
+    [config.enabled, pro, trialActive, todayUsage],
   );
 
   const access = useCallback((key: FeatureKey) => checkAccess(ctx, key), [ctx]);
-  const can = useCallback((key: FeatureKey) => checkAccess(ctx, key).state === 'allowed', [ctx]);
+  const gesperrt = useCallback((pfad: string) => istGesperrt(ctx, pfad), [ctx]);
   const consume = useCallback(
     (key: FeatureKey, amount = 1) => {
       // Bei Pro/Testphase gar nicht erst zählen – spart Schreibzugriffe.
@@ -248,7 +247,7 @@ export function ProProvider({ children }: { children: ReactNode }) {
       trialAvailable: effectiveTrialStart === null,
       startTrial: startTrialState,
       access,
-      can,
+      gesperrt,
       consume,
       startCheckout,
       manageBilling,
@@ -257,7 +256,7 @@ export function ProProvider({ children }: { children: ReactNode }) {
       paywallReason,
     }),
     [config, pro, fullAccess, entitlement, trialActive, daysLeft, effectiveTrialStart,
-     startTrialState, access, can, consume, startCheckout, manageBilling, openPaywall,
+     startTrialState, access, gesperrt, consume, startCheckout, manageBilling, openPaywall,
      closePaywall, paywallReason],
   );
 

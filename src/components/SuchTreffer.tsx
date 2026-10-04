@@ -2,6 +2,7 @@
 
 import { Link } from 'react-router-dom';
 import { Icon } from './Icon';
+import { Schloss } from './pro/Schloss';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/suche';
 import { zeichenFuerPfad } from '../lib/zeichen';
@@ -36,6 +37,7 @@ export function SuchTreffer({ ergebnis, abfrage, beiWahl }: Props) {
                       <strong>{z.titel}</strong>
                       {z.beschreibung && <span className="small muted">{z.beschreibung}</span>}
                     </span>
+                    <Schloss pfad={z.to} />
                   </Link>
                 </li>
               );
@@ -57,6 +59,7 @@ export function SuchTreffer({ ergebnis, abfrage, beiWahl }: Props) {
                       {h.art === 'ueberschrift' ? L.abschnitt(h.ausschnitt) : h.ausschnitt}
                     </span>
                   </span>
+                  <Schloss pfad={`/lernen/${h.moduleId}/${h.lessonId}`} />
                   <span className="pill">{h.moduleTitle}</span>
                 </Link>
               </li>

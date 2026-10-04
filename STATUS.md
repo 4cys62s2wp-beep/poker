@@ -23,7 +23,7 @@ Projekts, unverändert übernommen.
 | `npm test` | alle grün, null übersprungen |
 | `npm run test:rules` | 29 Regelprüfungen gegen den echten Emulator |
 | `tools/poker-math` | Python-Tests des Generators, laufen in der Action mit (E-069) |
-| Messläufe im Browser | dreizehn, jeder mit Ergebnis in `docs/` und einem Test, der es festhält |
+| Messläufe im Browser | vierzehn, jeder mit Ergebnis in `docs/` und einem Test, der es festhält |
 | `npx tsc --noEmit`, `npm run build` | sauber |
 
 Hier steht bewusst keine Testzahl mehr. Sie veraltet mit jedem Commit, und

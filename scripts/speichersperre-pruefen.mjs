@@ -162,7 +162,7 @@ const NAME_NEU = 'Zweiter Name';
 let vollBefund = null;
 let vollErgebnis = null;
 try {
-  await vollSeite.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
+  await vollSeite.goto(`${GRUND}/#/profil/einstellungen`, { waitUntil: 'domcontentloaded' });
   await vollSeite.waitForTimeout(1800);
   const feld = vollSeite.locator('#profil-name').first();
   const speichern = vollSeite.locator('button', { hasText: 'Speichern' }).first();
@@ -196,7 +196,7 @@ try {
 } catch (e) {
   vollBefund = `Messung abgebrochen: ${String(e).split('\n')[0].slice(0, 120)}`;
 }
-if (vollBefund) befunde.push({ adresse: '#/profil', art: 'voller Speicher', text: vollBefund });
+if (vollBefund) befunde.push({ adresse: '#/profil/einstellungen', art: 'voller Speicher', text: vollBefund });
 
 await browser.close();
 

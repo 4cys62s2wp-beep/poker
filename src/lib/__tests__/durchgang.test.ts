@@ -813,7 +813,7 @@ describe('Der Willkommensdialog (FAHRPLAN 4.4)', () => {
 
   it('springt von dort zur Kontokarte, setzt den Fokus und verdeckt sie nicht', () => {
     const k = schritt('„Ich habe schon ein Konto“ springt zur Kontokarte');
-    expect(k.adresse).toBe('#/profil?konto=1');
+    expect(k.adresse).toBe('#/profil/einstellungen?konto=1');
     expect(k.fokus_auf_konto).toBe(true);
     expect(k.sichtbar).toBe(true);
     expect(k.unter_der_kopfzeile).toBe(true);
@@ -1496,7 +1496,7 @@ describe('Die Startseite lädt nichts, was sie nicht braucht', () => {
 
   it('holt das Konto trotzdem, sobald jemand es aufruft', () => {
     /* Der Preis der Verzögerung darf nicht sein, dass die Funktion fehlt.
-       Auf dem Profil erscheint die Kontokarte, und dafür wird Firebase
+       In den Einstellungen erscheint die Kontokarte, und dafür wird Firebase
        nachgeladen — vier Dateien, dieselben wie vorher. */
     expect(e().dateien_nach_profil).toBeGreaterThan(0);
     expect(e().kontokarte_da).toBe(true);
@@ -1603,5 +1603,105 @@ describe('Auszahlung und Bankroll (E-094)', () => {
     expect(l.rueckgaengig).toBe(true);
     expect(b().nach_rueckgaengig).toBe(1);
     expect(b().nach_ablauf_und_neuladen).toBe(0);
+  });
+});
+
+describe('Profil, Einstellungen und Konto (E-095)', () => {
+  const profil = () => schritt('Profil: Identität und Fortschritt, Einstellungen hinter dem Zahnrad');
+  const einst = () => schritt('Einstellungen: gruppiert, Zurücksetzen zuletzt und mit „Vorher sichern?“');
+  const konto = () => schritt('Kontokarte: kein Sprung, Google-Knopf nach Vorgabe, gleichwertige Wahl');
+
+  it('nennt ein Profil ohne Namen „Profil 1“ und gibt ihm einen Buchstaben statt „?“', () => {
+    const l = profil().leer as Record<string, unknown>;
+    expect(l.name).toBe('Profil 1');
+    expect(l.avatar).toBe('P');
+  });
+
+  it('ist kurz: Identität und Fortschritt, nicht 5280 Pixel Sammelseite', () => {
+    const l = profil().leer as Record<string, unknown>;
+    expect(Number(l.hoehe)).toBeLessThan(2200);
+    expect(l.namensfeld, 'Das Namensfeld gehört in die Einstellungen').toBe(0);
+    expect(l.zuruecksetzen, 'Zurücksetzen gehört in die Einstellungen').toBe(0);
+  });
+
+  it('führt mit einem Zahnrad zu den Einstellungen', () => {
+    expect((profil().leer as Record<string, unknown>).zahnrad).toBe('Einstellungen');
+    const z = profil().ziel as Record<string, unknown>;
+    expect(z.adresse).toBe('#/profil/einstellungen');
+    expect(z.ueberschrift).toBe('Einstellungen');
+  });
+
+  it('zeigt die nächsten drei Abzeichen und zählt den Rest in einer Zeile', () => {
+    const l = profil().leer as Record<string, unknown>;
+    expect(l.naechste).toBe(3);
+    expect(l.medaillen_verdient).toBe(0);
+    expect(String(l.offen_zeile)).toBe('Noch 22 Abzeichen zu entdecken');
+    expect(l.emoji_in_abzeichen, 'Medaillen sind Zeichen aus dem eigenen Satz').toBe(false);
+  });
+
+  it('zeigt auch bei vielen verdienten höchstens sechs, das neueste zuerst', () => {
+    const v = profil().viele as Record<string, unknown>;
+    expect(v.verdient).toBe(6);
+    expect(v.erstes).toBe('Trainingsfleiß');
+    expect(String(v.weitere)).toBe('3 weitere verdient');
+  });
+
+  it('öffnet mit „Alle ansehen“ die ganze Sammlung, die Offenen als Umriss', () => {
+    const a = profil().alle as Record<string, unknown>;
+    expect(a.stuecke).toBe(22);
+    expect(a.offene).toBe(22 - 9);
+    expect(a.ausgeklappt).toBe('true');
+  });
+
+  it('gruppiert die Einstellungen und stellt die Daten ans Ende', () => {
+    expect(einst().gruppen).toEqual([
+      'Konto', 'Profil auf diesem Gerät', 'Darstellung', 'App', 'Über PokerMentor', 'Daten',
+    ]);
+  });
+
+  it('hat die zerstörende Aktion als letztes Bedienelement der Seite', () => {
+    expect(einst().reset_ist_letztes_bedienelement).toBe(true);
+  });
+
+  it('fragt „Vorher sichern?“ und bietet das Backup in der Bestätigung an', () => {
+    const f = einst().frage as Record<string, unknown>;
+    expect(f.titel).toBe('Vorher sichern?');
+    expect(f.knoepfe).toEqual(['Erst Backup herunterladen', 'Ja, alles löschen', 'Abbrechen']);
+    expect(einst().abgebrochen_ok).toBe(true);
+  });
+
+  it('fragt keine E-Mail-Adresse fürs Profil mehr ab', () => {
+    expect(einst().email_feld).toBe(0);
+  });
+
+  it('hält der Kontokarte den Platz frei, sodass nichts springt', () => {
+    const k = konto();
+    const karte = k.karte as Record<string, unknown>;
+    expect(Math.abs(Number(k.platzhalter_hoehe) - Number(karte.hoehe))).toBeLessThanOrEqual(24);
+  });
+
+  it('gestaltet den Google-Knopf neutral und nicht als Hauptknopf', () => {
+    const karte = konto().karte as Record<string, unknown>;
+    expect(karte.google_ist_hauptknopf).toBe(false);
+    expect(karte.google_g_farben).toBe(4);
+    expect(String(karte.google_flaeche)).toMatch(/^rgb\((255, 255, 255|19, 19, 20)\)$/);
+    expect(Number(karte.google_hoehe)).toBeGreaterThanOrEqual(44);
+  });
+
+  it('stellt „Anmelden“ und „Neues Konto“ gleichwertig nebeneinander', () => {
+    const karte = konto().karte as { tabs: Array<{ text: string; breite: number }> };
+    expect(karte.tabs.map((t) => t.text)).toEqual(['Anmelden', 'Neues Konto']);
+    expect(karte.tabs[0].breite).toBe(karte.tabs[1].breite);
+    const neu = konto().neu as Record<string, unknown>;
+    expect(neu.titel).toBe('Konto erstellen');
+    expect(neu.name_feld).toBe(1);
+  });
+
+  it('zeigt Feedback-Link, Google und „Neues Konto“ nur mit hinterlegten Anbieterangaben', () => {
+    expect(konto().feedback_mit_adresse).toBe(1);
+    const o = konto().ohne_anbieter as Record<string, unknown>;
+    expect(o.google).toBe(0);
+    expect(o.umschalter).toBe(0);
+    expect(o.feedback).toBe(0);
   });
 });

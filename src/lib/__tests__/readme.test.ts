@@ -21,7 +21,7 @@ import { describe, expect, it } from 'vitest';
 const README = readFileSync('README.md', 'utf8');
 const STATUS = readFileSync('STATUS.md', 'utf8');
 const FIREBASE = readFileSync('FIREBASE_SETUP.md', 'utf8');
-const PROFILTEXTE = readFileSync('src/i18n/pages/profile.ts', 'utf8');
+const PROFILTEXTE = readFileSync('src/i18n/pages/einstellungen.ts', 'utf8');
 const PAKET = JSON.parse(readFileSync('package.json', 'utf8')) as {
   scripts: Record<string, string>;
 };
@@ -133,9 +133,9 @@ describe('STATUS.md', () => {
   });
 });
 
-describe('Die Versionsangabe im Profil', () => {
+describe('Die Versionsangabe in den Einstellungen', () => {
   it('stimmt mit package.json überein, in beiden Sprachen', () => {
-    /* Unter dem Profil steht „Version 2.2 · …". Das ist die einzige Stelle,
+    /* Unter den Einstellungen steht „Version 2.2 · …". Das ist die einzige Stelle,
        an der die App der Nutzerin sagt, welchen Stand sie vor sich hat — und
        sie steht zweimal da, deutsch und englisch. Eine Versionserhöhung, die
        den Text vergisst, macht aus einer Auskunft eine Falschauskunft. */

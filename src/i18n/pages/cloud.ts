@@ -5,6 +5,8 @@ import { defineStrings } from '..';
    describeCloudError() in src/lib/cloud/cloud.ts – die kennen nur Firebase-Codes. */
 export const STR = defineStrings(
   {
+    laedt: 'Konto wird geladen …',
+    umschalter: 'Anmelden oder neues Konto',
     offlineBand: 'Konto offline – wird synchronisiert, sobald wieder Netz da ist.',
 
     changePassword: 'Passwort ändern',
@@ -70,6 +72,8 @@ export const STR = defineStrings(
     infoSynced: 'Synchronisiert.',
   },
   {
+    laedt: 'Loading account …',
+    umschalter: 'Sign in or new account',
     offlineBand: 'Account offline – syncs as soon as you are back online.',
 
     changePassword: 'Change password',

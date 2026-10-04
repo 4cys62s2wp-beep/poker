@@ -5331,3 +5331,69 @@ des letzten Abends als Vorbelegung. Statt knopfähnlicher Felder zeigt es einen 
   deckt den eigenen Platz in einer Runde ab, nicht mehrere Personen auf einem Gerät.
 - Das **Datumsfeld** bleibt das des Browsers (`lang` gesetzt, Rahmen wie die anderen Felder); ein eigener Kalender wäre
   mehr Code als Nutzen.
+
+## E-095 · 2026-10-04 · Profil und Einstellungen getrennt: ein Profil, das den Fortschritt zeigt, eine Liste, in der das Löschen zuletzt steht
+
+**Stand:** entschieden und umgesetzt (FAHRPLAN 8.1–8.5), mit den unten genannten Lücken.
+
+**Ausgangsbefund.** Das Profil war 5280 Pixel lang: Rang und vier Kacheln, 22 Abzeichen als Kachelwand (drei davon
+farbig), dann Konto, Links, Profile, Einstellungen mit der Farbwahl bei 3552 und „Fortschritt zurücksetzen …“ bei 4042
+direkt darunter, Backup, Teilen, Erinnerung, Installieren, ein grauer Absatz. Wer seinen Fortschritt sehen wollte, scrollte
+an Einstellungen vorbei; wer eine Einstellung suchte, an Abzeichen.
+
+**Zwei Seiten statt einer.**
+- **`/profil`** zeigt Identität und Fortschritt: Avatar mit Anfangsbuchstaben und Name (ein Profil ohne Namen heißt
+  „Profil 1“, nicht „Ohne Namen“ und nicht „?“), der Rang, die vier Kacheln, die Abzeichen, darunter die Wege weiter
+  (Freunde nur mit Cloud, Pro, Rechtliches, Kündigen). Gemessen: 1445 Pixel leer. Oben rechts ein **Zahnrad**
+  („Einstellungen“, am Handy nur das Zeichen).
+- **`/profil/einstellungen`** (Tiefe 2, in der Seitenleiste als Eintrag unter „Profil“) ist eine gruppierte Liste:
+  **Konto · Profil auf diesem Gerät · Darstellung · App · Über PokerMentor · Daten.** Die Reihenfolge folgt der Häufigkeit;
+  „Über“ steht vor „Daten“, damit **die zerstörende Aktion das letzte Bedienelement der Seite** ist (gemessen: ja).
+  „Fortschritt zurücksetzen …“ öffnet eine Bestätigung, die zuerst fragt **„Vorher sichern?“** und den Backup-Knopf gleich
+  mitbringt — vorher stand das Backup eine Karte weiter unten, nach dem Löschen.
+- Der Sprung des Willkommensdialogs („Ich habe schon ein Konto“) und die Knöpfe der Freunde-Seite führen jetzt auf
+  `/profil/einstellungen?konto=1`; der Anker `#konto` ist die Überschrift „Konto“ und trägt den Fokus.
+
+**Konto und Profil sind zwei Dinge (8.2).** „Konto“ ist die Anmeldung mit E-Mail oder Google, „Profil“ die Person auf dem
+Gerät. `begriffe.ts` verbietet „Cloud-Konto“, „Cloud-Account“ und „Geräte-Sync“; die Pro-Tabelle sagt „Sync auf allen
+Geräten“. Die Sätze über den Speicherort hängen am **Zustand** (`lib/speicherort.ts`, getestet): ohne Konto „liegt nur auf
+diesem Gerät“, mit bestätigtem Konto „auf diesem Gerät und in deinem Konto“, mit unbestätigtem „bis dahin nur auf diesem
+Gerät“. Vorher stand oben „doppelt auf diesem Gerät gesichert – und mit Konto zusätzlich in der Cloud“ und weiter unten
+„Alle Daten liegen nur auf diesem Gerät“. **Das Feld „E-Mail (optional, für die Profil-Zuordnung)“ ist weg:** Es wurde
+gespeichert und angezeigt, aber von nichts gelesen, und es widersprach der Datensparsamkeit, die die App verspricht. Auch die
+Adresse eines angemeldeten Kontos wird nicht mehr im Profilindex abgelegt; alte Einträge verschwinden beim Laden
+(`profilindex.test.ts`).
+
+**Die Kontokarte (8.3).** Während die Cloud lädt (1,96 s bei 4G), gab sie `null` zurück, und danach sprang eine 563 Pixel
+hohe Karte herein. Jetzt steht ein **Platzhalter in Kartenhöhe** da (35rem = 560 Pixel gegen die gemessenen 563 der geladenen Karte), auch
+solange die Anbieterangaben laden — sonst käme „Neues Konto“ erst danach dazu. „Mit Google anmelden“ folgt Googles Vorgaben:
+neutrale Fläche (hell weiß mit grauem Rand, dunkel #131314), das vierfarbige G, kein goldener Hauptknopf; er steht weiter
+oben, weil er der einzige Weg ohne Bestätigungsmail ist. **„Anmelden“ und „Neues Konto“ sind ein Umschalter aus zwei gleich
+breiten Feldern** statt Umrissknopf neben nacktem Text; darunter ein Senden-Knopf, „Passwort vergessen?“ als ruhige Zeile.
+Ohne Anbieterangaben gibt es weder Google noch „Neues Konto“ (E-043, `kontoAnbieten`) — gemessen.
+
+**Abzeichen (8.4).** Das Profil zeigt **höchstens sechs verdiente** (die zuletzt verdienten zuerst, `waehleAbzeichen`),
+dazu „weitere verdient“, **die nächsten drei** mit ihrer Bedingung und eine Zeile „Noch 22 Abzeichen zu entdecken“;
+„Alle ansehen“ (`aria-expanded`) öffnet die Sammlung. Die 22 **Emoji sind Medaillen** aus dem eigenen Symbolsatz
+(`Medaille.tsx`, ein Ring um ein Zeichen; jedes Abzeichen hat ein eigenes, ein Test hält es fest). Noch nicht verdient ist
+ein **gestrichelter Umriss** statt `filter: grayscale(1)` mit Deckkraft — es tritt zurück, ohne zu verblassen (Regel 10.10).
+Auch der Hinweis beim Verdienen und die Kachel im Quiz-Ergebnis tragen die Medaille statt des Emoji.
+
+**Über, Kontakt, Feedback (8.5).** „Über PokerMentor“ nennt die **vier Versprechen** (kein Echtgeld, kein Tracking,
+funktioniert offline, jede Zahl hat eine Herkunft), den Verantwortungssatz, Version und Baustand. „Feedback geben“ und auf
+dem Absturzbildschirm „Fehlerbericht senden“ sind ein **mailto** mit Version, Sprache, Browser und (beim Absturz) der
+Fehlermeldung (`lib/feedback.ts`, getestet) — **nur, wenn der Betreiber in `legal.json` eine Adresse hinterlegt hat**; sie ist
+heute leer, also sieht man beide Links auf der Live-Seite noch nicht. Nichts verlässt das Gerät, bevor jemand in seinem
+Mailprogramm auf „Senden“ drückt. Der Freunde-Eintrag erscheint in Seitenleiste und Profil nur bei konfigurierter Cloud
+(war schon so).
+
+**Nicht umgesetzt, mit Grund:**
+- **Zusammenführen eines leeren lokalen Profils mit einem Konto** (8.3, ausdrücklich „eigene Aufgabe“): Die Konfliktregel
+  „mehr XP gewinnt“ gilt weiter.
+- **Eigene SVG-Medaillen mit je einer Zeichnung** (8.4): Statt 22 neuer Glyphen tragen die Medaillen vorhandene Zeichen
+  des Symbolsatzes; das ist weniger, aber einheitlich und mit dem Stil der App identisch.
+- **Das Kalender-Abzeichen mit „July 17“** (8.4): Ich konnte die Stelle nicht finden; die Daten stehen überall über
+  `toLocaleDateString` der gewählten Sprache. Falls es am englischen Datum liegt: es heißt jetzt „17 Jul 2026“.
+- **Der Kontoplatzhalter ist eine Fläche ohne Skelett:** keine Animation, damit `prefers-reduced-motion` nichts ändern muss.
+- Die **Datumsangabe der Backup-Datei** steht jetzt nach der Uhr des Geräts statt in UTC (`heuteIso`), bei den Sicherungen
+  der Einstellungen; die Notsicherung im Absturzbildschirm trägt noch UTC.

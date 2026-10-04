@@ -71,6 +71,17 @@ export const BEGRIFFE: Begriff[] = [
     ausser: ['src/i18n/pages/payout.ts', 'src/lib/poker/payout.ts', 'src/i18n/pages/abende.ts'],
   },
   {
+    gegenstand: 'Das Konto (Anmeldung mit E-Mail oder Google)',
+    wort: 'Konto',
+    verboten: /Cloud-Konto|Cloud-Account|Geräte-Sync\b|Geräte-Synchronisation/,
+    beispiel: 'Mit deinem Cloud-Konto',
+    grund: 'Auf den Seiten hieß es „Konto“, „Cloud-Konto“ und „Cloud-Account“, die '
+      + 'Synchronisation „Geräte-Sync“ und „Geräte-Synchronisation“. „Konto“ ist die '
+      + 'Anmeldung mit E-Mail, „Profil“ die Person auf dem Gerät — und beides soll man '
+      + 'nicht verwechseln können.',
+    gilt: 'alles',
+  },
+  {
     gegenstand: 'Flushdraw',
     wort: 'Flushdraw',
     verboten: /Flush[ -][Dd]raw/,

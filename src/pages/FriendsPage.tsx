@@ -78,7 +78,7 @@ export function FriendsPage() {
       <div>
         {header}
         <InfoCard title={F.offlineTitle} body={F.offlineBody}>
-          <Link to="/profil" className="btn sm primary" style={{ textDecoration: 'none' }}>
+          <Link to="/profil/einstellungen?konto=1" className="btn sm primary" style={{ textDecoration: 'none' }}>
             {F.offlineCta}
           </Link>
         </InfoCard>
@@ -91,7 +91,7 @@ export function FriendsPage() {
       <div>
         {header}
         <InfoCard title={F.unverifiedTitle} body={F.unverifiedBody}>
-          <Link to="/profil" className="btn sm" style={{ textDecoration: 'none' }}>
+          <Link to="/profil/einstellungen?konto=1" className="btn sm" style={{ textDecoration: 'none' }}>
             {F.offlineCta}
           </Link>
         </InfoCard>

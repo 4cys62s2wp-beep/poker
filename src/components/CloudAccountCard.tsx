@@ -1,5 +1,15 @@
-/* Konto-Karte für die Profilseite: Registrierung, Login, E-Mail-Verifizierung
-   und Sync-Status. Ohne Cloud-Konfiguration zeigt sie den Geräte-Modus an. */
+/* Die Kontokarte der Einstellungen: Anmeldung, Neuanlage, E-Mail-Bestätigung
+   und Stand des Abgleichs. Ohne Cloud-Konfiguration gibt es sie nicht.
+
+   Drei Dinge, die E-095 daran geändert hat:
+   - Während die Cloud lädt (gemessen 1,96 s bei 4G), gab die Karte `null`
+     zurück, und danach sprang eine 550 Pixel hohe Karte herein. Jetzt steht
+     ein Platzhalter in fester Höhe da.
+   - Der Google-Knopf folgt Googles Vorgaben für „Mit Google anmelden“: eine
+     neutrale Fläche, das vierfarbige G, kein goldener Hauptknopf. Er steht
+     weiter oben (er ist der einzige Weg ohne Bestätigungsmail).
+   - „Anmelden“ und „Neues Konto“ sind ein Umschalter aus zwei gleichwertigen
+     Feldern statt eines Umrissknopfs neben nacktem Text. */
 
 import { useEffect, useState, type FormEvent } from 'react';
 import { useCloud } from '../lib/cloud/CloudProvider';
@@ -36,7 +46,17 @@ export function CloudAccountCard() {
   const [bestaetigung, setBestaetigung] = useState('');
   const [loeschPasswort, setLoeschPasswort] = useState('');
 
-  if (cloud.phase === 'checking') return null;
+  /* Ein Platzhalter in Kartenhöhe statt `null`: Die Karte soll nicht
+     hereinspringen und alles darunter verschieben. Auch das Warten auf die
+     Anbieterangaben gehört dazu — sonst käme der Umschalter „Neues Konto“
+     erst danach dazu. */
+  if (cloud.phase === 'checking' || (cloud.phase === 'ready' && !cloud.user && legal === undefined)) {
+    return (
+      <div className="card konto-platzhalter" role="status" aria-busy="true">
+        <span className="sr-only">{C.laedt}</span>
+      </div>
+    );
+  }
 
   /* Gibt es hier keine Cloud, gibt es auch keine Karte: Eine Anleitung für den,
      der die App betreibt, hat in der Oberfläche eines Nutzers nichts zu suchen
@@ -220,13 +240,13 @@ export function CloudAccountCard() {
       {mode !== 'reset' && neuanmeldung && (
         <>
           <button
-            className="btn primary"
+            className="google-knopf"
             type="button"
-            style={{ width: '100%' }}
             disabled={cloud.busy}
             onClick={() => void cloud.loginWithGoogle()}
           >
-            {C.continueWithGoogle}
+            <GoogleG />
+            <span>{C.continueWithGoogle}</span>
           </button>
           <p className="small faint" style={{ margin: '7px 0 0', textAlign: 'center' }}>
             {C.googleHint}
@@ -237,6 +257,25 @@ export function CloudAccountCard() {
             <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
           </div>
         </>
+      )}
+
+      {/* Anmelden und Neues Konto stehen gleichwertig nebeneinander. Gibt es keine
+          Neuanlage (ohne Anbieterangaben), gibt es auch keinen Umschalter. */}
+      {mode !== 'reset' && neuanmeldung && (
+        <div className="segmented konto-umschalter" role="radiogroup" aria-label={C.umschalter}>
+          {(['login', 'register'] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              role="radio"
+              aria-checked={mode === m}
+              className={mode === m ? 'on' : ''}
+              onClick={() => { setMode(m); cloud.clearMessages(); }}
+            >
+              {m === 'login' ? C.submitLogin : C.newAccount}
+            </button>
+          ))}
+        </div>
       )}
 
       <form onSubmit={submit}>
@@ -280,26 +319,19 @@ export function CloudAccountCard() {
             required
           />
         )}
-        <div className="row wrap">
-          <button className="btn sm" type="submit" disabled={cloud.busy}>
-            {cloud.busy ? C.busy : mode === 'register' ? C.submitRegister : mode === 'reset' ? C.submitReset : C.submitLogin}
-          </button>
-          {mode !== 'login' && (
+        <button className="btn primary konto-senden" type="submit" disabled={cloud.busy}>
+          {cloud.busy ? C.busy : mode === 'register' ? C.submitRegister : mode === 'reset' ? C.submitReset : C.submitLogin}
+        </button>
+        <div className="row wrap konto-weitere">
+          {mode === 'reset' && (
             <button className="btn sm ghost" type="button" onClick={() => { setMode('login'); cloud.clearMessages(); }}>
               {C.toLogin}
             </button>
           )}
           {mode === 'login' && (
-            <>
-              {neuanmeldung && (
-                <button className="btn sm ghost" type="button" onClick={() => { setMode('register'); cloud.clearMessages(); }}>
-                  {C.newAccount}
-                </button>
-              )}
-              <button className="btn sm ghost" type="button" onClick={() => { setMode('reset'); cloud.clearMessages(); }}>
-                {C.forgotPassword}
-              </button>
-            </>
+            <button className="btn sm ghost" type="button" onClick={() => { setMode('reset'); cloud.clearMessages(); }}>
+              {C.forgotPassword}
+            </button>
           )}
         </div>
       </form>
@@ -307,5 +339,17 @@ export function CloudAccountCard() {
       {cloud.error && <div className="feedback-box bad" style={{ marginTop: 12 }}>{cloud.error}</div>}
       {cloud.info && <div className="feedback-box good" style={{ marginTop: 12 }}>{cloud.info}</div>}
     </div>
+  );
+}
+
+/** Das vierfarbige „G“ — Googles Vorgabe für den Anmeldeknopf. */
+function GoogleG() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+      <path className="g-rot" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+      <path className="g-blau" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+      <path className="g-gelb" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+      <path className="g-gruen" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+    </svg>
   );
 }

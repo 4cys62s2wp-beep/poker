@@ -10,6 +10,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import type { QuizQuestion } from '../content/types';
 import { QuizRunner, type QuizErgebnis, type QuizZustand } from '../components/QuizRunner';
 import { Icon } from '../components/Icon';
+import { Medaille } from '../components/Medaille';
 import { useAppState } from '../state/AppState';
 import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/quiz';
@@ -97,7 +98,7 @@ function LessonQuizInhalt() {
               </div>
               {abzeichen.map((b) => (
                 <div key={b!.id} className="ergebnis-kachel abzeichen">
-                  <strong aria-hidden="true">{b!.icon}</strong>
+                  <Medaille name={b!.icon} groesse={36} />
                   <span>{L.tileBadge}: {b!.title}</span>
                 </div>
               ))}

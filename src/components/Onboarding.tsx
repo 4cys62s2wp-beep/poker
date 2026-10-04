@@ -27,7 +27,7 @@ const TEXT: Record<Lang, {
     next: 'Weiter',
     skip: 'Überspringen',
     back: 'Zurück',
-    langNote: 'Du kannst die Sprache jederzeit im Profil ändern.',
+    langNote: 'Du kannst die Sprache jederzeit in den Einstellungen ändern.',
     haveAccount: 'Ich habe schon ein Konto',
     goalLabel: 'Was hast du vor?',
     goalLearn: 'Poker lernen',
@@ -43,7 +43,7 @@ const TEXT: Record<Lang, {
     next: 'Next',
     skip: 'Skip',
     back: 'Back',
-    langNote: 'You can change the language anytime in your profile.',
+    langNote: 'You can change the language anytime in the settings.',
     haveAccount: 'I already have an account',
     goalLabel: 'What are you here for?',
     goalLearn: 'Learn poker',
@@ -129,7 +129,7 @@ export function Onboarding() {
    *  Kontokarte und setzt den Fokus dorthin. */
   function zumKonto() {
     finishOnboarding();
-    navigate('/profil?konto=1');
+    navigate('/profil/einstellungen?konto=1');
   }
 
   return createPortal(

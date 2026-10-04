@@ -39,9 +39,9 @@ describe('Verwendung', () => {
     return aus;
   }
 
-  it('steht nur beim Einrichten eines Abends und im Profil', () => {
+  it('steht nur beim Einrichten eines Abends und in den Einstellungen', () => {
     const mit = dateien('src').filter((d) => readFileSync(d, 'utf8').includes('<InstallierenKarte'));
-    expect(mit.sort()).toEqual(['src/pages/ProfilePage.tsx', 'src/pages/live/EinrichtenPage.tsx']);
+    expect(mit.sort()).toEqual(['src/pages/EinstellungenPage.tsx', 'src/pages/live/EinrichtenPage.tsx']);
   });
 
   it('hört früh auf das Angebot des Browsers und bietet nach Besuchen oder Lektionen nichts an', () => {

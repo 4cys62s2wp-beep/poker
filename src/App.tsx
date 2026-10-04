@@ -49,6 +49,7 @@ import { HandExplorer } from './pages/tools/HandExplorer';
 import { ChipCalculator } from './pages/tools/ChipCalculator';
 import { GlossaryPage } from './pages/GlossaryPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { EinstellungenPage } from './pages/EinstellungenPage';
 import { FriendsPage } from './pages/FriendsPage';
 
 /* Routen nach der Struktur aus docs/SCREEN_STRUKTUR.md:
@@ -202,6 +203,7 @@ export function App() {
 
           {/* ── Persönliches ─────────────────────────────────────────── */}
           <Route path="/profil" element={<ProfilePage />} />
+          <Route path="/profil/einstellungen" element={<EinstellungenPage />} />
           <Route path="/freunde" element={<FriendsPage />} />
           <Route path="/pro" element={<UpgradePage />} />
           <Route path="/rechtliches" element={<LegalPage />} />

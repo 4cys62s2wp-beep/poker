@@ -874,8 +874,10 @@ Farben auf Bereichsgrün statt Gold und Freunde-Violett (Regel 10.9); Ergebnisza
 **Ziel:** Das Profil zeigt Fortschritt statt einer 5280 px langen Sammelseite, Einstellungen und Konto sind sofort auffindbar, und Konto und Profil werden nicht mehr verwechselt.  
 **Baut auf:** 2, 3
 
-### [ ] 8.1 Einstellungen auf eine eigene Seite, die zerstörende Aktion zuletzt  
+### [x] 8.1 Einstellungen auf eine eigene Seite, die zerstörende Aktion zuletzt  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt: `/profil/einstellungen` als gruppierte Liste (Konto, Profil, Darstellung, App, Über, Daten), Zahnrad im Profil, Eintrag in der Seitenleiste; „Fortschritt zurücksetzen“ ist das letzte Bedienelement und fragt „Vorher sichern?“. Siehe E-095.
 
 Neue Route /profil/einstellungen als gruppierte Liste (Konto, Darstellung, Daten, Über). „Fortschritt zurücksetzen …“ steht heute bei y=4042 direkt unter dem Farbmodus; künftig kommt es ans Ende hinter Backup, mit „Vorher sichern?“ und dem Backup-Knopf in der Bestätigung. #/profil zeigt nur noch Identität und Fortschritt. Einstieg über ein Zahnrad im Profil und über die Fußzeile der Seitenleiste aus Paket 2. E-036 nennt das Profil selbst eine offene Baustelle („Wand aus Nullen“).
 
@@ -886,8 +888,10 @@ Neue Route /profil/einstellungen als gruppierte Liste (Konto, Darstellung, Daten
 
 </details>
 
-### [ ] 8.2 Konto und Profil trennen, die zwecklose E-Mail streichen  
+### [x] 8.2 Konto und Profil trennen, die zwecklose E-Mail streichen  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt: Profil ohne E-Mail-Feld (auch der Index speichert keine Adresse mehr), „Konto“ gegen „Profil“ in `begriffe.ts`, Speicherort-Satz nach Zustand, „Profil 1“ mit Anfangsbuchstaben.
 
 Das Feld „E-Mail (optional, für die Profil-Zuordnung)“ wird nur gespeichert und angezeigt (AppState.tsx:849, ProfilePage.tsx:232) und entfällt, weil es der versprochenen Datensparsamkeit widerspricht. Begriffe: „Konto“ meint die Cloud mit E-Mail, „Profil“ die Person auf dem Gerät; „Cloud-Konto“, „Geräte-Sync“ und „Synchronisation“ werden vereinheitlicht. Die Texte zur Speicherung hängen am Zustand, statt sich zu widersprechen („doppelt auf diesem Gerät … zusätzlich in der Cloud“ gegen „Alle Daten liegen nur auf diesem Gerät“). Ein Profil ohne Namen heißt „Profil 1“ und bekommt den Anfangsbuchstaben als Avatar statt „?“.
 
@@ -898,8 +902,10 @@ Das Feld „E-Mail (optional, für die Profil-Zuordnung)“ wird nur gespeichert
 
 </details>
 
-### [ ] 8.3 Konto-Einstieg ohne Sprung und mit einem echten Google-Knopf  
+### [x] 8.3 Konto-Einstieg ohne Sprung und mit einem echten Google-Knopf  
 *Wirkung 4 · Aufwand S*
+
+**Stand:** Umgesetzt: Platzhalter in Kartenhöhe, Google-Knopf nach Googles Vorgaben, „Anmelden“/„Neues Konto“ als gleichwertiger Umschalter. Das Zusammenführen eines leeren Profils mit dem Konto bleibt eine eigene Aufgabe.
 
 CloudAccountCard gibt während des Ladens (gemessen 1,96 s bei 4G) heute null zurück (Z. 23), danach springt eine ~550 px hohe Karte herein. Künftig steht dort ein Platzhalter in fester Kartenhöhe. „Mit Google anmelden“ (CloudAccountCard.tsx 126–134) wird nach Googles Branding-Vorgaben gestaltet: neutrale Fläche, farbiges G, kein goldener Hauptknopf. Er bleibt oben, wie der Codekommentar begründet. „Anmelden“ und „Neues Konto“ werden gleichwertig gestaltet statt Umrissknopf neben nacktem Text. Wie ein leeres lokales Profil mit dem Konto zusammengeführt wird, ist eine eigene Aufgabe.
 
@@ -910,8 +916,10 @@ CloudAccountCard gibt während des Ladens (gemessen 1,96 s bei 4G) heute null zu
 
 </details>
 
-### [ ] 8.4 Abzeichen kompakt und einheitlich  
+### [x] 8.4 Abzeichen kompakt und einheitlich  
 *Wirkung 3 · Aufwand M*
+
+**Stand:** Umgesetzt: höchstens sechs verdiente, „Als Nächstes“ drei, eine Zeile für den Rest, „Alle ansehen“; Medaillen aus dem eigenen Symbolsatz, Offenes als Umriss. Keine 22 neuen Zeichnungen.
 
 Auf dem Profil höchstens 6 Abzeichen, dazu „Nächste 3“ und „Alle ansehen“; die gesperrten werden zu einer Zeile „Noch 19 Abzeichen zu entdecken“ statt rund 1700–2100 px grauer Kacheln. Die 22 Emoji-Abzeichen (badges.ts) werden SVG-Medaillen; gesperrte erhalten einen Umriss statt filter: grayscale(1). Das ist mit Regel 10.10 vereinbar, weil sie mit einem Zeichen zurücktreten. Das Kalender-Abzeichen zeigt deutsches Datum statt „July 17“.
 
@@ -923,8 +931,10 @@ Auf dem Profil höchstens 6 Abzeichen, dazu „Nächste 3“ und „Alle ansehen
 
 </details>
 
-### [ ] 8.5 Über, Kontakt und Feedback  
+### [x] 8.5 Über, Kontakt und Feedback  
 *Wirkung 4 · Aufwand M*
+
+**Stand:** Umgesetzt: Gruppe „Über“ mit vier Versprechen, Version und Baustand; Feedback und Fehlerbericht als mailto, sobald `legal.json` eine Adresse trägt (heute leer).
 
 Eine Gruppe „Über“ in den Einstellungen mit den vier Versprechen (kein Echtgeld, kein Tracking, funktioniert offline, Herkunft jeder Zahl im Blatt „Warum diese Zahl“) sowie Version und Baustand aus Punkt 3.8, statt eines grauen Absatzes bei y=5019. Sobald legal.email eingetragen ist (Punkt 3.6): „Feedback geben“ und in ErrorBoundary.tsx „Fehlerbericht senden“ als mailto mit Version, Sprache, userAgent und error.message. Der Freunde-Eintrag erscheint in Profil und Navigation nur bei konfigurierter Cloud; die Route bleibt als Umleitung.
 

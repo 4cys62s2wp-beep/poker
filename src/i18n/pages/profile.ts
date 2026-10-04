@@ -1,11 +1,22 @@
 import { defineStrings } from '..';
 
-/* Texte der Profilseite (src/pages/ProfilePage.tsx). */
+/* Texte der Profilseite (src/pages/ProfilePage.tsx): Identität und Fortschritt.
+   Alles Einstellbare steht in einstellungen.ts (E-095). */
 export const STR = defineStrings(
   {
     title: 'Profil',
-    sub: 'Dein Fortschritt wird doppelt auf diesem Gerät gesichert – und mit Konto zusätzlich in der Cloud.',
+    einstellungen: 'Einstellungen',
 
+    /* Wo der Fortschritt liegt — je nach Zustand ein anderer Satz (E-095).
+       Vorher stand oben „doppelt auf diesem Gerät … und mit Konto zusätzlich in
+       der Cloud“ und weiter unten „Alle Daten liegen nur auf diesem Gerät“. */
+    speicherGeraet: 'Dein Fortschritt liegt nur auf diesem Gerät. Ein Backup oder ein Konto nimmt ihn mit.',
+    speicherKonto: 'Dein Fortschritt liegt auf diesem Gerät und in deinem Konto.',
+    speicherKontoOffen:
+      'Dein Konto ist noch nicht bestätigt. Bis dahin liegt dein Fortschritt nur auf diesem Gerät.',
+
+    /** Ein Profil ohne Namen heißt „Profil 1“, nicht „Ohne Namen“ oder „?“. */
+    unbenannt: (n: number) => `Profil ${n}`,
 
     /* ── Der Rang als Bild (E-037) ──────────────────────────────────── */
     rangMarke: 'Dein Rang',
@@ -31,61 +42,23 @@ export const STR = defineStrings(
 
     badgesTitle: 'Abzeichen',
     badgeSeit: (wann: string) => (wann ? `seit ${wann}` : 'verdient'),
-
-    accountSection: 'Konto & Synchronisation',
-
-    profilesSection: 'Profile auf diesem Gerät',
-    profilesIntro:
-      'Jedes Profil hat eigenen Fortschritt, eigene XP und eigene Abzeichen – so können mehrere Personen am selben Gerät parallel trainieren. Der Fortschritt bleibt auch nach Neuladen oder Schließen des Browsers erhalten.',
-    unnamed: 'Ohne Namen',
-    activePill: 'aktiv',
-    cloudPill: 'Cloud',
-    switchProfile: 'Wechseln',
-    confirmDelete: 'Wirklich löschen',
-    cancel: 'Abbrechen',
-    deleteAria: (name: string) => `Profil ${name} löschen`,
-    newProfile: '+ Neues Profil anlegen',
-    namePlaceholder: 'Name',
-    emailOptionalPlaceholder: 'E-Mail (optional)',
-    createAndSwitch: 'Profil erstellen & wechseln',
-
-    settingsSection: 'Einstellungen',
-    profileNameLabel: 'Name dieses Profils',
-    profileNamePlaceholder: 'Dein Name',
-    emailLabel: 'E-Mail (optional, für die Profil-Zuordnung)',
-    emailPlaceholder: 'name@beispiel.de',
-    save: 'Speichern',
-    languageLabel: 'Sprache / Language',
-    modusLabel: 'Farben',
-    modusName: { system: 'Systemvorgabe', hell: 'Hell', dunkel: 'Dunkel' },
-    modusHinweis: 'Die Live-Session bleibt immer dunkel — auf dem Tisch blendet eine helle Fläche die Runde.',
-    langGerman: 'Deutsch',
-    langEnglish: 'English',
-    resetStart: 'Fortschritt zurücksetzen …',
-    resetConfirm1: 'Wirklich den kompletten Fortschritt',
-    resetConfirmStrong: 'dieses Profils',
-    resetConfirm2:
-      'löschen (XP, Lektionen, Abzeichen, Sessions)? Andere Profile bleiben unberührt. Das kann nicht rückgängig gemacht werden.',
-    resetYes: 'Ja, alles löschen',
-
-    backupTitle: 'Daten sichern & übertragen',
-    backupDesc:
-      'Alle Daten liegen nur auf diesem Gerät. Mit einem Backup nimmst du deinen Fortschritt mit – z. B. vom Handy auf den Laptop.',
-    backupDownload: 'Backup herunterladen',
-    backupImport: 'Backup einspielen …',
-    importOk: 'Backup erfolgreich eingespielt – dein Fortschritt wurde übernommen.',
-    importError: 'Das war keine gültige PokerMentor-Backup-Datei.',
-
-
-    aboutTitle: 'Über PokerMentor',
-    bauStand: (stand: string) => `Stand: ${stand}.`,
-    aboutBody:
-      'Version 2.2 · Eine Lern- und Trainings-App für Poker – ohne Echtgeld und ohne Tracking. Poker ist ein Geschicklichkeitsspiel mit erheblichem Glücksanteil: Spiele verantwortungsvoll und setze dir Grenzen, bevor du an einen echten Tisch gehst (Modul „Psychologie & Bankroll“).',
+    nochKeins: 'Noch keins verdient — das erste ist nur eine Lektion entfernt.',
+    naechste: 'Als Nächstes',
+    offenZeile: (n: number) => (n === 1 ? 'Noch 1 Abzeichen zu entdecken' : `Noch ${n} Abzeichen zu entdecken`),
+    alleAnsehen: 'Alle ansehen',
+    weniger: 'Weniger zeigen',
+    weitereVerdient: (n: number) => (n === 1 ? '1 weiteres verdient' : `${n} weitere verdient`),
   },
   {
     title: 'Profile',
-    sub: 'Your progress is saved twice on this device – and additionally in the cloud with an account.',
+    einstellungen: 'Settings',
 
+    speicherGeraet: 'Your progress lives on this device only. A backup or an account takes it with you.',
+    speicherKonto: 'Your progress lives on this device and in your account.',
+    speicherKontoOffen:
+      'Your account is not verified yet. Until then your progress lives on this device only.',
+
+    unbenannt: (n: number) => `Profile ${n}`,
 
     /* ── Rank as a picture (E-037) ──────────────────────────────────── */
     rangMarke: 'Your rank',
@@ -111,54 +84,11 @@ export const STR = defineStrings(
 
     badgesTitle: 'Badges',
     badgeSeit: (wann: string) => (wann ? `since ${wann}` : 'earned'),
-
-    accountSection: 'Account & Sync',
-
-    profilesSection: 'Profiles on This Device',
-    profilesIntro:
-      'Each profile has its own progress, XP and badges – so several people can train side by side on the same device. Progress is kept even after reloading or closing the browser.',
-    unnamed: 'Unnamed',
-    activePill: 'active',
-    cloudPill: 'Cloud',
-    switchProfile: 'Switch',
-    confirmDelete: 'Really delete',
-    cancel: 'Cancel',
-    deleteAria: (name: string) => `Delete profile ${name}`,
-    newProfile: '+ Create new profile',
-    namePlaceholder: 'Name',
-    emailOptionalPlaceholder: 'Email (optional)',
-    createAndSwitch: 'Create profile & switch',
-
-    settingsSection: 'Settings',
-    profileNameLabel: 'Name of this profile',
-    profileNamePlaceholder: 'Your name',
-    emailLabel: 'Email (optional, to identify the profile)',
-    emailPlaceholder: 'you@example.com',
-    save: 'Save',
-    languageLabel: 'Sprache / Language',
-    modusLabel: 'Colours',
-    modusName: { system: 'System default', hell: 'Light', dunkel: 'Dark' },
-    modusHinweis: 'The live session always stays dark — on the table a bright surface dazzles everyone.',
-    langGerman: 'Deutsch',
-    langEnglish: 'English',
-    resetStart: 'Reset progress …',
-    resetConfirm1: 'Really delete the entire progress of',
-    resetConfirmStrong: 'this profile',
-    resetConfirm2: '(XP, lessons, badges, sessions)? Other profiles are not affected. This cannot be undone.',
-    resetYes: 'Yes, delete everything',
-
-    backupTitle: 'Back Up & Transfer Data',
-    backupDesc:
-      'All data lives only on this device. With a backup you can take your progress with you – e.g. from your phone to your laptop.',
-    backupDownload: 'Download backup',
-    backupImport: 'Import backup …',
-    importOk: 'Backup imported successfully – your progress has been restored.',
-    importError: 'That was not a valid PokerMentor backup file.',
-
-
-    aboutTitle: 'About PokerMentor',
-    bauStand: (stand: string) => `Build: ${stand}.`,
-    aboutBody:
-      'Version 2.2 · A learning and training app for poker – no real money, no tracking. Poker is a game of skill with a significant element of luck: play responsibly and set yourself limits before you sit down at a real table (module “Psychology & Bankroll”).',
+    nochKeins: 'None earned yet — the first one is a single lesson away.',
+    naechste: 'Up next',
+    offenZeile: (n: number) => (n === 1 ? '1 more badge to discover' : `${n} more badges to discover`),
+    alleAnsehen: 'View all',
+    weniger: 'Show fewer',
+    weitereVerdient: (n: number) => (n === 1 ? '1 more earned' : `${n} more earned`),
   },
 );

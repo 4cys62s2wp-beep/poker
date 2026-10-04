@@ -12,6 +12,7 @@ import { OnlineBadge } from './social/OnlineBadge';
 import { useCloud } from '../lib/cloud/CloudProvider';
 import { Kopfzeile } from './Kopfzeile';
 import { Marke } from './Marke';
+import { Medaille } from './Medaille';
 import { UpdateBand } from './UpdateBand';
 import { breiteVon, findeOrt, ortName, waehleAktiv, type NavZiel, type OrtPfad } from '../lib/orte';
 import { ladeLaufende, type LaufendeSession } from '../lib/session/laufend';
@@ -93,6 +94,7 @@ export function Layout() {
   const cloud = useCloud();
   const fussEintraege: NavEintrag[] = [
     eintrag('/profil'),
+    eintrag('/profil/einstellungen'),
     ...(cloud.phase === 'unavailable' ? [] : [eintrag('/freunde')]),
   ];
   const aktiv = waehleAktiv(
@@ -197,8 +199,11 @@ export function Layout() {
       <div className="toast-stack" role="status" aria-live="polite">
         {toasts.map((t) => (
           <div key={t.id} className="toast">
-            <div className="t-title">{t.title}</div>
-            {t.sub && <div className="t-sub">{t.sub}</div>}
+            {t.icon && <Medaille name={t.icon} groesse={38} />}
+            <div>
+              <div className="t-title">{t.title}</div>
+              {t.sub && <div className="t-sub">{t.sub}</div>}
+            </div>
           </div>
         ))}
       </div>

@@ -233,7 +233,7 @@ Gemessen am **gerenderten** Ergebnis bei 390 Pixel Breite mit
 gemessen wurde. (Hier stand das Datum einmal doppelt und war ein Vierteljahr
 alt; eine Zahl gehört an eine Stelle.)
 
-**41 eigene Bildschirme**, größte Tiefe **2**, **null Sackgassen**, **null unerreichbare Adressen**.
+**42 eigene Bildschirme**, größte Tiefe **2**, **null Sackgassen**, **null unerreichbare Adressen**.
 
 ### Tiefe 0 — die Startseite
 
@@ -262,7 +262,9 @@ näher gerückt:
 `/profil` liegt weiterhin bei eins — nicht mehr über die untere Leiste, die
 es seit E-032 nicht mehr gibt, sondern über das Personensymbol oben rechts.
 Wer seinen Namen oder den Farbmodus ändern will, sucht das nicht unter einem
-der drei Einstiege.
+der drei Einstiege — und findet es seit E-095 unter `/profil/einstellungen`,
+einem Zahnrad im Profil (Tiefe 2) und einem Eintrag in der Fußzeile der
+Seitenleiste.
 
 `/session/abende` ist von zwei auf zwei geblieben, hat aber einen zweiten Weg
 bekommen: Der zuletzt gespielte Abend steht in der großen Karte und führt
@@ -276,7 +278,7 @@ direkt zu sich selbst.
 
 **Live-Session** — `/session/abende` · `/session/auszahlung` · `/session/bankroll` · `/session/chips`
 
-**Übriges** — `/freunde` · `/rechtliches`
+**Übriges** — `/freunde` · `/profil/einstellungen` · `/rechtliches`
 
 ### Was nicht mitzählt
 

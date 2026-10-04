@@ -1,9 +1,9 @@
 {
-  "geprueft_am": "2026-10-04T14:49:20.470Z",
+  "geprueft_am": "2026-10-04T15:21:11.574Z",
   "breite": 390,
   "hoehe": 844,
   "daumen_ab": 0.5,
-  "bildschirme": 139,
+  "bildschirme": 140,
   "mit_entscheidung": 107,
   "befunde": [],
   "messungen": [
@@ -120,7 +120,7 @@
     {
       "hash": "#/profil",
       "scrollt": true,
-      "ueberlauf_px": 4638,
+      "ueberlauf_px": 601,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,
@@ -548,15 +548,15 @@
     },
     {
       "hash": "#/lernen/trainer/szenario",
-      "scrollt": true,
-      "ueberlauf_px": 8,
+      "scrollt": false,
+      "ueberlauf_px": 0,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 1,
       "leiste": {
-        "oben_px": 625,
-        "unten_px": 828,
-        "mitte_px": 727,
+        "oben_px": 639,
+        "unten_px": 820,
+        "mitte_px": 730,
         "im_daumenbereich": true,
         "ohne_scrollen": true,
         "knoepfe": 3,
@@ -606,6 +606,15 @@
       "hash": "#/nachschlagen/tells",
       "scrollt": true,
       "ueberlauf_px": 6023,
+      "fensterhoehe": 844,
+      "grenze_px": 422,
+      "leisten": 0,
+      "leiste": null
+    },
+    {
+      "hash": "#/profil/einstellungen",
+      "scrollt": true,
+      "ueberlauf_px": 2480,
       "fensterhoehe": 844,
       "grenze_px": 422,
       "leisten": 0,

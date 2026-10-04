@@ -17,6 +17,7 @@
 
 import type { Lang } from '../i18n';
 import { STR as LAYOUT } from '../i18n/pages/layout';
+import { STR as EINSTELLUNGEN } from '../i18n/pages/einstellungen';
 import { STR as FRIENDS } from '../i18n/pages/friends';
 import { STR as LEGAL } from '../i18n/pages/legal';
 import { STR as PRO } from '../i18n/pages/pro';
@@ -36,7 +37,7 @@ export type OrtPfad =
   | '/nachschlagen/equity' | '/nachschlagen/tells'
   | '/session' | '/session/live' | '/session/live/einrichten' | '/session/abende'
   | '/session/chips' | '/session/auszahlung' | '/session/bankroll'
-  | '/profil' | '/freunde' | '/pro' | '/rechtliches' | '/kuendigen';
+  | '/profil' | '/profil/einstellungen' | '/freunde' | '/pro' | '/rechtliches' | '/kuendigen';
 
 export type Breite = 'schmal' | 'standard' | 'weit';
 
@@ -93,6 +94,7 @@ export const ORTE: Ort[] = [
   { pfad: '/session/bankroll', name: (l) => LAYOUT[l].bankroll, eltern: '/session' },
 
   { pfad: '/profil', name: (l) => LAYOUT[l].profile, kurz: (l) => LAYOUT[l].mobileYou, eltern: '/' },
+  { pfad: '/profil/einstellungen', name: (l) => EINSTELLUNGEN[l].title, eltern: '/profil' },
   { pfad: '/freunde', name: (l) => FRIENDS[l].navFriends, eltern: '/profil' },
   { pfad: '/pro', name: (l) => PRO[l].navPro, eltern: '/profil', breite: 'schmal' },
   { pfad: '/rechtliches', name: (l) => LEGAL[l].navLegal, eltern: '/profil' },

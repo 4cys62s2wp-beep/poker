@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T14:54:53.354Z",
+  "geprueft_am": "2026-10-04T15:26:43.982Z",
   "grund": "http://127.0.0.1:4183",
   "breite": 390,
   "browser": "141.0.7390.37",
@@ -9,8 +9,8 @@
   "frische_anfrage_scheitert": true,
   "gebaute_dateien": 21,
   "gebaute_dateien_im_speicher": 21,
-  "bildschirme": 139,
-  "geladen": 139,
+  "bildschirme": 140,
+  "geladen": 140,
   "befunde_gesamt": 0,
   "je_art": {},
   "befunde": []

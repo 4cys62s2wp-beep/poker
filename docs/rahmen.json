@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T14:51:33.426Z",
+  "geprueft_am": "2026-10-04T15:27:29.112Z",
   "befunde_gesamt": 0,
   "je_bereich": {},
   "messwerte": {
@@ -29,12 +29,12 @@
         "rueckweg": "Nachschlagen"
       },
       {
-        "seite": "Profil",
-        "adresse": "profil",
-        "seitenhoehe": 5482,
+        "seite": "Einstellungen",
+        "adresse": "profil/einstellungen",
+        "seitenhoehe": 3324,
         "gescrollt": 1800,
-        "titel": "Profil",
-        "rueckweg": "Start"
+        "titel": "Einstellungen",
+        "rueckweg": "Profil"
       }
     ],
     "lesefortschritt": {
@@ -59,7 +59,7 @@
       "ueberDu": false
     },
     "seitenleiste": {
-      "seiten": 25,
+      "seiten": 26,
       "laufenderAbend": {
         "ziel": "#/session/live",
         "laeuft": "25/50 läuft gerade",
@@ -74,42 +74,42 @@
         "hoehe": 860,
         "unten": 860,
         "legalUnten": 848,
-        "duOben": 681
+        "duOben": 637
       },
       {
         "adresse": "#/lernen",
         "hoehe": 860,
         "unten": 860,
         "legalUnten": 848,
-        "duOben": 681
+        "duOben": 637
       },
       {
         "adresse": "#/session/live/einrichten",
         "hoehe": 860,
         "unten": 860,
         "legalUnten": 848,
-        "duOben": 681
+        "duOben": 637
       },
       {
         "adresse": "#/",
         "hoehe": 768,
         "unten": 768,
         "legalUnten": 756,
-        "duOben": 589
+        "duOben": 545
       },
       {
         "adresse": "#/lernen",
         "hoehe": 768,
         "unten": 768,
         "legalUnten": 756,
-        "duOben": 589
+        "duOben": 545
       },
       {
         "adresse": "#/session/live/einrichten",
         "hoehe": 768,
         "unten": 768,
         "legalUnten": 756,
-        "duOben": 589
+        "duOben": 545
       }
     ],
     "zentrierung": [
@@ -219,6 +219,14 @@
       },
       {
         "adresse": "#/profil",
+        "breite": "standard",
+        "rand": {
+          "links": 466,
+          "rechts": 466
+        }
+      },
+      {
+        "adresse": "#/profil/einstellungen",
         "breite": "standard",
         "rand": {
           "links": 466,

@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T14:46:37.373Z",
+  "geprueft_am": "2026-10-04T15:18:26.719Z",
   "breite": 390,
   "grenzwerte": {
     "kontrast_ergebnis": 7,
@@ -59,6 +59,7 @@
     "#/nachschlagen/equity",
     "#/nachschlagen/ranges",
     "#/nachschlagen/tells",
+    "#/profil/einstellungen",
     "#/rechtliches",
     "#/session/abende",
     "#/session/auszahlung",
@@ -154,8 +155,8 @@
     "#/lernen/m9/m9-l5/quiz",
     "#/lernen/uebungstisch · Tisch mit sechs Plätzen"
   ],
-  "bildschirme": 140,
-  "messungen": 280,
+  "bildschirme": 141,
+  "messungen": 282,
   "befunde_gesamt": 0,
   "stellen_gesamt": 0,
   "je_art": [],

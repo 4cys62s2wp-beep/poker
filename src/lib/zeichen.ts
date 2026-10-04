@@ -51,6 +51,7 @@ export const ZEICHEN = {
   '/session/bankroll': 'coin',
 
   '/profil': 'profile',
+  '/profil/einstellungen': 'settings',
   '/freunde': 'friends',
   '/pro': 'crown',
   '/rechtliches': 'notes',
@@ -75,7 +76,7 @@ export const BILDSCHIRME: Record<string, ZeichenPfad[]> = {
     '/', '/lernen', '/lernen/wiederholen', '/lernen/uebungstisch',
     '/nachschlagen', '/nachschlagen/coach', '/nachschlagen/glossar',
     '/session', '/session/live', '/session/abende', '/session/chips',
-    '/session/auszahlung', '/session/bankroll', '/profil', '/freunde', '/pro',
+    '/session/auszahlung', '/session/bankroll', '/profil', '/profil/einstellungen', '/freunde', '/pro',
   ],
   lernen: [
     '/lernen/trainer/szenario', '/lernen/trainer/preflop',

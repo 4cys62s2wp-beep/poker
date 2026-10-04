@@ -1,16 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ALL_MODULES } from '../content';
-import { useAppState, xpThreshold } from '../state/AppState';
+import { useAppState } from '../state/AppState';
 import { rangnamen } from '../lib/rang/titel';
-import { MODI } from '../lib/design/modus';
-import { useFarbmodus } from '../lib/design/FarbmodusProvider';
-import { useLang, levelTitleFor } from '../i18n';
+import { useLang } from '../i18n';
 import { STR } from '../i18n/pages/profile';
-import { CloudAccountCard } from '../components/CloudAccountCard';
-import { ShareCard } from '../components/ShareCard';
-import { downloadBlob } from '../lib/download';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Levelring } from '../components/Levelring';
+import { Medaille } from '../components/Medaille';
 import { rangstand } from '../lib/rang/stand';
 import { Icon, type IconName } from '../components/Icon';
 import { STR as FRIENDS } from '../i18n/pages/friends';
@@ -18,81 +14,24 @@ import { STR as LEGAL } from '../i18n/pages/legal';
 import { STR as PRO_STR } from '../i18n/pages/pro';
 import { zeichenFuer } from '../lib/zeichen';
 import { usePro } from '../lib/pro/ProProvider';
-import { InstallierenKarte } from '../components/InstallierenKarte';
-import { ErinnerungKarte } from '../components/ErinnerungKarte';
-import { Zurueck } from '../components/ui';
+import { PageHeader } from '../components/ui';
 import { aktuelleSerie } from '../lib/serie';
 import { tagesschluessel } from '../lib/heute/hand';
 import { useCloud } from '../lib/cloud/CloudProvider';
+import { speicherort } from '../lib/speicherort';
+import { waehleAbzeichen } from '../lib/abzeichen';
 
+/* Das Profil: Identität und Fortschritt (E-095).
+   Alles, was man einstellt, steht auf /profil/einstellungen — vorher war diese
+   Seite 5280 Pixel lang und der Fortschritt in der Mitte. */
 export function ProfilePage() {
-  const {
-    data, level, setName, resetAll, exportJson, importJson,
-    profiles, activeProfile, createProfile, switchProfile, deleteProfile, updateProfile,
-  } = useAppState();
-  const { lang, setLang, content } = useLang();
+  const { data, profiles, activeProfile } = useAppState();
+  const { lang, content } = useLang();
   const proCtx = usePro();
   const P = STR[lang];
-  const { modus, setzeModus } = useFarbmodus();
   const cloud = useCloud();
-  /* `?konto=1` kommt aus dem Willkommensdialog („Ich habe schon ein Konto"):
-     Die Seite springt zur Kontokarte und setzt den Fokus dorthin. Zwei Bilder
-     warten, weil die Scrollverwaltung nach einem Seitenwechsel selbst nach
-     oben scrollt und die Überschrift fokussiert — danach erst gilt unser Ziel. */
-  const [suche] = useSearchParams();
-  const zumKonto = suche.has('konto');
-  useEffect(() => {
-    if (!zumKonto) return undefined;
-    let zweites = 0;
-    const erstes = requestAnimationFrame(() => {
-      zweites = requestAnimationFrame(() => {
-        const ziel = document.getElementById('konto');
-        ziel?.scrollIntoView({ block: 'start' });
-        ziel?.focus({ preventScroll: true });
-      });
-    });
-    return () => { cancelAnimationFrame(erstes); cancelAnimationFrame(zweites); };
-  }, [zumKonto]);
   const serieZahl = aktuelleSerie(data.streak, tagesschluessel());
-  const [nameInput, setNameInput] = useState(data.name);
-  const [emailInput, setEmailInput] = useState(activeProfile.email ?? '');
-  const [confirmReset, setConfirmReset] = useState(false);
-  const [importStatus, setImportStatus] = useState<'ok' | 'error' | null>(null);
-  const [showNewProfile, setShowNewProfile] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newEmail, setNewEmail] = useState('');
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-
-  /* Beim Profilwechsel (auch durch Cloud-Login) die Eingabefelder auf das neue
-     Profil umstellen. Ohne das würde ein Klick auf „Speichern" den Namen des
-     zuvor aktiven Profils in das neue schreiben. */
-  useEffect(() => {
-    setNameInput(data.name);
-    setEmailInput(activeProfile.email ?? '');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeProfile.id]);
-
-  function downloadBackup() {
-    downloadBlob(
-      exportJson(),
-      `pokermentor-backup-${new Date().toISOString().slice(0, 10)}.json`,
-      'application/json',
-    );
-  }
-
-  function handleImportFile(file: File) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const ok = importJson(String(reader.result ?? ''));
-      setImportStatus(ok ? 'ok' : 'error');
-    };
-    /* Ohne diese Zeile passiert bei einer unlesbaren Datei gar nichts: kein
-       Haken, kein Fehler, keine Erklärung. Eine Datei, die zwischen Auswahl
-       und Lesen verschwindet oder für die die Berechtigung fehlt, ist selten
-       — aber „nichts passiert" ist die schlechteste aller Antworten. */
-    reader.onerror = () => setImportStatus('error');
-    reader.readAsText(file);
-  }
+  const [alleAbzeichen, setAlleAbzeichen] = useState(false);
 
   const totalLessons = ALL_MODULES.reduce((s, m) => s + m.lessons.length, 0);
   const doneLessons = Object.keys(data.completedLessons).length;
@@ -108,22 +47,42 @@ export function ProfilePage() {
     );
   };
   const rang = rangstand(data.xp, rangnamen(lang));
+  const abzeichen = waehleAbzeichen(content.badges, data.badges);
 
   const trainerTotals = Object.values(data.trainers).reduce(
     (acc, t) => ({ attempts: acc.attempts + t.attempts, correct: acc.correct + t.correct }),
     { attempts: 0, correct: 0 },
   );
 
-  const nextLevelXp = xpThreshold(level + 1);
+  const stelle = Math.max(0, profiles.findIndex((p) => p.id === activeProfile.id));
+  const name = activeProfile.name || P.unbenannt(stelle + 1);
+  const ort = speicherort(cloud.user);
+  const speicherSatz = ort === 'konto' ? P.speicherKonto : ort === 'konto-offen' ? P.speicherKontoOffen : P.speicherGeraet;
 
   return (
     <div>
-      <Zurueck to="/" />
-      <div className="page-header">
-        <h1>{P.title}</h1>
-        <p className="sub">
-          {P.sub}
-        </p>
+      <PageHeader
+        title={P.title}
+        sub={speicherSatz}
+        backTo="/"
+        actions={(
+          <Link to="/profil/einstellungen" className="btn sm ghost einstellungen-knopf" aria-label={P.einstellungen} title={P.einstellungen}>
+            <Icon name={zeichenFuer('/profil/einstellungen')} size={20} />
+            <span className="einstellungen-text">{P.einstellungen}</span>
+          </Link>
+        )}
+      />
+
+      {/* Wer das ist: ein Avatar mit dem Anfangsbuchstaben, nie ein „?“. */}
+      <div className="profil-kopf">
+        <span
+          className="profil-avatar gross"
+          style={{ background: `${activeProfile.color}26`, border: `1.5px solid ${activeProfile.color}55` }}
+          aria-hidden="true"
+        >
+          {name.slice(0, 1).toUpperCase()}
+        </span>
+        <strong className="profil-name">{name}</strong>
       </div>
 
       {/* Der Rang als ein Bild statt als vier Kästen mit Zahlen (E-037).
@@ -194,41 +153,89 @@ export function ProfilePage() {
         </div>
       </div>
 
-      {/* Die Sammlung feiert, was verdient ist (E-042).
-          Vorher unterschied ein verdientes Abzeichen sich von einem
-          unverdienten durch einen Rahmen und ein Wort — dabei ist das
-          Verdienen der ganze Zweck. Jetzt trägt es eine Medaille: ein Ring
-          in der Auszeichnungsfarbe, ein Schimmer, und darunter der Tag, an
-          dem es dazukam. Das Datum ist keine Verzierung: Es ist das, was
-          eine Sammlung von einer Liste unterscheidet. */}
-      <div className="section-title">
+      {/* Die Sammlung feiert, was verdient ist (E-042) — und zeigt, was zählt
+          (E-095): die zuletzt verdienten (höchstens sechs), die nächsten drei und
+          für den Rest eine Zeile. Vorher waren es 22 Kacheln, drei davon farbig. */}
+      <h2 className="section-title">
         {P.badgesTitle}
         <span className="section-stand">
           {P.rangSammlung(earnedBadges, content.badges.length)}
         </span>
-      </div>
-      <div className="abzeichen">
-        {content.badges.map((b) => {
-          const seit = data.badges[b.id];
-          return (
-            <div key={b.id} className={`abzeichen-stueck${seit ? ' verdient' : ''}`}>
-              <span className="abzeichen-medaille" aria-hidden="true">{b.icon}</span>
-              <span className="b-name">{b.title}</span>
-              <span className="b-desc">{b.description}</span>
-              {seit && <span className="abzeichen-seit">{P.badgeSeit(datum(seit))}</span>}
-            </div>
-          );
-        })}
-      </div>
+      </h2>
 
-      <div className="section-title" id="konto" tabIndex={-1}>{P.accountSection}</div>
-      <CloudAccountCard />
+      {alleAbzeichen ? (
+        <div className="abzeichen" id="alle-abzeichen">
+          {content.badges.map((b) => {
+            const seit = data.badges[b.id];
+            return (
+              <div key={b.id} className={`abzeichen-stueck${seit ? ' verdient' : ''}`}>
+                <Medaille name={b.icon} verdient={!!seit} />
+                <span className="b-name">{b.title}</span>
+                <span className="b-desc">{b.description}</span>
+                {seit && <span className="abzeichen-seit">{P.badgeSeit(datum(seit))}</span>}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <>
+          {abzeichen.verdient.length > 0 ? (
+            <div className="abzeichen">
+              {abzeichen.verdient.map(({ def, seit }) => (
+                <div key={def.id} className="abzeichen-stueck verdient">
+                  <Medaille name={def.icon} />
+                  <span className="b-name">{def.title}</span>
+                  <span className="b-desc">{def.description}</span>
+                  <span className="abzeichen-seit">{P.badgeSeit(datum(seit))}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="small muted" style={{ marginTop: 0 }}>{P.nochKeins}</p>
+          )}
+          {abzeichen.weitereVerdient > 0 && (
+            <p className="small faint" style={{ margin: 'var(--sp-2) 0 0' }}>{P.weitereVerdient(abzeichen.weitereVerdient)}</p>
+          )}
+
+          {abzeichen.naechste.length > 0 && (
+            <>
+              <div className="stat-label naechste-kopf">{P.naechste}</div>
+              <ul className="list-plain naechste-liste">
+                {abzeichen.naechste.map((b) => (
+                  <li key={b.id}>
+                    <Medaille name={b.icon} verdient={false} groesse={40} />
+                    <span>
+                      <strong>{b.title}</strong>
+                      <span className="small muted">{b.description}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </>
+      )}
+
+      <div className="row between wrap abzeichen-fuss">
+        {!alleAbzeichen && abzeichen.offen > 0 ? (
+          <span className="small muted">{P.offenZeile(abzeichen.offen)}</span>
+        ) : <span />}
+        <button
+          type="button"
+          className="btn sm"
+          aria-expanded={alleAbzeichen}
+          aria-controls="alle-abzeichen"
+          onClick={() => setAlleAbzeichen(!alleAbzeichen)}
+        >
+          {alleAbzeichen ? P.weniger : P.alleAnsehen}
+        </button>
+      </div>
 
       {/* Freunde und Rechtliches standen nur in der Seitenleiste – die unter
           920 px ausgeblendet ist. Auf dem Handy waren beide Seiten damit
           nicht erreichbar, obwohl die alte Erreichbarkeitstabelle „über
           Profil" behauptete. Diese Zeilen sind die Korrektur. */}
-      <div style={{ display: 'grid', gap: 'var(--sp-2)', marginTop: 'var(--sp-3)' }}>
+      <div style={{ display: 'grid', gap: 'var(--sp-2)', marginTop: 'var(--sp-5)' }}>
         {cloud.phase !== 'unavailable' && (
           <ProfilLink to="/freunde" icon={zeichenFuer('/freunde')} label={FRIENDS[lang].navFriends} />
         )}
@@ -237,262 +244,6 @@ export function ProfilePage() {
         {/* § 312k BGB: ohne Anmeldung erreichbar, deshalb dauerhaft sichtbar,
             sobald es überhaupt etwas zu kündigen gibt. */}
         {proCtx.enabled && <ProfilLink to="/kuendigen" icon={zeichenFuer('/kuendigen')} label={LEGAL[lang].cancelNav} />}
-      </div>
-
-      <div className="section-title">{P.profilesSection}</div>
-      <div className="card">
-        <p className="small muted" style={{ marginBottom: 14 }}>
-          {P.profilesIntro}
-        </p>
-
-        {profiles.map((p) => {
-          const isActive = p.id === activeProfile.id;
-          return (
-            <div key={p.id} className="row between wrap" style={{ padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
-              <div className="row">
-                <span
-                  style={{
-                    width: 36, height: 36, borderRadius: '50%', display: 'inline-flex',
-                    alignItems: 'center', justifyContent: 'center', fontWeight: 800,
-                    /* Kennfarbe tönt, Textton schreibt — wie auf der
-                       Pro-Seite. Als Schriftfarbe kam sie im hellen Modus
-                       auf 1,83 zu 1. */
-                    background: `${p.color}26`, color: 'var(--text)', border: `1.5px solid ${p.color}55`,
-                    flexShrink: 0,
-                  }}
-                >
-                  {(p.name || '?').slice(0, 1).toUpperCase()}
-                </span>
-                <div>
-                  <div style={{ fontWeight: 800 }}>
-                    {p.name || P.unnamed} {isActive && <span className="pill gold" style={{ marginLeft: 6 }}>{P.activePill}</span>}
-                    {p.cloudUid && <span className="pill info" style={{ marginLeft: 6 }}>{P.cloudPill}</span>}
-                  </div>
-                  {p.email && <div className="small faint">{p.email}</div>}
-                </div>
-              </div>
-              <div className="row">
-                {!isActive && (
-                  <button className="btn sm" onClick={() => switchProfile(p.id)}>
-                    {P.switchProfile}
-                  </button>
-                )}
-                {profiles.length > 1 && (
-                  confirmDeleteId === p.id ? (
-                    <>
-                      <button className="btn sm danger" onClick={() => { deleteProfile(p.id); setConfirmDeleteId(null); }}>
-                        {P.confirmDelete}
-                      </button>
-                      <button className="btn sm ghost" onClick={() => setConfirmDeleteId(null)}>
-                        {P.cancel}
-                      </button>
-                    </>
-                  ) : (
-                    <button className="btn sm ghost" onClick={() => setConfirmDeleteId(p.id)} aria-label={P.deleteAria(p.name)}>
-                      <Icon name="x" size={16} />
-                    </button>
-                  )
-                )}
-              </div>
-            </div>
-          );
-        })}
-
-        {!showNewProfile ? (
-          <button className="btn sm" style={{ marginTop: 14 }} onClick={() => setShowNewProfile(true)}>
-            {P.newProfile}
-          </button>
-        ) : (
-          <div style={{ marginTop: 14 }}>
-            <div className="grid cols-2" style={{ gap: 10 }}>
-              <input
-                className="text-input"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder={P.namePlaceholder}
-                maxLength={40}
-              />
-              <input
-                className="text-input"
-                type="email"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                placeholder={P.emailOptionalPlaceholder}
-                maxLength={120}
-              />
-            </div>
-            <div className="row" style={{ marginTop: 10 }}>
-              <button
-                className="btn sm primary"
-                disabled={!newName.trim()}
-                onClick={() => {
-                  createProfile(newName, newEmail);
-                  setNewName('');
-                  setNewEmail('');
-                  setShowNewProfile(false);
-                  setNameInput(newName.trim());
-                  setEmailInput(newEmail.trim());
-                }}
-              >
-                {P.createAndSwitch}
-              </button>
-              <button className="btn sm ghost" onClick={() => setShowNewProfile(false)}>
-                {P.cancel}
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="section-title">{P.settingsSection}</div>
-      <div className="card">
-        {/* Eine sichtbare Beschriftung, die nicht mit dem Feld verbunden ist,
-            gibt es für ein Vorlesegerät nicht — dort hieß das Feld bis E-043
-            nur „Eingabefeld". */}
-        <label className="stat-label" htmlFor="profil-name" style={{ display: 'block', marginBottom: 5 }}>
-          {P.profileNameLabel}
-        </label>
-        <div className="row" style={{ marginBottom: 12 }}>
-          <input
-            id="profil-name"
-            className="text-input"
-            value={nameInput}
-            onChange={(e) => setNameInput(e.target.value)}
-            placeholder={P.profileNamePlaceholder}
-            maxLength={40}
-          />
-        </div>
-        <label className="stat-label satz" htmlFor="profil-email" style={{ display: 'block', marginBottom: 5 }}>
-          {P.emailLabel}
-        </label>
-        <div className="row">
-          <input
-            id="profil-email"
-            className="text-input"
-            type="email"
-            value={emailInput}
-            onChange={(e) => setEmailInput(e.target.value)}
-            placeholder={P.emailPlaceholder}
-            maxLength={120}
-          />
-          <button
-            className="btn"
-            onClick={() => {
-              setName(nameInput.trim());
-              updateProfile(activeProfile.id, { name: nameInput, email: emailInput });
-            }}
-          >
-            {P.save}
-          </button>
-        </div>
-
-        <div className="stat-label" style={{ marginTop: 12, marginBottom: 5 }}>{P.languageLabel}</div>
-        <div className="row">
-          <button className={lang === 'de' ? 'btn sm primary' : 'btn sm'} onClick={() => setLang('de')}>
-            {P.langGerman}
-          </button>
-          <button className={lang === 'en' ? 'btn sm primary' : 'btn sm'} onClick={() => setLang('en')}>
-            {P.langEnglish}
-          </button>
-        </div>
-
-        {/* Die Farbwahl steht hier und nicht auf der Startseite: Sie wird
-            einmal getroffen und dann jahrelang nicht mehr. Ein Platz auf der
-            Startseite kostet Fläche, die drei Karten brauchen. */}
-        <div className="stat-label" style={{ marginTop: 12, marginBottom: 5 }}>{P.modusLabel}</div>
-        <div className="row" role="radiogroup" aria-label={P.modusLabel}>
-          {MODI.map((m) => (
-            <button
-              key={m}
-              type="button"
-              role="radio"
-              aria-checked={modus === m}
-              className={modus === m ? 'btn sm primary' : 'btn sm'}
-              onClick={() => setzeModus(m)}
-            >
-              {P.modusName[m]}
-            </button>
-          ))}
-        </div>
-        <p className="small faint" style={{ marginTop: 6 }}>{P.modusHinweis}</p>
-
-        <hr className="divider" />
-
-        {!confirmReset ? (
-          <button className="btn danger sm" onClick={() => setConfirmReset(true)}>
-            {P.resetStart}
-          </button>
-        ) : (
-          <div>
-            <p className="small" style={{ marginBottom: 10 }}>
-              {P.resetConfirm1} <strong>{P.resetConfirmStrong}</strong> {P.resetConfirm2}
-            </p>
-            <div className="row">
-              <button
-                className="btn danger sm"
-                onClick={() => {
-                  resetAll();
-                  setConfirmReset(false);
-                  setNameInput('');
-                }}
-              >
-                {P.resetYes}
-              </button>
-              <button className="btn sm" onClick={() => setConfirmReset(false)}>
-                {P.cancel}
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="card" style={{ marginTop: 14 }}>
-        <div style={{ fontWeight: 800, marginBottom: 6 }}>{P.backupTitle}</div>
-        <p className="small muted" style={{ marginBottom: 12 }}>
-          {P.backupDesc}
-        </p>
-        <div className="row wrap">
-          <button className="btn sm" onClick={downloadBackup}>
-            {P.backupDownload}
-          </button>
-          <label className="btn sm" style={{ cursor: 'pointer' }}>
-            {P.backupImport}
-            <input
-              type="file"
-              accept="application/json,.json"
-              style={{ display: 'none' }}
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) handleImportFile(f);
-                e.target.value = '';
-              }}
-            />
-          </label>
-        </div>
-        {importStatus === 'ok' && (
-          <div className="feedback-box good" style={{ marginTop: 12 }}>
-            {P.importOk}
-          </div>
-        )}
-        {importStatus === 'error' && (
-          <div className="feedback-box bad" style={{ marginTop: 12 }}>
-            {P.importError}
-          </div>
-        )}
-      </div>
-
-      <ShareCard />
-
-      <ErinnerungKarte />
-
-      <InstallierenKarte />
-
-      <div className="card" style={{ marginTop: 14 }}>
-        <div style={{ fontWeight: 700, marginBottom: 6 }}>{P.aboutTitle}</div>
-        <p className="small muted">
-          {P.aboutBody}
-          {' '}{P.bauStand(__BAU__)}
-        </p>
       </div>
 
       <div className="suit-deco">♠ ♥ ♦ ♣</div>
@@ -505,16 +256,11 @@ function ProfilLink({ to, icon, label }: { to: string; icon: IconName; label: st
   return (
     <Link
       to={to}
-      className="card clickable"
-      style={{
-        display: 'flex', alignItems: 'center', gap: 'var(--sp-3)',
-        padding: 'var(--sp-3) var(--sp-4)', minHeight: 'var(--touch-min)',
-        textDecoration: 'none', color: 'inherit',
-      }}
+      className="card clickable einstellungen-zeile"
     >
-      <span style={{ color: 'var(--auszeichnung)', display: 'flex' }}><Icon name={icon} size={18} /></span>
-      <span style={{ flex: 1, fontWeight: 'var(--fw-medium)' }}>{label}</span>
-      <span aria-hidden="true" style={{ color: 'var(--text-faint)' }}>›</span>
+      <span className="zeichen"><Icon name={icon} size={18} /></span>
+      <span className="titel">{label}</span>
+      <span aria-hidden="true" className="weiter">›</span>
     </Link>
   );
 }

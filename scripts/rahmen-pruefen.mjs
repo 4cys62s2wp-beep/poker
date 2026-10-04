@@ -54,7 +54,7 @@ const gehe = async (seite, adresse, warte = 700) => {
     ['lernen/m1/m1-l1', 'Lektion'],
     ['nachschlagen/glossar', 'Glossar'],
     ['nachschlagen/tells', 'Tells'],
-    ['profil', 'Profil'],
+    ['profil/einstellungen', 'Einstellungen'],
   ];
   const kopf = [];
   for (const [adresse, name] of LANG) {
@@ -215,7 +215,8 @@ const gehe = async (seite, adresse, warte = 700) => {
     '#/nachschlagen/ranges': '#/nachschlagen', '#/session': '#/session',
     '#/session/live/einrichten': '#/session/live/einrichten', '#/session/abende': '#/session/abende',
     '#/session/chips': '#/session/chips', '#/session/auszahlung': '#/session/auszahlung',
-    '#/session/bankroll': '#/session/bankroll', '#/profil': '#/profil', '#/freunde': '#/freunde',
+    '#/session/bankroll': '#/session/bankroll', '#/profil': '#/profil',
+    '#/profil/einstellungen': '#/profil/einstellungen', '#/freunde': '#/freunde',
     '#/session/spieler/Mira': '#/session/abende', '#/rechtliches': null,
   };
   const k = await kontext(1366, 860);
@@ -289,7 +290,7 @@ const gehe = async (seite, adresse, warte = 700) => {
 {
   const SEITEN = ['#/', '#/lernen', '#/lernen/m1', '#/lernen/m1/m1-l1', '#/lernen/drill', '#/lernen/trainer/preflop',
     '#/lernen/wiederholen', '#/lernen/uebungstisch', '#/nachschlagen', '#/nachschlagen/glossar',
-    '#/nachschlagen/odds', '#/session', '#/session/bankroll', '#/profil', '#/freunde', '#/rechtliches'];
+    '#/nachschlagen/odds', '#/session', '#/session/bankroll', '#/profil', '#/profil/einstellungen', '#/freunde', '#/rechtliches'];
   const k = await kontext(1920, 1080);
   const seite = await k.newPage();
   const mess = [];
@@ -361,7 +362,7 @@ const gehe = async (seite, adresse, warte = 700) => {
     mess[modus] = { meta: l.meta, grund: hex(l.grund) };
     if (modus === 'dunkel') {
       /* Umschalten in der App zieht die Leiste nach. */
-      await gehe(seite, '#/profil', 600);
+      await gehe(seite, '#/profil/einstellungen', 600);
       await seite.getByRole('radio', { name: 'Hell' }).click();
       await seite.waitForTimeout(300);
       const nach = await leiste(seite);

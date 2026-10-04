@@ -1,8 +1,8 @@
 {
-  "geprueft_am": "2026-10-04T14:44:59Z",
+  "geprueft_am": "2026-10-04T15:16:47Z",
   "breite": 390,
-  "erreichbar": 139,
-  "bildschirme": 41,
+  "erreichbar": 140,
+  "bildschirme": 42,
   "groesste_tiefe": 2,
   "sackgassen": [],
   "tiefer_als_zwei": [],
@@ -287,6 +287,12 @@
     },
     {
       "hash": "#/nachschlagen/tells",
+      "tiefe": 2,
+      "zurueck": true,
+      "inhalt": false
+    },
+    {
+      "hash": "#/profil/einstellungen",
       "tiefe": 2,
       "zurueck": true,
       "inhalt": false

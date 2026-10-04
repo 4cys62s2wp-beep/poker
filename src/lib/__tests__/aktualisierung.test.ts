@@ -65,9 +65,9 @@ describe('Verdrahtung', () => {
     expect(readFileSync('src/lib/aktualisierung.ts', 'utf8')).toContain("'vite:preloadError'");
   });
 
-  it('zeigt den Stand des Baus im Profil und setzt ihn in beiden Builds', () => {
+  it('zeigt den Stand des Baus in den Einstellungen und setzt ihn in beiden Builds', () => {
     expect(readFileSync('vite.config.ts', 'utf8')).toContain('__BAU__');
     expect(readFileSync('vite.single.config.ts', 'utf8')).toContain('__BAU__');
-    expect(readFileSync('src/pages/ProfilePage.tsx', 'utf8')).toContain('P.bauStand(__BAU__)');
+    expect(readFileSync('src/pages/EinstellungenPage.tsx', 'utf8')).toContain('L.bauStand(__BAU__)');
   });
 });

@@ -30,7 +30,8 @@ describe('Konto nur mit Anbieterangaben', () => {
     const karte = readFileSync('src/components/CloudAccountCard.tsx', 'utf8');
     expect(karte).toContain('kontoAnbieten(legal)');
     expect(karte).toMatch(/mode !== 'reset' && neuanmeldung/);
-    expect(karte).toMatch(/\{neuanmeldung && \([\s\S]*setMode\('register'\)/);
+    /* „Neues Konto“ steht im Umschalter, und der hängt an neuanmeldung. */
+    expect(karte).toMatch(/mode !== 'reset' && neuanmeldung && \(\s*<div className="segmented konto-umschalter"[\s\S]*setMode\(m\)/);
     /* Wer ein Konto hat, behält Abmelden: der Zweig mit `user` hängt nicht an neuanmeldung. */
     const mitKonto = karte.slice(karte.indexOf('if (user) {'), karte.indexOf('return (', karte.indexOf('if (user) {') + 20) + 1);
     expect(mitKonto).not.toContain('neuanmeldung');

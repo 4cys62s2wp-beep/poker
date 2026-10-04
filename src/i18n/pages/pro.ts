@@ -23,7 +23,7 @@ export const STR = defineStrings(
     // § 312j BGB: Pflichtangaben unmittelbar über dem Bestell-Button.
     checkoutSummaryTitle: 'Das bestellst du',
     checkoutSummary: (price: string, period: string) =>
-      `PokerMentor Pro – voller Zugriff auf alle Lerninhalte, den unbegrenzten Live-Coach, alle Trainer und die Geräte-Synchronisation. Gesamtpreis ${price} ${period}, inklusive Mehrwertsteuer. Das Abo verlängert sich automatisch um denselben Zeitraum und ist jederzeit zum Ende des laufenden Abrechnungszeitraums kündbar.`,
+      `PokerMentor Pro – voller Zugriff auf alle Lerninhalte, den unbegrenzten Live-Coach, alle Trainer und die Synchronisation auf allen Geräten. Gesamtpreis ${price} ${period}, inklusive Mehrwertsteuer. Das Abo verlängert sich automatisch um denselben Zeitraum und ist jederzeit zum Ende des laufenden Abrechnungszeitraums kündbar.`,
     periodMonthly: 'pro Monat',
     periodAnnual: 'pro Jahr',
     vatNote: 'Alle Preise inkl. MwSt.',
@@ -63,7 +63,7 @@ export const STR = defineStrings(
       ['Pro-Insights', '–', 'Enthalten'],
       ['Wiederholen (Spaced Repetition)', '–', 'Enthalten'],
       ['Bankroll-Tracker', '15 Sessions', 'Unbegrenzt + CSV'],
-      ['Geräte-Sync', '–', 'Enthalten'],
+      ['Sync auf allen Geräten', '–', 'Enthalten'],
     ],
 
     // FAQ
@@ -114,7 +114,7 @@ export const STR = defineStrings(
     securePay: 'Secure payment · Apple Pay, Google Pay, card, PayPal, SEPA',
     checkoutSummaryTitle: 'What you’re ordering',
     checkoutSummary: (price: string, period: string) =>
-      `PokerMentor Pro – full access to all lessons, the unlimited Live Coach, every trainer and device sync. Total price ${price} ${period}, VAT included. The subscription renews automatically for the same period and can be cancelled at any time, effective at the end of the current billing period.`,
+      `PokerMentor Pro – full access to all lessons, the unlimited Live Coach, every trainer and sync across all devices. Total price ${price} ${period}, VAT included. The subscription renews automatically for the same period and can be cancelled at any time, effective at the end of the current billing period.`,
     periodMonthly: 'per month',
     periodAnnual: 'per year',
     vatNote: 'All prices include VAT.',
@@ -151,7 +151,7 @@ export const STR = defineStrings(
       ['Pro Insights', '–', 'Included'],
       ['Review (spaced repetition)', '–', 'Included'],
       ['Bankroll tracker', '15 sessions', 'Unlimited + CSV'],
-      ['Device sync', '–', 'Included'],
+      ['Sync across devices', '–', 'Included'],
     ],
 
     faqTitle: 'Frequently asked',

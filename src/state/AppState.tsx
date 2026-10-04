@@ -7,6 +7,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { RANGNAMEN } from '../lib/rang/titel';
 import { ALL_MODULES } from '../content';
 import { BADGES } from '../content/badges';
+import type { IconName } from '../components/Icon';
 import { durableDelete, durableSet, requestPersistentStorage } from '../lib/storage';
 import { setzeAppMarke } from '../lib/appmarke';
 import { bestanden, lektionsXp } from '../lib/lernen/quiz';
@@ -112,7 +113,6 @@ export interface AppData {
 export interface ProfileMeta {
   id: string;
   name: string;
-  email?: string;
   createdAt: string;
   /** Akzentfarbe fürs Avatar-Monogramm. */
   color: string;
@@ -167,6 +167,8 @@ export interface Toast {
   id: number;
   title: string;
   sub?: string;
+  /** Das Zeichen einer Medaille, wenn die Meldung ein Abzeichen ist. */
+  icon?: IconName;
 }
 
 interface AppStateValue {
@@ -198,10 +200,10 @@ interface AppStateValue {
   addHandRecord: (record: Omit<HandRecord, 'id' | 'date'>) => void;
   exportJson: () => string;
   importJson: (json: string) => boolean;
-  createProfile: (name: string, email?: string) => void;
+  createProfile: (name: string) => void;
   switchProfile: (id: string) => void;
   deleteProfile: (id: string) => void;
-  updateProfile: (id: string, patch: { name?: string; email?: string }) => void;
+  updateProfile: (id: string, patch: { name?: string }) => void;
   /** Externe Daten (z. B. Cloud-Sync) in das aktive Profil übernehmen. */
   replaceData: (data: AppData) => void;
   /**
@@ -466,7 +468,7 @@ function saveProfilesIndex(index: ProfilesIndex) {
 }
 
 /** Lädt den Profil-Index; migriert Altdaten (Einzelprofil-Ära) beim ersten Mal. */
-function loadProfilesIndex(): ProfilesIndex {
+export function loadProfilesIndex(): ProfilesIndex {
   try {
     const raw = localStorage.getItem(PROFILES_KEY);
     if (raw) {
@@ -481,7 +483,6 @@ function loadProfilesIndex(): ProfilesIndex {
         const profiles: ProfileMeta[] = parsed.profiles.map((p, i) => ({
           id: p.id.slice(0, 64),
           name: typeof p.name === 'string' ? p.name.slice(0, 40) : '',
-          email: typeof p.email === 'string' ? p.email.slice(0, 120) : undefined,
           createdAt: typeof p.createdAt === 'string' ? p.createdAt.slice(0, 40) : new Date().toISOString(),
           color: PROFILE_COLORS.includes(p.color) ? p.color : PROFILE_COLORS[i % PROFILE_COLORS.length],
           cloudUid: typeof p.cloudUid === 'string' ? p.cloudUid.slice(0, 128) : undefined,
@@ -569,9 +570,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     saveProfilesIndex(index);
   }, [index]);
 
-  const pushToast = useCallback((title: string, sub?: string) => {
+  const pushToast = useCallback((title: string, sub?: string, icon?: IconName) => {
     const id = toastId.current++;
-    setToasts((t) => [...t, { id, title, sub }]);
+    setToasts((t) => [...t, { id, title, sub, icon }]);
     window.setTimeout(() => {
       setToasts((t) => t.filter((x) => x.id !== id));
     }, 4000);
@@ -652,7 +653,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     for (const b of BADGES) {
       if (!still && data.badges[b.id] && !base.badges[b.id]) {
         const def = badgeDefsRef.current.find((d) => d.id === b.id) ?? b;
-        pushToast(`${def.icon} ${l === 'de' ? 'Abzeichen' : 'Badge'}: ${def.title}`, def.description);
+        pushToast(`${l === 'de' ? 'Abzeichen' : 'Badge'}: ${def.title}`, def.description, def.icon);
       }
     }
   }, [data, pushToast]);
@@ -894,14 +895,13 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   // ---------- Profil-Verwaltung ----------
 
-  const createProfile = useCallback((name: string, email?: string) => {
+  const createProfile = useCallback((name: string) => {
     const id = newProfileId();
     setIndex((idx) => {
       const color = PROFILE_COLORS[idx.profiles.length % PROFILE_COLORS.length];
       const meta: ProfileMeta = {
         id,
         name: name.trim().slice(0, 40),
-        email: email?.trim().slice(0, 120) || undefined,
         createdAt: new Date().toISOString(),
         color,
       };
@@ -934,7 +934,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     if (idx.activeId === id) swapData(loadDataFor(nextActive));
   }, [swapData]);
 
-  const updateProfile = useCallback((id: string, patch: { name?: string; email?: string }) => {
+  const updateProfile = useCallback((id: string, patch: { name?: string }) => {
     setIndex((idx) => ({
       ...idx,
       profiles: idx.profiles.map((p) =>
@@ -942,7 +942,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
           ? {
               ...p,
               name: patch.name !== undefined ? patch.name.trim().slice(0, 40) : p.name,
-              email: patch.email !== undefined ? patch.email.trim().slice(0, 120) || undefined : p.email,
             }
           : p,
       ),
@@ -963,7 +962,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     ): { outcome: 'adopted-cloud' | 'kept-local' | 'created'; data: AppData } => {
       const idx = indexRef.current;
       const cleanName = (name || email).trim().slice(0, 40);
-      const cleanEmail = email.trim().slice(0, 120);
       const existing = idx.profiles.find((p) => p.cloudUid === uid);
 
       if (existing) {
@@ -975,7 +973,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         setIndex({
           activeId: existing.id,
           profiles: idx.profiles.map((p) =>
-            p.id === existing.id ? { ...p, name: cleanName || p.name, email: cleanEmail } : p,
+            p.id === existing.id ? { ...p, name: cleanName || p.name } : p,
           ),
         });
         swapData(chosen);
@@ -986,7 +984,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       const meta: ProfileMeta = {
         id,
         name: cleanName,
-        email: cleanEmail,
         createdAt: new Date().toISOString(),
         color: PROFILE_COLORS[idx.profiles.length % PROFILE_COLORS.length],
         cloudUid: uid,

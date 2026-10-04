@@ -19,8 +19,8 @@ export const STR = defineStrings(
     // Zustände ohne Cloud / ohne Anmeldung
     offlineTitle: 'Freunde brauchen ein Konto',
     offlineBody:
-      'Diese App speichert deinen Fortschritt zuerst auf dem Gerät. Für Freunde und den Online-Status wird ein kostenloses Cloud-Konto gebraucht – lege es im Profil an oder melde dich dort an.',
-    offlineCta: 'Zum Profil',
+      'Diese App speichert deinen Fortschritt zuerst auf dem Gerät. Für Freunde und den Online-Status wird ein kostenloses Konto gebraucht – lege es in den Einstellungen an oder melde dich dort an.',
+    offlineCta: 'Zum Konto',
     unconfiguredTitle: 'Freunde gibt es hier nicht',
     unconfiguredBody: 'In dieser Fassung der App sind Freundesliste und Online-Status nicht verfügbar.',
     noNetTitle: 'Freunde brauchen Netz',
@@ -98,8 +98,8 @@ export const STR = defineStrings(
 
     offlineTitle: 'Friends need an account',
     offlineBody:
-      'This app keeps your progress on the device first. Friends and the online status need a free cloud account – create one or sign in from your profile.',
-    offlineCta: 'Go to profile',
+      'This app keeps your progress on the device first. Friends and the online status need a free account – create one or sign in from the settings.',
+    offlineCta: 'Go to account',
     unconfiguredTitle: 'No friends here',
     unconfiguredBody: 'This version of the app has no friend list or online status.',
     noNetTitle: 'Friends need a connection',

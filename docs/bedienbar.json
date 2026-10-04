@@ -1,5 +1,5 @@
 {
-  "geprueft_am": "2026-10-04T14:48:16.230Z",
+  "geprueft_am": "2026-10-04T15:20:06.785Z",
   "breite": 390,
   "sprachen": [
     "de",
@@ -52,6 +52,7 @@
     "#/nachschlagen/equity",
     "#/nachschlagen/ranges",
     "#/nachschlagen/tells",
+    "#/profil/einstellungen",
     "#/rechtliches",
     "#/session/abende",
     "#/session/auszahlung",
@@ -146,9 +147,9 @@
     "#/lernen/m9/m9-l5",
     "#/lernen/m9/m9-l5/quiz"
   ],
-  "bildschirme": 139,
-  "messungen": 278,
-  "fokusziele_geprueft": 867,
+  "bildschirme": 140,
+  "messungen": 280,
+  "fokusziele_geprueft": 877,
   "befunde_gesamt": 0,
   "stellen_gesamt": 0,
   "je_art": [],

@@ -454,10 +454,12 @@ await schritt('Ein Tipp auf einen Abend zeigt den Abend', async () => {
    Live-Bereich in jedem Modus dunkel bleibt. */
 
 await schritt('Die Farbwahl liegt unter dem Personensymbol', async () => {
-  await seite.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
-  await seite.waitForSelector('[role="radiogroup"]');
+  /* Seit E-095 unter „Einstellungen“ (Zahnrad im Profil), nicht mehr mitten im
+     Profil. Gewählt wird die Gruppe „Farben“ — die Seite hat mehr als eine. */
+  await seite.goto(`${GRUND}/#/profil/einstellungen`, { waitUntil: 'domcontentloaded' });
+  await seite.waitForSelector('[aria-labelledby="einst-farben"]');
   await seite.waitForTimeout(300);
-  const knoepfe = seite.locator('[role="radiogroup"] button');
+  const knoepfe = seite.locator('[aria-labelledby="einst-farben"] button');
   const anzahl = await knoepfe.count();
   const eintraege = [];
   for (let i = 0; i < anzahl; i += 1) {
@@ -487,7 +489,7 @@ await schritt('Umschalten wirkt sofort und wird gemerkt', async () => {
     farbschema: getComputedStyle(document.documentElement).colorScheme,
     gespeichert: localStorage.getItem('pokermentor-farbmodus-v1'),
   }));
-  const knoepfe = seite.locator('[role="radiogroup"] button');
+  const knoepfe = seite.locator('[aria-labelledby="einst-farben"] button');
 
   await knoepfe.nth(2).click();
   await seite.waitForTimeout(200);
@@ -991,7 +993,7 @@ await schritt('Erinnern ohne Server: Kalendereintrag und Glossar-Sprung', async 
     }
   });
   const p = await k.newPage();
-  await p.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
+  await p.goto(`${GRUND}/#/profil/einstellungen`, { waitUntil: 'domcontentloaded' });
   await p.waitForSelector('.erinnerung-karte');
   await p.locator('#erinnerung-uhrzeit').fill('07:30');
   const [download] = await Promise.all([
@@ -1731,7 +1733,7 @@ await schritt('Die Startseite lädt nichts, was sie nicht braucht', async () => 
     await seite.waitForTimeout(1200);
     const nachStart = [...geholt];
 
-    await seite.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
+    await seite.goto(`${GRUND}/#/profil/einstellungen`, { waitUntil: 'domcontentloaded' });
     await seite.waitForTimeout(2800);
     const nachProfil = geholt.filter((n) => !nachStart.includes(n));
 
@@ -1929,6 +1931,153 @@ await schritt('Am Übungstisch liegt alles im Bild: Hand, Einsatzwahl, Urteil', 
     await ctx.close();
   }
   return { geraete: aus, fold };
+});
+
+/* ── Profil, Einstellungen, Konto (E-095) ─────────────────────────────────
+   Das Profil war 5280 Pixel lang, mit der Farbwahl bei 3552 und dem
+   Zurücksetzen direkt darunter. Gemessen wird, was jetzt gelten soll:
+   Das Profil zeigt Identität und Fortschritt, höchstens sechs Abzeichen und
+   die nächsten drei; die Einstellungen sind eine gruppierte Liste, und die
+   zerstörende Aktion steht ganz am Ende — mit der Frage „Vorher sichern?“. */
+
+await schritt('Profil: Identität und Fortschritt, Einstellungen hinter dem Zahnrad', async () => {
+  const k = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' });
+  await k.addInitScript(() => localStorage.setItem('pokermentor-lang-v1', 'de'));
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.profil-kopf');
+  await p.waitForTimeout(300);
+  const leer = await p.evaluate(() => ({
+    hoehe: document.documentElement.scrollHeight,
+    avatar: document.querySelector('.profil-avatar')?.textContent?.trim(),
+    name: document.querySelector('.profil-name')?.textContent?.trim(),
+    medaillen_verdient: document.querySelectorAll('.abzeichen-stueck.verdient').length,
+    naechste: document.querySelectorAll('.naechste-liste li').length,
+    offen_zeile: document.querySelector('.abzeichen-fuss .small')?.textContent?.trim(),
+    emoji_in_abzeichen: /\p{Extended_Pictographic}/u.test(document.querySelector('.naechste-liste')?.textContent ?? ''),
+    namensfeld: document.querySelectorAll('#profil-name').length,
+    zuruecksetzen: [...document.querySelectorAll('button')].filter((b) => /zurücksetzen/i.test(b.textContent)).length,
+    zahnrad: document.querySelector('main .einstellungen-knopf')?.getAttribute('aria-label'),
+  }));
+  /* Mit vielen verdienten Abzeichen: höchstens sechs, die übrigen als Zeile. */
+  await p.evaluate(() => {
+    const idx = JSON.parse(localStorage.getItem('pokermentor-profiles-v1'));
+    const key = `pokermentor-data-${idx.activeId}`;
+    const d = JSON.parse(localStorage.getItem(key));
+    const ids = ['first-lesson', 'quiz-perfect', 'module-basics', 'module-math', 'five-lessons', 'twenty-lessons',
+      'all-modules', 'trainer-first', 'trainer-100'];
+    d.badges = Object.fromEntries(ids.map((id, i) => [id, `2026-03-0${i + 1}T10:00:00.000Z`]));
+    localStorage.setItem(key, JSON.stringify(d));
+  });
+  await p.reload({ waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.profil-kopf');
+  await p.waitForTimeout(300);
+  const viele = await p.evaluate(() => ({
+    verdient: document.querySelectorAll('.abzeichen-stueck.verdient').length,
+    erstes: document.querySelector('.abzeichen-stueck.verdient .b-name')?.textContent?.trim(),
+    weitere: document.querySelector('.abzeichen + p')?.textContent?.trim(),
+  }));
+  await p.getByRole('button', { name: 'Alle ansehen' }).click();
+  await p.waitForTimeout(200);
+  const alle = await p.evaluate(() => ({
+    stuecke: document.querySelectorAll('.abzeichen-stueck').length,
+    offene: document.querySelectorAll('.medaille.offen').length,
+    ausgeklappt: document.querySelector('.abzeichen-fuss button')?.getAttribute('aria-expanded'),
+  }));
+  /* Zahnrad: ein Tipp führt zu den Einstellungen. */
+  await p.goto(`${GRUND}/#/profil`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.profil-kopf');
+  await p.locator('main .einstellungen-knopf').click();
+  await p.waitForTimeout(400);
+  const ziel = { adresse: new URL(p.url()).hash, ueberschrift: (await p.locator('h1').first().innerText()).trim() };
+  await k.close();
+  return { leer, viele, alle, ziel };
+});
+
+await schritt('Einstellungen: gruppiert, Zurücksetzen zuletzt und mit „Vorher sichern?“', async () => {
+  const k = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' });
+  await k.addInitScript(() => localStorage.setItem('pokermentor-lang-v1', 'de'));
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/profil/einstellungen`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('#profil-name');
+  await p.waitForTimeout(500);
+  const gruppen = (await p.locator('h2.section-title').allInnerTexts()).map((t) => t.trim());
+  const lage = await p.evaluate(() => {
+    const reset = [...document.querySelectorAll('button')].find((b) => /zurücksetzen/i.test(b.textContent));
+    const alle = [...document.querySelectorAll('main button, main a, main input, main select')]
+      .filter((e) => e.getBoundingClientRect().width > 0);
+    const letztes = alle[alle.length - 1];
+    return {
+      hoehe: document.documentElement.scrollHeight,
+      reset_ist_letztes_bedienelement: letztes === reset,
+      email_feld: document.querySelectorAll('#profil-email, input[type="email"][placeholder*="beispiel"]').length,
+    };
+  });
+  await p.getByRole('button', { name: /Fortschritt zurücksetzen/ }).click();
+  await p.waitForTimeout(200);
+  const frage = await p.evaluate(() => {
+    const d = document.querySelector('[role="alertdialog"]');
+    return {
+      titel: d?.querySelector('div')?.textContent?.trim(),
+      knoepfe: [...(d?.querySelectorAll('button') ?? [])].map((b) => b.textContent.trim()),
+    };
+  });
+  await p.getByRole('button', { name: 'Abbrechen' }).last().click();
+  await p.waitForTimeout(150);
+  const danach = await p.getByRole('button', { name: /Fortschritt zurücksetzen/ }).count();
+  await k.close();
+  return { gruppen, ...lage, frage, abgebrochen_ok: danach === 1 };
+});
+
+await schritt('Kontokarte: kein Sprung, Google-Knopf nach Vorgabe, gleichwertige Wahl', async () => {
+  const k = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' });
+  await k.addInitScript(() => localStorage.setItem('pokermentor-lang-v1', 'de'));
+  await k.route('**/legal.json', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: ANBIETER }));
+  const p = await k.newPage();
+  await p.goto(`${GRUND}/#/profil/einstellungen`, { waitUntil: 'domcontentloaded' });
+  await p.waitForSelector('.konto-platzhalter, .google-knopf');
+  const platzhalter_hoehe = await p.locator('.konto-platzhalter').evaluate((e) => Math.round(e.getBoundingClientRect().height))
+    .catch(() => null);
+  await p.waitForSelector('.google-knopf');
+  await p.waitForTimeout(300);
+  const karte = await p.evaluate(() => {
+    const kachel = document.getElementById('konto').nextElementSibling;
+    const g = document.querySelector('.google-knopf');
+    const gs = getComputedStyle(g);
+    const tabs = [...document.querySelectorAll('.konto-umschalter button')];
+    const senden = document.querySelector('.konto-senden');
+    return {
+      hoehe: Math.round(kachel.getBoundingClientRect().height),
+      google_flaeche: gs.backgroundColor,
+      google_ist_hauptknopf: g.classList.contains('primary'),
+      google_hoehe: Math.round(g.getBoundingClientRect().height),
+      google_g_farben: g.querySelectorAll('svg path').length,
+      tabs: tabs.map((t) => ({ text: t.textContent.trim(), breite: Math.round(t.getBoundingClientRect().width) })),
+      senden_text: senden?.textContent?.trim(),
+    };
+  });
+  await p.getByRole('radio', { name: 'Neues Konto' }).click();
+  await p.waitForTimeout(200);
+  const neu = await p.evaluate(() => ({
+    titel: document.getElementById('konto').nextElementSibling.querySelector('div')?.textContent?.trim(),
+    name_feld: document.querySelectorAll('input[autocomplete="name"]').length,
+    senden: document.querySelector('.konto-senden')?.textContent?.trim(),
+  }));
+  const feedback = await p.locator('a[href^="mailto:"]').count();
+  await k.close();
+  /* Ohne Anbieterangaben: kein „Neues Konto“, kein Google, kein Feedback-Link. */
+  const k2 = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' });
+  await k2.addInitScript(() => localStorage.setItem('pokermentor-lang-v1', 'de'));
+  const p2 = await k2.newPage();
+  await p2.goto(`${GRUND}/#/profil/einstellungen`, { waitUntil: 'domcontentloaded' });
+  await p2.waitForSelector('.konto-senden');
+  const ohne = {
+    google: await p2.locator('.google-knopf').count(),
+    umschalter: await p2.locator('.konto-umschalter').count(),
+    feedback: await p2.locator('a[href^="mailto:"]').count(),
+  };
+  await k2.close();
+  return { platzhalter_hoehe, karte, neu, feedback_mit_adresse: feedback, ohne_anbieter: ohne };
 });
 
 /* ── Auszahlung und Bankroll (E-094) ──────────────────────────────────────

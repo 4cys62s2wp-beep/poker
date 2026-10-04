@@ -1,6 +1,6 @@
 import { defineStrings } from '..';
 
-/* Texte der Erinnerungskarte im Profil (src/components/ErinnerungKarte.tsx). */
+/* Texte der Erinnerungskarte in den Einstellungen (src/components/ErinnerungKarte.tsx). */
 export const STR = defineStrings(
   {
     titel: 'Täglich erinnern',

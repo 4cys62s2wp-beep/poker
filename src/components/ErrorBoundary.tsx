@@ -21,6 +21,8 @@ import { Component, type ReactNode } from 'react';
 import { LANG_KEY } from '../i18n';
 import { alleGespeichertenDaten, loescheAllesVonUns } from '../lib/storage';
 import { downloadBlob } from '../lib/download';
+import { feedbackMail } from '../lib/feedback';
+import { loadLegalConfig } from '../lib/legal';
 
 interface State {
   hasError: boolean;
@@ -30,6 +32,9 @@ interface State {
   fragtNach: boolean;
   /** Gelöscht wird gerade — der Spiegel braucht einen Augenblick. */
   loescht: boolean;
+  /** Der Link „Fehlerbericht senden“ — nur, wenn der Betreiber eine Adresse
+   *  hinterlegt hat (legal.json). */
+  bericht: string | null;
 }
 
 const ABSTURZ_KEY = 'pokermentor-absturz-zaehler';
@@ -65,6 +70,9 @@ const TEXTS = {
     wirklich: 'Wirklich alles löschen?',
     hinweis: 'Das löscht deinen Fortschritt auf diesem Gerät.',
     abbrechen: 'Doch nicht',
+    bericht: 'Fehlerbericht senden',
+    berichtKopf: 'Was hast du gerade gemacht? (bitte hier schreiben):',
+    berichtBetreff: 'PokerMentor – Fehlerbericht',
   },
   en: {
     title: 'Something went wrong',
@@ -77,6 +85,9 @@ const TEXTS = {
     wirklich: 'Really delete everything?',
     hinweis: 'This deletes your progress on this device.',
     abbrechen: 'Cancel',
+    bericht: 'Send error report',
+    berichtKopf: 'What were you doing? (please write here):',
+    berichtBetreff: 'PokerMentor – error report',
   },
 } as const;
 
@@ -86,13 +97,29 @@ const ABSATZ = { color: 'var(--text-dim)', maxWidth: 420 } as const;
 
 /** Fängt unerwartete Fehler ab, statt eine weiße Seite zu zeigen. */
 export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
-  state: State = { hasError: false, erneut: false, fragtNach: false, loescht: false };
+  state: State = { hasError: false, erneut: false, fragtNach: false, loescht: false, bericht: null };
 
   static getDerivedStateFromError(): Partial<State> {
     return { hasError: true };
   }
 
-  componentDidCatch() {
+  componentDidCatch(fehler: unknown) {
+    /* Der Bericht ist eine Mail an die hinterlegte Adresse, mit Version,
+       Sprache, Browser und der Fehlermeldung — vorgeschrieben, aber vor dem
+       Senden zu lesen und zu ändern. Ohne Adresse (legal.json) gibt es keinen
+       Link. Die Konfiguration lädt vom Netz oder aus dem Zwischenspeicher; ist
+       beides nicht da, bleibt der Bildschirm, wie er ist. */
+    void loadLegalConfig().then((c) => {
+      if (!c) return;
+      const t = TEXTS[currentLang()];
+      this.setState({
+        bericht: feedbackMail({
+          email: c.email, betreff: t.berichtBetreff, kopf: t.berichtKopf,
+          bau: __BAU__, version: 'PokerMentor', sprache: currentLang(), userAgent: navigator.userAgent,
+          fehler: fehler instanceof Error ? fehler.message : String(fehler ?? ''),
+        }),
+      });
+    }).catch(() => undefined);
     try {
       const bisher = Number(sessionStorage.getItem(ABSTURZ_KEY) ?? '0');
       const jetzt = (Number.isFinite(bisher) ? Math.max(0, bisher) : 0) + 1;
@@ -141,7 +168,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
   render() {
     if (!this.state.hasError) return this.props.children;
     const t = TEXTS[currentLang()];
-    const { erneut, fragtNach, loescht } = this.state;
+    const { erneut, fragtNach, loescht, bericht } = this.state;
 
     return (
       <main
@@ -162,6 +189,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
         <p style={ABSATZ}>{erneut ? t.wiederBody : t.body}</p>
 
         <button className="btn primary" onClick={this.neuLaden}>{t.reload}</button>
+        {bericht && <a className="btn ghost" href={bericht}>{t.bericht}</a>}
 
         {erneut && !fragtNach && (
           <>
